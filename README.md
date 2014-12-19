@@ -4,18 +4,18 @@ Kyoto Visualization System (KVS) is a multi-platform, open-source C++ library fo
 
 # Installation
 
-# Requirements
+## Requirements
 * GLUT
 * GLEW
 * Qt (optional)
 
-# Settings
+## Settings
 ```
 export KVS_DIR=/usr/local/kvs
 export PATH=$KVS_DIR/bin:$PATH
 ```
 
-# Build
+## Build
 ```
 make
 make install
