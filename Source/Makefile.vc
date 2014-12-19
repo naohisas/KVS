@@ -1,0 +1,96 @@
+#*****************************************************************************
+#  $Id: Makefile.vc 1497 2013-04-04 07:17:54Z naohisa.sakamoto@gmail.com $
+#*****************************************************************************
+
+#=============================================================================
+#  Include.
+#=============================================================================
+!INCLUDE ..\kvs.conf
+!INCLUDE ..\Makefile.vc.def
+
+
+#=============================================================================
+#  INCLUDE_PATH, LIBRARY_PATH, LINK_LIBRARY, INSTALL_DIR.
+#=============================================================================
+INCLUDE_PATH =
+LIBRARY_PATH =
+LINK_LIBRARY =
+INSTALL_DIR  = $(KVS_DIR)
+
+
+#=============================================================================
+#  Sub directory.
+#=============================================================================
+SUBDIRS = Core
+
+!IF "$(KVS_SUPPORT_GLUT)" == "1"
+SUBDIRS = $(SUBDIRS) SupportGLUT
+!ENDIF
+
+!IF "$(KVS_SUPPORT_QT)" == "1"
+SUBDIRS = $(SUBDIRS) SupportQt
+!ENDIF
+
+!IF "$(KVS_SUPPORT_SAGE)" == "1"
+SUBDIRS = $(SUBDIRS) SupportSAGE
+!ENDIF
+
+!IF "$(KVS_SUPPORT_OPENCV)" == "1"
+SUBDIRS = $(SUBDIRS) SupportOpenCV
+!ENDIF
+
+!IF "$(KVS_SUPPORT_CUDA)" == "1"
+SUBDIRS = $(SUBDIRS) SupportCUDA
+!ENDIF
+
+
+#=============================================================================
+#  build.
+#=============================================================================
+build:
+	FOR %%i IN ( $(SUBDIRS) ) DO \
+	CD %%i && $(MAKE) /f $(MAKEFILE) /$(MAKEFLAGS) build && CD ..
+
+
+#=============================================================================
+#  clean.
+#=============================================================================
+clean:
+	FOR %%i IN ( $(SUBDIRS) ) DO \
+	CD %%i && $(MAKE) /f $(MAKEFILE) /$(MAKEFLAGS) clean && CD ..
+
+
+#=============================================================================
+#  install.
+#=============================================================================
+install:
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs" $(MKDIR) "$(INSTALL_DIR)\include\kvs"
+	$(INSTALL) kvsCore "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\* "$(INSTALL_DIR)\include\kvs"
+!IF "$(KVS_SUPPORT_GLUT)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\glut" $(MKDIR) "$(INSTALL_DIR)\include\kvs\glut"
+	$(INSTALL) kvsSupportGLUT "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\glut\* "$(INSTALL_DIR)\include\kvs\glut"
+!ENDIF
+!IF "$(KVS_SUPPORT_QT)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\qt" $(MKDIR) "$(INSTALL_DIR)\include\kvs\qt"
+	$(INSTALL) kvsSupportQt "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\qt\* "$(INSTALL_DIR)\include\kvs\qt"
+!ENDIF
+!IF "$(KVS_SUPPORT_OPENCV)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\opencv" $(MKDIR) "$(INSTALL_DIR)\include\kvs\opencv"
+	$(INSTALL) kvsSupportOpenCV "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\opencv\* "$(INSTALL_DIR)\include\kvs\opencv"
+!ENDIF
+!IF "$(KVS_SUPPORT_CUDA)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\cuda" $(MKDIR) "$(INSTALL_DIR)\include\kvs\cuda"
+	$(INSTALL) kvsSupportCUDA "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\cuda\* "$(INSTALL_DIR)\include\kvs\cuda"
+!ENDIF
+!IF "$(KVS_SUPPORT_SAGE)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\sage" $(MKDIR) "$(INSTALL_DIR)\include\kvs\sage"
+	$(INSTALL) kvsSupportSAGE "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\sage\* "$(INSTALL_DIR)\include\kvs\sage"
+!ENDIF
+	FOR %%i IN ( $(SUBDIRS) ) DO \
+	CD %%i && $(MAKE) /f $(MAKEFILE) /$(MAKEFLAGS) install && CD ..

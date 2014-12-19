@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<VisualStudioProject
+  ProjectType="Visual C++"
+  Version="VC_VERSION_REPLACED_BY_KVSMAKE"
+  Name="PROJECT_NAME_REPLACED_BY_KVSMAKE"
+  RootNamespace="PROJECT_NAME_REPLACED_BY_KVSMAKE"
+  >
+  <Platforms>
+    <Platform Name="Win32"/>
+  </Platforms>
+  <Configurations>
+    <Configuration
+      Name="Debug|Win32"
+      OutputDirectory="$(ConfigurationName)"
+      IntermediateDirectory="$(ConfigurationName)"
+      ConfigurationType="1"
+      CharacterSet="2"
+      >
+      <Tool
+        Name="VCCLCompilerTool"
+        AdditionalIncludeDirectories="$(KVS_DIR)\include"
+        PreprocessorDefinitions="DEFINITIONS_DEBUG_REPLACED_BY_KVSMAKE"
+        Optimization="0"
+        RuntimeLibrary="3"
+        WarningLevel="4"
+        />
+      <Tool
+        Name="VCLinkerTool"
+        AdditionalDependencies="LIBRARIES_REPLACED_BY_KVSMAKE"
+        AdditionalLibraryDirectories="$(KVS_DIR)\lib"
+        />
+    </Configuration>
+    <Configuration
+      Name="Release|Win32"
+      OutputDirectory="$(ConfigurationName)"
+      IntermediateDirectory="$(ConfigurationName)"
+      ConfigurationType="1"
+      CharacterSet="2"
+      WholeProgramOptimization="1"
+      >
+      <Tool
+        Name="VCCLCompilerTool"
+        AdditionalIncludeDirectories="$(KVS_DIR)\include"
+        PreprocessorDefinitions="DEFINITIONS_RELEASE_REPLACED_BY_KVSMAKE"
+        Optimization="3"
+        RuntimeLibrary="2"
+        WarningLevel="4"
+        />
+      <Tool
+        Name="VCLinkerTool"
+        AdditionalDependencies="LIBRARIES_REPLACED_BY_KVSMAKE"
+        AdditionalLibraryDirectories="$(KVS_DIR)\lib"
+        OptimizeReferences="2"
+        EnableCOMDATFolding="2"
+        />
+    </Configuration>
+  </Configurations>
+  <Files>
+    <Filter
+      Name="Header"
+      Filter="h"
+      >
+HEADERS_REPLACED_BY_KVSMAKE
+    </Filter>
+    <Filter
+      Name="Source"
+      Filter="cpp"
+      >
+SOURCES_REPLACED_BY_KVSMAKE
+    </Filter>
+  </Files>
+</VisualStudioProject>

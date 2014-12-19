@@ -1,0 +1,176 @@
+#*****************************************************************************
+#  Makefile.vc.kvs
+#*****************************************************************************
+
+#=============================================================================
+#  KVS_DIR.
+#=============================================================================
+!IFNDEF KVS_DIR
+!ERROR KVS_DIR is not defined.
+!ENDIF
+
+
+#=============================================================================
+#  Include.
+#=============================================================================
+!INCLUDE "$(KVS_DIR)\kvs.conf"
+!INCLUDE "$(KVS_DIR)\Makefile.vc.def"
+
+
+#=============================================================================
+#  INCLUDE_PATH, LIBRARY_PATH, LINK_LIBRARY, INSTALL_DIR.
+#=============================================================================
+INCLUDE_PATH =
+LIBRARY_PATH =
+LINK_LIBRARY =
+INSTALL_DIR  =
+
+!IF EXIST( kvsmake.vc.conf )
+!INCLUDE kvsmake.vc.conf
+!ELSE
+!IF EXIST( kvsmake.conf )
+!INCLUDE kvsmake.conf
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
+#  Project name.
+#=============================================================================
+PROJECT_NAME = PROJECT_NAME_REPLACED_BY_KVSMAKE
+
+TARGET_EXE = $(PROJECT_NAME).exe
+
+TARGET_LIB = $(PROJECT_NAME).lib
+
+
+#=============================================================================
+#  Source.
+#=============================================================================
+SOURCES = \
+SOURCES_REPLACED_BY_KVSMAKE
+
+
+#=============================================================================
+#  Object.
+#=============================================================================
+OBJECTS = $(SOURCES:.cpp=.obj)
+
+
+#=============================================================================
+#  Include path.
+#=============================================================================
+!IF "$(KVS_SUPPORT_GLUT)" == "1"
+INCLUDE_PATH = $(INCLUDE_PATH) $(GLUT_INCLUDE_PATH)
+!ENDIF
+
+!IF "$(KVS_SUPPORT_OPENCV)" == "1"
+INCLUDE_PATH = $(INCLUDE_PATH) $(OPENCV_INCLUDE_PATH)
+!ENDIF
+
+!IF "$(KVS_SUPPORT_CUDA)" == "1"
+INCLUDE_PATH = $(INCLUDE_PATH) $(CUDA_INCLUDE_PATH)
+!ENDIF
+
+INCLUDE_PATH = $(INCLUDE_PATH) /I"$(KVS_DIR)\include"
+INCLUDE_PATH = $(INCLUDE_PATH) $(GLEW_INCLUDE_PATH)
+INCLUDE_PATH = $(INCLUDE_PATH) $(GL_INCLUDE_PATH)
+
+
+#=============================================================================
+#  Library path.
+#=============================================================================
+!IF "$(KVS_SUPPORT_GLUT)" == "1"
+LIBRARY_PATH = $(LIBRARY_PATH) $(GLUT_LIBRARY_PATH)
+!ENDIF
+
+!IF "$(KVS_SUPPORT_OPENCV)" == "1"
+LIBRARY_PATH = $(LIBRARY_PATH) $(OPENCV_LIBRARY_PATH)
+!ENDIF
+
+!IF "$(KVS_SUPPORT_CUDA)" == "1"
+LIBRARY_PATH = $(LIBRARY_PATH) $(CUDA_LIBRARY_PATH)
+!ENDIF
+
+LIBRARY_PATH = $(LIBRARY_PATH) /LIBPATH:"$(KVS_DIR)\lib"
+LIBRARY_PATH = $(LIBRARY_PATH) $(GLEW_LIBRARY_PATH)
+LIBRARY_PATH = $(LIBRARY_PATH) $(GL_LIBRARY_PATH)
+
+
+#=============================================================================
+#  Link library.
+#=============================================================================
+!IF "$(KVS_SUPPORT_GLUT)" == "1"
+LINK_LIBRARY = $(LINK_LIBRARY) $(LIB_KVS_SUPPORT_GLUT) $(GLUT_LINK_LIBRARY)
+!ENDIF
+
+!IF "$(KVS_SUPPORT_OPENCV)" == "1"
+LINK_LIBRARY = $(LINK_LIBRARY) $(LIB_KVS_SUPPORT_GLEW) $(OPENCV_LINK_LIBRARY)
+!ENDIF
+
+!IF "$(KVS_SUPPORT_CUDA)" == "1"
+LINK_LIBRARY = $(LINK_LIBRARY) $(LIB_KVS_SUPPORT_CUDA) $(CUDA_LINK_LIBRARY)
+!ENDIF
+
+LINK_LIBRARY = $(LINK_LIBRARY) $(LIB_KVS_CORE)
+LINK_LIBRARY = $(LINK_LIBRARY) $(GLEW_LINK_LIBRARY)
+LINK_LIBRARY = $(LINK_LIBRARY) $(GL_LINK_LIBRARY)
+
+
+#=============================================================================
+#  Build rule.
+#=============================================================================
+$(TARGET_EXE): $(OBJECTS)
+	$(LD) $(LDFLAGS) $(LIBRARY_PATH) /OUT:$@ $** $(LINK_LIBRARY)
+	mt -nologo -manifest $@.manifest -outputresource:$@;1
+	$(RM) $@.manifest
+
+$(TARGET_LIB): $(OBJECTS)
+	$(AR) /OUT:$@ @<<
+$**
+<<
+
+.cpp.obj::
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) @<<
+$<
+<<
+
+.h.cpp::
+
+
+#=============================================================================
+#  build.
+#=============================================================================
+build: $(TARGET_EXE)
+
+
+#=============================================================================
+#  lib.
+#=============================================================================
+lib: $(TARGET_LIB)
+
+
+#=============================================================================
+#  clean.
+#=============================================================================
+clean:
+	$(RM) $(TARGET_EXE) $(TARGET_LIB) $(OBJECTS)
+
+
+#=============================================================================
+#  distclean.
+#=============================================================================
+distclean: clean
+	$(RM) Makefile.vc.kvs
+
+
+#=============================================================================
+#  install.
+#=============================================================================
+!IF "$(INSTALL_DIR)" != ""
+install:
+	IF NOT EXIST "$(INSTALL_DIR)\include" $(MKDIR) "$(INSTALL_DIR)\include"
+	$(INSTALL) *.h "$(INSTALL_DIR)\include"
+	IF NOT EXIST "$(INSTALL_DIR)\lib" $(MKDIR) "$(INSTALL_DIR)\lib"
+	$(INSTALL) $(TARGET_LIB) "$(INSTALL_DIR)\lib"
+!ENDIF

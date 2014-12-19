@@ -1,0 +1,81 @@
+#*****************************************************************************
+#  $Id: Makefile.vc 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
+#*****************************************************************************
+
+#=============================================================================
+#  include
+#=============================================================================
+!INCLUDE ..\..\kvs.conf
+!INCLUDE ..\..\Makefile.vc.def
+
+
+#=============================================================================
+#  INCLUDE_PATH, LIBRARY_PATH, LINK_LIBRARY, INSTALL_DIR.
+#=============================================================================
+INCLUDE_PATH = /I..\..\Source
+LIBRARY_PATH = /LIBPATH:..\..\Source\Core\$(OUTDIR)
+LINK_LIBRARY = $(LIB_KVS_CORE)
+INSTALL_DIR  = $(KVS_DIR)
+
+
+#=============================================================================
+#  Project name.
+#=============================================================================
+PROJECT_NAME = kvsmake
+
+TARGET_EXE = $(OUTDIR)\$(PROJECT_NAME).exe
+
+
+#=============================================================================
+#  Object.
+#=============================================================================
+OBJECTS = \
+$(OUTDIR)\WriteMakefile.obj \
+$(OUTDIR)\WriteQtProject.obj \
+$(OUTDIR)\WriteVCProject.obj \
+$(OUTDIR)\WriteVCProjectCUDA.obj \
+$(OUTDIR)\WriteVCXProject.obj \
+$(OUTDIR)\main.obj \
+
+
+#=============================================================================
+#  Build rule.
+#=============================================================================
+$(TARGET_EXE): $(OBJECTS)
+	$(LD) $(LDFLAGS) $(LIBRARY_PATH) /OUT:$@ $** $(LINK_LIBRARY)
+	mt -nologo -manifest $@.manifest -outputresource:$@;1
+	$(RM) $@.manifest
+
+{}.cpp{$(OUTDIR)\}.obj::
+	IF NOT EXIST $(OUTDIR) $(MKDIR) $(OUTDIR)
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\ @<<
+$<
+<<
+
+
+#=============================================================================
+#  build.
+#=============================================================================
+build: $(TARGET_EXE)
+
+.h.cpp::
+
+
+#=============================================================================
+#  clean.
+#=============================================================================
+clean:
+	IF EXIST $(OUTDIR) $(RMDIR) $(OUTDIR)
+
+
+#=============================================================================
+#  install.
+#=============================================================================
+install:
+	IF NOT EXIST $(INSTALL_DIR)\bin $(MKDIR) $(INSTALL_DIR)\bin
+	$(INSTALL) Makefile.vc.kvs.template $(INSTALL_DIR)\bin
+	$(INSTALL) VCProject.template       $(INSTALL_DIR)\bin
+	$(INSTALL) VCProjectCUDA.template   $(INSTALL_DIR)\bin
+	$(INSTALL) VCXProject.template       $(INSTALL_DIR)\bin
+	$(INSTALL) QtProject.template       $(INSTALL_DIR)\bin
+	$(INSTALL_EXE) $(TARGET_EXE) $(INSTALL_DIR)\bin

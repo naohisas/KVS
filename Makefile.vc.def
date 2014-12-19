@@ -1,0 +1,220 @@
+#*****************************************************************************
+#  $Id: Makefile.vc.def 1728 2014-04-25 09:11:19Z naohisa.sakamoto@gmail.com $
+#*****************************************************************************
+
+#=============================================================================
+#  KVS_DIR.
+#=============================================================================
+!IFNDEF KVS_DIR
+!ERROR KVS_DIR is not defined.
+!ENDIF
+
+
+#=============================================================================
+#  Suffix rule.
+#=============================================================================
+.SUFFIXES:
+.SUFFIXES: .obj .cpp .h
+
+
+#=============================================================================
+#  Command macro.
+#=============================================================================
+MAKE = nmake /nologo
+CPP  = cl /nologo
+LD   = link /nologo
+AR   = lib /nologo
+QMAKE= qmake
+
+MKDIR   = mkdir
+RM      = del /s
+RMDIR   = rmdir /q /s
+
+INSTALL     = xcopy /f /y
+INSTALL_EXE = xcopy /f /y
+
+
+#=============================================================================
+#  all command.
+#=============================================================================
+all: build
+
+
+#=============================================================================
+#  rebuild command..
+#=============================================================================
+rebuild: clean build
+
+
+#=============================================================================
+#  Makefile.
+#=============================================================================
+MAKEFILE = Makefile.vc
+
+
+#=============================================================================
+#  KVS library.
+#=============================================================================
+LIB_KVS_CORE = kvsCore.lib
+
+LIB_KVS_SUPPORT_CUDA   = libkvsSupportCUDA.lib
+LIB_KVS_SUPPORT_GLUT   = kvsSupportGLUT.lib
+LIB_KVS_SUPPORT_QT     = kvsSupportQt.lib
+LIB_KVS_SUPPORT_OPENCV = kvsSupportOpenCV.lib
+
+
+#=============================================================================
+#  Solution.
+#=============================================================================
+!IFDEF DEBUG
+SOLUTION = Debug
+!ELSE
+SOLUTION = Release
+!ENDIF
+
+
+#=============================================================================
+#  Output directory.
+#=============================================================================
+OUTDIR = $(SOLUTION)
+
+
+#=============================================================================
+#  GL_INCLUDE_PATH, GL_LIBRARY_PATH, GL_LINK_LIBRARY
+#=============================================================================
+GL_INCLUDE_PATH =
+GL_LIBRARY_PATH =
+GL_LINK_LIBRARY = glu32.lib opengl32.lib
+
+
+#=============================================================================
+#  GLEW_INCLUDE_PATH, GLEW_LIBRARY_PATH, GLEW_LINK_LIBRARY
+#=============================================================================
+GLEW_INCLUDE_PATH =
+GLEW_LIBRARY_PATH =
+GLEW_LINK_LIBRARY = glew32.lib
+!IFDEF KVS_GLEW_DIR
+GLEW_INCLUDE_PATH = $(GLEW_INCLUDE_PATH) /I"$(KVS_GLEW_DIR)\include"
+GLEW_LIBRARY_PATH = $(GLEW_LIBRARY_PATH) /LIBPATH:"$(KVS_GLEW_DIR)\lib"
+!ENDIF
+
+#=============================================================================
+#  GLUT_INCLUDE_PATH, GLUT_LIBRARY_PATH, GLUT_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_GLUT)" == "1"
+GLUT_INCLUDE_PATH =
+GLUT_LIBRARY_PATH =
+GLUT_LINK_LIBRARY = glut32.lib
+!IFDEF KVS_GLUT_DIR
+GLUT_INCLUDE_PATH = $(GLUT_INCLUDE_PATH) /I"$(KVS_GLUT_DIR)\include"
+GLUT_LIBRARY_PATH = $(GLUT_LIBRARY_PATH) /LIBPATH:"$(KVS_GLUT_DIR)\lib"
+!ENDIF
+!ENDIF
+
+#=============================================================================
+#  CUDA_INCLUDE_PATH, CUDA_LIBRARY_PATH, CUDA_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_CUDA)" == "1"
+CUDA_INCLUDE_PATH =
+CUDA_LIBRARY_PATH =
+CUDA_LINK_LIBRARY = cuda.lib cudart.lib
+!IFDEF KVS_CUDA_DIR
+CUDA_INCLUDE_PATH = $(CUDA_INCLUDE_PATH) /I"$(KVS_CUDA_DIR)\include"
+CUDA_LIBRARY_PATH = $(CUDA_LIBRARY_PATH) /LIBPATH:"$(KVS_CUDA_DIR)\lib\win32"
+!ENDIF
+!IFDEF KVS_CUDA_SDK_DIR
+CUDA_INCLUDE_PATH = $(CUDA_INCLUDE_PATH) /I"$(KVS_CUDA_SDK_DIR)\common\inc"
+CUDA_LIBRARY_PATH = $(CUDA_LIBRARY_PATH) /LIBPATH:"$(KVS_CUDA_SDK_DIR)\lib\win32"
+#CUDA_LINK_LIBRARY = cutil.lib
+CUDA_LINK_LIBRARY = $(CUDA_LINK_LIBRARY)
+!ENDIF
+
+NVCC = nvcc
+NVCCFLAGS = --host-compilation C++
+!ENDIF
+
+
+#=============================================================================
+#  OPENCV_INCLUDE_PATH, OPENCV_LIBRARY_PATH, OPENCV_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_OPENCV)" == "1"
+OPENCV_INCLUDE_PATH = /I"C:\Program Files\OpenCV\cv\include"
+OPENCV_INCLUDE_PATH = $(OPENCV_INCLUDE_PATH) /I"C:\Program Files\OpenCV\cvaux\include"
+OPENCV_INCLUDE_PATH = $(OPENCV_INCLUDE_PATH) /I"C:\Program Files\OpenCV\cxcore\include"
+OPENCV_INCLUDE_PATH = $(OPENCV_INCLUDE_PATH) /I"C:\Program Files\OpenCV\otherlibs\highgui"
+OPENCV_LIBRARY_PATH = /LIBPATH:"C:\Program Files\OpenCV\lib"
+OPENCV_LINK_LIBRARY = cv.lib cxcore.lib cvaux.lib highgui.lib cvcam.lib
+!IFDEF KVS_OPENCV_DIR
+OPENCV_INCLUDE_PATH = $(OPENCV_INCLUDE_PATH) /I"$(KVS_OPENCV_DIR)\cv\include"
+OPENCV_INCLUDE_PATH = $(OPENCV_INCLUDE_PATH) /I"$(KVS_OPENCV_DIR)\cvaux\include"
+OPENCV_INCLUDE_PATH = $(OPENCV_INCLUDE_PATH) /I"$(KVS_OPENCV_DIR)\cxcore\include"
+OPENCV_INCLUDE_PATH = $(OPENCV_INCLUDE_PATH) /I"$(KVS_OPENCV_DIR)\otherlibs\hightgui"
+OPENCV_LIBRARY_PATH = $(OPENCV_LIBRARY_PATH) /LIBPATH:"$(KVS_OPENCV_DIR)\lib"
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
+#  Compiler option.
+#=============================================================================
+CPPFLAGS = /W3 /EHsc /GR
+
+!IFDEF DEBUG
+CPPFLAGS = $(CPPFLAGS) /Od /MDd
+!ELSE
+CPPFLAGS = $(CPPFLAGS) /Ox /MD
+!ENDIF
+
+
+#=============================================================================
+#  Definition.
+#=============================================================================
+DEFINITIONS = /DWIN32 /D_MBCS /DNOMINMAX /D_SCL_SECURE_NO_DEPRECATE /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+
+!IFDEF DEBUG
+DEFINITIONS = $(DEFINITIONS) /D_DEBUG /DKVS_ENABLE_DEBUG
+!ELSE
+DEFINITIONS = $(DEFINITIONS) /DNDEBUG
+!ENDIF
+
+!IFDEF MEM_DEBUG
+DEFINITIONS = $(DEFINITIONS) /DKVS_ENABLE_MEM_DEBUG
+!ENDIF
+
+!IF "$(KVS_ENABLE_DEPRECATED)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_ENABLE_DEPRECATED
+!ENDIF
+
+# NOTE: The GLEW header files must be included before including the OpenGL
+# header files. Therefore 'GLEW_INCLUDE_PATH' adds to 'DEFINITIONS' here.
+DEFINITIONS = $(DEFINITIONS) $(GLEW_INCLUDE_PATH)
+
+!IF "$(KVS_SUPPORT_GLUT)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_GLUT
+!ENDIF
+
+!IF "$(KVS_SUPPORT_QT)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_QT
+!ENDIF
+
+!IF "$(KVS_SUPPORT_OPENCV)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_OPENCV
+!ENDIF
+
+!IF "$(KVS_SUPPORT_CUDA)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_CUDA
+!ENDIF
+
+
+#=============================================================================
+#  Linker option.
+#=============================================================================
+LDFLAGS = /MANIFEST
+
+!IFDEF DEBUG
+LDFLAGS = $(LDFLAGS) /DEBUG
+!ENDIF
+
+!IFDEF NOCONSOLE
+LDFLAGS = /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup /MANIFEST
+!ENDIF
