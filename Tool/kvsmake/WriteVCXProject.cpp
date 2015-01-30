@@ -11,6 +11,7 @@
  *  $Id: WriteVCXProject.cpp 1498 2013-04-04 07:30:41Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
+#if defined ( KVS_COMPILER_VC )
 #include "WriteVCXProject.h"
 #include <string>
 #include <fstream>
@@ -134,3 +135,5 @@ bool WriteVCXProject( const std::string& project_name )
 }
 
 } // end of namespace kvsmake
+
+#endif

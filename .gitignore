@@ -30,3 +30,6 @@
 .DS_Store
 Release
 Debug
+/build
+/BUILD
+/Build
