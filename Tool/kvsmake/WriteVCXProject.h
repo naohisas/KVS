@@ -14,6 +14,7 @@
 /****************************************************************************/
 #ifndef KVSMAKE__WRITE_VCX_PROJECT_H_INCLUDE
 #define KVSMAKE__WRITE_VCX_PROJECT_H_INCLUDE
+#if defined ( KVS_COMPILER_VC )
 
 #include <string>
 
@@ -25,4 +26,5 @@ bool WriteVCXProject( const std::string& project_name );
 
 } // end of namespace kvsmake
 
+#endif
 #endif // KVSMAKE__WRITE_VCX_PROJECT_H_INCLUDE
