@@ -184,7 +184,7 @@ void PolygonObject::setOpacity( const kvs::UInt8 opacity )
 size_t PolygonObject::numberOfConnections() const
 {
     const size_t nvertices_per_face = m_polygon_type;
-    return m_connections.size() / nvertices_per_face;
+    return nvertices_per_face == 0 ? 0 : m_connections.size() / nvertices_per_face;
 }
 
 std::ostream& operator << ( std::ostream& os, const PolygonObject& object )

@@ -182,9 +182,8 @@ void MarchingPrism::extract_surfaces_with_duplication(
     std::vector<kvs::Real32> coords;
     std::vector<kvs::Real32> normals;
 
-    const kvs::UInt32 ncells( volume->numberOfCells() );
-    const kvs::UInt32* connections =
-        static_cast<const kvs::UInt32*>( volume->connections().data() );
+    const kvs::UInt32 ncells = volume->numberOfCells();
+    const kvs::UInt32* connections = volume->connections().data();
 
     // Extract surfaces.
     size_t index = 0;
@@ -205,10 +204,10 @@ void MarchingPrism::extract_surfaces_with_duplication(
         if ( table_index == 63 ) continue;
 
         // Calculate the triangle polygons.
-        for ( size_t i = 0; MarchingPrismTable::TriangleID[ table_index ][i] != -1; i += 3 )
+        for ( size_t i = 0; MarchingPrismTable::TriangleID[table_index][i] != -1; i += 3 )
         {
             // Refer the edge IDs from the TriangleTable by using the table_index.
-            const int e0 = MarchingPrismTable::TriangleID[table_index][i];
+            const int e0 = MarchingPrismTable::TriangleID[table_index][i+0];
             const int e1 = MarchingPrismTable::TriangleID[table_index][i+1];
             const int e2 = MarchingPrismTable::TriangleID[table_index][i+2];
 
@@ -256,10 +255,10 @@ void MarchingPrism::extract_surfaces_with_duplication(
         SuperClass::setColor( color );
         SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
         SuperClass::setOpacity( 255 );
-        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
         SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
         SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
     }
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
 }
 
 /*==========================================================================*/
@@ -299,8 +298,10 @@ const kvs::Vector3f MarchingPrism::interpolate_vertex(
     const int vertex0,
     const int vertex1 ) const
 {
-    const T* const values = static_cast<const T*>( BaseClass::volume()->values().data() );
-    const kvs::Real32* const coords = BaseClass::volume()->coords().data();
+//    const T* const values = static_cast<const T*>( BaseClass::volume()->values().data() );
+//    const kvs::Real32* const coords = BaseClass::volume()->coords().data();
+    const kvs::ValueArray<T>& values = BaseClass::volume()->values().asValueArray<T>();
+    const kvs::ValueArray<kvs::Real32>& coords = BaseClass::volume()->coords();
 
     const size_t coord0_index = 3 * vertex0;
     const size_t coord1_index = 3 * vertex1;
