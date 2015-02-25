@@ -268,6 +268,7 @@ $(OUTDIR)\.\Visualization\Mapper\ExternalFaces.obj \
 $(OUTDIR)\.\Visualization\Mapper\ExtractEdges.obj \
 $(OUTDIR)\.\Visualization\Mapper\ExtractVertices.obj \
 $(OUTDIR)\.\Visualization\Mapper\FrequencyTable.obj \
+$(OUTDIR)\.\Visualization\Mapper\GridBase.obj \
 $(OUTDIR)\.\Visualization\Mapper\HexahedralCell.obj \
 $(OUTDIR)\.\Visualization\Mapper\HitAndMissSampling.obj \
 $(OUTDIR)\.\Visualization\Mapper\Isosurface.obj \
@@ -290,11 +291,13 @@ $(OUTDIR)\.\Visualization\Mapper\PyramidalCell.obj \
 $(OUTDIR)\.\Visualization\Mapper\QuadraticHexahedralCell.obj \
 $(OUTDIR)\.\Visualization\Mapper\QuadraticTetrahedralCell.obj \
 $(OUTDIR)\.\Visualization\Mapper\RGBFormulae.obj \
+$(OUTDIR)\.\Visualization\Mapper\RectilinearGrid.obj \
 $(OUTDIR)\.\Visualization\Mapper\SlicePlane.obj \
 $(OUTDIR)\.\Visualization\Mapper\Streamline.obj \
 $(OUTDIR)\.\Visualization\Mapper\StreamlineBase.obj \
 $(OUTDIR)\.\Visualization\Mapper\TetrahedralCell.obj \
 $(OUTDIR)\.\Visualization\Mapper\TransferFunction.obj \
+$(OUTDIR)\.\Visualization\Mapper\UniformGrid.obj \
 $(OUTDIR)\.\Visualization\Object\GeometryObjectBase.obj \
 $(OUTDIR)\.\Visualization\Object\ImageObject.obj \
 $(OUTDIR)\.\Visualization\Object\LineObject.obj \

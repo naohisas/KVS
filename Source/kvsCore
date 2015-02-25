@@ -222,6 +222,7 @@
 #include <Core/Visualization/Mapper/ExtractEdges.h>
 #include <Core/Visualization/Mapper/ExtractVertices.h>
 #include <Core/Visualization/Mapper/FrequencyTable.h>
+#include <Core/Visualization/Mapper/GridBase.h>
 #include <Core/Visualization/Mapper/HexahedralCell.h>
 #include <Core/Visualization/Mapper/HitAndMissSampling.h>
 #include <Core/Visualization/Mapper/Isosurface.h>
@@ -244,11 +245,13 @@
 #include <Core/Visualization/Mapper/QuadraticHexahedralCell.h>
 #include <Core/Visualization/Mapper/QuadraticTetrahedralCell.h>
 #include <Core/Visualization/Mapper/RGBFormulae.h>
+#include <Core/Visualization/Mapper/RectilinearGrid.h>
 #include <Core/Visualization/Mapper/SlicePlane.h>
 #include <Core/Visualization/Mapper/Streamline.h>
 #include <Core/Visualization/Mapper/StreamlineBase.h>
 #include <Core/Visualization/Mapper/TetrahedralCell.h>
 #include <Core/Visualization/Mapper/TransferFunction.h>
+#include <Core/Visualization/Mapper/UniformGrid.h>
 #include <Core/Visualization/Module.h>
 #include <Core/Visualization/Object/GeometryObjectBase.h>
 #include <Core/Visualization/Object/ImageObject.h>

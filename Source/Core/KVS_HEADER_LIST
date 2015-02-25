@@ -222,6 +222,7 @@ Visualization/Mapper/ExternalFaces
 Visualization/Mapper/ExtractEdges
 Visualization/Mapper/ExtractVertices
 Visualization/Mapper/FrequencyTable
+Visualization/Mapper/GridBase
 Visualization/Mapper/HexahedralCell
 Visualization/Mapper/HitAndMissSampling
 Visualization/Mapper/Isosurface
@@ -244,11 +245,13 @@ Visualization/Mapper/PyramidalCell
 Visualization/Mapper/QuadraticHexahedralCell
 Visualization/Mapper/QuadraticTetrahedralCell
 Visualization/Mapper/RGBFormulae
+Visualization/Mapper/RectilinearGrid
 Visualization/Mapper/SlicePlane
 Visualization/Mapper/Streamline
 Visualization/Mapper/StreamlineBase
 Visualization/Mapper/TetrahedralCell
 Visualization/Mapper/TransferFunction
+Visualization/Mapper/UniformGrid
 Visualization/Module
 Visualization/Object/GeometryObjectBase
 Visualization/Object/ImageObject
