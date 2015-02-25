@@ -29,107 +29,94 @@ QuadraticTetrahedralCell::QuadraticTetrahedralCell(
     kvs::CellBase( volume )
 {
     // Set the initial interpolation functions and differential functions.
-    this->interpolationFunctions( BaseClass::localPoint() );
-    this->differentialFunctions( BaseClass::localPoint() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the QuadraticTetrahedralCell class.
- */
-/*===========================================================================*/
-QuadraticTetrahedralCell::~QuadraticTetrahedralCell()
-{
+    this->updateInterpolationFunctions( BaseClass::localPoint() );
+    this->updateDifferentialFunctions( BaseClass::localPoint() );
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Calculates the interpolation functions in the local coordinate.
- *  @return point [in] point in the local coordinate
+ *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* QuadraticTetrahedralCell::interpolationFunctions( const kvs::Vec3& point ) const
+void QuadraticTetrahedralCell::updateInterpolationFunctions( const kvs::Vec3& local ) const
 {
-    const float x = point[0];
-    const float y = point[1];
-    const float z = point[2];
-    const float w = 1 - x - y - z;
+    KVS_ASSERT( BaseClass::containsLocalPoint( local ) );
 
-    const float xy = x * y;
-    const float yz = y * z;
-    const float zx = z * x;
+    const float p = local.x();
+    const float q = local.y();
+    const float r = local.z();
+    const float w = 1 - p - q - r;
 
     kvs::Real32* N = BaseClass::interpolationFunctions();
     N[0] = w * (2 * w - 1); // (0, 0, 0)
-    N[1] = x * (2 * x - 1); // (1, 0, 0)
-    N[2] = z * (2 * z - 1); // (0, 0, 1)
-    N[3] = y * (2 * y - 1); // (0, 1, 0)
-    N[4] = 4 * x * w; // (1/2,   0,   0)
-    N[5] = 4 * z * w; // (  0,   0, 1/2)
-    N[6] = 4 * y * w; // (  0, 1/2,   0)
-    N[7] = 4 * z * x; // (1/2,   0, 1/2)
-    N[8] = 4 * y * z; // (  0, 1/2, 1/2)
-    N[9] = 4 * x * y; // (1/2, 1/2,   0)
-
-    return N;
+    N[1] = p * (2 * p - 1); // (1, 0, 0)
+    N[2] = r * (2 * r - 1); // (0, 0, 1)
+    N[3] = q * (2 * q - 1); // (0, 1, 0)
+    N[4] = 4 * p * w; // (1/2,   0,   0)
+    N[5] = 4 * r * w; // (  0,   0, 1/2)
+    N[6] = 4 * q * w; // (  0, 1/2,   0)
+    N[7] = 4 * r * p; // (1/2,   0, 1/2)
+    N[8] = 4 * q * r; // (  0, 1/2, 1/2)
+    N[9] = 4 * p * q; // (1/2, 1/2,   0)
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Calculates the differential functions in the local coordinate.
- *  @return point [in] point in the local coordinate
+ *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* QuadraticTetrahedralCell::differentialFunctions( const kvs::Vec3& point ) const
+void QuadraticTetrahedralCell::updateDifferentialFunctions( const kvs::Vec3& local ) const
 {
-    const float x = point.x();
-    const float y = point.y();
-    const float z = point.z();
-    const float w = 1 - x - y - z;
+    KVS_ASSERT( BaseClass::containsLocalPoint( local ) );
+
+    const float p = local.x();
+    const float q = local.y();
+    const float r = local.z();
+    const float w = 1 - p - q - r;
 
     const size_t nnodes = BaseClass::numberOfCellNodes();
     kvs::Real32* dN = BaseClass::differentialFunctions();
-    kvs::Real32* dNdx = dN;
-    kvs::Real32* dNdy = dNdx + nnodes;
-    kvs::Real32* dNdz = dNdy + nnodes;
+    kvs::Real32* dNdp = dN;
+    kvs::Real32* dNdq = dNdp + nnodes;
+    kvs::Real32* dNdr = dNdq + nnodes;
 
-    // dNdx
-    dNdx[0] = -4 * w + 1;
-    dNdx[1] =  4 * x - 1;
-    dNdx[2] =  0;
-    dNdx[3] =  0;
-    dNdx[4] =  4 * (w - x);
-    dNdx[5] = -4 * z;
-    dNdx[6] = -4 * y;
-    dNdx[7] =  4 * z;
-    dNdx[8] =  0;
-    dNdx[9] =  4 * y;
+    // dNdp
+    dNdp[0] = -4 * w + 1;
+    dNdp[1] =  4 * p - 1;
+    dNdp[2] =  0;
+    dNdp[3] =  0;
+    dNdp[4] =  4 * (w - p);
+    dNdp[5] = -4 * r;
+    dNdp[6] = -4 * q;
+    dNdp[7] =  4 * r;
+    dNdp[8] =  0;
+    dNdp[9] =  4 * q;
 
-    // dNdy
-    dNdy[0] = -4 * w + 1;
-    dNdy[1] =  0;
-    dNdy[2] =  0;
-    dNdy[3] =  4 * y - 1;
-    dNdy[4] = -4 * x;
-    dNdy[5] = -4 * z;
-    dNdy[6] =  4 * (w - y);
-    dNdy[7] =  0;
-    dNdy[8] =  4 * z;
-    dNdy[9] =  4 * x;
+    // dNdq
+    dNdq[0] = -4 * w + 1;
+    dNdq[1] =  0;
+    dNdq[2] =  0;
+    dNdq[3] =  4 * q - 1;
+    dNdq[4] = -4 * p;
+    dNdq[5] = -4 * r;
+    dNdq[6] =  4 * (w - q);
+    dNdq[7] =  0;
+    dNdq[8] =  4 * r;
+    dNdq[9] =  4 * p;
 
-    // dNdz
-    dNdz[0] = -4 * w + 1;
-    dNdz[1] =  0;
-    dNdz[2] =  4 * z - 1;
-    dNdz[3] =  0;
-    dNdz[4] = -4 * x;
-    dNdz[5] =  4 * (w - z);
-    dNdz[6] = -4 * y;
-    dNdz[7] =  4 * x;
-    dNdz[8] =  4 * y;
-    dNdz[9] =  0;
-
-    return dN;
+    // dNdr
+    dNdr[0] = -4 * w + 1;
+    dNdr[1] =  0;
+    dNdr[2] =  4 * r - 1;
+    dNdr[3] =  0;
+    dNdr[4] = -4 * p;
+    dNdr[5] =  4 * (w - r);
+    dNdr[6] = -4 * q;
+    dNdr[7] =  4 * p;
+    dNdr[8] =  4 * q;
+    dNdr[9] =  0;
 }
 
 /*===========================================================================*/
@@ -141,50 +128,47 @@ const kvs::Real32* QuadraticTetrahedralCell::differentialFunctions( const kvs::V
 const kvs::Vec3 QuadraticTetrahedralCell::randomSampling() const
 {
     // Generate a point in the local coordinate.
-    const float s = BaseClass::randomNumber();
-    const float t = BaseClass::randomNumber();
-    const float u = BaseClass::randomNumber();
+    const float p = BaseClass::randomNumber();
+    const float q = BaseClass::randomNumber();
+    const float r = BaseClass::randomNumber();
 
-    kvs::Vec3 point;
-    if ( s + t + u <= 1.0f )
+    kvs::Vec3 local;
+    if ( p + q + r <= 1.0f )
     {
-        point[0] = s;
-        point[1] = t;
-        point[2] = u;
+        local[0] = p;
+        local[1] = q;
+        local[2] = r;
     }
-    else if ( s - t + u >= 1.0f )
+    else if ( p - q + r >= 1.0f )
     {
         // Revise the point.
-        point[0] = -u + 1.0f;
-        point[1] = -s + 1.0f;
-        point[2] =  t;
+        local[0] = -r + 1.0f;
+        local[1] = -p + 1.0f;
+        local[2] =  q;
     }
-    else if ( s + t - u >= 1.0f )
+    else if ( p + q - r >= 1.0f )
     {
         // Revise the point.
-        point[0] = -s + 1.0f;
-        point[1] = -t + 1.0f;
-        point[2] =  u;
+        local[0] = -p + 1.0f;
+        local[1] = -q + 1.0f;
+        local[2] =  r;
     }
-    else if ( -s + t + u >= 1.0f )
+    else if ( -p + q + r >= 1.0f )
     {
         // Revise the point.
-        point[0] = -u + 1.0f;
-        point[1] =  s;
-        point[2] = -t + 1.0f;
+        local[0] = -r + 1.0f;
+        local[1] =  p;
+        local[2] = -q + 1.0f;
     }
     else
     {
         // Revise the point.
-        point[0] =   0.5f * s - 0.5f * t - 0.5f * u + 0.5f;
-        point[1] = - 0.5f * s + 0.5f * t - 0.5f * u + 0.5f;
-        point[2] = - 0.5f * s - 0.5f * t + 0.5f * u + 0.5f;
+        local[0] =   0.5f * p - 0.5f * q - 0.5f * r + 0.5f;
+        local[1] = - 0.5f * p + 0.5f * q - 0.5f * r + 0.5f;
+        local[2] = - 0.5f * p - 0.5f * q + 0.5f * r + 0.5f;
     }
 
-    BaseClass::setLocalPoint( point );
-    BaseClass::m_global_point = BaseClass::transformLocalToGlobal( point );
-
-    return BaseClass::m_global_point;
+    return BaseClass::localToGlobal( local );
 }
 
 /*===========================================================================*/

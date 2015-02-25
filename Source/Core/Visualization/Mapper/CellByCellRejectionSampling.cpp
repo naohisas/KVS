@@ -472,11 +472,12 @@ void CellByCellRejectionSampling::generate_particles( const kvs::UnstructuredVol
         cell->bindCell( index );
 
         // Calculate a number of particles in this cell.
-        const float averaged_scalar = cell->averagedScalar();
+//        const float averaged_scalar = cell->averagedScalar();
+        const float averaged_scalar = Generator::AveragedScalar( cell );
         const float density = this->calculate_density( averaged_scalar );
         const size_t nparticles = this->calculate_number_of_particles( density, cell->volume() );
 
-        const float* S = cell->scalars();
+        const float* S = cell->values();
         float S_min = S[0];
         float S_max = S[0];
         for ( size_t i = 1; i < ncellnodes; i++ )

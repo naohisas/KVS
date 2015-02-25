@@ -24,69 +24,6 @@
 #include "CellTreeLocator.h"
 
 
-namespace
-{
-
-bool CellContains( const kvs::CellBase* cell, const kvs::Vec3& p )
-{
-    kvs::Vec3 min_cell_coord = cell->vertices()[0];
-    kvs::Vec3 max_cell_coord = cell->vertices()[0];
-    const size_t nnodes = cell->numberOfCellNodes();
-    for ( size_t i = 0; i < nnodes; i++ )
-    {
-        const kvs::Vec3 v = cell->vertices()[i];
-        min_cell_coord.x() = kvs::Math::Min( min_cell_coord.x(), v.x() );
-        min_cell_coord.y() = kvs::Math::Min( min_cell_coord.y(), v.y() );
-        min_cell_coord.z() = kvs::Math::Min( min_cell_coord.z(), v.z() );
-        max_cell_coord.x() = kvs::Math::Max( max_cell_coord.x(), v.x() );
-        max_cell_coord.y() = kvs::Math::Max( max_cell_coord.y(), v.y() );
-        max_cell_coord.z() = kvs::Math::Max( max_cell_coord.z(), v.z() );
-    }
-
-    if ( p.x() < min_cell_coord.x() || p.x() > max_cell_coord.x() ) { return false; }
-    if ( p.y() < min_cell_coord.y() || p.y() > max_cell_coord.y() ) { return false; }
-    if ( p.z() < min_cell_coord.z() || p.z() > max_cell_coord.z() ) { return false; }
-
-    cell->setGlobalPoint( p );
-    const kvs::Vec3 local = cell->localPoint();
-    switch ( nnodes )
-    {
-    case  4: // Tetrahedra
-    {
-        if ( local.x() < 0 || 1 < local.x() ) { return false; }
-        if ( local.y() < 0 || 1 < local.y() ) { return false; }
-        if ( local.z() < 0 || 1 < local.z() ) { return false; }
-        if ( local.x() + local.y() + local.z() > 1 ) { return false; }
-        return true;
-    }
-    case  8: // Hexahedra
-    case 10: // Quadratic tetrahedra
-    case 20: // Quadratic hexahedra
-    {
-        if ( local.x() < 0 || 1 < local.x() ) { return false; }
-        if ( local.y() < 0 || 1 < local.y() ) { return false; }
-        if ( local.z() < 0 || 1 < local.z() ) { return false; }
-        return true;
-    }
-    case  6: // Prism
-    {
-        if ( local.x() < 0 || 1 < local.x() ) { return false; }
-        if ( local.y() < 0 || 1 < local.y() ) { return false; }
-        if ( local.z() < 0 || 1 < local.z() ) { return false; }
-        if ( local.x() + local.y() > 1 ) { return false; }
-        return true;
-    }
-    default:
-    {
-        kvsMessageError("Not supported cell type.");
-        return false;
-    }
-    }
-}
-
-} // end of namespace
-
-
 namespace kvs
 {
 
@@ -132,7 +69,7 @@ int CellTreeLocator::findCell( const kvs::Vec3 p )
             for ( ; begin != end; ++begin )
             {
                 BaseClass::cell()->bindCell( *begin );
-                if ( ::CellContains( BaseClass::cell(), p ) ) { return *begin; }
+                if ( BaseClass::cell()->contains( p ) ) { return *begin; }
             }
         }
         break;
@@ -148,7 +85,7 @@ int CellTreeLocator::findCell( const kvs::Vec3 p )
             for ( ; begin != end; ++begin )
             {
                 BaseClass::cell()->bindCell( *begin );
-                if ( ::CellContains( BaseClass::cell(), p ) )
+                if ( BaseClass::cell()->contains( p ) )
                 {
                     const unsigned int* sp = pt.sp();
                     m_cache1[0] = *sp;
@@ -169,7 +106,7 @@ int CellTreeLocator::findCell( const kvs::Vec3 p )
             for ( ; begin != end; ++begin )
             {
                 BaseClass::cell()->bindCell( *begin );
-                if ( ::CellContains( BaseClass::cell(), p ) )
+                if ( BaseClass::cell()->contains( p ) )
                 {
                     const unsigned int* stack1 = pt.m_stack;
                     const unsigned int* sp1 = pt.m_sp;

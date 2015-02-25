@@ -36,20 +36,20 @@ class TetrahedralCell : public kvs::CellBase
 {
 public:
 
-    enum { NumberOfNodes = kvs::UnstructuredVolumeObject::Tetrahedra };
     typedef kvs::CellBase BaseClass;
 
 public:
 
     TetrahedralCell( const kvs::UnstructuredVolumeObject* volume );
-    virtual ~TetrahedralCell();
 
-    const kvs::Real32* interpolationFunctions( const kvs::Vec3& local ) const;
-    const kvs::Real32* differentialFunctions( const kvs::Vec3& local ) const;
+    void updateInterpolationFunctions( const kvs::Vec3& local ) const;
+    void updateDifferentialFunctions( const kvs::Vec3& local ) const;
+    bool containsLocalPoint( const kvs::Vec3& local ) const;
     const kvs::Vec3 randomSampling() const;
     const kvs::Real32 volume() const;
-    const kvs::Vec3 transformGlobalToLocal( const kvs::Vec3& global ) const;
-    const kvs::Vec3 transformLocalToGlobal( const kvs::Vec3& local ) const;
+    const kvs::Vec3 globalPoint() const;
+    const kvs::Vec3 localToGlobal( const kvs::Vec3& global ) const;
+    const kvs::Vec3 globalToLocal( const kvs::Vec3& local ) const;
 };
 
 } // end of namespace kvs

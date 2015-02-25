@@ -23,30 +23,32 @@ namespace
  *  @brief  Gets scalar values and vertex coords specified by the given cell index.
  *  @param  volume [in] input volume
  *  @param  index [in] cell index
- *  @param  scalars [out] scalar values
- *  @param  vertices [out] vertex coords
+ *  @param  cell_values [out] values of the cell
+ *  @param  cell_coords [out] coords of the cell
  */
 /*===========================================================================*/
 template <typename ValueType>
-inline void GetScalarsAndVertices(
+inline void Bind(
     const kvs::UnstructuredVolumeObject* volume,
     const size_t index,
-    kvs::Real32* scalars,
-    kvs::Vec3* vertices )
+    kvs::Real32* cell_values,
+    kvs::Vec3* cell_coords )
 {
-    const kvs::UInt32* const connections = volume->connections().data();
-    const kvs::Real32* const coords = volume->coords().data();
-    const ValueType* const values = static_cast<const ValueType*>( volume->values().data() );
-
     const size_t nnodes = volume->numberOfCellNodes();
-    const kvs::UInt32 connection_index = nnodes * index;
-    for ( size_t i = 0; i < nnodes; i++ )
-    {
-        const kvs::UInt32 node_index = connections[ connection_index + i ];
-        scalars[i] = static_cast<kvs::Real32>( values[ node_index ] );
+    const size_t veclen = volume->veclen();
 
-        const kvs::UInt32 coord_index = 3 * node_index;
-        vertices[i].set( coords[ coord_index ], coords[ coord_index + 1 ], coords[ coord_index + 2 ] );
+    const kvs::UInt32* connections = volume->connections().data() + nnodes * index;
+    const kvs::Real32* coords = volume->coords().data();
+    const ValueType* values = static_cast<const ValueType*>( volume->values().data() );
+    for ( size_t j = 0; j < nnodes; j++ )
+    {
+        const kvs::UInt32 node_index = *( connections++ );
+        for ( size_t i = 0; i < veclen; i++ )
+        {
+            cell_values[ i * nnodes + j ] = kvs::Real32( values[ veclen * node_index + i ] );
+        }
+
+        cell_coords[j] = kvs::Vec3( coords + 3 * node_index );
     }
 }
 
@@ -65,21 +67,22 @@ namespace kvs
 CellBase::CellBase(
     const kvs::UnstructuredVolumeObject* volume ):
     m_nnodes( volume->numberOfCellNodes() ),
-    m_global_point( 0, 0, 0 ),
+    m_veclen( volume->veclen() ),
     m_local_point( 0, 0, 0 ),
     m_reference_volume( volume )
 {
     const size_t dimension = 3;
     const size_t nnodes = m_nnodes;
+    const size_t veclen = m_veclen;
     try
     {
-        m_vertices = new kvs::Vec3 [nnodes];
-        if ( !m_vertices ) throw "Cannot allocate memory for 'm_vertices'";
-        memset( m_vertices, 0, sizeof( kvs::Vec3 ) * nnodes );
+        m_coords = new kvs::Vec3 [nnodes];
+        if ( !m_coords ) throw "Cannot allocate memory for 'm_coords'";
+        memset( m_coords, 0, sizeof( kvs::Vec3 ) * nnodes );
 
-        m_scalars = new kvs::Real32 [nnodes];
-        if ( !m_scalars ) throw "Cannot allocate memory for 'm_scalars'";
-        memset( m_scalars, 0, sizeof( kvs::Real32 ) * nnodes );
+        m_values = new kvs::Real32 [nnodes*veclen];
+        if ( !m_values ) throw "Cannot allocate memory for 'm_values'";
+        memset( m_values, 0, sizeof( kvs::Real32 ) * nnodes * veclen );
 
         m_interpolation_functions = new kvs::Real32 [nnodes];
         if ( !m_interpolation_functions ) throw "Cannot allocate memory for 'm_interpolation_functions'";
@@ -103,8 +106,8 @@ CellBase::CellBase(
 /*===========================================================================*/
 CellBase::~CellBase()
 {
-    if ( m_vertices ) delete [] m_vertices;
-    if ( m_scalars ) delete [] m_scalars;
+    if ( m_coords ) delete [] m_coords;
+    if ( m_values ) delete [] m_values;
     if ( m_interpolation_functions ) delete [] m_interpolation_functions;
     if ( m_differential_functions ) delete [] m_differential_functions;
 }
@@ -120,30 +123,18 @@ void CellBase::bindCell( const kvs::UInt32 index )
     const kvs::UnstructuredVolumeObject* volume = m_reference_volume;
     switch ( volume->values().typeID() )
     {
-    case kvs::Type::TypeInt8:   ::GetScalarsAndVertices<kvs::Int8>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeUInt8:  ::GetScalarsAndVertices<kvs::UInt8>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeInt16:  ::GetScalarsAndVertices<kvs::Int16>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeUInt16: ::GetScalarsAndVertices<kvs::UInt16>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeInt32:  ::GetScalarsAndVertices<kvs::Int32>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeUInt32: ::GetScalarsAndVertices<kvs::UInt32>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeInt64:  ::GetScalarsAndVertices<kvs::Int64>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeUInt64: ::GetScalarsAndVertices<kvs::UInt64>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeReal32: ::GetScalarsAndVertices<kvs::Real32>( volume, index, m_scalars, m_vertices ); break;
-    case kvs::Type::TypeReal64: ::GetScalarsAndVertices<kvs::Real64>( volume, index, m_scalars, m_vertices ); break;
+    case kvs::Type::TypeInt8:   ::Bind<kvs::Int8>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeUInt8:  ::Bind<kvs::UInt8>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeInt16:  ::Bind<kvs::Int16>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeUInt16: ::Bind<kvs::UInt16>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeInt32:  ::Bind<kvs::Int32>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeUInt32: ::Bind<kvs::UInt32>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeInt64:  ::Bind<kvs::Int64>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeUInt64: ::Bind<kvs::UInt64>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeReal32: ::Bind<kvs::Real32>( volume, index, m_values, m_coords ); break;
+    case kvs::Type::TypeReal64: ::Bind<kvs::Real64>( volume, index, m_values, m_coords ); break;
     default: break;
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a point in the global coordinate.
- *  @param  global [in] coordinate value in the global coordinate
- */
-/*===========================================================================*/
-void CellBase::setGlobalPoint( const kvs::Vec3& global ) const
-{
-    m_global_point = global;
-    this->setLocalPoint( this->transformGlobalToLocal( global ) );
 }
 
 /*===========================================================================*/
@@ -155,8 +146,37 @@ void CellBase::setGlobalPoint( const kvs::Vec3& global ) const
 void CellBase::setLocalPoint( const kvs::Vec3& local ) const
 {
     m_local_point = local;
-    this->interpolationFunctions( local );
-    this->differentialFunctions( local );
+    this->updateInterpolationFunctions( local );
+    this->updateDifferentialFunctions( local );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  True if this cell contains a point defined in the local coordinate.
+ *  @param  local [in] local point
+ *  @return True if this cell contains the local point
+ */
+/*===========================================================================*/
+bool CellBase::containsLocalPoint( const kvs::Vec3& local ) const
+{
+    if ( local.x() < 0 || 1 < local.x() ) { return false; }
+    if ( local.y() < 0 || 1 < local.y() ) { return false; }
+    if ( local.z() < 0 || 1 < local.z() ) { return false; }
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Transforms the local to the global coordinate.
+ *  @return global point for the local point
+ */
+/*===========================================================================*/
+const kvs::Vec3 CellBase::globalPoint() const
+{
+    const size_t nnodes = m_nnodes;
+    const float* N = m_interpolation_functions;
+    const kvs::Vec3* V = m_coords;
+    return this->interpolateCoord( V, N, nnodes );
 }
 
 /*===========================================================================*/
@@ -165,7 +185,7 @@ void CellBase::setLocalPoint( const kvs::Vec3& local ) const
  *  @param  global [in] point in the global coodinate
  */
 /*===========================================================================*/
-const kvs::Vec3 CellBase::transformGlobalToLocal( const kvs::Vec3& global ) const
+const kvs::Vec3 CellBase::globalToLocal( const kvs::Vec3& global ) const
 {
     const kvs::Vec3 X( global );
 
@@ -176,8 +196,7 @@ const kvs::Vec3 CellBase::transformGlobalToLocal( const kvs::Vec3& global ) cons
     kvs::Vec3 x0( 0.25f, 0.25f, 0.25f ); // Initial point in local coordinate.
     for ( size_t i = 0; i < MaxLoop; i++ )
     {
-        this->setLocalPoint( x0 );
-        const kvs::Vec3 X0( this->transformLocalToGlobal( x0 ) );
+        const kvs::Vec3 X0( this->localToGlobal( x0 ) );
         const kvs::Vec3 dX( X - X0 );
 
         const kvs::Mat3 J( this->JacobiMatrix() );
@@ -193,34 +212,30 @@ const kvs::Vec3 CellBase::transformGlobalToLocal( const kvs::Vec3& global ) cons
 /*===========================================================================*/
 /**
  *  @brief  Transforms the local to the global coordinate.
- *  @param  point [in] point in the local coordinate
+ *  @param  local [in] point in the local coodinate
  */
 /*===========================================================================*/
-const kvs::Vec3 CellBase::transformLocalToGlobal( const kvs::Vec3& local ) const
+const kvs::Vec3 CellBase::localToGlobal( const kvs::Vec3& local ) const
 {
-    kvs::IgnoreUnusedVariable( local );
-
-    const float* N = m_interpolation_functions;
-    const kvs::Vec3* V = m_vertices;
-    const size_t nnodes = m_nnodes;
-
-    float X = 0; for ( size_t i = 0; i < nnodes; i++ ) X += N[i] * V[i].x();
-    float Y = 0; for ( size_t i = 0; i < nnodes; i++ ) Y += N[i] * V[i].y();
-    float Z = 0; for ( size_t i = 0; i < nnodes; i++ ) Z += N[i] * V[i].z();
-
-    return kvs::Vec3( X, Y, Z );
+    this->setLocalPoint( local );
+    return this->globalPoint();
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Returns the sampled point randomly in the cell.
- *  @return coordinate value of the sampled point
+ *  @return coordinate value of the sampled point in the global coordinate
  */
 /*===========================================================================*/
 const kvs::Vec3 CellBase::randomSampling() const
 {
-    kvsMessageError("'randomSampling' is not implemented.");
-    return kvs::Vec3( 0.0f, 0.0f, 0.0f );
+    // Generate a point in the local coordinate.
+    const float p = this->randomNumber();
+    const float q = this->randomNumber();
+    const float r = this->randomNumber();
+
+    const kvs::Vec3 local( p, q, r );
+    return this->localToGlobal( local );
 }
 
 /*===========================================================================*/
@@ -237,30 +252,72 @@ const kvs::Real32 CellBase::volume() const
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the averaged scalar value.
- *  @return averaged scalar value
+ *  @brief  Returns the jacobi matrix.
+ *  @return Jacobi matrix
  */
 /*===========================================================================*/
-const kvs::Real32 CellBase::averagedScalar() const
+const kvs::Mat3 CellBase::JacobiMatrix() const
 {
-    const size_t nnodes = m_nnodes;
-    const kvs::Real32* s = m_scalars;
-    kvs::Real32 S = 0; for ( size_t i = 0; i < nnodes; i++ ) { S += s[i]; }
-    return S / nnodes;
+    const kvs::UInt32 nnodes = m_nnodes;
+    const float* dNdp = m_differential_functions;
+    const float* dNdq = dNdp + nnodes;
+    const float* dNdr = dNdq + nnodes;
+    const kvs::Vec3* coords = m_coords;
+
+    const kvs::Vec3 dx = this->interpolateCoord( coords, dNdp, nnodes );
+    const kvs::Vec3 dy = this->interpolateCoord( coords, dNdq, nnodes );
+    const kvs::Vec3 dz = this->interpolateCoord( coords, dNdr, nnodes );
+    return kvs::Mat3( dx[0], dy[0], dz[0], dx[1], dy[1], dz[1], dx[2], dy[2], dz[2] );
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the interpolated scalar value at the attached point.
+ *  @brief  Returns a center of cell in the global coordinate.
+ *  @return center of cell in the global coordinate.
+ */
+/*===========================================================================*/
+const kvs::Vec3 CellBase::center() const
+{
+    const size_t nnodes = this->numberOfCellNodes();
+    kvs::Vec3 center = kvs::Vec3::Zero();
+    for ( size_t i = 0; i < nnodes; i ++ ) { center += m_coords[i]; }
+    return center /= nnodes;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the interpolated scalar value at the point.
  */
 /*===========================================================================*/
 const kvs::Real32 CellBase::scalar() const
 {
+    KVS_ASSERT( m_veclen == 1 );
+
     const size_t nnodes = m_nnodes;
-    const float* N = m_interpolation_functions;
-    const kvs::Real32* s = m_scalars;
-    kvs::Real32 S = 0; for ( size_t i = 0; i < nnodes; i++ ) { S += N[i] * s[i]; }
-    return S;
+    const kvs::Real32* N = m_interpolation_functions;
+    const kvs::Real32* S = m_values;
+    return this->interpolateValue( S, N, nnodes );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the interpolated vector value at the point.
+ */
+/*===========================================================================*/
+const kvs::Vec3 CellBase::vector() const
+{
+    KVS_ASSERT( m_veclen == 3 );
+
+    const size_t nnodes = m_nnodes;
+    const kvs::Real32* N = m_interpolation_functions;
+    const kvs::Real32* Sx = m_values;
+    const kvs::Real32* Sy = Sx + nnodes;
+    const kvs::Real32* Sz = Sy + nnodes;
+
+    const kvs::Real32 x = this->interpolateValue( Sx, N, nnodes );
+    const kvs::Real32 y = this->interpolateValue( Sy, N, nnodes );
+    const kvs::Real32 z = this->interpolateValue( Sz, N, nnodes );
+    return kvs::Vec3( x, y, z );
 }
 
 /*===========================================================================*/
@@ -272,59 +329,39 @@ const kvs::Vec3 CellBase::gradient() const
 {
     // Calculate a gradient vector in the local coordinate.
     const kvs::UInt32 nnodes = m_nnodes;
-    const float* dNdx = m_differential_functions;
-    const float* dNdy = m_differential_functions + nnodes;
-    const float* dNdz = m_differential_functions + nnodes + nnodes;
-    const kvs::Real32* s = m_scalars;
+    const float* dNdp = m_differential_functions;
+    const float* dNdq = m_differential_functions + nnodes;
+    const float* dNdr = m_differential_functions + nnodes + nnodes;
+    const kvs::Real32* S = m_values;
 
-    float dsdx = 0.0f;
-    float dsdy = 0.0f;
-    float dsdz = 0.0f;
-    for ( size_t i = 0; i < nnodes; i++ )
-    {
-        dsdx += s[i] * dNdx[i];
-        dsdy += s[i] * dNdy[i];
-        dsdz += s[i] * dNdz[i];
-    }
-
-    const kvs::Vec3 g( dsdx, dsdy, dsdz );
+    const float dSdp = this->interpolateValue( S, dNdp, nnodes );
+    const float dSdq = this->interpolateValue( S, dNdq, nnodes );
+    const float dSdr = this->interpolateValue( S, dNdr, nnodes );
+    const kvs::Vec3 g( dSdp, dSdq, dSdr );
 
     // Calculate a gradient vector in the global coordinate.
     const kvs::Mat3 J = this->JacobiMatrix();
 
     float determinant = 0.0f;
     const kvs::Vec3 G = J.inverted( &determinant ) * g;
-
-    return kvs::Math::IsZero( determinant ) ? kvs::Vec3( 0.0f, 0.0f, 0.0f ) : G;
+    return kvs::Math::IsZero( determinant ) ? kvs::Vec3::Zero() : G;
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the jacobi matrix.
- *  @return Jacobi matrix
+ *  @brief  Returns true if this cell contains the global point.
+ *  @param  global [in] global point
+ *  @return true if this cell contains the global point
  */
 /*===========================================================================*/
-const kvs::Mat3 CellBase::JacobiMatrix() const
+bool CellBase::contains( const kvs::Vec3& global ) const
 {
-    const kvs::UInt32 nnodes = m_nnodes;
-    const float* dNdx = m_differential_functions;
-    const float* dNdy = m_differential_functions + nnodes;
-    const float* dNdz = m_differential_functions + nnodes * 2;
-    const kvs::Vec3* V = m_vertices;
-
-    float dXdx = 0; for ( size_t i = 0; i < nnodes; i++ ) dXdx += dNdx[i]*V[i].x();
-    float dYdx = 0; for ( size_t i = 0; i < nnodes; i++ ) dYdx += dNdx[i]*V[i].y();
-    float dZdx = 0; for ( size_t i = 0; i < nnodes; i++ ) dZdx += dNdx[i]*V[i].z();
-
-    float dXdy = 0; for ( size_t i = 0; i < nnodes; i++ ) dXdy += dNdy[i]*V[i].x();
-    float dYdy = 0; for ( size_t i = 0; i < nnodes; i++ ) dYdy += dNdy[i]*V[i].y();
-    float dZdy = 0; for ( size_t i = 0; i < nnodes; i++ ) dZdy += dNdy[i]*V[i].z();
-
-    float dXdz = 0; for ( size_t i = 0; i < nnodes; i++ ) dXdz += dNdz[i]*V[i].x();
-    float dYdz = 0; for ( size_t i = 0; i < nnodes; i++ ) dYdz += dNdz[i]*V[i].y();
-    float dZdz = 0; for ( size_t i = 0; i < nnodes; i++ ) dZdz += dNdz[i]*V[i].z();
-
-    return kvs::Mat3( dXdx, dYdx, dZdx, dXdy, dYdy, dZdy, dXdz, dYdz, dZdz );
+    if ( this->containsInBounds( global ) )
+    {
+        const kvs::Vec3 local = this->globalToLocal( global );
+        return this->containsLocalPoint( local );
+    }
+    return false;
 }
 
 /*===========================================================================*/
@@ -343,6 +380,82 @@ const kvs::Real32 CellBase::randomNumber() const
     w=(w^(w>>19))^(t^(t>>8));
 
     return t24*static_cast<kvs::Real32>(w>>8);
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  True if the global point is contained within the bounding box of the cell.
+ *  @param  global [in] global point
+ *  @return true if the cell contains the global point
+ */
+/*===========================================================================*/
+bool CellBase::containsInBounds( const kvs::Vec3& global ) const
+{
+    kvs::Vec3 min_coord = this->coords()[0];
+    kvs::Vec3 max_coord = this->coords()[0];
+    const size_t nnodes = this->numberOfCellNodes();
+    for ( size_t i = 0; i < nnodes; i++ )
+    {
+        const kvs::Vec3 v = this->coords()[i];
+        min_coord.x() = kvs::Math::Min( min_coord.x(), v.x() );
+        min_coord.y() = kvs::Math::Min( min_coord.y(), v.y() );
+        min_coord.z() = kvs::Math::Min( min_coord.z(), v.z() );
+        max_coord.x() = kvs::Math::Max( max_coord.x(), v.x() );
+        max_coord.y() = kvs::Math::Max( max_coord.y(), v.y() );
+        max_coord.z() = kvs::Math::Max( max_coord.z(), v.z() );
+    }
+
+    if ( global.x() < min_coord.x() || global.x() > max_coord.x() ) { return false; }
+    if ( global.y() < min_coord.y() || global.y() > max_coord.y() ) { return false; }
+    if ( global.z() < min_coord.z() || global.z() > max_coord.z() ) { return false; }
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Interpolates a value at the local point with interpolation functions.
+ *  @param  values [in] values at the nodes
+ *  @param  weights [in] weights for the values
+ *  @param  nnodes [in] number of nodes
+ *  @return interpolated value
+ */
+/*===========================================================================*/
+kvs::Real32 CellBase::interpolateValue(
+    const kvs::Real32* values,
+    const kvs::Real32* weights,
+    const size_t nnodes ) const
+{
+    kvs::Real32 value = 0;
+    for ( size_t i = 0; i < nnodes; ++i )
+    {
+        value += *values * *weights;
+        ++values; ++weights;
+    }
+    return value;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Interpolates a coordinate value with interpolation functions.
+ *  @param  coords [in] coordinate values at the nodes
+ *  @param  weights [in] weights for the values
+ *  @param  nnodes [in] number of nodes
+ *  @return interpolated value
+ */
+/*===========================================================================*/
+kvs::Vec3 CellBase::interpolateCoord(
+    const kvs::Vec3* coords,
+    const kvs::Real32* weights,
+    const size_t nnodes ) const
+{
+    kvs::Vec3 coord = kvs::Vec3::Zero();
+    for ( size_t i = 0; i < nnodes; ++i )
+    {
+        coord += *coords * *weights;
+        ++coords; ++weights;
+    }
+    return coord;
 }
 
 } // end of namespace kvs

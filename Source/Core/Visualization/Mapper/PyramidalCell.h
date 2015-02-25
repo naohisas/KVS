@@ -34,7 +34,6 @@ class PyramidalCell : public kvs::CellBase
 {
 public:
 
-    enum { NumberOfNodes = 5 };
     typedef kvs::CellBase BaseClass;
 
 private:
@@ -44,11 +43,11 @@ private:
 public:
 
     PyramidalCell( const kvs::UnstructuredVolumeObject* volume );
-    virtual ~PyramidalCell();
 
-    const kvs::Real32* interpolationFunctions( const kvs::Vec3& point ) const;
-    const kvs::Real32* differentialFunctions( const kvs::Vec3& point ) const;
+    void updateInterpolationFunctions( const kvs::Vec3& local ) const;
+    void updateDifferentialFunctions( const kvs::Vec3& local ) const;
     void bindCell( const kvs::UInt32 cell );
+    bool containsLocalPoint( const kvs::Vec3& local ) const;
     const kvs::Vec3 randomSampling() const;
     const kvs::Real32 volume() const;
 };

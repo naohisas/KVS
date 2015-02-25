@@ -29,17 +29,8 @@ HexahedralCell::HexahedralCell(
     kvs::CellBase( volume )
 {
     // Set the initial interpolation functions and differential functions.
-    this->interpolationFunctions( BaseClass::localPoint() );
-    this->differentialFunctions( BaseClass::localPoint() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the HexahedralCell class.
- */
-/*===========================================================================*/
-HexahedralCell::~HexahedralCell()
-{
+    this->updateInterpolationFunctions( BaseClass::localPoint() );
+    this->updateDifferentialFunctions( BaseClass::localPoint() );
 }
 
 /*==========================================================================*/
@@ -48,27 +39,27 @@ HexahedralCell::~HexahedralCell()
  *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* HexahedralCell::interpolationFunctions( const kvs::Vec3& local ) const
+void HexahedralCell::updateInterpolationFunctions( const kvs::Vec3& local ) const
 {
-    const float x = local.x();
-    const float y = local.y();
-    const float z = local.z();
-    const float xy = x * y;
-    const float yz = y * z;
-    const float zx = z * x;
-    const float xyz = xy * z;
+    KVS_ASSERT( BaseClass::containsLocalPoint( local ) );
+
+    const float p = local.x();
+    const float q = local.y();
+    const float r = local.z();
+    const float pq = p * q;
+    const float qr = q * r;
+    const float rp = r * p;
+    const float pqr = pq * r;
 
     kvs::Real32* N = BaseClass::interpolationFunctions();
-    N[0] = z - zx - yz + xyz;
-    N[1] = zx - xyz;
-    N[2] = xyz;
-    N[3] = yz - xyz;
-    N[4] = 1.0f - x - y - z + xy + yz + zx - xyz;
-    N[5] = x - xy - zx + xyz;
-    N[6] = xy - xyz;
-    N[7] = y - xy - yz + xyz;
-
-    return N;
+    N[0] = r - rp - qr + pqr;
+    N[1] = rp - pqr;
+    N[2] = pqr;
+    N[3] = qr - pqr;
+    N[4] = 1.0f - p - q - r + pq + qr + rp - pqr;
+    N[5] = p - pq - rp + pqr;
+    N[6] = pq - pqr;
+    N[7] = q - pq - qr + pqr;
 }
 
 /*==========================================================================*/
@@ -77,69 +68,49 @@ const kvs::Real32* HexahedralCell::interpolationFunctions( const kvs::Vec3& loca
  *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* HexahedralCell::differentialFunctions( const kvs::Vec3& local ) const
+void HexahedralCell::updateDifferentialFunctions( const kvs::Vec3& local ) const
 {
-    const float x = local.x();
-    const float y = local.y();
-    const float z = local.z();
-    const float xy = x * y;
-    const float yz = y * z;
-    const float zx = z * x;
+    KVS_ASSERT( BaseClass::containsLocalPoint( local ) );
+
+    const float p = local.x();
+    const float q = local.y();
+    const float r = local.z();
+    const float pq = p * q;
+    const float qr = q * r;
+    const float rp = r * p;
 
     const size_t nnodes = BaseClass::numberOfCellNodes();
     kvs::Real32* dN = BaseClass::differentialFunctions();
-    kvs::Real32* dNdx = dN;
-    kvs::Real32* dNdy = dN + nnodes;
-    kvs::Real32* dNdz = dN + nnodes + nnodes;
+    kvs::Real32* dNdp = dN;
+    kvs::Real32* dNdq = dN + nnodes;
+    kvs::Real32* dNdr = dN + nnodes + nnodes;
 
-    dNdx[0] =  - z + yz;
-    dNdx[1] =  z - yz;
-    dNdx[2] =  yz;
-    dNdx[3] =  - yz;
-    dNdx[4] =  - 1.0f + y +z - yz;
-    dNdx[5] =  1.0f - y - z + yz;
-    dNdx[6] =  y - yz;
-    dNdx[7] =  - y + yz;
+    dNdp[0] =  - r + qr;
+    dNdp[1] =  r - qr;
+    dNdp[2] =  qr;
+    dNdp[3] =  - qr;
+    dNdp[4] =  - 1.0f + q +r - qr;
+    dNdp[5] =  1.0f - q - r + qr;
+    dNdp[6] =  q - qr;
+    dNdp[7] =  - q + qr;
 
-    dNdy[0] =  - z + zx;
-    dNdy[1] =  - zx;
-    dNdy[2] =  zx;
-    dNdy[3] =  z - zx;
-    dNdy[4] =  - 1.0f + x + z - zx;
-    dNdy[5] =  - x + zx;
-    dNdy[6] =  x - zx;
-    dNdy[7] =  1.0f - x - z + zx;
+    dNdq[0] =  - r + rp;
+    dNdq[1] =  - rp;
+    dNdq[2] =  rp;
+    dNdq[3] =  r - rp;
+    dNdq[4] =  - 1.0f + p + r - rp;
+    dNdq[5] =  - p + rp;
+    dNdq[6] =  p - rp;
+    dNdq[7] =  1.0f - p - r + rp;
 
-    dNdz[0] =  1.0f - y - x + xy;
-    dNdz[1] =  x - xy;
-    dNdz[2] =  xy;
-    dNdz[3] =  y - xy;
-    dNdz[4] =  - 1.0f + y + x - xy;
-    dNdz[5] =  - x + xy;
-    dNdz[6] =  - xy;
-    dNdz[7] =  - y + xy;
-
-    return dN;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the sampled point randomly in the cell.
- *  @return coordinate value of the sampled point
- */
-/*===========================================================================*/
-const kvs::Vec3 HexahedralCell::randomSampling() const
-{
-    // Generate a point in the local coordinate.
-    const float s = BaseClass::randomNumber();
-    const float t = BaseClass::randomNumber();
-    const float u = BaseClass::randomNumber();
-
-    const kvs::Vec3 point( s, t, u );
-    this->setLocalPoint( point );
-    BaseClass::m_global_point = BaseClass::transformLocalToGlobal( point );
-
-    return BaseClass::m_global_point;
+    dNdr[0] =  1.0f - q - p + pq;
+    dNdr[1] =  p - pq;
+    dNdr[2] =  pq;
+    dNdr[3] =  q - pq;
+    dNdr[4] =  - 1.0f + q + p - pq;
+    dNdr[5] =  - p + pq;
+    dNdr[6] =  - pq;
+    dNdr[7] =  - q + pq;
 }
 
 /*===========================================================================*/

@@ -34,16 +34,14 @@ class QuadraticTetrahedralCell : public kvs::CellBase
 {
 public:
 
-    enum { NumberOfNodes = kvs::UnstructuredVolumeObject::QuadraticTetrahedra };
     typedef kvs::CellBase BaseClass;
 
 public:
 
     QuadraticTetrahedralCell( const kvs::UnstructuredVolumeObject* volume );
-    virtual ~QuadraticTetrahedralCell();
 
-    const kvs::Real32* interpolationFunctions( const kvs::Vec3& point ) const;
-    const kvs::Real32* differentialFunctions( const kvs::Vec3& point ) const;
+    void updateInterpolationFunctions( const kvs::Vec3& local ) const;
+    void updateDifferentialFunctions( const kvs::Vec3& local ) const;
     const kvs::Vec3 randomSampling() const;
     const kvs::Real32 volume() const;
 };

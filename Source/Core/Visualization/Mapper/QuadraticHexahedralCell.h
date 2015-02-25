@@ -34,17 +34,14 @@ class QuadraticHexahedralCell : public kvs::CellBase
 {
 public:
 
-    enum { NumberOfNodes = kvs::UnstructuredVolumeObject::QuadraticHexahedra };
     typedef kvs::CellBase BaseClass;
 
 public:
 
     QuadraticHexahedralCell( const kvs::UnstructuredVolumeObject* volume );
-    virtual ~QuadraticHexahedralCell();
 
-    const kvs::Real32* interpolationFunctions( const kvs::Vec3& point ) const;
-    const kvs::Real32* differentialFunctions( const kvs::Vec3& point ) const;
-    const kvs::Vec3 randomSampling() const;
+    void updateInterpolationFunctions( const kvs::Vec3& local ) const;
+    void updateDifferentialFunctions( const kvs::Vec3& local ) const;
     const kvs::Real32 volume() const;
 };
 
