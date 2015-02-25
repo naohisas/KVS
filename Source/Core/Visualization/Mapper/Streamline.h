@@ -16,6 +16,9 @@
 #define KVS__STREAMLINE_H_INCLUDE
 
 #include <kvs/Module>
+#include <kvs/GridBase>
+#include <kvs/CellBase>
+#include <kvs/CellLocator>
 #include "StreamlineBase.h"
 
 
@@ -34,27 +37,55 @@ class Streamline : public kvs::StreamlineBase
 
 public:
 
-    Streamline();
+    class StructuredVolumeInterpolator : public Interpolator
+    {
+    private:
+        kvs::GridBase* m_grid;
+    public:
+        StructuredVolumeInterpolator( const kvs::StructuredVolumeObject* volume );
+        ~StructuredVolumeInterpolator();
+        kvs::Vec3 interpolatedValue( const kvs::Vec3& point );
+        bool containsInVolume( const kvs::Vec3& point );
+    };
+
+    class UnstructuredVolumeInterpolator : public Interpolator
+    {
+    private:
+        kvs::CellBase* m_cell;
+        kvs::CellLocator* m_locator;
+    public:
+        UnstructuredVolumeInterpolator( const kvs::UnstructuredVolumeObject* volume );
+        ~UnstructuredVolumeInterpolator();
+        kvs::Vec3 interpolatedValue( const kvs::Vec3& point );
+        bool containsInVolume( const kvs::Vec3& point );
+    };
+
+    class EulerIntegrator : public Integrator
+    {
+    public:
+        kvs::Vec3 next( const kvs::Vec3& point );
+    };
+
+    class RungeKutta2ndIntegrator : public Integrator
+    {
+    public:
+        kvs::Vec3 next( const kvs::Vec3& point );
+    };
+
+    class RungeKutta4thIntegrator : public Integrator
+    {
+    public:
+        kvs::Vec3 next( const kvs::Vec3& point );
+    };
+
+public:
+
     Streamline(
         const kvs::StructuredVolumeObject* volume,
         const kvs::PointObject* seed_points,
         const kvs::TransferFunction& transfer_function );
-    virtual ~Streamline();
 
     BaseClass::SuperClass* exec( const kvs::ObjectBase* object );
-
-protected:
-
-    bool check_for_acceptance( const std::vector<kvs::Real32>& vertices );
-    bool check_for_termination(
-        const kvs::Vec3& current_vertex,
-        const kvs::Vec3& direction,
-        const size_t integration_times,
-        const kvs::Vec3& next_vertex );
-    const kvs::Vec3 interpolate_vector( const kvs::Vec3& vertex, const kvs::Vec3& direction );
-    const kvs::Vec3 calculate_vector( const kvs::Vec3& vertex );
-    const kvs::RGBColor calculate_color( const kvs::Vec3& direction );
-    void set_min_max_vector_length( const kvs::VolumeObjectBase* volume );
 };
 
 } // end of namespace kvs

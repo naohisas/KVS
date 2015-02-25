@@ -48,8 +48,36 @@ public:
     enum IntegrationDirection
     {
         BackwardDirection = -1,
-        BothDirections = 0,
+//        BothDirections = 0,
         ForwardDirection = 1
+    };
+
+    class Interpolator
+    {
+    public:
+        virtual ~Interpolator() {}
+        virtual kvs::Vec3 interpolatedValue( const kvs::Vec3& point ) = 0;
+        virtual bool containsInVolume( const kvs::Vec3& point ) = 0;
+        kvs::Vec3 direction( const kvs::Vec3& point )
+        {
+            return this->interpolatedValue( point ).normalized();
+        }
+    };
+
+    class Integrator
+    {
+    private:
+        float m_step;
+        Interpolator* m_interpolator;
+    public:
+        virtual ~Integrator() {}
+        virtual kvs::Vec3 next( const kvs::Vec3& point ) = 0;
+        void setStep( const float step ) { m_step = step; }
+        void setInterpolator( Interpolator* interpolator ) { m_interpolator = interpolator; }
+        float step() const { return m_step; }
+        bool contains( const kvs::Vec3& point ) { return m_interpolator->containsInVolume( point ); }
+        kvs::Vec3 value( const kvs::Vec3& point ) { return m_interpolator->interpolatedValue( point ); }
+        kvs::Vec3 direction( const kvs::Vec3& point ) { return this->value( point ).normalized(); }
     };
 
 protected:
@@ -83,45 +111,10 @@ public:
 
 protected:
 
-    virtual bool check_for_acceptance( const std::vector<kvs::Real32>& vertices ) = 0;
-    virtual bool check_for_termination(
-        const kvs::Vec3& current_vertex,
-        const kvs::Vec3& direction,
-        const size_t integration_times,
-        const kvs::Vec3& next_vertex ) = 0;
-    virtual const kvs::Vec3 interpolate_vector( const kvs::Vec3& vertex, const kvs::Vec3& direction ) = 0;
-    virtual const kvs::Vec3 calculate_vector( const kvs::Vec3& vertex ) = 0;
-    virtual const kvs::RGBColor calculate_color( const kvs::Vec3& direction ) = 0;
-
-    void mapping( const kvs::VolumeObjectBase* volume );
-
-    void extract_lines( const kvs::StructuredVolumeObject* volume );
-    bool calculate_line( std::vector<kvs::Real32>* vertices, std::vector<kvs::UInt8>* colors, const size_t index );
-    bool calculate_one_side(
-        std::vector<kvs::Real32>* coords,
-        std::vector<kvs::UInt8>* colors,
-        const kvs::Vec3& seed_point,
-        const kvs::Vec3& seed_vector );
-    bool calculate_next_vertex(
-        const kvs::Vec3& current_vertex,
-        const kvs::Vec3& current_direction,
-        kvs::Vec3* next_vertex );
-    bool integrate_by_euler(
-        const kvs::Vec3& current_vertex,
-        const kvs::Vec3& current_direction,
-        kvs::Vec3* next_vertex );
-    bool integrate_by_runge_kutta_2nd(
-        const kvs::Vec3& current_vertex,
-        const kvs::Vec3& current_direction,
-        kvs::Vec3* next_vertex );
-    bool integrate_by_runge_kutta_4th(
-        const kvs::Vec3& current_vertex,
-        const kvs::Vec3& current_direction,
-        kvs::Vec3* next_vertex );
-
-    bool check_for_inside_volume( const kvs::Vec3& seed );
-    bool check_for_vector_length( const kvs::Vec3& direction );
-    bool check_for_integration_times( const size_t times );
+    void mapping( Integrator* integrator );
+    kvs::RGBColor interpolatedColor( const kvs::Vec3& value );
+    bool isTerminatedByVectorLength( const kvs::Vec3& vector );
+    bool isTerminatedByIntegrationTimes( const size_t times );
 };
 
 } // end of namespace kvs
