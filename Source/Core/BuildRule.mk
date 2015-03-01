@@ -108,8 +108,11 @@ $(OUTDIR)/./Image/ColorImage.o \
 $(OUTDIR)/./Image/GrayImage.o \
 $(OUTDIR)/./Image/HSVColor.o \
 $(OUTDIR)/./Image/ImageBase.o \
+$(OUTDIR)/./Image/LabColor.o \
+$(OUTDIR)/./Image/MshColor.o \
 $(OUTDIR)/./Image/RGBAColor.o \
 $(OUTDIR)/./Image/RGBColor.o \
+$(OUTDIR)/./Image/XYZColor.o \
 $(OUTDIR)/./Matrix/FrustumMatrix44.o \
 $(OUTDIR)/./Matrix/LookAtMatrix44.o \
 $(OUTDIR)/./Matrix/Matrix.o \

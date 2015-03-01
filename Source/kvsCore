@@ -33,8 +33,11 @@
 #include <Core/Image/GrayImage.h>
 #include <Core/Image/HSVColor.h>
 #include <Core/Image/ImageBase.h>
+#include <Core/Image/LabColor.h>
+#include <Core/Image/MshColor.h>
 #include <Core/Image/RGBAColor.h>
 #include <Core/Image/RGBColor.h>
+#include <Core/Image/XYZColor.h>
 #include <Core/Matrix/FrustumMatrix44.h>
 #include <Core/Matrix/LookAtMatrix44.h>
 #include <Core/Matrix/Matrix.h>

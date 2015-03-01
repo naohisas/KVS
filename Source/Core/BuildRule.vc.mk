@@ -108,8 +108,11 @@ $(OUTDIR)\.\Image\ColorImage.obj \
 $(OUTDIR)\.\Image\GrayImage.obj \
 $(OUTDIR)\.\Image\HSVColor.obj \
 $(OUTDIR)\.\Image\ImageBase.obj \
+$(OUTDIR)\.\Image\LabColor.obj \
+$(OUTDIR)\.\Image\MshColor.obj \
 $(OUTDIR)\.\Image\RGBAColor.obj \
 $(OUTDIR)\.\Image\RGBColor.obj \
+$(OUTDIR)\.\Image\XYZColor.obj \
 $(OUTDIR)\.\Matrix\FrustumMatrix44.obj \
 $(OUTDIR)\.\Matrix\LookAtMatrix44.obj \
 $(OUTDIR)\.\Matrix\Matrix.obj \

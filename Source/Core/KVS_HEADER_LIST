@@ -33,8 +33,11 @@ Image/ColorImage
 Image/GrayImage
 Image/HSVColor
 Image/ImageBase
+Image/LabColor
+Image/MshColor
 Image/RGBAColor
 Image/RGBColor
+Image/XYZColor
 Matrix/FrustumMatrix44
 Matrix/LookAtMatrix44
 Matrix/Matrix
