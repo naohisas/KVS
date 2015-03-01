@@ -45,46 +45,6 @@ struct Less
     }
 };
 
-kvs::RGBColor Interpolate(
-    const float s,
-    const float s0,
-    const float s1,
-    const kvs::RGBColor& c0,
-    const kvs::RGBColor& c1 )
-{
-    const float r0 = static_cast<float>( c0.r() );
-    const float g0 = static_cast<float>( c0.g() );
-    const float b0 = static_cast<float>( c0.b() );
-
-    const float r1 = static_cast<float>( c1.r() );
-    const float g1 = static_cast<float>( c1.g() );
-    const float b1 = static_cast<float>( c1.b() );
-
-    const float w = ( s - s0 ) / ( s1 - s0 );
-    const float r = kvs::Math::Mix( r0, r1, w );
-    const float g = kvs::Math::Mix( g0, g1, w );
-    const float b = kvs::Math::Mix( b0, b1, w );
-
-    const kvs::UInt8 R = static_cast<kvs::UInt8>( r );
-    const kvs::UInt8 G = static_cast<kvs::UInt8>( g );
-    const kvs::UInt8 B = static_cast<kvs::UInt8>( b );
-    return kvs::RGBColor( R, G, B );
-};
-
-kvs::RGBColor Interpolate(
-    const float s,
-    const float s0,
-    const float s1,
-    const kvs::HSVColor& c0,
-    const kvs::HSVColor& c1 )
-{
-    const float w = ( s - s0 ) / ( s1 - s0 );
-    const float H = kvs::Math::Mix( c0.h(), c1.h(), w );
-    const float S = kvs::Math::Mix( c0.s(), c1.s(), w );
-    const float V = kvs::Math::Mix( c0.v(), c1.v(), w );
-    return kvs::RGBColor( kvs::HSVColor( H, S, V ) );
-};
-
 }
 
 namespace kvs
@@ -315,17 +275,18 @@ void ColorMap::create()
                     // Interpolate.
                     const float s0 = p0.first;
                     const float s1 = p1.first;
+                    const float ratio = ( f - s0 ) / ( s1 - s0 );
                     if ( m_color_space == RGBSpace )
                     {
                         const kvs::RGBColor c0 = p0.second;
                         const kvs::RGBColor c1 = p1.second;
-                        color = ::Interpolate( f, s0, s1, c0, c1 );
+                        color = kvs::RGBColor::Mix( c0, c1, ratio );
                     }
                     else if ( m_color_space == HSVSpace )
                     {
                         const kvs::HSVColor c0 = p0.second;
                         const kvs::HSVColor c1 = p1.second;
-                        color = ::Interpolate( f, s0, s1, c0, c1 );
+                        color = kvs::HSVColor::Mix( c0, c1, ratio );
                     }
                     break;
                 }
