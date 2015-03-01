@@ -276,9 +276,9 @@ void ColorMap::create()
                 1.0f );
             const kvs::RGBColor rgb( hsv );
 
-            *( color++ ) = rgb.red();
-            *( color++ ) = rgb.green();
-            *( color++ ) = rgb.blue();
+            *( color++ ) = rgb.r();
+            *( color++ ) = rgb.g();
+            *( color++ ) = rgb.b();
         }
 
     }

@@ -243,9 +243,9 @@ void ExtractVertices::calculate_colors()
             const kvs::UInt32 color_level =
                 static_cast<kvs::UInt32>( normalize_factor * ( static_cast<kvs::Real64>( *( value++ ) ) - min_value ) );
 
-            *( color++ ) = cmap[ color_level ].red();
-            *( color++ ) = cmap[ color_level ].green();
-            *( color++ ) = cmap[ color_level ].blue();
+            *( color++ ) = cmap[ color_level ].r();
+            *( color++ ) = cmap[ color_level ].g();
+            *( color++ ) = cmap[ color_level ].b();
         }
     }
     else
@@ -263,9 +263,9 @@ void ExtractVertices::calculate_colors()
             const kvs::UInt32 color_level =
                 static_cast<kvs::UInt32>( normalize_factor * ( magnitude - min_value ) );
 
-            *( color++ ) = cmap[ color_level ].red();
-            *( color++ ) = cmap[ color_level ].green();
-            *( color++ ) = cmap[ color_level ].blue();
+            *( color++ ) = cmap[ color_level ].r();
+            *( color++ ) = cmap[ color_level ].g();
+            *( color++ ) = cmap[ color_level ].b();
         }
     }
 

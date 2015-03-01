@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file RGBColor.h
+ *  @file   RGBColor.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -19,6 +20,7 @@
 #include <kvs/Math>
 #include <kvs/Type>
 #include <kvs/Vector3>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -34,118 +36,85 @@ class RGBAColor;
 /*==========================================================================*/
 class RGBColor
 {
-protected:
+private:
 
-    kvs::UInt8 m_red; ///< red [0-255]
-    kvs::UInt8 m_green; ///< green [0-255]
-    kvs::UInt8 m_blue; ///< blue [0-255]
+    kvs::UInt8 m_r; ///< red [0-255]
+    kvs::UInt8 m_g; ///< green [0-255]
+    kvs::UInt8 m_b; ///< blue [0-255]
 
 public:
 
-    static RGBColor Black();
-    static RGBColor White();
-    static RGBColor Red();
-    static RGBColor Green();
-    static RGBColor Blue();
-    static RGBColor Yellow();
-    static RGBColor Cyan();
-    static RGBColor Magenta();
+    static RGBColor Black() { return kvs::RGBColor( 0, 0, 0 ); }
+    static RGBColor White() { return kvs::RGBColor( 255, 255, 255 ); }
+    static RGBColor Red() { return kvs::RGBColor( 255, 0, 0 ); }
+    static RGBColor Green() { return kvs::RGBColor( 0, 255, 0 ); }
+    static RGBColor Blue() { return kvs::RGBColor( 0, 0, 255 ); }
+    static RGBColor Yellow() { return kvs::RGBColor( 255, 255, 0 ); }
+    static RGBColor Cyan() { return kvs::RGBColor( 0, 255, 255 ); }
+    static RGBColor Magenta() { return kvs::RGBColor( 255, 0, 255 ); }
+    static RGBColor Mix( const kvs::RGBColor& rgb1, const kvs::RGBColor& rgb2, const kvs::Real32 t );
 
 public:
 
     RGBColor();
-    RGBColor( kvs::UInt8 red, kvs::UInt8 green, kvs::UInt8 blue );
+    RGBColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b );
     RGBColor( const kvs::UInt8 rgb[3] );
-    RGBColor( const RGBColor& rgb );
-    RGBColor( const HSVColor& hsv );
+    RGBColor( const kvs::RGBColor& rgb );
+    RGBColor( const kvs::HSVColor& hsv );
     RGBColor( const kvs::Vec3& rgb );
+    RGBColor( const kvs::Vec3i& rgb );
 
-public:
+    void set( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b ) { m_r = r; m_g = g; m_b = b; }
+    kvs::UInt8 r() const { return m_r; }
+    kvs::UInt8 g() const { return m_g; }
+    kvs::UInt8 b() const { return m_b; }
+    kvs::Vec3 toVec3() const;
+    kvs::Vec3i toVec3i() const;
+    kvs::HSVColor toHSVColor() const;
 
-    RGBColor& operator += ( const RGBColor& rgb );
-    RGBColor& operator -= ( const RGBColor& rgb );
-    RGBColor& operator = ( const RGBColor& rgb );
-    RGBColor& operator = ( const RGBAColor& rgba );
-    RGBColor& operator = ( const HSVColor& hsv );
-    RGBColor& operator = ( const kvs::Vec3& rgb );
-
-public:
-
-    friend bool operator == ( const RGBColor& a, const RGBColor& b )
-    {
-        return( ( a.m_red   == b.m_red   ) &&
-                ( a.m_green == b.m_green ) &&
-                ( a.m_blue  == b.m_blue  ) );
-    }
-
-    friend RGBColor operator + ( const RGBColor& a, const RGBColor& b )
-    {
-        RGBColor ret( a ); ret += b;
-        return( ret );
-    }
-
-    friend RGBColor operator - ( const RGBColor& a, const RGBColor& b )
-    {
-        RGBColor ret( a ); ret -= b;
-        return( ret );
-    }
+    kvs::RGBColor& operator += ( const kvs::RGBColor& rgb );
+    kvs::RGBColor& operator -= ( const kvs::RGBColor& rgb );
+    kvs::RGBColor& operator = ( const kvs::RGBColor& rgb );
+    kvs::RGBColor& operator = ( const kvs::RGBAColor& rgba );
+    kvs::RGBColor& operator = ( const kvs::HSVColor& hsv );
+    kvs::RGBColor& operator = ( const kvs::Vec3& rgb );
+    kvs::RGBColor& operator = ( const kvs::Vec3i& rgb );
+    friend bool operator == ( const kvs::RGBColor& a, const kvs::RGBColor& b );
+    friend kvs::RGBColor operator + ( const kvs::RGBColor& a, const kvs::RGBColor& b );
+    friend kvs::RGBColor operator - ( const kvs::RGBColor& a, const kvs::RGBColor& b );
+    friend std::ostream& operator << ( std::ostream& os, const RGBColor& rgb );
 
     template <typename T>
-    friend RGBColor operator * ( const T a, const RGBColor& rgb )
+    friend kvs::RGBColor operator * ( const T a, const kvs::RGBColor& rgb )
     {
-        return( RGBColor( static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) ),
-                          static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) ),
-                          static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) ) ) );
+        const kvs::UInt8 r = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) );
+        const kvs::UInt8 g = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) );
+        const kvs::UInt8 b = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) );
+        return kvs::RGBColor( r, g, b );
     }
 
     template <typename T>
     friend RGBColor operator * ( const RGBColor& rgb, const T a )
     {
-        return( RGBColor( static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) ),
-                          static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) ),
-                          static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) ) ) );
+        const kvs::UInt8 r = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) );
+        const kvs::UInt8 g = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) );
+        const kvs::UInt8 b = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) );
+        return kvs::RGBColor( r, g, b );
     }
 
     template <typename T>
     friend RGBColor operator / ( const RGBColor& rgb, const T a )
     {
-        return( RGBColor( static_cast<kvs::UInt8>( kvs::Math::Round( rgb.r() / a ) ),
-                          static_cast<kvs::UInt8>( kvs::Math::Round( rgb.g() / a ) ),
-                          static_cast<kvs::UInt8>( kvs::Math::Round( rgb.b() / a ) ) ) );
-    }
-
-    friend std::ostream& operator << ( std::ostream& os, const RGBColor& rgb )
-    {
-        const size_t width = 8;
-        const size_t precision = 3;
-
-        const std::ios_base::fmtflags original_flags( os.flags() );
-
-        os.setf( std::ios::fixed );
-        os.setf( std::ios::showpoint );
-
-        os << std::setw(width) << std::setprecision(precision) << (int)rgb.r() << " ";
-        os << std::setw(width) << std::setprecision(precision) << (int)rgb.g() << " ";
-        os << std::setw(width) << std::setprecision(precision) << (int)rgb.b();
-
-        os.flags( original_flags );
-
-        return( os );
+        const kvs::UInt8 r = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.r() / a ) );
+        const kvs::UInt8 g = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.g() / a ) );
+        const kvs::UInt8 b = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.b() / a ) );
+        return kvs::RGBColor( r, g, b );
     }
 
 public:
-
-    void set( kvs::UInt8 red, kvs::UInt8 green, kvs::UInt8 blue );
-
-public:
-
-    kvs::UInt8 r() const { return m_red; }
-    kvs::UInt8 g() const { return m_green; }
-    kvs::UInt8 b() const { return m_blue; }
-    kvs::UInt8 red() const { return m_red; }
-    kvs::UInt8 green() const { return m_green; }
-    kvs::UInt8 blue() const { return m_blue; }
-    kvs::Vec3 toVec3() const;
+    KVS_DEPRECATED( kvs::UInt8 red() const ) { return this->r(); }
+    KVS_DEPRECATED( kvs::UInt8 green() const ) { return this->g(); }
+    KVS_DEPRECATED( kvs::UInt8 blue() const ) { return this->b(); }
 };
 
 } // end of namespace kvs
