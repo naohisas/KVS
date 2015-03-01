@@ -26,8 +26,9 @@
 namespace kvs
 {
 
-class HSVColor;
 class RGBAColor;
+class HSVColor;
+class XYZColor;
 
 /*==========================================================================*/
 /**
@@ -71,6 +72,7 @@ public:
     kvs::Vec3 toVec3() const;
     kvs::Vec3i toVec3i() const;
     kvs::HSVColor toHSVColor() const;
+    kvs::XYZColor toXYZColor() const;
 
     kvs::RGBColor& operator += ( const kvs::RGBColor& rgb );
     kvs::RGBColor& operator -= ( const kvs::RGBColor& rgb );

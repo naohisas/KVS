@@ -18,6 +18,7 @@
 #include "RGBColor.h"
 #include "HSVColor.h"
 #include "RGBAColor.h"
+#include "XYZColor.h"
 
 
 namespace kvs
@@ -178,6 +179,11 @@ kvs::Vec3i RGBColor::toVec3i() const
 kvs::HSVColor RGBColor::toHSVColor() const
 {
     return kvs::HSVColor( *this );
+}
+
+kvs::XYZColor RGBColor::toXYZColor() const
+{
+    return kvs::XYZColor( *this );
 }
 
 } // end of namespace kvs
