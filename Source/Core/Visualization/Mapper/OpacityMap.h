@@ -53,17 +53,17 @@ public:
     OpacityMap( const OpacityMap& other );
     OpacityMap( const size_t resolution, const float min_value, const float max_value );
     OpacityMap( const Table& table, const float min_value, const float max_value );
-    virtual ~OpacityMap();
+    virtual ~OpacityMap() {}
 
-    float minValue() const;
-    float maxValue() const;
-    size_t resolution() const;
-    const Points& points() const;
-    const Table& table() const;
+    float minValue() const { return m_min_value; }
+    float maxValue() const { return m_max_value; }
+    size_t resolution() const { return m_resolution; }
+    const Points& points() const { return m_points; }
+    const Table& table() const { return m_table; }
 
     bool hasRange() const;
-    void setRange( const float min_value, const float max_value );
-    void setResolution( const size_t resolution );
+    void setRange( const float min_value, const float max_value ) { m_min_value = min_value; m_max_value = max_value; }
+    void setResolution( const size_t resolution ) { m_resolution = resolution; }
     void addPoint( const float value, const float opacity );
     void removePoint( const float value );
     void create();

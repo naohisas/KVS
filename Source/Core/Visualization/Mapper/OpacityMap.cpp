@@ -42,17 +42,6 @@ struct Less
     }
 };
 
-float Interpolate(
-    const float s,
-    const float s0,
-    const float s1,
-    const float a0,
-    const float a1 )
-{
-    const float w = ( s - s0 ) / ( s1 - s0 );
-    return kvs::Math::Mix( a0, a1, w );
-};
-
 } // end of namespace
 
 
@@ -152,70 +141,6 @@ OpacityMap::OpacityMap( const OpacityMap& other ):
 {
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Destroys the OpacityMap class.
- */
-/*==========================================================================*/
-OpacityMap::~OpacityMap()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the min value.
- *  @return min value
- */
-/*===========================================================================*/
-float OpacityMap::minValue() const
-{
-    return m_min_value;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the max value.
- *  @return max value
- */
-/*===========================================================================*/
-float OpacityMap::maxValue() const
-{
-    return m_max_value;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Returns the resolution of the opacity map.
- *  @return resolusion
- */
-/*==========================================================================*/
-size_t OpacityMap::resolution() const
-{
-    return m_resolution;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the control point list.
- *  @return control point list
- */
-/*===========================================================================*/
-const OpacityMap::Points& OpacityMap::points() const
-{
-    return m_points;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the opacity map table.
- *  @return opacity map table
- */
-/*==========================================================================*/
-const OpacityMap::Table& OpacityMap::table() const
-{
-    return m_table;
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Returns true if the range is specified.
@@ -225,30 +150,6 @@ const OpacityMap::Table& OpacityMap::table() const
 bool OpacityMap::hasRange() const
 {
     return !kvs::Math::Equal( m_min_value, m_max_value );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a table resolution.
- *  @param  resolution [in] table resolution
- */
-/*===========================================================================*/
-void OpacityMap::setResolution( const size_t resolution )
-{
-    m_resolution = resolution;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets min and max values.
- *  @param  min_value [in] min. value
- *  @param  max_value [in] max. value
- */
-/*===========================================================================*/
-void OpacityMap::setRange( const float min_value, const float max_value )
-{
-    m_min_value = min_value;
-    m_max_value = max_value;
 }
 
 /*===========================================================================*/
@@ -331,7 +232,7 @@ void OpacityMap::create()
                     const float s1 = p1.first;
                     const float a0 = p0.second;
                     const float a1 = p1.second;
-                    opacity = ::Interpolate( f, s0, s1, a0, a1 );
+                    opacity = kvs::Math::Mix( a0, a1, ( f - s0 ) / ( s1 - s0 ) );
                     break;
                 }
                 else
@@ -376,8 +277,8 @@ kvs::Real32 OpacityMap::operator []( const size_t index ) const
 /*===========================================================================*/
 kvs::Real32 OpacityMap::at( const float value ) const
 {
-    if ( value <= m_min_value ) return m_table[ 0 ];
-    else if ( value >= m_max_value ) return m_table[ m_resolution - 1 ];
+    if ( value <= m_min_value ) { return m_table[ 0 ]; }
+    else if ( value >= m_max_value ) { return m_table[ m_resolution - 1 ]; }
 
     const float r = static_cast<float>( m_resolution - 1 );
     const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;
@@ -386,8 +287,7 @@ kvs::Real32 OpacityMap::at( const float value ) const
 
     const kvs::Real32 a0 = m_table[ s0 ];
     const kvs::Real32 a1 = m_table[ s1 ];
-
-    return ( a1 - a0 ) * v + a0 * s1 - a1 * s0;
+    return kvs::Math::Mix( a0, a1, v - s0 );
 }
 
 /*==========================================================================*/
@@ -404,7 +304,6 @@ OpacityMap& OpacityMap::operator =( const OpacityMap& rhs )
     m_max_value = rhs.m_max_value;
     m_points = rhs.m_points;
     m_table = rhs.m_table;
-
     return *this;
 }
 
