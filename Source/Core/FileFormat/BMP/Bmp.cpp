@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Bmp.cpp
+ *  @file   Bmp.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -18,6 +19,30 @@
 #include <cstring>
 #include <kvs/Message>
 #include <kvs/File>
+
+
+namespace
+{
+
+void Flip( const size_t width, const size_t height, kvs::UInt8* pixels )
+{
+    const size_t stride = width * 3;
+
+    kvs::UInt8* pdata = pixels;
+    const size_t end_line = height / 2;
+    for ( size_t i = 0; i < end_line; i++ )
+    {
+        kvs::UInt8* src = pdata + ( i * stride );
+        kvs::UInt8* dst = pdata + ( ( height - i - 1 ) * stride );
+        for ( size_t j = 0; j < stride; j++ )
+        {
+            std::swap( *src, *dst );
+            src++; dst++;
+        }
+    }
+}
+
+}
 
 
 namespace kvs
@@ -39,15 +64,6 @@ bool Bmp::CheckExtension( const std::string& filename )
     }
 
     return false;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Bmp class.
- */
-/*==========================================================================*/
-Bmp::Bmp()
-{
 }
 
 /*==========================================================================*/
@@ -76,72 +92,6 @@ Bmp::Bmp( const size_t width, const size_t height, const kvs::ValueArray<kvs::UI
 Bmp::Bmp( const std::string& filename )
 {
     this->read( filename );
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Returns the file header.
- *  @return file header information
- */
-/*==========================================================================*/
-const Bmp::FileHeader& Bmp::fileHeader() const
-{
-    return m_file_header;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the information header.
- *  @return information header information
- */
-/*==========================================================================*/
-const Bmp::InfoHeader& Bmp::infoHeader() const
-{
-    return m_info_header;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the image width.
- *  @return image width
- */
-/*==========================================================================*/
-size_t Bmp::width() const
-{
-    return m_width;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the image height.
- *  @return image height
- */
-/*==========================================================================*/
-size_t Bmp::height() const
-{
-    return m_height;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the bits-per-pixel.
- *  @return bits per pixel
- */
-/*==========================================================================*/
-size_t Bmp::bitsPerPixel() const
-{
-    return m_bpp;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the pixel data.
- *  @return pixel data
- */
-/*==========================================================================*/
-const kvs::ValueArray<kvs::UInt8>& Bmp::pixels() const
-{
-    return m_pixels;
 }
 
 /*===========================================================================*/
@@ -192,7 +142,7 @@ bool Bmp::read( const std::string& filename )
     }
 
     m_width = m_info_header.width();
-    m_height = m_info_header.height();
+    m_height = m_info_header.height() < 0 ? -1 * m_info_header.height() : m_info_header.height();
     m_bpp = m_info_header.bpp();
 
     this->skip_header_and_pallete( ifs );
@@ -221,6 +171,11 @@ bool Bmp::read( const std::string& filename )
 
         // Padding.
         ifs.seekg( padding, std::ios::cur );
+    }
+
+    if ( m_info_header.height() < 0 )
+    {
+        ::Flip( m_width, m_height, data );
     }
 
     ifs.close();
@@ -314,8 +269,8 @@ void Bmp::set_header()
     m_file_header.m_offset = offset;
 
     m_info_header.m_size = 40;
-    m_info_header.m_width = kvs::UInt32( m_width );
-    m_info_header.m_height = kvs::UInt32( m_height );
+    m_info_header.m_width = kvs::Int32( m_width );
+    m_info_header.m_height = kvs::Int32( m_height );
     m_info_header.m_nplanes = 1;
     m_info_header.m_bpp = 24;
     m_info_header.m_compression = 0L; // 0L: no compress,

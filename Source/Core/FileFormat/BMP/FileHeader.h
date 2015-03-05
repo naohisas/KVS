@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file FileHeader.h
+ *  @file   FileHeader.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -50,14 +51,14 @@ private:
 
 public:
 
-    FileHeader();
+    FileHeader() {}
     FileHeader( std::ifstream& ifs );
 
-    kvs::UInt16 type() const;
-    kvs::UInt32 size() const;
-    kvs::UInt16 reserved1() const;
-    kvs::UInt16 reserved2() const;
-    kvs::UInt32 offset() const;
+    kvs::UInt16 type() const { return m_type; }
+    kvs::UInt32 size() const { return m_size; }
+    kvs::UInt16 reserved1() const { return m_reserved1; }
+    kvs::UInt16 reserved2() const { return m_reserved2; }
+    kvs::UInt32 offset() const { return m_offset; }
 
     bool isBM();
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
@@ -66,7 +67,7 @@ public:
 
 private:
 
-    void swap_bytes();
+    void swapBytes();
 };
 
 } // end of namespace bmp

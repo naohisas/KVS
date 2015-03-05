@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file FileHeader.cpp
+ *  @file   FileHeader.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -23,38 +24,9 @@ namespace kvs
 namespace bmp
 {
 
-FileHeader::FileHeader()
-{
-}
-
 FileHeader::FileHeader( std::ifstream& ifs )
 {
     this->read( ifs );
-}
-
-kvs::UInt16 FileHeader::type() const
-{
-    return m_type;
-}
-
-kvs::UInt32 FileHeader::size() const
-{
-    return m_size;
-}
-
-kvs::UInt16 FileHeader::reserved1() const
-{
-    return m_reserved1;
-}
-
-kvs::UInt16 FileHeader::reserved2() const
-{
-    return m_reserved2;
-}
-
-kvs::UInt32 FileHeader::offset() const
-{
-    return m_offset;
 }
 
 bool FileHeader::isBM()
@@ -70,31 +42,31 @@ void FileHeader::print( std::ostream& os, const kvs::Indent& indent ) const
     os << indent << "Size : " << m_size << std::endl;
     os << indent << "Reserved 1 : " << m_reserved1 << std::endl;
     os << indent << "Reserved 2 : " << m_reserved2 << std::endl;
-    os << indent << "Offset : " << m_offset;
+    os << indent << "Offset : " << m_offset << std::endl;
 }
 
 void FileHeader::read( std::ifstream& ifs )
 {
-    BaseClass::get_value( ifs, &m_type );
-    BaseClass::get_value( ifs, &m_size );
-    BaseClass::get_value( ifs, &m_reserved1 );
-    BaseClass::get_value( ifs, &m_reserved2 );
-    BaseClass::get_value( ifs, &m_offset );
+    BaseClass::ReadValue( ifs, &m_type );
+    BaseClass::ReadValue( ifs, &m_size );
+    BaseClass::ReadValue( ifs, &m_reserved1 );
+    BaseClass::ReadValue( ifs, &m_reserved2 );
+    BaseClass::ReadValue( ifs, &m_offset );
     BMP_HEADER_SWAP_BYTES;
 }
 
 void FileHeader::write( std::ofstream& ofs )
 {
     BMP_HEADER_SWAP_BYTES;
-    BaseClass::put_value( ofs, m_type );
-    BaseClass::put_value( ofs, m_size );
-    BaseClass::put_value( ofs, m_reserved1 );
-    BaseClass::put_value( ofs, m_reserved2 );
-    BaseClass::put_value( ofs, m_offset );
+    BaseClass::WriteValue( ofs, m_type );
+    BaseClass::WriteValue( ofs, m_size );
+    BaseClass::WriteValue( ofs, m_reserved1 );
+    BaseClass::WriteValue( ofs, m_reserved2 );
+    BaseClass::WriteValue( ofs, m_offset );
     BMP_HEADER_SWAP_BYTES;
 }
 
-void FileHeader::swap_bytes()
+void FileHeader::swapBytes()
 {
     kvs::Endian::Swap( &m_size );
     kvs::Endian::Swap( &m_reserved1 );
