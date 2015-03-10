@@ -252,6 +252,17 @@ const kvs::Real32 CellBase::volume() const
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns a center of cell in the local coordinate.
+ *  @return center of cell in the local coordinate.
+ */
+/*===========================================================================*/
+const kvs::Vec3 CellBase::localCenter() const
+{
+    return kvs::Vec3( 0.5f, 0.5f, 0.5f );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Returns the jacobi matrix.
  *  @return Jacobi matrix
  */
@@ -310,14 +321,14 @@ const kvs::Vec3 CellBase::vector() const
 
     const size_t nnodes = m_nnodes;
     const kvs::Real32* N = m_interpolation_functions;
-    const kvs::Real32* Sx = m_values;
-    const kvs::Real32* Sy = Sx + nnodes;
-    const kvs::Real32* Sz = Sy + nnodes;
+    const kvs::Real32* Su = m_values;
+    const kvs::Real32* Sv = Su + nnodes;
+    const kvs::Real32* Sw = Sv + nnodes;
 
-    const kvs::Real32 x = this->interpolateValue( Sx, N, nnodes );
-    const kvs::Real32 y = this->interpolateValue( Sy, N, nnodes );
-    const kvs::Real32 z = this->interpolateValue( Sz, N, nnodes );
-    return kvs::Vec3( x, y, z );
+    const kvs::Real32 u = this->interpolateValue( Su, N, nnodes );
+    const kvs::Real32 v = this->interpolateValue( Sv, N, nnodes );
+    const kvs::Real32 w = this->interpolateValue( Sw, N, nnodes );
+    return kvs::Vec3( u, v, w );
 }
 
 /*===========================================================================*/
@@ -325,8 +336,10 @@ const kvs::Vec3 CellBase::vector() const
  *  @brief  Returns the gradient vector at the attached point.
  */
 /*===========================================================================*/
-const kvs::Vec3 CellBase::gradient() const
+const kvs::Vec3 CellBase::gradientVector() const
 {
+    KVS_ASSERT( m_veclen == 1 );
+
     // Calculate a gradient vector in the local coordinate.
     const kvs::UInt32 nnodes = m_nnodes;
     const float* dNdp = m_differential_functions;
@@ -343,8 +356,45 @@ const kvs::Vec3 CellBase::gradient() const
     const kvs::Mat3 J = this->JacobiMatrix();
 
     float determinant = 0.0f;
-    const kvs::Vec3 G = J.inverted( &determinant ) * g;
+    const kvs::Vec3 G = 3.0f * J.inverted( &determinant ) * g;
     return kvs::Math::IsZero( determinant ) ? kvs::Vec3::Zero() : G;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the gradient tensor at the attached point.
+ */
+/*===========================================================================*/
+const kvs::Mat3 CellBase::gradientTensor() const
+{
+    KVS_ASSERT( m_veclen == 3 );
+
+    // Calculate a gradient tensor in the local coordinate.
+    const kvs::UInt32 nnodes = m_nnodes;
+    const float* dNdp = m_differential_functions;
+    const float* dNdq = m_differential_functions + nnodes;
+    const float* dNdr = m_differential_functions + nnodes + nnodes;
+    const kvs::Real32* Su = m_values;
+    const kvs::Real32* Sv = Su + nnodes;
+    const kvs::Real32* Sw = Sv + nnodes;
+
+    const float dudp = this->interpolateValue( Su, dNdp, nnodes );
+    const float dudq = this->interpolateValue( Su, dNdq, nnodes );
+    const float dudr = this->interpolateValue( Su, dNdr, nnodes );
+    const float dvdp = this->interpolateValue( Sv, dNdp, nnodes );
+    const float dvdq = this->interpolateValue( Sv, dNdq, nnodes );
+    const float dvdr = this->interpolateValue( Sv, dNdr, nnodes );
+    const float dwdp = this->interpolateValue( Sw, dNdp, nnodes );
+    const float dwdq = this->interpolateValue( Sw, dNdq, nnodes );
+    const float dwdr = this->interpolateValue( Sw, dNdr, nnodes );
+    const kvs::Mat3 t( dudp, dvdp, dwdp, dudq, dvdq, dwdq, dudr, dvdr, dwdr );
+
+    // Calculate a gradient tensor in the global coordinate.
+    const kvs::Mat3 J = this->JacobiMatrix();
+
+    float determinant = 0.0f;
+    const kvs::Mat3 T = 3.0f * J.inverted( &determinant ) * t;
+    return kvs::Math::IsZero( determinant ) ? kvs::Mat3::Zero() : T;
 }
 
 /*===========================================================================*/

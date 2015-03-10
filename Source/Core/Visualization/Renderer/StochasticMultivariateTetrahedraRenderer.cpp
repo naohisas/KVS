@@ -145,7 +145,7 @@ kvs::ValueArray<kvs::Real32> VertexNormals( const kvs::UnstructuredVolumeObject*
     for ( size_t i = 0; i < ncells; i++ )
     {
         cell.bindCell( i );
-        const kvs::Vec3 g = -cell.gradient();
+        const kvs::Vec3 g = -cell.gradientVector();
         const kvs::UInt32 index0 = volume->connections()[ 4 * i + 0 ];
         const kvs::UInt32 index1 = volume->connections()[ 4 * i + 1 ];
         const kvs::UInt32 index2 = volume->connections()[ 4 * i + 2 ];

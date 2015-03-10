@@ -47,6 +47,7 @@ public:
     bool containsLocalPoint( const kvs::Vec3& local ) const;
     const kvs::Vec3 randomSampling() const;
     const kvs::Real32 volume() const;
+    const kvs::Vec3 localCenter() const;
     const kvs::Vec3 globalPoint() const;
     const kvs::Vec3 localToGlobal( const kvs::Vec3& global ) const;
     const kvs::Vec3 globalToLocal( const kvs::Vec3& local ) const;

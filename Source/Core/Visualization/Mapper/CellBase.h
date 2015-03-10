@@ -62,6 +62,7 @@ public:
     virtual const kvs::Vec3 localToGlobal( const kvs::Vec3& local ) const;
     virtual const kvs::Vec3 randomSampling() const;
     virtual const kvs::Real32 volume() const;
+    virtual const kvs::Vec3 localCenter() const;
 
     size_t veclen() const { return m_veclen; }
     size_t numberOfCellNodes() const { return m_nnodes; }
@@ -77,7 +78,8 @@ public:
     const kvs::Vec3 center() const;
     const kvs::Real32 scalar() const;
     const kvs::Vec3 vector() const;
-    const kvs::Vec3 gradient() const;
+    const kvs::Vec3 gradientVector() const;
+    const kvs::Mat3 gradientTensor() const;
     bool contains( const kvs::Vec3& global ) const;
 
 protected:
@@ -90,6 +92,7 @@ protected:
 public:
     KVS_DEPRECATED( const kvs::Vec3* vertices() const ) { return this->coords(); }
     KVS_DEPRECATED( const kvs::Real32* scalars() const ) { return this->values(); }
+    KVS_DEPRECATED( const kvs::Vec3 gradient() const ) { return this->gradientVector(); }
     KVS_DEPRECATED( virtual const kvs::Real32* interpolationFunctions( const kvs::Vec3& local ) const )
     {
         this->updateInterpolationFunctions( local );

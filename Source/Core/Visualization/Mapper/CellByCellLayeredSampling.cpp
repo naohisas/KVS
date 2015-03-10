@@ -479,7 +479,7 @@ void CellByCellLayeredSampling::uniform_sampling(
         const kvs::RGBColor color( tfunc.colorMap().at( scalar ) );
 
         // Calculate a normal.
-        const Vector3f normal( -cell->gradient() );
+        const Vector3f normal( -cell->gradientVector() );
 
         // set coord, color, and normal to point object( this ).
         coords->push_back( coord.x() );
@@ -535,7 +535,7 @@ void CellByCellLayeredSampling::rejection_sampling(
             const kvs::RGBColor color( tfunc.colorMap().at( scalar ) );
 
             // Calculate a normal.
-            const Vector3f normal( -cell->gradient() );
+            const Vector3f normal( -cell->gradientVector() );
 
             // set coord, color, and normal to point object( this ).
             coords->push_back( coord.x() );
@@ -589,7 +589,7 @@ void CellByCellLayeredSampling::roulette_selection(
     m_L_matrix.transpose();
     const kvs::Matrix44f L_inv = m_L_matrix;
 
-    const kvs::Vector3f g = cell->gradient().normalized();
+    const kvs::Vector3f g = cell->gradientVector().normalized();
 
     const kvs::Matrix44f LA_inv = L_inv * A_inv;
     for ( size_t i = 0; i < nparticles; i++ )
@@ -767,7 +767,7 @@ void CellByCellLayeredSampling::calculate_particles_in_cell(
     const float max_cell_scalar = static_cast<float>( S_max - min_value ) / ( max_value - min_value );
 
     // Gradient vector.
-    kvs::Vector3f g = cell->gradient().normalized();
+    kvs::Vector3f g = cell->gradientVector().normalized();
 
     // Temporary vector for calculating basis vectors: t1 and t2.
     kvs::Vector3f u( 0.0f, 0.0f, 0.0f );

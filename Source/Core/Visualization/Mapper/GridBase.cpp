@@ -243,7 +243,7 @@ kvs::Vec3 GridBase::vector() const
     return kvs::Vec3( x, y, z );
 }
 
-kvs::Vec3 GridBase::gradient() const
+kvs::Vec3 GridBase::gradientVector() const
 {
     KVS_ASSERT( m_veclen == 1 );
 

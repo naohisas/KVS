@@ -57,7 +57,7 @@ public:
     void updateDifferentialFunctions( const kvs::Vec3& local );
     kvs::Real32 scalar() const;
     kvs::Vec3 vector() const;
-    kvs::Vec3 gradient() const;
+    kvs::Vec3 gradientVector() const;
 
     size_t veclen() const { return m_veclen; }
     size_t numberOfCellNodes() const { return m_nnodes; }

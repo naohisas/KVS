@@ -172,6 +172,17 @@ const kvs::Real32 TetrahedralCell::volume() const
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns a center of the cell in the local coordinate.
+ *  @return center of the cell in the local coordinate
+ */
+/*===========================================================================*/
+const kvs::Vec3 TetrahedralCell::localCenter() const
+{
+    return kvs::Vec3( 0.25f, 0.25f, 0.25f );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Returns the global point for the local point in the class
  *  @return global point
  */

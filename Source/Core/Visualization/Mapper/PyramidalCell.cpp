@@ -163,7 +163,18 @@ bool PyramidalCell::containsLocalPoint( const kvs::Vec3& local ) const
 /*===========================================================================*/
 const kvs::Real32 PyramidalCell::volume() const
 {
-    return float( m_pyramid.x() * m_pyramid.y() * m_pyramid.z() / 3);
+    return float( m_pyramid.x() * m_pyramid.y() * m_pyramid.z() / 3 );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a center of the cell in the local coordinate.
+ *  @return center of the cell in the local coordinate
+ */
+/*===========================================================================*/
+const kvs::Vec3 PyramidalCell::localCenter() const
+{
+    return kvs::Vec3( 0.0f, 0.0f, 0.2f );
 }
 
 /*===========================================================================*/

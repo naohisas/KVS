@@ -38,6 +38,7 @@ public:
     bool containsLocalPoint( const kvs::Vec3& local ) const;
     const kvs::Vec3 randomSampling() const;
     const kvs::Real32 volume() const;
+    const kvs::Vec3 localCenter() const;
 };
 
 } // end of namespace kvs

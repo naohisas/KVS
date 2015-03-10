@@ -496,7 +496,7 @@ void CellByCellUniformSampling::generate_particles( const kvs::UnstructuredVolum
             // Calculate a normal.
             /* NOTE: The gradient vector of the cell is reversed for shading on the rendering process.
              */
-            const Vector3f normal( -cell->gradient() );
+            const Vector3f normal( -cell->gradientVector() );
 
             // set coord, color, and normal to point object( this ).
             vertex_coords.push_back( coord.x() );

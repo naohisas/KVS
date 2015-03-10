@@ -178,4 +178,15 @@ const kvs::Real32 PrismaticCell::volume() const
     return S / N;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns a center of the cell in the local coordinate.
+ *  @return center of the cell in the local coordinate
+ */
+/*===========================================================================*/
+const kvs::Vec3 PrismaticCell::localCenter() const
+{
+    return kvs::Vec3( 1.0f / 3.0f, 1.0f / 3.0f, 0.5f );
+}
+
 } // end of namespace kvs

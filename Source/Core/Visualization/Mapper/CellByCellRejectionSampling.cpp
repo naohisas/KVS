@@ -505,7 +505,7 @@ void CellByCellRejectionSampling::generate_particles( const kvs::UnstructuredVol
                 const kvs::RGBColor color( color_map.at( scalar ) );
 
                 // Calculate a normal.
-                const Vector3f normal( cell->gradient() );
+                const Vector3f normal( cell->gradientVector() );
 
                 // set coord, color, and normal to point object( this ).
                 vertex_coords.push_back( coord.x() );
