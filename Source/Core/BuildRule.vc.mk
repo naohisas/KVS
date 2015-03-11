@@ -242,11 +242,14 @@ $(OUTDIR)\.\Visualization\Exporter\PointExporter.obj \
 $(OUTDIR)\.\Visualization\Exporter\PolygonExporter.obj \
 $(OUTDIR)\.\Visualization\Exporter\StructuredVolumeExporter.obj \
 $(OUTDIR)\.\Visualization\Exporter\UnstructuredVolumeExporter.obj \
+$(OUTDIR)\.\Visualization\Filter\InverseDistanceWeighting.obj \
 $(OUTDIR)\.\Visualization\Filter\KMeansClustering.obj \
 $(OUTDIR)\.\Visualization\Filter\LineIntegralConvolution.obj \
 $(OUTDIR)\.\Visualization\Filter\StructuredVectorToScalar.obj \
 $(OUTDIR)\.\Visualization\Filter\TetrahedraToTetrahedra.obj \
 $(OUTDIR)\.\Visualization\Filter\Tubeline.obj \
+$(OUTDIR)\.\Visualization\Filter\UnstructuredGradient.obj \
+$(OUTDIR)\.\Visualization\Filter\UnstructuredQCriterion.obj \
 $(OUTDIR)\.\Visualization\Filter\UnstructuredVectorToScalar.obj \
 $(OUTDIR)\.\Visualization\Importer\ImageImporter.obj \
 $(OUTDIR)\.\Visualization\Importer\LineImporter.obj \
@@ -267,6 +270,7 @@ $(OUTDIR)\.\Visualization\Mapper\CellLocator.obj \
 $(OUTDIR)\.\Visualization\Mapper\CellTree.obj \
 $(OUTDIR)\.\Visualization\Mapper\CellTreeLocator.obj \
 $(OUTDIR)\.\Visualization\Mapper\ColorMap.obj \
+$(OUTDIR)\.\Visualization\Mapper\DivergingColorMap.obj \
 $(OUTDIR)\.\Visualization\Mapper\ExternalFaces.obj \
 $(OUTDIR)\.\Visualization\Mapper\ExtractEdges.obj \
 $(OUTDIR)\.\Visualization\Mapper\ExtractVertices.obj \

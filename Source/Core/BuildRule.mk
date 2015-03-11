@@ -242,11 +242,14 @@ $(OUTDIR)/./Visualization/Exporter/PointExporter.o \
 $(OUTDIR)/./Visualization/Exporter/PolygonExporter.o \
 $(OUTDIR)/./Visualization/Exporter/StructuredVolumeExporter.o \
 $(OUTDIR)/./Visualization/Exporter/UnstructuredVolumeExporter.o \
+$(OUTDIR)/./Visualization/Filter/InverseDistanceWeighting.o \
 $(OUTDIR)/./Visualization/Filter/KMeansClustering.o \
 $(OUTDIR)/./Visualization/Filter/LineIntegralConvolution.o \
 $(OUTDIR)/./Visualization/Filter/StructuredVectorToScalar.o \
 $(OUTDIR)/./Visualization/Filter/TetrahedraToTetrahedra.o \
 $(OUTDIR)/./Visualization/Filter/Tubeline.o \
+$(OUTDIR)/./Visualization/Filter/UnstructuredGradient.o \
+$(OUTDIR)/./Visualization/Filter/UnstructuredQCriterion.o \
 $(OUTDIR)/./Visualization/Filter/UnstructuredVectorToScalar.o \
 $(OUTDIR)/./Visualization/Importer/ImageImporter.o \
 $(OUTDIR)/./Visualization/Importer/LineImporter.o \
@@ -267,6 +270,7 @@ $(OUTDIR)/./Visualization/Mapper/CellLocator.o \
 $(OUTDIR)/./Visualization/Mapper/CellTree.o \
 $(OUTDIR)/./Visualization/Mapper/CellTreeLocator.o \
 $(OUTDIR)/./Visualization/Mapper/ColorMap.o \
+$(OUTDIR)/./Visualization/Mapper/DivergingColorMap.o \
 $(OUTDIR)/./Visualization/Mapper/ExternalFaces.o \
 $(OUTDIR)/./Visualization/Mapper/ExtractEdges.o \
 $(OUTDIR)/./Visualization/Mapper/ExtractVertices.o \
