@@ -178,10 +178,10 @@ kvs::Stl* PolygonExporter<kvs::Stl>::exec( const kvs::ObjectBase* object )
             const kvs::UInt32 index1 = *(pconnections++);
             const kvs::UInt32 index2 = *(pconnections++);
 
-            const kvs::Vector3f normal0( pnormals + 3 * index0 );
-            const kvs::Vector3f normal1( pnormals + 3 * index1 );
-            const kvs::Vector3f normal2( pnormals + 3 * index2 );
-            const kvs::Vector3f normal = ( normal0 + normal1 + normal2 ) / 3;
+            const kvs::Vec3 normal0( pnormals + 3 * index0 );
+            const kvs::Vec3 normal1( pnormals + 3 * index1 );
+            const kvs::Vec3 normal2( pnormals + 3 * index2 );
+            const kvs::Vec3 normal = ( normal0 + normal1 + normal2 ) / 3.0f;
 
             normals[ 3 * i + 0 ] = normal.x();
             normals[ 3 * i + 1 ] = normal.y();

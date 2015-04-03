@@ -146,7 +146,13 @@ private:
 
 public:
 
-    Splitter() {}
+    Splitter()
+    {
+        m_index = 0;
+        m_min[0] = m_min[1] = m_min[2] = 0.0f;
+        m_max[0] = m_max[1] = m_max[2] = 0.0f;
+    }
+
     ~Splitter() {}
 
 public:
@@ -212,16 +218,16 @@ public:
 
                 // (distance from center to min) / (distance from max to min) * nbuckets, of a certain dimension
                 int ind = (int)( (cen-min[d])*iext[d] );
-                if ( ind<0 ) { ind = 0; } // how can ind < 0 ??? 
-                if ( ind>=nbuckets ) { ind = nbuckets-1; } // how can ind > nbuckets??
+                if ( ind < 0 ) { ind = 0; } // how can ind < 0 ??? 
+                if ( ind >= int( nbuckets ) ) { ind = nbuckets-1; } // how can ind > nbuckets??
 
                 b[d][ind].add( pc->min[d], pc->max[d] );
             }
         }
 
         float cost = std::numeric_limits<float>::max();
-        float plane;
-        unsigned int dim;
+        float plane = 0.0f;
+        unsigned int dim = 0;
 
         // This part loops through every buckets(6) in all the dimension(3)
         // to determine the best spliting plane
@@ -523,14 +529,14 @@ public:
                     // (distance from center to min) / (distance from max to min) * nbuckets, of a certain dimension
                     int ind = (int)( (cen-min[d])*iext[d] );
                     if ( ind < 0 ) { ind = 0; } // how can ind < 0 ??? 
-                    if ( ind >= nbuckets ) { ind = nbuckets - 1; } // how can ind > nbuckets??
+                    if ( ind >= int( nbuckets ) ) { ind = nbuckets - 1; } // how can ind > nbuckets??
                     b[d][ind].add( pc->min[d], pc->max[d] );
                 }
             }
 
             float cost = std::numeric_limits<float>::max();
-            float plane;
-            unsigned int dim;
+            float plane = 0.0f;
+            unsigned int dim = 0;
 
             // This part loops through every buckets(6) in all the dimension(3)
             // to determine the best spliting plane
@@ -586,7 +592,10 @@ public:
                 std::nth_element( begin, mid, end, CenterOrder( dim ) );
             }
 
-            float lmin[3], lmax[3], rmin[3], rmax[3];
+            float lmin[3] = {0.0f, 0.0f, 0.0f};
+            float lmax[3] = {0.0f, 0.0f, 0.0f};
+            float rmin[3] = {0.0f, 0.0f, 0.0f};
+            float rmax[3] = {0.0f, 0.0f, 0.0f};
 
             // find each part's left right bounds
             FindMinMax( begin, mid, lmin, lmax );
@@ -704,14 +713,14 @@ public:
                 int ind = (int)( (cen-min[d])*iext[d] );
 
                 if ( ind < 0 ) { ind = 0; } // how can ind < 0 ???
-                if ( ind >= nbuckets ) { ind = nbuckets-1; } // how can ind > nbuckets??
+                if ( ind >= int( nbuckets ) ) { ind = nbuckets-1; } // how can ind > nbuckets??
                 b[d][ind].add( pc->min[d], pc->max[d] );
             }
         }
 
         float cost = std::numeric_limits<float>::max();
-        float plane;
-        unsigned int dim;
+        float plane = 0.0f;
+        unsigned int dim = 0;
 
         // This part loops through every buckets(6) in all the dimension(3)
         // to determine the best spliting plane

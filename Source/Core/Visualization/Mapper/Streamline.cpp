@@ -141,7 +141,7 @@ kvs::Vec3 Streamline::RungeKutta2ndIntegrator::next( const kvs::Vec3& point )
     const kvs::Vec3 v1 = point;
 
     const kvs::Vec3 k1 = direction( v1 ) * k0;
-    const kvs::Vec3 v2 = point + k1 / 2;
+    const kvs::Vec3 v2 = point + k1 / 2.0f;
     if ( !contains( v2 ) ) { return point; }
 
     const kvs::Vec3 k2 = direction( v2 ) * k0;

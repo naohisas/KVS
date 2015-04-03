@@ -148,9 +148,9 @@ int CellAdjacencyGraphLocator::findCell( const kvs::Vec3 p )
     {
         // 1 bind some random cell indices, get their center,
         // find the one closest to the target point
-        unsigned int startindex, temp_startindex;
+        unsigned int startindex = 0, temp_startindex = 0;
         float min = std::numeric_limits<float>::max();
-        float distance;
+        float distance = 0.0f;
         kvs::Vec3 center;
         for ( size_t i = 0; i < m_nrandtests; i++ )
         {
@@ -173,9 +173,9 @@ int CellAdjacencyGraphLocator::findCell( const kvs::Vec3 p )
         {
             // 1 bind some random cell indices, get their center,
             // find the one closest to the target point
-            unsigned int startindex, temp_startindex;
+            unsigned int startindex = 0, temp_startindex = 0;
             float min = std::numeric_limits<float>::max();
-            float distance;
+            float distance = 0.0f;
             kvs::Vec3 center;
             for ( size_t i = 0; i < m_nrandtests; i ++ )
             {
@@ -213,7 +213,7 @@ int CellAdjacencyGraphLocator::find_cell( const kvs::Vec3 p, const int start_cel
     case kvs::UnstructuredVolumeObject::Tetrahedra:
     {
         ::Weights w;
-        unsigned int current_faceid;
+        unsigned int current_faceid = 0;
         float step = 0;
         bool found = false;
 
