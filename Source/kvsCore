@@ -219,6 +219,7 @@
 #include <Core/Visualization/Mapper/CellByCellMetropolisSampling.h>
 #include <Core/Visualization/Mapper/CellByCellParticleGenerator.h>
 #include <Core/Visualization/Mapper/CellByCellRejectionSampling.h>
+#include <Core/Visualization/Mapper/CellByCellSampling.h>
 #include <Core/Visualization/Mapper/CellByCellUniformSampling.h>
 #include <Core/Visualization/Mapper/CellLocator.h>
 #include <Core/Visualization/Mapper/CellTree.h>

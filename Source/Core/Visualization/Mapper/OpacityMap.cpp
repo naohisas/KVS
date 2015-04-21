@@ -264,7 +264,6 @@ void OpacityMap::create()
 kvs::Real32 OpacityMap::operator []( const size_t index ) const
 {
     KVS_ASSERT( index < this->resolution() );
-
     return m_table[index];
 }
 
@@ -277,8 +276,7 @@ kvs::Real32 OpacityMap::operator []( const size_t index ) const
 /*===========================================================================*/
 kvs::Real32 OpacityMap::at( const float value ) const
 {
-    if ( value <= m_min_value ) { return m_table[ 0 ]; }
-    else if ( value >= m_max_value ) { return m_table[ m_resolution - 1 ]; }
+    if ( value < m_min_value || m_max_value < value ) { return 0.0f; }
 
     const float r = static_cast<float>( m_resolution - 1 );
     const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;

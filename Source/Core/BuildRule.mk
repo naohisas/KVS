@@ -265,6 +265,7 @@ $(OUTDIR)/./Visualization/Mapper/CellBase.o \
 $(OUTDIR)/./Visualization/Mapper/CellByCellLayeredSampling.o \
 $(OUTDIR)/./Visualization/Mapper/CellByCellMetropolisSampling.o \
 $(OUTDIR)/./Visualization/Mapper/CellByCellRejectionSampling.o \
+$(OUTDIR)/./Visualization/Mapper/CellByCellSampling.o \
 $(OUTDIR)/./Visualization/Mapper/CellByCellUniformSampling.o \
 $(OUTDIR)/./Visualization/Mapper/CellLocator.o \
 $(OUTDIR)/./Visualization/Mapper/CellTree.o \

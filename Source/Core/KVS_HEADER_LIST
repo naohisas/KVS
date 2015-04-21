@@ -219,6 +219,7 @@ Visualization/Mapper/CellByCellLayeredSampling
 Visualization/Mapper/CellByCellMetropolisSampling
 Visualization/Mapper/CellByCellParticleGenerator
 Visualization/Mapper/CellByCellRejectionSampling
+Visualization/Mapper/CellByCellSampling
 Visualization/Mapper/CellByCellUniformSampling
 Visualization/Mapper/CellLocator
 Visualization/Mapper/CellTree
