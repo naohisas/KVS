@@ -31,9 +31,9 @@ StreamlineBase::StreamlineBase():
     m_seed_points( NULL ),
     m_integration_method( StreamlineBase::RungeKutta2nd ),
     m_integration_direction( StreamlineBase::ForwardDirection ),
-    m_integration_interval( 0.35f ),
+    m_integration_interval( 1.0f ),
     m_vector_length_threshold( 0.000001f ),
-    m_integration_times_threshold( 256 ),
+    m_integration_times_threshold( 1000 ),
     m_enable_boundary_condition( true ),
     m_enable_vector_length_condition( true ),
     m_enable_integration_times_condition( true )

@@ -60,7 +60,8 @@ public:
         virtual bool containsInVolume( const kvs::Vec3& point ) = 0;
         kvs::Vec3 direction( const kvs::Vec3& point )
         {
-            return this->interpolatedValue( point ).normalized();
+//            return this->interpolatedValue( point ).normalized();
+            return this->interpolatedValue( point );
         }
     };
 
@@ -77,7 +78,8 @@ public:
         float step() const { return m_step; }
         bool contains( const kvs::Vec3& point ) { return m_interpolator->containsInVolume( point ); }
         kvs::Vec3 value( const kvs::Vec3& point ) { return m_interpolator->interpolatedValue( point ); }
-        kvs::Vec3 direction( const kvs::Vec3& point ) { return this->value( point ).normalized(); }
+//        kvs::Vec3 direction( const kvs::Vec3& point ) { return this->value( point ).normalized(); }
+        kvs::Vec3 direction( const kvs::Vec3& point ) { return this->value( point ); }
     };
 
 protected:
@@ -106,6 +108,10 @@ public:
     void setEnableBoundaryCondition( const bool enabled ) { m_enable_boundary_condition = enabled; }
     void setEnableVectorLengthCondition( const bool enabled ) { m_enable_vector_length_condition = enabled; }
     void setEnableIntegrationTimesCondition( const bool enabled ) { m_enable_integration_times_condition = enabled; }
+
+    IntegrationMethod integrationMethod() const { return m_integration_method; }
+    IntegrationDirection integrationDirection() const { return m_integration_direction; }
+    float integrationInterval() const { return m_integration_interval; }
 
     virtual kvs::ObjectBase* exec( const kvs::ObjectBase* object ) = 0;
 
