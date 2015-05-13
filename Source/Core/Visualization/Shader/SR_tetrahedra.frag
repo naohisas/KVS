@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   tetrahedra.frag
- *  @author Jun Nishimura, Naohisa Sakamoto
+ *  @author Naoya Maeda, Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -13,50 +13,53 @@
  */
 /*****************************************************************************/
 #version 120
-#include "shading.h"
-#include "qualifire.h"
-#include "texture.h"
+#include <shading.h>
+#include <qualifire.h>
+#include <texture.h>
 
 
-// Input parameters from geometry shader
-FragIn vec3 position; // vertex position in camera coordinate
-FragIn vec3 normal; // normal vector in camera coordinate
-FragIn vec2 random_index; // index for accessing to the random texture
-FragIn float scalar_front; // scalar value on the front face
-FragIn float scalar_back; // scalar value on the back face
-FragIn float segment_length; // distance between the front and back face in NDC
-FragIn float wc_inv_front; // reciprocal value of the w-component at the front face in clip coordinate
-FragIn float wc_inv_back; // reciprocal value of the w-component at the back face in clip coordinate
-#if defined( ENABLE_EXACT_DEPTH_TESTING )
-FragIn float depth_front; // depth value at the front face in NDC
-FragIn float depth_back; // depth value at the back face in NDC
-#endif
+// Input variables from geometry shader
+FragInWithNoperspective vec3 position; // 3D vertex position in camera coordinate
+FragInWithNoperspective vec3 normal; // normal vector in camera coordinate
+FragInWithNoperspective vec2 random_index; // index for accessing to the random texture
+FragInWithNoperspective vec2 position_ndc; // 2D vertex position in normalized device coordinate
+FragInWithNoperspective float scalar_front; // scalar value on the front face
+FragInWithNoperspective float scalar_back; // scalar value on the back face
+FragInWithNoperspective float depth_front; // depth value at the front face
+FragInWithNoperspective float depth_back; // depth value at the back face
+FragInWithNoperspective float wc_inv_front; // reciprocal value of the w-component at the front face in clip coordinate
+FragInWithNoperspective float wc_inv_back; // reciprocal value of the w-component at the back face in clip coordinate
 
-// Uniform parameters.
-uniform sampler3D preintegration_texture; // pre-integration texture
+// Uniform variables.
 uniform sampler2D random_texture; // random number texture
-uniform vec2 screen_scale_inv; // reciprocal values of width and height of screen
+uniform sampler2D preintegration_texture; // pre-integration texture
+uniform sampler1D transfer_function_texture; // transfer function texture
+uniform sampler1D T_texture; // T value texture
+uniform sampler1D invT_texture; // inverse value of T texture
 uniform float random_texture_size_inv; // reciprocal value of random texture size
 uniform vec2 random_offset; // offset values for accessing to the random texture
-uniform float delta_s;
-uniform float delta_d;
+uniform float random_bias;
+uniform float sampling_step_inv; // inverse value of the sampling step
+uniform float maxT;
+uniform float delta;
+uniform float delta2;
 uniform ShadingParameter shading; // shading parameters
-#if defined( ENABLE_EXACT_DEPTH_TESTING )
-uniform sampler2D depth_texture; // depth texture
-#endif
+
+// Uniform variables (OpenGL variables).
+uniform mat4 ModelViewProjectionMatrixInverse; // inverse matrix of model-view projection matrix
 
 
 // Returns an adjected index for refering the texture.
-#define ADJUST( index )                                 \
-    vec3(                                               \
-        delta_s + index.x * ( 1.0 - 2.0 * delta_s ),    \
-        delta_s + index.y * ( 1.0 - 2.0 * delta_s ),    \
-        delta_d + index.z * ( 1.0 - 2.0 * delta_s ) )
+#define ADJUST( x ) \
+    ( delta + x * ( 1.0 - 2.0 * delta ) )
+
+// Returns an adjusted index for refering the T-inverse texture.
+#define ADJUST_FOR_INVT( x ) \
+    ( ( delta2 + x * ( 1.0 - 2.0 * delta2 ) ) / maxT )
 
 // Returns a depth value in window coordinate.
-#define DEPTH( Z ) \
+#define DEPTH( z ) \
     ( gl_DepthRange.diff * Z + gl_DepthRange.near + gl_DepthRange.far ) / 2.0
-
 
 /*===========================================================================*/
 /**
@@ -70,42 +73,37 @@ float RandomNumber()
     float y = float( int( random_index.y ) * 31 );
     vec2 p = gl_FragCoord.xy;
     vec2 index = ( vec2( x, y ) + random_offset + p ) * random_texture_size_inv;
-    return LookupTexture2D( random_texture, index ).x;
+    return LookupTexture2D( random_texture, index ).r;
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Returns pre-integrated values.
- *  @return pre-integrated values
+ *  @brief  Returns a transformed object coordinate from normalized device coordinate.
+ *  @param  ndc [in] coordinate in normalized device coordinate
+ *  @return coordinate in object coordinate
  */
 /*===========================================================================*/
-vec4 LookupPreIntegration()
+vec3 NormalizedDeviceCoordinateToObjectCoordinate( const in vec4 ndc )
 {
-#if defined( ENABLE_EXACT_DEPTH_TESTING )
-    vec2 index = gl_FragCoord.xy * screen_scale_inv;
-    float depth = LookupTexture2D( depth_texture, index ).x;
-    if ( depth < 1.0 && depth_front <= depth && depth <= depth_back )
-    {
-        float ratio = ( depth - depth_front ) / ( depth_back - depth_front );
-        float Sf = scalar_front;
-        float Sb = ( 1.0 - ratio ) * scalar_front + ratio * scalar_back;
-        float d = ratio * segment_length;
+    vec4 temp = ModelViewProjectionMatrixInverse * ndc;
+    return temp.xyz / temp.w;
+}
 
-        Sf /= wc_inv_front;
-        Sb /= wc_inv_back;
-
-        return LookupTexture3D( preintegration_texture, ADJUST( vec3( Sf, Sb, d ) ) );
-    }
-#endif
-
-    float Sf = scalar_front;
-    float Sb = scalar_back;
-    float d = segment_length;
-
-    Sf /= wc_inv_front;
-    Sb /= wc_inv_back;
-
-    return LookupTexture3D( preintegration_texture, ADJUST( vec3( Sf, Sb, d ) ) );
+/*===========================================================================*/
+/**
+ *  @brief  Returns a distance between depths in object coordinate.
+ *  @param  Zf [in] depth value of the front face
+ *  @param  Zb [in] depth value of the back face
+ *  @return distance
+ */
+/*===========================================================================*/
+float DistanceInObjectCoordinate( const in float Zf, const in float Zb )
+{
+    vec4 front_ndc = vec4( position_ndc, Zf, 1.0 );
+    vec4 back_ndc = vec4( position_ndc, Zb, 1.0 );
+    vec3 front_obj = NormalizedDeviceCoordinateToObjectCoordinate( front_ndc );
+    vec3 back_obj = NormalizedDeviceCoordinateToObjectCoordinate( back_ndc );
+    return length( front_obj - back_obj );
 }
 
 /*===========================================================================*/
@@ -115,14 +113,44 @@ vec4 LookupPreIntegration()
 /*===========================================================================*/
 void main()
 {
-    vec4 preintegrated = LookupPreIntegration();
-    if ( preintegrated.a == 0.0 ) { discard; return; }
+    // Scalar values and depth values at the front and back points.
+    float Sf = scalar_front / wc_inv_front;
+    float Sb = scalar_back / wc_inv_back;
+    float Zf = depth_front;
+    float Zb = depth_back;
 
+    // Alpha correction factor.
+    float a = DistanceInObjectCoordinate( Zf, Zb ) * sampling_step_inv;
+
+    // Transparency calculated with pre-integration.
+    float dS = Sb - Sf;
+    float trans = exp( -LookupTexture2D( preintegration_texture, vec2( ADJUST( Sf ), ADJUST( Sb ) ) ).r * a );
+
+    // Stochastic color assignment.
     float R = RandomNumber();
-    if ( R > preintegrated.a ) { discard; return; }
+    if ( R <= trans ) { discard; return; }
 
-    // Color value for the ray segment.
-    vec3 color = preintegrated.xyz / preintegrated.a;
+    // Depth calculation by inverse transformation sampling.
+    float S; // scalar value at the estimated position
+    float W; // probability variable for depth calculation
+    float T_Sf = LookupTexture1D( T_texture, ADJUST( Sf ) ).r;
+    float log_R = -log( R );
+    const float epsilon = 0.001;
+    if ( abs( dS ) >= epsilon )
+    {
+        S = LookupTexture1D( invT_texture, ADJUST_FOR_INVT( log_R * dS / a + T_Sf ) ).r;
+        W = ( S - Sf ) / dS;
+    }
+    else
+    {
+        S = Sf;
+        W = -log_R / log( trans );
+    }
+    W = clamp( W, 0.0, 1.0 );
+    float Z = Zf + W * ( Zb - Zf );
+
+    // Color value for the point.
+    vec3 color = LookupTexture1D( transfer_function_texture, ADJUST( S ) ).rgb;
 
     // Light position in camera coordinate.
     vec3 light_position = gl_LightSource[0].position.xyz;
@@ -147,7 +175,5 @@ void main()
 #endif
 
     gl_FragColor = vec4( shaded_color, 1.0 );
-#if defined( ENABLE_EXACT_DEPTH_TESTING )
-    gl_FragDepth = DEPTH( depth_front );
-#endif
+    gl_FragDepth = DEPTH( Z );
 }
