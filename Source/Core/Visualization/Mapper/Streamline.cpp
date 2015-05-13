@@ -63,10 +63,11 @@ kvs::Vec3 Streamline::StructuredVolumeInterpolator::interpolatedValue( const kvs
 
 bool Streamline::StructuredVolumeInterpolator::containsInVolume( const kvs::Vec3& point )
 {
-    const kvs::Vec3ui& dim = m_grid->referenceVolume()->resolution();
-    if ( point.x() < 0 || dim.x() - 1 < point.x() ) return false;
-    if ( point.y() < 0 || dim.y() - 1 < point.y() ) return false;
-    if ( point.z() < 0 || dim.z() - 1 < point.z() ) return false;
+    const kvs::Vec3& min_coord = m_grid->referenceVolume()->minObjectCoord();
+    const kvs::Vec3& max_coord = m_grid->referenceVolume()->maxObjectCoord();
+    if ( point.x() < min_coord.x() || max_coord.x() <= point.x() ) return false;
+    if ( point.y() < min_coord.y() || max_coord.y() <= point.y() ) return false;
+    if ( point.z() < min_coord.z() || max_coord.z() <= point.z() ) return false;
     return true;
 }
 
@@ -120,9 +121,9 @@ bool Streamline::UnstructuredVolumeInterpolator::containsInVolume( const kvs::Ve
 {
     const kvs::Vec3& min_obj = m_cell->referenceVolume()->minObjectCoord();
     const kvs::Vec3& max_obj = m_cell->referenceVolume()->maxObjectCoord();
-    if ( point.x() < min_obj.x() || max_obj.x() < point.x() ) return false;
-    if ( point.y() < min_obj.y() || max_obj.y() < point.y() ) return false;
-    if ( point.z() < min_obj.z() || max_obj.z() < point.z() ) return false;
+    if ( point.x() < min_obj.x() || max_obj.x() <= point.x() ) return false;
+    if ( point.y() < min_obj.y() || max_obj.y() <= point.y() ) return false;
+    if ( point.z() < min_obj.z() || max_obj.z() <= point.z() ) return false;
     return m_locator->findCell( point ) != -1;
 }
 

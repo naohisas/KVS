@@ -80,6 +80,8 @@ public:
 
 public:
 
+    Streamline() {}
+
     Streamline(
         const kvs::StructuredVolumeObject* volume,
         const kvs::PointObject* seed_points,
