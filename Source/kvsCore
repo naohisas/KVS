@@ -290,6 +290,7 @@
 #include <Core/Visualization/Renderer/ParticleVolumeRenderer.h>
 #include <Core/Visualization/Renderer/PointRenderer.h>
 #include <Core/Visualization/Renderer/PolygonRenderer.h>
+#include <Core/Visualization/Renderer/PreIntegrationTable2D.h>
 #include <Core/Visualization/Renderer/PreIntegrationTable3D.h>
 #include <Core/Visualization/Renderer/ProjectedTetrahedraTable.h>
 #include <Core/Visualization/Renderer/Ray.h>

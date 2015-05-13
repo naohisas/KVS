@@ -339,6 +339,7 @@ $(OUTDIR)/./Visualization/Renderer/PointRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/PointRendererGLSL.o \
 $(OUTDIR)/./Visualization/Renderer/PolygonRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/PolygonRendererGLSL.o \
+$(OUTDIR)/./Visualization/Renderer/PreIntegrationTable2D.o \
 $(OUTDIR)/./Visualization/Renderer/PreIntegrationTable3D.o \
 $(OUTDIR)/./Visualization/Renderer/ProjectedTetrahedraTable.o \
 $(OUTDIR)/./Visualization/Renderer/Ray.o \

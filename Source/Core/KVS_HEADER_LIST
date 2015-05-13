@@ -290,6 +290,7 @@ Visualization/Renderer/ParticleBufferCompositor
 Visualization/Renderer/ParticleVolumeRenderer
 Visualization/Renderer/PointRenderer
 Visualization/Renderer/PolygonRenderer
+Visualization/Renderer/PreIntegrationTable2D
 Visualization/Renderer/PreIntegrationTable3D
 Visualization/Renderer/ProjectedTetrahedraTable
 Visualization/Renderer/Ray

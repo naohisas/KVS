@@ -339,6 +339,7 @@ $(OUTDIR)\.\Visualization\Renderer\PointRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\PointRendererGLSL.obj \
 $(OUTDIR)\.\Visualization\Renderer\PolygonRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\PolygonRendererGLSL.obj \
+$(OUTDIR)\.\Visualization\Renderer\PreIntegrationTable2D.obj \
 $(OUTDIR)\.\Visualization\Renderer\PreIntegrationTable3D.obj \
 $(OUTDIR)\.\Visualization\Renderer\ProjectedTetrahedraTable.obj \
 $(OUTDIR)\.\Visualization\Renderer\Ray.obj \
