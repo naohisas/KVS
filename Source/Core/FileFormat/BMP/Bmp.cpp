@@ -19,6 +19,7 @@
 #include <cstring>
 #include <kvs/Message>
 #include <kvs/File>
+#include <kvs/Math>
 
 
 namespace
@@ -134,28 +135,31 @@ bool Bmp::read( const std::string& filename )
     m_info_header.read( ifs );
 
     // Chech whether this file is supported or not.
-    if ( m_info_header.bpp() != 24 )
+    if ( !( m_info_header.bpp() == 24 || m_info_header.bpp() == 32 ) )
     {
         ifs.close();
         BaseClass::setSuccess( false );
         return false;
     }
 
-    m_width = m_info_header.width();
-    m_height = m_info_header.height() < 0 ? -1 * m_info_header.height() : m_info_header.height();
-    m_bpp = m_info_header.bpp();
-
     this->skip_header_and_pallete( ifs );
 
-    const size_t nchannels = 3; // NOTE: color mode only supported now.
+    m_width = m_info_header.width();
+    m_height = kvs::Math::Abs( m_info_header.height() );
+
+    // NOTE: The pixel data is stored as 24-bit color data in kvs::Bmp
+    // without depending on m_info_header.bpp().
+    m_bpp = 24;
+
+    // NOTE: 24-bit color data (R, G, and B channels) only supported.
+    const size_t nchannels = 3;
     m_pixels.allocate( m_width * m_height * nchannels );
 
     kvs::UInt8* data = m_pixels.data();
-
-    const size_t bpp = 3;
-    const size_t bpl = m_width * bpp;
-    const size_t padding = m_width % 4;
+    const size_t bpl = m_width * ( m_bpp / 8 );
+    const size_t padding = ( m_width * ( m_info_header.bpp() / 8 ) ) % 4;
     const size_t upper_left = ( m_height - 1 ) * bpl;
+    const size_t received = m_info_header.bpp() == 24 ? 0 : 1;
     for ( size_t j = 0; j < m_height; j++ )
     {
         // The origin of BMP is a lower-left point.
@@ -164,12 +168,13 @@ bool Bmp::read( const std::string& filename )
         {
             // BGR -> RGB
             const size_t index = line_index + 3 * i;
-            ifs.read( reinterpret_cast<char*>( data + index + 2 ), 1 );
-            ifs.read( reinterpret_cast<char*>( data + index + 1 ), 1 );
-            ifs.read( reinterpret_cast<char*>( data + index + 0 ), 1 );
+            ifs.read( (char*)( data + index + 2 ), 1 );
+            ifs.read( (char*)( data + index + 1 ), 1 );
+            ifs.read( (char*)( data + index + 0 ), 1 );
+            ifs.seekg( received, std::ios::cur ); // ignored
         }
 
-        // Padding.
+        // Padding. (4-byte alignment)
         ifs.seekg( padding, std::ios::cur );
     }
 
