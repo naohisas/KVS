@@ -15,7 +15,6 @@
 #include "StochasticMultipleTetrahedraCompositor.h"
 #include <kvs/Assert>
 #include <kvs/OpenGL>
-#include <kvs/glut/GLUT>
 #include <kvs/PaintEvent>
 #include <kvs/EventHandler>
 #include <kvs/ScreenBase>
@@ -29,6 +28,10 @@
 #include <kvs/UnstructuredVolumeObject>
 #include "StochasticRendererBase.h"
 #include "StochasticMultipleTetrahedraRenderer.h"
+
+#if defined( KVS_ENABLE_OPENGL )
+#include <kvs/glut/GLUT>
+#endif
 
 
 namespace kvs
@@ -77,7 +80,10 @@ void StochasticMultipleTetrahedraCompositor::update()
     }
 
     kvs::OpenGL::Flush();
+
+#if defined( KVS_ENABLE_OPENGL )
     glutSwapBuffers();
+#endif
 }
 
 /*===========================================================================*/

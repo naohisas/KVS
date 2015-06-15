@@ -708,13 +708,13 @@ void StochasticUniformGridRenderer::Engine::draw_quad()
         p2.loadIdentity();
         {
             kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-            glBegin( GL_QUADS );
-            glColor3f( 1.0, 1.0, 1.0 );
-            glTexCoord2f( 1, 1 ); glVertex2f( 1, 1 );
-            glTexCoord2f( 0, 1 ); glVertex2f( 0, 1 );
-            glTexCoord2f( 0, 0 ); glVertex2f( 0, 0 );
-            glTexCoord2f( 1, 0 ); glVertex2f( 1, 0 );
-            glEnd();
+            KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+            KVS_GL_CALL_VER( glColor3f( 1.0, 1.0, 1.0 ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 1, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 1 ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 0, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 1 ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 0, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 0 ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 1, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 0 ) );
+            KVS_GL_CALL_END( glEnd() );
         }
     }
 }

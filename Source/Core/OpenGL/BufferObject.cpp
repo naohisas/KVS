@@ -150,7 +150,7 @@ bool BufferObject::isCreated() const
 
 bool BufferObject::isValid() const
 {
-    GLboolean result;
+    GLboolean result = GL_FALSE;
     KVS_GL_CALL( result = glIsBuffer( m_id ) );
     return result == GL_TRUE;
 }

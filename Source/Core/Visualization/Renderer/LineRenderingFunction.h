@@ -24,6 +24,8 @@
 namespace
 {
 
+#if defined( KVS_ENABLE_OPENGL )
+
 /*
  * VC: vertex color, VCs: vertex color array
  * LC: line color,   LCs: line color array
@@ -865,6 +867,14 @@ void LineRenderingFunction( const kvs::LineObject* line )
         Rendering[type]( line );
     }
 };
+
+#else
+
+void LineRenderingFunction( const kvs::LineObject* )
+{
+}
+
+#endif // KVS_ENABLE_OPENGL
 
 } // end of namespace
 

@@ -31,13 +31,13 @@ void Draw( const float r, const float g, const float b, const float a )
             kvs::OpenGL::WithDisabled d2( GL_LIGHTING );
             kvs::OpenGL::WithEnabled e1( GL_TEXTURE_2D );
             {
-                glBegin( GL_QUADS );
-                glColor4f( r, g, b, a );
-                glTexCoord2f( 0, 0 ); glVertex2f( 0, 0 );
-                glTexCoord2f( 1, 0 ); glVertex2f( 1, 0 );
-                glTexCoord2f( 1, 1 ); glVertex2f( 1, 1 );
-                glTexCoord2f( 0, 1 ); glVertex2f( 0, 1 );
-                glEnd();
+                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+                KVS_GL_CALL_VER( glColor4f( r, g, b, a ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 1 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 1 ) );
+                KVS_GL_CALL_END( glEnd() );
             }
         }
     }

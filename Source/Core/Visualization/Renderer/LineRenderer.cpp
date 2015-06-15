@@ -64,15 +64,13 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
 
     BaseClass::startTimer();
 
-    glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::WithPushedAttrib p( GL_CURRENT_BIT | GL_ENABLE_BIT );
 
     this->initialize();
 
-    glEnable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
     ::LineRenderingFunction( line );
-    glDisable( GL_DEPTH_TEST );
-
-    glPopAttrib();
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
 
     BaseClass::stopTimer();
 }
@@ -106,16 +104,16 @@ void LineRenderer::disableAntiAliasing() const
 /*===========================================================================*/
 void LineRenderer::initialize()
 {
-    glColorMaterial( GL_FRONT, GL_AMBIENT_AND_DIFFUSE );
-    glEnable( GL_COLOR_MATERIAL );
+    kvs::OpenGL::SetColorMaterial( GL_FRONT, GL_AMBIENT_AND_DIFFUSE );
+    kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
 
     // Polygon offset.
-    glPolygonOffset( 1.0, 0.0 );
-    glEnable( GL_POLYGON_OFFSET_FILL );
+    KVS_GL_CALL( glPolygonOffset( 1.0, 0.0 ) );
+    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
     // Lighting.
-    if ( !BaseClass::isEnabledShading() ) glDisable( GL_LIGHTING );
-    else glEnable( GL_LIGHTING );
+    if ( !BaseClass::isEnabledShading() ) kvs::OpenGL::Disable( GL_LIGHTING );
+    else kvs::OpenGL::Enable( GL_LIGHTING );
 
     // Anti-aliasing.
     if ( m_enable_anti_aliasing )
@@ -125,17 +123,17 @@ void LineRenderer::initialize()
         {
             GLint buffers = 0;
             GLint samples = 0;
-            glGetIntegerv( GL_SAMPLE_BUFFERS, &buffers );
-            glGetIntegerv( GL_SAMPLES, &samples );
-            if ( buffers > 0 && samples > 1 ) glEnable( GL_MULTISAMPLE );
+            kvs::OpenGL::GetIntegerv( GL_SAMPLE_BUFFERS, &buffers );
+            kvs::OpenGL::GetIntegerv( GL_SAMPLES, &samples );
+            if ( buffers > 0 && samples > 1 ) kvs::OpenGL::Enable( GL_MULTISAMPLE );
         }
         else
 #endif
         {
-            glEnable( GL_LINE_SMOOTH );
-            glEnable( GL_BLEND );
-            glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+            kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+            kvs::OpenGL::Enable( GL_BLEND );
+            kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+            KVS_GL_CALL( glHint( GL_LINE_SMOOTH_HINT, GL_NICEST ) );
         }
     }
 }

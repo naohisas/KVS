@@ -415,13 +415,12 @@ void HAVSVolumeRenderer::draw_initialization_pass()
         p2.loadIdentity();
         {
             kvs::OpenGL::SetOrtho( 0, width, 0, height );
-
-            glBegin( GL_QUADS );
-            glVertex2i( 0, 0 );
-            glVertex2i( width, 0 );
-            glVertex2i( width, height );
-            glVertex2i( 0, height );
-            glEnd();
+            KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+            KVS_GL_CALL_VER( glVertex2i( 0, 0 ) );
+            KVS_GL_CALL_VER( glVertex2i( width, 0 ) );
+            KVS_GL_CALL_VER( glVertex2i( width, height ) );
+            KVS_GL_CALL_VER( glVertex2i( 0, height ) );
+            KVS_GL_CALL_END( glEnd() );
         }
     }
 }
@@ -517,12 +516,12 @@ void HAVSVolumeRenderer::draw_flush_pass()
             kvs::OpenGL::SetOrtho( 0, width, 0, height );
             for ( size_t i = 0; i < this->kBufferSize() - 1; i++ )
             {
-                glBegin( GL_QUADS );
-                glVertex2i( 0, 0 );
-                glVertex2i( 0, height );
-                glVertex2i( width, height );
-                glVertex2i( width, 0 );
-                glEnd();
+                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+                KVS_GL_CALL_VER( glVertex2i( 0, 0 ) );
+                KVS_GL_CALL_VER( glVertex2i( 0, height ) );
+                KVS_GL_CALL_VER( glVertex2i( width, height ) );
+                KVS_GL_CALL_VER( glVertex2i( width, 0 ) );
+                KVS_GL_CALL_END( glEnd() );
             }
         }
     }
@@ -553,12 +552,12 @@ void HAVSVolumeRenderer::draw_texture()
                 kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
                 // Draw texture using screen-aligned quad
-                glBegin( GL_QUADS );
-                glTexCoord2i( 0, 0 ); glVertex2i( 0, 0 );
-                glTexCoord2i( 1, 0 ); glVertex2i( width, 0 );
-                glTexCoord2i( 1, 1 ); glVertex2i( width, height );
-                glTexCoord2i( 0, 1 ); glVertex2i( 0, height );
-                glEnd();
+                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+                KVS_GL_CALL_VER( glTexCoord2i( 0, 0 ) ); KVS_GL_CALL_VER( glVertex2i( 0, 0 ) );
+                KVS_GL_CALL_VER( glTexCoord2i( 1, 0 ) ); KVS_GL_CALL_VER( glVertex2i( width, 0 ) );
+                KVS_GL_CALL_VER( glTexCoord2i( 1, 1 ) ); KVS_GL_CALL_VER( glVertex2i( width, height ) );
+                KVS_GL_CALL_VER( glTexCoord2i( 0, 1 ) ); KVS_GL_CALL_VER( glVertex2i( 0, height ) );
+                KVS_GL_CALL_END( glEnd() );
             }
         }
     }

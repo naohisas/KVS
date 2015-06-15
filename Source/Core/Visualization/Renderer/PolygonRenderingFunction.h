@@ -46,6 +46,8 @@
 namespace
 {
 
+#if defined( KVS_ENABLE_OPENGL )
+
 /*===========================================================================*/
 /**
  *  @brief  Rendering function for triangles with VCs and O.
@@ -3333,6 +3335,14 @@ void PolygonRenderingFunction( const kvs::PolygonObject* polygon )
         Rendering[type]( polygon );
     }
 };
+
+#else
+
+void PolygonRenderingFunction( const kvs::PolygonObject* )
+{
+};
+
+#endif
 
 } // end of namespace
 

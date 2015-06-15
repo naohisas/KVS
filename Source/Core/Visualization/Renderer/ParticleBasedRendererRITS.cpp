@@ -91,9 +91,9 @@ void EnsembleAverageBuffer::create( const size_t width, const size_t height )
 
     if ( m_enable_accum )
     {
-        glClearAccum( 0.0, 0.0, 0.0, 0.0 );
+        KVS_GL_CALL( glClearAccum( 0.0, 0.0, 0.0, 0.0 ) );
         GLint accum_r = 0;
-        glGetIntegerv( GL_ACCUM_RED_BITS, &accum_r );
+        kvs::OpenGL::GetIntegerv( GL_ACCUM_RED_BITS, &accum_r );
         const float pixel_scale = 255.0;
         const float accum_scale = float( 1 << ( accum_r ) );
         m_accum_scale = pixel_scale / accum_scale;
@@ -127,7 +127,7 @@ void EnsembleAverageBuffer::clear()
 {
     if ( m_enable_accum )
     {
-        glClear( GL_ACCUM_BUFFER_BIT );
+        kvs::OpenGL::Clear( GL_ACCUM_BUFFER_BIT );
     }
     else
     {
@@ -148,22 +148,22 @@ void EnsembleAverageBuffer::bind()
 {
     if ( m_enable_accum )
     {
-        glClear( GL_COLOR_BUFFER_BIT );
+        kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT );
     }
     else
     {
         m_count++;
         m_framebuffer.bind();
 
-        glViewport( 0, 0, m_width, m_height );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-        glDisable( GL_LIGHTING );
-        glEnable( GL_TEXTURE_2D );
+        kvs::OpenGL::SetViewport( 0, 0, m_width, m_height );
+        kvs::OpenGL::Disable( GL_DEPTH_TEST );
+        kvs::OpenGL::Disable( GL_CULL_FACE );
+        kvs::OpenGL::Disable( GL_LIGHTING );
+        kvs::OpenGL::Enable( GL_TEXTURE_2D );
 
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        glColor4f( 1.0f, 1.0f, 1.0f, this->opacity() );
+        kvs::OpenGL::Enable( GL_BLEND );
+        kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        KVS_GL_CALL( glColor4f( 1.0f, 1.0f, 1.0f, this->opacity() ) );
     }
 }
 
@@ -178,8 +178,8 @@ void EnsembleAverageBuffer::unbind()
     else
     {
         m_framebuffer.unbind();
-        glDisable( GL_BLEND );
-        glBlendFunc( GL_ONE, GL_ZERO );
+        kvs::OpenGL::Disable( GL_BLEND );
+        kvs::OpenGL::SetBlendFunc( GL_ONE, GL_ZERO );
     }
 }
 
@@ -192,7 +192,7 @@ void EnsembleAverageBuffer::add()
 {
     if ( m_enable_accum )
     {
-        glAccum( GL_ACCUM, m_accum_scale );
+        KVS_GL_CALL( glAccum( GL_ACCUM, m_accum_scale ) );
         m_count++;
     }
     else
@@ -210,16 +210,16 @@ void EnsembleAverageBuffer::draw()
 {
     if ( m_enable_accum )
     {
-        glAccum( GL_RETURN, static_cast<GLfloat>(1.0) / m_accum_scale / m_count );
+        KVS_GL_CALL( glAccum( GL_RETURN, static_cast<GLfloat>(1.0) / m_accum_scale / m_count ) );
     }
     else
     {
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_CULL_FACE );
-        glDisable( GL_LIGHTING );
-        glDisable( GL_NORMALIZE );
-        glEnable( GL_TEXTURE_2D );
-        glActiveTexture( GL_TEXTURE0 );
+        kvs::OpenGL::Disable( GL_DEPTH_TEST );
+        kvs::OpenGL::Disable( GL_CULL_FACE );
+        kvs::OpenGL::Disable( GL_LIGHTING );
+        kvs::OpenGL::Disable( GL_NORMALIZE );
+        kvs::OpenGL::Enable( GL_TEXTURE_2D );
+        kvs::Texture::SelectActiveUnit( 0 );
         m_texture.bind();
         this->draw_quad( 1.0f, 1.0f, 1.0f, 1.0f );
         m_texture.unbind();
@@ -233,9 +233,9 @@ void EnsembleAverageBuffer::draw()
 /*===========================================================================*/
 void EnsembleAverageBuffer::enableAccumulationBuffer()
 {
-    GLint accum_r = 0; glGetIntegerv( GL_ACCUM_RED_BITS,   &accum_r );
-    GLint accum_g = 0; glGetIntegerv( GL_ACCUM_GREEN_BITS, &accum_g );
-    GLint accum_b = 0; glGetIntegerv( GL_ACCUM_BLUE_BITS,  &accum_b );
+    GLint accum_r = 0; kvs::OpenGL::GetIntegerv( GL_ACCUM_RED_BITS,   &accum_r );
+    GLint accum_g = 0; kvs::OpenGL::GetIntegerv( GL_ACCUM_GREEN_BITS, &accum_g );
+    GLint accum_b = 0; kvs::OpenGL::GetIntegerv( GL_ACCUM_BLUE_BITS,  &accum_b );
     if ( accum_r == 0 || accum_g == 0 || accum_b == 0 )
     {
         kvsMessageError("Accumulation buffer cannot be enabled.");
@@ -306,33 +306,27 @@ void EnsembleAverageBuffer::draw_quad(
     const float b,
     const float a )
 {
-    glMatrixMode( GL_MODELVIEW );
-    glPushMatrix();
+    kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
+    p1.loadIdentity();
     {
-        glLoadIdentity();
-        glMatrixMode( GL_PROJECTION );
-        glPushMatrix();
+        kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
+        p2.loadIdentity();
         {
-            glLoadIdentity();
-            glOrtho( 0, 1, 0, 1, -1, 1 );
-
-            glDisable( GL_DEPTH_TEST );
-            glDisable( GL_LIGHTING );
-
-            glBegin( GL_QUADS );
+            kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
+            kvs::OpenGL::WithDisabled d1( GL_DEPTH_TEST );
+            kvs::OpenGL::WithDisabled d2( GL_LIGHTING );
+            kvs::OpenGL::WithEnabled e1( GL_TEXTURE_2D );
             {
-                glColor4f( r, g, b, a );
-                glTexCoord2f( 1, 1 ); glVertex2f( 1, 1 );
-                glTexCoord2f( 0, 1 ); glVertex2f( 0, 1 );
-                glTexCoord2f( 0, 0 ); glVertex2f( 0, 0 );
-                glTexCoord2f( 1, 0 ); glVertex2f( 1, 0 );
+                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+                KVS_GL_CALL_VER( glColor4f( r, g, b, a ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 1 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 1 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 0 ) );
+                KVS_GL_CALL_END( glEnd() );
             }
-            glEnd();
         }
-        glPopMatrix(); // pop PROJECTION matrix
     }
-    glMatrixMode( GL_MODELVIEW );
-    glPopMatrix(); // pop MODELVIEW matrix
 }
 
 
@@ -648,39 +642,39 @@ void ParticleBasedRenderer::Renderer::draw() const
 #else
 #error "KVS_GLSL_RITS_PARTICLE_BASED_RENDERER__NORMAL_TYPE_IS_* is not defined."
 #endif
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, (char*)(m_off_coord));
+    KVS_GL_CALL( glEnableClientState(GL_VERTEX_ARRAY) );
+    KVS_GL_CALL( glVertexPointer(3, GL_FLOAT, 0, (char*)(m_off_coord)) );
 
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(3, GL_UNSIGNED_BYTE, 0, (char*)(m_off_color));
+    KVS_GL_CALL( glEnableClientState(GL_COLOR_ARRAY) );
+    KVS_GL_CALL( glColorPointer(3, GL_UNSIGNED_BYTE, 0, (char*)(m_off_color)) );
 
     if ( m_particles->hasNormal() )
     {
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer( normal_type, 0, (char*)(m_off_normal));
+        KVS_GL_CALL( glEnableClientState(GL_NORMAL_ARRAY) );
+        KVS_GL_CALL( glNormalPointer( normal_type, 0, (char*)(m_off_normal)) );
     }
 
     if ( m_particles->hasIndex() )
     {
-        glEnableVertexAttribArray( m_loc_identifier );
-        glVertexAttribPointer( m_loc_identifier, 2, GL_UNSIGNED_SHORT, GL_FALSE, 0, (void*)(m_off_index));
+        KVS_GL_CALL( glEnableVertexAttribArray( m_loc_identifier ) );
+        KVS_GL_CALL( glVertexAttribPointer( m_loc_identifier, 2, GL_UNSIGNED_SHORT, GL_FALSE, 0, (void*)(m_off_index)) );
     }
 
     if(rendering_process::division_mode){
-        glDrawArrays(GL_POINTS, rendering_process::start_pos, rendering_process::used_points);
+        KVS_GL_CALL( glDrawArrays(GL_POINTS, rendering_process::start_pos, rendering_process::used_points) );
     }
     else {
-        glDrawArrays(GL_POINTS, 0, static_cast<size_t>(static_cast<double>(m_count)*rendering_process::used_point_ratio));
+        KVS_GL_CALL( glDrawArrays(GL_POINTS, 0, static_cast<size_t>(static_cast<double>(m_count)*rendering_process::used_point_ratio)) );
     }
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
+    KVS_GL_CALL( glDisableClientState(GL_VERTEX_ARRAY) );
+    KVS_GL_CALL( glDisableClientState(GL_NORMAL_ARRAY) );
+    KVS_GL_CALL( glDisableClientState(GL_COLOR_ARRAY) );
 
 
     if ( m_particles->hasIndex() )
     {
-        glDisableVertexAttribArray( m_loc_identifier );
+        KVS_GL_CALL( glDisableVertexAttribArray( m_loc_identifier ) );
     }
 }
 
@@ -1098,7 +1092,7 @@ void ParticleBasedRenderer::create_image(
     // Set shader initial parameters.
     //BaseClass::shader().set( camera, light );
 
-    glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT );
 
     /*ADD_UEMURA(begin)*/
     static const float default_window_size = static_cast<float>(camera->windowHeight());
@@ -1122,19 +1116,19 @@ void ParticleBasedRenderer::create_image(
         this->create_vertexbuffer();
         this->calculate_zooming_factor( point, camera );
 
-        glGetFloatv( GL_MODELVIEW_MATRIX, m_modelview_matrix );
+        kvs::OpenGL::GetFloatv( GL_MODELVIEW_MATRIX, m_modelview_matrix );
     }
 
     // Get the modelview matrix.
     float modelview_matrix[16];
-    glGetFloatv( GL_MODELVIEW_MATRIX, modelview_matrix );
+    kvs::OpenGL::GetFloatv( GL_MODELVIEW_MATRIX, modelview_matrix );
 
     // LOD control.
     size_t coarse_level=0;
     if ( m_enable_lod )
     {
         float modelview_matrix[16];
-        glGetFloatv( GL_MODELVIEW_MATRIX, modelview_matrix );
+        kvs::OpenGL::GetFloatv( GL_MODELVIEW_MATRIX, modelview_matrix );
 
         for ( size_t i = 0; i < 16; i++ )
         {
@@ -1185,7 +1179,7 @@ void ParticleBasedRenderer::create_image(
     if(Lr > m_repetition_level || !m_enable_repetition_level_zooming) Lr = m_repetition_level;
     /*ADD_UEMURA(end)*/
     
-    if ( coarse_level > 1 ) glClear( GL_ACCUM_BUFFER_BIT );
+    if ( coarse_level > 1 ) kvs::OpenGL::Clear( GL_ACCUM_BUFFER_BIT );
 
     if ( !m_enable_pre_downloading )
     {
@@ -1200,10 +1194,10 @@ void ParticleBasedRenderer::create_image(
     }
 
     // Enable or disable OpenGL capabilities.
-    if ( BaseClass::isEnabledShading() ) glEnable( GL_LIGHTING );
-    else glDisable( GL_LIGHTING );
-    glEnable( GL_DEPTH_TEST );
-    glEnable( GL_VERTEX_PROGRAM_POINT_SIZE ); // enable zooming.
+    if ( BaseClass::isEnabledShading() ) kvs::OpenGL::Enable( GL_LIGHTING );
+    else kvs::OpenGL::Disable( GL_LIGHTING );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_VERTEX_PROGRAM_POINT_SIZE ); // enable zooming.
 
     // Project particles.
     const size_t repeat_count = (m_coarse_level == coarse_level)? coarse_level : Lr;//ADD_UEMURA
@@ -1234,11 +1228,11 @@ void ParticleBasedRenderer::create_image(
         {
             // Render to the texture.
             m_resize_framebuffer.bind();
-            glViewport( 0, 0, m_render_width, m_render_height );
+            kvs::OpenGL::SetViewport( 0, 0, m_render_width, m_render_height );
         }
 
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        glEnable( GL_DEPTH_TEST );
+        kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
         if ( m_enable_pre_downloading )
         {
@@ -1351,16 +1345,16 @@ void ParticleBasedRenderer::create_image(
         if ( enable_resizing )
         {
             m_resize_framebuffer.unbind(); // render to the screen
-            glViewport( 0, 0, BaseClass::windowWidth(), BaseClass::windowHeight() );
+            kvs::OpenGL::SetViewport( 0, 0, BaseClass::windowWidth(), BaseClass::windowHeight() );
 
             if ( enable_averaging )
             {
                 m_ensemble_buffer.bind();
             }
 
-            glMatrixMode( GL_MODELVIEW );  glPushMatrix(); glLoadIdentity();
-            glMatrixMode( GL_PROJECTION ); glPushMatrix(); glLoadIdentity();
-            glOrtho( 0, 1, 0, 1, -1, 1 );
+            kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );  kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
+            kvs::OpenGL::SetMatrixMode( GL_PROJECTION ); kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
+            kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
 
             m_resize_texture.bind();
             if ( m_subpixel_level > 1 )
@@ -1369,18 +1363,18 @@ void ParticleBasedRenderer::create_image(
                 this->setup_resize_shader();
             }
 
-            glDisable( GL_DEPTH_TEST );
-            glDisable( GL_LIGHTING );
-            glBegin( GL_QUADS );
-            glColor4f( 1.0, 1.0, 1.0, m_ensemble_buffer.opacity() );
-            glTexCoord2f( 1, 1 );  glVertex2f( 1, 1 );
-            glTexCoord2f( 0, 1 );  glVertex2f( 0, 1 );
-            glTexCoord2f( 0, 0 );  glVertex2f( 0, 0 );
-            glTexCoord2f( 1, 0 );  glVertex2f( 1, 0 );
-            glEnd();
+            kvs::OpenGL::Disable( GL_DEPTH_TEST );
+            kvs::OpenGL::Disable( GL_LIGHTING );
+            KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+            KVS_GL_CALL_VER( glColor4f( 1.0, 1.0, 1.0, m_ensemble_buffer.opacity() ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 1, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 1 ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 0, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 1 ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 0, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 0 ) );
+            KVS_GL_CALL_VER( glTexCoord2f( 1, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 0 ) );
+            KVS_GL_CALL_END( glEnd() );
 
-            if ( BaseClass::isEnabledShading() ) glEnable( GL_LIGHTING );
-            glEnable( GL_DEPTH_TEST );
+            if ( BaseClass::isEnabledShading() ) kvs::OpenGL::Enable( GL_LIGHTING );
+            kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
             if ( m_subpixel_level > 1 )
             {
@@ -1388,9 +1382,9 @@ void ParticleBasedRenderer::create_image(
                 m_resize_texture.unbind();
             }
 
-            glPopMatrix(); // Pop PROJECTION matrix
-            glMatrixMode( GL_MODELVIEW );
-            glPopMatrix(); // Pop MODELVIEW matrix
+            kvs::OpenGL::PopMatrix(); // Pop PROJECTION matrix
+            kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
+            kvs::OpenGL::PopMatrix(); // Pop MODELVIEW matrix
 
         }
         if ( enable_averaging ) m_ensemble_buffer.add();
@@ -1399,8 +1393,7 @@ void ParticleBasedRenderer::create_image(
 
     if ( enable_averaging ) m_ensemble_buffer.draw();
 
-    glPopAttrib();
-    glFinish();
+    kvs::OpenGL::Finish();
 } 
 
 /*==========================================================================*/
@@ -1415,9 +1408,9 @@ void ParticleBasedRenderer::initialize_opengl()
   if ( m_repetition_level != 1 && m_enable_accumulation_buffer ) mode |= GLUT_ACCUM;
   glutInitDisplayMode( mode );
 */
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST );
+    KVS_GL_CALL( glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST ) );
 
-    if ( m_repetition_level > 1 ) glClearAccum( 0.0, 0.0, 0.0, 0.0 );
+    if ( m_repetition_level > 1 ) KVS_GL_CALL( glClearAccum( 0.0, 0.0, 0.0, 0.0 ) );
 
     // Initialize the shader for zooming.
     {

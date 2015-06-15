@@ -65,7 +65,7 @@ GLuint ProgramObject::id() const
 std::string ProgramObject::log() const
 {
     GLint length = 0;
-    glGetProgramiv( m_id, GL_INFO_LOG_LENGTH, &length );
+    KVS_GL_CALL( glGetProgramiv( m_id, GL_INFO_LOG_LENGTH, &length ) );
     if ( length == 0 ) return "";
 
     char* buffer = new char [ length ];
@@ -76,7 +76,7 @@ std::string ProgramObject::log() const
     }
 
     GLsizei buffer_size = 0;
-    glGetProgramInfoLog( m_id, length, &buffer_size, buffer );
+    KVS_GL_CALL( glGetProgramInfoLog( m_id, length, &buffer_size, buffer ) );
 
     std::string log( buffer );
     delete [] buffer;
@@ -262,7 +262,7 @@ bool ProgramObject::isCreated() const
 
 bool ProgramObject::isValid() const
 {
-    GLboolean result;
+    GLboolean result = GL_FALSE;
     KVS_GL_CALL( result = glIsProgram( m_id ) );
     return result == GL_TRUE;
 }
@@ -570,7 +570,7 @@ void ProgramObject::setUniformValuei(
     const GLchar* name,
     const GLint v0 )
 {
-    glUniform1i( this->uniformLocation( name ), v0 );
+    KVS_GL_CALL( glUniform1i( this->uniformLocation( name ), v0 ) );
 }
 
 /*===========================================================================*/
@@ -586,7 +586,7 @@ void ProgramObject::setUniformValuei(
     const GLint v0,
     const GLint v1 )
 {
-    glUniform2i( this->uniformLocation( name ), v0, v1 );
+    KVS_GL_CALL( glUniform2i( this->uniformLocation( name ), v0, v1 ) );
 }
 
 /*===========================================================================*/
@@ -604,7 +604,7 @@ void ProgramObject::setUniformValuei(
     const GLint v1,
     const GLint v2 )
 {
-    glUniform3i( this->uniformLocation( name ), v0, v1, v2 );
+    KVS_GL_CALL( glUniform3i( this->uniformLocation( name ), v0, v1, v2 ) );
 }
 
 /*===========================================================================*/
@@ -624,7 +624,7 @@ void ProgramObject::setUniformValuei(
     const GLint v2,
     const GLint v3 )
 {
-    glUniform4i( this->uniformLocation( name ), v0, v1, v2, v3 );
+    KVS_GL_CALL( glUniform4i( this->uniformLocation( name ), v0, v1, v2, v3 ) );
 }
 
 /*===========================================================================*/
@@ -640,7 +640,7 @@ void ProgramObject::setUniformValuei(
 {
     const GLint v0 = static_cast<GLint>( v.x() );
     const GLint v1 = static_cast<GLint>( v.y() );
-    glUniform2i( this->uniformLocation( name ), v0, v1 );
+    KVS_GL_CALL( glUniform2i( this->uniformLocation( name ), v0, v1 ) );
 }
 
 /*===========================================================================*/
@@ -657,7 +657,7 @@ void ProgramObject::setUniformValuei(
     const GLint v0 = static_cast<GLint>( v.x() );
     const GLint v1 = static_cast<GLint>( v.y() );
     const GLint v2 = static_cast<GLint>( v.z() );
-    glUniform3i( this->uniformLocation( name ), v0, v1, v2 );
+    KVS_GL_CALL( glUniform3i( this->uniformLocation( name ), v0, v1, v2 ) );
 }
 
 /*===========================================================================*/
@@ -675,7 +675,7 @@ void ProgramObject::setUniformValuei(
     const GLint v1 = static_cast<GLint>( v.y() );
     const GLint v2 = static_cast<GLint>( v.z() );
     const GLint v3 = static_cast<GLint>( v.w() );
-    glUniform4i( this->uniformLocation( name ), v0, v1, v2, v3 );
+    KVS_GL_CALL( glUniform4i( this->uniformLocation( name ), v0, v1, v2, v3 ) );
 }
 
 /*===========================================================================*/
@@ -689,7 +689,7 @@ void ProgramObject::setUniformValuef(
     const GLchar* name,
     const GLfloat v0 )
 {
-    glUniform1f( this->uniformLocation( name ), v0 );
+    KVS_GL_CALL( glUniform1f( this->uniformLocation( name ), v0 ) );
 }
 
 /*===========================================================================*/
@@ -705,7 +705,7 @@ void ProgramObject::setUniformValuef(
     const GLfloat v0,
     const GLfloat v1 )
 {
-    glUniform2f( this->uniformLocation( name ), v0, v1 );
+    KVS_GL_CALL( glUniform2f( this->uniformLocation( name ), v0, v1 ) );
 }
 
 /*===========================================================================*/
@@ -723,7 +723,7 @@ void ProgramObject::setUniformValuef(
     const GLfloat v1,
     const GLfloat v2 )
 {
-    glUniform3f( this->uniformLocation( name ), v0, v1, v2 );
+    KVS_GL_CALL( glUniform3f( this->uniformLocation( name ), v0, v1, v2 ) );
 }
 
 /*===========================================================================*/
@@ -743,7 +743,7 @@ void ProgramObject::setUniformValuef(
     const GLfloat v2,
     const GLfloat v3 )
 {
-    glUniform4f( this->uniformLocation( name ), v0, v1, v2, v3 );
+    KVS_GL_CALL( glUniform4f( this->uniformLocation( name ), v0, v1, v2, v3 ) );
 }
 
 /*===========================================================================*/
@@ -759,7 +759,7 @@ void ProgramObject::setUniformValuef(
 {
     const GLfloat v0 = static_cast<GLfloat>( v.x() );
     const GLfloat v1 = static_cast<GLfloat>( v.y() );
-    glUniform2f( this->uniformLocation( name ), v0, v1 );
+    KVS_GL_CALL( glUniform2f( this->uniformLocation( name ), v0, v1 ) );
 }
 
 /*===========================================================================*/
@@ -776,7 +776,7 @@ void ProgramObject::setUniformValuef(
     const GLfloat v0 = static_cast<GLfloat>( v.x() );
     const GLfloat v1 = static_cast<GLfloat>( v.y() );
     const GLfloat v2 = static_cast<GLfloat>( v.z() );
-    glUniform3f( this->uniformLocation( name ), v0, v1, v2 );
+    KVS_GL_CALL( glUniform3f( this->uniformLocation( name ), v0, v1, v2 ) );
 }
 
 /*===========================================================================*/
@@ -794,7 +794,7 @@ void ProgramObject::setUniformValuef(
     const GLfloat v1 = static_cast<GLfloat>( v.y() );
     const GLfloat v2 = static_cast<GLfloat>( v.z() );
     const GLfloat v3 = static_cast<GLfloat>( v.w() );
-    glUniform4f( this->uniformLocation( name ), v0, v1, v2, v3 );
+    KVS_GL_CALL( glUniform4f( this->uniformLocation( name ), v0, v1, v2, v3 ) );
 }
 
 } // end of namespace kvs

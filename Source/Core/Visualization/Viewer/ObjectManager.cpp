@@ -19,7 +19,6 @@
 #include <kvs/Vector2>
 #include <kvs/Vector3>
 #include <kvs/Vector4>
-#include <kvs/OpenGL>
 
 
 namespace kvs

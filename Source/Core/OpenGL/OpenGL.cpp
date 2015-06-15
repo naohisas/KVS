@@ -21,7 +21,7 @@ namespace
 
 std::string GLGetString( GLenum name )
 {
-    std::string ret;
+    std::string ret = "";
     const GLubyte* c = NULL;
     KVS_GL_CALL( c = glGetString( name ) );
     while ( *c ) ret += *c++;
@@ -30,7 +30,7 @@ std::string GLGetString( GLenum name )
 
 std::string GLUGetString( GLenum name )
 {
-    std::string ret;
+    std::string ret = "";
     const GLubyte* c = NULL;
     KVS_GL_CALL( c = gluGetString( name ) );
     while ( *c ) ret += *c++;
@@ -39,8 +39,9 @@ std::string GLUGetString( GLenum name )
 
 std::string GLEWGetString( GLenum name )
 {
-    std::string ret;
-    const GLubyte* c = glewGetString( name );
+    std::string ret = "";
+    const GLubyte* c = NULL;
+    KVS_GL_CALL( c = glewGetString( name ) );
     while ( *c ) ret += *c++;
     return ret;
 }

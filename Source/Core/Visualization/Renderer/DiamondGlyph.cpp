@@ -113,14 +113,11 @@ void DiamondGlyph::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
 
     BaseClass::startTimer();
 
-    glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
-
-    glEnable( GL_DEPTH_TEST );
+    kvs::OpenGL::WithPushedAttrib p( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
     this->initialize();
     this->draw();
-    glDisable( GL_DEPTH_TEST );
-
-    glPopAttrib();
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
 
     BaseClass::stopTimer();
 }
@@ -227,12 +224,12 @@ void DiamondGlyph::draw()
             const kvs::Real32 size = BaseClass::sizes()[i];
             const kvs::RGBColor color( BaseClass::colors().data() + index );
             const kvs::UInt8 opacity = BaseClass::opacities()[i];
-            glPushMatrix();
+            kvs::OpenGL::PushMatrix();
             {
                 BaseClass::transform( position, size );
                 this->draw_element( color, opacity );
             }
-            glPopMatrix();
+            kvs::OpenGL::PopMatrix();
         }
     }
     else
@@ -244,12 +241,12 @@ void DiamondGlyph::draw()
             const kvs::Real32 size = BaseClass::sizes()[i];
             const kvs::RGBColor color( BaseClass::colors().data() + index );
             const kvs::UInt8 opacity = BaseClass::opacities()[i];
-            glPushMatrix();
+            kvs::OpenGL::PushMatrix();
             {
                 BaseClass::transform( position, direction, size );
                 this->draw_element( color, opacity );
             }
-            glPopMatrix();
+            kvs::OpenGL::PopMatrix();
         }
     }
 }
@@ -263,11 +260,11 @@ void DiamondGlyph::draw()
 /*===========================================================================*/
 void DiamondGlyph::draw_element( const kvs::RGBColor& color, const kvs::UInt8 opacity )
 {
-    glBegin( GL_TRIANGLES );
+    KVS_GL_CALL_BEG( glBegin( GL_TRIANGLES ) );
     {
-        glColor4ub( color.r(), color.g(), color.b(), opacity );
+        KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), opacity ) );
 
-        for( size_t i = 0, index = 0; i < 8; i++, index += 3 )
+        for ( size_t i = 0, index = 0; i < 8; i++, index += 3 )
         {
             const kvs::UInt32 offset0 = ::Connections[index] * 3;
             const kvs::UInt32 offset1 = ::Connections[index+1] * 3;
@@ -279,13 +276,13 @@ void DiamondGlyph::draw_element( const kvs::RGBColor& color, const kvs::UInt8 op
             const kvs::Vector3f v10 = v0 - v1;
             const kvs::Vector3f v12 = v2 - v1;
             const kvs::Vector3f n = v12.cross( v10 );
-            glNormal3f( n.x(), n.y(), n.z() );
-            glVertex3fv( ::Vertices + offset0 );
-            glVertex3fv( ::Vertices + offset1 );
-            glVertex3fv( ::Vertices + offset2 );
+            KVS_GL_CALL_VER( glNormal3f( n.x(), n.y(), n.z() ) );
+            KVS_GL_CALL_VER( glVertex3fv( ::Vertices + offset0 ) );
+            KVS_GL_CALL_VER( glVertex3fv( ::Vertices + offset1 ) );
+            KVS_GL_CALL_VER( glVertex3fv( ::Vertices + offset2 ) );
         }
     }
-    glEnd();
+    KVS_GL_CALL_END( glEnd() );
 }
 
 /*===========================================================================*/
@@ -295,27 +292,27 @@ void DiamondGlyph::draw_element( const kvs::RGBColor& color, const kvs::UInt8 op
 /*===========================================================================*/
 void DiamondGlyph::initialize()
 {
-    glDisable( GL_LINE_SMOOTH );
+    kvs::OpenGL::Disable( GL_LINE_SMOOTH );
 
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
-    glShadeModel( GL_SMOOTH );
+    kvs::OpenGL::SetShadeModel( GL_SMOOTH );
 
-    glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
-    glEnable( GL_COLOR_MATERIAL );
+    kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+    kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
 
     if ( !BaseClass::isEnabledShading() )
     {
-        glDisable( GL_NORMALIZE );
-        glDisable( GL_LIGHTING );
+        kvs::OpenGL::Disable( GL_NORMALIZE );
+        kvs::OpenGL::Disable( GL_LIGHTING );
     }
     else
     {
-        glEnable( GL_NORMALIZE );
-        glEnable( GL_LIGHTING );
+        kvs::OpenGL::Enable( GL_NORMALIZE );
+        kvs::OpenGL::Enable( GL_LIGHTING );
     }
 }
 

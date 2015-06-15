@@ -23,6 +23,8 @@
 namespace
 {
 
+#if defined( KVS_ENABLE_OPENGL )
+
 /*
  * S: size,   Ss: size array
  * C: color,  Cs: color array
@@ -371,6 +373,14 @@ void PointRenderingFunction( const kvs::PointObject* point )
         Rendering[type]( point );
     }
 };
+
+#else
+
+void PointRenderingFunction( const kvs::PointObject* )
+{
+};
+
+#endif // KVS_ENABLE_OPENGL
 
 } // end of namespace
 

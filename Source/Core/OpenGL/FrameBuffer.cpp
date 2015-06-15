@@ -251,19 +251,19 @@ void FrameBuffer::read(
     void**       pixels,
     const GLenum buffer )
 {
-    glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
 
-    if( buffer != 0 )
+    if ( buffer != 0 )
     {
         GLint current_buffer;
-        glGetIntegerv( GL_READ_BUFFER, &current_buffer );
-        glReadBuffer( buffer );
-        glReadPixels( x, y, width, height, format, type, *pixels );
-        glReadBuffer( current_buffer );
+        kvs::OpenGL::GetIntegerv( GL_READ_BUFFER, &current_buffer );
+        kvs::OpenGL::SetReadBuffer( buffer );
+        kvs::OpenGL::ReadPixels( x, y, width, height, format, type, *pixels );
+        kvs::OpenGL::SetReadBuffer( current_buffer );
     }
     else
     {
-        glReadPixels( x, y, width, height, format, type, *pixels );
+        kvs::OpenGL::ReadPixels( x, y, width, height, format, type, *pixels );
     }
 }
 
@@ -282,7 +282,9 @@ void FrameBuffer::draw(
     const void*  pixels,
     const GLenum buffer )
 {
-    int viewport[4]; glGetIntegerv( GL_VIEWPORT, (GLint*)viewport );
+//    int viewport[4]; glGetIntegerv( GL_VIEWPORT, (GLint*)viewport );
+    GLint viewport[4];
+    kvs::OpenGL::GetViewport( viewport );
     const int x = viewport[0];
     const int y = viewport[1];
 
@@ -389,47 +391,39 @@ void FrameBuffer::draw(
     const void*  pixels,
     const GLenum buffer )
 {
-    glDisable( GL_TEXTURE_1D );
-    glDisable( GL_TEXTURE_2D );
-#if defined(GL_TEXTURE_3D)
-    glDisable( GL_TEXTURE_3D );
+    kvs::OpenGL::Disable( GL_TEXTURE_1D );
+    kvs::OpenGL::Disable( GL_TEXTURE_2D );
+#if defined( GL_TEXTURE_3D )
+    kvs::OpenGL::Disable( GL_TEXTURE_3D );
 #endif
 
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
 
     GLint current_buffer = 0;
-    if( buffer != 0 )
+    if ( buffer != 0 )
     {
-        glGetIntegerv( GL_DRAW_BUFFER, &current_buffer );
-        glDrawBuffer( buffer );
+        kvs::OpenGL::GetIntegerv( GL_DRAW_BUFFER, &current_buffer );
+        kvs::OpenGL::SetDrawBuffer( buffer );
     }
 
-    const int left   = viewport[0];
+    const int left = viewport[0];
     const int bottom = viewport[1];
-    const int right  = viewport[2];
-    const int top    = viewport[3];
+    const int right = viewport[2];
+    const int top = viewport[3];
 
-    glMatrixMode( GL_PROJECTION );
-    glPushMatrix();
+    kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
+    p1.loadIdentity();
     {
-        glLoadIdentity();
-
-        glMatrixMode( GL_MODELVIEW );
-        glPushMatrix();
+        kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
+        p2.loadIdentity();
         {
-            glLoadIdentity();
-            glOrtho( left, right, bottom, top, -1, 1 );
-
-            glRasterPos2i( x, y );
-            glDrawPixels( width, height, format, type, pixels );
+            kvs::OpenGL::SetOrtho( left, right, bottom, top, -1, 1 );
+            kvs::OpenGL::SetRasterPos( x, y );
+            kvs::OpenGL::DrawPixels( width, height, format, type, pixels );
         }
-        glMatrixMode( GL_PROJECTION );
-        glPopMatrix();
-        glMatrixMode( GL_MODELVIEW );
     }
-    glPopMatrix();
 
-    if( buffer != 0 ) glDrawBuffer( current_buffer );
+    if ( buffer != 0 ) { kvs::OpenGL::SetDrawBuffer( current_buffer ); }
 }
 
 } // end of namespace kvs
