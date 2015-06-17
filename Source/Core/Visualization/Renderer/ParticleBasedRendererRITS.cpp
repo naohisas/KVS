@@ -1797,7 +1797,7 @@ void ParticleBasedRenderer::calculate_zooming_factor( const kvs::PointObject* po
 /*==========================================================================*/
 void ParticleBasedRenderer::setup_zoom_shader( const float modelview_matrix[16] )
 {
-    float projection_matrix[16]; glGetFloatv( GL_PROJECTION_MATRIX, projection_matrix );
+    float projection_matrix[16]; kvs::OpenGL::GetFloatv( GL_PROJECTION_MATRIX, projection_matrix );
     const float tan_inv = projection_matrix[5]; // (1,1)
 
     const float* mat = modelview_matrix;
