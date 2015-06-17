@@ -102,7 +102,11 @@ std::string GLSLVersion()
 /*===========================================================================*/
 std::string GLUVersion()
 {
+#if defined( GLU_VERSION )
     return ::GLUGetString( GLU_VERSION );
+#else
+    return "Unknown";
+#endif
 }
 
 /*===========================================================================*/
@@ -113,7 +117,11 @@ std::string GLUVersion()
 /*===========================================================================*/
 std::string GLEWVersion()
 {
+#if defined( GLEW_VERSION )
     return ::GLEWGetString( GLEW_VERSION );
+#else
+    return "Unknown";
+#endif
 }
 
 /*===========================================================================*/
@@ -165,7 +173,9 @@ kvs::StringList ExtensionList()
 /*===========================================================================*/
 GLenum ErrorCode()
 {
-    return glGetError();
+    GLenum error_code = GL_NO_ERROR;
+    KVS_GL_CALL( error_code = glGetError() );
+    return error_code;
 }
 
 /*===========================================================================*/
@@ -191,7 +201,8 @@ bool HasError()
 std::string ErrorString( const GLenum error_code )
 {
     std::string error_string;
-    const GLubyte* c = gluErrorString( error_code );
+    const GLubyte* c = NULL;
+    KVS_GL_CALL( c = gluErrorString( error_code ) );
     while ( *c ) error_string += *c++;
     return error_string;
 }

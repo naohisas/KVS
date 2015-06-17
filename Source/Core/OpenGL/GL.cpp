@@ -50,10 +50,10 @@ bool HasError( const char* file, const int line, const char* func, const char* c
 
     return true;
 #else
-    kvs::IgnoreUnsedVariable( file );
-    kvs::IgnoreUnsedVariable( line );
-    kvs::IgnoreUnsedVariable( func );
-    kvs::IgnoreUnsedVariable( command );
+    kvs::IgnoreUnusedVariable( file );
+    kvs::IgnoreUnusedVariable( line );
+    kvs::IgnoreUnusedVariable( func );
+    kvs::IgnoreUnusedVariable( command );
     return false;
 #endif
 }
