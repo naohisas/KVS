@@ -33,8 +33,8 @@ void BeginDraw()
     const GLint top = vp[3];
 
     kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
-    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );  glPushMatrix(); glLoadIdentity();
-    kvs::OpenGL::SetMatrixMode( GL_PROJECTION ); glPushMatrix(); glLoadIdentity();
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );  kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
+    kvs::OpenGL::SetMatrixMode( GL_PROJECTION ); kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
     kvs::OpenGL::SetOrtho( left, right, top, bottom, -1, 1 ); // The origin is upper-left.
 }
 
