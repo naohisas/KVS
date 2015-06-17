@@ -158,8 +158,8 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         const kvs::AnyValueArray& color_axis_values = table->column(2);
         m_color_map.setRange( color_axis_min_value, color_axis_max_value );
 
-        glPointSize( size );
-        glBegin( GL_POINTS );
+        KVS_GL_CALL( glPointSize( size ) );
+        KVS_GL_CALL_BEG( glBegin( GL_POINTS ) );
         const kvs::Real64 x_ratio = kvs::Real64( x1 - x0 ) / ( x_max_value - x_min_value );
         const kvs::Real64 y_ratio = kvs::Real64( y1 - y0 ) / ( y_max_value - y_min_value );
         const size_t nrows = table->numberOfRows();
