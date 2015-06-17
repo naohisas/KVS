@@ -132,6 +132,24 @@
 #define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
     ( 11 > ( major ) || ( 11 == ( major ) && 0 >= ( minor ) ) )
 
+/*----------------------------------------------------------------------------
+ * Fujitsu C/C++ compiler
+ *----------------------------------------------------------------------------*/
+#elif defined ( __FCC_VERSION )
+#define KVS_COMPILER_FCC
+
+#define KVS_COMPILER_NAME "Fujitsu C/C++"
+#define KVS_COMPILER_VERSION KVS_COMPILER_NUMBER_TO_STRING( __FCC_VERSION )
+#define KVS_COMPILER_VERSION_IS( major, minor )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor )
+
+/*----------------------------------------------------------------------------
+ * Unknown compiler
+ *----------------------------------------------------------------------------*/
+
 #else
 #define KVS_COMPILER_VERSION "unknown"
 #define KVS_COMPILER_VERSION_IS( major, minor )

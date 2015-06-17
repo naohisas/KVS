@@ -26,7 +26,9 @@
     #define KVS_ATOMIC_DECREMENT( a ) _InterlockedDecrement( &( a ) )
     #define KVS_ATOMIC_COMPARE_SWAP( a, b, c ) _InterlockedCompareExchange( &( a ), ( c ), ( b ) )
   #else
-    #error "Not Supported Compiler"
+    #define KVS_ATOMIC_INCREMENT( a ) ( ++( a ) )
+    #define KVS_ATOMIC_DECREMENT( a ) ( --( a ) )
+    #define KVS_ATOMIC_COMPARE_SWAP( a, b, c ) _kvs_non_atomic_compare_swap( &( a ), ( b ), ( c ) )
   #endif
 #else
   #define KVS_ATOMIC_INCREMENT( a ) ( ++( a ) )
