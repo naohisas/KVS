@@ -143,8 +143,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     kvs::VertexShader vert( vert_src );
     if ( !vert.compile() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "VertexShader compile failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "VertexShader compile failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << vert.log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "VertexShader compile failed" );
@@ -153,8 +153,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     kvs::FragmentShader frag( frag_src );
     if ( !frag.compile() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "FragmentShader compile failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "FragmentShader compile failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << frag.log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "FragmentShader compile failed" );
@@ -165,8 +165,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     this->attach( frag );
     if ( !this->link() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "ProgramObject link failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "ProgramObject link failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << this->log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "ProgramObject link failed" );
@@ -178,8 +178,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     kvs::VertexShader vert( vert_src );
     if ( !vert.compile() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "VertexShader compile failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "VertexShader compile failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << vert.log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "VertexShader compile failed" );
@@ -188,8 +188,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     kvs::GeometryShader geom( geom_src );
     if ( !geom.compile() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "GeometryShader compile failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "GeometryShader compile failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << geom.log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "GeometryShader compile failed" );
@@ -198,8 +198,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     kvs::FragmentShader frag( frag_src );
     if ( !frag.compile() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "FragmentShader compile failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "FragmentShader compile failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << frag.log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "FragmentShader compile failed" );
@@ -223,8 +223,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
 
     if ( !this->link() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "ProgramObject link failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "ProgramObject link failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << this->log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "ProgramObject link failed" );
@@ -530,8 +530,8 @@ void ProgramObject::create(
     kvs::VertexShader vertex_shader( vertex_source );
     if ( !vertex_shader.compile() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "VertexShader compile failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "VertexShader compile failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << vertex_shader.log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "VertexShader compile failed" );
@@ -541,8 +541,8 @@ void ProgramObject::create(
     kvs::FragmentShader fragment_shader( fragment_source );
     if ( !fragment_shader.compile() )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "FragmentShader compile failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "FragmentShader compile failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << fragment_shader.log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "FragmentShader compile failed" );
@@ -551,8 +551,8 @@ void ProgramObject::create(
     // Link the shaders.
     if ( !this->link( vertex_shader, fragment_shader ) )
     {
-        GLenum error = glGetError();
-        kvsMessageError( "ShaderProgram link failed: %s(%d)\n", gluErrorString(error), error );
+        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
+        kvsMessageError( "ShaderProgram link failed: %s\n", error.c_str() );
         std::cout << "error log:" << std::endl;
         std::cout << this->log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "ShaderProgram link failed" );
