@@ -93,6 +93,7 @@ OUTDIR := $(SOLUTION)
 GL_INCLUDE_PATH :=
 GL_LIBRARY_PATH :=
 GL_LINK_LIBRARY :=
+ifeq "$(KVS_ENABLE_OPENGL)" "1"
 ifeq "$(shell uname -s)" "Darwin"
 GL_LINK_LIBRARY += -framework OpenGL -framework Foundation
 else
@@ -104,6 +105,7 @@ GL_LINK_LIBRARY += -lGLU -lGL -lm -lpthread
 endif
 endif
 endif
+endif
 
 
 #=============================================================================
@@ -111,10 +113,13 @@ endif
 #=============================================================================
 GLEW_INCLUDE_PATH :=
 GLEW_LIBRARY_PATH :=
+GLEW_LINK_LIBRARY :=
+ifeq "$(KVS_ENABLE_OPENGL)" "1"
 GLEW_LINK_LIBRARY += -lGLEW
 ifdef KVS_GLEW_DIR
 GLEW_INCLUDE_PATH += -I$(KVS_GLEW_DIR)/include
 GLEW_LIBRARY_PATH += -L$(KVS_GLEW_DIR)/lib
+endif
 endif
 
 
