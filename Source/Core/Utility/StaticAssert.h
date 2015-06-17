@@ -16,6 +16,8 @@
   #else
     #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes )
   #endif
+#elif defined KVS_COMPILER_FCC
+  #define KVS_STATIC_ASSERT( expr, mes ) typedef char KVS_STATIC_ASSERTION_FAILURE[ ( expr ) ? 1 : -1 ]
 #else
   #error "Not Supported Compiler"
 #endif
