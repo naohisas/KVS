@@ -26,13 +26,13 @@ const kvs::Vec3 ReferenceWhite( 0.95047, 1.0, 1.08883 ); // D65
 
 kvs::Real32 f( const kvs::Real32 t )
 {
-    if ( t > 0.008856 ) { return std::pow( t, 1.0 / 3.0 ); }
+    if ( t > 0.008856 ) { return std::pow( t, 1.0f / 3.0f ); }
     else { return 7.787037 * t + 16.0 / 116.0; }
 }
 
 kvs::Real32 finv( const kvs::Real32 t )
 {
-    if ( t > 0.008856 ) { return std::pow( t, 3.0 ); }
+    if ( t > 0.008856 ) { return std::pow( t, 3.0f ); }
     else { return ( t - 16.0 / 116.0 ) / 7.787037; }
 }
 
