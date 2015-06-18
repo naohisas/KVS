@@ -64,8 +64,8 @@ int CellTreeLocator::findCell( const kvs::Vec3 p )
         while ( const CellTree::Node* n = pt.next() )
         {
             // pt.next() brings us to a series of leaves that may contain p
-            const unsigned int* begin = &(m_cell_tree->leaves[ n->start ]);
-            const unsigned int* end = begin + n->size;
+            const unsigned int* begin = &(m_cell_tree->leaves[ n->leaf.start ]);
+            const unsigned int* end = begin + n->leaf.size;
             for ( ; begin != end; ++begin )
             {
                 BaseClass::cell()->bindCell( *begin );
@@ -80,8 +80,8 @@ int CellTreeLocator::findCell( const kvs::Vec3 p )
         while ( const CellTree::Node* n = pt.next() )
         {
             // pt.next() brings us to a series of leaves that may contain p
-            const unsigned int* begin = &(this->m_cell_tree->leaves[ n->start ]);
-            const unsigned int* end = begin + n->size;
+            const unsigned int* begin = &(this->m_cell_tree->leaves[ n->leaf.start ]);
+            const unsigned int* end = begin + n->leaf.size;
             for ( ; begin != end; ++begin )
             {
                 BaseClass::cell()->bindCell( *begin );
@@ -101,8 +101,8 @@ int CellTreeLocator::findCell( const kvs::Vec3 p )
         while ( const CellTree::Node* n = pt.next() )
         {
             // pt.next() brings us to a series of leaves that may contain p
-            const unsigned int* begin = &(this->m_cell_tree->leaves[ n->start ]);
-            const unsigned int* end = begin + n->size;
+            const unsigned int* begin = &(this->m_cell_tree->leaves[ n->leaf.start ]);
+            const unsigned int* end = begin + n->leaf.size;
             for ( ; begin != end; ++begin )
             {
                 BaseClass::cell()->bindCell( *begin );

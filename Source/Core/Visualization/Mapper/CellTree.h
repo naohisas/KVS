@@ -42,10 +42,10 @@ public:
     struct Node
     {
         kvs::UInt32 index;
-        union { struct { kvs::Real32 lmax, rmin; }; struct { kvs::UInt32 size, start; }; };
+        union { struct { kvs::Real32 lmax, rmin; } node; struct { kvs::UInt32 size, start; } leaf; };
 
-        void makeNode( kvs::UInt32 left, kvs::UInt32 d, kvs::Real32 b[2] ) { index = ( d & 3 ) | ( left << 2 ); lmax = b[0]; rmin = b[1]; }
-        void makeLeaf( kvs::UInt32 st, kvs::UInt32 sz ) { index = 3; size = sz; start = st; }
+        void makeNode( kvs::UInt32 left, kvs::UInt32 d, kvs::Real32 b[2] ) { index = ( d & 3 ) | ( left << 2 ); node.lmax = b[0]; node.rmin = b[1]; }
+        void makeLeaf( kvs::UInt32 st, kvs::UInt32 sz ) { index = 3; leaf.size = sz; leaf.start = st; }
         void setChildren( kvs::UInt32 left ) { index = this->dim() | ( left << 2 ); }
         bool isNode() const { return ( index & 3 ) != 3; }
         bool isLeaf() const { return index == 3; }
@@ -85,11 +85,11 @@ public:
                 const kvs::Real32 p = m_pos[ n->dim() ]; // the value corresponding to split dim of the node
                 const kvs::UInt32 left = n->left(); // get the VECTOR STORAGE index of the left child
 
-                bool l = p <= n->lmax;
-                bool r = p > n->rmin;
+                bool l = p <= n->node.lmax;
+                bool r = p > n->node.rmin;
                 if ( l && r )
                 {
-                    if ( n->lmax - p < p - n->rmin )
+                    if ( n->node.lmax - p < p - n->node.rmin )
                     {
                         *(m_sp++) = left;
                         *(m_sp++) = left + 1;
@@ -146,11 +146,11 @@ public:
                 const kvs::Real32 p = m_pos[ n->dim() ]; // the value corresponding to split dim of the node
                 const kvs::UInt32 left = n->left(); // get the VECTOR STORAGE index of the left child
 
-                bool l = p <= n->lmax;
-                bool r = p > n->rmin;
+                bool l = p <= n->node.lmax;
+                bool r = p > n->node.rmin;
                 if ( l && r )
                 {
-                    if ( n->lmax-p < p-n->rmin )
+                    if ( n->node.lmax-p < p-n->node.rmin )
                     {
                         *(m_sp++) = left;
                         *(m_sp++) = left + 1;
@@ -221,14 +221,14 @@ public:
                 const kvs::Real32 p = m_pos[ n->dim() ]; // the value corresponding to split dim of the node
                 const kvs::UInt32 left = n->left(); // get the VECTOR STORAGE index of the left child
 
-                bool l = p <= n->lmax;
-                bool r = p > n->rmin;
+                bool l = p <= n->node.lmax;
+                bool r = p > n->node.rmin;
                 if ( l && r )
                 {
                     if ( !m_lrstack.has( *m_sp ) ) { m_lrstack.push( *m_sp ); }
                     else { continue; } // if already registered in lr_stack
 
-                    if ( n->lmax-p < p-n->rmin )
+                    if ( n->node.lmax-p < p-n->node.rmin )
                     {
                         m_sp++;
                         *(m_sp++) = left;

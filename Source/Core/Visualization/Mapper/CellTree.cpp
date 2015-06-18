@@ -151,6 +151,8 @@ public:
         m_index = 0;
         m_min[0] = m_min[1] = m_min[2] = 0.0f;
         m_max[0] = m_max[1] = m_max[2] = 0.0f;
+        m_nodes = NULL;
+        m_pc = NULL;
     }
 
     ~Splitter() {}
@@ -178,7 +180,7 @@ public:
 
     bool check()
     {
-        return ( &m_nodes != NULL );
+        return ( m_nodes != NULL );
     }
 
     void run()
@@ -189,8 +191,8 @@ public:
     void split( kvs::UInt32 index, kvs::Real32 min[3], kvs::Real32 max[3] )
     {
         std::vector<kvs::CellTree::Node>& nodes = *m_nodes;
-        kvs::UInt32 start = nodes[index].start;
-        kvs::UInt32 size  = nodes[index].size;
+        kvs::UInt32 start = nodes[index].leaf.start;
+        kvs::UInt32 size  = nodes[index].leaf.size;
 
         // if size is less than the maxium bucket size, don't do spliting any more
         if ( size < m_leafsize ) { return; }
@@ -666,11 +668,11 @@ public:
                 {
                     mask.set( nn-ct.nodes.begin() );
                     unsigned int left = ni->left();
-                    if ( m_nodes2[left].isLeaf() ) { m_nodes2[left].start += size1; }
+                    if ( m_nodes2[left].isLeaf() ) { m_nodes2[left].leaf.start += size1; }
                     *(nn++) = m_nodes2[left];
 
                     mask.set( nn-ct.nodes.begin() );
-                    if ( m_nodes2[left+1].isLeaf() ) { m_nodes2[left+1].start += size1; }
+                    if ( m_nodes2[left+1].isLeaf() ) { m_nodes2[left+1].leaf.start += size1; }
                     *(nn++) = m_nodes2[left+1];
                 }
                 ni->setChildren( nn-ct.nodes.begin()-2 );
@@ -684,8 +686,8 @@ public:
 
     void split( unsigned int index, float min[3], float max[3] )
     {
-        unsigned int start = m_nodes[index].start;
-        unsigned int size = m_nodes[index].size;
+        unsigned int start = m_nodes[index].leaf.start;
+        unsigned int size = m_nodes[index].leaf.size;
 
         if ( size < m_leafsize ) { return; } // if size is less than the maxium bucket size, don't do spliting any more
 
