@@ -45,8 +45,7 @@
 // Fujitsu C/C++ compiler
 #elif defined ( KVS_COMPILER_FCC )
 
-#pragma message("Breakpoint.h: Unknown breakpoint code.")
-#define KVS_BREAKPOINT { } // Insert breakpoint code for your CPU here.
+#define KVS_BREAKPOINT { } // Unknown
 
 // Unknown compiler
 #else
