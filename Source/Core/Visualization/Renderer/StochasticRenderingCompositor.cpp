@@ -15,7 +15,6 @@
 #include "StochasticRenderingCompositor.h"
 #include <kvs/Assert>
 #include <kvs/OpenGL>
-#include <kvs/glut/GLUT>
 #include <kvs/PaintEvent>
 #include <kvs/EventHandler>
 #include <kvs/ScreenBase>
