@@ -262,15 +262,20 @@ kvs::Vec3 GridBase::gradientVector() const
 
 kvs::UInt32 GridBase::gridIndexOf( const kvs::Vec3ui& base_index ) const
 {
-    const kvs::UInt32 line_size = m_reference_volume->numberOfNodesPerLine();
-    const kvs::UInt32 slice_size = m_reference_volume->numberOfNodesPerSlice();
-    return base_index.x() + base_index.y() * line_size + base_index.z() * slice_size;
+//    const kvs::UInt32 line_size = m_reference_volume->numberOfNodesPerLine();
+//    const kvs::UInt32 slice_size = m_reference_volume->numberOfNodesPerSlice();
+//    return base_index.x() + base_index.y() * line_size + base_index.z() * slice_size;
+    const size_t dimx = m_reference_volume->resolution().x() - 1;
+    const size_t dimy = m_reference_volume->resolution().y() - 1;
+    return base_index.x() + base_index.y() * dimx + base_index.z() * dimx * dimy;
 }
 
 kvs::Vec3ui GridBase::baseIndexOf( const kvs::UInt32 grid_index ) const
 {
-    const size_t dimx = m_reference_volume->resolution().x();
-    const size_t dimy = m_reference_volume->resolution().y();
+//    const size_t dimx = m_reference_volume->resolution().x();
+//    const size_t dimy = m_reference_volume->resolution().y();
+    const size_t dimx = m_reference_volume->resolution().x() - 1;
+    const size_t dimy = m_reference_volume->resolution().y() - 1;
     const size_t dimxy = dimx * dimy;
     const size_t i = grid_index % dimxy % dimx;
     const size_t j = grid_index % dimxy / dimx;
