@@ -111,7 +111,7 @@ public:
     {
         return this->localToGlobal( local );
     }
-    KVS_DEPRECATED( kvs::Real32 averageScalar() const )
+    KVS_DEPRECATED( kvs::Real32 averagedScalar() const )
     {
         const size_t nnodes = this->numberOfCellNodes();;
         const kvs::Real32* S = this->values();
