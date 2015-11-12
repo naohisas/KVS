@@ -63,7 +63,7 @@ kvs::ValueArray<kvs::UInt16> RandomIndices( const kvs::UnstructuredVolumeObject*
     kvs::ValueArray<kvs::UInt16> indices( nnodes * 2 );
     for ( size_t i = 0; i < nnodes; i++ )
     {
-        const unsigned int count = i * ::RandomNumber();
+        const unsigned int count = i * RandomNumber();
         indices[ 2 * i + 0 ] = static_cast<kvs::UInt16>( ( count ) % size );
         indices[ 2 * i + 1 ] = static_cast<kvs::UInt16>( ( count / size ) % size );
     }
