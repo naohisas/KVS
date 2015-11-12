@@ -12,7 +12,9 @@
  *  $Id: WriteVCProjectCUDA.cpp 1416 2013-02-15 10:59:48Z s.yamada0808@gmail.com $
  */
 /****************************************************************************/
+#include <kvs/Compiler>
 #if defined ( KVS_COMPILER_VC )
+
 #include "WriteVCProjectCUDA.h"
 #include <string>
 #include <fstream>

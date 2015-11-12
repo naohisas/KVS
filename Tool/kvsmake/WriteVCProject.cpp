@@ -12,7 +12,9 @@
  *  $Id: WriteVCProject.cpp 1498 2013-04-04 07:30:41Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
+#include <kvs/Compiler>
 #if defined ( KVS_COMPILER_VC )
+
 #include "WriteVCProject.h"
 #include <string>
 #include <fstream>

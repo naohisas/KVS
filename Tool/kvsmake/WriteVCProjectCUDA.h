@@ -15,7 +15,9 @@
 #ifndef KVSMAKE__WRITE_VC_PROJECT_CUDA_H_INCLUDE
 #define KVSMAKE__WRITE_VC_PROJECT_CUDA_H_INCLUDE
 
+#include <kvs/Compiler>
 #if defined ( KVS_COMPILER_VC )
+
 #include <string>
 
 
