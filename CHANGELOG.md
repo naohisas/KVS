@@ -1,4 +1,69 @@
 ## Changes
+
+**Version 2.5.0 Released** (2015.11.1x)
++ Add new classes and functions
+ + kvs::MarchingPrism
+ + kvs::GridBase
+ + kvs::UniformGrid
+ + kvs::RectilinearGrid
+ + kvs::XYZColor
+ + kvs::LabColor
+ + kvs::MshColor
+ + kvs::DivergingColorMap
+ + kvs::InverseDistanceWeighting
+ + kvs::UnstructuredGradient
+ + kvs::UnstructuredQCriterion
++ Fixed problem
+ + kvs::qt::ScreenBase
+ + kvs::TableObject
+ + kvs::ImageObject
+ + kvs::PolygonObject
+ + kvs::UnstructuredVolumeExporter
++ Modified methods in kvs::Csv class
+ + numberOfRows() -> (add)
+ + nrows() -> (deprecated, use numberOfRows())
++ Modified methods in kvs::RGBColor class
+ + Mix() (static) -> (add)
+ + toVec3i() -> (add)
+ + toHSVColor -> (add)
+ + toXYZColor -> (add)
+ + red() -> (deprecated, use r())
+ + green() -> (deprecated, use g())
+ + blue() -> (deprecated, use b())
++ Modified methods in kvs::HSVColor class
+ + Mix() (static) -> (add)
+ + toRGBColor() -> (add)
+ + hue() -> (deprecated, use h())
+ + saturation() -> (deprecated, use s())
+ + value() -> (deprecated, use v())
+ + intensity() -> (deprecated, use v())
++ Modified methods in kvs::StreamlineBase class
+ + BothDirections (enum) -> (removed)
+ + integrationMethod() -> (add)
+ + integrationDirection() -> (add)
+ + integrationInterval() -> (add)
++ Modified methods in kvs::CellBase class
+ + m_vertices -> m_coords
+ + m_scalars -> m_values
+ + vertices() -> coords() (deprecated)
+ + scalars() -> values() (deprecated)
+ + m_global_point -> (removed)
+ + setGlobalPoint() -> (removed)
+ + globalPoint() -> (add)
+ + transformLocalToGlobal() -> localToGlobal() (deprecated)
+ + transformGlobalToLocal() -> globalToLocal() (deprecated)
+ + center() -> (add)
+ + contains() -> (add)
+ + containsLocalPoint() -> (add)
+ + averagedScalar -> (deprecated)
+ + gradient -> (deprecated)
+ + gradientVector -> (add)
+ + gradientTensor -> (add)
+ + localCenter() -> (add)
++ Modified methods in kvs::XXXCell class
+ + NumberOfNodes -> (removed)
+ + referenceVolume() -> (add)
+
 **Version 2.4.0 Released** (2014-10-10)
 + Add new classes and functions
  + kvs::PrismaticCell
