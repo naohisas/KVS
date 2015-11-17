@@ -13,13 +13,14 @@ Kyoto Visualization System (KVS) is a multi-platform, open-source C++ library fo
 
 ## Settings
 
-### Windows
++ Windows
+
 |Variable|Value|
 |:-------|:----|
 |KVS_DIR |C:\Program Files\kvs|
 |PATH|%PATH%;%KVS_DIR%\bin|
 
-### Linux and Mac OS X
++ Linux and Mac OS X
 ```
 export KVS_DIR=/usr/local/kvs
 export PATH=$KVS_DIR/bin:$PATH
@@ -27,13 +28,13 @@ export PATH=$KVS_DIR/bin:$PATH
 
 ## Build and install
 
-### Windows
++ Windows
 ```
 nmake
 nmake install
 ```
 
-### Linux and Mac OS X
++ Linux and Mac OS X
 ```
 make
 make install
