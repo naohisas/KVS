@@ -20,6 +20,7 @@
 #include <iostream>
 #include <kvs/FileFormatBase>
 #include <kvs/Indent>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -52,7 +53,7 @@ public:
     Csv();
     Csv( const std::string& filename );
 
-    size_t nrows() const;
+    size_t numberOfRows() const;
     const Row& row( const size_t index ) const;
     const std::string& value( const size_t i, const size_t j ) const;
     void addRow( const Row& row );
@@ -62,6 +63,9 @@ public:
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     bool read( const std::string& filename );
     bool write( const std::string& filename );
+
+public:
+    KVS_DEPRECATED( size_t nrows() const ) { return this->numberOfRows(); }
 };
 
 } // end of namespace kvs

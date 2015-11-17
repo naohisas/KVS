@@ -26,24 +26,24 @@ namespace
 
 void BeginDraw()
 {
-    GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
+    GLint vp[4]; kvs::OpenGL::GetIntegerv( GL_VIEWPORT, vp );
     const GLint left = vp[0];
     const GLint bottom = vp[1];
     const GLint right = vp[2];
     const GLint top = vp[3];
 
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
-    glMatrixMode( GL_MODELVIEW );  glPushMatrix(); glLoadIdentity();
-    glMatrixMode( GL_PROJECTION ); glPushMatrix(); glLoadIdentity();
-    glOrtho( left, right, top, bottom, -1, 1 ); // The origin is upper-left.
+    kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );  kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
+    kvs::OpenGL::SetMatrixMode( GL_PROJECTION ); kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
+    kvs::OpenGL::SetOrtho( left, right, top, bottom, -1, 1 ); // The origin is upper-left.
 }
 
 void EndDraw()
 {
-    glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
-    glPopMatrix();
-    glPopAttrib();
+    kvs::OpenGL::PopMatrix();
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
+    kvs::OpenGL::PopMatrix();
+    kvs::OpenGL::PopAttrib();
 }
 
 } // end of namespace
@@ -88,15 +88,15 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
 
     BaseClass::startTimer();
 
-    glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
 
     ::BeginDraw();
 
-    glDisable( GL_LIGHTING );
-    glEnable( GL_POINT_SMOOTH );
+    kvs::OpenGL::Disable( GL_LIGHTING );
+    kvs::OpenGL::Enable( GL_POINT_SMOOTH );
 
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     // X and Y values.
     const kvs::AnyValueArray& x_values = table->column(0);
@@ -118,13 +118,13 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         const GLubyte g = static_cast<GLubyte>( m_background_color.g() );
         const GLubyte b = static_cast<GLubyte>( m_background_color.b() );
         const GLubyte a = static_cast<GLubyte>( m_background_color.a() * 255.0f );
-        glBegin( GL_QUADS );
-        glColor4ub( r, g, b, a );
-        glVertex2i( x0, y0 );
-        glVertex2i( x1, y0 );
-        glVertex2i( x1, y1 );
-        glVertex2i( x0, y1 );
-        glEnd();
+        KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+        KVS_GL_CALL_VER( glColor4ub( r, g, b, a ) );
+        KVS_GL_CALL_VER( glVertex2i( x0, y0 ) );
+        KVS_GL_CALL_VER( glVertex2i( x1, y0 ) );
+        KVS_GL_CALL_VER( glVertex2i( x1, y1 ) );
+        KVS_GL_CALL_VER( glVertex2i( x0, y1 ) );
+        KVS_GL_CALL_END( glEnd() );
     }
 
     const kvs::UInt8 opacity = m_point_opacity;
@@ -133,9 +133,9 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
     {
         const kvs::RGBColor color = m_point_color;
 
-        glPointSize( size );
-        glBegin( GL_POINTS );
-        glColor4ub( color.r(), color.g(), color.b(), opacity );
+        KVS_GL_CALL( glPointSize( size ) );
+        KVS_GL_CALL_BEG( glBegin( GL_POINTS ) );
+        KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), opacity ) );
         const kvs::Real64 x_ratio = kvs::Real64( x1 - x0 ) / ( x_max_value - x_min_value );
         const kvs::Real64 y_ratio = kvs::Real64( y1 - y0 ) / ( y_max_value - y_min_value );
         const size_t nrows = table->numberOfRows();
@@ -147,9 +147,9 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
             const kvs::Real64 y_value = y_values[i].to<kvs::Real64>();
             const double x = x0 + ( x_value - x_min_value ) * x_ratio;
             const double y = y1 - ( y_value - y_min_value ) * y_ratio;
-            glVertex2d( x, y );
+            KVS_GL_CALL_VER( glVertex2d( x, y ) );
         }
-        glEnd();
+        KVS_GL_CALL_END( glEnd() );
     }
     else
     {
@@ -158,8 +158,8 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         const kvs::AnyValueArray& color_axis_values = table->column(2);
         m_color_map.setRange( color_axis_min_value, color_axis_max_value );
 
-        glPointSize( size );
-        glBegin( GL_POINTS );
+        KVS_GL_CALL( glPointSize( size ) );
+        KVS_GL_CALL_BEG( glBegin( GL_POINTS ) );
         const kvs::Real64 x_ratio = kvs::Real64( x1 - x0 ) / ( x_max_value - x_min_value );
         const kvs::Real64 y_ratio = kvs::Real64( y1 - y0 ) / ( y_max_value - y_min_value );
         const size_t nrows = table->numberOfRows();
@@ -169,20 +169,18 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
 
             const kvs::Real64 color_value = color_axis_values[i].to<kvs::Real64>();
             const kvs::RGBColor color = m_color_map.at( static_cast<float>( color_value) );
-            glColor4ub( color.r(), color.g(), color.b(), opacity );
+            KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), opacity ) );
 
             const kvs::Real64 x_value = x_values[i].to<kvs::Real64>();
             const kvs::Real64 y_value = y_values[i].to<kvs::Real64>();
             const double x = x0 + ( x_value - x_min_value ) * x_ratio;
             const double y = y1 - ( y_value - y_min_value ) * y_ratio;
-            glVertex2d( x, y );
+            KVS_GL_CALL_VER( glVertex2d( x, y ) );
         }
-        glEnd();
+        KVS_GL_CALL_END( glEnd() );
     }
 
     ::EndDraw();
-
-    glPopAttrib();
 
     BaseClass::stopTimer();
 }

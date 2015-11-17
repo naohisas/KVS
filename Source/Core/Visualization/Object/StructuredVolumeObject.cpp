@@ -237,7 +237,8 @@ std::ostream& operator << ( std::ostream& os, const StructuredVolumeObject& obje
     // @TODO Cannot instance the object that is a abstract class here (error:C2259).
 #endif
 #else
-    os << static_cast<const kvs::VolumeObjectBase&>( object ) << std::endl;
+//    os << static_cast<const kvs::VolumeObjectBase&>( object ) << std::endl;
+    static_cast<const kvs::VolumeObjectBase&>( object ).print( os );
 #endif
     os << "Grid type:  " << ::GetGridTypeName( object.gridType() ) << std::endl;
     os << "Resolution:  " << object.resolution() << std::endl;

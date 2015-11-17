@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Bmp.h
+ *  @file   Bmp.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -57,22 +58,22 @@ public:
 
 public:
 
-    Bmp();
+    Bmp() {}
     Bmp( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& pixels );
     Bmp( const std::string& filename );
 
-    const Bmp::FileHeader& fileHeader() const;
-    const Bmp::InfoHeader& infoHeader() const;
-    size_t width() const;
-    size_t height() const;
-    size_t bitsPerPixel() const;
-    const kvs::ValueArray<kvs::UInt8>& pixels() const;
+    const Bmp::FileHeader& fileHeader() const { return m_file_header; }
+    const Bmp::InfoHeader& infoHeader() const { return m_info_header; }
+    size_t width() const { return m_width; }
+    size_t height() const { return m_height; }
+    size_t bitsPerPixel() const { return m_bpp; }
+    const kvs::ValueArray<kvs::UInt8>& pixels() const { return m_pixels; }
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     bool read( const std::string& filename );
     bool write( const std::string& filename );
 
-protected:
+private:
 
     void set_header();
     void skip_header_and_pallete( std::ifstream& ifs );

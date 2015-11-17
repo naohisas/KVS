@@ -242,7 +242,8 @@ std::ostream& operator << ( std::ostream& os, const kvs::GeometryObjectBase& obj
     // @TODO Cannot instance the object that is a abstract class here (error:C2259).
 #endif
 #else
-    os << static_cast<const kvs::ObjectBase&>( object ) << std::endl;
+//    os << static_cast<const kvs::ObjectBase&>( object ) << std::endl;
+    static_cast<const kvs::ObjectBase&>( object ).print( os );
 #endif
     os << "Number of vertices:  " << object.numberOfVertices() << std::endl;
     os << "Number of colors:  " << object.numberOfColors() << std::endl;

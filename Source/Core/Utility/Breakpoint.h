@@ -42,6 +42,11 @@
 #define KVS_BREAKPOINT { } // Insert breakpoint code for your CPU here.
 #endif
 
+// Fujitsu C/C++ compiler
+#elif defined ( KVS_COMPILER_FCC )
+
+#define KVS_BREAKPOINT { } // Unknown
+
 // Unknown compiler
 #else
 #error Unknown compiler. KVS supports GNU C++ compiler and

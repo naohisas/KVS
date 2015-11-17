@@ -86,12 +86,12 @@ void ImageRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
             p2.loadIdentity();
             {
                 kvs::OpenGL::SetOrtho( m_left, m_right, m_bottom, m_top, -1, 1 );
-                glBegin( GL_QUADS );
-                glTexCoord2f( 0.0, 0.0 ); glVertex2f(  0.0,  1.0 );
-                glTexCoord2f( 0.0, 1.0 ); glVertex2f(  0.0,  0.0 );
-                glTexCoord2f( 1.0, 1.0 ); glVertex2f(  1.0,  0.0 );
-                glTexCoord2f( 1.0, 0.0 ); glVertex2f(  1.0,  1.0 );
-                glEnd();
+                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  1.0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  0.0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  0.0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  1.0 ) );
+                KVS_GL_CALL_END( glEnd() );
             }
         }
     }

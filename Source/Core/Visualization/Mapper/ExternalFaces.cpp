@@ -700,17 +700,17 @@ void CalculateFaces(
 
         GetColorIndices<3>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
         // c0
-        *( color++ ) = cmap[ color_level[0] ].red();
-        *( color++ ) = cmap[ color_level[0] ].green();
-        *( color++ ) = cmap[ color_level[0] ].blue();
+        *( color++ ) = cmap[ color_level[0] ].r();
+        *( color++ ) = cmap[ color_level[0] ].g();
+        *( color++ ) = cmap[ color_level[0] ].b();
         // c1
-        *( color++ ) = cmap[ color_level[1] ].red();
-        *( color++ ) = cmap[ color_level[1] ].green();
-        *( color++ ) = cmap[ color_level[1] ].blue();
+        *( color++ ) = cmap[ color_level[1] ].r();
+        *( color++ ) = cmap[ color_level[1] ].g();
+        *( color++ ) = cmap[ color_level[1] ].b();
         // c2
-        *( color++ ) = cmap[ color_level[2] ].red();
-        *( color++ ) = cmap[ color_level[2] ].green();
-        *( color++ ) = cmap[ color_level[2] ].blue();
+        *( color++ ) = cmap[ color_level[2] ].r();
+        *( color++ ) = cmap[ color_level[2] ].g();
+        *( color++ ) = cmap[ color_level[2] ].b();
 
         const kvs::Vector3f n( ( v1 - v0 ).cross( v2 - v0 ) );
         // n0
@@ -795,21 +795,21 @@ void CalculateFaces(
 
         GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
         // c0
-        *( color++ ) = cmap[ color_level[0] ].red();
-        *( color++ ) = cmap[ color_level[0] ].green();
-        *( color++ ) = cmap[ color_level[0] ].blue();
+        *( color++ ) = cmap[ color_level[0] ].r();
+        *( color++ ) = cmap[ color_level[0] ].g();
+        *( color++ ) = cmap[ color_level[0] ].b();
         // c1
-        *( color++ ) = cmap[ color_level[1] ].red();
-        *( color++ ) = cmap[ color_level[1] ].green();
-        *( color++ ) = cmap[ color_level[1] ].blue();
+        *( color++ ) = cmap[ color_level[1] ].r();
+        *( color++ ) = cmap[ color_level[1] ].g();
+        *( color++ ) = cmap[ color_level[1] ].b();
         // c2
-        *( color++ ) = cmap[ color_level[2] ].red();
-        *( color++ ) = cmap[ color_level[2] ].green();
-        *( color++ ) = cmap[ color_level[2] ].blue();
+        *( color++ ) = cmap[ color_level[2] ].r();
+        *( color++ ) = cmap[ color_level[2] ].g();
+        *( color++ ) = cmap[ color_level[2] ].b();
         // c3
-        *( color++ ) = cmap[ color_level[3] ].red();
-        *( color++ ) = cmap[ color_level[3] ].green();
-        *( color++ ) = cmap[ color_level[3] ].blue();
+        *( color++ ) = cmap[ color_level[3] ].r();
+        *( color++ ) = cmap[ color_level[3] ].g();
+        *( color++ ) = cmap[ color_level[3] ].b();
 
         const kvs::Vector3f n( ( v1 - v0 ).cross( v2 - v0 ) );
         // n0
@@ -1518,21 +1518,21 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 node_index[3] = node_index[0] + nnodes_per_line;
                 ::GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
                 // v3
-                *( color++ ) = cmap[ color_level[3] ].red();
-                *( color++ ) = cmap[ color_level[3] ].green();
-                *( color++ ) = cmap[ color_level[3] ].blue();
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
                 // v2
-                *( color++ ) = cmap[ color_level[2] ].red();
-                *( color++ ) = cmap[ color_level[2] ].green();
-                *( color++ ) = cmap[ color_level[2] ].blue();
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v1
-                *( color++ ) = cmap[ color_level[1] ].red();
-                *( color++ ) = cmap[ color_level[1] ].green();
-                *( color++ ) = cmap[ color_level[1] ].blue();
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v0
-                *( color++ ) = cmap[ color_level[0] ].red();
-                *( color++ ) = cmap[ color_level[0] ].green();
-                *( color++ ) = cmap[ color_level[0] ].blue();
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
             }
         }
     }
@@ -1551,21 +1551,21 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 node_index[3] = node_index[0] + nnodes_per_line;
                 ::GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
                 // v0
-                *( color++ ) = cmap[ color_level[0] ].red();
-                *( color++ ) = cmap[ color_level[0] ].green();
-                *( color++ ) = cmap[ color_level[0] ].blue();
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
                 // v1
-                *( color++ ) = cmap[ color_level[1] ].red();
-                *( color++ ) = cmap[ color_level[1] ].green();
-                *( color++ ) = cmap[ color_level[1] ].blue();
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v2
-                *( color++ ) = cmap[ color_level[2] ].red();
-                *( color++ ) = cmap[ color_level[2] ].green();
-                *( color++ ) = cmap[ color_level[2] ].blue();
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v3
-                *( color++ ) = cmap[ color_level[3] ].red();
-                *( color++ ) = cmap[ color_level[3] ].green();
-                *( color++ ) = cmap[ color_level[3] ].blue();
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
             }
         }
     }
@@ -1584,21 +1584,21 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 node_index[3] = node_index[0] + nnodes_per_line;
                 ::GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
                 // v0
-                *( color++ ) = cmap[ color_level[0] ].red();
-                *( color++ ) = cmap[ color_level[0] ].green();
-                *( color++ ) = cmap[ color_level[0] ].blue();
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
                 // v1
-                *( color++ ) = cmap[ color_level[1] ].red();
-                *( color++ ) = cmap[ color_level[1] ].green();
-                *( color++ ) = cmap[ color_level[1] ].blue();
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v2
-                *( color++ ) = cmap[ color_level[2] ].red();
-                *( color++ ) = cmap[ color_level[2] ].green();
-                *( color++ ) = cmap[ color_level[2] ].blue();
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v3
-                *( color++ ) = cmap[ color_level[3] ].red();
-                *( color++ ) = cmap[ color_level[3] ].green();
-                *( color++ ) = cmap[ color_level[3] ].blue();
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
             }
         }
     }
@@ -1617,21 +1617,21 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 node_index[3] = node_index[0] + nnodes_per_line;
                 ::GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
                 // v3
-                *( color++ ) = cmap[ color_level[3] ].red();
-                *( color++ ) = cmap[ color_level[3] ].green();
-                *( color++ ) = cmap[ color_level[3] ].blue();
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
                 // v2
-                *( color++ ) = cmap[ color_level[2] ].red();
-                *( color++ ) = cmap[ color_level[2] ].green();
-                *( color++ ) = cmap[ color_level[2] ].blue();
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v1
-                *( color++ ) = cmap[ color_level[1] ].red();
-                *( color++ ) = cmap[ color_level[1] ].green();
-                *( color++ ) = cmap[ color_level[1] ].blue();
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v0
-                *( color++ ) = cmap[ color_level[0] ].red();
-                *( color++ ) = cmap[ color_level[0] ].green();
-                *( color++ ) = cmap[ color_level[0] ].blue();
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
             }
         }
     }
@@ -1650,21 +1650,21 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 node_index[3] = node_index[0] + nnodes_per_slice;
                 ::GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
                 // v0
-                *( color++ ) = cmap[ color_level[0] ].red();
-                *( color++ ) = cmap[ color_level[0] ].green();
-                *( color++ ) = cmap[ color_level[0] ].blue();
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
                 // v1
-                *( color++ ) = cmap[ color_level[1] ].red();
-                *( color++ ) = cmap[ color_level[1] ].green();
-                *( color++ ) = cmap[ color_level[1] ].blue();
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v2
-                *( color++ ) = cmap[ color_level[2] ].red();
-                *( color++ ) = cmap[ color_level[2] ].green();
-                *( color++ ) = cmap[ color_level[2] ].blue();
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v3
-                *( color++ ) = cmap[ color_level[3] ].red();
-                *( color++ ) = cmap[ color_level[3] ].green();
-                *( color++ ) = cmap[ color_level[3] ].blue();
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
             }
         }
     }
@@ -1683,21 +1683,21 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 node_index[3] = node_index[0] + nnodes_per_slice;
                 ::GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
                 // v3
-                *( color++ ) = cmap[ color_level[3] ].red();
-                *( color++ ) = cmap[ color_level[3] ].green();
-                *( color++ ) = cmap[ color_level[3] ].blue();
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
                 // v2
-                *( color++ ) = cmap[ color_level[2] ].red();
-                *( color++ ) = cmap[ color_level[2] ].green();
-                *( color++ ) = cmap[ color_level[2] ].blue();
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v1
-                *( color++ ) = cmap[ color_level[1] ].red();
-                *( color++ ) = cmap[ color_level[1] ].green();
-                *( color++ ) = cmap[ color_level[1] ].blue();
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v0
-                *( color++ ) = cmap[ color_level[0] ].red();
-                *( color++ ) = cmap[ color_level[0] ].green();
-                *( color++ ) = cmap[ color_level[0] ].blue();
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
             }
         }
     }

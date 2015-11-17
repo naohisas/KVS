@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   TransferFunction.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -16,6 +17,7 @@
 #include <kvs/TransferFunction>
 #include <kvs/Texture1D>
 #include <kvs/Texture2D>
+#include <kvs/OpenGL>
 #include <kvs/InitializeEventListener>
 #include <kvs/PaintEventListener>
 #include <kvs/glut/Application>
@@ -38,10 +40,10 @@ namespace TransferFunction
 struct Parameters
 {
     kvs::TransferFunction transfer_function; ///< transfer function
-    kvs::Texture1D        color_map_texture; ///< color map texture
-    kvs::Texture2D        checkerboard_texture; ///< checkerboard texture
-    bool                  has_color_map_option; ///< check flag for color map
-    bool                  has_opacity_map_option; ///< check flag for opacity map
+    kvs::Texture1D color_map_texture; ///< color map texture
+    kvs::Texture2D checkerboard_texture; ///< checkerboard texture
+    bool has_color_map_option; ///< check flag for color map
+    bool has_opacity_map_option; ///< check flag for opacity map
 
     Parameters( Argument& arg )
     {
@@ -49,51 +51,38 @@ struct Parameters
         has_opacity_map_option = arg.hasOpacityMapOption();
     }
 
-    void initializeColorMapTexture( void )
+    void initializeColorMapTexture()
     {
         const size_t nchannels  = 4; // rgba
         const size_t width = transfer_function.colorMap().resolution();
         const kvs::UInt8* color_map = transfer_function.colorMap().table().data();
         const kvs::Real32* opacity_map = transfer_function.opacityMap().table().data();
 
-        GLubyte* data = new GLubyte [ width * nchannels ];
-        if ( !data )
-        {
-            kvsMessageError("Cannot allocate for the color map texture.");
-            return;
-        }
-
+        kvs::ValueArray<GLubyte> data( width * nchannels );
+        GLubyte* pdata = data.data();
         for ( size_t i = 0, i3 = 0; i < width; i++, i3 += 3 )
         {
-            *(data++) = static_cast<GLubyte>(color_map[i3]);
-            *(data++) = static_cast<GLubyte>(color_map[i3+1]);
-            *(data++) = static_cast<GLubyte>(color_map[i3+2]);
-            *(data++) = static_cast<GLubyte>(int(opacity_map[i] * 255.0f + 0.5));
+            *(pdata++) = static_cast<GLubyte>(color_map[i3]);
+            *(pdata++) = static_cast<GLubyte>(color_map[i3+1]);
+            *(pdata++) = static_cast<GLubyte>(color_map[i3+2]);
+            *(pdata++) = static_cast<GLubyte>(int(opacity_map[i] * 255.0f + 0.5));
         }
-        data -= width * nchannels;
 
         color_map_texture.setPixelFormat( nchannels, sizeof( kvs::UInt8 ) );
+        color_map_texture.setWrapS( GL_CLAMP_TO_EDGE );
         color_map_texture.setMinFilter( GL_LINEAR );
         color_map_texture.setMagFilter( GL_LINEAR );
-        color_map_texture.create( width );
-        color_map_texture.load( width, data );
-
-        delete [] data;
+        color_map_texture.create( width, data.data() );
     }
 
-    void initializeCheckerboardTexture( void )
+    void initializeCheckerboardTexture()
     {
         const size_t nchannels = 3;
         const int width = 32;
         const int height = 32;
 
-        GLubyte* data = new GLubyte [ width * height * nchannels ];
-        if ( !data )
-        {
-            kvsMessageError("Cannot allocate for the checkerboard texture.");
-            return;
-        }
-
+        kvs::ValueArray<GLubyte> data( width * height * nchannels );
+        GLubyte* pdata = data.data();
         const int c1 = 255; // checkerboard color (gray value) 1
         const int c2 = 230; // checkerboard color (gray value) 2
         for ( int i = 0; i < height; i++ )
@@ -102,22 +91,18 @@ struct Parameters
             {
                 int c = ((((i&0x8)==0)^((j&0x8)==0))) * c1;
                 c = ( c == 0 ) ? c2 : c;
-                *(data++) = static_cast<GLubyte>(c);
-                *(data++) = static_cast<GLubyte>(c);
-                *(data++) = static_cast<GLubyte>(c);
+                *(pdata++) = static_cast<GLubyte>(c);
+                *(pdata++) = static_cast<GLubyte>(c);
+                *(pdata++) = static_cast<GLubyte>(c);
             }
         }
-        data -= width * height * nchannels;
 
         checkerboard_texture.setPixelFormat( nchannels, sizeof( kvs::UInt8 ) );
         checkerboard_texture.setMinFilter( GL_NEAREST );
         checkerboard_texture.setMagFilter( GL_NEAREST );
         checkerboard_texture.setWrapS( GL_REPEAT );
         checkerboard_texture.setWrapT( GL_REPEAT );
-        checkerboard_texture.create( width, height );
-        checkerboard_texture.load( width, height, data );
-
-        delete [] data;
+        checkerboard_texture.create( width, height, data.data() );
     }
 };
 
@@ -137,7 +122,7 @@ public:
     InitializeEvent( kvsview::TransferFunction::Parameters* parameters ):
         m_parameters( parameters ) {}
 
-    void update( void )
+    void update()
     {
         m_parameters->initializeColorMapTexture();
         m_parameters->initializeCheckerboardTexture();
@@ -160,38 +145,31 @@ public:
     PaintEvent( kvsview::TransferFunction::Parameters* parameters ):
         m_parameters( parameters ) {}
 
-    void update( void )
+    void update()
     {
         kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
+        glut_screen->setBackgroundColor( kvs::RGBColor::White() );
 
-        const kvs::RGBColor white( 255, 255, 255 );
-        glut_screen->scene()->background()->setColor( white );
+        kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
+        kvs::OpenGL::Disable( GL_LIGHTING );
+        kvs::OpenGL::Disable( GL_DEPTH_TEST );
+        kvs::OpenGL::Enable( GL_BLEND );
 
-        int vp[4]; glGetIntegerv( GL_VIEWPORT, (GLint*)vp );
+        GLint vp[4]; kvs::OpenGL::GetViewport( vp );
         const int left = vp[0];
         const int bottom = vp[1];
         const int right = vp[2];
         const int top = vp[3];
 
-        glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
-
-        glDisable( GL_LIGHTING );
-        glDisable( GL_DEPTH_TEST );
-        glEnable( GL_BLEND );
-
-        glMatrixMode( GL_MODELVIEW );
-        glPushMatrix();
+        kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
+        p1.loadIdentity();
         {
-            glLoadIdentity();
-
-            glMatrixMode( GL_PROJECTION );
-            glPushMatrix();
+            kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
+            p2.loadIdentity();
             {
-                glLoadIdentity();
-
                 const float front = 0.0f;
                 const float back = 2000.0f;
-                glOrtho( left, right, bottom, top, front, back );
+                kvs::OpenGL::SetOrtho( left, right, bottom, top, front, back );
 
                 const bool has_color_map_option = m_parameters->has_color_map_option;
                 const bool has_opacity_map_option = m_parameters->has_opacity_map_option;
@@ -213,12 +191,7 @@ public:
                     this->draw_color_map_texture( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
                 }
             }
-            glPopMatrix();
-            glMatrixMode( GL_MODELVIEW );
         }
-        glPopMatrix();
-
-        glPopAttrib();
     }
 
 private:
@@ -228,9 +201,9 @@ private:
         // Since the checkerboard is background, GL_ONE and GL_ZERO are always specified
         // for src_factor and dst_factor, rescpectively.
 
-        glDisable( GL_TEXTURE_1D );
-        glEnable( GL_TEXTURE_2D );
-        glBlendFunc( src_factor, dst_factor );
+        kvs::OpenGL::Disable( GL_TEXTURE_1D );
+        kvs::OpenGL::Enable( GL_TEXTURE_2D );
+        kvs::OpenGL::SetBlendFunc( src_factor, dst_factor );
         m_parameters->checkerboard_texture.bind();
         {
             const float scale = 0.6f;
@@ -243,9 +216,9 @@ private:
 
     void draw_color_map_texture( const GLenum src_factor, const GLenum dst_factor )
     {
-        glEnable( GL_TEXTURE_1D );
-        glDisable( GL_TEXTURE_2D );
-        glBlendFunc( src_factor, dst_factor );
+        kvs::OpenGL::Enable( GL_TEXTURE_1D );
+        kvs::OpenGL::Disable( GL_TEXTURE_2D );
+        kvs::OpenGL::SetBlendFunc( src_factor, dst_factor );
         m_parameters->color_map_texture.bind();
         {
             const float texture_width = 1.0f;
@@ -295,9 +268,9 @@ Argument::Argument( int argc, char** argv ):
  *  @return true, if the color map option is specified
  */
 /*===========================================================================*/
-const bool Argument::hasColorMapOption( void )
+const bool Argument::hasColorMapOption()
 {
-    return( this->hasOption("c") );
+    return this->hasOption("c");
 }
 
 /*===========================================================================*/
@@ -306,9 +279,9 @@ const bool Argument::hasColorMapOption( void )
  *  @return true, if the opacity map option is specified
  */
 /*===========================================================================*/
-const bool Argument::hasOpacityMapOption( void )
+const bool Argument::hasOpacityMapOption()
 {
-    return( this->hasOption("a") );
+    return this->hasOption("a");
 }
 
 /*===========================================================================*/
@@ -329,7 +302,7 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+const bool Main::exec()
 {
     // Setup GLUT viewer application.
     kvs::glut::Application app( m_argc, m_argv );
@@ -341,7 +314,7 @@ const bool Main::exec( void )
 
     // Parameters.
     kvsview::TransferFunction::Parameters params( arg );
-    if ( !params.transfer_function.read( m_input_name ) ) exit( EXIT_FAILURE );
+    if ( !params.transfer_function.read( m_input_name ) ) { exit( EXIT_FAILURE ); }
 
     // Verbose information.
     if ( arg.verboseMode() )
@@ -358,11 +331,11 @@ const bool Main::exec( void )
     kvs::glut::Screen screen( &app );
     screen.addEvent( &initialize_event );
     screen.addEvent( &paint_event );
-    screen.setGeometry( 0, 0, 512, 150 );
+    screen.setGeometry( 0, 0, 512, 100 );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::TransferFunction::CommandName );
     screen.show();
 
-    return( arg.clear(), app.run() );
+    return arg.clear(), app.run();
 }
 
 } // end of namespace TransferFunction

@@ -31,6 +31,8 @@
 #    endif
 #elif defined ( KVS_COMPILER_GCC )
 #    define KVS_MACRO_FUNC __PRETTY_FUNCTION__
+#elif defined ( KVS_COMPILER_FCC )
+#    define KVS_MACRO_FUNC "unknown"
 #else
 #    define KVS_MACRO_FUNC __func__
 #endif
@@ -43,7 +45,7 @@
         __pragma( warning( disable: 4127 ) )        \
         } while ( false )                           \
         __pragma( warning( pop ) )
-#elif defined ( KVS_COMPILER_GCC )
+#else
 #    define KVS_MACRO_MULTI_STATEMENT_END } while ( false )
 #endif
 

@@ -12,8 +12,7 @@
  *  $Id: CellByCellMetropolisSampling.h 1792 2014-07-31 04:50:42Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__CELL_BY_CELL_METROPOLIS_SAMPLING_H_INCLUDE
-#define KVS__CELL_BY_CELL_METROPOLIS_SAMPLING_H_INCLUDE
+#pragma once
 
 #include <kvs/MapperBase>
 #include <kvs/Camera>
@@ -22,7 +21,6 @@
 #include <kvs/StructuredVolumeObject>
 #include <kvs/UnstructuredVolumeObject>
 #include <kvs/Module>
-#include "CellByCellParticleGenerator.h"
 
 
 namespace kvs
@@ -45,7 +43,6 @@ private:
     size_t m_subpixel_level; ///< subpixel level
     float m_sampling_step; ///< sampling step in the object coordinate
     float m_object_depth; ///< object depth
-    kvs::ValueArray<float> m_density_map; ///< density map
 
 public:
 
@@ -63,27 +60,25 @@ public:
         const float sampling_step,
         const kvs::TransferFunction& transfer_function,
         const float object_depth = 0.0f );
-    virtual ~CellByCellMetropolisSampling();
 
     SuperClass* exec( const kvs::ObjectBase* object );
 
-    size_t subpixelLevel() const;
-    float samplingStep() const;
-    float objectDepth() const;
+    size_t subpixelLevel() const { return m_subpixel_level; }
+    float samplingStep() const { return m_sampling_step; }
+    float objectDepth() const { return m_object_depth; }
 
-    void attachCamera( const kvs::Camera* camera );
-    void setSubpixelLevel( const size_t subpixel_level );
-    void setSamplingStep( const float sampling_step );
-    void setObjectDepth( const float object_depth );
+    void attachCamera( const kvs::Camera* camera ) { m_camera = camera; }
+    void setSubpixelLevel( const size_t subpixel_level ) { m_subpixel_level = subpixel_level; }
+    void setSamplingStep( const float step ) { m_sampling_step = step; }
+    void setObjectDepth( const float depth ) { m_object_depth = depth; }
 
 private:
 
-    void mapping( const kvs::Camera* camera, const kvs::StructuredVolumeObject* volume );
-    void mapping( const kvs::Camera* camera, const kvs::UnstructuredVolumeObject* volume );
-    template <typename T> void generate_particles( const kvs::StructuredVolumeObject* volume );
+    void mapping( const kvs::StructuredVolumeObject* volume );
+    void mapping( const kvs::UnstructuredVolumeObject* volume );
+    template <typename T>
+    void generate_particles( const kvs::StructuredVolumeObject* volume );
     void generate_particles( const kvs::UnstructuredVolumeObject* volume );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__CELL_BY_CELL_METROPOLIS_SAMPLING_H_INCLUDE

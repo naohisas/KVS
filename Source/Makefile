@@ -23,8 +23,10 @@ INSTALL_DIR  := $(KVS_DIR)
 #=============================================================================
 SUBDIRS := Core
 
+ifeq "$(KVS_ENABLE_OPENGL)" "1"
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
 SUBDIRS += SupportGLUT
+endif
 endif
 
 ifeq "$(KVS_SUPPORT_QT)" "1"

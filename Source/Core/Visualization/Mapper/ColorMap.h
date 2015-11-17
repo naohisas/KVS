@@ -62,7 +62,7 @@ public:
     ColorMap( const ColorMap& other );
     ColorMap( const size_t resolution, const float min_value, const float max_value );
     ColorMap( const Table& table, const float min_value, const float max_value );
-    virtual ~ColorMap();
+    virtual ~ColorMap() {}
 
     ColorSpace colorSpace() const { return m_color_space; }
     float minValue() const { return m_min_value; }
@@ -84,7 +84,6 @@ public:
 
     const kvs::RGBColor operator []( const size_t index ) const;
     const kvs::RGBColor at( const float value ) const;
-
     ColorMap& operator =( const ColorMap& rhs );
 };
 

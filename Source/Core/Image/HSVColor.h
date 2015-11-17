@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file HSVColor.h
+ *  @file   HSVColor.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -15,6 +16,9 @@
 #define KVS__HSV_COLOR_H_INCLUDE
 
 #include <kvs/Math>
+#include <kvs/Vector3>
+#include <kvs/Type>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -29,53 +33,42 @@ class RGBColor;
 /*==========================================================================*/
 class HSVColor
 {
-protected:
+private:
 
-    float m_hue; ///< hue angle [0-1]
-    float m_saturation; ///< saturation [0-1]
-    float m_value; ///< value (intensity) [0-1]
-
-public:
-
-    HSVColor( float hue = 0.0f, float saturation = 0.0f, float value = 0.0f );
-    HSVColor( const HSVColor& hsv );
-    HSVColor( const RGBColor& rgb );
+    kvs::Real32 m_h; ///< hue angle [0-1]
+    kvs::Real32 m_s; ///< saturation [0-1]
+    kvs::Real32 m_v; ///< value (intensity) [0-1]
 
 public:
 
-    HSVColor& operator += ( const HSVColor& hsv );
-    HSVColor& operator -= ( const HSVColor& hsv );
-    HSVColor& operator = ( const HSVColor& hsv );
-    HSVColor& operator = ( const RGBColor& rgb );
+    static kvs::HSVColor Mix( const kvs::HSVColor& hsv1, const kvs::HSVColor& hsv2, const kvs::Real32 t );
 
 public:
 
-    friend bool operator == ( const HSVColor& a, const HSVColor& b )
-    {
-        return( kvs::Math::Equal( a.h(), b.h() ) &&
-                kvs::Math::Equal( a.s(), b.s() ) &&
-                kvs::Math::Equal( a.v(), b.v() ) );
-    }
+    HSVColor( kvs::Real32 h = 0.0f, kvs::Real32 s = 0.0f, kvs::Real32 v = 0.0f );
+    HSVColor( const kvs::Vec3& hsv );
+    HSVColor( const kvs::HSVColor& hsv );
+    HSVColor( const kvs::RGBColor& rgb );
 
-    friend HSVColor operator + ( const HSVColor& a, const HSVColor& b )
-    {
-        HSVColor ret( a ); ret += b;
-        return( ret );
-    }
+    void set( kvs::Real32 h, kvs::Real32 s, kvs::Real32 v ) { m_h = h; m_s = s; m_v = v; }
+    kvs::Real32 h() const { return m_h; }
+    kvs::Real32 s() const { return m_s; }
+    kvs::Real32 v() const { return m_v; }
+    kvs::Vec3 toVec3() const { return kvs::Vec3( m_h, m_s, m_v ); }
+    kvs::RGBColor toRGBColor() const;
+
+    kvs::HSVColor& operator += ( const kvs::HSVColor& hsv );
+    kvs::HSVColor& operator -= ( const kvs::HSVColor& hsv );
+    kvs::HSVColor& operator = ( const kvs::HSVColor& hsv );
+    kvs::HSVColor& operator = ( const kvs::RGBColor& rgb );
+    friend bool operator == ( const kvs::HSVColor& a, const kvs::HSVColor& b );
+    friend kvs::HSVColor operator + ( const kvs::HSVColor& a, const kvs::HSVColor& b );
 
 public:
-
-    void set( float hue, float saturation, float value );
-
-public:
-
-    float h() const;
-    float hue() const;
-    float s() const;
-    float saturation() const;
-    float v() const;
-    float value() const;
-    float intensity() const;
+    KVS_DEPRECATED( float hue() const ) { return this->h(); }
+    KVS_DEPRECATED( float saturation() const ) { return this->s(); }
+    KVS_DEPRECATED( float value() const ) { return this->v(); }
+    KVS_DEPRECATED( float intensity() const ) { return this->v(); }
 };
 
 } // end of namespace kvs

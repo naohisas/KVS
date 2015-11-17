@@ -563,7 +563,6 @@ const bool Main::exec( void )
     screen.setTitle( kvsview::CommandName + " - " + kvsview::ParticleBasedRenderer::CommandName );
 
     // Check the input point or volume data.
-    bool is_volume = false; // check flag whether the input data is volume data
     m_input_name = arg.value<std::string>();
     if ( !kvsview::FileChecker::ImportablePoint( m_input_name ) )
     {
@@ -573,8 +572,6 @@ const bool Main::exec( void )
             kvsMessageError("%s is not volume data.", m_input_name.c_str());
             return( false );
         }
-
-        is_volume = true;
     }
 
     // Visualization pipeline.

@@ -45,7 +45,6 @@ class SphereGlyph : public kvs::GlyphBase
 
 private:
 
-    GLUquadricObj* m_sphere; ///< glyph primitive
     size_t m_nslices; ///< number of subdivisions around the z-axis (lines of longitude)
     size_t m_nstacks; ///< number of subdivisions along the z-axis (lines of latitude)
     const kvs::PointObject* m_point; ///< pointer to the point object (reference)
@@ -57,7 +56,6 @@ public:
     SphereGlyph( const kvs::PointObject* point );
     SphereGlyph( const kvs::VolumeObjectBase* volume );
     SphereGlyph( const kvs::VolumeObjectBase* volume, const kvs::TransferFunction& transfer_function );
-    virtual ~SphereGlyph();
 
     void setNumberOfSlices( const size_t nslices ) { m_nslices = nslices; }
     void setNumberOfStacks( const size_t nstacks ) { m_nstacks = nstacks; }

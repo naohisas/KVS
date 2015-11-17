@@ -18,7 +18,6 @@
 #include <kvs/Camera>
 #include <kvs/ObjectBase>
 #include <kvs/Xform>
-#include <kvs/OpenGL>
 
 
 namespace kvs

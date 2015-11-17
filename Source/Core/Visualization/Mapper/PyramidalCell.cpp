@@ -29,102 +29,92 @@ PyramidalCell::PyramidalCell( const kvs::UnstructuredVolumeObject* volume ):
     m_pyramid( 0, 0, 0 )
 {
     // Set the initial interpolation functions and differential functions.
-    this->interpolationFunctions( BaseClass::localPoint() );
-    this->differentialFunctions( BaseClass::localPoint() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the unstructured volume object.
- */
-/*===========================================================================*/
-PyramidalCell::~PyramidalCell()
-{
+    this->updateInterpolationFunctions( BaseClass::localPoint() );
+    this->updateDifferentialFunctions( BaseClass::localPoint() );
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Calculates the interpolation functions in the local coordinate.
- *  @return point [in] point in the local coordinate
+ *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* PyramidalCell::interpolationFunctions( const kvs::Vec3& point ) const
+void PyramidalCell::updateInterpolationFunctions( const kvs::Vec3& local ) const
 {
-    const float z = point.z();
-    float x;
-    float y;
-    if ( 1 - z != 0.0 )
+    KVS_ASSERT( this->containsLocalPoint( local ) );
+
+    float p = local.x();
+    float q = local.y();
+    const float r = local.z();
+    if ( 1 - r != 0.0 )
     {
-        x = point.x() / ( 1 - z ) * 2;
-        y = point.y() / ( 1 - z ) * 2;
+        p = p / ( 1 - r ) * 2;
+        q = q / ( 1 - r ) * 2;
     }
     else
     {
-        x = point.x() * 2;
-        y = point.y() * 2;
+        p = p * 2;
+        q = q * 2;
     }
 
-    const float xy = x * y;
+    const float pq = p * q;
 
     kvs::Real32* N = BaseClass::interpolationFunctions();
-    N[0] = z;
-    N[1] = 0.25f * ( 1 - z ) * ( 1 - x - y + xy );
-    N[2] = 0.25f * ( 1 - z ) * ( 1 + x - y - xy );
-    N[3] = 0.25f * ( 1 - z ) * ( 1 + x + y + xy );
-    N[4] = 0.25f * ( 1 - z ) * ( 1 - x + y - xy );
-
-    return N;
+    N[0] = r;
+    N[1] = 0.25f * ( 1 - r ) * ( 1 - p - q + pq );
+    N[2] = 0.25f * ( 1 - r ) * ( 1 + p - q - pq );
+    N[3] = 0.25f * ( 1 - r ) * ( 1 + p + q + pq );
+    N[4] = 0.25f * ( 1 - r ) * ( 1 - p + q - pq );
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Calculates the differential functions in the local coordinate.
- *  @return point [in] point in the local coordinate
+ *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* PyramidalCell::differentialFunctions( const kvs::Vec3& point ) const
+void PyramidalCell::updateDifferentialFunctions( const kvs::Vec3& local ) const
 {
-    const float z = point.z();
-    float x;
-    float y;
-    if ( 1 - z != 0.0 )
+    KVS_ASSERT( this->containsLocalPoint( local ) );
+
+    float p = local.x();
+    float q = local.y();
+    const float r = local.z();
+    if ( 1 - r != 0.0 )
     {
-        x = point.x() / ( 1 - z ) * 2;
-        y = point.y() / ( 1 - z ) * 2;
+        p = p / ( 1 - r ) * 2;
+        q = q / ( 1 - r ) * 2;
     }
     else
     {
-        x = point.x() * 2;
-        y = point.y() * 2;
+        p = p * 2;
+        q = q * 2;
     }
 
-    const float xy = x * y;
-
+    const float pq = p * q;
     const size_t nnodes = BaseClass::numberOfCellNodes();
     kvs::Real32* dN = BaseClass::differentialFunctions();
-    kvs::Real32* dNdx = dN;
-    kvs::Real32* dNdy = dNdx + nnodes;
-    kvs::Real32* dNdz = dNdy + nnodes;
+    kvs::Real32* dNdp = dN;
+    kvs::Real32* dNdq = dNdp + nnodes;
+    kvs::Real32* dNdr = dNdq + nnodes;
 
-    dNdx[0] = 0.0f;
-    dNdx[1] = 0.25f * ( - 1 + y );
-    dNdx[2] = 0.25f * ( 1 - y );
-    dNdx[3] = 0.25f * ( 1 + y );
-    dNdx[4] = 0.25f * ( - 1 - y );
+    dNdp[0] = 0.0f;
+    dNdp[1] = 0.25f * ( - 1 + q );
+    dNdp[2] = 0.25f * (   1 - q );
+    dNdp[3] = 0.25f * (   1 + q );
+    dNdp[4] = 0.25f * ( - 1 - q );
 
-    dNdy[0] = 0.0f;
-    dNdy[1] = 0.25f * ( - 1 + x );
-    dNdy[2] = 0.25f * ( - 1 - x );
-    dNdy[3] = 0.25f * ( 1 + x );
-    dNdy[4] = 0.25f * ( 1 - x );
+    dNdq[0] = 0.0f;
+    dNdq[1] = 0.25f * ( - 1 + p );
+    dNdq[2] = 0.25f * ( - 1 - p );
+    dNdq[3] = 0.25f * (   1 + p );
+    dNdq[4] = 0.25f * (   1 - p );
 
-    dNdz[0] = 1.0f;
-    dNdz[1] = 0.25f * ( - 1 - xy );
-    dNdz[2] = 0.25f * ( - 1 + xy );
-    dNdz[3] = 0.25f * ( - 1 - xy );
-    dNdz[4] = 0.25f * ( - 1 + xy );
-
-    return dN;
+    dNdr[0] = 1.0f;
+    dNdr[1] = 0.25f * ( - 1 - pq );
+    dNdr[2] = 0.25f * ( - 1 + pq );
+    dNdr[3] = 0.25f * ( - 1 - pq );
+    dNdr[4] = 0.25f * ( - 1 + pq );
 }
 
 /*===========================================================================*/
@@ -137,9 +127,9 @@ void PyramidalCell::bindCell( const kvs::UInt32 index )
 {
     BaseClass::bindCell( index );
 
-    kvs::Vec3 v12( BaseClass::m_vertices[2] - BaseClass::m_vertices[1] );
-    kvs::Vec3 v14( BaseClass::m_vertices[4] - BaseClass::m_vertices[1] );
-    kvs::Vec3 v10( BaseClass::m_vertices[0] - BaseClass::m_vertices[1] );
+    kvs::Vec3 v12( BaseClass::coord(2) - BaseClass::coord(1) );
+    kvs::Vec3 v14( BaseClass::coord(4) - BaseClass::coord(1) );
+    kvs::Vec3 v10( BaseClass::coord(0) - BaseClass::coord(1) );
 
     m_pyramid.x() = (float)v12.length();
     m_pyramid.y() = (float)v14.length();
@@ -152,13 +142,39 @@ void PyramidalCell::bindCell( const kvs::UInt32 index )
 
 /*===========================================================================*/
 /**
+ *  @brief  True if the pyramid cell contains a point defined in the local coordinate.
+ *  @param  local [in] local point
+ *  @return True if the pyramid cell contains the local point
+ */
+/*===========================================================================*/
+bool PyramidalCell::containsLocalPoint( const kvs::Vec3& local ) const
+{
+    if ( local.z() < 0 || 1 < local.z() ) { return false; }
+    if ( kvs::Math::Abs( local.x() ) > 1 - local.z() ) { return false; }
+    if ( kvs::Math::Abs( local.y() ) > 1 - local.z() ) { return false; }
+    return true;
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Returns a volume of the cell.
  *  @return volume of the cell
  */
 /*===========================================================================*/
 const kvs::Real32 PyramidalCell::volume() const
 {
-    return float( m_pyramid.x() * m_pyramid.y() * m_pyramid.z() / 3);
+    return float( m_pyramid.x() * m_pyramid.y() * m_pyramid.z() / 3 );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a center of the cell in the local coordinate.
+ *  @return center of the cell in the local coordinate
+ */
+/*===========================================================================*/
+const kvs::Vec3 PyramidalCell::localCenter() const
+{
+    return kvs::Vec3( 0.0f, 0.0f, 0.2f );
 }
 
 /*===========================================================================*/
@@ -170,36 +186,33 @@ const kvs::Real32 PyramidalCell::volume() const
 const kvs::Vec3 PyramidalCell::randomSampling() const
 {
     // Generate a point in the local coordinate.
-    const float s = BaseClass::randomNumber();
-    const float t = BaseClass::randomNumber();
-    const float u = BaseClass::randomNumber();
+    const float p = BaseClass::randomNumber();
+    const float q = BaseClass::randomNumber();
+    const float r = BaseClass::randomNumber();
 
-    kvs::Vec3 point;
-    if ( kvs::Math::Abs( s - 0.5f ) <= kvs::Math::Abs( t - 0.5f ) &&
-         kvs::Math::Abs( t - 0.5f ) > kvs::Math::Abs( u - 0.5f ) )
+    kvs::Vec3 local;
+    if ( kvs::Math::Abs( p - 0.5f ) <= kvs::Math::Abs( q - 0.5f ) &&
+         kvs::Math::Abs( q - 0.5f ) > kvs::Math::Abs( r - 0.5f ) )
     {
-        point.x() = u - 0.5f;
-        point.y() = s - 0.5f;
-        point.z() = ( 0.5f - kvs::Math::Abs( t - 0.5f ) ) * 2.0f;
+        local[0] = r - 0.5f;
+        local[1] = p - 0.5f;
+        local[2] = ( 0.5f - kvs::Math::Abs( q - 0.5f ) ) * 2.0f;
     }
-    else if ( kvs::Math::Abs( u - 0.5f ) <= kvs::Math::Abs( s - 0.5f ) &&
-              kvs::Math::Abs( t - 0.5f ) < kvs::Math::Abs( s - 0.5f ) )
+    else if ( kvs::Math::Abs( r - 0.5f ) <= kvs::Math::Abs( p - 0.5f ) &&
+              kvs::Math::Abs( q - 0.5f ) < kvs::Math::Abs( p - 0.5f ) )
     {
-        point.x() = t - 0.5f;
-        point.y() = u - 0.5f;
-        point.z() = ( 0.5f - kvs::Math::Abs( s - 0.5f ) ) * 2.0f;
+        local[0] = q - 0.5f;
+        local[1] = r - 0.5f;
+        local[2] = ( 0.5f - kvs::Math::Abs( p - 0.5f ) ) * 2.0f;
     }
     else
     {
-        point.x() = s - 0.5f;
-        point.y() = t - 0.5f;
-        point.z() = ( 0.5f - kvs::Math::Abs( u - 0.5 ) ) * 2.0f;
+        local[0] = p - 0.5f;
+        local[1] = q - 0.5f;
+        local[2] = ( 0.5f - kvs::Math::Abs( r - 0.5 ) ) * 2.0f;
     }
 
-    this->setLocalPoint( point );
-    BaseClass::m_global_point = this->transformLocalToGlobal( point );
-
-    return BaseClass::m_global_point;
+    return BaseClass::localToGlobal( local );
 }
 
 } // end of namespace kvs

@@ -15,6 +15,9 @@
 #ifndef KVSMAKE__WRITE_VC_PROJECT_CUDA_H_INCLUDE
 #define KVSMAKE__WRITE_VC_PROJECT_CUDA_H_INCLUDE
 
+#include <kvs/Compiler>
+#if defined ( KVS_COMPILER_VC )
+
 #include <string>
 
 
@@ -25,4 +28,5 @@ bool WriteVCProjectCUDA( const std::string& project_name );
 
 } // end of namespace kvsmake
 
+#endif
 #endif // KVS_KVSMAKE_WRITE_VC_PROJECT_CUDA_H_INCLUDE

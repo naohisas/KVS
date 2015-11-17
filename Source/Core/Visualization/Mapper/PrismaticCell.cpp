@@ -29,83 +29,90 @@ PrismaticCell::PrismaticCell(
     kvs::CellBase( volume )
 {
     // Set the initial interpolation functions and differential functions.
-    this->interpolationFunctions( BaseClass::localPoint() );
-    this->differentialFunctions( BaseClass::localPoint() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the PrismaticCell class.
- */
-/*===========================================================================*/
-PrismaticCell::~PrismaticCell()
-{
+    this->updateInterpolationFunctions( BaseClass::localPoint() );
+    this->updateDifferentialFunctions( BaseClass::localPoint() );
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Calculates the interpolation functions in the local coordinate.
- *  @return point [in] point in the local coordinate
+ *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* PrismaticCell::interpolationFunctions( const kvs::Vec3& point ) const
+void PrismaticCell::updateInterpolationFunctions( const kvs::Vec3& local ) const
 {
-    // 0 <= x,y,z <= 1, x + y <= 1
-    const float x = point.x();
-    const float y = point.y();
-    const float z = point.z();
+    KVS_ASSERT( this->containsLocalPoint( local ) );
 
-    kvs::Real32* N = BaseClass::m_interpolation_functions;
-    N[0] = ( 1 - x - y ) * z;
-    N[1] = x * z;
-    N[2] = y * z;
-    N[3] = ( 1 - x - y ) * ( 1 - z );
-    N[4] = x * ( 1 - z );
-    N[5] = y * ( 1 - z );
+    // 0 <= p,q,r <= 1, p + q <= 1
+    const float p = local.x();
+    const float q = local.y();
+    const float r = local.z();
 
-    return N;
+    kvs::Real32* N = BaseClass::interpolationFunctions();
+    N[0] = ( 1 - p - q ) * r;
+    N[1] = p * r;
+    N[2] = q * r;
+    N[3] = ( 1 - p - q ) * ( 1 - r );
+    N[4] = p * ( 1 - r );
+    N[5] = q * ( 1 - r );
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Calculates the differential functions in the local coordinate.
- *  @return point [in] point in the local coordinate
+ *  @return local [in] point in the local coordinate
  */
 /*==========================================================================*/
-const kvs::Real32* PrismaticCell::differentialFunctions( const kvs::Vec3& point ) const
+void PrismaticCell::updateDifferentialFunctions( const kvs::Vec3& local ) const
 {
-    const float x = point.x();
-    const float y = point.y();
-    const float z = point.z();
+    KVS_ASSERT( this->containsLocalPoint( local ) );
 
-    const int nnodes = NumberOfNodes;
-    kvs::Real32* dN = BaseClass::m_differential_functions;
-    kvs::Real32* dNdx = dN;
-    kvs::Real32* dNdy = dNdx + nnodes;
-    kvs::Real32* dNdz = dNdy + nnodes;
+    const float p = local.x();
+    const float q = local.y();
+    const float r = local.z();
 
-    dNdx[0] = -z;
-    dNdx[1] =  z;
-    dNdx[2] =  0;
-    dNdx[3] = -( 1 - z );
-    dNdx[4] =  ( 1 - z );
-    dNdx[5] =  0;
+    const size_t nnodes = BaseClass::numberOfCellNodes();
+    kvs::Real32* dN = BaseClass::differentialFunctions();
+    kvs::Real32* dNdp = dN;
+    kvs::Real32* dNdq = dNdp + nnodes;
+    kvs::Real32* dNdr = dNdq + nnodes;
 
-    dNdy[0] = -z;
-    dNdy[1] =  0;
-    dNdy[2] =  z;
-    dNdy[3] = -( 1 - z );
-    dNdy[4] =  0;
-    dNdy[5] =  ( 1 - z );
+    dNdp[0] = -r;
+    dNdp[1] =  r;
+    dNdp[2] =  0;
+    dNdp[3] = -( 1 - r );
+    dNdp[4] =  ( 1 - r );
+    dNdp[5] =  0;
 
-    dNdz[0] =  ( 1 - x - y );
-    dNdz[1] =  x;
-    dNdz[2] =  y;
-    dNdz[3] = -( 1 - x - y );
-    dNdz[4] = -x;
-    dNdz[5] = -y;
+    dNdq[0] = -r;
+    dNdq[1] =  0;
+    dNdq[2] =  r;
+    dNdq[3] = -( 1 - r );
+    dNdq[4] =  0;
+    dNdq[5] =  ( 1 - r );
 
-    return dN;
+    dNdr[0] =  ( 1 - p - q );
+    dNdr[1] =  p;
+    dNdr[2] =  q;
+    dNdr[3] = -( 1 - p - q );
+    dNdr[4] = -p;
+    dNdr[5] = -q;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  True if the prismatic cell contains a point defined in the local coordinate.
+ *  @param  local [in] local point
+ *  @return true if the prismatic cell contains the local point
+ */
+/*===========================================================================*/
+bool PrismaticCell::containsLocalPoint( const kvs::Vec3& local ) const
+{
+    if ( local.x() < 0 || 1 < local.x() ) { return false; }
+    if ( local.y() < 0 || 1 < local.y() ) { return false; }
+    if ( local.z() < 0 || 1 < local.z() ) { return false; }
+    if ( local.x() + local.y() > 1 ) { return false; }
+    return true;
 }
 
 /*===========================================================================*/
@@ -117,28 +124,25 @@ const kvs::Real32* PrismaticCell::differentialFunctions( const kvs::Vec3& point 
 const kvs::Vec3 PrismaticCell::randomSampling() const
 {
     // Generate a point in the local coordinate.
-    const float s = BaseClass::randomNumber();
-    const float t = BaseClass::randomNumber();
-    const float u = BaseClass::randomNumber();
+    const float p = BaseClass::randomNumber();
+    const float q = BaseClass::randomNumber();
+    const float r = BaseClass::randomNumber();
 
-    kvs::Vec3 point;
-    if ( s + t > 1.0f )
+    kvs::Vec3 local;
+    if ( p + q > 1.0f )
     {
-        point[0] = 1.0f - t;
-        point[1] = 1.0f - s;
-        point[2] = u;
+        local[0] = 1.0f - q;
+        local[1] = 1.0f - p;
+        local[2] = r;
     }
     else
     {
-        point[0] = s;
-        point[1] = t;
-        point[2] = u;
+        local[0] = p;
+        local[1] = q;
+        local[2] = r;
     }
 
-    this->setLocalPoint( point );
-    BaseClass::m_global_point = BaseClass::transformLocalToGlobal( point );
-
-    return BaseClass::m_global_point;
+    return BaseClass::localToGlobal( local );
 }
 
 /*===========================================================================*/
@@ -165,13 +169,24 @@ const kvs::Real32 PrismaticCell::volume() const
     float S = 0.0f;
     for ( size_t i = 0; i < N; i++ )
     {
-        this->setLocalPoint( P[i] );
+        BaseClass::setLocalPoint( P[i] );
         const kvs::Mat3 J = BaseClass::JacobiMatrix();
         const float D = 0.5f * J.determinant();
         S += kvs::Math::Abs<float>( D );
     }
 
     return S / N;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a center of the cell in the local coordinate.
+ *  @return center of the cell in the local coordinate
+ */
+/*===========================================================================*/
+const kvs::Vec3 PrismaticCell::localCenter() const
+{
+    return kvs::Vec3( 1.0f / 3.0f, 1.0f / 3.0f, 0.5f );
 }
 
 } // end of namespace kvs

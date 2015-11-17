@@ -195,7 +195,8 @@ std::ostream& operator << ( std::ostream& os, const kvs::VolumeObjectBase& objec
     // @TODO Cannot instance the object that is a abstract class here (error:C2259).
 #endif
 #else
-    os << static_cast<const kvs::ObjectBase&>( object ) << std::endl;
+//    os << static_cast<const kvs::ObjectBase&>( object ) << std::endl;
+    static_cast<const kvs::ObjectBase&>( object ).print( os );
 #endif
 
     const std::ios_base::fmtflags flags( os.flags() );

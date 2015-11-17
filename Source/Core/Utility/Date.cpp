@@ -113,9 +113,9 @@ Date::~Date()
 
 Date& Date::operator = ( const Date& date )
 {
-    m_year       = date.m_year;
-    m_month      = date.m_month;
-    m_day        = date.m_day;
+    m_year = date.m_year;
+    m_month = date.m_month;
+    m_day = date.m_day;
     m_julian_day = date.m_julian_day;
 
     return *this;
@@ -130,22 +130,19 @@ Date& Date::operator += ( const int days )
 
 Date& Date::operator -= ( const int days )
 {
-    this->subtractDays( days );
-
+    this->subDays( days );
     return *this;
 }
 
 Date operator + ( const Date& date, const int days )
 {
     Date ret( date ); ret += days;
-
     return ret;
 }
 
 Date operator - ( const Date& date, const int days )
 {
     Date ret( date ); ret -= days;
-
     return ret;
 }
 
@@ -194,26 +191,6 @@ std::ostream& operator << ( std::ostream& os, const Date& date )
     return os;
 }
 
-int Date::year() const
-{
-    return m_year;
-}
-
-int Date::month() const
-{
-    return m_month;
-}
-
-int Date::day() const
-{
-    return m_day;
-}
-
-long Date::julianDay() const
-{
-    return m_julian_day;
-}
-
 std::string Date::monthString( const bool abbreviation ) const
 {
     return abbreviation ?
@@ -226,9 +203,9 @@ const Date& Date::today()
     time_t t = time( NULL );
     tm* time = localtime( &t );
 
-    m_year       = time->tm_year + 1900;
-    m_month      = time->tm_mon + 1;
-    m_day        = time->tm_mday;
+    m_year = time->tm_year + 1900;
+    m_month = time->tm_mon + 1;
+    m_day = time->tm_mday;
     m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
 
     return *this;
@@ -237,7 +214,7 @@ const Date& Date::today()
 int Date::yearsOld() const
 {
     Date today;
-    if ( today <= *this ) return( 0 );
+    if ( today <= *this ) { return 0; }
 
     const long t = today.julianDay();
     const long b = this->julianDay();
@@ -248,15 +225,15 @@ int Date::yearsOld() const
 Date::DayOfWeek Date::dayOfWeek() const
 {
     struct tm t;
-    t.tm_year  = m_year - 1900;
-    t.tm_mon   = m_month - 1;
-    t.tm_mday  = m_day;
-    t.tm_hour  = 0;
-    t.tm_min   = 0;
-    t.tm_sec   = 0;
+    t.tm_year = m_year - 1900;
+    t.tm_mon = m_month - 1;
+    t.tm_mday = m_day;
+    t.tm_hour = 0;
+    t.tm_min = 0;
+    t.tm_sec = 0;
     t.tm_isdst = -1;
 
-    if ( mktime( &t ) == -1 ) return( Date::UnknownDay );
+    if ( mktime( &t ) == -1 ) { return Date::UnknownDay; }
 
     return ( Date::DayOfWeek )( t.tm_wday );
 }
@@ -264,7 +241,7 @@ Date::DayOfWeek Date::dayOfWeek() const
 std::string Date::dayOfWeekString( const bool abbreviation ) const
 {
     const Date::DayOfWeek day_of_week = this->dayOfWeek();
-    if ( day_of_week == Date::UnknownDay ) return "Unknown";
+    if ( day_of_week == Date::UnknownDay ) { return "Unknown"; }
 
     return abbreviation ?
            std::string( ::DayOfWeekShortName[day_of_week] ) :
@@ -273,8 +250,8 @@ std::string Date::dayOfWeekString( const bool abbreviation ) const
 
 int Date::daysInMonth() const
 {
-    if ( ( m_month < Date::Jan ) || ( Date::Dec < m_month ) ) return 0;
-    if ( ( Date::Feb == m_month ) && this->isLeepYear() )     return 29;
+    if ( ( m_month < Date::Jan ) || ( Date::Dec < m_month ) ) { return 0; }
+    if ( ( Date::Feb == m_month ) && this->isLeepYear() ) { return 29; }
 
     return ::DaysInMonth[ m_month - 1 ];
 }
@@ -299,9 +276,9 @@ void Date::fromString( const std::string date, const std::string sep )
             const std::string m = date.substr( 4,2 );
             const std::string d = date.substr( 6,2 );
 
-            m_year  = atoi( y.c_str() );
+            m_year = atoi( y.c_str() );
             m_month = atoi( m.c_str() );
-            m_day   = atoi( d.c_str() );
+            m_day = atoi( d.c_str() );
         }
     }
     else
@@ -312,9 +289,9 @@ void Date::fromString( const std::string date, const std::string sep )
         const std::string m = tokenizer.token();
         const std::string d = tokenizer.token();
 
-        m_year  = atoi( y.c_str() );
+        m_year = atoi( y.c_str() );
         m_month = atoi( m.c_str() );
-        m_day   = atoi( d.c_str() );
+        m_day = atoi( d.c_str() );
     }
 
     m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
@@ -332,31 +309,31 @@ bool Date::isValid() const
            m_day >= 1 && m_day <= this->daysInMonth();
 }
 
-void Date::addYears( const int year )
+void Date::addYears( const int years )
 {
-    m_year += year;
+    m_year += years;
     this->adjust_days();
 
     m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
 }
 
-void Date::subtractYears( const int year )
+void Date::subYears( const int years )
 {
-    m_year -= year;
+    m_year -= years;
     this->adjust_days();
 
     m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
 }
 
-void Date::addMonths( const int month )
+void Date::addMonths( const int months )
 {
-    m_month += month;
+    m_month += months;
     if ( m_month > Date::Dec )
     {
         while ( m_month > Date::Dec )
         {
             m_month -= 12;
-            m_year  += 1;
+            m_year += 1;
         }
     }
 
@@ -365,20 +342,20 @@ void Date::addMonths( const int month )
     m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
 }
 
-void Date::subtractMonths( const int month )
+void Date::subMonths( const int months )
 {
-    m_month -= month;
+    m_month -= months;
 
-    if ( month > Date::Dec )
+    if ( months > Date::Dec )
     {
-        const int t = month / 12;
-        m_year  -= t;
+        const int t = months / 12;
+        m_year -= t;
         m_month += t * 12;
     }
 
     if ( m_month < Date::Jan )
     {
-        m_year  -=  1;
+        m_year -=  1;
         m_month += 12;
     }
 
@@ -394,7 +371,7 @@ void Date::addDays( const int days )
     *this = this->convert_from_julian_date( m_julian_day );
 }
 
-void Date::subtractDays( const int days )
+void Date::subDays( const int days )
 {
     m_julian_day -= days;
 
@@ -412,35 +389,25 @@ void Date::adjust_days()
 
 long Date::convert_to_julian_date( const int year, const int month, const int day ) const
 {
-    int y = year;
-    int m = month;
-    int d = day;
+    const int a = ( 14 - month ) / 12;
+    const int m = month + 12 * a - 3;
+    const int y = year + 4800 - a;
 
-    if ( month < 3 )
-    {
-        m += 12;
-        y  -= 1;
-    }
-
-    return d + ( 153*m-457 ) / 5 + 365*y + ( y/4 ) - ( y/100 ) + ( y/400 ) + 1721119;
+    return day + ( ( 153 * m + 2 ) / 5 ) + ( 365 * y ) + ( y / 4 ) - ( y / 100 ) + ( y / 400 ) - 32045;
 }
 
 Date Date::convert_from_julian_date( const long julian_day ) const
 {
-    long L = julian_day + 68569;
+    const long a = julian_day + 32044;
+    const long b = ( 4 * a + 3 ) / 146097;
+    const long c = a - ( ( 146097 * b ) / 4 );
+    const long d = ( 4 * c + 3 ) / 1461;
+    const long e = c - ( 1461 * d / 4 );
+    const long m = ( 5 * e + 2 ) / 153;
 
-    long N = ( long )( ( 4*L )/146097 );
-    L -= ( long )( ( 146097 * N + 3 )/4 );
-
-    long I = ( long ) ( ( 4000 *( L + 1 )/1461001 ) ) ;
-    L -= ( long )( ( 1461*I )/4 ) + 31;
-
-    long J   = ( long )( ( 80*L )/2447 );
-    long J11 = ( long )( J/11 );
-
-    int day   = L - ( long )( ( 2447*J )/80 );
-    int month = J + 2 - 12*J11;
-    int year  = 100*( N-49 ) + I + J11;
+    const int day = e - ( ( 153 * m + 2 ) / 5 ) + 1;
+    const int month = m + 3 - ( 12 * ( m / 10 ) );
+    const int year = ( 100 * b ) + d - 4800 + ( m / 10 );
 
     return Date( year, month, day );
 }

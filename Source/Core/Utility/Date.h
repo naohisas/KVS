@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <string>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -61,110 +62,70 @@ public:
         NumberOfMonths = 12
     };
 
-protected:
+private:
 
-    int  m_year;       ///< year
-    int  m_month;      ///< month
-    int  m_day;        ///< day
+    int m_year; ///< year
+    int m_month; ///< month
+    int m_day; ///< day
     long m_julian_day; ///< julian day
 
 public:
 
     Date();
-
     Date( const long julian_day );
-
     Date( const int year, const int month, const int day );
-
     Date( const Date& date );
-
     virtual ~Date();
 
-public:
-
     Date& operator = ( const Date& date );
-
     Date& operator += ( const int days );
-
     Date& operator -= ( const int days );
-
     friend Date operator + ( const Date& date, const int days );
-
     friend Date operator - ( const Date& date, const int days );
-
     friend int operator - ( const Date& date1, const Date& date2 );
-
     friend bool operator > ( const Date& date1, const Date& date2 );
-
     friend bool operator >= ( const Date& date1, const Date& date2 );
-
     friend bool operator < ( const Date& date1, const Date& date2 );
-
     friend bool operator <= ( const Date& date1, const Date& date2 );
-
     friend bool operator == ( const Date& date1, const Date& date2 );
-
     friend bool operator != ( const Date& date1, const Date& date2 );
-
     friend std::ostream& operator << ( std::ostream& os, const Date& date );
 
-public:
-
-    int year() const;
-
-    int month() const;
-
-    int day() const;
-
-    long julianDay() const;
+    int year() const { return m_year; }
+    int month() const { return m_month; }
+    int day() const { return m_day; }
+    long julianDay() const { return m_julian_day; }
 
     std::string monthString( const bool abbrevition = true ) const;
-
-public:
-
     const Date& today();
-
     int yearsOld() const;
 
-public:
-
     DayOfWeek dayOfWeek() const;
-
     std::string dayOfWeekString( const bool abbr = true ) const;
-
     int daysInMonth() const;
-
     std::string toString( const std::string sep = "" ) const;
-
     void fromString( const std::string date, const std::string sep = "" );
 
-public:
-
     bool isLeepYear() const;
-
     bool isValid() const;
 
-public:
-
-    void addYears( const int year );
-
-    void subtractYears( const int year );
-
-    void addMonths( const int month );
-
-    void subtractMonths( const int month );
-
+    void addYears( const int years );
+    void subYears( const int years );
+    void addMonths( const int months );
+    void subMonths( const int months );
     void addDays( const int days );
+    void subDays( const int days );
 
-    void subtractDays( const int days );
-
-protected:
+private:
 
     void adjust_days();
-
     long convert_to_julian_date( const int year, const int month, const int day ) const;
-
     Date convert_from_julian_date( const long julian_day ) const;
+
+public:
+    KVS_DEPRECATED( void subtractYears( const int years ) ) { this->subYears( years ); }
+    KVS_DEPRECATED( void subtractMonths( const int months ) ) { this->subMonths( months ); }
+    KVS_DEPRECATED( void subtractDays( const int days ) ) { this->subDays( days ); }
 };
 
 } // end of namespace kvs

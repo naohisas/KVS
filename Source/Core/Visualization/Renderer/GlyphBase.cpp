@@ -63,9 +63,9 @@ GlyphBase::~GlyphBase()
 /*===========================================================================*/
 void GlyphBase::transform( const kvs::Vector3f& position, const kvs::Real32 size )
 {
-    glTranslatef( position.x(), position.y(), position.z() );
-    glScalef( m_scale.x(), m_scale.y(), m_scale.z() );
-    glScalef( size, size, size );
+    kvs::OpenGL::Translate( position.x(), position.y(), position.z() );
+    kvs::OpenGL::Scale( m_scale.x(), m_scale.y(), m_scale.z() );
+    kvs::OpenGL::Scale( size, size, size );
 }
 
 /*===========================================================================*/
@@ -91,7 +91,7 @@ void GlyphBase::transform(
 
     float array[16];
     xform.toArray( array );
-    glMultMatrixf( array );
+    kvs::OpenGL::MultMatrix( array );
 }
 
 /*===========================================================================*/

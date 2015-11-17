@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   tetrahedra.vert
- *  @author Jun Nishimura, Naohisa Sakamoto
+ *  @author Naoya Maeda, Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -13,14 +13,14 @@
  */
 /*****************************************************************************/
 #version 120
-#include "qualifire.h"
+#include <qualifire.h>
 
 
-// Input parameters.
-VertIn float value; // normalized scalar value for the vertex
+// Input variables from OpenGL.
 VertIn vec2 random_index; // index for accessing to the random texture
+VertIn float value; // normalized scalar value for the vertex
 
-// Output parameters to geometry shader.
+// Output variables to geometry shader.
 VertOut vec4 position_in; // vertex position in camera coordinate
 VertOut vec4 position_ndc_in; // vertex position in normalized device coordinate
 VertOut vec3 normal_in; // normal vector in camera coordinate

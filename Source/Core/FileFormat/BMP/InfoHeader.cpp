@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file InfoHeader.cpp
+ *  @file   InfoHeader.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -21,68 +22,9 @@ namespace kvs
 namespace bmp
 {
 
-InfoHeader::InfoHeader()
-{
-}
-
 InfoHeader::InfoHeader( std::ifstream& ifs )
 {
     this->read( ifs );
-}
-
-kvs::UInt32 InfoHeader::size() const
-{
-    return m_size;
-}
-
-kvs::UInt32 InfoHeader::width() const
-{
-    return m_width;
-}
-
-kvs::UInt32 InfoHeader::height() const
-{
-    return m_height;
-}
-
-kvs::UInt16 InfoHeader::nplanes() const
-{
-    return m_nplanes;
-}
-
-kvs::UInt16 InfoHeader::bpp() const
-{
-    return m_bpp;
-}
-
-kvs::UInt32 InfoHeader::compression() const
-{
-    return m_compression;
-}
-
-kvs::UInt32 InfoHeader::bitmapsize() const
-{
-    return m_bitmapsize;
-}
-
-kvs::UInt32 InfoHeader::hresolution() const
-{
-    return m_hresolution;
-}
-
-kvs::UInt32 InfoHeader::vresolution() const
-{
-    return m_vresolution;
-}
-
-kvs::UInt32 InfoHeader::colsused() const
-{
-    return m_colsused;
-}
-
-kvs::UInt32 InfoHeader::colsimportant() const
-{
-    return m_colsimportant;
 }
 
 void InfoHeader::print( std::ostream& os, const kvs::Indent& indent ) const
@@ -97,43 +39,43 @@ void InfoHeader::print( std::ostream& os, const kvs::Indent& indent ) const
     os << indent << "Horizontal resolution : " << m_hresolution << std::endl;
     os << indent << "Vertical resolution : " << m_vresolution << std::endl;
     os << indent << "Number of colors : " << m_colsused << std::endl;
-    os << indent << "Number of important colors : " << m_colsimportant;
+    os << indent << "Number of important colors : " << m_colsimportant << std::endl;
 }
 
 void InfoHeader::read( std::ifstream& ifs )
 {
-    BaseClass::get_value( ifs, &m_size );
-    BaseClass::get_value( ifs, &m_width );
-    BaseClass::get_value( ifs, &m_height );
-    BaseClass::get_value( ifs, &m_nplanes );
-    BaseClass::get_value( ifs, &m_bpp );
-    BaseClass::get_value( ifs, &m_compression );
-    BaseClass::get_value( ifs, &m_bitmapsize );
-    BaseClass::get_value( ifs, &m_hresolution );
-    BaseClass::get_value( ifs, &m_vresolution );
-    BaseClass::get_value( ifs, &m_colsused );
-    BaseClass::get_value( ifs, &m_colsimportant );
+    BaseClass::ReadValue( ifs, &m_size );
+    BaseClass::ReadValue( ifs, &m_width );
+    BaseClass::ReadValue( ifs, &m_height );
+    BaseClass::ReadValue( ifs, &m_nplanes );
+    BaseClass::ReadValue( ifs, &m_bpp );
+    BaseClass::ReadValue( ifs, &m_compression );
+    BaseClass::ReadValue( ifs, &m_bitmapsize );
+    BaseClass::ReadValue( ifs, &m_hresolution );
+    BaseClass::ReadValue( ifs, &m_vresolution );
+    BaseClass::ReadValue( ifs, &m_colsused );
+    BaseClass::ReadValue( ifs, &m_colsimportant );
     BMP_HEADER_SWAP_BYTES;
 }
 
 void InfoHeader::write( std::ofstream& ofs )
 {
     BMP_HEADER_SWAP_BYTES;
-    BaseClass::put_value( ofs, m_size );
-    BaseClass::put_value( ofs, m_width );
-    BaseClass::put_value( ofs, m_height );
-    BaseClass::put_value( ofs, m_nplanes );
-    BaseClass::put_value( ofs, m_bpp );
-    BaseClass::put_value( ofs, m_compression );
-    BaseClass::put_value( ofs, m_bitmapsize );
-    BaseClass::put_value( ofs, m_hresolution );
-    BaseClass::put_value( ofs, m_vresolution );
-    BaseClass::put_value( ofs, m_colsused );
-    BaseClass::put_value( ofs, m_colsimportant );
+    BaseClass::WriteValue( ofs, m_size );
+    BaseClass::WriteValue( ofs, m_width );
+    BaseClass::WriteValue( ofs, m_height );
+    BaseClass::WriteValue( ofs, m_nplanes );
+    BaseClass::WriteValue( ofs, m_bpp );
+    BaseClass::WriteValue( ofs, m_compression );
+    BaseClass::WriteValue( ofs, m_bitmapsize );
+    BaseClass::WriteValue( ofs, m_hresolution );
+    BaseClass::WriteValue( ofs, m_vresolution );
+    BaseClass::WriteValue( ofs, m_colsused );
+    BaseClass::WriteValue( ofs, m_colsimportant );
     BMP_HEADER_SWAP_BYTES;
 };
 
-void InfoHeader::swap_bytes()
+void InfoHeader::swapBytes()
 {
     kvs::Endian::Swap( &m_size );
     kvs::Endian::Swap( &m_width );

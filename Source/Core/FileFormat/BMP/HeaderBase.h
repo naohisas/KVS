@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file HeaderBase.h
+ *  @file   HeaderBase.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -20,7 +21,7 @@
 
 
 #ifdef KVS_PLATFORM_BIG_ENDIAN
-#define BMP_HEADER_SWAP_BYTES (swap_bytes())
+#define BMP_HEADER_SWAP_BYTES (swapBytes())
 #else
 #define BMP_HEADER_SWAP_BYTES ((void)0)
 #endif
@@ -34,27 +35,19 @@ namespace bmp
 
 struct HeaderBase
 {
-    void get_value( std::ifstream& ifs, kvs::UInt32* value )
+    template <typename T>
+    static void ReadValue( std::ifstream& ifs, T* value )
     {
-        ifs.read( reinterpret_cast<char*>( value ), sizeof( kvs::UInt32 ) );
+        ifs.read( reinterpret_cast<char*>( value ), sizeof( T ) );
     }
 
-    void get_value( std::ifstream& ifs, kvs::UInt16* value )
+    template <typename T>
+    static void WriteValue( std::ofstream& ofs, T value )
     {
-        ifs.read( reinterpret_cast<char*>( value ), sizeof( kvs::UInt16 ) );
+        ofs.write( reinterpret_cast<char*>( &value ), sizeof( T ) );
     }
 
-    void put_value( std::ofstream& ofs, kvs::UInt32 value )
-    {
-        ofs.write( reinterpret_cast<char*>( &value ), sizeof( kvs::UInt32 ) );
-    }
-
-    void put_value( std::ofstream& ofs, kvs::UInt16 value )
-    {
-        ofs.write( reinterpret_cast<char*>( &value ), sizeof( kvs::UInt16 ) );
-    }
-
-    virtual void swap_bytes() = 0;
+    virtual void swapBytes() = 0;
 };
 
 } // end of namespace bmp

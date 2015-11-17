@@ -1,0 +1,14 @@
+# - Try to find kvs
+# Once done this will define
+# KVS_SUPPORTQT_(LIBRARY|INCLUDE_DIR)
+
+find_package(PkgConfig)
+find_library(KVS_SUPPORTQT_LIBRARY NAMES kvsSupportQT)
+
+if(KVS_SUPPORTQT_LIBRARY)
+	MESSAGE(STATUS "Found kvsSupportQT: ${KVS_SUPPORTQT_LIBRARY}")
+	MESSAGE(STATUS "KVS_SupportQT_INCLUDE_DIR: ${KVS_SUPPORTQT_INCLUDE_DIR}")
+else(KVS_SUPPORTQT_LIBRARY)
+	MESSAGE(STATUS "Not Found: kvsSupportQT")	
+	SET(KVS_FOUND FALSE)
+endif(KVS_SUPPORTQT_LIBRARY)

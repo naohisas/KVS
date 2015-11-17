@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file RGBAColor.cpp
+ *  @file   RGBAColor.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -18,65 +19,57 @@
 namespace kvs
 {
 
-RGBAColor::RGBAColor( float opacity ):
+RGBAColor::RGBAColor( kvs::Real32 a ):
     kvs::RGBColor( 0, 0, 0 ),
-    m_opacity( opacity )
+    m_a( a )
 {
 }
 
-RGBAColor::RGBAColor( kvs::UInt8 red, kvs::UInt8 green, kvs::UInt8 blue, float opacity ):
-    kvs::RGBColor( red, green, blue ),
-    m_opacity( opacity )
+RGBAColor::RGBAColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b, kvs::Real32 a ):
+    kvs::RGBColor( r, g, b ),
+    m_a( a )
 {
 }
 
-RGBAColor::RGBAColor( const kvs::UInt8 rgb[3], float opacity ):
+RGBAColor::RGBAColor( const kvs::UInt8 rgb[3], kvs::Real32 a ):
     kvs::RGBColor( rgb[0], rgb[1], rgb[2] ),
-    m_opacity( opacity )
+    m_a( a )
 {
 }
 
-RGBAColor::RGBAColor( const kvs::RGBColor& rgb, float opacity ):
+RGBAColor::RGBAColor( const kvs::RGBColor& rgb, kvs::Real32 a ):
     kvs::RGBColor( rgb ),
-    m_opacity( opacity )
+    m_a( a )
 {
 }
 
-RGBAColor& RGBAColor::operator = ( const RGBAColor& rgba )
+kvs::RGBAColor& RGBAColor::operator = ( const kvs::RGBAColor& rgba )
 {
-    m_red = rgba.m_red;
-    m_green = rgba.m_green;
-    m_blue = rgba.m_blue;
-    m_opacity = rgba.m_opacity;
+    kvs::RGBColor::set( rgba.r(), rgba.g(), rgba.b() );
+    m_a = rgba.m_a;
     return *this;
 }
 
-RGBAColor& RGBAColor::operator = ( const RGBColor& rgb )
+kvs::RGBAColor& RGBAColor::operator = ( const kvs::RGBColor& rgb )
 {
-    m_red = rgb.r();
-    m_green = rgb.g();
-    m_blue = rgb.b();
-    m_opacity = 1.0f;
+    kvs::RGBColor::set( rgb.r(), rgb.g(), rgb.b() );
+    m_a = 1.0f;
     return *this;
 }
 
-RGBAColor& RGBAColor::operator = ( const kvs::Vec4& rgba )
+kvs::RGBAColor& RGBAColor::operator = ( const kvs::Vec4& rgba )
 {
     KVS_ASSERT( 0.0f <= rgba.x() && rgba.x() <= 1.0f );
     KVS_ASSERT( 0.0f <= rgba.y() && rgba.y() <= 1.0f );
     KVS_ASSERT( 0.0f <= rgba.z() && rgba.z() <= 1.0f );
     KVS_ASSERT( 0.0f <= rgba.w() && rgba.w() <= 1.0f );
 
-    m_red = kvs::Math::Round( rgba.x() * 255.0f );
-    m_green = kvs::Math::Round( rgba.y() * 255.0f );
-    m_blue = kvs::Math::Round( rgba.z() * 255.0f );
-    m_opacity = rgba.w();
+    const kvs::UInt8 r = kvs::Math::Round( rgba.x() * 255.0f );
+    const kvs::UInt8 g = kvs::Math::Round( rgba.y() * 255.0f );
+    const kvs::UInt8 b = kvs::Math::Round( rgba.z() * 255.0f );
+    kvs::RGBColor::set( r, g, b );
+    m_a = rgba.w();
     return *this;
-}
-
-kvs::Vec4 RGBAColor::toVec4() const
-{
-    return kvs::Vec4( toVec3(), m_opacity );
 }
 
 } // end of namespace kvs

@@ -15,6 +15,7 @@
 #include "GL.h"
 #include <string>
 #include <kvs/Message>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace kvs
@@ -28,6 +29,7 @@ namespace detail
 
 bool HasError( const char* file, const int line, const char* func, const char* command )
 {
+#if defined( KVS_ENABLE_OPENGL )
     GLenum error = glGetError();
     if ( error == GL_NO_ERROR ) return false;
 
@@ -47,6 +49,13 @@ bool HasError( const char* file, const int line, const char* func, const char* c
     std::cerr << "\t" << "GL COMMAND: " << command << std::endl;
 
     return true;
+#else
+    kvs::IgnoreUnusedVariable( file );
+    kvs::IgnoreUnusedVariable( line );
+    kvs::IgnoreUnusedVariable( func );
+    kvs::IgnoreUnusedVariable( command );
+    return false;
+#endif
 }
 
 } // end of namespace detail

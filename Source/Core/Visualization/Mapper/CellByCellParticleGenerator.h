@@ -20,6 +20,7 @@
 #include <kvs/Vector3>
 #include <kvs/Math>
 #include <kvs/Camera>
+#include <kvs/CellBase>
 
 
 namespace kvs
@@ -344,6 +345,14 @@ inline const kvs::ValueArray<float> CalculateDensityMap(
     }
 
     return density_map;
+}
+
+inline kvs::Real32 AveragedScalar( const kvs::CellBase* cell )
+{
+    const size_t nnodes = cell->numberOfCellNodes();;
+    const kvs::Real32* S = cell->values();
+    kvs::Real32 Sa = 0; for ( size_t i = 0; i < nnodes; i++ ) { Sa += S[i]; }
+    return Sa / nnodes;
 }
 
 } // end of namespace CellByCellParticleGenerator

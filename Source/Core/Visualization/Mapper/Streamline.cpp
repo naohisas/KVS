@@ -19,46 +19,155 @@
 #include <kvs/RGBColor>
 #include <kvs/Vector3>
 #include <kvs/VolumeObjectBase>
-
-
-namespace
-{
-
-template <typename T>
-inline const kvs::Vec3 GetInterpolatedVector(
-    const size_t vertex_id[8],
-    const float weight[8],
-    const kvs::VolumeObjectBase* volume )
-{
-    const T* values = reinterpret_cast<const T*>( volume->values().data() );
-
-    kvs::Vec3 ret( 0.0f, 0.0f, 0.0f );
-    for ( size_t i = 0; i < 8; i++ )
-    {
-        const size_t index = 3 * vertex_id[i];
-        const float w = weight[i];
-        ret.x() += static_cast<float>( values[ index     ] * w );
-        ret.y() += static_cast<float>( values[ index + 1 ] * w );
-        ret.z() += static_cast<float>( values[ index + 2 ] * w );
-    }
-
-    return ret;
-}
-
-} // end of namespace
+#include <kvs/UniformGrid>
+#include <kvs/RectilinearGrid>
+#include <kvs/TetrahedralCell>
+#include <kvs/HexahedralCell>
+#include <kvs/QuadraticTetrahedralCell>
+#include <kvs/QuadraticHexahedralCell>
+#include <kvs/PyramidalCell>
+#include <kvs/PrismaticCell>
+#include <kvs/CellTreeLocator>
 
 
 namespace kvs
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new streamline class.
- */
-/*===========================================================================*/
-Streamline::Streamline():
-    kvs::StreamlineBase()
+Streamline::StructuredVolumeInterpolator::StructuredVolumeInterpolator(
+    const kvs::StructuredVolumeObject* volume )
 {
+    switch ( volume->gridType() )
+    {
+    case kvs::StructuredVolumeObject::Uniform:
+        m_grid = new kvs::UniformGrid( volume );
+        break;
+    case kvs::StructuredVolumeObject::Rectilinear:
+        m_grid = new kvs::RectilinearGrid( volume );
+        break;
+    default:
+        m_grid = NULL;
+        break;
+    }
+}
+
+Streamline::StructuredVolumeInterpolator::~StructuredVolumeInterpolator()
+{
+    if ( m_grid ) { delete m_grid; }
+}
+
+kvs::Vec3 Streamline::StructuredVolumeInterpolator::interpolatedValue( const kvs::Vec3& point )
+{
+    m_grid->bind( point );
+    return m_grid->vector();
+}
+
+bool Streamline::StructuredVolumeInterpolator::containsInVolume( const kvs::Vec3& point )
+{
+    const kvs::Vec3& min_coord = m_grid->referenceVolume()->minObjectCoord();
+    const kvs::Vec3& max_coord = m_grid->referenceVolume()->maxObjectCoord();
+    if ( point.x() < min_coord.x() || max_coord.x() <= point.x() ) return false;
+    if ( point.y() < min_coord.y() || max_coord.y() <= point.y() ) return false;
+    if ( point.z() < min_coord.z() || max_coord.z() <= point.z() ) return false;
+    return true;
+}
+
+Streamline::UnstructuredVolumeInterpolator::UnstructuredVolumeInterpolator(
+    const kvs::UnstructuredVolumeObject* volume )
+{
+    switch ( volume->cellType() )
+    {
+    case kvs::UnstructuredVolumeObject::Tetrahedra:
+        m_cell = new kvs::TetrahedralCell( volume );
+        break;
+    case kvs::UnstructuredVolumeObject::Hexahedra:
+        m_cell = new kvs::HexahedralCell( volume );
+        break;
+    case kvs::UnstructuredVolumeObject::QuadraticTetrahedra:
+        m_cell = new kvs::QuadraticTetrahedralCell( volume );
+        break;
+    case kvs::UnstructuredVolumeObject::QuadraticHexahedra:
+        m_cell = new kvs::QuadraticHexahedralCell( volume );
+        break;
+    case kvs::UnstructuredVolumeObject::Pyramid:
+        m_cell = new kvs::PyramidalCell( volume );
+        break;
+    case kvs::UnstructuredVolumeObject::Prism:
+        m_cell = new kvs::PrismaticCell( volume );
+        break;
+    default:
+        m_cell = NULL;
+        break;
+    }
+
+    m_locator = new kvs::CellTreeLocator( volume );
+}
+
+Streamline::UnstructuredVolumeInterpolator::~UnstructuredVolumeInterpolator()
+{
+    if ( m_cell ) { delete m_cell; }
+    if ( m_locator ) { delete m_locator; }
+}
+
+kvs::Vec3 Streamline::UnstructuredVolumeInterpolator::interpolatedValue( const kvs::Vec3& point )
+{
+    int index = m_locator->findCell( point );
+    if ( index < 0 ) { return kvs::Vec3::Zero(); }
+
+    m_cell->bindCell( kvs::UInt32( index ) );
+    return m_cell->vector();
+}
+
+bool Streamline::UnstructuredVolumeInterpolator::containsInVolume( const kvs::Vec3& point )
+{
+    const kvs::Vec3& min_obj = m_cell->referenceVolume()->minObjectCoord();
+    const kvs::Vec3& max_obj = m_cell->referenceVolume()->maxObjectCoord();
+    if ( point.x() < min_obj.x() || max_obj.x() <= point.x() ) return false;
+    if ( point.y() < min_obj.y() || max_obj.y() <= point.y() ) return false;
+    if ( point.z() < min_obj.z() || max_obj.z() <= point.z() ) return false;
+    return m_locator->findCell( point ) != -1;
+}
+
+kvs::Vec3 Streamline::EulerIntegrator::next( const kvs::Vec3& point )
+{
+    const kvs::Real32 k0 = step();
+    const kvs::Vec3 v1 = point;
+
+    const kvs::Vec3 k1 = direction( v1 ) * k0;
+    return point + k1;
+}
+
+kvs::Vec3 Streamline::RungeKutta2ndIntegrator::next( const kvs::Vec3& point )
+{
+    const kvs::Real32 k0 = step();
+    const kvs::Vec3 v1 = point;
+
+    const kvs::Vec3 k1 = direction( v1 ) * k0;
+    const kvs::Vec3 v2 = point + k1 / 2.0f;
+    if ( !contains( v2 ) ) { return point; }
+
+    const kvs::Vec3 k2 = direction( v2 ) * k0;
+    return point + k2;
+}
+
+kvs::Vec3 Streamline::RungeKutta4thIntegrator::next( const kvs::Vec3& point )
+{
+    const kvs::Real32 k0 = step();
+    const kvs::Vec3 v1 = point;
+
+    const kvs::Vec3 k1 = direction( v1 ) * k0;
+    const kvs::Vec3 v2 = point + k1 / 2.0f;
+    if ( !contains( v2 ) ) { return point; }
+
+    const kvs::Vec3 k2 = direction( v2 ) * k0;
+    const kvs::Vec3 v3 = point + k2 / 2.0f;
+    if ( !contains( v3 ) ) { return point; }
+
+    const kvs::Vec3 k3 = direction( v3 ) * k0;
+    const kvs::Vec3 v4 = point + k3;
+    if ( !contains( v4 ) ) { return point; }
+
+    const kvs::Vec3 k4 = direction( v4 ) * k0;
+    return point + ( k1 + 2.0f * ( k2 + k3 ) + k4 ) / 6.0f;
 }
 
 /*===========================================================================*/
@@ -77,15 +186,6 @@ Streamline::Streamline(
     BaseClass::setTransferFunction( transfer_function );
     BaseClass::setSeedPoints( seed_points );
     this->exec( volume );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the streamline class.
- */
-/*===========================================================================*/
-Streamline::~Streamline()
-{
 }
 
 /*===========================================================================*/
@@ -131,163 +231,49 @@ Streamline::BaseClass::SuperClass* Streamline::exec( const kvs::ObjectBase* obje
         volume->updateMinMaxValues();
     }
 
-    BaseClass::mapping( volume );
+    Interpolator* interpolator = NULL;
+    switch ( volume->volumeType() )
+    {
+    case kvs::VolumeObjectBase::Structured:
+    {
+        const kvs::StructuredVolumeObject* svolume = kvs::StructuredVolumeObject::DownCast( volume );
+        interpolator = new StructuredVolumeInterpolator( svolume );
+        break;
+    }
+    case kvs::VolumeObjectBase::Unstructured:
+    {
+        const kvs::UnstructuredVolumeObject* uvolume = kvs::UnstructuredVolumeObject::DownCast( volume );
+        interpolator = new UnstructuredVolumeInterpolator( uvolume );
+        break;
+    }
+    default:
+        break;
+    }
+
+    Integrator* integrator = NULL;
+    switch ( m_integration_method )
+    {
+    case BaseClass::Euler:
+        integrator = new EulerIntegrator();
+        break;
+    case BaseClass::RungeKutta2nd:
+        integrator = new RungeKutta2ndIntegrator();
+        break;
+    case BaseClass::RungeKutta4th:
+        integrator = new RungeKutta4thIntegrator();
+        break;
+    default:
+        break;
+    }
+
+    integrator->setInterpolator( interpolator );
+    integrator->setStep( m_integration_interval * m_integration_direction );
+    BaseClass::mapping( integrator );
+
+    delete interpolator;
+    delete integrator;
 
     return this;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Check whether the vertices are accepted or not.
- *  @param  vertices [in] vertices
- *  @return true if the vertices are accepted
- */
-/*===========================================================================*/
-bool Streamline::check_for_acceptance( const std::vector<kvs::Real32>& vertices )
-{
-    kvs::IgnoreUnusedVariable( vertices );
-    return true;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Test whether the streamline is futher integrated or terminated.
- *  @param  current_vertex [in] position of the current vertex
- *  @param  direction [in] direction vector
- *  @param  integration_times [in] integration times
- *  @param  next_vertex [in] position of the next vertex
- *  @return true, if the stremaline is integrated.
- */
-/*===========================================================================*/
-bool Streamline::check_for_termination(
-    const kvs::Vec3& current_vertex,
-    const kvs::Vec3& direction,
-    const size_t integration_times,
-    const kvs::Vec3& next_vertex )
-{
-    kvs::IgnoreUnusedVariable( current_vertex );
-
-    if ( m_enable_boundary_condition )
-    {
-        if ( !BaseClass::check_for_inside_volume( next_vertex ) ) return true;
-    }
-
-    if ( m_enable_vector_length_condition )
-    {
-//        return BaseClass::check_for_vector_length( direction );
-        if ( BaseClass::check_for_vector_length( direction ) ) return true;
-    }
-
-    if ( m_enable_integration_times_condition )
-    {
-//        return BaseClass::check_for_integration_times( integration_times );
-        if ( BaseClass::check_for_integration_times( integration_times ) ) return true;
-    }
-
-    return false;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Calculate the interpolated vector on the seed point.
- *  @param  point [in] seed point
- *  @return interpolated vector
- */
-/*===========================================================================*/
-const kvs::Vec3 Streamline::calculate_vector( const kvs::Vec3& point )
-{
-    const kvs::Vec3 origin( 0.0f, 0.0f, 0.0f );
-    return this->interpolate_vector( point, origin );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Calculate the color.
- *  @param  direction [in] direction vector
- *  @return color
- */
-/*===========================================================================*/
-const kvs::RGBColor Streamline::calculate_color( const kvs::Vec3& direction )
-{
-    const kvs::Real64 min_length = BaseClass::volume()->minValue();
-    const kvs::Real64 max_length = BaseClass::volume()->maxValue();
-    const kvs::Real64 diff = direction.length() - min_length;
-    const kvs::Real64 interval = max_length - min_length;
-    const kvs::UInt8 level = kvs::UInt8( 255.0 * diff / interval );
-
-    return BaseClass::transferFunction().colorMap()[level];
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Interpolates the vertex.
- *  @param  vertex [in] vertex
- *  @param  previous_vector [in] previous vector
- *  @return interpolated vector
- */
-/*===========================================================================*/
-const kvs::Vec3 Streamline::interpolate_vector(
-    const kvs::Vec3& vertex,
-    const kvs::Vec3& previous_vector )
-{
-    kvs::IgnoreUnusedVariable( previous_vector );
-
-    const size_t cell_x = static_cast<size_t>( vertex.x() );
-    const size_t cell_y = static_cast<size_t>( vertex.y() );
-    const size_t cell_z = static_cast<size_t>( vertex.z() );
-
-    const kvs::StructuredVolumeObject* volume = kvs::StructuredVolumeObject::DownCast( BaseClass::volume() );
-    const size_t resolution_x = static_cast<size_t>( volume->resolution().x() );
-    const size_t resolution_y = static_cast<size_t>( volume->resolution().y() );
-//    const size_t resolution_z = static_cast<size_t>( volume->resolution().z() );
-
-    size_t vertex_id[8];
-    vertex_id[0] = cell_z * resolution_x * resolution_y + cell_y * resolution_x + cell_x;
-    vertex_id[1] = vertex_id[0] + 1;
-    vertex_id[2] = vertex_id[1] + resolution_x;
-    vertex_id[3] = vertex_id[2] - 1;
-    vertex_id[4] = vertex_id[0] + resolution_x * resolution_y;
-    vertex_id[5] = vertex_id[4] + 1;
-    vertex_id[6] = vertex_id[5] + resolution_x;
-    vertex_id[7] = vertex_id[6] - 1;
-
-    // Weight.
-    const kvs::Vec3 local_coord(
-        2.0f * ( vertex.x() - cell_x ) - 1.0f,
-        2.0f * ( vertex.y() - cell_y ) - 1.0f,
-        2.0f * ( vertex.z() - cell_z ) - 1.0f );
-
-    const float x_min = local_coord.x() - 1.0f;
-    const float x_max = local_coord.x() + 1.0f;
-    const float y_min = local_coord.y() - 1.0f;
-    const float y_max = local_coord.y() + 1.0f;
-    const float z_min = local_coord.z() - 1.0f;
-    const float z_max = local_coord.z() + 1.0f;
-
-    const float weight[8] = {
-        -x_min * y_min * z_min * 0.125f,
-        x_max  * y_min * z_min * 0.125f,
-        -x_max * y_max * z_min * 0.125f,
-        x_min  * y_max * z_min * 0.125f,
-        x_min  * y_min * z_max * 0.125f,
-        -x_max * y_min * z_max * 0.125f,
-        x_max  * y_max * z_max * 0.125f,
-        -x_min * y_max * z_max * 0.125f };
-
-    // Interpolate.
-    const std::type_info& type = BaseClass::volume()->values().typeInfo()->type();
-    if (      type == typeid( kvs::Int8   ) ) return ::GetInterpolatedVector<kvs::Int8>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::Int16  ) ) return ::GetInterpolatedVector<kvs::Int16>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::Int32  ) ) return ::GetInterpolatedVector<kvs::Int32>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::Int64  ) ) return ::GetInterpolatedVector<kvs::Int64>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::UInt8  ) ) return ::GetInterpolatedVector<kvs::UInt8>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::UInt16 ) ) return ::GetInterpolatedVector<kvs::UInt16>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::UInt32 ) ) return ::GetInterpolatedVector<kvs::UInt32>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::UInt64 ) ) return ::GetInterpolatedVector<kvs::UInt64>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::Real32 ) ) return ::GetInterpolatedVector<kvs::Real32>( vertex_id, weight, BaseClass::volume() );
-    else if ( type == typeid( kvs::Real64 ) ) return ::GetInterpolatedVector<kvs::Real64>( vertex_id, weight, BaseClass::volume() );
-
-    return kvs::Vec3( 0.0f, 0.0f, 0.0f );
 }
 
 } // end of namespace kvs

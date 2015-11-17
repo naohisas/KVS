@@ -388,10 +388,10 @@ void Material::setShininess( const float shininess )
 /*===========================================================================*/
 void Material::apply( void )
 {
-    glMaterialfv( (GLenum)m_face, GL_AMBIENT,   m_ambient );
-    glMaterialfv( (GLenum)m_face, GL_DIFFUSE,   m_diffuse );
-    glMaterialfv( (GLenum)m_face, GL_SPECULAR,  m_specular );
-    glMaterialf(  (GLenum)m_face, GL_SHININESS, m_shininess );
+    KVS_GL_CALL( glMaterialfv( (GLenum)m_face, GL_AMBIENT,   m_ambient ) );
+    KVS_GL_CALL( glMaterialfv( (GLenum)m_face, GL_DIFFUSE,   m_diffuse ) );
+    KVS_GL_CALL( glMaterialfv( (GLenum)m_face, GL_SPECULAR,  m_specular ) );
+    KVS_GL_CALL( glMaterialf(  (GLenum)m_face, GL_SHININESS, m_shininess ) );
 }
 
 } // end of namespace kvs

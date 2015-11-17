@@ -66,7 +66,7 @@ Csv::Csv( const std::string& filename )
  *  @return number of rows
  */
 /*===========================================================================*/
-size_t Csv::nrows() const
+size_t Csv::numberOfRows() const
 {
     return m_table.size();
 }

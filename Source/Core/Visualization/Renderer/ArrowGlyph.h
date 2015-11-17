@@ -51,7 +51,6 @@ public:
 
 private:
 
-    GLUquadricObj* m_cylinder; ///< glyph primitive
     ArrowType m_type; ///< arrow type
     const kvs::VolumeObjectBase* m_volume; ///< pointer to the volume object (reference)
 
@@ -60,7 +59,6 @@ public:
     ArrowGlyph();
     ArrowGlyph( const kvs::VolumeObjectBase* volume );
     ArrowGlyph( const kvs::VolumeObjectBase* volume, const kvs::TransferFunction& transfer_function );
-    virtual ~ArrowGlyph();
 
     void setType( const ArrowType type ) { m_type = type; }
     ArrowType type() const { return m_type; }

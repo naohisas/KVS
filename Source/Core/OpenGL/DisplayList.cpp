@@ -90,7 +90,7 @@ void DisplayList::begin( const GLuint index, const GLenum mode )
         return;
     }
 
-    glNewList( m_id + index, mode );
+    KVS_GL_CALL( glNewList( m_id + index, mode ) );
 }
 
 /*===========================================================================*/
@@ -100,7 +100,7 @@ void DisplayList::begin( const GLuint index, const GLenum mode )
 /*===========================================================================*/
 void DisplayList::end()
 {
-    glEndList();
+    KVS_GL_CALL( glEndList() );
 }
 
 /*===========================================================================*/
@@ -112,8 +112,8 @@ void DisplayList::end()
 /*===========================================================================*/
 bool DisplayList::create( const GLsizei range )
 {
-    m_id = glGenLists( range );
-    if ( m_id == 0 ) return false;
+    KVS_GL_CALL( m_id = glGenLists( range ) );
+    if ( m_id == 0 ) { return false; }
 
     m_range = range;
 
@@ -127,9 +127,12 @@ bool DisplayList::create( const GLsizei range )
 /*===========================================================================*/
 void DisplayList::clear()
 {
-    if ( glIsList( m_id ) == GL_TRUE )
+    GLboolean valid = GL_FALSE;
+    KVS_GL_CALL( result = glIsList( m_id ) );
+
+    if ( valid == GL_TRUE )
     {
-        glDeleteLists( m_id, m_range );
+        KVS_GL_CALL( glDeleteLists( m_id, m_range ) );
     }
 }
 
@@ -147,7 +150,7 @@ void DisplayList::render( const GLuint index )
         return;
     }
 
-    glCallList( m_id + index );
+    KVS_GL_CALL( glCallList( m_id + index ) );
 }
 
 } // end of namespace kvs

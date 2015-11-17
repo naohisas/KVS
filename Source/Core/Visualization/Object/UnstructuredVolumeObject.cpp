@@ -176,7 +176,8 @@ std::ostream& operator << ( std::ostream& os, const UnstructuredVolumeObject& ob
     // @TODO Cannot instance the object that is a abstract class here (error:C2259).
 #endif
 #else
-    os << static_cast<const kvs::VolumeObjectBase&>( object ) << std::endl;
+//    os << static_cast<const kvs::VolumeObjectBase&>( object ) << std::endl;
+    static_cast<const kvs::VolumeObjectBase&>( object ).print( os );
 #endif
     os << "Cell type:  " << ::CellTypeName[ object.cellType() ] << std::endl;
     os << "Number of nodes:  " << object.numberOfNodes() << std::endl;

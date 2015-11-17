@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file InfoHeader.h
+ *  @file   InfoHeader.h
+ *  @auhtor Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -45,8 +46,8 @@ public:
 private:
 
     kvs::UInt32 m_size; ///< size of this structure (40 bytes)
-    kvs::UInt32 m_width; ///< image width
-    kvs::UInt32 m_height; ///< image height
+    kvs::Int32 m_width; ///< image width
+    kvs::Int32 m_height; ///< image height
     kvs::UInt16 m_nplanes; ///< number of color planes (always 1)
     kvs::UInt16 m_bpp; ///< bit per pixel (1, 4, 8, 16 or 24)
     kvs::UInt32 m_compression; ///< compression type (0, 1, 2 or 3)
@@ -58,20 +59,20 @@ private:
 
 public:
 
-    InfoHeader();
+    InfoHeader() {}
     InfoHeader( std::ifstream& ifs );
 
-    kvs::UInt32 size() const;
-    kvs::UInt32 width() const;
-    kvs::UInt32 height() const;
-    kvs::UInt16 nplanes() const;
-    kvs::UInt16 bpp() const;
-    kvs::UInt32 compression() const;
-    kvs::UInt32 bitmapsize() const;
-    kvs::UInt32 hresolution() const;
-    kvs::UInt32 vresolution() const;
-    kvs::UInt32 colsused() const;
-    kvs::UInt32 colsimportant() const;
+    kvs::UInt32 size() const { return m_size; }
+    kvs::Int32 width() const { return m_width; }
+    kvs::Int32 height() const { return m_height; }
+    kvs::UInt16 nplanes() const { return m_nplanes; }
+    kvs::UInt16 bpp() const { return m_bpp; }
+    kvs::UInt32 compression() const { return m_compression; }
+    kvs::UInt32 bitmapsize() const { return m_bitmapsize; }
+    kvs::UInt32 hresolution() const { return m_hresolution; }
+    kvs::UInt32 vresolution() const { return m_vresolution; }
+    kvs::UInt32 colsused() const { return m_colsused; }
+    kvs::UInt32 colsimportant() const { return m_colsimportant; }
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     void read( std::ifstream& ifs );
@@ -79,7 +80,7 @@ public:
 
 private:
 
-    void swap_bytes();
+    void swapBytes();
 };
 
 } // end of namespace bmp

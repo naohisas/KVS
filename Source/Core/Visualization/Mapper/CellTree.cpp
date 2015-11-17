@@ -146,7 +146,15 @@ private:
 
 public:
 
-    Splitter() {}
+    Splitter()
+    {
+        m_index = 0;
+        m_min[0] = m_min[1] = m_min[2] = 0.0f;
+        m_max[0] = m_max[1] = m_max[2] = 0.0f;
+        m_nodes = NULL;
+        m_pc = NULL;
+    }
+
     ~Splitter() {}
 
 public:
@@ -172,7 +180,7 @@ public:
 
     bool check()
     {
-        return ( &m_nodes != NULL );
+        return ( m_nodes != NULL );
     }
 
     void run()
@@ -183,8 +191,8 @@ public:
     void split( kvs::UInt32 index, kvs::Real32 min[3], kvs::Real32 max[3] )
     {
         std::vector<kvs::CellTree::Node>& nodes = *m_nodes;
-        kvs::UInt32 start = nodes[index].start;
-        kvs::UInt32 size  = nodes[index].size;
+        kvs::UInt32 start = nodes[index].leaf.start;
+        kvs::UInt32 size  = nodes[index].leaf.size;
 
         // if size is less than the maxium bucket size, don't do spliting any more
         if ( size < m_leafsize ) { return; }
@@ -212,16 +220,16 @@ public:
 
                 // (distance from center to min) / (distance from max to min) * nbuckets, of a certain dimension
                 int ind = (int)( (cen-min[d])*iext[d] );
-                if ( ind<0 ) { ind = 0; } // how can ind < 0 ??? 
-                if ( ind>=nbuckets ) { ind = nbuckets-1; } // how can ind > nbuckets??
+                if ( ind < 0 ) { ind = 0; } // how can ind < 0 ??? 
+                if ( ind >= int( nbuckets ) ) { ind = nbuckets-1; } // how can ind > nbuckets??
 
                 b[d][ind].add( pc->min[d], pc->max[d] );
             }
         }
 
         float cost = std::numeric_limits<float>::max();
-        float plane;
-        unsigned int dim;
+        float plane = 0.0f;
+        unsigned int dim = 0;
 
         // This part loops through every buckets(6) in all the dimension(3)
         // to determine the best spliting plane
@@ -523,14 +531,14 @@ public:
                     // (distance from center to min) / (distance from max to min) * nbuckets, of a certain dimension
                     int ind = (int)( (cen-min[d])*iext[d] );
                     if ( ind < 0 ) { ind = 0; } // how can ind < 0 ??? 
-                    if ( ind >= nbuckets ) { ind = nbuckets - 1; } // how can ind > nbuckets??
+                    if ( ind >= int( nbuckets ) ) { ind = nbuckets - 1; } // how can ind > nbuckets??
                     b[d][ind].add( pc->min[d], pc->max[d] );
                 }
             }
 
             float cost = std::numeric_limits<float>::max();
-            float plane;
-            unsigned int dim;
+            float plane = 0.0f;
+            unsigned int dim = 0;
 
             // This part loops through every buckets(6) in all the dimension(3)
             // to determine the best spliting plane
@@ -586,7 +594,10 @@ public:
                 std::nth_element( begin, mid, end, CenterOrder( dim ) );
             }
 
-            float lmin[3], lmax[3], rmin[3], rmax[3];
+            float lmin[3] = {0.0f, 0.0f, 0.0f};
+            float lmax[3] = {0.0f, 0.0f, 0.0f};
+            float rmin[3] = {0.0f, 0.0f, 0.0f};
+            float rmax[3] = {0.0f, 0.0f, 0.0f};
 
             // find each part's left right bounds
             FindMinMax( begin, mid, lmin, lmax );
@@ -657,11 +668,11 @@ public:
                 {
                     mask.set( nn-ct.nodes.begin() );
                     unsigned int left = ni->left();
-                    if ( m_nodes2[left].isLeaf() ) { m_nodes2[left].start += size1; }
+                    if ( m_nodes2[left].isLeaf() ) { m_nodes2[left].leaf.start += size1; }
                     *(nn++) = m_nodes2[left];
 
                     mask.set( nn-ct.nodes.begin() );
-                    if ( m_nodes2[left+1].isLeaf() ) { m_nodes2[left+1].start += size1; }
+                    if ( m_nodes2[left+1].isLeaf() ) { m_nodes2[left+1].leaf.start += size1; }
                     *(nn++) = m_nodes2[left+1];
                 }
                 ni->setChildren( nn-ct.nodes.begin()-2 );
@@ -675,8 +686,8 @@ public:
 
     void split( unsigned int index, float min[3], float max[3] )
     {
-        unsigned int start = m_nodes[index].start;
-        unsigned int size = m_nodes[index].size;
+        unsigned int start = m_nodes[index].leaf.start;
+        unsigned int size = m_nodes[index].leaf.size;
 
         if ( size < m_leafsize ) { return; } // if size is less than the maxium bucket size, don't do spliting any more
 
@@ -704,14 +715,14 @@ public:
                 int ind = (int)( (cen-min[d])*iext[d] );
 
                 if ( ind < 0 ) { ind = 0; } // how can ind < 0 ???
-                if ( ind >= nbuckets ) { ind = nbuckets-1; } // how can ind > nbuckets??
+                if ( ind >= int( nbuckets ) ) { ind = nbuckets-1; } // how can ind > nbuckets??
                 b[d][ind].add( pc->min[d], pc->max[d] );
             }
         }
 
         float cost = std::numeric_limits<float>::max();
-        float plane;
-        unsigned int dim;
+        float plane = 0.0f;
+        unsigned int dim = 0;
 
         // This part loops through every buckets(6) in all the dimension(3)
         // to determine the best spliting plane

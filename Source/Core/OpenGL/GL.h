@@ -48,6 +48,8 @@
 #endif
 #endif
 
+#if defined( KVS_ENABLE_OPENGL )
+
 // GLEW header file 'glew.h' must be included before the OpenGL header files.
 #include <GL/glew.h>
 
@@ -60,6 +62,11 @@
 #include <GL/glu.h>
 #endif
 
+#else
+
+#include "GLdef.h"
+
+#endif
 
 namespace kvs
 {
@@ -78,16 +85,74 @@ bool HasError( const char* file, const int line, const char* func, const char* c
 
 } // end of namespace kvs
 
+/*===========================================================================*/
+/**
+ *  @def KVS_GL_CALL( command )
+ *  A macro for OpenGL command safe calling. An error checking will be done
+ *  before and after calling the command when the debug option (KVS_ENABLE_DEBUG)
+ *  is available.
+ */
+/*===========================================================================*/
 
-#if defined KVS_ENABLE_DEBUG
+/*===========================================================================*/
+/**
+ *  @def KVS_GL_CALL_BEG( command )
+ *  A macro for OpenGL command safe calling. An error checking will be done
+ *  before calling the command when the debug option (KVS_ENABLE_DEBUG)
+ *  is available. This is for calling glBegin function.
+ */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/**
+ *  @def KVS_GL_CALL_END( command )
+ *  A macro for OpenGL command safe calling. An error checking will be done
+ *  after calling the command when the debug option (KVS_ENABLE_DEBUG)
+ *  is available. This is for calling glEnd function.
+ */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/**
+ *  @def KVS_GL_CALL_VER( command )
+ *  A macro for OpenGL command calling without error checking. This is for
+ *  calling glVertex, glNormal, glColor, and etc. which will be exectuted
+ *  between glBegin and glEnd functions.
+ */
+/*===========================================================================*/
+
+#if defined( KVS_ENABLE_OPENGL )
+
+#if defined( KVS_ENABLE_DEBUG )
 #define KVS_GL_CALL( command )                                          \
     KVS_MACRO_MULTI_STATEMENT_BEGIN                                     \
     if ( kvs::GL::detail::HasError( KVS_MACRO_FILE, KVS_MACRO_LINE, KVS_MACRO_FUNC, "Unknown" ) ) { KVS_BREAKPOINT; } \
     command;                                                            \
     if ( kvs::GL::detail::HasError( KVS_MACRO_FILE, KVS_MACRO_LINE, KVS_MACRO_FUNC, #command ) ) { KVS_BREAKPOINT; } \
     KVS_MACRO_MULTI_STATEMENT_END
+#define KVS_GL_CALL_BEG( command )                                      \
+    KVS_MACRO_MULTI_STATEMENT_BEGIN                                     \
+    if ( kvs::GL::detail::HasError( KVS_MACRO_FILE, KVS_MACRO_LINE, KVS_MACRO_FUNC, "Unknown" ) ) { KVS_BREAKPOINT; } \
+    command;                                                            \
+    KVS_MACRO_MULTI_STATEMENT_END
+#define KVS_GL_CALL_END( command )                                      \
+    KVS_MACRO_MULTI_STATEMENT_BEGIN                                     \
+    command;                                                            \
+    if ( kvs::GL::detail::HasError( KVS_MACRO_FILE, KVS_MACRO_LINE, KVS_MACRO_FUNC, #command ) ) { KVS_BREAKPOINT; } \
+    KVS_MACRO_MULTI_STATEMENT_END
+#define KVS_GL_CALL_VER( command ) ( command )
 #else
 #define KVS_GL_CALL( command ) ( command )
-#endif
+#define KVS_GL_CALL_BEG( command ) ( command )
+#define KVS_GL_CALL_END( command ) ( command )
+#define KVS_GL_CALL_VER( command ) ( command )
+#endif // KVS_ENABLE_DEBUG
+
+#else
+#define KVS_GL_CALL( command )
+#define KVS_GL_CALL_BEG( command )
+#define KVS_GL_CALL_END( command )
+#define KVS_GL_CALL_VER( command )
+#endif // KVS_ENABLE_OPENGL
 
 #endif // KVS__GL_H_INCLUDE

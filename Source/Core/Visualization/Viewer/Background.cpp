@@ -229,12 +229,12 @@ void Background::apply_gradation_color()
             p.loadIdentity();
             {
                 kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-                glBegin( GL_QUADS );
-                glColor3ub( m_color[0].r(), m_color[0].g(), m_color[0].b() ); glVertex2d( 0.0, 0.0 );
-                glColor3ub( m_color[1].r(), m_color[1].g(), m_color[1].b() ); glVertex2d( 1.0, 0.0 );
-                glColor3ub( m_color[2].r(), m_color[2].g(), m_color[2].b() ); glVertex2d( 1.0, 1.0 );
-                glColor3ub( m_color[3].r(), m_color[3].g(), m_color[3].b() ); glVertex2d( 0.0, 1.0 );
-                glEnd();
+                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+                KVS_GL_CALL_VER( glColor3ub( m_color[0].r(), m_color[0].g(), m_color[0].b() ) ); KVS_GL_CALL_VER( glVertex2d( 0.0, 0.0 ) );
+                KVS_GL_CALL_VER( glColor3ub( m_color[1].r(), m_color[1].g(), m_color[1].b() ) ); KVS_GL_CALL_VER( glVertex2d( 1.0, 0.0 ) );
+                KVS_GL_CALL_VER( glColor3ub( m_color[2].r(), m_color[2].g(), m_color[2].b() ) ); KVS_GL_CALL_VER( glVertex2d( 1.0, 1.0 ) );
+                KVS_GL_CALL_VER( glColor3ub( m_color[3].r(), m_color[3].g(), m_color[3].b() ) ); KVS_GL_CALL_VER( glVertex2d( 0.0, 1.0 ) );
+                KVS_GL_CALL_END( glEnd() );
             }
         }
     }
@@ -279,16 +279,15 @@ void Background::apply_image()
             p.loadIdentity();
             {
                 kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-                glBegin( GL_QUADS );
-                glTexCoord2f( 0.0, 0.0 ); glVertex2f(  1.0,  1.0 );
-                glTexCoord2f( 0.0, 1.0 ); glVertex2f(  1.0,  0.0 );
-                glTexCoord2f( 1.0, 1.0 ); glVertex2f(  0.0,  0.0 );
-                glTexCoord2f( 1.0, 0.0 ); glVertex2f(  0.0,  1.0 );
-                glEnd();
+                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  1.0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  0.0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  0.0 ) );
+                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  1.0 ) );
+                KVS_GL_CALL_END( glEnd() );
             }
         }
     }
 }
 
 } // end of namespace kvs
-

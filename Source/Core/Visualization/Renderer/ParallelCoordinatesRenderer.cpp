@@ -25,25 +25,25 @@ namespace
 
 void BeginDraw()
 {
-    GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
+    GLint vp[4]; kvs::OpenGL::GetIntegerv( GL_VIEWPORT, vp );
     const GLint left = vp[0];
     const GLint bottom = vp[1];
     const GLint right = vp[2];
     const GLint top = vp[3];
 
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
-    glMatrixMode( GL_MODELVIEW );  glPushMatrix(); glLoadIdentity();
-    glMatrixMode( GL_PROJECTION ); glPushMatrix(); glLoadIdentity();
-    glOrtho( left, right, top, bottom, -1, 1 ); // The origin is upper-left.
-    glDisable( GL_DEPTH_TEST );
+    kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW ); kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
+    kvs::OpenGL::SetMatrixMode( GL_PROJECTION ); kvs::OpenGL::PushMatrix(); kvs::OpenGL::LoadIdentity();
+    kvs::OpenGL::SetOrtho( left, right, top, bottom, -1, 1 ); // The origin is upper-left.
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
 }
 
 void EndDraw()
 {
-    glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
-    glPopMatrix();
-    glPopAttrib();
+    kvs::OpenGL::PopMatrix();
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
+    kvs::OpenGL::PopMatrix();
+    kvs::OpenGL::PopAttrib();
 }
 
 } // end of namespace
@@ -111,7 +111,7 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
 
     BaseClass::startTimer();
 
-    glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
 
     // Anti-aliasing.
     if ( m_enable_anti_aliasing )
@@ -121,20 +121,20 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
         {
             GLint buffers = 0;
             GLint samples = 0;
-            glGetIntegerv( GL_SAMPLE_BUFFERS, &buffers );
-            glGetIntegerv( GL_SAMPLES, &samples );
-            if ( buffers > 0 && samples > 1 ) glEnable( GL_MULTISAMPLE );
+            kvs::OpenGL::GetIntegerv( GL_SAMPLE_BUFFERS, &buffers );
+            kvs::OpenGL::GetIntegerv( GL_SAMPLES, &samples );
+            if ( buffers > 0 && samples > 1 ) kvs::OpenGL::Enable( GL_MULTISAMPLE );
         }
         else
 #endif
         {
-            glEnable( GL_LINE_SMOOTH );
-            glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+            kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+            KVS_GL_CALL( glHint( GL_LINE_SMOOTH_HINT, GL_NICEST ) );
         }
     }
 
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     ::BeginDraw();
 
@@ -155,12 +155,12 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
     {
         if ( !table->insideRange( i ) ) continue;
 
-        glLineWidth( m_line_width );
-        glBegin( GL_LINE_STRIP );
+        KVS_GL_CALL( glLineWidth( m_line_width ) );
+        KVS_GL_CALL_BEG( glBegin( GL_LINE_STRIP ) );
 
         const kvs::Real64 color_value = color_axis_values[i].to<kvs::Real64>();
         const kvs::RGBColor color = m_color_map.at( static_cast<float>( color_value ) );
-        glColor4ub( color.r(), color.g(), color.b(), m_line_opacity );
+        KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), m_line_opacity ) );
 
         for ( size_t j = 0; j < naxes; j++ )
         {
@@ -170,15 +170,13 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
 
             const kvs::Real64 x = m_left_margin + stride * j;
             const kvs::Real64 y = y1 - ( y1 - y0 ) * ( value - min_value ) / ( max_value - min_value );
-            glVertex2d( x, y );
+            KVS_GL_CALL_VER( glVertex2d( x, y ) );
         }
 
-        glEnd();
+        KVS_GL_CALL_END( glEnd() );
     }
 
     ::EndDraw();
-
-    glPopAttrib();
 
     BaseClass::stopTimer();
 }

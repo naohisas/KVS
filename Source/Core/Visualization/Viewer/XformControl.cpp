@@ -12,9 +12,6 @@
  */
 /****************************************************************************/
 #include "XformControl.h"
-#if KVS_ENABLE_DEPRECATED
-#include <kvs/OpenGL>
-#endif
 
 
 namespace kvs

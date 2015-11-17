@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   TransferFunction.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -42,10 +43,8 @@ class Argument : public kvsview::Argument::Common
 public:
 
     Argument( int argc, char** argv );
-
-    const bool hasColorMapOption( void );
-
-    const bool hasOpacityMapOption( void );
+    const bool hasColorMapOption();
+    const bool hasOpacityMapOption();
 };
 
 /*===========================================================================*/
@@ -57,8 +56,8 @@ class Main
 {
 protected:
 
-    int         m_argc;        ///< argument count
-    char**      m_argv;        ///< argument values
+    int m_argc; ///< argument count
+    char** m_argv; ///< argument values
     std::string m_input_name;  ///< input filename
     std::string m_output_name; ///< output filename
 
@@ -68,7 +67,7 @@ public:
 
 public:
 
-    const bool exec( void );
+    const bool exec();
 };
 
 } // end of namespace TransferFunction
