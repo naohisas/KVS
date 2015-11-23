@@ -64,7 +64,7 @@ const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
 /*===========================================================================*/
 const CameraCoordinate NormalizedDeviceCoordinate::toCameraCoordinate( const kvs::Camera* camera ) const
 {
-    const kvs::Xform xform( camera->projectionMatrix() * camera->viewingMatrix() );
+    const kvs::Xform xform( camera->projectionMatrix() );
     const kvs::Vec3 position = xform.inverse().project( m_position );
     return CameraCoordinate( position, camera );
 }
