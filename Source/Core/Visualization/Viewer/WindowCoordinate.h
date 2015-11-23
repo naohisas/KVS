@@ -16,6 +16,7 @@
 #define KVS__WINDOW_COORDINATE_H_INCLUDE
 
 #include <kvs/Vector3>
+#include <kvs/Vector4>
 
 
 namespace kvs
@@ -49,6 +50,7 @@ public:
 public:
 
     WindowCoordinate( const kvs::Vec3& position, const int x, const int y, const size_t width, const size_t height );
+    WindowCoordinate( const kvs::Vec3& position, const kvs::Vec4i& viewport );
 
     const kvs::Vec3& position() const { return m_position; }
     const NormalizedDeviceCoordinate toNormalizedDeviceCoordinate() const;
