@@ -11,8 +11,7 @@
  *  $Id: Material.h 1103 2012-04-21 05:32:51Z s.yamada0808@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__MATERIAL_H_INCLUDE
-#define KVS__MATERIAL_H_INCLUDE
+#pragma once
 
 #if KVS_ENABLE_DEPRECATED
 
@@ -327,5 +326,3 @@ const Material MATERIAL_YELLOW_RUBBER
 } // end of namespace kvs
 
 #endif
-
-#endif // KVS__MATERIAL_H_INCLUDE

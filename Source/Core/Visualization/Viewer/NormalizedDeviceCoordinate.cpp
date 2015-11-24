@@ -63,7 +63,7 @@ const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
  */
 /*===========================================================================*/
 const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
-    const kvs::Vec4& viewport ) const
+    const kvs::Vec4i& viewport ) const
 {
     return this->toWindowCoordinate(
         viewport[0],

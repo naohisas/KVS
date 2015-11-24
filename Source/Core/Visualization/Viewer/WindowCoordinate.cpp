@@ -90,7 +90,7 @@ WindowCoordinate::WindowCoordinate(
  *  @param  viewport [in] viewport vector
  */
 /*===========================================================================*/
-WindowCoordinate::WindowCoordinate( const kvs::Vec3& position, const kvs::Vec4i& viewport )
+WindowCoordinate::WindowCoordinate( const kvs::Vec3& position, const kvs::Vec4i& viewport ):
     m_position( position ),
     m_x( viewport[0] ),
     m_y( viewport[1] ),

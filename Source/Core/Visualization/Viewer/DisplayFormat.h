@@ -12,9 +12,7 @@
  *  $Id: DisplayFormat.h 1514 2013-04-09 07:14:05Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__DISPLAY_FORMAT_H_INCLUDE
-#define KVS__DISPLAY_FORMAT_H_INCLUDE
-
+#pragma once
 
 namespace kvs
 {
@@ -61,5 +59,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__DISPLAY_FORMAT_H_INCLUDE

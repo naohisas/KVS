@@ -12,8 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__NORMALIZED_DEVICE_COORDINATE_H_INCLUDE
-#define KVS__NORMALIZED_DEVICE_COORDINATE_H_INCLUDE
+#pragma once
 
 #include <kvs/Vector3>
 #include <kvs/Vector4>
@@ -48,5 +47,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__NORMALIZED_DEVICE_COORDINATE_H_INCLUDE

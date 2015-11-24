@@ -12,8 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__WINDOW_COORDINATE_H_INCLUDE
-#define KVS__WINDOW_COORDINATE_H_INCLUDE
+#pragma once
 
 #include <kvs/Vector3>
 #include <kvs/Vector4>
@@ -57,5 +56,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__WINDOW_COORDINATE_H_INCLUDE

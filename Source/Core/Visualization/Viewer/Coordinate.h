@@ -12,13 +12,10 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__COORDINATE_H_INCLUDE
-#define KVS__COORDINATE_H_INCLUDE
+#pragma once
 
 #include "ObjectCoordinate.h"
 #include "WorldCoordinate.h"
 #include "CameraCoordinate.h"
 #include "NormalizedDeviceCoordinate.h"
 #include "WindowCoordinate.h"
-
-#endif // KVS__COORDINATE_H_INCLUDE

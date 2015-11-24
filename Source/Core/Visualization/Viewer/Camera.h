@@ -12,14 +12,14 @@
  *  $Id: Camera.h 1791 2014-07-24 06:51:25Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__CAMERA_H_INCLUDE
-#define KVS__CAMERA_H_INCLUDE
+#pragma once
 
 #include <kvs/XformControl>
 #include <kvs/Vector2>
 #include <kvs/Vector3>
 #include <kvs/Matrix33>
 #include <kvs/ColorImage>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -33,7 +33,6 @@ namespace kvs
 class Camera : public kvs::XformControl
 {
 public:
-
     enum ProjectionType
     {
         Perspective = 0,
@@ -42,7 +41,6 @@ public:
     };
 
 private:
-
     kvs::Vec3 m_transform_center; // transform center
     ProjectionType m_projection_type; ///< projection type
     float m_field_of_view; ///< field of view [deg]
@@ -56,7 +54,6 @@ private:
     size_t m_window_height; ///< window height
 
 public:
-
     Camera();
     virtual ~Camera();
 
@@ -108,54 +105,53 @@ public:
 public:
 
 //deprecated unused
-    const kvs::Mat4 modelViewMatrix() const;
+    KVS_DEPRECATED( const kvs::Mat4 modelViewMatrix() const );
 //deprecated unused
-    const kvs::Mat4 projectionModelViewMatrix() const;
+    KVS_DEPRECATED( const kvs::Mat4 projectionModelViewMatrix() const );
 //deprecated unused
-    void getProjectionMatrix( float (*projection)[16] ) const;
+    KVS_DEPRECATED( void getProjectionMatrix( float (*projection)[16] ) const );
 //deprecated unused
-    void getModelViewMatrix( float (*modelview)[16] ) const;
+    KVS_DEPRECATED( void getModelViewMatrix( float (*modelview)[16] ) const );
 //deprecated unused
-    void getProjectionModelViewMatrix( float (*projection_modelview)[16] ) const;
+    KVS_DEPRECATED( void getProjectionModelViewMatrix( float (*projection_modelview)[16] ) const );
 //deprecated unused
-    void getProjectionModelViewMatrix(
+    KVS_DEPRECATED( void getProjectionModelViewMatrix(
         const float projection[16],
         const float modelview[16],
-        float (*projection_modelview)[16] ) const;
-    void getCombinedMatrix( float (*combined)[16] ) const;
+        float (*projection_modelview)[16] ) const );
+    KVS_DEPRECATED( void getCombinedMatrix( float (*combined)[16] ) const );
 //deprecated unused
-    void getCombinedMatrix(
+    KVS_DEPRECATED( void getCombinedMatrix(
         const float projection[16],
         const float modelview[16],
-        float (*combined)[16] ) const;
+        float (*combined)[16] ) const );
+
 //deprecated unused
-    const kvs::Vec2 projectObjectToWindow(
+    KVS_DEPRECATED( const kvs::Vec2 projectObjectToWindow(
         float  p_obj_x,
         float  p_obj_y,
         float  p_obj_z,
-        float* depth = NULL ) const;
+        float* depth = NULL ) const );
 //deprecated used at ObjectBase.cpp and ObjectManager.cpp
-    const kvs::Vec2 projectObjectToWindow( const kvs::Vec3& p_obj, float* depth = NULL ) const;
+    KVS_DEPRECATED( const kvs::Vec2 projectObjectToWindow( const kvs::Vec3& p_obj, float* depth = NULL ) const );
 //deprecated unused
-    const kvs::Vec3 projectWindowToObject( const kvs::Vec2& p_win, float depth = 0.0 ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectWindowToObject( const kvs::Vec2& p_win, float depth = 0.0 ) const );
 //deprecated unused
-    const kvs::Vec3 projectWindowToCamera( const kvs::Vec2& p_win, float depth = 0.0 ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectWindowToCamera( const kvs::Vec2& p_win, float depth = 0.0 ) const );
 //deprecated unused
-    const kvs::Vec3 projectWindowToWorld( const kvs::Vec2& p_win, float depth = 0.0 ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectWindowToWorld( const kvs::Vec2& p_win, float depth = 0.0 ) const );
 //deprecated unused
-    const kvs::Vec3 projectObjectToCamera( const kvs::Vec3& p_obj ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectObjectToCamera( const kvs::Vec3& p_obj ) const );
 //deprecated unused
-    const kvs::Vec3 projectCameraToObject( const kvs::Vec3& p_cam ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectCameraToObject( const kvs::Vec3& p_cam ) const );
 //deprecated used at Light.cpp
-    const kvs::Vec3 projectWorldToCamera( const kvs::Vec3& p_wld ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectWorldToCamera( const kvs::Vec3& p_wld ) const );
 //deprecated unused
-    const kvs::Vec3 projectCameraToWorld( const kvs::Vec3& p_cam ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectCameraToWorld( const kvs::Vec3& p_cam ) const );
 //deprecated used at Shader.cpp, HAVSVolumeRenderer and RayCastingRenderer.cpp
-    const kvs::Vec3 projectWorldToObject( const kvs::Vec3& p_wld ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectWorldToObject( const kvs::Vec3& p_wld ) const );
 //deprecated unused
-    const kvs::Vec3 projectObjectToWorld( const kvs::Vec3& p_obj ) const;
+    KVS_DEPRECATED( const kvs::Vec3 projectObjectToWorld( const kvs::Vec3& p_obj ) const );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__CAMERA_H_INCLUDE

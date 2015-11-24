@@ -12,8 +12,7 @@
  *  $Id: Background.h 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__BACKGROUND_H_INCLUDE
-#define KVS__BACKGROUND_H_INCLUDE
+#pragma once
 
 #include <kvs/RGBAColor>
 #include <kvs/ColorImage>
@@ -51,16 +50,16 @@ protected:
 public:
 
     Background();
-    Background( const kvs::RGBAColor& color );
-    Background( const kvs::RGBAColor& color1, const kvs::RGBAColor& color2 );
-    Background( const kvs::RGBAColor& color0, const kvs::RGBAColor& color1, const kvs::RGBAColor& color2, const kvs::RGBAColor& color3 );
+    Background( const kvs::RGBAColor& c );
+    Background( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1 );
+    Background( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1, const kvs::RGBAColor& c2, const kvs::RGBAColor& c3 );
     virtual ~Background();
 
     Background& operator = ( const Background& bg );
 
-    void setColor( const kvs::RGBAColor& color );
-    void setColor( const kvs::RGBAColor& color0, const kvs::RGBAColor& color1 );
-    void setColor( const kvs::RGBAColor& color0, const kvs::RGBAColor& color1, const kvs::RGBAColor& color2, const kvs::RGBAColor& color3 );
+    void setColor( const kvs::RGBAColor& c );
+    void setColor( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1 );
+    void setColor( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1, const kvs::RGBAColor& c2, const kvs::RGBAColor& c3 );
     void setImage( const kvs::ColorImage& image );
 
     const kvs::RGBColor& color( size_t index = 0 ) const;
@@ -75,5 +74,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__BACKGROUND_H_INCLUDE

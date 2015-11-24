@@ -12,8 +12,7 @@
  *  $Id: ScreenBase.h 1570 2013-05-09 08:32:56Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__SCREEN_BASE_H_INCLUDE
-#define KVS__SCREEN_BASE_H_INCLUDE
+#pragma once
 
 #include <string>
 #include <kvs/DisplayFormat>
@@ -102,5 +101,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SCREEN_BASE_H_INCLUDE

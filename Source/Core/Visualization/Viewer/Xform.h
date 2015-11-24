@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Xform.h
+ *  @file   Xform.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: Xform.h 1539 2013-04-16 11:52:28Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__XFORM_H_INCLUDE
-#define KVS__XFORM_H_INCLUDE
+#pragma once
 
 #include <kvs/Vector3>
 #include <kvs/Matrix33>
@@ -72,33 +72,30 @@ namespace kvs
 class Xform
 {
 private:
-    kvs::Matrix44f m_matrix;
+    kvs::Mat4 m_matrix; ///< xform matrix
 
 public:
     Xform();
-    Xform(
-        const kvs::Vector3f&  translation,
-        const kvs::Vector3f&  scaling,
-        const kvs::Matrix33f& rotation );
-    explicit Xform( const kvs::Matrix44f& mat );
+    Xform( const kvs::Vec3& t, const kvs::Vec3& s, const kvs::Mat3& r );
+    explicit Xform( const kvs::Mat4& mat );
 
-    const kvs::Vector3f translation() const;
-    const kvs::Matrix33f rotation() const;
-    const kvs::Vector3f scaling() const;
-    const kvs::Matrix33f scaledRotation() const;
+    const kvs::Vec3 translation() const;
+    const kvs::Mat3 rotation() const;
+    const kvs::Vec3 scaling() const;
+    const kvs::Mat3 scaledRotation() const;
 
-    const kvs::Vector3f transform( const kvs::Vector3f& pos ) const;
-    const kvs::Vector3f transformNormal( const kvs::Vector3f& normal ) const;
-    const kvs::Vector3f project( const kvs::Vector3f& pos ) const;
+    const kvs::Vec3 transform( const kvs::Vec3& pos ) const;
+    const kvs::Vec3 transformNormal( const kvs::Vec3& normal ) const;
+    const kvs::Vec3 project( const kvs::Vec3& pos ) const;
 
     const kvs::Xform inverse() const;
-    const kvs::Matrix44f toMatrix() const;
+    const kvs::Mat4 toMatrix() const;
     void toArray( float array[16] ) const;
 
     static const kvs::Xform FromArray( const float ary[16] );
-    static const kvs::Xform Translation( const kvs::Vector3f& t );
-    static const kvs::Xform Rotation( const kvs::Matrix33f& r );
-    static const kvs::Xform Scaling( const kvs::Vector3f& s );
+    static const kvs::Xform Translation( const kvs::Vec3& t );
+    static const kvs::Xform Rotation( const kvs::Mat3& r );
+    static const kvs::Xform Scaling( const kvs::Vec3& s );
     static const kvs::Xform Scaling( float s );
 
     friend const kvs::Xform operator*( const kvs::Xform& lhs, const kvs::Xform& rhs )
@@ -108,5 +105,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__XFORM_H_INCLUDE

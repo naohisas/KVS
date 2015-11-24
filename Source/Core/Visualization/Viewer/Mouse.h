@@ -12,8 +12,7 @@
  *  $Id: Mouse.h 1713 2014-02-04 05:46:24Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__MOUSE_H_INCLUDE
-#define KVS__MOUSE_H_INCLUDE
+#pragma once
 
 #include <kvs/Trackball>
 #include <kvs/Timer>
@@ -81,5 +80,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__MOUSE_H_INCLUDE

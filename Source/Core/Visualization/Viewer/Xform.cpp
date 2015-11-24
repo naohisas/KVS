@@ -17,31 +17,24 @@
 namespace kvs
 {
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Default constructor.
+ *  @brief  Constructs a new xform matrix.
  */
-/*==========================================================================*/
-Xform::Xform():
-    m_matrix( 1, 0, 0, 0,
-              0, 1, 0, 0,
-              0, 0, 1, 0,
-              0, 0, 0, 1 )
+/*===========================================================================*/
+Xform::Xform(): m_matrix( kvs::Mat4::Identity() )
 {
 }
 
 /*==========================================================================*/
 /**
- *  Constructor.
- *  @param translation [in] translation vector
- *  @param scaling [in] scaling vector
- *  @param rotation [in] rotation matrix
+ *  @brief Constructs a new xform matrix.
+ *  @param t [in] translation vector
+ *  @param s [in] scaling vector
+ *  @param r [in] rotation matrix
  */
 /*==========================================================================*/
-Xform::Xform(
-    const kvs::Vector3f&  t,
-    const kvs::Vector3f&  s,
-    const kvs::Matrix33f& r ):
+Xform::Xform( const kvs::Vec3& t, const kvs::Vec3& s, const kvs::Mat3& r ):
     m_matrix( s[0] * r[0][0], s[1] * r[0][1], s[2] * r[0][2], t[0],
               s[0] * r[1][0], s[1] * r[1][1], s[2] * r[1][2], t[1],
               s[0] * r[2][0], s[1] * r[2][1], s[2] * r[2][2], t[2],
@@ -51,83 +44,104 @@ Xform::Xform(
 
 /*==========================================================================*/
 /**
- *  Constructor.
+ *  @brief Constructs a new xform matrix.
  *  @param m [in] xform matrix
  */
 /*==========================================================================*/
-Xform::Xform( const kvs::Matrix44f& m ):
+Xform::Xform( const kvs::Mat4& m ):
     m_matrix( m )
 {
 }
 
 /*==========================================================================*/
 /**
- *  Get the translation vector.
+ *  @brief  Returns the translation vector.
  *  @return translation vector
  */
 /*==========================================================================*/
-const kvs::Vector3f Xform::translation() const
+const kvs::Vec3 Xform::translation() const
 {
-    return kvs::Vector3f( m_matrix[0][3], m_matrix[1][3], m_matrix[2][3] );
+    return kvs::Vec3( m_matrix[0][3], m_matrix[1][3], m_matrix[2][3] );
 }
 
 /*==========================================================================*/
 /**
- *  Get the rotation matrix.
+ *  @brief  Returns the rotation matrix.
  *  @return rotation matrix
  */
 /*==========================================================================*/
-const kvs::Matrix33f Xform::rotation() const
+const kvs::Mat3 Xform::rotation() const
 {
-    kvs::Vector3f s = this->scaling();
-    return kvs::Matrix33f( m_matrix[0][0] / s.x(), m_matrix[0][1] / s.y(), m_matrix[0][2] / s.z(),
-                           m_matrix[1][0] / s.x(), m_matrix[1][1] / s.y(), m_matrix[1][2] / s.z(),
-                           m_matrix[2][0] / s.x(), m_matrix[2][1] / s.y(), m_matrix[2][2] / s.z() );
+    kvs::Vec3 s = this->scaling();
+    return kvs::Mat3( m_matrix[0][0] / s.x(), m_matrix[0][1] / s.y(), m_matrix[0][2] / s.z(),
+                      m_matrix[1][0] / s.x(), m_matrix[1][1] / s.y(), m_matrix[1][2] / s.z(),
+                      m_matrix[2][0] / s.x(), m_matrix[2][1] / s.y(), m_matrix[2][2] / s.z() );
 }
 
 /*==========================================================================*/
 /**
- *  Get the scaled rotation matrix.
+ *  @brief  Returns the scaled rotation matrix.
  *  @return scaled rotation matrix
  */
 /*==========================================================================*/
-const kvs::Matrix33f Xform::scaledRotation() const
+const kvs::Mat3 Xform::scaledRotation() const
 {
-    return kvs::Matrix33f( m_matrix[0][0], m_matrix[0][1], m_matrix[0][2],
-                           m_matrix[1][0], m_matrix[1][1], m_matrix[1][2],
-                           m_matrix[2][0], m_matrix[2][1], m_matrix[2][2] );
+    return kvs::Mat3( m_matrix[0][0], m_matrix[0][1], m_matrix[0][2],
+                      m_matrix[1][0], m_matrix[1][1], m_matrix[1][2],
+                      m_matrix[2][0], m_matrix[2][1], m_matrix[2][2] );
 }
 
 /*==========================================================================*/
 /**
- *  Get the scale vector.
+ *  @brief  Returns the scale vector.
  *  @return rotation matrix
  */
 /*==========================================================================*/
 const kvs::Vector3f Xform::scaling() const
 {
-    const float sx = (float)kvs::Vector3f( m_matrix[0][0], m_matrix[1][0], m_matrix[2][0] ).length();
-    const float sy = (float)kvs::Vector3f( m_matrix[0][1], m_matrix[1][1], m_matrix[2][1] ).length();
-    const float sz = (float)kvs::Vector3f( m_matrix[0][2], m_matrix[1][2], m_matrix[2][2] ).length();
-    return kvs::Vector3f( sx, sy, sz );
+    const float sx = (float)kvs::Vec3( m_matrix[0][0], m_matrix[1][0], m_matrix[2][0] ).length();
+    const float sy = (float)kvs::Vec3( m_matrix[0][1], m_matrix[1][1], m_matrix[2][1] ).length();
+    const float sz = (float)kvs::Vec3( m_matrix[0][2], m_matrix[1][2], m_matrix[2][2] ).length();
+    return kvs::Vec3( sx, sy, sz );
 }
 
-const kvs::Vector3f Xform::transform( const kvs::Vector3f& pos ) const
+/*===========================================================================*/
+/**
+ *  @brief  Returns the transformed position by this xform matrix.
+ *  @param  position [in] position
+ *  @return transformed position
+ */
+/*===========================================================================*/
+const kvs::Vec3 Xform::transform( const kvs::Vec3& position ) const
 {
-    kvs::Vector4f p = m_matrix * kvs::Vector4f( pos, 1 );
-    return kvs::Vector3f( p.x(), p.y(), p.z() );
+    kvs::Vec4 p = m_matrix * kvs::Vec4( position, 1 );
+    return kvs::Vec3( p.x(), p.y(), p.z() );
 }
 
-const kvs::Vector3f Xform::transformNormal( const kvs::Vector3f& normal ) const
+/*===========================================================================*/
+/**
+ *  @brief  Returns the transformed normal vector by this xform matrix.
+ *  @param  normal [in] normal vector
+ *  @return transformed normal vector
+ */
+/*===========================================================================*/
+const kvs::Vec3 Xform::transformNormal( const kvs::Vec3& normal ) const
 {
-    kvs::Vector4f n = m_matrix * kvs::Vector4f( normal, 0 );
-    return kvs::Vector3f( n.x(), n.y(), n.z() );
+    kvs::Vec4 n = m_matrix * kvs::Vec4( normal, 0 );
+    return kvs::Vec3( n.x(), n.y(), n.z() );
 }
 
-const kvs::Vector3f Xform::project( const kvs::Vector3f& pos ) const
+/*===========================================================================*/
+/**
+ *  @brief  Projects the position by this xform matrix.
+ *  @param  position [in] position
+ *  @return projected position
+ */
+/*===========================================================================*/
+const kvs::Vec3 Xform::project( const kvs::Vec3& position ) const
 {
-    kvs::Vector4f p = m_matrix * kvs::Vector4f( pos, 1 );
-    return kvs::Vector3f( p.x(), p.y(), p.z() ) / p.w();
+    kvs::Vec4 p = m_matrix * kvs::Vec4( position, 1 );
+    return kvs::Vec3( p.x(), p.y(), p.z() ) / p.w();
 }
 
 const kvs::Xform Xform::inverse() const
@@ -135,11 +149,23 @@ const kvs::Xform Xform::inverse() const
     return kvs::Xform( m_matrix.inverted() );
 }
 
-const kvs::Matrix44f Xform::toMatrix() const
+/*===========================================================================*/
+/**
+ *  @brief  Returns the xform matrix.
+ *  @return xform matrix
+ */
+/*===========================================================================*/
+const kvs::Mat4 Xform::toMatrix() const
 {
     return m_matrix;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Gets the xform matrix as array
+ *  @param  array [out] pointer to the array
+ */
+/*===========================================================================*/
 void Xform::toArray( float array[16] ) const
 {
     array[0]  = m_matrix[0][0];
@@ -160,46 +186,81 @@ void Xform::toArray( float array[16] ) const
     array[15] = m_matrix[3][3];
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns the xform generated from the given array.
+ *  @param  ary [in] pointer to the array
+ *  @return xform
+ */
+/*===========================================================================*/
 const kvs::Xform Xform::FromArray( const float ary[16] )
 {
-    kvs::Matrix44f m( ary );
+    kvs::Mat4 m( ary );
     m.transpose();
     return kvs::Xform( m );
 }
 
-const kvs::Xform Xform::Translation( const kvs::Vector3f& t )
+/*===========================================================================*/
+/**
+ *  @brief  Returns the xform generated from the given translation vector.
+ *  @param  t [in] translation vector
+ *  @return translated xform
+ */
+/*===========================================================================*/
+const kvs::Xform Xform::Translation( const kvs::Vec3& t )
 {
-    kvs::Matrix44f m( 1, 0, 0, t[0],
-                      0, 1, 0, t[1],
-                      0, 0, 1, t[2],
-                      0, 0, 0, 1 );
+    kvs::Mat4 m( 1, 0, 0, t[0],
+                 0, 1, 0, t[1],
+                 0, 0, 1, t[2],
+                 0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 
-const kvs::Xform Xform::Rotation( const kvs::Matrix33f& r )
+/*===========================================================================*/
+/**
+ *  @brief  Returns the xform generated from the given rotation matrix.
+ *  @param  r [in] rotation matrix
+ *  @return rotated xform
+ */
+/*===========================================================================*/
+const kvs::Xform Xform::Rotation( const kvs::Mat3& r )
 {
-    kvs::Matrix44f m( r[0][0], r[0][1], r[0][2], 0,
-                      r[1][0], r[1][1], r[1][2], 0,
-                      r[2][0], r[2][1], r[2][2], 0,
-                      0, 0, 0, 1 );
+    kvs::Mat4 m( r[0][0], r[0][1], r[0][2], 0,
+                 r[1][0], r[1][1], r[1][2], 0,
+                 r[2][0], r[2][1], r[2][2], 0,
+                 0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 
-const kvs::Xform Xform::Scaling( const kvs::Vector3f& s )
+/*===========================================================================*/
+/**
+ *  @brief  Returns the xform generated from the given scaling vector.
+ *  @param  s [in] scaling vector
+ *  @return scaled xform
+ */
+/*===========================================================================*/
+const kvs::Xform Xform::Scaling( const kvs::Vec3& s )
 {
-    kvs::Matrix44f m( s[0], 0, 0, 0,
-                      0, s[1], 0, 0,
-                      0, 0, s[2], 0,
-                      0, 0, 0, 1 );
+    kvs::Mat4 m( s[0], 0, 0, 0,
+                 0, s[1], 0, 0,
+                 0, 0, s[2], 0,
+                 0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns the xform generated from the given scaling value.
+ *  @param  s [in] scaling value
+ *  @return scaled xform
+ */
+/*===========================================================================*/
 const kvs::Xform Xform::Scaling( float s )
 {
-    kvs::Matrix44f m( s, 0, 0, 0,
-                      0, s, 0, 0,
-                      0, 0, s, 0,
-                      0, 0, 0, 1 );
+    kvs::Mat4 m( s, 0, 0, 0,
+                 0, s, 0, 0,
+                 0, 0, s, 0,
+                 0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 
