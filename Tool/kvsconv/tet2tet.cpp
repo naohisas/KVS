@@ -16,7 +16,7 @@
 #include <memory>
 #include <string>
 #include <kvs/File>
-#include <kvs/KVSMLObjectUnstructuredVolume>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/UnstructuredVolumeObject>
 #include <kvs/UnstructuredVolumeImporter>
 #include <kvs/UnstructuredVolumeExporter>
@@ -85,21 +85,21 @@ const std::string Argument::outputFilename( const std::string& filename )
  *  @return writing data type
  */
 /*===========================================================================*/
-const kvs::KVSMLObjectUnstructuredVolume::WritingDataType Argument::writingDataType( void )
+const kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType( void )
 {
     if ( this->hasOption("b") )
     {
-        return( kvs::KVSMLObjectUnstructuredVolume::ExternalBinary );
+        return( kvs::KVSMLUnstructuredVolumeObject::ExternalBinary );
     }
     else
     {
         if ( this->hasOption("e") )
         {
-            return( kvs::KVSMLObjectUnstructuredVolume::ExternalAscii );
+            return( kvs::KVSMLUnstructuredVolumeObject::ExternalAscii );
         }
     }
 
-    return( kvs::KVSMLObjectUnstructuredVolume::Ascii );
+    return( kvs::KVSMLUnstructuredVolumeObject::Ascii );
 }
 
 /*===========================================================================*/
@@ -181,8 +181,8 @@ const bool Main::exec( void )
     delete volume;
 
     // Export the unstructured volume object to KVSML data (unstructured volume).
-    kvs::KVSMLObjectUnstructuredVolume* output =
-        new kvs::UnstructuredVolumeExporter<kvs::KVSMLObjectUnstructuredVolume>( object );
+    kvs::KVSMLUnstructuredVolumeObject* output =
+        new kvs::UnstructuredVolumeExporter<kvs::KVSMLUnstructuredVolumeObject>( object );
     if ( !output )
     {
         kvsMessageError("Cannot export unstructured volume object.");

@@ -40,9 +40,9 @@ ImageImporter::ImageImporter()
 /*===========================================================================*/
 ImageImporter::ImageImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectImage::CheckExtension( filename ) )
+    if ( kvs::KVSMLImageObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectImage* file_format = new kvs::KVSMLObjectImage( filename );
+        kvs::KVSMLImageObject* file_format = new kvs::KVSMLImageObject( filename );
         if( !file_format )
         {
             BaseClass::setSuccess( false );
@@ -232,7 +232,7 @@ ImageImporter::SuperClass* ImageImporter::exec( const kvs::FileFormatBase* file_
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectImage* image = dynamic_cast<const kvs::KVSMLObjectImage*>( file_format ) )
+    if ( const kvs::KVSMLImageObject* image = dynamic_cast<const kvs::KVSMLImageObject*>( file_format ) )
     {
         this->import( image );
     }
@@ -276,7 +276,7 @@ ImageImporter::SuperClass* ImageImporter::exec( const kvs::FileFormatBase* file_
  *  @param  kvsml [in] pointer to the KVSML image format data
  */
 /*===========================================================================*/
-void ImageImporter::import( const kvs::KVSMLObjectImage* kvsml )
+void ImageImporter::import( const kvs::KVSMLImageObject* kvsml )
 {
     kvs::ImageObject::PixelType pixel_type = kvs::ImageObject::Gray8;
     if ( kvsml->pixelType() == "gray" )

@@ -113,9 +113,9 @@ UnstructuredVolumeImporter::UnstructuredVolumeImporter()
 /*===========================================================================*/
 UnstructuredVolumeImporter::UnstructuredVolumeImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectUnstructuredVolume::CheckExtension( filename ) )
+    if ( kvs::KVSMLUnstructuredVolumeObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectUnstructuredVolume* file_format = new kvs::KVSMLObjectUnstructuredVolume( filename );
+        kvs::KVSMLUnstructuredVolumeObject* file_format = new kvs::KVSMLUnstructuredVolumeObject( filename );
         if( !file_format )
         {
             BaseClass::setSuccess( false );
@@ -220,7 +220,7 @@ UnstructuredVolumeImporter::SuperClass* UnstructuredVolumeImporter::exec( const 
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectUnstructuredVolume* volume = dynamic_cast<const kvs::KVSMLObjectUnstructuredVolume*>( file_format ) )
+    if ( const kvs::KVSMLUnstructuredVolumeObject* volume = dynamic_cast<const kvs::KVSMLUnstructuredVolumeObject*>( file_format ) )
     {
         this->import( volume );
     }
@@ -248,7 +248,7 @@ UnstructuredVolumeImporter::SuperClass* UnstructuredVolumeImporter::exec( const 
  *  @param  kvsml [in] pointer to the KVSML format data
  */
 /*==========================================================================*/
-void UnstructuredVolumeImporter::import( const kvs::KVSMLObjectUnstructuredVolume* kvsml )
+void UnstructuredVolumeImporter::import( const kvs::KVSMLUnstructuredVolumeObject* kvsml )
 {
     if ( kvsml->objectTag().hasExternalCoord() )
     {

@@ -15,6 +15,20 @@
 #ifndef KVS__KVSML_OBJECT_POLYGON_H_INCLUDE
 #define KVS__KVSML_OBJECT_POLYGON_H_INCLUDE
 
+#if 1
+
+#include "KVSMLPolygonObject.h"
+#include <kvs/Deprecated>
+
+namespace kvs
+{
+
+typedef KVS_DEPRECATED( KVSMLPolygonObject ) KVSMLObjectPolygon;
+
+} // end of namespace kvs
+
+#else
+
 #include <kvs/FileFormatBase>
 #include <kvs/ValueArray>
 #include <kvs/Type>
@@ -96,5 +110,7 @@ public:
 };
 
 } // end of namesapce kvs
+
+#endif
 
 #endif // KVS__KVSML_OBJECT_POLYGON_H_INCLUDE

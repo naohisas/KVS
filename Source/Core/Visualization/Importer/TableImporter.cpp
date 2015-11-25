@@ -14,7 +14,7 @@
 /*****************************************************************************/
 #include "TableImporter.h"
 #include <kvs/DebugNew>
-#include <kvs/KVSMLObjectTable>
+#include <kvs/KVSMLTableObject>
 #include <string>
 
 
@@ -38,9 +38,9 @@ TableImporter::TableImporter()
 /*===========================================================================*/
 TableImporter::TableImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectTable::CheckExtension( filename ) )
+    if ( kvs::KVSMLTableObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectTable* file_format = new kvs::KVSMLObjectTable( filename );
+        kvs::KVSMLTableObject* file_format = new kvs::KVSMLTableObject( filename );
         if( !file_format )
         {
             BaseClass::setSuccess( false );
@@ -94,7 +94,7 @@ TableImporter::SuperClass* TableImporter::exec( const kvs::FileFormatBase* file_
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectTable* table = dynamic_cast<const kvs::KVSMLObjectTable*>( file_format ) )
+    if ( const kvs::KVSMLTableObject* table = dynamic_cast<const kvs::KVSMLTableObject*>( file_format ) )
     {
         this->import( table );
     }
@@ -111,10 +111,10 @@ TableImporter::SuperClass* TableImporter::exec( const kvs::FileFormatBase* file_
 /*===========================================================================*/
 /**
  *  @brief  Imports table data from KVSML format file.
- *  @param  kvsml [in] pointer to the KVSMLObjectTable
+ *  @param  kvsml [in] pointer to the KVSMLTableObject
  */
 /*===========================================================================*/
-void TableImporter::import( const kvs::KVSMLObjectTable* kvsml )
+void TableImporter::import( const kvs::KVSMLTableObject* kvsml )
 {
     const size_t ncolumns = kvsml->ncolumns();
     for ( size_t i = 0; i < ncolumns; i++ )

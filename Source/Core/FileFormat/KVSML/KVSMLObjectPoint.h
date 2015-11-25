@@ -15,6 +15,20 @@
 #ifndef KVS__KVSML_OBJECT_POINT_H_INCLUDE
 #define KVS__KVSML_OBJECT_POINT_H_INCLUDE
 
+#if 1
+
+#include "KVSMLPointObject.h"
+#include <kvs/Deprecated>
+
+namespace kvs
+{
+
+typedef KVS_DEPRECATED( KVSMLPointObject ) KVSMLObjectPoint;
+
+} // end of namespace kvs
+
+#else
+
 #include <kvs/FileFormatBase>
 #include <kvs/ValueArray>
 #include <kvs/Type>
@@ -84,5 +98,7 @@ public:
 };
 
 } // end of namespace kvs
+
+#endif
 
 #endif // KVS__KVSML_OBJECT_POINT_H_INCLUDE

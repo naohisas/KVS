@@ -16,7 +16,7 @@
 #define KVS__POINT_EXPORTER_H_INCLUDE
 
 #include <kvs/PointObject>
-#include <kvs/KVSMLObjectPoint>
+#include <kvs/KVSMLPointObject>
 #include "ExporterBase.h"
 
 
@@ -40,17 +40,17 @@ public:
 
 /*===========================================================================*/
 /**
- *  @brief  Point exporter class as KVSMLObjectPoint format.
+ *  @brief  Point exporter class as KVSMLPointObject format.
  */
 /*===========================================================================*/
 template <>
-class PointExporter<kvs::KVSMLObjectPoint> :
+class PointExporter<kvs::KVSMLPointObject> :
         public kvs::ExporterBase,
-        public kvs::KVSMLObjectPoint
+        public kvs::KVSMLPointObject
 {
 public:
     PointExporter( const kvs::PointObject* object );
-    kvs::KVSMLObjectPoint* exec( const kvs::ObjectBase* object );
+    kvs::KVSMLPointObject* exec( const kvs::ObjectBase* object );
 };
 
 } // end of namespace kvs

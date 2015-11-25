@@ -16,7 +16,7 @@
 #include <string>
 #include <kvs/File>
 #include <kvs/AVSField>
-#include <kvs/KVSMLObjectStructuredVolume>
+#include <kvs/KVSMLStructuredVolumeObject>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/StructuredVolumeExporter>
@@ -82,21 +82,21 @@ const std::string Argument::outputFilename( const std::string& filename )
  *  @return writing data type
  */
 /*===========================================================================*/
-const kvs::KVSMLObjectStructuredVolume::WritingDataType Argument::writingDataType( void )
+const kvs::KVSMLStructuredVolumeObject::WritingDataType Argument::writingDataType( void )
 {
     if ( this->hasOption("b") )
     {
-        return( kvs::KVSMLObjectStructuredVolume::ExternalBinary );
+        return( kvs::KVSMLStructuredVolumeObject::ExternalBinary );
     }
     else
     {
         if ( this->hasOption("e") )
         {
-            return( kvs::KVSMLObjectStructuredVolume::ExternalAscii );
+            return( kvs::KVSMLStructuredVolumeObject::ExternalAscii );
         }
     }
 
-    return( kvs::KVSMLObjectStructuredVolume::Ascii );
+    return( kvs::KVSMLStructuredVolumeObject::Ascii );
 }
 
 /*===========================================================================*/
@@ -161,8 +161,8 @@ const bool Main::exec( void )
     delete input;
 
     // Export the structured volume object to KVSML data (structured volume).
-    kvs::KVSMLObjectStructuredVolume* output =
-        new kvs::StructuredVolumeExporter<kvs::KVSMLObjectStructuredVolume>( object );
+    kvs::KVSMLStructuredVolumeObject* output =
+        new kvs::StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>( object );
     if ( !output )
     {
         kvsMessageError("Cannot export structured volume object.");

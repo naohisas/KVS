@@ -18,7 +18,7 @@
 #include "ImporterBase.h"
 #include <kvs/Module>
 #include <kvs/StructuredVolumeObject>
-#include <kvs/KVSMLObjectStructuredVolume>
+#include <kvs/KVSMLStructuredVolumeObject>
 #include <kvs/AVSField>
 #include <kvs/DicomList>
 
@@ -48,7 +48,7 @@ public:
 
 private:
 
-    void import( const kvs::KVSMLObjectStructuredVolume* kvsml );
+    void import( const kvs::KVSMLStructuredVolumeObject* kvsml );
     void import( const kvs::AVSField* field );
     void import( const kvs::DicomList* dicom_list );
     template <typename T>

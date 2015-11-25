@@ -14,7 +14,7 @@
 /****************************************************************************/
 #include "PointImporter.h"
 #include <kvs/DebugNew>
-#include <kvs/KVSMLObjectPoint>
+#include <kvs/KVSMLPointObject>
 #include <kvs/Math>
 #include <kvs/Vector3>
 #include <string>
@@ -40,9 +40,9 @@ PointImporter::PointImporter()
 /*===========================================================================*/
 PointImporter::PointImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectPoint::CheckExtension( filename ) )
+    if ( kvs::KVSMLPointObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectPoint* file_format = new kvs::KVSMLObjectPoint( filename );
+        kvs::KVSMLPointObject* file_format = new kvs::KVSMLPointObject( filename );
         if( !file_format )
         {
             BaseClass::setSuccess( false );
@@ -105,7 +105,7 @@ PointImporter::SuperClass* PointImporter::exec( const kvs::FileFormatBase* file_
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectPoint* point = dynamic_cast<const kvs::KVSMLObjectPoint*>( file_format ) )
+    if ( const kvs::KVSMLPointObject* point = dynamic_cast<const kvs::KVSMLPointObject*>( file_format ) )
     {
         this->import( point );
     }
@@ -125,7 +125,7 @@ PointImporter::SuperClass* PointImporter::exec( const kvs::FileFormatBase* file_
  *  @param  kvsml [in] pointer to the KVSML format data
  */
 /*==========================================================================*/
-void PointImporter::import( const kvs::KVSMLObjectPoint* kvsml )
+void PointImporter::import( const kvs::KVSMLPointObject* kvsml )
 {
     if ( kvsml->objectTag().hasExternalCoord() )
     {

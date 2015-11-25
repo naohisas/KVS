@@ -16,7 +16,7 @@
 
 #include <string>
 #include <kvs/CommandLine>
-#include <kvs/KVSMLObjectStructuredVolume>
+#include <kvs/KVSMLStructuredVolumeObject>
 #include "Argument.h"
 
 
@@ -46,7 +46,7 @@ public:
 
     const std::string outputFilename( const std::string& filename );
 
-    const kvs::KVSMLObjectStructuredVolume::WritingDataType writingDataType( void );
+    const kvs::KVSMLStructuredVolumeObject::WritingDataType writingDataType( void );
 };
 
 /*===========================================================================*/

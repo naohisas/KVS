@@ -17,7 +17,7 @@
 
 #include <string>
 #include <kvs/CommandLine>
-#include <kvs/KVSMLObjectUnstructuredVolume>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/TetrahedraToTetrahedra>
 #include "Argument.h"
 
@@ -48,7 +48,7 @@ public:
 
     const std::string outputFilename( const std::string& filename );
 
-    const kvs::KVSMLObjectUnstructuredVolume::WritingDataType writingDataType( void );
+    const kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType( void );
 
     const kvs::TetrahedraToTetrahedra::Method conversionMethod( void );
 };

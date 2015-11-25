@@ -16,7 +16,7 @@
 #define KVS__POLYGON_EXPORTER_H_INCLUDE
 
 #include <kvs/PolygonObject>
-#include <kvs/KVSMLObjectPolygon>
+#include <kvs/KVSMLPolygonObject>
 #include <kvs/Stl>
 #include <kvs/Ply>
 #include "ExporterBase.h"
@@ -42,17 +42,17 @@ public:
 
 /*===========================================================================*/
 /**
- *  @brief  Polygon exporter class as KVSMLObjectPoint format.
+ *  @brief  Polygon exporter class as KVSMLPointObject format.
  */
 /*===========================================================================*/
 template <>
-class PolygonExporter<kvs::KVSMLObjectPolygon> :
+class PolygonExporter<kvs::KVSMLPolygonObject> :
         public kvs::ExporterBase,
-        public kvs::KVSMLObjectPolygon
+        public kvs::KVSMLPolygonObject
 {
 public:
     PolygonExporter( const kvs::PolygonObject* object );
-    kvs::KVSMLObjectPolygon* exec( const kvs::ObjectBase* object );
+    kvs::KVSMLPolygonObject* exec( const kvs::ObjectBase* object );
 };
 
 /*===========================================================================*/

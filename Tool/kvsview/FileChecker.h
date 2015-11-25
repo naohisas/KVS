@@ -20,11 +20,11 @@
 #include <kvs/AVSUcd>
 #include <kvs/Stl>
 #include <kvs/Ply>
-#include <kvs/KVSMLObjectPoint>
-#include <kvs/KVSMLObjectLine>
-#include <kvs/KVSMLObjectPolygon>
-#include <kvs/KVSMLObjectStructuredVolume>
-#include <kvs/KVSMLObjectUnstructuredVolume>
+#include <kvs/KVSMLPointObject>
+#include <kvs/KVSMLLineObject>
+#include <kvs/KVSMLPolygonObject>
+#include <kvs/KVSMLStructuredVolumeObject>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/DicomList>
 
 
@@ -44,9 +44,9 @@ namespace FileChecker
 inline const bool ImportablePoint( const std::string& filename )
 {
     // KVSML format.
-    if ( kvs::KVSMLObjectPoint::CheckExtension( filename ) )
+    if ( kvs::KVSMLPointObject::CheckExtension( filename ) )
     {
-        if ( kvs::KVSMLObjectPoint::CheckFormat( filename ) )
+        if ( kvs::KVSMLPointObject::CheckFormat( filename ) )
         {
             return( true );
         }
@@ -65,9 +65,9 @@ inline const bool ImportablePoint( const std::string& filename )
 inline const bool ImportableLine( const std::string& filename )
 {
     // KVSML format.
-    if ( kvs::KVSMLObjectLine::CheckExtension( filename ) )
+    if ( kvs::KVSMLLineObject::CheckExtension( filename ) )
     {
-        if ( kvs::KVSMLObjectLine::CheckFormat( filename ) )
+        if ( kvs::KVSMLLineObject::CheckFormat( filename ) )
         {
             return( true );
         }
@@ -86,9 +86,9 @@ inline const bool ImportableLine( const std::string& filename )
 inline const bool ImportablePolygon( const std::string& filename )
 {
     // KVSML format.
-    if ( kvs::KVSMLObjectPolygon::CheckExtension( filename ) )
+    if ( kvs::KVSMLPolygonObject::CheckExtension( filename ) )
     {
-        if ( kvs::KVSMLObjectPolygon::CheckFormat( filename ) )
+        if ( kvs::KVSMLPolygonObject::CheckFormat( filename ) )
         {
             return( true );
         }
@@ -122,9 +122,9 @@ inline const bool ImportableStructuredVolume( const std::string& filename )
     if ( file.isFile() )
     {
         // KVSML format.
-        if ( kvs::KVSMLObjectStructuredVolume::CheckExtension( filename ) )
+        if ( kvs::KVSMLStructuredVolumeObject::CheckExtension( filename ) )
         {
-            if ( kvs::KVSMLObjectStructuredVolume::CheckFormat( filename ) )
+            if ( kvs::KVSMLStructuredVolumeObject::CheckFormat( filename ) )
             {
                 return( true );
             }
@@ -158,9 +158,9 @@ inline const bool ImportableStructuredVolume( const std::string& filename )
 inline const bool ImportableUnstructuredVolume( const std::string& filename )
 {
     // KVSML format.
-    if ( kvs::KVSMLObjectUnstructuredVolume::CheckExtension( filename ) )
+    if ( kvs::KVSMLUnstructuredVolumeObject::CheckExtension( filename ) )
     {
-        if ( kvs::KVSMLObjectUnstructuredVolume::CheckFormat( filename ) )
+        if ( kvs::KVSMLUnstructuredVolumeObject::CheckFormat( filename ) )
         {
             return( true );
         }

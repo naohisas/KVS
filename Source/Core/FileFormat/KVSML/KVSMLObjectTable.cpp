@@ -12,6 +12,10 @@
  *  $Id: KVSMLObjectTable.cpp 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
+#if 1
+
+#else
+
 #include "KVSMLObjectTable.h"
 #include "TableObjectTag.h"
 #include "ColumnTag.h"
@@ -350,3 +354,5 @@ bool KVSMLObjectTable::write( const std::string& filename )
 }
 
 } // end of namespace kvs
+
+#endif

@@ -12,6 +12,10 @@
  *  $Id: KVSMLObjectPoint.cpp 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
+#if 1
+
+#else
+
 #include "KVSMLObjectPoint.h"
 #include "PointObjectTag.h"
 #include "VertexTag.h"
@@ -306,3 +310,5 @@ bool KVSMLObjectPoint::write( const std::string& filename )
 }
 
 } // end of namespace kvs
+
+#endif

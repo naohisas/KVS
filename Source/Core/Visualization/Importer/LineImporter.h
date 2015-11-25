@@ -18,7 +18,7 @@
 #include "ImporterBase.h"
 #include <kvs/Module>
 #include <kvs/LineObject>
-#include <kvs/KVSMLObjectLine>
+#include <kvs/KVSMLLineObject>
 
 
 namespace kvs
@@ -46,7 +46,7 @@ public:
 
 private:
 
-    void import( const kvs::KVSMLObjectLine* kvsml );
+    void import( const kvs::KVSMLLineObject* kvsml );
     void set_min_max_coord();
 };
 

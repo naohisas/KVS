@@ -16,7 +16,7 @@
 #define KVS__LINE_EXPORTER_H_INCLUDE
 
 #include <kvs/LineObject>
-#include <kvs/KVSMLObjectLine>
+#include <kvs/KVSMLLineObject>
 #include "ExporterBase.h"
 
 
@@ -40,17 +40,17 @@ public:
 
 /*===========================================================================*/
 /**
- *  @brief  Line exporter class as KVSMLObjectLine format.
+ *  @brief  Line exporter class as KVSMLLineObject format.
  */
 /*===========================================================================*/
 template <>
-class LineExporter<kvs::KVSMLObjectLine> :
+class LineExporter<kvs::KVSMLLineObject> :
         public kvs::ExporterBase,
-        public kvs::KVSMLObjectLine
+        public kvs::KVSMLLineObject
 {
 public:
     LineExporter( const kvs::LineObject* object );
-    kvs::KVSMLObjectLine* exec( const kvs::ObjectBase* object );
+    kvs::KVSMLLineObject* exec( const kvs::ObjectBase* object );
 };
 
 } // end of namespace kvs

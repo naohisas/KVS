@@ -15,6 +15,20 @@
 #ifndef KVS__KVSML__KVSML_OBJECT_LINE_H_INCLUDE
 #define KVS__KVSML__KVSML_OBJECT_LINE_H_INCLUDE
 
+#if 1
+
+#include "KVSMLLineObject.h"
+#include <kvs/Deprecated>
+
+namespace kvs
+{
+
+typedef KVS_DEPRECATED( KVSMLLineObject ) KVSMLObjectLine;
+
+} // end of namespace kvs
+
+#else
+
 #include <kvs/FileFormatBase>
 #include <kvs/ValueArray>
 #include <kvs/Type>
@@ -90,5 +104,7 @@ public:
 };
 
 } // end of namespace kvs
+
+#endif
 
 #endif // KVS__KVSML_OBJECT_LINE_H_INCLUDE

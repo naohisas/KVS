@@ -12,6 +12,10 @@
  *  $Id: KVSMLObjectStructuredVolume.cpp 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
+#if 1
+
+#else
+
 #include "KVSMLObjectStructuredVolume.h"
 #include "StructuredVolumeObjectTag.h"
 #include "NodeTag.h"
@@ -419,3 +423,5 @@ bool KVSMLObjectStructuredVolume::write( const std::string& filename )
 }
 
 } // end of namespace kvs
+
+#endif

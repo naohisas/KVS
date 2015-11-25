@@ -14,7 +14,7 @@
 /****************************************************************************/
 #include "LineImporter.h"
 #include <kvs/DebugNew>
-#include <kvs/KVSMLObjectLine>
+#include <kvs/KVSMLLineObject>
 #include <kvs/Math>
 #include <kvs/Vector3>
 #include <string>
@@ -84,9 +84,9 @@ LineImporter::LineImporter()
 /*===========================================================================*/
 LineImporter::LineImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectLine::CheckExtension( filename ) )
+    if ( kvs::KVSMLLineObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectLine* file_format = new kvs::KVSMLObjectLine( filename );
+        kvs::KVSMLLineObject* file_format = new kvs::KVSMLLineObject( filename );
         if( !file_format )
         {
             BaseClass::setSuccess( false );
@@ -149,7 +149,7 @@ LineImporter::SuperClass* LineImporter::exec( const kvs::FileFormatBase* file_fo
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectLine* line = dynamic_cast<const kvs::KVSMLObjectLine*>( file_format ) )
+    if ( const kvs::KVSMLLineObject* line = dynamic_cast<const kvs::KVSMLLineObject*>( file_format ) )
     {
         this->import( line );
     }
@@ -169,7 +169,7 @@ LineImporter::SuperClass* LineImporter::exec( const kvs::FileFormatBase* file_fo
  *  @param  kvsml [in] pointer to the KVSML document
  */
 /*==========================================================================*/
-void LineImporter::import( const kvs::KVSMLObjectLine* kvsml )
+void LineImporter::import( const kvs::KVSMLLineObject* kvsml )
 {
     if ( kvsml->objectTag().hasExternalCoord() )
     {

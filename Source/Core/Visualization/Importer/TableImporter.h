@@ -18,7 +18,7 @@
 #include <kvs/ImporterBase>
 #include <kvs/Module>
 #include <kvs/TableObject>
-#include <kvs/KVSMLObjectTable>
+#include <kvs/KVSMLTableObject>
 
 
 namespace kvs
@@ -45,7 +45,7 @@ public:
 
 private:
 
-    void import( const kvs::KVSMLObjectTable* kvsml );
+    void import( const kvs::KVSMLTableObject* kvsml );
 };
 
 } // end of namespace kvs

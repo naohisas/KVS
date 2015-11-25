@@ -12,6 +12,10 @@
  *  $Id: KVSMLObjectLine.cpp 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
+#if 1
+
+#else
+
 #include "KVSMLObjectLine.h"
 #include "LineObjectTag.h"
 #include "LineTag.h"
@@ -438,3 +442,5 @@ bool KVSMLObjectLine::write( const std::string& filename )
 }
 
 } // end of namespace kvs
+
+#endif

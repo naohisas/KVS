@@ -56,6 +56,8 @@ $(OUTDIR)/./FileFormat/KVSML/DataReader.o \
 $(OUTDIR)/./FileFormat/KVSML/DataValueTag.o \
 $(OUTDIR)/./FileFormat/KVSML/DataWriter.o \
 $(OUTDIR)/./FileFormat/KVSML/ImageObjectTag.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLImageObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLLineObject.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLObjectImage.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLObjectLine.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLObjectPoint.o \
@@ -63,8 +65,13 @@ $(OUTDIR)/./FileFormat/KVSML/KVSMLObjectPolygon.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLObjectStructuredVolume.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLObjectTable.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLObjectUnstructuredVolume.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLPointObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLPolygonObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLStructuredVolumeObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLTableObject.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLTag.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLTransferFunction.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLUnstructuredVolumeObject.o \
 $(OUTDIR)/./FileFormat/KVSML/LineObjectTag.o \
 $(OUTDIR)/./FileFormat/KVSML/LineTag.o \
 $(OUTDIR)/./FileFormat/KVSML/NodeTag.o \

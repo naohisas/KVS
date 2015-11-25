@@ -12,6 +12,10 @@
  *  $Id: KVSMLObjectPolygon.cpp 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
+#if 1
+
+#else
+
 #include "KVSMLObjectPolygon.h"
 #include "PolygonObjectTag.h"
 #include "PolygonTag.h"
@@ -491,3 +495,5 @@ bool KVSMLObjectPolygon::write( const std::string& filename )
 }
 
 } // end of namesapce kvs
+
+#endif

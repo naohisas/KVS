@@ -15,6 +15,20 @@
 #ifndef KVS__KVSML_OBJECT_TABLE_H_INCLUDE
 #define KVS__KVSML_OBJECT_TABLE_H_INCLUDE
 
+#if 1
+
+#include "KVSMLTableObject.h"
+#include <kvs/Deprecated>
+
+namespace kvs
+{
+
+typedef KVS_DEPRECATED( KVSMLTableObject ) KVSMLObjectTable;
+
+} // end of namespace kvs
+
+#else
+
 #include <kvs/FileFormatBase>
 #include <kvs/AnyValueArray>
 #include <kvs/Type>
@@ -103,5 +117,7 @@ public:
 };
 
 } // end of namespace kvs
+
+#endif
 
 #endif // KVS__KVSML_OBJECT_TABLE_H_INCLUDE

@@ -17,7 +17,7 @@
 #include <kvs/IgnoreUnusedVariable>
 #include <kvs/Math>
 #include <kvs/File>
-#include <kvs/KVSMLObjectImage>
+#include <kvs/KVSMLImageObject>
 #include <kvs/Bmp>
 #include <kvs/Ppm>
 #include <kvs/Pbm>
@@ -420,9 +420,9 @@ void GrayImage::resize( const size_t width, const size_t height, GrayImage::Bili
 bool GrayImage::read( const std::string& filename )
 {
     // KVSML image.
-    if ( kvs::KVSMLObjectImage::CheckExtension( filename ) )
+    if ( kvs::KVSMLImageObject::CheckExtension( filename ) )
     {
-        const kvs::KVSMLObjectImage kvsml( filename );
+        const kvs::KVSMLImageObject kvsml( filename );
         if ( kvsml.pixelType() == "color" )
         {
             kvs::ColorImage image( kvsml.width(), kvsml.height(), kvsml.pixels() );
@@ -505,13 +505,13 @@ bool GrayImage::read( const std::string& filename )
 bool GrayImage::write( const std::string& filename )
 {
     // KVSML image.
-    if ( kvs::KVSMLObjectImage::CheckExtension( filename ) )
+    if ( kvs::KVSMLImageObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectImage kvsml;
+        kvs::KVSMLImageObject kvsml;
         kvsml.setWidth( BaseClass::width() );
         kvsml.setHeight( BaseClass::height() );
         kvsml.setPixelType( "gray" );
-        kvsml.setWritingDataType( kvs::KVSMLObjectImage::Ascii );
+        kvsml.setWritingDataType( kvs::KVSMLImageObject::Ascii );
         kvsml.setPixels( BaseClass::pixels() );
         return( kvsml.write( filename ) );
     }

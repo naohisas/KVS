@@ -19,7 +19,7 @@
 #include <string>
 #include <kvs/Module>
 #include <kvs/ImageObject>
-#include <kvs/KVSMLObjectImage>
+#include <kvs/KVSMLImageObject>
 #include <kvs/Bmp>
 #include <kvs/Tiff>
 #include <kvs/Ppm>
@@ -53,7 +53,7 @@ public:
 
 private:
 
-    void import( const kvs::KVSMLObjectImage* kvsml );
+    void import( const kvs::KVSMLImageObject* kvsml );
     void import( const kvs::Bmp* bmp );
     void import( const kvs::Tiff* tiff );
     void import( const kvs::Ppm* ppm );

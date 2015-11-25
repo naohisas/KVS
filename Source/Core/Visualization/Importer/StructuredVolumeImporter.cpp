@@ -67,9 +67,9 @@ StructuredVolumeImporter::StructuredVolumeImporter()
 /*===========================================================================*/
 StructuredVolumeImporter::StructuredVolumeImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectStructuredVolume::CheckExtension( filename ) )
+    if ( kvs::KVSMLStructuredVolumeObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectStructuredVolume* file_format = new kvs::KVSMLObjectStructuredVolume( filename );
+        kvs::KVSMLStructuredVolumeObject* file_format = new kvs::KVSMLStructuredVolumeObject( filename );
         if( !file_format )
         {
             BaseClass::setSuccess( false );
@@ -174,7 +174,7 @@ StructuredVolumeImporter::SuperClass* StructuredVolumeImporter::exec( const kvs:
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectStructuredVolume* volume = dynamic_cast<const kvs::KVSMLObjectStructuredVolume*>( file_format ) )
+    if ( const kvs::KVSMLStructuredVolumeObject* volume = dynamic_cast<const kvs::KVSMLStructuredVolumeObject*>( file_format ) )
     {
         this->import( volume );
     }
@@ -203,7 +203,7 @@ StructuredVolumeImporter::SuperClass* StructuredVolumeImporter::exec( const kvs:
  */
 /*==========================================================================*/
 void StructuredVolumeImporter::import(
-    const kvs::KVSMLObjectStructuredVolume* kvsml )
+    const kvs::KVSMLStructuredVolumeObject* kvsml )
 {
     if ( kvsml->objectTag().hasExternalCoord() )
     {

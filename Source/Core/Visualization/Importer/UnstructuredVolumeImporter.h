@@ -18,7 +18,7 @@
 #include "ImporterBase.h"
 #include <kvs/Module>
 #include <kvs/UnstructuredVolumeObject>
-#include <kvs/KVSMLObjectUnstructuredVolume>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/AVSUcd>
 #include <kvs/AVSField>
 
@@ -48,7 +48,7 @@ public:
 
 private:
 
-    void import( const kvs::KVSMLObjectUnstructuredVolume* const kvsml );
+    void import( const kvs::KVSMLUnstructuredVolumeObject* const kvsml );
     void import( const kvs::AVSUcd* const ucd );
     void import( const kvs::AVSField* const field );
 };

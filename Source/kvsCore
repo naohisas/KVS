@@ -9,6 +9,8 @@
 #include <Core/FileFormat/FrontSTR/FrontSTR.h>
 #include <Core/FileFormat/GIS/Gis.h>
 #include <Core/FileFormat/GrADS/GrADS.h>
+#include <Core/FileFormat/KVSML/KVSMLImageObject.h>
+#include <Core/FileFormat/KVSML/KVSMLLineObject.h>
 #include <Core/FileFormat/KVSML/KVSMLObjectImage.h>
 #include <Core/FileFormat/KVSML/KVSMLObjectLine.h>
 #include <Core/FileFormat/KVSML/KVSMLObjectPoint.h>
@@ -16,7 +18,12 @@
 #include <Core/FileFormat/KVSML/KVSMLObjectStructuredVolume.h>
 #include <Core/FileFormat/KVSML/KVSMLObjectTable.h>
 #include <Core/FileFormat/KVSML/KVSMLObjectUnstructuredVolume.h>
+#include <Core/FileFormat/KVSML/KVSMLPointObject.h>
+#include <Core/FileFormat/KVSML/KVSMLPolygonObject.h>
+#include <Core/FileFormat/KVSML/KVSMLStructuredVolumeObject.h>
+#include <Core/FileFormat/KVSML/KVSMLTableObject.h>
 #include <Core/FileFormat/KVSML/KVSMLTransferFunction.h>
+#include <Core/FileFormat/KVSML/KVSMLUnstructuredVolumeObject.h>
 #include <Core/FileFormat/PLY/Ply.h>
 #include <Core/FileFormat/PNM/Pbm.h>
 #include <Core/FileFormat/PNM/Pgm.h>

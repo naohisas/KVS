@@ -16,11 +16,6 @@
 #include <string>
 #include <kvs/File>
 #include <kvs/IgnoreUnusedVariable>
-#include <kvs/AVSField>
-#include <kvs/KVSMLObjectStructuredVolume>
-#include <kvs/StructuredVolumeObject>
-#include <kvs/StructuredVolumeImporter>
-#include <kvs/StructuredVolumeExporter>
 
 
 namespace kvsconv

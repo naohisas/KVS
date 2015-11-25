@@ -12,6 +12,10 @@
  *  $Id: KVSMLObjectImage.cpp 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
+#if 1
+
+#else
+
 #include "KVSMLObjectImage.h"
 #include "ImageObjectTag.h"
 #include "PixelTag.h"
@@ -295,3 +299,5 @@ bool KVSMLObjectImage::write( const std::string& filename )
 }
 
 } // end of namespace kvs
+
+#endif

@@ -14,7 +14,7 @@
 /****************************************************************************/
 #include "PolygonImporter.h"
 #include <kvs/DebugNew>
-#include <kvs/KVSMLObjectPolygon>
+#include <kvs/KVSMLPolygonObject>
 #include <kvs/Math>
 #include <kvs/Vector3>
 
@@ -99,9 +99,9 @@ PolygonImporter::PolygonImporter()
 /*===========================================================================*/
 PolygonImporter::PolygonImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectPolygon::CheckExtension( filename ) )
+    if ( kvs::KVSMLPolygonObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectPolygon* file_format = new kvs::KVSMLObjectPolygon( filename );
+        kvs::KVSMLPolygonObject* file_format = new kvs::KVSMLPolygonObject( filename );
         if( !file_format )
         {
             BaseClass::setSuccess( false );
@@ -206,7 +206,7 @@ PolygonImporter::SuperClass* PolygonImporter::exec( const kvs::FileFormatBase* f
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectPolygon* polygon = dynamic_cast<const kvs::KVSMLObjectPolygon*>( file_format ) )
+    if ( const kvs::KVSMLPolygonObject* polygon = dynamic_cast<const kvs::KVSMLPolygonObject*>( file_format ) )
     {
         this->import( polygon );
     }
@@ -234,7 +234,7 @@ PolygonImporter::SuperClass* PolygonImporter::exec( const kvs::FileFormatBase* f
  *  @param  document [in] pointer to the KVSML document
  */
 /*==========================================================================*/
-void PolygonImporter::import( const kvs::KVSMLObjectPolygon* kvsml )
+void PolygonImporter::import( const kvs::KVSMLPolygonObject* kvsml )
 {
     if ( kvsml->objectTag().hasExternalCoord() )
     {

@@ -15,6 +15,20 @@
 #ifndef KVS__KVSML_OBJECT_STRUCTURED_VOLUME_H_INCLUDE
 #define KVS__KVSML_OBJECT_STRUCTURED_VOLUME_H_INCLUDE
 
+#if 1
+
+#include "KVSMLStructuredVolumeObject.h"
+#include <kvs/Deprecated>
+
+namespace kvs
+{
+
+typedef KVS_DEPRECATED( KVSMLStructuredVolumeObject ) KVSMLObjectStructuredVolume;
+
+} // end of namespace kvs
+
+#else
+
 #include <kvs/FileFormatBase>
 #include <kvs/AnyValueArray>
 #include <kvs/ValueArray>
@@ -109,5 +123,7 @@ public:
 };
 
 } // end of namespace kvs
+
+#endif
 
 #endif // KVS__KVSML_OBJECT_STRUCTURED_VOLUME_H_INCLUDE

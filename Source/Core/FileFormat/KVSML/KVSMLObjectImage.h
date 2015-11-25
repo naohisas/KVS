@@ -15,6 +15,20 @@
 #ifndef KVS__KVSML_OBJECT_IMAGE_H_INCLUDE
 #define KVS__KVSML_OBJECT_IMAGE_H_INCLUDE
 
+#if 1
+
+#include "KVSMLImageObject.h"
+#include <kvs/Deprecated>
+
+namespace kvs
+{
+
+typedef KVS_DEPRECATED( KVSMLImageObject ) KVSMLObjectImage;
+
+} // end of namespace kvs
+
+#else
+
 #include <kvs/FileFormatBase>
 #include <kvs/ValueArray>
 #include <kvs/Type>
@@ -89,5 +103,7 @@ public:
 };
 
 } // end of namespace kvs
+
+#endif
 
 #endif // KVS__KVSML_OBJECT_IMAGE_H_INCLUDE
