@@ -58,13 +58,6 @@ $(OUTDIR)/./FileFormat/KVSML/DataWriter.o \
 $(OUTDIR)/./FileFormat/KVSML/ImageObjectTag.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLImageObject.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLLineObject.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectImage.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectLine.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectPoint.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectPolygon.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectStructuredVolume.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectTable.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectUnstructuredVolume.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLPointObject.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLPolygonObject.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLStructuredVolumeObject.o \
