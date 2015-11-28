@@ -12,9 +12,7 @@
  *  $Id: StructuredVolumeObject.h 1787 2014-07-17 11:10:26Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__STRUCTURED_VOLUME_OBJECT_H_INCLUDE
-#define KVS__STRUCTURED_VOLUME_OBJECT_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/Module>
 #include <kvs/VolumeObjectBase>
@@ -110,5 +108,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STRUCTURED_VOLUME_OBJECT_H_INCLUDE

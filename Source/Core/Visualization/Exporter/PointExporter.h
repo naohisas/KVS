@@ -12,9 +12,7 @@
  *  $Id: PointExporter.h 1794 2014-08-01 07:45:27Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__POINT_EXPORTER_H_INCLUDE
-#define KVS__POINT_EXPORTER_H_INCLUDE
-
+#pragma once
 #include <kvs/PointObject>
 #include <kvs/KVSMLPointObject>
 #include "ExporterBase.h"
@@ -54,5 +52,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__POINT_EXPORTER_H_INCLUDE

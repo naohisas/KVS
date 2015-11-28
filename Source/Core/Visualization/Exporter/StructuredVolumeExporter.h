@@ -12,9 +12,7 @@
  *  $Id: StructuredVolumeExporter.h 1794 2014-08-01 07:45:27Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__STRUCTURED_VOLUME_EXPORTER_H_INCLUDE
-#define KVS__STRUCTURED_VOLUME_EXPORTER_H_INCLUDE
-
+#pragma once
 #include <kvs/ObjectBase>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/KVSMLStructuredVolumeObject>
@@ -71,5 +69,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STRUCTURED_VOLUME_EXPORTER_H_INCLUDE

@@ -12,9 +12,7 @@
  *  $Id: PolygonExporter.h 1794 2014-08-01 07:45:27Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__POLYGON_EXPORTER_H_INCLUDE
-#define KVS__POLYGON_EXPORTER_H_INCLUDE
-
+#pragma once
 #include <kvs/PolygonObject>
 #include <kvs/KVSMLPolygonObject>
 #include <kvs/Stl>
@@ -86,5 +84,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__POLYGON_EXPORTER_H_INCLUDE

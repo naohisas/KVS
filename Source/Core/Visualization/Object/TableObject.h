@@ -12,9 +12,7 @@
  *  $Id: TableObject.h 1759 2014-05-05 06:14:18Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__TABLE_OBJECT_H_INCLUDE
-#define KVS__TABLE_OBJECT_H_INCLUDE
-
+#pragma once
 #include <vector>
 #include <ostream>
 #include <kvs/Module>
@@ -169,5 +167,3 @@ inline void TableObject::addColumn( const std::vector<T>& array, const std::stri
 }
 
 } // end of namespace kvs
-
-#endif // KVS__TABLE_OBJECT_H_INCLUDE

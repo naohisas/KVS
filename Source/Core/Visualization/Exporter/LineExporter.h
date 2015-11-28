@@ -12,9 +12,7 @@
  *  $Id: LineExporter.h 1794 2014-08-01 07:45:27Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__LINE_EXPORTER_H_INCLUDE
-#define KVS__LINE_EXPORTER_H_INCLUDE
-
+#pragma once
 #include <kvs/LineObject>
 #include <kvs/KVSMLLineObject>
 #include "ExporterBase.h"
@@ -54,5 +52,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__LINE_EXPORTER_H_INCLUDE

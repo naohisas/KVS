@@ -12,9 +12,7 @@
  *  $Id: PointObject.h 1815 2014-10-02 01:17:28Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__POINT_OBJECT_H_INCLUDE
-#define KVS__POINT_OBJECT_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/GeometryObjectBase>
 #include <kvs/ValueArray>
@@ -196,5 +194,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__POINT_OBJECT_H_INCLUDE

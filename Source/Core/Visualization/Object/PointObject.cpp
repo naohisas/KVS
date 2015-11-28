@@ -71,7 +71,7 @@ PointObject::PointObject( const kvs::LineObject& line )
     BaseClass::setGeometryType( Point );
     BaseClass::setCoords( line.coords() );
 
-    if( line.colorType() == kvs::LineObject::VertexColor )
+    if ( line.colorType() == kvs::LineObject::VertexColor )
     {
         BaseClass::setColors( line.colors() );
     }
@@ -102,7 +102,7 @@ PointObject::PointObject( const kvs::PolygonObject& polygon )
     BaseClass::setGeometryType( Point );
     BaseClass::setCoords( polygon.coords() );
 
-    if( polygon.colorType() == kvs::PolygonObject::VertexColor )
+    if ( polygon.colorType() == kvs::PolygonObject::VertexColor )
     {
         BaseClass::setColors( polygon.colors() );
     }
@@ -111,7 +111,7 @@ PointObject::PointObject( const kvs::PolygonObject& polygon )
         BaseClass::setColor( polygon.color() );
     }
 
-    if( polygon.normalType() == kvs::PolygonObject::VertexNormal )
+    if ( polygon.normalType() == kvs::PolygonObject::VertexNormal )
     {
         BaseClass::setNormals( polygon.normals() );
     }

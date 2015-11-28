@@ -12,9 +12,7 @@
  *  $Id: LineObject.h 1815 2014-10-02 01:17:28Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__LINE_OBJECT_H_INCLUDE
-#define KVS__LINE_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/GeometryObjectBase>
 #include <kvs/ValueArray>
 #include <kvs/Type>
@@ -239,5 +237,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__LINE_OBJECT_H_INCLUDE

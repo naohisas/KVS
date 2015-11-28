@@ -12,9 +12,7 @@
  *  $Id: ImageImporter.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__IMAGE_IMPORTER_H_INCLUDE
-#define KVS__IMAGE_IMPORTER_H_INCLUDE
-
+#pragma once
 #include "ImporterBase.h"
 #include <string>
 #include <kvs/Module>
@@ -43,7 +41,6 @@ class ImageImporter : public kvs::ImporterBase, public kvs::ImageObject
     kvsModuleSuperClass( kvs::ImageObject );
 
 public:
-
     ImageImporter();
     ImageImporter( const std::string& filename );
     ImageImporter( const kvs::FileFormatBase* file_format );
@@ -52,7 +49,6 @@ public:
     SuperClass* exec( const kvs::FileFormatBase* file_format );
 
 private:
-
     void import( const kvs::Bmp* bmp );
     void import( const kvs::Tiff* tiff );
     void import( const kvs::Ppm* ppm );
@@ -62,5 +58,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__IMAGE_IMPORTER_H_INCLUDE

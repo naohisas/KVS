@@ -12,9 +12,7 @@
  *  $Id: ExporterBase.h 1794 2014-08-01 07:45:27Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__EXPORTER_BASE_H_INCLUDE
-#define KVS__EXPORTER_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/FileFormatBase>
 #include <kvs/Module>
 
@@ -32,11 +30,9 @@ class ExporterBase
     kvsModuleBase( kvs::ExporterBase );
 
 private:
-
     bool m_is_success; ///< check flag for exporting
 
 public:
-
     ExporterBase() {}
     virtual ~ExporterBase() {}
 
@@ -45,10 +41,7 @@ public:
     virtual kvs::FileFormatBase* exec( const kvs::ObjectBase* object ) = 0;
 
 protected:
-
     void setSuccess( const bool success ) { m_is_success = success; }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__EXPORTER_BASE_H_INCLUDE

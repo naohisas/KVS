@@ -12,9 +12,7 @@
  *  $Id: ImageObject.h 1775 2014-05-16 13:49:42Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__IMAGE_OBJECT_H_INCLUDE
-#define KVS__IMAGE_OBJECT_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/ObjectBase>
 #include <kvs/ClassName>
@@ -90,5 +88,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__IMAGE_OBJECT_H_INCLUDE
