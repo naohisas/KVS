@@ -57,6 +57,8 @@ public:
     void deepCopy( const PointObject& other );
     void clear();
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setSizes( const kvs::ValueArray<kvs::Real32>& sizes ) { m_sizes = sizes; }
     void setSize( const kvs::Real32 size );

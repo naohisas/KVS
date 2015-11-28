@@ -19,7 +19,6 @@
 #include <kvs/KVSMLStructuredVolumeObject>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
-#include <kvs/StructuredVolumeExporter>
 
 
 namespace kvsconv
@@ -49,9 +48,9 @@ Argument::Argument( int argc, char** argv ):
  *  @return input filename
  */
 /*===========================================================================*/
-const std::string Argument::inputFilename( void )
+const std::string Argument::inputFilename()
 {
-    return( this->value<std::string>() );
+    return this->value<std::string>();
 }
 
 /*===========================================================================*/
@@ -72,44 +71,8 @@ const std::string Argument::outputFilename( const std::string& filename )
         // Replace the extension as follows: xxxx.fld -> xxx.kvsml.
         const std::string basename = kvs::File( filename ).baseName();
         const std::string extension = "kvsml";
-        return( basename + "." + extension );
+        return basename + "." + extension;
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a writing data type (ascii/external ascii/external binary).
- *  @return writing data type
- */
-/*===========================================================================*/
-const kvs::KVSMLStructuredVolumeObject::WritingDataType Argument::writingDataType( void )
-{
-    if ( this->hasOption("b") )
-    {
-        return( kvs::KVSMLStructuredVolumeObject::ExternalBinary );
-    }
-    else
-    {
-        if ( this->hasOption("e") )
-        {
-            return( kvs::KVSMLStructuredVolumeObject::ExternalAscii );
-        }
-    }
-
-    return( kvs::KVSMLStructuredVolumeObject::Ascii );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class for a fld2kvsml.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
 }
 
 /*===========================================================================*/
@@ -117,11 +80,11 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+bool Main::exec()
 {
     // Parse specified arguments.
     fld2kvsml::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    if( !arg.parse() ) { return false; }
 
     // Set a input filename and a output filename.
     m_input_name = arg.inputFilename();
@@ -131,61 +94,28 @@ const bool Main::exec( void )
     if ( !file.isExisted() )
     {
         kvsMessageError("Input data file '%s' is not existed.",m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Read AVS Field data file.
     kvs::AVSField* input = new kvs::AVSField( m_input_name );
-    if ( !input )
-    {
-        kvsMessageError("Cannot allocate for the AVS field data.");
-        return( false );
-    }
-
     if ( input->isFailure() )
     {
         kvsMessageError("Cannot read a file %s.", m_input_name.c_str() );
         delete input;
-        return( false );
+        return false;
     }
 
     // Import AVS Field data as structured volume object.
     kvs::StructuredVolumeObject* object = new kvs::StructuredVolumeImporter( input );
-    if ( !object )
-    {
-        kvsMessageError("Cannot import AVS Field data.");
-        delete input;
-        return( false );
-    }
-
     delete input;
 
-    // Export the structured volume object to KVSML data (structured volume).
-    kvs::KVSMLStructuredVolumeObject* output =
-        new kvs::StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>( object );
-    if ( !output )
-    {
-        kvsMessageError("Cannot export structured volume object.");
-        delete object;
-        return( false );
-    }
-
+    const bool ascii = !arg.hasOption("b");
+    const bool external = arg.hasOption("e");
+    object->write( m_output_name, ascii, external );
     delete object;
 
-    // Set the writing data type.
-    output->setWritingDataType( arg.writingDataType() );
-
-    // Write to KVSML data file.
-    if ( !output->write( m_output_name ) )
-    {
-        kvsMessageError("Cannot write to KVSML data file %s.", m_output_name.c_str() );
-        delete output;
-        return( false );
-    }
-
-    delete output;
-
-    return( true );
+    return true;
 }
 
 } // end of namespace fld2kvsml

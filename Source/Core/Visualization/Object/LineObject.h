@@ -74,6 +74,8 @@ public:
     void deepCopy( const LineObject& object );
     void clear();
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setLineType( const LineType line_type ) { m_line_type = line_type; }
     void setLineTypeToStrip() { this->setLineType( Strip ); }

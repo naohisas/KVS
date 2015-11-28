@@ -42,10 +42,6 @@ public:
     TableImporter( const kvs::FileFormatBase* file_format );
 
     SuperClass* exec( const kvs::FileFormatBase* file_format );
-
-private:
-
-    void import( const kvs::KVSMLTableObject* kvsml );
 };
 
 } // end of namespace kvs

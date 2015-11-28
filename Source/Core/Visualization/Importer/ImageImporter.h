@@ -53,7 +53,6 @@ public:
 
 private:
 
-    void import( const kvs::KVSMLImageObject* kvsml );
     void import( const kvs::Bmp* bmp );
     void import( const kvs::Tiff* tiff );
     void import( const kvs::Ppm* ppm );

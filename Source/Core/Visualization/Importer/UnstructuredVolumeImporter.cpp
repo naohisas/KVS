@@ -24,29 +24,6 @@ namespace
 
 /*==========================================================================*/
 /**
- *  @brief  Converts to the cell type from the given string.
- *  @param  cell_type [in] grid type string
- *  @return cell type
- */
-/*==========================================================================*/
-const kvs::UnstructuredVolumeObject::CellType StringToCellType( const std::string& cell_type )
-{
-    if (      cell_type == "tetrahedra" ) { return kvs::UnstructuredVolumeObject::Tetrahedra; }
-    else if ( cell_type == "quadratic tetrahedra" ) { return kvs::UnstructuredVolumeObject::QuadraticTetrahedra; }
-    else if ( cell_type == "hexahedra"  ) { return kvs::UnstructuredVolumeObject::Hexahedra;  }
-    else if ( cell_type == "quadratic hexahedra"  ) { return kvs::UnstructuredVolumeObject::QuadraticHexahedra;  }
-    else if ( cell_type == "pyramid"  ) { return kvs::UnstructuredVolumeObject::Pyramid;  }
-    else if ( cell_type == "point"  ) { return kvs::UnstructuredVolumeObject::Point;  }
-    else if ( cell_type == "prism"  ) { return kvs::UnstructuredVolumeObject::Prism;  }
-    else
-    {
-        kvsMessageError( "Unknown cell type '%s'.", cell_type.c_str() );
-        return kvs::UnstructuredVolumeObject::UnknownCellType;
-    }
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Converts to the cell type from the given element type.
  *  @param  element_type [in] element type
  *  @return cell type
@@ -115,24 +92,7 @@ UnstructuredVolumeImporter::UnstructuredVolumeImporter( const std::string& filen
 {
     if ( kvs::KVSMLUnstructuredVolumeObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLUnstructuredVolumeObject* file_format = new kvs::KVSMLUnstructuredVolumeObject( filename );
-        if( !file_format )
-        {
-            BaseClass::setSuccess( false );
-            kvsMessageError("Cannot read '%s'.",filename.c_str());
-            return;
-        }
-
-        if( file_format->isFailure() )
-        {
-            BaseClass::setSuccess( false );
-            kvsMessageError("Cannot read '%s'.",filename.c_str());
-            delete file_format;
-            return;
-        }
-
-        this->import( file_format );
-        delete file_format;
+        BaseClass::setSuccess( SuperClass::read( filename ) );
     }
     else if ( kvs::AVSUcd::CheckExtension( filename ) )
     {
@@ -220,9 +180,9 @@ UnstructuredVolumeImporter::SuperClass* UnstructuredVolumeImporter::exec( const 
         return NULL;
     }
 
-    if ( const kvs::KVSMLUnstructuredVolumeObject* volume = dynamic_cast<const kvs::KVSMLUnstructuredVolumeObject*>( file_format ) )
+    if ( dynamic_cast<const kvs::KVSMLUnstructuredVolumeObject*>( file_format ) )
     {
-        this->import( volume );
+        BaseClass::setSuccess( SuperClass::read( file_format->filename() ) );
     }
     else if ( const kvs::AVSUcd* volume = dynamic_cast<const kvs::AVSUcd*>( file_format ) )
     {
@@ -240,55 +200,6 @@ UnstructuredVolumeImporter::SuperClass* UnstructuredVolumeImporter::exec( const 
     }
 
     return this;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Imports a KVSML format data.
- *  @param  kvsml [in] pointer to the KVSML format data
- */
-/*==========================================================================*/
-void UnstructuredVolumeImporter::import( const kvs::KVSMLUnstructuredVolumeObject* kvsml )
-{
-    if ( kvsml->objectTag().hasExternalCoord() )
-    {
-        const kvs::Vector3f min_coord( kvsml->objectTag().minExternalCoord() );
-        const kvs::Vector3f max_coord( kvsml->objectTag().maxExternalCoord() );
-        SuperClass::setMinMaxExternalCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml->objectTag().hasObjectCoord() )
-    {
-        const kvs::Vector3f min_coord( kvsml->objectTag().minObjectCoord() );
-        const kvs::Vector3f max_coord( kvsml->objectTag().maxObjectCoord() );
-        SuperClass::setMinMaxObjectCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml->hasLabel() ) { SuperClass::setLabel( kvsml->label() ); }
-    if ( kvsml->hasUnit() ) { SuperClass::setUnit( kvsml->unit() ); }
-
-    SuperClass::setVeclen( kvsml->veclen() );
-    SuperClass::setNumberOfNodes( kvsml->nnodes() );
-    SuperClass::setNumberOfCells( kvsml->ncells() );
-    SuperClass::setCellType( ::StringToCellType( kvsml->cellType() ) );
-    SuperClass::setCoords( kvsml->coords() );
-    SuperClass::setConnections( kvsml->connections() );
-    SuperClass::setValues( kvsml->values() );
-    SuperClass::updateMinMaxCoords();
-
-    if ( kvsml->hasMinValue() && kvsml->hasMaxValue() )
-    {
-        const double min_value = kvsml->minValue();
-        const double max_value = kvsml->maxValue();
-        SuperClass::setMinMaxValues( min_value, max_value );
-    }
-    else
-    {
-        SuperClass::updateMinMaxValues();
-        const double min_value = kvsml->hasMinValue() ? kvsml->minValue() : SuperClass::minValue();
-        const double max_value = kvsml->hasMaxValue() ? kvsml->maxValue() : SuperClass::maxValue();
-        SuperClass::setMinMaxValues( min_value, max_value );
-    }
 }
 
 /*==========================================================================*/

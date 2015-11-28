@@ -80,6 +80,8 @@ public:
     void deepCopy( const PolygonObject& object );
     void clear();
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setPolygonType( const PolygonType polygon_type ) { m_polygon_type = polygon_type; }
     void setPolygonTypeToTriangle() { this->setPolygonType( Triangle ); }

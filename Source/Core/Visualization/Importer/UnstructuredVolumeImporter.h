@@ -48,7 +48,6 @@ public:
 
 private:
 
-    void import( const kvs::KVSMLUnstructuredVolumeObject* const kvsml );
     void import( const kvs::AVSUcd* const ucd );
     void import( const kvs::AVSField* const field );
 };

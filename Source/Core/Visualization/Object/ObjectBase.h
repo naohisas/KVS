@@ -79,6 +79,8 @@ public:
     void show() { m_show_flag = true; }
     void hide() { m_show_flag = false; }
     virtual void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    virtual bool read( const std::string& filename );
+    virtual bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     ObjectType objectType() const { return m_object_type; }
     const std::string& name() const { return m_name; }

@@ -43,11 +43,6 @@ public:
     virtual ~LineImporter();
 
     SuperClass* exec( const kvs::FileFormatBase* file_format );
-
-private:
-
-    void import( const kvs::KVSMLLineObject* kvsml );
-    void set_min_max_coord();
 };
 
 } // end of namespace kvs

@@ -57,6 +57,8 @@ public:
     void shallowCopy( const StructuredVolumeObject& object );
     void deepCopy( const StructuredVolumeObject& object );
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setGridType( GridType grid_type ) { m_grid_type = grid_type; }
     void setGridTypeToUniform() { this->setGridType( Uniform ); }
@@ -72,10 +74,6 @@ public:
     size_t numberOfCells() const;
 
     void updateMinMaxCoords();
-
-private:
-
-    void calculate_min_max_coords();
 
 public:
     KVS_DEPRECATED( StructuredVolumeObject(

@@ -43,11 +43,6 @@ public:
     virtual ~PointImporter();
 
     SuperClass* exec( const kvs::FileFormatBase* file_format );
-
-private:
-
-    void import( const kvs::KVSMLPointObject* kvsml );
-    void set_min_max_coord();
 };
 
 } // end of namespace kvs

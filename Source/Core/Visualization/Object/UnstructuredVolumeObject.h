@@ -65,6 +65,8 @@ public:
     void shallowCopy( const UnstructuredVolumeObject& object );
     void deepCopy( const UnstructuredVolumeObject& object );
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setCellType( CellType cell_type ) { m_cell_type = cell_type; }
     void setCellTypeToTetrahedra() { this->setCellType( Tetrahedra ); }
