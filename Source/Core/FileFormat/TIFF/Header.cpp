@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Header.cpp
+ *  @file   Header.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -53,21 +54,6 @@ std::ostream& operator << ( std::ostream& os, const Header& header )
     os << "Offset:       " << header.offset();
 
     return os;
-}
-
-kvs::UInt16 Header::magic() const
-{
-    return m_magic;
-}
-
-kvs::UInt16 Header::version() const
-{
-    return m_version;
-}
-
-kvs::UInt32 Header::offset() const
-{
-    return m_offset;
 }
 
 void Header::print( std::ostream& os, const kvs::Indent& indent ) const

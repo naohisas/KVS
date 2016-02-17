@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Header.h
+ *  @file   Header.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: Header.h 1312 2012-09-18 15:33:43Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__TIFF__HEADER_H_INCLUDE
-#define KVS__TIFF__HEADER_H_INCLUDE
+#pragma once
 
 #include <kvs/Type>
 #include <kvs/Indent>
@@ -26,9 +26,14 @@ namespace kvs
 namespace tiff
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Header class.
+ */
+/*===========================================================================*/
 class Header
 {
-protected:
+private:
 
     kvs::UInt16 m_magic; ///< magic number
     kvs::UInt16 m_version; ///< TIFF version
@@ -45,9 +50,9 @@ public:
 
 public:
 
-    kvs::UInt16 magic() const;
-    kvs::UInt16 version() const;
-    kvs::UInt32 offset() const;
+    kvs::UInt16 magic() const { return m_magic; }
+    kvs::UInt16 version() const { return m_version; }
+    kvs::UInt32 offset() const { return m_offset; }
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     bool read( std::ifstream& ifs );
@@ -56,5 +61,3 @@ public:
 } // end of namesapce tiff
 
 } // end of namespace kvs
-
-#endif // KVS__TIFF__HEADER_H_INCLUDE

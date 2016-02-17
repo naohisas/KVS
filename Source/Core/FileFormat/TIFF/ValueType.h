@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ValueType.h
+ *  @file   ValueType.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: ValueType.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
  */
 /****************************************************************************/
-#ifndef KVS__TIFF__VALUE_TYPE_H_INCLUDE
-#define KVS__TIFF__VALUE_TYPE_H_INCLUDE
+#pragma once
 
 #include <string>
 
@@ -78,5 +78,3 @@ const size_t ValueTypeSize[ kvs::tiff::NumberOfValueTypes ] =
 } // end of namespace tiff
 
 } // end of namespace kvs
-
-#endif // KVS__TIFF__VALUE_TYPE_H_INCLUDE
