@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   StochasticPolygonRenderer.cpp
- *  @author Naohisa Sakamoto
+ *  @author Naohisa Sakamoto, Zhao Kun
  */
 /*----------------------------------------------------------------------------
  *
@@ -62,20 +62,37 @@ kvs::ValueArray<kvs::Real32> VertexNormals( const kvs::PolygonObject* polygon )
     }
     case kvs::PolygonObject::PolygonNormal:
     {
-        // Same normal vectors are assigned for each vertex of the polygon.
-        const size_t npolygons = polygon->normals().size() / 3;
-        const size_t nnormals = npolygons * 3;
-        normals.allocate( nnormals * 3 );
+        const size_t nvertices = polygon->numberOfVertices();
+        const size_t npolygons = polygon->connections().size() / 3;
+        const kvs::UInt32* polygon_connections = polygon->connections().data();
+        const kvs::Real32* polygon_normals = polygon->normals().data();
+
+        // Initialize the normal vectors
+        normals.allocate( nvertices * 3 );
+        normals.fill(0);
+
+        // Calculate the normal verctors for each vertex
         kvs::Real32* pnormals = normals.data();
         for ( size_t i = 0; i < npolygons; i++ )
         {
-            const kvs::Vec3 n = polygon->normal(i);
-            for ( size_t j = 0; j < 3; j++ )
-            {
-                *(pnormals++) = n.x();
-                *(pnormals++) = n.y();
-                *(pnormals++) = n.z();
-            }
+            const size_t i3 = i * 3;
+            const kvs::UInt32 c0 = polygon_connections[ i3 ];
+            const kvs::UInt32 c1 = polygon_connections[ i3 + 1 ];
+            const kvs::UInt32 c2 = polygon_connections[ i3 + 2 ];
+            const kvs::Real32 nx = polygon_normals[ i3 ];
+            const kvs::Real32 ny = polygon_normals[ i3 + 1 ];
+            const kvs::Real32 nz = polygon_normals[ i3 + 2 ];
+            pnormals[ c0 * 3 + 0 ] += nx;
+            pnormals[ c0 * 3 + 1 ] += ny;
+            pnormals[ c0 * 3 + 2 ] += nz;
+
+            pnormals[ c1 * 3 + 0 ] += nx;
+            pnormals[ c1 * 3 + 1 ] += ny;
+            pnormals[ c1 * 3 + 2 ] += nz;
+
+            pnormals[ c2 * 3 + 0 ] += nx;
+            pnormals[ c2 * 3 + 1 ] += ny;
+            pnormals[ c2 * 3 + 2 ] += nz;
         }
         break;
     }
