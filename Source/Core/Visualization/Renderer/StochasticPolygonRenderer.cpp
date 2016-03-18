@@ -265,7 +265,60 @@ kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::PolygonObject* polygon )
         }
         else
         {
-            colors = polygon->colors();
+            const size_t nverts = polygon->numberOfVertices();
+            colors.allocate( nverts * 4 );
+            if ( is_single_color )
+            {
+                const kvs::RGBColor polygon_color = polygon->color();
+                if ( is_single_alpha )
+                {
+                    const kvs::UInt8 polygon_alpha = polygon->opacity();
+                    for ( size_t i = 0; i < nverts; i++ )
+                    {
+                        colors[ 4 * i + 0 ] = polygon_color.r();
+                        colors[ 4 * i + 1 ] = polygon_color.g();
+                        colors[ 4 * i + 2 ] = polygon_color.b();
+                        colors[ 4 * i + 3 ] = polygon_alpha;
+                    }
+                }
+                else
+                {
+                    const kvs::UInt8* polygon_alphas = polygon->opacities().data();
+                    for ( size_t i = 0; i < nverts; i++ )
+                    {
+                        colors[ 4 * i + 0 ] = polygon_color.r();
+                        colors[ 4 * i + 1 ] = polygon_color.g();
+                        colors[ 4 * i + 2 ] = polygon_color.b();
+                        colors[ 4 * i + 3 ] = polygon_alphas[ i ];
+                    }
+                }
+            }
+            else
+            {
+                const kvs::UInt8* polygon_colors = polygon->colors().data();
+                if ( is_single_alpha )
+                {
+                    const kvs::UInt8 polygon_alpha = polygon->opacity();
+                    for ( size_t i = 0; i < nverts; i++ )
+                    {
+                        colors[ 4 * i + 0 ] = polygon_colors[ 3 * i + 0 ];
+                        colors[ 4 * i + 1 ] = polygon_colors[ 3 * i + 1 ];
+                        colors[ 4 * i + 2 ] = polygon_colors[ 3 * i + 2 ];
+                        colors[ 4 * i + 3 ] = polygon_alpha;
+                    }
+                }
+                else
+                {
+                    const kvs::UInt8* polygon_alphas = polygon->opacities().data();
+                    for ( size_t i = 0; i < nverts; i++ )
+                    {
+                        colors[ 4 * i + 0 ] = polygon_colors[ 3 * i + 0 ];
+                        colors[ 4 * i + 1 ] = polygon_colors[ 3 * i + 1 ];
+                        colors[ 4 * i + 2 ] = polygon_colors[ 3 * i + 2 ];
+                        colors[ 4 * i + 3 ] = polygon_alphas[ i ];
+                    }
+                }
+            }
         }
         break;
     }
@@ -299,7 +352,7 @@ kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::PolygonObject* polygon )
         }
         break;
     }
-    default: break;
+    default: { break; }
     }
 
     return colors;
@@ -538,12 +591,6 @@ void StochasticPolygonRenderer::Engine::create_buffer_object( const kvs::Polygon
     if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
     {
         kvsMessageError("Not supported polygon type.");
-        return;
-    }
-
-    if ( polygon->colors().size() != 3 )
-    {
-        kvsMessageError("Not specified color values.");
         return;
     }
 
