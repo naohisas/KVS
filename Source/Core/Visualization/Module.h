@@ -39,14 +39,15 @@
     virtual const char* moduleName() const { return #this_class; }      \
     static Pointer DownCast( kvs:: category##Base::Pointer& m )         \
     {                                                                   \
-        typedef this_class T;                                           \
-        typedef kvs:: category##Base U;                                 \
-        return kvs::dynamic_pointer_cast<T,U>( m );                     \
+        typedef this_class T_;                                          \
+        typedef kvs:: category##Base U_;                                \
+        return kvs::dynamic_pointer_cast<T_,U_>( m );                   \
     };                                                                  \
     static const Pointer DownCast( const kvs:: category##Base::Pointer& m ) \
     {                                                                   \
-        typedef kvs:: category##Base U;                                 \
-        return DownCast( kvs::const_pointer_cast<U,U>( m ) );           \
+        typedef this_class T_;                                          \
+        typedef kvs:: category##Base U_;                                \
+        return kvs::dynamic_pointer_cast<T_,U_>( kvs::const_pointer_cast<U_,U_>( m ) ); \
     };                                                                  \
     static this_class* DownCast( kvs:: category##Base* m )              \
     {                                                                   \
@@ -54,7 +55,7 @@
     };                                                                  \
     static const this_class* DownCast( const kvs:: category##Base* m )  \
     {                                                                   \
-        return DownCast( const_cast<kvs:: category##Base *>( m ) );     \
+        return dynamic_cast<this_class *>( const_cast<kvs:: category##Base *>( m ) ); \
     }
 
 // TODO: Remove dynamic_cast from the DownCast method.
