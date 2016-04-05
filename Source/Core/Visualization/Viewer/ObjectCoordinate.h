@@ -12,8 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__OBJECT_COORDINATE_H_INCLUDE
-#define KVS__OBJECT_COORDINATE_H_INCLUDE
+#pragma once
 
 #include <kvs/Vector3>
 
@@ -45,5 +44,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__OBJECT_COORDINATE_H_INCLUDE

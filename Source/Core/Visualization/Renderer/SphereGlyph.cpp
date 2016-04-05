@@ -35,8 +35,8 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
     GLfloat cosCache1b[CacheSize];
     GLfloat sinCache2b[CacheSize];
     GLfloat cosCache2b[CacheSize];
-    GLfloat sinCache3b[CacheSize];
-    GLfloat cosCache3b[CacheSize];
+//    GLfloat sinCache3b[CacheSize];
+//    GLfloat cosCache3b[CacheSize];
     GLfloat angle;
     GLfloat zLow, zHigh;
     GLfloat sintemp1 = 0.0, sintemp2 = 0.0, sintemp3 = 0.0, sintemp4 = 0.0;
@@ -92,12 +92,12 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
             sinCache3a[i] = std::sin(angle);
             cosCache3a[i] = std::cos(angle);
         }
-        for (j = 0; j <= stacks; j++)
-        {
-            angle = Pi * (j - 0.5) / stacks;
-            sinCache3b[j] = std::sin(angle);
-            cosCache3b[j] = std::cos(angle);
-        }
+//        for (j = 0; j <= stacks; j++)
+//        {
+//            angle = Pi * (j - 0.5) / stacks;
+//            sinCache3b[j] = std::sin(angle);
+//            cosCache3b[j] = std::cos(angle);
+//        }
     }
 
     sinCache1a[slices] = sinCache1a[0];

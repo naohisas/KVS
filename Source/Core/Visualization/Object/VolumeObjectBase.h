@@ -12,9 +12,7 @@
  *  $Id: VolumeObjectBase.h 1811 2014-09-03 02:53:36Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__VOLUME_OBJECT_BASE_H_INCLUDE
-#define KVS__VOLUME_OBJECT_BASE_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <ostream>
 #include <kvs/ObjectBase>
@@ -116,5 +114,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__VOLUME_OBJECT_BASE_H_INCLUDE

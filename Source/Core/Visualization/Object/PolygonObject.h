@@ -12,9 +12,7 @@
  *  $Id: PolygonObject.h 1815 2014-10-02 01:17:28Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__POLYGON_OBJECT_H_INCLUDE
-#define KVS__POLYGON_OBJECT_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/GeometryObjectBase>
 #include <kvs/ValueArray>
@@ -80,6 +78,8 @@ public:
     void deepCopy( const PolygonObject& object );
     void clear();
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setPolygonType( const PolygonType polygon_type ) { m_polygon_type = polygon_type; }
     void setPolygonTypeToTriangle() { this->setPolygonType( Triangle ); }
@@ -268,5 +268,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__POLYGON_OBJECT_H_INCLUDE

@@ -9,6 +9,8 @@ FileFormat/FrontFlow/FrontFlow
 FileFormat/FrontSTR/FrontSTR
 FileFormat/GIS/Gis
 FileFormat/GrADS/GrADS
+FileFormat/KVSML/KVSMLImageObject
+FileFormat/KVSML/KVSMLLineObject
 FileFormat/KVSML/KVSMLObjectImage
 FileFormat/KVSML/KVSMLObjectLine
 FileFormat/KVSML/KVSMLObjectPoint
@@ -16,7 +18,12 @@ FileFormat/KVSML/KVSMLObjectPolygon
 FileFormat/KVSML/KVSMLObjectStructuredVolume
 FileFormat/KVSML/KVSMLObjectTable
 FileFormat/KVSML/KVSMLObjectUnstructuredVolume
+FileFormat/KVSML/KVSMLPointObject
+FileFormat/KVSML/KVSMLPolygonObject
+FileFormat/KVSML/KVSMLStructuredVolumeObject
+FileFormat/KVSML/KVSMLTableObject
 FileFormat/KVSML/KVSMLTransferFunction
+FileFormat/KVSML/KVSMLUnstructuredVolumeObject
 FileFormat/PLY/Ply
 FileFormat/PNM/Pbm
 FileFormat/PNM/Pgm
@@ -311,6 +318,7 @@ Visualization/Renderer/StochasticRenderingCompositor
 Visualization/Renderer/StochasticRenderingEngine
 Visualization/Renderer/StochasticTetrahedraRenderer
 Visualization/Renderer/StochasticUniformGridRenderer
+Visualization/Renderer/StylizedLineRenderer
 Visualization/Renderer/VolumeRayIntersector
 Visualization/Renderer/VolumeRendererBase
 Visualization/Viewer/ApplicationBase

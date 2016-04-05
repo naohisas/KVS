@@ -19,13 +19,13 @@
 #include <kvs/Dicom>
 #include <kvs/Gis>
 #include <kvs/GrADS>
-#include <kvs/KVSMLObjectImage>
-#include <kvs/KVSMLObjectPoint>
-#include <kvs/KVSMLObjectLine>
-#include <kvs/KVSMLObjectPolygon>
-#include <kvs/KVSMLObjectStructuredVolume>
-#include <kvs/KVSMLObjectUnstructuredVolume>
-#include <kvs/KVSMLObjectTable>
+#include <kvs/KVSMLImageObject>
+#include <kvs/KVSMLPointObject>
+#include <kvs/KVSMLLineObject>
+#include <kvs/KVSMLPolygonObject>
+#include <kvs/KVSMLStructuredVolumeObject>
+#include <kvs/KVSMLUnstructuredVolumeObject>
+#include <kvs/KVSMLTableObject>
 #include <kvs/KVSMLTransferFunction>
 #include <kvs/Ply>
 #include <kvs/Pbm>
@@ -72,39 +72,39 @@ inline void PrintInformation( const char* class_name, std::ostream& os, const kv
 /*===========================================================================*/
 inline void PrintKVSMLInformation( std::ostream& os, const kvscheck::FileChecker& checker )
 {
-    if ( kvs::KVSMLObjectImage::CheckFormat( checker.filename() ) )
+    if ( kvs::KVSMLImageObject::CheckFormat( checker.filename() ) )
     {
-        PRINT_INFO( kvs::KVSMLObjectImage, os, checker ); return;
+        PRINT_INFO( kvs::KVSMLImageObject, os, checker ); return;
     }
 
-    if ( kvs::KVSMLObjectPoint::CheckFormat( checker.filename() ) )
+    if ( kvs::KVSMLPointObject::CheckFormat( checker.filename() ) )
     {
-        PRINT_INFO( kvs::KVSMLObjectPoint, os, checker ); return;
+        PRINT_INFO( kvs::KVSMLPointObject, os, checker ); return;
     }
 
-    if ( kvs::KVSMLObjectLine::CheckFormat( checker.filename() ) )
+    if ( kvs::KVSMLLineObject::CheckFormat( checker.filename() ) )
     {
-        PRINT_INFO( kvs::KVSMLObjectLine, os, checker ); return;
+        PRINT_INFO( kvs::KVSMLLineObject, os, checker ); return;
     }
 
-    if ( kvs::KVSMLObjectPolygon::CheckFormat( checker.filename() ) )
+    if ( kvs::KVSMLPolygonObject::CheckFormat( checker.filename() ) )
     {
-        PRINT_INFO( kvs::KVSMLObjectPolygon, os, checker ); return;
+        PRINT_INFO( kvs::KVSMLPolygonObject, os, checker ); return;
     }
 
-    if ( kvs::KVSMLObjectStructuredVolume::CheckFormat( checker.filename() ) )
+    if ( kvs::KVSMLStructuredVolumeObject::CheckFormat( checker.filename() ) )
     {
-        PRINT_INFO( kvs::KVSMLObjectStructuredVolume, os, checker ); return;
+        PRINT_INFO( kvs::KVSMLStructuredVolumeObject, os, checker ); return;
     }
 
-    if ( kvs::KVSMLObjectUnstructuredVolume::CheckFormat( checker.filename() ) )
+    if ( kvs::KVSMLUnstructuredVolumeObject::CheckFormat( checker.filename() ) )
     {
-        PRINT_INFO( kvs::KVSMLObjectUnstructuredVolume, os, checker ); return;
+        PRINT_INFO( kvs::KVSMLUnstructuredVolumeObject, os, checker ); return;
     }
 
-    if ( kvs::KVSMLObjectTable::CheckFormat( checker.filename() ) )
+    if ( kvs::KVSMLTableObject::CheckFormat( checker.filename() ) )
     {
-        PRINT_INFO( kvs::KVSMLObjectTable, os, checker ); return;
+        PRINT_INFO( kvs::KVSMLTableObject, os, checker ); return;
     }
 
     if ( kvs::KVSMLTransferFunction::CheckFormat( checker.filename() ) )
@@ -184,10 +184,10 @@ const FileChecker::FormatType FileChecker::fileFormat( void ) const
         return FileChecker::GrADSFormat;
     }
 
-    if ( kvs::KVSMLObjectPoint::CheckExtension( m_filename ) )
+    if ( kvs::KVSMLPointObject::CheckExtension( m_filename ) )
     {
         /* NOTE: The KVSML object file have a same extension. Therefore,
-         * kvs::KVSMLObjectPoint is used in order to check the file extension
+         * kvs::KVSMLPointObject is used in order to check the file extension
          * for the KVSML format here.
          */
         return FileChecker::KVSMLFormat;

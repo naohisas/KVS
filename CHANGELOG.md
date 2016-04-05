@@ -1,4 +1,46 @@
-### Version 2.5.0 Released (2015.11.1x)
+### Version 2.6.0 Released (2016.4.5)
+**Add new classes and functions**
++ kvs::StylizedLineRenderer
+
+**Add new methods**
++ kvs::ObjectBase::read/write
++ kvs::LineObject::read/write
++ kvs::PointObject::read/write
++ kvs::PolygonObject::read/write
++ kvs::StructuredVolumeObject::read/write
++ kvs::UnstructuredVolumeObject::read/write
++ kvs::ImageObject::read/write
++ kvs::TableObject::read/write
+
+**Fixed problem**
++ kvs::NormalizedDeviceCoordinate::toCameraCoordinate()
++ kvs::Matrix::invert()
++ kvs::gis::GSIMesh
+
+**Supported prism cell**
++ kvs::SlicePlane
+
+**Supported polygon color and normal type of polygon object**
++ kvs::StochasticPolygonRenderer
+
+**Duprecated methods in kvs::Camera class**
++ modelViewMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix() instead)
++ projectionModelViewMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix(), kvs::Camera::projectionMatrix() instead)
++ getProjectionMatrix() -> (deprecated, use kvs::Camera::projectionMatrix() instead)
++ getModelViewMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix())
++ getProjectionModelViewMatrix() -> (deprecated)
++ getCombinedMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix(), kvs::Camera::projectionMatrix() instead)
++ projectObjectToWindow() -> (deprecated, use Coordinate classes instead)
++ projectWindowToObject() -> (deprecated, use Coordinate classes instead)
++ projectWindowToCamera() -> (deprecated, use Coordinate classes instead)
++ projectObjectToCamera() -> (deprecated, use Coordinate classes instead)
++ projectCameraToObject() -> (deprecated, use Coordinate classes instead)
++ projectWorldToCamera() -> (deprecated, use Coordinate classes instead)
++ projectCameraToWorld() -> (deprecated, use Coordinate classes instead)
++ projectWorldToObject() -> (deprecated, use Coordinate classes instead)
++ projectObjectToWorld() -> (deprecated, use Coordinate classes instead)
+
+### Version 2.5.0 Released (2015.11.18)
 **Add new classes and functions**
 + kvs::MarchingPrism
 + kvs::GridBase

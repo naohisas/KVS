@@ -12,8 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__SCENE_H_INCLUDE
-#define KVS__SCENE_H_INCLUDE
+#pragma once
 
 #include <kvs/Mouse>
 
@@ -134,5 +133,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SCENE_H_INCLUDE

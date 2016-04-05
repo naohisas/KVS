@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file TagDictionary.h
+ *  @file   TagDictionary.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: TagDictionary.h 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__TIFF__TAG_DICTIONARY_H_INCLUDE
-#define KVS__TIFF__TAG_DICTIONARY_H_INCLUDE
+#pragma once
 
 #include <kvs/Type>
 #include <map>
@@ -25,13 +25,18 @@ namespace kvs
 namespace tiff
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Tag directory class.
+ */
+/*===========================================================================*/
 class TagDictionary
 {
 public:
 
     typedef std::map<kvs::UInt16,std::string> Container;
 
-protected:
+private:
 
     Container m_container;
 
@@ -51,5 +56,3 @@ private:
 } // end of namespace tiff
 
 } // end of namespace kvs
-
-#endif // KVS__TIFF__TAG_DICTIONARY_H_INCLUDE

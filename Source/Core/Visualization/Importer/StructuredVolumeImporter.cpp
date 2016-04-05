@@ -22,31 +22,6 @@
 #include <kvs/Value>
 
 
-namespace
-{
-
-/*==========================================================================*/
-/**
- *  @brief  Converts to the grid type from the given string.
- *  @param  grid_type [in] grid type string
- *  @return grid type
- */
-/*==========================================================================*/
-const kvs::StructuredVolumeObject::GridType StringToGridType( const std::string& grid_type )
-{
-    if (      grid_type == "uniform"     ) { return kvs::StructuredVolumeObject::Uniform;     }
-    else if ( grid_type == "rectilinear" ) { return kvs::StructuredVolumeObject::Rectilinear; }
-    else if ( grid_type == "curvilinear" ) { return kvs::StructuredVolumeObject::Curvilinear; }
-    else
-    {
-        kvsMessageError( "Unknown grid type '%s'.", grid_type.c_str() );
-        return kvs::StructuredVolumeObject::UnknownGridType;
-    }
-}
-
-} // end of namespace
-
-
 namespace kvs
 {
 
@@ -67,26 +42,9 @@ StructuredVolumeImporter::StructuredVolumeImporter()
 /*===========================================================================*/
 StructuredVolumeImporter::StructuredVolumeImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectStructuredVolume::CheckExtension( filename ) )
+    if ( kvs::KVSMLStructuredVolumeObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectStructuredVolume* file_format = new kvs::KVSMLObjectStructuredVolume( filename );
-        if( !file_format )
-        {
-            BaseClass::setSuccess( false );
-            kvsMessageError("Cannot read '%s'.",filename.c_str());
-            return;
-        }
-
-        if( file_format->isFailure() )
-        {
-            BaseClass::setSuccess( false );
-            kvsMessageError("Cannot read '%s'.",filename.c_str());
-            delete file_format;
-            return;
-        }
-
-        this->import( file_format );
-        delete file_format;
+        BaseClass::setSuccess( SuperClass::read( filename ) );
     }
     else if ( kvs::AVSField::CheckExtension( filename ) )
     {
@@ -174,9 +132,9 @@ StructuredVolumeImporter::SuperClass* StructuredVolumeImporter::exec( const kvs:
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectStructuredVolume* volume = dynamic_cast<const kvs::KVSMLObjectStructuredVolume*>( file_format ) )
+    if ( dynamic_cast<const kvs::KVSMLStructuredVolumeObject*>( file_format ) )
     {
-        this->import( volume );
+        BaseClass::setSuccess( SuperClass::read( file_format->filename() ) );
     }
     else if ( const kvs::AVSField* volume = dynamic_cast<const kvs::AVSField*>( file_format ) )
     {
@@ -194,59 +152,6 @@ StructuredVolumeImporter::SuperClass* StructuredVolumeImporter::exec( const kvs:
     }
 
     return this;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Imports the KVSML format data.
- *  @param  kvsml [in] pointer to the KVSML format data
- */
-/*==========================================================================*/
-void StructuredVolumeImporter::import(
-    const kvs::KVSMLObjectStructuredVolume* kvsml )
-{
-    if ( kvsml->objectTag().hasExternalCoord() )
-    {
-        const kvs::Vector3f min_coord( kvsml->objectTag().minExternalCoord() );
-        const kvs::Vector3f max_coord( kvsml->objectTag().maxExternalCoord() );
-        SuperClass::setMinMaxExternalCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml->objectTag().hasObjectCoord() )
-    {
-        const kvs::Vector3f min_coord( kvsml->objectTag().minObjectCoord() );
-        const kvs::Vector3f max_coord( kvsml->objectTag().maxObjectCoord() );
-        SuperClass::setMinMaxObjectCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml->hasLabel() ) { SuperClass::setLabel( kvsml->label() ); }
-    if ( kvsml->hasUnit() ) { SuperClass::setUnit( kvsml->unit() ); }
-
-    SuperClass::setGridType( ::StringToGridType( kvsml->gridType() ) );
-    SuperClass::setResolution( kvsml->resolution() );
-    SuperClass::setVeclen( kvsml->veclen() );
-    SuperClass::setValues( kvsml->values() );
-
-    if ( SuperClass::gridType() == SuperClass::Rectilinear ||
-         SuperClass::gridType() == SuperClass::Curvilinear )
-    {
-        SuperClass::setCoords( kvsml->coords() );
-    }
-    SuperClass::updateMinMaxCoords();
-
-    if ( kvsml->hasMinValue() && kvsml->hasMaxValue() )
-    {
-        const double min_value = kvsml->minValue();
-        const double max_value = kvsml->maxValue();
-        SuperClass::setMinMaxValues( min_value, max_value );
-    }
-    else
-    {
-        SuperClass::updateMinMaxValues();
-        const double min_value = kvsml->hasMinValue() ? kvsml->minValue() : SuperClass::minValue();
-        const double max_value = kvsml->hasMaxValue() ? kvsml->maxValue() : SuperClass::maxValue();
-        SuperClass::setMinMaxValues( min_value, max_value );
-    }
 }
 
 /*==========================================================================*/

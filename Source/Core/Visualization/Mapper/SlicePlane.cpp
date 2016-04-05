@@ -17,6 +17,7 @@
 #include <kvs/MarchingTetrahedraTable>
 #include <kvs/MarchingHexahedraTable>
 #include <kvs/MarchingPyramidTable>
+#include <kvs/MarchingPrismTable>
 
 namespace kvs
 {
@@ -367,6 +368,11 @@ void SlicePlane::extract_plane(
         case kvs::UnstructuredVolumeObject::Pyramid:
         {
             this->extract_pyramid_plane<T>( volume );
+            break;
+        }
+        case kvs::UnstructuredVolumeObject::Prism:
+        {
+            this->extract_prism_plane<T>( volume );
             break;
         }
         default: break;
@@ -770,6 +776,140 @@ void SlicePlane::extract_pyramid_plane(
     SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
+
+/*==========================================================================*/
+/**
+ *  @brief  Extract a slice plane for a unstructured volume.
+ *  @param  volume [in] pointer to the unstructured volume object
+ */
+/*==========================================================================*/
+template <typename T>
+void SlicePlane::extract_prism_plane(
+    const kvs::UnstructuredVolumeObject* volume )
+{
+    // Calculated the coordinate data array and the normal vector array.
+    std::vector<kvs::Real32> coords;
+    std::vector<kvs::Real32> normals;
+    std::vector<kvs::UInt8>  colors;
+
+    // Calculate min/max values of the node data.
+    if ( !volume->hasMinMaxValues() )
+    {
+        volume->updateMinMaxValues();
+    }
+
+    // Calculate a normalize factor.
+    const kvs::Real64 min_value( volume->minValue() );
+    const kvs::Real64 max_value( volume->maxValue() );
+    const kvs::Real64 normalize_factor( 255.0 / ( max_value - min_value ) );
+
+    // Refer the parameters of the unstructured volume object.
+    const kvs::Real32* volume_coords      = volume->coords().data();
+    const kvs::UInt32* volume_connections = volume->connections().data();
+    const size_t       ncells             = volume->numberOfCells();
+
+    const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
+
+    // Extract surfaces.
+    size_t index = 0;
+    size_t local_index[6];
+    for ( kvs::UInt32 cell = 0; cell < ncells; ++cell, index += 6 )
+    {
+        // Calculate the indices of the target cell.
+        local_index[0] = volume_connections[ index + 0 ];
+        local_index[1] = volume_connections[ index + 1 ];
+        local_index[2] = volume_connections[ index + 2 ];
+        local_index[3] = volume_connections[ index + 3 ];
+        local_index[4] = volume_connections[ index + 4 ];
+        local_index[5] = volume_connections[ index + 5 ];
+
+        // Calculate the index of the reference table.
+        const size_t table_index = this->calculate_prism_table_index( local_index );
+        if ( table_index == 0 ) continue;
+        if ( table_index == 63 ) continue;
+
+        // Calculate the triangle polygons.
+        for ( size_t i = 0; MarchingPrismTable::TriangleID[ table_index ][i] != -1; i += 3 )
+        {
+            // Refer the edge IDs from the TriangleTable using the table_index.
+            const int e0 = MarchingPrismTable::TriangleID[table_index][i+0];
+            const int e1 = MarchingPrismTable::TriangleID[table_index][i+1];
+            const int e2 = MarchingPrismTable::TriangleID[table_index][i+2];
+
+            // Refer indices of the coordinate array from the VertexTable using the edgeIDs.
+            const size_t c0 = local_index[ MarchingPrismTable::VertexID[e0][0] ];
+            const size_t c1 = local_index[ MarchingPrismTable::VertexID[e0][1] ];
+            const size_t c2 = local_index[ MarchingPrismTable::VertexID[e1][0] ];
+            const size_t c3 = local_index[ MarchingPrismTable::VertexID[e1][1] ];
+            const size_t c4 = local_index[ MarchingPrismTable::VertexID[e2][0] ];
+            const size_t c5 = local_index[ MarchingPrismTable::VertexID[e2][1] ];
+
+            // Determine vertices for each edge.
+            const kvs::Vec3 v0( volume_coords + 3 * c0 );
+            const kvs::Vec3 v1( volume_coords + 3 * c1 );
+
+            const kvs::Vec3 v2( volume_coords + 3 * c2 );
+            const kvs::Vec3 v3( volume_coords + 3 * c3 );
+
+            const kvs::Vec3 v4( volume_coords + 3 * c4 );
+            const kvs::Vec3 v5( volume_coords + 3 * c5 );
+
+            // Calculate coordinates of the vertices which are composed
+            // of the triangle polygon.
+            const kvs::Vec3 vertex0( this->interpolate_vertex( v0, v1 ) );
+            coords.push_back( vertex0.x() );
+            coords.push_back( vertex0.y() );
+            coords.push_back( vertex0.z() );
+
+            const kvs::Vec3 vertex1( this->interpolate_vertex( v2, v3 ) );
+            coords.push_back( vertex1.x() );
+            coords.push_back( vertex1.y() );
+            coords.push_back( vertex1.z() );
+
+            const kvs::Vec3 vertex2( this->interpolate_vertex( v4, v5 ) );
+            coords.push_back( vertex2.x() );
+            coords.push_back( vertex2.y() );
+            coords.push_back( vertex2.z() );
+
+            const double value0 = this->interpolate_value<T>( volume, c0, c1 );
+            const double value1 = this->interpolate_value<T>( volume, c2, c3 );
+            const double value2 = this->interpolate_value<T>( volume, c4, c5 );
+
+            const kvs::UInt8 color0 =
+                static_cast<kvs::UInt8>( normalize_factor * ( value0 - min_value ) );
+            colors.push_back( color_map[ color0 ].r() );
+            colors.push_back( color_map[ color0 ].g() );
+            colors.push_back( color_map[ color0 ].b() );
+
+            const kvs::UInt8 color1 =
+                static_cast<kvs::UInt8>( normalize_factor * ( value1 - min_value ) );
+            colors.push_back( color_map[ color1 ].r() );
+            colors.push_back( color_map[ color1 ].g() );
+            colors.push_back( color_map[ color1 ].b() );
+
+            const kvs::UInt8 color2 =
+                static_cast<kvs::UInt8>( normalize_factor * ( value2 - min_value ) );
+            colors.push_back( color_map[ color2 ].r() );
+            colors.push_back( color_map[ color2 ].g() );
+            colors.push_back( color_map[ color2 ].b() );
+
+            // Calculate a normal vector for the triangle polygon.
+            const kvs::Vec3 normal( -( vertex2 - vertex0 ).cross( vertex1 - vertex0 ) );
+            normals.push_back( normal.x() );
+            normals.push_back( normal.y() );
+            normals.push_back( normal.z() );
+        } // end of loop-triangle
+    } // end of loop-cell
+
+    SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
+    SuperClass::setColors( kvs::ValueArray<kvs::UInt8>( colors ) );
+    SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
+    SuperClass::setOpacity( 255 );
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+    SuperClass::setColorType( kvs::PolygonObject::VertexColor );
+    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Calculate a table index.
@@ -882,6 +1022,37 @@ size_t SlicePlane::calculate_pyramid_table_index(
     if ( this->substitute_plane_equation( vertex2 ) > 0.0 ) { table_index |=  4; }
     if ( this->substitute_plane_equation( vertex3 ) > 0.0 ) { table_index |=  8; }
     if ( this->substitute_plane_equation( vertex4 ) > 0.0 ) { table_index |= 16; }
+
+    return table_index;
+}
+
+
+/*==========================================================================*/
+/**
+ *  @brief  Caluclate a table index.
+ *  @param  local_index [in] indices of a target cell
+ *  @return table index
+ */
+/*==========================================================================*/
+size_t SlicePlane::calculate_prism_table_index(
+    const size_t* local_index ) const
+{
+    const kvs::Real32* const coords = BaseClass::volume()->coords().data();
+
+    const kvs::Vec3 vertex0( coords + 3 * local_index[0] );
+    const kvs::Vec3 vertex1( coords + 3 * local_index[1] );
+    const kvs::Vec3 vertex2( coords + 3 * local_index[2] );
+    const kvs::Vec3 vertex3( coords + 3 * local_index[3] );
+    const kvs::Vec3 vertex4( coords + 3 * local_index[4] );
+    const kvs::Vec3 vertex5( coords + 3 * local_index[5] );
+
+    size_t table_index = 0;
+    if ( this->substitute_plane_equation( vertex0 ) > 0.0 ) { table_index |=  1; }
+    if ( this->substitute_plane_equation( vertex1 ) > 0.0 ) { table_index |=  2; }
+    if ( this->substitute_plane_equation( vertex2 ) > 0.0 ) { table_index |=  4; }
+    if ( this->substitute_plane_equation( vertex3 ) > 0.0 ) { table_index |=  8; }
+    if ( this->substitute_plane_equation( vertex4 ) > 0.0 ) { table_index |= 16; }
+    if ( this->substitute_plane_equation( vertex5 ) > 0.0 ) { table_index |= 32; }
 
     return table_index;
 }

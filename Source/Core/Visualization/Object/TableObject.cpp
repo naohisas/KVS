@@ -15,6 +15,34 @@
 #include "TableObject.h"
 #include <kvs/Value>
 #include <kvs/Math>
+#include <kvs/KVSMLTableObject>
+
+
+namespace
+{
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a writing data type.
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return writing data type
+ */
+/*===========================================================================*/
+kvs::KVSMLTableObject::WritingDataType GetWritingDataType( const bool ascii, const bool external )
+{
+    if ( ascii )
+    {
+        if ( external ) { return kvs::KVSMLTableObject::ExternalAscii; }
+        else { return kvs::KVSMLTableObject::Ascii; }
+    }
+    else
+    {
+        return kvs::KVSMLTableObject::ExternalBinary;
+    }
+}
+
+} // end of namespace
 
 
 namespace kvs
@@ -102,6 +130,65 @@ void TableObject::print( std::ostream& os, const kvs::Indent& indent ) const
     for ( size_t i = 0; i < this->minRanges().size(); i++ ) os << this->minRanges()[i] << ", "; os << std::endl;
     os << indent << "Max. ranges for each column : ";
     for ( size_t i = 0; i < this->maxRanges().size(); i++ ) os << this->maxRanges()[i] << ", "; os << std::endl;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Read a table object from the specified file in KVSML.
+ *  @param  filename [in] input filename
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool TableObject::read( const std::string& filename )
+{
+    if ( !kvs::KVSMLTableObject::CheckExtension( filename ) )
+    {
+        kvsMessageError("%s is not a table object file in KVSML.", filename.c_str());
+        return false;
+    }
+
+    kvs::KVSMLTableObject kvsml;
+    if ( !kvsml.read( filename ) ) { return false; }
+
+    const size_t ncolumns = kvsml.ncolumns();
+    for ( size_t i = 0; i < ncolumns; i++ )
+    {
+        const std::string label = kvsml.labelList().at(i);
+        const kvs::AnyValueArray& column = kvsml.columnList().at(i);
+        this->addColumn( column, label );
+
+        if ( kvsml.hasMinValueList().at(i) ) { this->setMinValue( i, kvsml.minValueList().at(i) ); }
+        if ( kvsml.hasMaxValueList().at(i) ) { this->setMaxValue( i, kvsml.maxValueList().at(i) ); }
+        if ( kvsml.hasMinRangeList().at(i) ) { this->setMinRange( i, kvsml.minRangeList().at(i) ); }
+        if ( kvsml.hasMaxRangeList().at(i) ) { this->setMaxRange( i, kvsml.maxRangeList().at(i) ); }
+    }
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Write the table object to the specfied file in KVSML.
+ *  @param  filename [in] output filename
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return true, if the writing process is done successfully
+ */
+/*===========================================================================*/
+bool TableObject::write( const std::string& filename, const bool ascii, const bool external ) const
+{
+    kvs::KVSMLTableObject kvsml;
+    kvsml.setWritingDataType( ::GetWritingDataType( ascii, external ) );
+
+    const size_t ncolumns = this->numberOfColumns();
+    for ( size_t i = 0; i < ncolumns; i++ )
+    {
+        const std::string label = this->labels().at(i);
+        const kvs::AnyValueArray& column = this->column(i);
+        kvsml.addColumn( column, label );
+    }
+
+    return kvsml.write( filename );
 }
 
 /*===========================================================================*/

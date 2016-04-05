@@ -85,14 +85,30 @@ WindowCoordinate::WindowCoordinate(
 
 /*===========================================================================*/
 /**
+ *  @brief  Constructs a new WindowCoordinate class.
+ *  @param  position [in] position in the window coordinates
+ *  @param  viewport [in] viewport vector
+ */
+/*===========================================================================*/
+WindowCoordinate::WindowCoordinate( const kvs::Vec3& position, const kvs::Vec4i& viewport ):
+    m_position( position ),
+    m_x( viewport[0] ),
+    m_y( viewport[1] ),
+    m_width( static_cast<size_t>( viewport[2] ) ),
+    m_height( static_cast<size_t>( viewport[3] ) )
+{
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Transforms the widnow coordinates to the normalized device coordinates.
  *  @return transformed position in the normalized device coordinates
  */
 /*===========================================================================*/
 const NormalizedDeviceCoordinate WindowCoordinate::toNormalizedDeviceCoordinate() const
 {
-    const float x = ( m_position[0] - m_x ) / m_width * 2.0f - 1.0f;
-    const float y = ( m_position[1] - m_y ) / m_height * 2.0f - 1.0f;
+    const float x = 2.0f * ( m_position[0] - m_x ) / m_width - 1.0f;
+    const float y = 2.0f * ( m_position[1] - m_y ) / m_height - 1.0f;
     const float z = WindowCoordinate::InvertDepth( m_position[2] ) * 2.0f - 1.0f;
     const kvs::Vec3 position( x, y, z );
     return NormalizedDeviceCoordinate( position );

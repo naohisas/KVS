@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Tag.h
+ *  @file   Tag.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: Tag.h 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__TIFF__TAG_H_INCLUDE
-#define KVS__TIFF__TAG_H_INCLUDE
+#pragma once
 
 #include <kvs/Type>
 #include <string>
@@ -24,6 +24,11 @@ namespace kvs
 namespace tiff
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Tag class.
+ */
+/*===========================================================================*/
 class Tag
 {
 private:
@@ -40,12 +45,10 @@ public:
 public:
 
     Tag& operator = ( const Tag& tag );
-    kvs::UInt16 id() const;
-    const std::string& name() const;
+    kvs::UInt16 id() const { return m_id; }
+    const std::string& name() const { return m_name; }
 };
 
 } // end of namesapce tiff
 
 } // end of namespace kvs
-
-#endif // KVS__TIFF__TAG_H_INCLUDE

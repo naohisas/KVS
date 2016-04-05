@@ -12,9 +12,7 @@
  *  $Id: UnstructuredVolumeObject.h 1787 2014-07-17 11:10:26Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__UNSTRUCTURED_VOLUME_OBJECT_H_INCLUDE
-#define KVS__UNSTRUCTURED_VOLUME_OBJECT_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/Module>
 #include <kvs/VolumeObjectBase>
@@ -65,6 +63,8 @@ public:
     void shallowCopy( const UnstructuredVolumeObject& object );
     void deepCopy( const UnstructuredVolumeObject& object );
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setCellType( CellType cell_type ) { m_cell_type = cell_type; }
     void setCellTypeToTetrahedra() { this->setCellType( Tetrahedra ); }
@@ -114,5 +114,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__UNSTRUCTURED_VOLUME_OBJECT_H_INCLUDE

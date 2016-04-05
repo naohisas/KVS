@@ -12,11 +12,9 @@
  *  $Id: PointExporter.h 1794 2014-08-01 07:45:27Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__POINT_EXPORTER_H_INCLUDE
-#define KVS__POINT_EXPORTER_H_INCLUDE
-
+#pragma once
 #include <kvs/PointObject>
-#include <kvs/KVSMLObjectPoint>
+#include <kvs/KVSMLPointObject>
 #include "ExporterBase.h"
 
 
@@ -40,19 +38,17 @@ public:
 
 /*===========================================================================*/
 /**
- *  @brief  Point exporter class as KVSMLObjectPoint format.
+ *  @brief  Point exporter class as KVSMLPointObject format.
  */
 /*===========================================================================*/
 template <>
-class PointExporter<kvs::KVSMLObjectPoint> :
+class PointExporter<kvs::KVSMLPointObject> :
         public kvs::ExporterBase,
-        public kvs::KVSMLObjectPoint
+        public kvs::KVSMLPointObject
 {
 public:
     PointExporter( const kvs::PointObject* object );
-    kvs::KVSMLObjectPoint* exec( const kvs::ObjectBase* object );
+    kvs::KVSMLPointObject* exec( const kvs::ObjectBase* object );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__POINT_EXPORTER_H_INCLUDE

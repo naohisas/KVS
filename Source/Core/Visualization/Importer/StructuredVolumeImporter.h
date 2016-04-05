@@ -12,13 +12,11 @@
  *  $Id: StructuredVolumeImporter.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__STRUCTURED_VOLUME_IMPORTER_H_INCLUDE
-#define KVS__STRUCTURED_VOLUME_IMPORTER_H_INCLUDE
-
+#pragma once
 #include "ImporterBase.h"
 #include <kvs/Module>
 #include <kvs/StructuredVolumeObject>
-#include <kvs/KVSMLObjectStructuredVolume>
+#include <kvs/KVSMLStructuredVolumeObject>
 #include <kvs/AVSField>
 #include <kvs/DicomList>
 
@@ -38,7 +36,6 @@ class StructuredVolumeImporter : public kvs::ImporterBase, public kvs::Structure
     kvsModuleSuperClass( kvs::StructuredVolumeObject );
 
 public:
-
     StructuredVolumeImporter();
     StructuredVolumeImporter( const std::string& filename );
     StructuredVolumeImporter( const kvs::FileFormatBase* file_format );
@@ -47,8 +44,6 @@ public:
     SuperClass* exec( const kvs::FileFormatBase* file_format );
 
 private:
-
-    void import( const kvs::KVSMLObjectStructuredVolume* kvsml );
     void import( const kvs::AVSField* field );
     void import( const kvs::DicomList* dicom_list );
     template <typename T>
@@ -56,5 +51,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STRUCTURED_VOLUME_IMPORTER_H_INCLUDE

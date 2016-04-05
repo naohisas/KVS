@@ -14,10 +14,37 @@
 /*****************************************************************************/
 #include "PointObject.h"
 #include <cstring>
+#include <kvs/KVSMLPointObject>
 #include <kvs/LineObject>
 #include <kvs/PolygonObject>
 #include <kvs/Assert>
 
+
+namespace
+{
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a writing data type.
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return writing data type
+ */
+/*===========================================================================*/
+kvs::KVSMLPointObject::WritingDataType GetWritingDataType( const bool ascii, const bool external )
+{
+    if ( ascii )
+    {
+        if ( external ) { return kvs::KVSMLPointObject::ExternalAscii; }
+        else { return kvs::KVSMLPointObject::Ascii; }
+    }
+    else
+    {
+        return kvs::KVSMLPointObject::ExternalBinary;
+    }
+}
+
+}
 
 namespace kvs
 {
@@ -44,7 +71,7 @@ PointObject::PointObject( const kvs::LineObject& line )
     BaseClass::setGeometryType( Point );
     BaseClass::setCoords( line.coords() );
 
-    if( line.colorType() == kvs::LineObject::VertexColor )
+    if ( line.colorType() == kvs::LineObject::VertexColor )
     {
         BaseClass::setColors( line.colors() );
     }
@@ -75,7 +102,7 @@ PointObject::PointObject( const kvs::PolygonObject& polygon )
     BaseClass::setGeometryType( Point );
     BaseClass::setCoords( polygon.coords() );
 
-    if( polygon.colorType() == kvs::PolygonObject::VertexColor )
+    if ( polygon.colorType() == kvs::PolygonObject::VertexColor )
     {
         BaseClass::setColors( polygon.colors() );
     }
@@ -84,7 +111,7 @@ PointObject::PointObject( const kvs::PolygonObject& polygon )
         BaseClass::setColor( polygon.color() );
     }
 
-    if( polygon.normalType() == kvs::PolygonObject::VertexNormal )
+    if ( polygon.normalType() == kvs::PolygonObject::VertexNormal )
     {
         BaseClass::setNormals( polygon.normals() );
     }
@@ -399,6 +426,68 @@ void PointObject::print( std::ostream& os, const kvs::Indent& indent ) const
     os << indent << "Object type : " << "point object" << std::endl;
     BaseClass::print( os, indent );
     os << indent << "Number of sizes : " << this->numberOfSizes() << std::endl;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Read a point object from the specified file in KVSML.
+ *  @param  filename [in] input filename
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool PointObject::read( const std::string& filename )
+{
+    if ( !kvs::KVSMLPointObject::CheckExtension( filename ) )
+    {
+        kvsMessageError("%s is not a point object file in KVSML.", filename.c_str());
+        return false;
+    }
+
+    kvs::KVSMLPointObject kvsml;
+    if ( !kvsml.read( filename ) ) { return false; }
+
+    if ( kvsml.objectTag().hasExternalCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.objectTag().minExternalCoord() );
+        const kvs::Vec3 max_coord( kvsml.objectTag().maxExternalCoord() );
+        this->setMinMaxExternalCoords( min_coord, max_coord );
+    }
+
+    if ( kvsml.objectTag().hasObjectCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.objectTag().minObjectCoord() );
+        const kvs::Vec3 max_coord( kvsml.objectTag().maxObjectCoord() );
+        this->setMinMaxObjectCoords( min_coord, max_coord );
+    }
+
+    this->setCoords( kvsml.coords() );
+    this->setColors( kvsml.colors() );
+    this->setNormals( kvsml.normals() );
+    this->setSizes( kvsml.sizes() );
+    this->updateMinMaxCoords();
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Write the point object to the specfied file in KVSML.
+ *  @param  filename [in] output filename
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return true, if the writing process is done successfully
+ */
+/*===========================================================================*/
+bool PointObject::write( const std::string& filename, const bool ascii, const bool external ) const
+{
+    kvs::KVSMLPointObject kvsml;
+    kvsml.setWritingDataType( ::GetWritingDataType( ascii, external ) );
+    kvsml.setCoords( this->coords() );
+    kvsml.setColors( this->colors() );
+    kvsml.setNormals( this->normals() );
+    kvsml.setSizes( this->sizes() );
+
+    return kvsml.write( filename );
 }
 
 /*===========================================================================*/

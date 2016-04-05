@@ -12,8 +12,7 @@
  *  $Id: IDManager.h 1699 2014-01-17 06:31:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__ID_MANAGER_H_INCLUDE
-#define KVS__ID_MANAGER_H_INCLUDE
+#pragma once
 
 #include <list>
 #include <vector>
@@ -79,5 +78,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__ID_MANAGER_H_INCLUDE

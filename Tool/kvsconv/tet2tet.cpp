@@ -16,7 +16,7 @@
 #include <memory>
 #include <string>
 #include <kvs/File>
-#include <kvs/KVSMLObjectUnstructuredVolume>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/UnstructuredVolumeObject>
 #include <kvs/UnstructuredVolumeImporter>
 #include <kvs/UnstructuredVolumeExporter>
@@ -54,7 +54,7 @@ Argument::Argument( int argc, char** argv ):
 /*===========================================================================*/
 const std::string Argument::inputFilename( void )
 {
-    return( this->value<std::string>() );
+    return this->value<std::string>();
 }
 
 /*===========================================================================*/
@@ -68,14 +68,14 @@ const std::string Argument::outputFilename( const std::string& filename )
 {
     if ( this->hasOption("output") )
     {
-        return( this->optionValue<std::string>("output") );
+        return this->optionValue<std::string>("output");
     }
     else
     {
         // Replace the extension as follows: xxxx.inp -> xxx.kvsml.
         const std::string basename = kvs::File( filename ).baseName();
         const std::string extension = "kvsml";
-        return( basename + "." + extension );
+        return basename + "." + extension;
     }
 }
 
@@ -85,21 +85,21 @@ const std::string Argument::outputFilename( const std::string& filename )
  *  @return writing data type
  */
 /*===========================================================================*/
-const kvs::KVSMLObjectUnstructuredVolume::WritingDataType Argument::writingDataType( void )
+const kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType( void )
 {
     if ( this->hasOption("b") )
     {
-        return( kvs::KVSMLObjectUnstructuredVolume::ExternalBinary );
+        return kvs::KVSMLUnstructuredVolumeObject::ExternalBinary;
     }
     else
     {
         if ( this->hasOption("e") )
         {
-            return( kvs::KVSMLObjectUnstructuredVolume::ExternalAscii );
+            return kvs::KVSMLUnstructuredVolumeObject::ExternalAscii;
         }
     }
 
-    return( kvs::KVSMLObjectUnstructuredVolume::Ascii );
+    return kvs::KVSMLUnstructuredVolumeObject::Ascii;
 }
 
 /*===========================================================================*/
@@ -108,13 +108,13 @@ const kvs::KVSMLObjectUnstructuredVolume::WritingDataType Argument::writingDataT
  *  @return conversion method
  */
 /*===========================================================================*/
-const kvs::TetrahedraToTetrahedra::Method Argument::conversionMethod( void )
+const kvs::TetrahedraToTetrahedra::Method Argument::conversionMethod()
 {
     kvs::TetrahedraToTetrahedra::Method method = kvs::TetrahedraToTetrahedra::Subdivision8;
 
     if ( this->hasOption("m") )
     {
-        switch( this->optionValue<int>("m") )
+        switch ( this->optionValue<int>("m") )
         {
         case 0: method = kvs::TetrahedraToTetrahedra::Subdivision8; break;
         case 1: method = kvs::TetrahedraToTetrahedra::Removal; break;
@@ -122,20 +122,7 @@ const kvs::TetrahedraToTetrahedra::Method Argument::conversionMethod( void )
         }
     }
 
-    return( method );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class for a tet2tet.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
+    return method;
 }
 
 /*===========================================================================*/
@@ -143,11 +130,11 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+bool Main::exec()
 {
     // Parse specified arguments.
     tet2tet::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    if( !arg.parse() ) { return false; }
 
     // Set a input filename and a output filename.
     m_input_name = arg.inputFilename();
@@ -157,7 +144,7 @@ const bool Main::exec( void )
     if ( !file.isExisted() )
     {
         kvsMessageError("Input data file '%s' is not existed.",m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Import the unstructured volume object.
@@ -165,7 +152,7 @@ const bool Main::exec( void )
     if ( !volume )
     {
         kvsMessageError("Cannot import unstructured volume object.");
-        return( false );
+        return false;
     }
 
     // Convert quadratic tetrahedral volume to linear tetrahedral volume.
@@ -175,37 +162,16 @@ const bool Main::exec( void )
     {
         kvsMessageError("Cannot convert to tetrahedral volume dataset.");
         delete volume;
-        return( false );
+        return false;
     }
-
     delete volume;
 
-    // Export the unstructured volume object to KVSML data (unstructured volume).
-    kvs::KVSMLObjectUnstructuredVolume* output =
-        new kvs::UnstructuredVolumeExporter<kvs::KVSMLObjectUnstructuredVolume>( object );
-    if ( !output )
-    {
-        kvsMessageError("Cannot export unstructured volume object.");
-        delete object;
-        return( false );
-    }
-
+    const bool ascii = !arg.hasOption("b");
+    const bool external = arg.hasOption("e");
+    object->write( m_output_name, ascii, external );
     delete object;
 
-    // Set the writing data type.
-    output->setWritingDataType( arg.writingDataType() );
-
-    // Write to KVSML data file.
-    if ( !output->write( m_output_name ) )
-    {
-        kvsMessageError("Cannot write to KVSML data file %s.", m_output_name.c_str() );
-        delete output;
-        return( false );
-    }
-
-    delete output;
-
-    return( true );
+    return true;
 }
 
 } // end of namespace tet2tet

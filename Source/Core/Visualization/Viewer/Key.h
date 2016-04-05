@@ -11,9 +11,7 @@
  *  $Id: Key.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
  */
 /****************************************************************************/
-#ifndef KVS__KEY_H_INCLUDE
-#define KVS__KEY_H_INCLUDE
-
+#pragma once
 
 namespace kvs
 {
@@ -166,5 +164,3 @@ struct Key
 };
 
 } // end of namespace kvs
-
-#endif // KVS__KEY_H_INCLUDE

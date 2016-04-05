@@ -364,7 +364,7 @@ bool GSIMesh::read_data( FILE* fp, const kvs::gis::Area& area )
             available_ctr++;
         }
 
-        if ( buf ) { delete buf; buf = NULL; }
+        if ( buf ) { delete [] buf; buf = NULL; }
     }
 
     // Reset some parameters.

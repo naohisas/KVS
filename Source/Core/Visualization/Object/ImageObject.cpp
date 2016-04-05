@@ -14,6 +14,7 @@
 /*****************************************************************************/
 #include "ImageObject.h"
 #include <string>
+#include <kvs/KVSMLImageObject>
 
 
 namespace
@@ -28,13 +29,57 @@ namespace
 /*===========================================================================*/
 const std::string GetPixelTypeName( const kvs::ImageObject::PixelType type )
 {
-    switch( type )
+    switch ( type )
     {
     case kvs::ImageObject::Gray8: return "8 bit gray pixel";
     case kvs::ImageObject::Gray16: return "16 bit gray pixel";
     case kvs::ImageObject::Color24: return "24 bit RGB color pixel (8x8x8 bits)";
     case kvs::ImageObject::Color32: return "32 bit RGBA color pixel (8x8x8x8 bits)";
-    default: return "unknown pixel type";
+    default: return "unknown";
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a pixel type from the pixel type name.
+ *  @param  pixel_type_name [in] pixel type name
+ *  @return pixel type
+ */
+/*===========================================================================*/
+kvs::ImageObject::PixelType GetPixelType( const std::string& pixel_type_name )
+{
+    if ( pixel_type_name == "gray" )
+    {
+        return kvs::ImageObject::Gray8;
+    }
+    else if ( pixel_type_name == "color" )
+    {
+        return kvs::ImageObject::Color24;
+    }
+    else
+    {
+        return kvs::ImageObject::UnknownPixelType;
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a writing data type.
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return writing data type
+ */
+/*===========================================================================*/
+kvs::KVSMLImageObject::WritingDataType GetWritingDataType( const bool ascii, const bool external )
+{
+    if ( ascii )
+    {
+        if ( external ) { return kvs::KVSMLImageObject::ExternalAscii; }
+        else { return kvs::KVSMLImageObject::Ascii; }
+    }
+    else
+    {
+        return kvs::KVSMLImageObject::ExternalBinary;
     }
 }
 
@@ -120,6 +165,49 @@ void ImageObject::print( std::ostream& os, const kvs::Indent& indent ) const
     os << indent << "Bits per pixel : " << this->bitsPerPixel() << std::endl;
     os << indent << "Bytes per pixel : " << this->bytesPerPixel() << std::endl;
     os << indent << "Pixel type : " << ::GetPixelTypeName( this->pixelType() ) << std::endl;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Read an image object from the specified file in KVSML.
+ *  @param  filename [in] input filename
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool ImageObject::read( const std::string& filename )
+{
+    if ( !kvs::KVSMLImageObject::CheckExtension( filename ) )
+    {
+        kvsMessageError("%s is not an image object file in KVSML.", filename.c_str());
+        return false;
+    }
+
+    kvs::KVSMLImageObject kvsml;
+    if ( !kvsml.read( filename ) ) { return false; }
+
+    this->setSize( kvsml.width(), kvsml.height() );
+    this->setPixels( kvsml.pixels(), ::GetPixelType( kvsml.pixelType() ) );
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Write the image object to the specfied file in KVSML.
+ *  @param  filename [in] output filename
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return true, if the writing process is done successfully
+ */
+/*===========================================================================*/
+bool ImageObject::write( const std::string& filename, const bool ascii, const bool external ) const
+{
+    kvs::KVSMLImageObject kvsml;
+    kvsml.setWritingDataType( ::GetWritingDataType( ascii, external ) );
+    kvsml.setWidth( this->width() );
+    kvsml.setHeight( this->height() );
+
+    return kvsml.write( filename );
 }
 
 /*==========================================================================*/

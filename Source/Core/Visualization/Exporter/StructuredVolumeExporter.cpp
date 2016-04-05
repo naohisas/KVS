@@ -23,11 +23,11 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a KVSMLObjectStructuredVolume data from given object.
+ *  @brief  Constructs a KVSMLStructuredVolumeObject data from given object.
  *  @param  object [in] pointer to the structured volume object
  */
 /*===========================================================================*/
-StructuredVolumeExporter<kvs::KVSMLObjectStructuredVolume>::StructuredVolumeExporter(
+StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>::StructuredVolumeExporter(
     const kvs::StructuredVolumeObject* object )
 {
     this->exec( object );
@@ -35,11 +35,11 @@ StructuredVolumeExporter<kvs::KVSMLObjectStructuredVolume>::StructuredVolumeExpo
 
 /*===========================================================================*/
 /**
- *  @brief  Exports object to a KVSMLObjectStructuredVolume data.
+ *  @brief  Exports object to a KVSMLStructuredVolumeObject data.
  *  @param  object [in] pointer to the structured volume object
  */
 /*===========================================================================*/
-kvs::KVSMLObjectStructuredVolume* StructuredVolumeExporter<kvs::KVSMLObjectStructuredVolume>::exec(
+kvs::KVSMLStructuredVolumeObject* StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>::exec(
     const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );

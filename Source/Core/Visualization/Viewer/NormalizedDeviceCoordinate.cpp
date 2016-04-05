@@ -57,6 +57,23 @@ const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
 
 /*===========================================================================*/
 /**
+ *  @brief  Transforms normalized device coordinates to world coordinates.
+ *  @param  viewport [in] viewport vector
+ *  @return world coordinates
+ */
+/*===========================================================================*/
+const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
+    const kvs::Vec4i& viewport ) const
+{
+    return this->toWindowCoordinate(
+        viewport[0],
+        viewport[1],
+        static_cast<size_t>( viewport[2] ),
+        static_cast<size_t>( viewport[3] ) );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Transforms normalized device coordinates to camera coordinates.
  *  @param  camera [in] pointer to a camera defines camera coordinates
  *  @return camera coordinates
@@ -64,7 +81,7 @@ const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
 /*===========================================================================*/
 const CameraCoordinate NormalizedDeviceCoordinate::toCameraCoordinate( const kvs::Camera* camera ) const
 {
-    const kvs::Xform xform( camera->projectionMatrix() * camera->viewingMatrix() );
+    const kvs::Xform xform( camera->projectionMatrix() );
     const kvs::Vec3 position = xform.inverse().project( m_position );
     return CameraCoordinate( position, camera );
 }

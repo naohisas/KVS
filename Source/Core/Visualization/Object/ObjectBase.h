@@ -12,9 +12,7 @@
  *  $Id: ObjectBase.h 1804 2014-08-08 14:46:45Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__OBJECT_BASE_H_INCLUDE
-#define KVS__OBJECT_BASE_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <kvs/XformControl>
 #include <kvs/Vector2>
@@ -79,6 +77,8 @@ public:
     void show() { m_show_flag = true; }
     void hide() { m_show_flag = false; }
     virtual void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    virtual bool read( const std::string& filename );
+    virtual bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     ObjectType objectType() const { return m_object_type; }
     const std::string& name() const { return m_name; }
@@ -142,5 +142,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__OBJECT_BASE_H_INCLUDE

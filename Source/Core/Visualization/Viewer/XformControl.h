@@ -11,8 +11,7 @@
  *  $Id: XformControl.h 1539 2013-04-16 11:52:28Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__XFORM_CONTROL_H_INCLUDE
-#define KVS__XFORM_CONTROL_H_INCLUDE
+#pragma once
 
 #include <kvs/Xform>
 
@@ -28,11 +27,11 @@ namespace kvs
 class XformControl
 {
 private:
-    kvs::Xform m_current_xform;
-    kvs::Xform m_initial_xform; ///< initial transform vector
+    kvs::Xform m_current_xform; ///< current xform
+    kvs::Xform m_initial_xform; ///< initial xform
 
 public:
-    XformControl();
+    XformControl(){}
 
     void saveXform();
     void resetXform();
@@ -40,14 +39,12 @@ public:
     void multiplyXform( const kvs::Xform& xform );
     const kvs::Xform xform() const;
 
-    void rotate( const kvs::Matrix33f& rotation );
-    void translate( const kvs::Vector3f& translation );
-    void scale( const kvs::Vector3f& scaling );
+    void rotate( const kvs::Mat3& rotation );
+    void translate( const kvs::Vec3& translation );
+    void scale( const kvs::Vec3& scaling );
 
 protected:
-    ~XformControl();
+    ~XformControl(){}
 };
 
 } // end of namespace kvs
-
-#endif // KVS__XFORM_CONTROL_H_INCLUDE

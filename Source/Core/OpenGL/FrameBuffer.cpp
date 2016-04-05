@@ -163,8 +163,8 @@ void FrameBuffer::drawPixels(
         kvs::OpenGL::GetViewport( viewport );
         const int left = viewport[0];
         const int bottom = viewport[1];
-        const int right = viewport[2];
-        const int top = viewport[3];
+        const int right = viewport[0] + viewport[2];
+        const int top = viewport[1] + viewport[3];
 
         kvs::OpenGL::WithPushedMatrix p1( GL_PROJECTION );
         p1.loadIdentity();
@@ -408,8 +408,8 @@ void FrameBuffer::draw(
 
     const int left = viewport[0];
     const int bottom = viewport[1];
-    const int right = viewport[2];
-    const int top = viewport[3];
+    const int right = viewport[0] + viewport[2];
+    const int top = viewport[1] + viewport[3];
 
     kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
     p1.loadIdentity();

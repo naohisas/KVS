@@ -12,8 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__WORLD_COORDINATE_H_INCLUDE
-#define KVS__WORLD_COORDINATE_H_INCLUDE
+#pragma once
 
 #include <kvs/Vector3>
 #include <kvs/Matrix44>
@@ -48,5 +47,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__WORLD_COORDINATE_H_INCLUDE

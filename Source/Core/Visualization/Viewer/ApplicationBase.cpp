@@ -20,50 +20,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new ApplicationBase class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-ApplicationBase::ApplicationBase( int argc, char** argv ):
-    m_argc( argc ),
-    m_argv( argv )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the ApplicationBase class.
- */
-/*===========================================================================*/
-ApplicationBase::~ApplicationBase()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the argument count.
- *  @return argument count
- */
-/*===========================================================================*/
-int ApplicationBase::argc()
-{
-    return m_argc;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the argument values.
- *  @return argument values
- */
-/*===========================================================================*/
-char** ApplicationBase::argv()
-{
-    return m_argv;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Attaches a pointer to the screeen.
  *  @param  screen [in] pointer to the screen
  */

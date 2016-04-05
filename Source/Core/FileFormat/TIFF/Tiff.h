@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Tiff.h
+ *  @file   Tiff.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: Tiff.h 1313 2012-09-19 08:19:01Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__TIFF_H_INCLUDE
-#define KVS__TIFF_H_INCLUDE
+#pragma once
 
 #include <kvs/FileFormatBase>
 #include <kvs/Type>
@@ -27,6 +27,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Tiff class.
+ */
+/*===========================================================================*/
 class Tiff : public kvs::FileFormatBase
 {
 public:
@@ -65,13 +70,13 @@ public:
     Tiff( const std::string& filename );
     virtual ~Tiff();
 
-    const Tiff::Header& header() const;
-    const Tiff::IFD& ifd() const;
-    size_t width() const;
-    size_t height() const;
-    size_t bitsPerSample() const;
-    ColorMode colorMode() const;
-    const kvs::AnyValueArray& rawData() const;
+    const Tiff::Header& header() const { return m_header; }
+    const Tiff::IFD& ifd() const { return m_ifd; }
+    size_t width() const { return m_width; }
+    size_t height() const { return m_height; }
+    size_t bitsPerSample() const { return m_bits_per_sample; }
+    ColorMode colorMode() const { return m_color_mode; }
+    const kvs::AnyValueArray& rawData() const { return m_raw_data; }
     bool isSupported() const;
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
@@ -94,5 +99,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS_CORE_TIFF_TIFF_H_INCLUDE

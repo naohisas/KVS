@@ -12,13 +12,11 @@
  *  $Id: PolygonImporter.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__POLYGON_IMPORTER_H_INCLUDE
-#define KVS__POLYGON_IMPORTER_H_INCLUDE
-
+#pragma once
 #include "ImporterBase.h"
 #include <kvs/Module>
 #include <kvs/PolygonObject>
-#include <kvs/KVSMLObjectPolygon>
+#include <kvs/KVSMLPolygonObject>
 #include <kvs/Stl>
 #include <kvs/Ply>
 
@@ -38,7 +36,6 @@ class PolygonImporter : public kvs::ImporterBase, public kvs::PolygonObject
     kvsModuleSuperClass( kvs::PolygonObject );
 
 public:
-
     PolygonImporter();
     PolygonImporter( const std::string& filename );
     PolygonImporter( const kvs::FileFormatBase* file_format );
@@ -47,13 +44,10 @@ public:
     SuperClass* exec( const kvs::FileFormatBase* file_format );
 
 private:
-
-    void import( const kvs::KVSMLObjectPolygon* kvsml );
+    void import( const kvs::KVSMLPolygonObject* kvsml );
     void import( const kvs::Stl* stl );
     void import( const kvs::Ply* ply );
     void set_min_max_coord();
 };
 
 } // end of namespace kvs
-
-#endif // KVS__POLYGON_IMPORTER_H_INCLUDE

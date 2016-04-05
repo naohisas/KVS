@@ -12,8 +12,7 @@
  *  $Id: Trackball.h 1713 2014-02-04 05:46:24Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__TRACKBALL_H_INCLUDE
-#define KVS__TRACKBALL_H_INCLUDE
+#pragma once
 
 #include <kvs/Vector2>
 #include <kvs/Vector3>
@@ -79,5 +78,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__TRACKBALL_H_INCLUDE

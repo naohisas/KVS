@@ -41,24 +41,24 @@ class SlicePlane : public kvs::MapperBase, public kvs::PolygonObject
 
 private:
 
-    kvs::Vector4f m_coefficients; ///< coeficients of a slice plane
+    kvs::Vec4 m_coefficients; ///< coeficients of a slice plane
 
 public:
 
     SlicePlane();
     SlicePlane(
         const kvs::VolumeObjectBase* volume,
-        const kvs::Vector4f& coefficients,
+        const kvs::Vec4& coefficients,
         const kvs::TransferFunction& transfer_function );
     SlicePlane(
         const kvs::VolumeObjectBase* volume,
-        const kvs::Vector3f& point,
-        const kvs::Vector3f& normal,
+        const kvs::Vec3& point,
+        const kvs::Vec3& normal,
         const kvs::TransferFunction& transfer_function );
     virtual ~SlicePlane();
 
-    void setPlane( const kvs::Vector4f& coefficients );
-    void setPlane( const kvs::Vector3f& point, const kvs::Vector3f& normal );
+    void setPlane( const kvs::Vec4& coefficients );
+    void setPlane( const kvs::Vec3& point, const kvs::Vec3& normal );
 
     SuperClass* exec( const kvs::ObjectBase* object );
 
@@ -70,17 +70,19 @@ protected:
     template <typename T> void extract_tetrahedra_plane( const kvs::UnstructuredVolumeObject* volume );
     template <typename T> void extract_hexahedra_plane( const kvs::UnstructuredVolumeObject* volume );
     template <typename T> void extract_pyramid_plane( const kvs::UnstructuredVolumeObject* volume );
+    template <typename T> void extract_prism_plane( const kvs::UnstructuredVolumeObject* volume );
     size_t calculate_table_index( const size_t x, const size_t y, const size_t z ) const;
     size_t calculate_tetrahedra_table_index( const size_t* local_index ) const;
     size_t calculate_hexahedra_table_index( const size_t* local_index ) const;
     size_t calculate_pyramid_table_index( const size_t* local_index ) const;
+    size_t calculate_prism_table_index( const size_t* local_index ) const;
     float substitute_plane_equation( const size_t x, const size_t y, const size_t z ) const;
-    float substitute_plane_equation( const kvs::Vector3f& vertex ) const;
-    const kvs::Vector3f interpolate_vertex( const kvs::Vector3f& vertex0, const kvs::Vector3f& vertex1 ) const;
+    float substitute_plane_equation( const kvs::Vec3& vertex ) const;
+    const kvs::Vec3 interpolate_vertex( const kvs::Vec3& vertex0, const kvs::Vec3& vertex1 ) const;
     template <typename T> double interpolate_value(
         const kvs::StructuredVolumeObject* volume,
-        const kvs::Vector3f& vertex0,
-        const kvs::Vector3f& vertex1 ) const;
+        const kvs::Vec3& vertex0,
+        const kvs::Vec3& vertex1 ) const;
     template <typename T> double interpolate_value(
         const kvs::UnstructuredVolumeObject* volume,
         const size_t index0,

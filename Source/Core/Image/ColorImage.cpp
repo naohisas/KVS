@@ -15,7 +15,7 @@
 #include "GrayImage.h"
 #include "BitImage.h"
 #include <kvs/IgnoreUnusedVariable>
-#include <kvs/KVSMLObjectImage>
+#include <kvs/KVSMLImageObject>
 #include <kvs/RGBColor>
 #include <kvs/File>
 #include <kvs/Bmp>
@@ -243,9 +243,9 @@ void ColorImage::resize( const size_t width, const size_t height, ColorImage::Bi
 bool ColorImage::read( const std::string& filename )
 {
     // KVSML image.
-    if ( kvs::KVSMLObjectImage::CheckExtension( filename ) )
+    if ( kvs::KVSMLImageObject::CheckExtension( filename ) )
     {
-        const kvs::KVSMLObjectImage kvsml( filename );
+        const kvs::KVSMLImageObject kvsml( filename );
         if ( kvsml.pixelType() == "color" )
         {
             const BaseClass::ImageType type = BaseClass::Color;
@@ -335,13 +335,13 @@ bool ColorImage::read( const std::string& filename )
 bool ColorImage::write( const std::string& filename )
 {
     // KVSML image.
-    if ( kvs::KVSMLObjectImage::CheckExtension( filename ) )
+    if ( kvs::KVSMLImageObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectImage kvsml;
+        kvs::KVSMLImageObject kvsml;
         kvsml.setWidth( BaseClass::width() );
         kvsml.setHeight( BaseClass::height() );
         kvsml.setPixelType( "color" );
-        kvsml.setWritingDataType( kvs::KVSMLObjectImage::Ascii );
+        kvsml.setWritingDataType( kvs::KVSMLImageObject::Ascii );
         kvsml.setPixels( BaseClass::pixels() );
         return( kvsml.write( filename ) );
     }

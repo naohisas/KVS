@@ -25,7 +25,7 @@ namespace kvs
  *  @param  object [in] pointer to the input line object
  */
 /*===========================================================================*/
-LineExporter<kvs::KVSMLObjectLine>::LineExporter( const kvs::LineObject* object )
+LineExporter<kvs::KVSMLLineObject>::LineExporter( const kvs::LineObject* object )
 {
     this->exec( object );
 }
@@ -34,10 +34,10 @@ LineExporter<kvs::KVSMLObjectLine>::LineExporter( const kvs::LineObject* object 
 /**
  *  @brief  Executes the export process.
  *  @param  object [in] pointer to the input object
- *  @return pointer to the KVSMLObjectLine format
+ *  @return pointer to the KVSMLLineObject format
  */
 /*===========================================================================*/
-kvs::KVSMLObjectLine* LineExporter<kvs::KVSMLObjectLine>::exec( const kvs::ObjectBase* object )
+kvs::KVSMLLineObject* LineExporter<kvs::KVSMLLineObject>::exec( const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );
 

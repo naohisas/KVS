@@ -12,13 +12,11 @@
  *  $Id: UnstructuredVolumeImporter.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__UNSTRUCTURED_VOLUME_IMPORTER_H_INCLUDE
-#define KVS__UNSTRUCTURED_VOLUME_IMPORTER_H_INCLUDE
-
+#pragma once
 #include "ImporterBase.h"
 #include <kvs/Module>
 #include <kvs/UnstructuredVolumeObject>
-#include <kvs/KVSMLObjectUnstructuredVolume>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/AVSUcd>
 #include <kvs/AVSField>
 
@@ -38,7 +36,6 @@ class UnstructuredVolumeImporter : public kvs::ImporterBase, public kvs::Unstruc
     kvsModuleSuperClass( kvs::UnstructuredVolumeObject );
 
 public:
-
     UnstructuredVolumeImporter();
     UnstructuredVolumeImporter( const std::string& filename );
     UnstructuredVolumeImporter( const kvs::FileFormatBase* file_format );
@@ -47,12 +44,8 @@ public:
     SuperClass* exec( const kvs::FileFormatBase* file_format );
 
 private:
-
-    void import( const kvs::KVSMLObjectUnstructuredVolume* const kvsml );
     void import( const kvs::AVSUcd* const ucd );
     void import( const kvs::AVSField* const field );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__UNSTRUCTURED_VOLUME_IMPORTER_H_INCLUDE
