@@ -19,11 +19,13 @@
 #include <kvs/Dicom>
 #include <kvs/ImageObject>
 #include <kvs/ImageImporter>
+#include <kvs/ImageRenderer>
 #include <kvs/Date>
 #include <kvs/Time>
 #include <kvs/File>
 #include <kvs/Vector2>
 #include <kvs/ObjectManager>
+#include <kvs/RendererManager>
 #include <kvs/IDManager>
 #include <kvs/Camera>
 
@@ -122,9 +124,12 @@ void Command::updateDicomImage( void )
 
     const kvs::Dicom* dicom  = m_parameter->dicom_list[ m_parameter->index ];
     kvs::ImageObject* object = new kvs::ImageImporter( dicom );
+    kvs::ImageRenderer* renderer = new kvs::ImageRenderer();
 
     const int object_id = m_screen->scene()->objectManager()->insert( object );
+    const int renderer_id = m_screen->scene()->rendererManager()->insert( renderer );
     m_screen->scene()->IDManager()->changeObject( object_id );
+    m_screen->scene()->IDManager()->changeRenderer( renderer_id );
 }
 
 /*===========================================================================*/

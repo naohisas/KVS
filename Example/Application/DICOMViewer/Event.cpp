@@ -16,6 +16,7 @@
 #include "Command.h"
 #include <kvs/Dicom>
 #include <kvs/ImageObject>
+#include <kvs/ImageRenderer>
 #include <kvs/RGBColor>
 #include <kvs/Key>
 #include <kvs/MouseButton>
@@ -45,7 +46,8 @@ void Init::update( void )
     const kvs::ValueArray<kvs::UInt8> data = dicom->pixelData();
     const kvs::ImageObject::PixelType type = kvs::ImageObject::Gray8;
     kvs::ImageObject* object = new kvs::ImageObject( width, height, data, type );
-    static_cast<kvs::glut::Screen*>(screen())->registerObject( object );
+    kvs::ImageRenderer* renderer = new kvs::ImageRenderer();
+    static_cast<kvs::glut::Screen*>(screen())->registerObject( object, renderer );
 }
 
 /*===========================================================================*/

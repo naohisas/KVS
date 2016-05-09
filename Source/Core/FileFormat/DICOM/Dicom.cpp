@@ -810,9 +810,9 @@ bool Dicom::read_data( std::ifstream& ifs )
         return false;
     }
 
-    this->set_windowing_parameter();
     this->set_min_max_window_value();
     this->set_min_max_raw_value();
+    this->set_windowing_parameter();
 
     return true;
 }
@@ -1124,6 +1124,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0018, 0x0050 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_slice_thickness;
         return;
@@ -1133,6 +1135,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0018, 0x0088 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_slice_spacing;
         return;
@@ -1142,6 +1146,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0020, 0x0011 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_series_number;
         return;
@@ -1151,6 +1157,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0020, 0x0013 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_image_number;
         return;
@@ -1160,6 +1168,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0020, 0x1041 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_slice_location;
         return;
@@ -1213,8 +1223,10 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0028, 0x0030 ) )
     {
         // Split the string by the delimiter '\': "xxx\yyy" -> xxx yyy
-        std::string         temp  = element.value();
-        std::string         delim = "\\";
+        std::string temp  = element.value();
+        if ( temp.size() == 0 ) return;
+
+        std::string delim = "\\";
         std::vector<std::string> tokens;
 
         kvs::Tokenizer t( temp, delim );
@@ -1239,6 +1251,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0028, 0x1050 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_window_level;
         return;
@@ -1248,6 +1262,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0028, 0x1051 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_window_width;
         return;
@@ -1257,6 +1273,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0028, 0x1052 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_rescale_intersept;
         return;
@@ -1266,6 +1284,8 @@ void Dicom::parse_element( dcm::Element& element )
     if( element.tag() == dcm::Tag( 0x0028, 0x1053 ) )
     {
         std::string temp = element.value();
+        if ( temp.size() == 0 ) return;
+
         std::stringstream t( temp );
         t >> m_rescale_slope;
         return;
