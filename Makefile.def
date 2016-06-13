@@ -26,9 +26,6 @@ endif
 #  Command macro.
 #=============================================================================
 CCACHE := $(shell type -p ccache)
-ifeq ($(CCACHE),)
-CCACHE := $(shell type -p ccache-swig)
-endif
 SHELL  := /bin/bash
 MAKE   := make
 CPP    := $(CCACHE) g++
