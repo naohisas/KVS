@@ -486,7 +486,7 @@ void ProgramObject::deleteID()
 void ProgramObject::setParameter( GLenum pname, GLint value )
 {
     KVS_ASSERT( this->isCreated() );
-    KVS_GL_CALL( glProgramParameteriEXT( this->id(), pname, value ) );
+    KVS_GL_CALL( glProgramParameteri( this->id(), pname, value ) );
 }
 
 ProgramObject::Binder::Binder( const ProgramObject& po ) :

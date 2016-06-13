@@ -16,6 +16,7 @@
 #include <kvs/ObjectManager>
 #include <kvs/EventBase>
 #include <kvs/ScreenBase>
+#include <kvs/OpenGL>
 #include <kvs/glut/Screen>
 #include <kvs/glut/GLUT>
 
@@ -109,27 +110,31 @@ void OrientationAxis::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
+//    GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
+    GLint vp[4];
+    kvs::OpenGL::GetViewport( &(vp[0]) );
 
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
 
-    glDisable( GL_LIGHTING );
-    glDisable( GL_TEXTURE_2D );
-    glEnable( GL_DEPTH_TEST );
+    kvs::OpenGL::Disable( GL_LIGHTING );
+    kvs::OpenGL::Disable( GL_TEXTURE_2D );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
-    glClearDepth( 1.0 );
-    glClear( GL_DEPTH_BUFFER_BIT );
+    kvs::OpenGL::SetClearDepth( 1.0 );
+    kvs::OpenGL::Clear( GL_DEPTH_BUFFER_BIT );
 
     // Anti-aliasing.
     if ( m_enable_anti_aliasing )
     {
-        glEnable( GL_LINE_SMOOTH );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+        kvs::OpenGL::Enable( GL_BLEND );
+        kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     }
 
     // Set the projection parameters.
-    glMatrixMode( GL_PROJECTION ); glLoadIdentity();
+//    glMatrixMode( GL_PROJECTION ); glLoadIdentity();
+    kvs::OpenGL::WithPushedMatrix p1( GL_PROJECTION );
+    p1.loadIdentity();
     {
         const float front = 1.0f;
         const float back = 2000.0f;
@@ -138,7 +143,8 @@ void OrientationAxis::paintEvent()
             // Perspective projection.
             const float field_of_view = 45.0f;
             const float aspect = 1.0f;
-           gluPerspective( field_of_view, aspect, front, back );
+//            gluPerspective( field_of_view, aspect, front, back );
+            kvs::OpenGL::SetPerspective( field_of_view, aspect, front, back );
         }
         else
         {
@@ -147,7 +153,8 @@ void OrientationAxis::paintEvent()
             const float bottom = -5.0f;
             const float right = 5.0f;
             const float top = 5.0f;
-            glOrtho( left, right, bottom, top, front, back );
+//            glOrtho( left, right, bottom, top, front, back );
+            kvs::OpenGL::SetOrtho( left, right, bottom, top, front, back );
         }
     }
 
@@ -156,16 +163,22 @@ void OrientationAxis::paintEvent()
     const int y = screen()->height() - m_y - m_height + m_margin;
     const int width = m_width - m_margin;
     const int height = m_height - m_margin;
-    glViewport( x, y, width, height);
-    glMatrixMode( GL_MODELVIEW ); glLoadIdentity();
+//    glViewport( x, y, width, height);
+    kvs::OpenGL::SetViewport( x, y, width, height);
+//    glMatrixMode( GL_MODELVIEW ); glLoadIdentity();
+    kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );
+    p2.loadIdentity();
     {
         // Viewing transformation.
-        const kvs::Vector3f eye( 0.0f, 0.0f, 12.0f );
-        const kvs::Vector3f center( 0.0f, 0.0f, 0.0f );
-        const kvs::Vector3f up( 0.0f, 1.0f, 0.0f );
-        gluLookAt( eye.x(), eye.y(), eye.z(),
-                   center.x(), center.y(), center.z(),
-                   up.x(), up.y(), up.z() );
+        const kvs::Vec3 eye( 0.0f, 0.0f, 12.0f );
+        const kvs::Vec3 center( 0.0f, 0.0f, 0.0f );
+        const kvs::Vec3 up( 0.0f, 1.0f, 0.0f );
+        kvs::OpenGL::SetLookAt( eye.x(), eye.y(), eye.z(),
+                                center.x(), center.y(), center.z(),
+                                up.x(), up.y(), up.z() );
+//        gluLookAt( eye.x(), eye.y(), eye.z(),
+//                   center.x(), center.y(), center.z(),
+//                   up.x(), up.y(), up.z() );
 
         // Rotate the axis and the box using the object's rotation matrix.
         kvs::Xform xform = m_object->xform();
@@ -177,7 +190,8 @@ void OrientationAxis::paintEvent()
 
         float mat[16];
         xform.toArray( mat );
-        glMultMatrixf( mat );
+//        glMultMatrixf( mat );
+        kvs::OpenGL::MultMatrix( &(mat[0]) );
 
         // Fixed length of the axis
         const float length = 4.0f;
@@ -209,8 +223,9 @@ void OrientationAxis::paintEvent()
         }
     }
 
-    glViewport( vp[0], vp[1], vp[2], vp[3]);
-    glPopAttrib();
+//    glViewport( vp[0], vp[1], vp[2], vp[3]);
+    kvs::OpenGL::SetViewport( vp[0], vp[1], vp[2], vp[3]);
+//    glPopAttrib();
 }
 
 /*===========================================================================*/
@@ -269,18 +284,19 @@ void OrientationAxis::draw_centered_axis( const float length )
     //const kvs::Vector3f v6( x + length, y + length, z + length );
     //const kvs::Vector3f v7( x, y + length, z + length );
 
-    glLineWidth( m_axis_line_width );
+    KVS_GL_CALL( glLineWidth( m_axis_line_width ) );
 
     const float padding = static_cast<float>( length ) / 4.0f;
 
     // X-axis.
-    glColor3ub( m_x_axis_color.r(), m_x_axis_color.g(), m_x_axis_color.b() );
-    glBegin( GL_LINES );
-    glVertex3f( v0.x(), v0.y(), v0.z() );
-    glVertex3f( v1.x(), v1.y(), v1.z() );
-    glEnd();
+    KVS_GL_CALL_VER( glColor3ub( m_x_axis_color.r(), m_x_axis_color.g(), m_x_axis_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
+    KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+    KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+    KVS_GL_CALL_END( glEnd() );
 
-    glRasterPos3d( v1.x(), v1.y() - padding, v1.z() - padding );
+//    glRasterPos3d( v1.x(), v1.y() - padding, v1.z() - padding );
+    kvs::OpenGL::SetRasterPos( v1.x(), v1.y() - padding, v1.z() - padding );
     char* x_char = const_cast<char*>( m_x_tag.c_str() );
     for( char* p = x_char; *p; p++ )
     {
@@ -288,13 +304,13 @@ void OrientationAxis::draw_centered_axis( const float length )
     }
 
     // Y-axis.
-    glColor3ub( m_y_axis_color.r(), m_y_axis_color.g(), m_y_axis_color.b() );
-    glBegin( GL_LINES );
-    glVertex3f( v0.x(), v0.y(), v0.z() );
-    glVertex3f( v4.x(), v4.y(), v4.z() );
-    glEnd();
+    KVS_GL_CALL_VER( glColor3ub( m_y_axis_color.r(), m_y_axis_color.g(), m_y_axis_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
+    KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+    KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
+    KVS_GL_CALL_END( glEnd() );
 
-    glRasterPos3d( v4.x() - padding, v4.y(), v4.z() - padding );
+    kvs::OpenGL::SetRasterPos( v4.x() - padding, v4.y(), v4.z() - padding );
     char* y_char = const_cast<char*>( m_y_tag.c_str() );
     for( char* p = y_char; *p; p++ )
     {
@@ -302,13 +318,13 @@ void OrientationAxis::draw_centered_axis( const float length )
     }
 
     // Z-axis.
-    glColor3ub( m_z_axis_color.r(), m_z_axis_color.g(), m_z_axis_color.b() );
-    glBegin( GL_LINES );
-    glVertex3f( v0.x(), v0.y(), v0.z() );
-    glVertex3f( v3.x(), v3.y(), v3.z() );
-    glEnd();
+    KVS_GL_CALL_VER( glColor3ub( m_z_axis_color.r(), m_z_axis_color.g(), m_z_axis_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
+    KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+    KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
+    KVS_GL_CALL_END( glEnd() );
 
-    glRasterPos3d( v3.x() - padding, v3.y() - padding, v3.z() );
+    kvs::OpenGL::SetRasterPos( v3.x() - padding, v3.y() - padding, v3.z() );
     char* z_char = const_cast<char*>( m_z_tag.c_str() );
     for( char* p = z_char; *p; p++ )
     {
@@ -335,18 +351,18 @@ void OrientationAxis::draw_cornered_axis( const float length )
     //const kvs::Vector3f v6( x + length, y + length, z + length );
     //const kvs::Vector3f v7( x, y + length, z + length );
 
-    glLineWidth( m_axis_line_width );
+    KVS_GL_CALL( glLineWidth( m_axis_line_width ) );
 
     const float padding = static_cast<float>( length ) / 6.0f;
 
     // X-axis.
-    glColor3ub( m_x_axis_color.r(), m_x_axis_color.g(), m_x_axis_color.b() );
-    glBegin( GL_LINES );
-    glVertex3f( v0.x(), v0.y(), v0.z() );
-    glVertex3f( v1.x(), v1.y(), v1.z() );
-    glEnd();
+    KVS_GL_CALL( glColor3ub( m_x_axis_color.r(), m_x_axis_color.g(), m_x_axis_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
+    KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+    KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+    KVS_GL_CALL_END( glEnd() );
 
-    glRasterPos3d( v1.x(), v1.y() - padding, v1.z() - padding );
+    kvs::OpenGL::SetRasterPos( v1.x(), v1.y() - padding, v1.z() - padding );
     char* x_char = const_cast<char*>( m_x_tag.c_str() );
     for( char* p = x_char; *p; p++ )
     {
@@ -354,13 +370,13 @@ void OrientationAxis::draw_cornered_axis( const float length )
     }
 
     // Y-axis.
-    glColor3ub( m_y_axis_color.r(), m_y_axis_color.g(), m_y_axis_color.b() );
-    glBegin( GL_LINES );
-    glVertex3f( v0.x(), v0.y(), v0.z() );
-    glVertex3f( v4.x(), v4.y(), v4.z() );
-    glEnd();
+    KVS_GL_CALL_VER( glColor3ub( m_y_axis_color.r(), m_y_axis_color.g(), m_y_axis_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
+    KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+    KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
+    KVS_GL_CALL_END( glEnd() );
 
-    glRasterPos3d( v4.x() - padding, v4.y(), v4.z() - padding );
+    kvs::OpenGL::SetRasterPos( v4.x() - padding, v4.y(), v4.z() - padding );
     char* y_char = const_cast<char*>( m_y_tag.c_str() );
     for( char* p = y_char; *p; p++ )
     {
@@ -368,13 +384,13 @@ void OrientationAxis::draw_cornered_axis( const float length )
     }
 
     // Z-axis.
-    glColor3ub( m_z_axis_color.r(), m_z_axis_color.g(), m_z_axis_color.b() );
-    glBegin( GL_LINES );
-    glVertex3f( v0.x(), v0.y(), v0.z() );
-    glVertex3f( v3.x(), v3.y(), v3.z() );
-    glEnd();
+    KVS_GL_CALL_VER( glColor3ub( m_z_axis_color.r(), m_z_axis_color.g(), m_z_axis_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
+    KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+    KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
+    KVS_GL_CALL_END( glEnd() );
 
-    glRasterPos3d( v3.x() - padding, v3.y() - padding, v3.z() );
+    kvs::OpenGL::SetRasterPos( v3.x() - padding, v3.y() - padding, v3.z() );
     char* z_char = const_cast<char*>( m_z_tag.c_str() );
     for( char* p = z_char; *p; p++ )
     {
@@ -402,52 +418,52 @@ void OrientationAxis::draw_wired_box( const float length )
     const kvs::Vector3f v6( x + length, y + length, z + length );
     const kvs::Vector3f v7( x, y + length, z + length );
 
-    glLineWidth( m_box_line_width );
-    glColor3ub( m_box_line_color.r(), m_box_line_color.g(), m_box_line_color.b() );
-    glBegin( GL_LINES );
+    KVS_GL_CALL( glLineWidth( m_box_line_width ) );
+    KVS_GL_CALL_VER( glColor3ub( m_box_line_color.r(), m_box_line_color.g(), m_box_line_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
     {
         if ( m_axis_type != OrientationAxis::CorneredAxis )
         {
             // X axis.
-            glVertex3f( v0.x(), v0.y(), v0.z() );
-            glVertex3f( v1.x(), v1.y(), v1.z() );
+            KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+            KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
         }
-        glVertex3f( v1.x(), v1.y(), v1.z() );
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v3.x(), v3.y(), v3.z() );
+        KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
         if ( m_axis_type != OrientationAxis::CorneredAxis )
         {
             // Z axis.
-            glVertex3f( v3.x(), v3.y(), v3.z() );
-            glVertex3f( v0.x(), v0.y(), v0.z() );
+            KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
+            KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
         }
 
-        glVertex3f( v4.x(), v4.y(), v4.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
-        glVertex3f( v4.x(), v4.y(), v4.z() );
+        KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
 
         if ( m_axis_type != OrientationAxis::CorneredAxis )
         {
             // Y axis.
-            glVertex3f( v0.x(), v0.y(), v0.z() );
-            glVertex3f( v4.x(), v4.y(), v4.z() );
+            KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+            KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
         }
-        glVertex3f( v1.x(), v1.y(), v1.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
+        KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
 
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
 
-        glVertex3f( v3.x(), v3.y(), v3.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
+        KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
     }
-    glEnd();
+    KVS_GL_CALL_END( glEnd() );
 }
 
 /*===========================================================================*/
@@ -470,93 +486,93 @@ void OrientationAxis::draw_solid_box( const float length )
     const kvs::Vector3f v6( x + length, y + length, z + length );
     const kvs::Vector3f v7( x, y + length, z + length );
 
-    glPolygonOffset( 1, 1 );
-    glEnable( GL_POLYGON_OFFSET_FILL );
+    kvs::OpenGL::SetPolygonOffset( 1, 1 );
+    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
-    glColor3ub( m_box_color.r(), m_box_color.g(), m_box_color.b() );
-    glBegin( GL_QUADS );
+    KVS_GL_CALL_VER( glColor3ub( m_box_color.r(), m_box_color.g(), m_box_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
     {
         // bottom
-        glVertex3f( v0.x(), v0.y(), v0.z() );
-        glVertex3f( v1.x(), v1.y(), v1.z() );
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v3.x(), v3.y(), v3.z() );
+        KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
         // top
-        glVertex3f( v7.x(), v7.y(), v7.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
-        glVertex3f( v4.x(), v4.y(), v4.z() );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
         // back
-        glVertex3f( v0.x(), v0.y(), v0.z() );
-        glVertex3f( v4.x(), v4.y(), v4.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
-        glVertex3f( v1.x(), v1.y(), v1.z() );
+        KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
         // right
-        glVertex3f( v1.x(), v1.y(), v1.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
-        glVertex3f( v2.x(), v2.y(), v2.z() );
+        KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
         // front
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
-        glVertex3f( v3.x(), v3.y(), v3.z() );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
         // left
-        glVertex3f( v0.x(), v0.y(), v0.z() );
-        glVertex3f( v3.x(), v3.y(), v3.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
-        glVertex3f( v4.x(), v4.y(), v4.z() );
+        KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
     }
-    glEnd();
+    KVS_GL_CALL_END( glEnd() );
 
-    glLineWidth( m_box_line_width );
-    glColor3ub( m_box_line_color.r(), m_box_line_color.g(), m_box_line_color.b() );
-    glBegin( GL_LINES );
+    KVS_GL_CALL( glLineWidth( m_box_line_width ) );
+    KVS_GL_CALL_VER( glColor3ub( m_box_line_color.r(), m_box_line_color.g(), m_box_line_color.b() ) );
+    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
     {
         if ( m_axis_type != OrientationAxis::CorneredAxis )
         {
             // X axis.
-            glVertex3f( v0.x(), v0.y(), v0.z() );
-            glVertex3f( v1.x(), v1.y(), v1.z() );
+            KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+            KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
         }
-        glVertex3f( v1.x(), v1.y(), v1.z() );
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v3.x(), v3.y(), v3.z() );
+        KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
         if ( m_axis_type != OrientationAxis::CorneredAxis )
         {
             // Z axis.
-            glVertex3f( v3.x(), v3.y(), v3.z() );
-            glVertex3f( v0.x(), v0.y(), v0.z() );
+            KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
+            KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
         }
 
-        glVertex3f( v4.x(), v4.y(), v4.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
-        glVertex3f( v4.x(), v4.y(), v4.z() );
+        KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
 
         if ( m_axis_type != OrientationAxis::CorneredAxis )
         {
             // Y axis.
-            glVertex3f( v0.x(), v0.y(), v0.z() );
-            glVertex3f( v4.x(), v4.y(), v4.z() );
+            KVS_GL_CALL_VER( glVertex3f( v0.x(), v0.y(), v0.z() ) );
+            KVS_GL_CALL_VER( glVertex3f( v4.x(), v4.y(), v4.z() ) );
         }
-        glVertex3f( v1.x(), v1.y(), v1.z() );
-        glVertex3f( v5.x(), v5.y(), v5.z() );
+        KVS_GL_CALL_VER( glVertex3f( v1.x(), v1.y(), v1.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v5.x(), v5.y(), v5.z() ) );
 
-        glVertex3f( v2.x(), v2.y(), v2.z() );
-        glVertex3f( v6.x(), v6.y(), v6.z() );
+        KVS_GL_CALL_VER( glVertex3f( v2.x(), v2.y(), v2.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v6.x(), v6.y(), v6.z() ) );
 
-        glVertex3f( v3.x(), v3.y(), v3.z() );
-        glVertex3f( v7.x(), v7.y(), v7.z() );
+        KVS_GL_CALL_VER( glVertex3f( v3.x(), v3.y(), v3.z() ) );
+        KVS_GL_CALL_VER( glVertex3f( v7.x(), v7.y(), v7.z() ) );
     }
-    glEnd();
+    KVS_GL_CALL_END( glEnd() );
 
-    glDisable( GL_POLYGON_OFFSET_FILL );
+    kvs::OpenGL::Disable( GL_POLYGON_OFFSET_FILL );
 }
 
 } // end of namesapce glut

@@ -41,7 +41,7 @@ ExtensionChecker::ExtensionChecker( int argc, char** argv )
     glutCreateWindow("");
 
     m_gl_extensions = kvs::OpenGL::ExtensionList();
-#if defined( GLU_VERSION_1_1 )
+#if defined( KVS_ENABLE_GLU ) && defined( GLU_VERSION_1_1 )
     /* The gluGetString function is not used in GLU version 1.0.
      */
     std::stringstream glu_extension_list( (char*)gluGetString( GLU_EXTENSIONS ) );

@@ -96,9 +96,17 @@ void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLd
 void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top );
 void SetPerspective( GLdouble fovy, GLdouble aspect, GLdouble near, GLdouble far );
 void SetFrustum( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble far );
+void SetLookAt(
+    GLdouble eyex, GLdouble eyey, GLdouble eyez,
+    GLdouble centerx, GLdouble centery, GLdouble centerz,
+    GLdouble upx, GLdouble upy, GLdouble upz );
 
 void SetLight( GLenum light, GLenum pname, GLfloat param );
 void SetLight( GLenum light, GLenum pname, GLfloat* params );
+
+void SetClearDepth( GLdouble depth );
+void SetClearDepth( GLfloat depth );
+void SetPolygonOffset( GLfloat factor, GLfloat units );
 
 void ReadPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data );
 void DrawPixels( GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* data );
@@ -130,26 +138,14 @@ void PushClientAttrib( GLbitfield mask );
 void PopClientAttrib();
 
 GLint Project(
-    GLdouble objx,
-    GLdouble objy,
-    GLdouble objz,
-    const GLdouble modelmat[16],
-    const GLdouble projmat[16],
-    const GLint viewport[4],
-    GLdouble* winx,
-    GLdouble* winy,
-    GLdouble* winz );
+    GLdouble objx, GLdouble objy, GLdouble objz,
+    const GLdouble modelmat[16], const GLdouble projmat[16], const GLint viewport[4],
+    GLdouble* winx, GLdouble* winy, GLdouble* winz );
 
 GLint UnProject(
-    GLdouble winx,
-    GLdouble winy,
-    GLdouble winz,
-    const GLdouble modelmat[16],
-    const GLdouble projmat[16],
-    const GLint viewport[4],
-    GLdouble* objx,
-    GLdouble* objy,
-    GLdouble* objz );
+    GLdouble winx, GLdouble winy, GLdouble winz,
+    const GLdouble modelmat[16], const GLdouble projmat[16], const GLint viewport[4],
+    GLdouble* objx, GLdouble* objy, GLdouble* objz );
 
 class WithPushedMatrix
 {
