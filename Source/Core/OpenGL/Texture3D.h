@@ -17,6 +17,7 @@
 
 #include <kvs/Texture>
 #include <kvs/Deprecated>
+#include <cstddef>
 
 
 namespace kvs

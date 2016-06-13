@@ -678,7 +678,7 @@ void RayCastingRenderer::initialize_framebuffer( const size_t width, const size_
     m_color_texture.setWrapT( GL_CLAMP_TO_BORDER );
     m_color_texture.setMagFilter( GL_LINEAR );
     m_color_texture.setMinFilter( GL_LINEAR );
-    m_color_texture.setPixelFormat( GL_RGBA32F, GL_RGB, GL_FLOAT  );
+    m_color_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGB, GL_FLOAT  );
     m_color_texture.create( width, height );
 
     m_entry_texture.setWrapS( GL_CLAMP_TO_BORDER );

@@ -41,8 +41,12 @@ bool HasError( const char* file, const int line, const char* func, const char* c
 
     // Output message with an error string.
     std::string error_string;
+#if defined( KVS_ENABLE_GLU )
     const GLubyte* c = gluErrorString( error );
-    while ( *c ) error_string += *c++;
+    while ( *c ) { error_string += *c++; }
+#else
+    error_string = "Unknown error. (GLU is not enabled)";
+#endif
     std::cerr << ": " << error_string << std::endl;
     std::cerr << "\t" << "FILE: " << file << " (" << line << ")" << std::endl;
     std::cerr << "\t" << "FUNC: " << func << std::endl;

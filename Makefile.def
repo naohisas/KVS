@@ -94,17 +94,23 @@ GL_INCLUDE_PATH :=
 GL_LIBRARY_PATH :=
 GL_LINK_LIBRARY :=
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
-ifeq "$(shell uname -s)" "Darwin"
-GL_LINK_LIBRARY += -framework OpenGL -framework Foundation
-else
-ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
-GL_LINK_LIBRARY += -lGLU -lGL -lm
-else
-ifeq "$(shell uname -s)" "Linux"
-GL_LINK_LIBRARY += -lGLU -lGL -lm -lpthread
-endif
-endif
-endif
+  ifeq "$(shell uname -s)" "Darwin"
+    GL_LINK_LIBRARY += -framework OpenGL -framework Foundation
+  else
+    ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
+      ifeq "$(KVS_ENABLE_GLU)" "1"
+        GL_LINK_LIBRARY += -lGLU
+      endif
+      GL_LINK_LIBRARY += -lGL -lm
+    else
+      ifeq "$(shell uname -s)" "Linux"
+        ifeq "$(KVS_ENABLE_GLU)" "1"
+          GL_LINK_LIBRARY += -lGLU
+        endif
+        GL_LINK_LIBRARY += -lGL -lm -lpthread
+      endif
+    endif
+  endif
 endif
 
 
@@ -115,11 +121,13 @@ GLEW_INCLUDE_PATH :=
 GLEW_LIBRARY_PATH :=
 GLEW_LINK_LIBRARY :=
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
-GLEW_LINK_LIBRARY += -lGLEW
-ifdef KVS_GLEW_DIR
-GLEW_INCLUDE_PATH += -I$(KVS_GLEW_DIR)/include
-GLEW_LIBRARY_PATH += -L$(KVS_GLEW_DIR)/lib
-endif
+  ifeq  "$(KVS_ENABLE_GLEW)" "1"
+    GLEW_LINK_LIBRARY += -lGLEW
+    ifdef KVS_GLEW_DIR
+      GLEW_INCLUDE_PATH += -I$(KVS_GLEW_DIR)/include
+      GLEW_LIBRARY_PATH += -L$(KVS_GLEW_DIR)/lib
+    endif
+  endif
 endif
 
 
@@ -239,6 +247,14 @@ endif
 
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
 DEFINITIONS += -DKVS_ENABLE_OPENGL
+endif
+
+ifeq "$(KVS_ENABLE_GLU)" "1"
+DEFINITIONS += -DKVS_ENABLE_GLU
+endif
+
+ifeq "$(KVS_ENABLE_GLEW)" "1"
+DEFINITIONS += -DKVS_ENABLE_GLEW
 endif
 
 ifeq "$(KVS_ENABLE_DEPRECATED)" "1"

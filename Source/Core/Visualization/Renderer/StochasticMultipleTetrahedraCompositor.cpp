@@ -364,7 +364,7 @@ void StochasticMultipleTetrahedraCompositor::create_extra_texture( const size_t 
     m_extra_texture.setWrapT( GL_CLAMP_TO_EDGE );
     m_extra_texture.setMagFilter( GL_LINEAR );
     m_extra_texture.setMinFilter( GL_LINEAR );
-    m_extra_texture.setPixelFormat( GL_RGBA32F, GL_RGBA, GL_FLOAT );
+    m_extra_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT );
     m_extra_texture.create( width, height );
     m_ensemble_buffer.currentFrameBufferObject().attachColorTexture( m_extra_texture, 1 );
 }

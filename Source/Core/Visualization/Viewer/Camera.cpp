@@ -536,7 +536,8 @@ const kvs::Vec3 Camera::projectWindowToObject( const kvs::Vec2& p_win, float dep
     double x = 0;
     double y = 0;
     double z = 0;
-    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
 
     const kvs::Vec3 p_cam( (float)x, (float)y, (float)z );
     const kvs::Xform modelview( kvs::OpenGL::ModelViewMatrix() );
@@ -564,7 +565,8 @@ const kvs::Vec3 Camera::projectWindowToCamera( const kvs::Vec2& p_win, float dep
     double x = 0;
     double y = 0;
     double z = 0;
-    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
 
     return kvs::Vec3( (float)x, (float)y, (float)z );
 }
@@ -591,7 +593,8 @@ const kvs::Vec3 Camera::projectWindowToWorld( const kvs::Vec2& p_win, float dept
     double x = 0;
     double y = 0;
     double z = 0;
-    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
 
     const kvs::Vec3 p_cam( (float)x, (float)y, (float)z );
     const kvs::Xform inv_viewing( this->xform() );

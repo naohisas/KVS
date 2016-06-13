@@ -365,7 +365,7 @@ void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
             const kvs::UInt32* pconnections = line->connections().data();
             for ( size_t i = 0; i < nlines; i++ )
             {
-                glBegin( GL_QUAD_STRIP );
+                KVS_GL_CALL_BEG( glBegin( GL_QUAD_STRIP ) );
                 const size_t index0 = *(pconnections++);
                 const size_t index1 = *(pconnections++);
                 for ( size_t j = index0; j <= index1; j++ )
@@ -375,14 +375,14 @@ void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
                     const float radius = m_radius_size;
                     const float rot = 0.0f;
                     const float zdiff = 0.0f;
-                    glColor3ubv( colors.data() + 3 * j );
-                    glNormal3fv( normals.data() + 3 * j );
-                    glTexCoord4f( -radius * halo_factor, radius, rot, zdiff );
-                    glVertex3fv( coords.data() + 3 * j );
-                    glTexCoord4f(  radius * halo_factor, radius, rot, zdiff );
-                    glVertex3fv( coords.data() + 3 * j );
+                    KVS_GL_CALL_VER( glColor3ubv( colors.data() + 3 * j ) );
+                    KVS_GL_CALL_VER( glNormal3fv( normals.data() + 3 * j ) );
+                    KVS_GL_CALL_VER( glTexCoord4f( -radius * halo_factor, radius, rot, zdiff ) );
+                    KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * j ) );
+                    KVS_GL_CALL_VER( glTexCoord4f(  radius * halo_factor, radius, rot, zdiff ) );
+                    KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * j ) );
                 }
-                glEnd();
+                KVS_GL_CALL_END( glEnd() );
             }
             ::DisplayList::End();
             break;
@@ -390,7 +390,7 @@ void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
         case kvs::LineObject::Strip:
         {
             ::DisplayList::New( m_display_list_id, GL_COMPILE );
-            glBegin( GL_QUAD_STRIP );
+            KVS_GL_CALL_BEG( glBegin( GL_QUAD_STRIP ) );
             const size_t nvertices = line->numberOfVertices();
             for ( size_t i = 0; i < nvertices; i++ )
             {
@@ -399,14 +399,14 @@ void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
                 const float radius = m_radius_size;
                 const float rot = 0.0f;
                 const float zdiff = 0.0f;
-                glColor3ubv( colors.data() + 3 * i );
-                glNormal3fv( normals.data() + 3 * i );
-                glTexCoord4f( -radius * halo_factor, radius, rot, zdiff );
-                glVertex3fv( coords.data() + 3 * i );
-                glTexCoord4f(  radius * halo_factor, radius, rot, zdiff );
-                glVertex3fv( coords.data() + 3 * i );
+                KVS_GL_CALL_VER( glColor3ubv( colors.data() + 3 * i ) );
+                KVS_GL_CALL_VER( glNormal3fv( normals.data() + 3 * i ) );
+                KVS_GL_CALL_VER( glTexCoord4f( -radius * halo_factor, radius, rot, zdiff ) );
+                KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * i ) );
+                KVS_GL_CALL_VER( glTexCoord4f(  radius * halo_factor, radius, rot, zdiff ) );
+                KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * i ) );
             }
-            glEnd();
+            KVS_GL_CALL_END( glEnd() );
             ::DisplayList::End();
             break;
         }
@@ -437,7 +437,7 @@ void StylizedLineRenderer::create_shape_texture()
     m_shape_texture.setWrapT( GL_REPEAT );
     m_shape_texture.setMagFilter( GL_NEAREST );
     m_shape_texture.setMinFilter( GL_NEAREST );
-    m_shape_texture.setPixelFormat( GL_RGBA32F, GL_RGBA, GL_FLOAT );
+    m_shape_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT );
     m_shape_texture.create( resolution, resolution, shape.data() );
 }
 

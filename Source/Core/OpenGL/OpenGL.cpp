@@ -19,7 +19,24 @@
 namespace
 {
 
-std::string GLGetString( GLenum name )
+#if !defined( KVS_ENABLE_GLU )
+const char* GLErrorStrings[GL_OUT_OF_MEMORY - GL_INVALID_ENUM + 1] =
+{
+    "invalid enumerant",
+    "invalid value",
+    "invalid operation",
+    "stack overflow",
+    "stack underflow",
+    "out of memory",
+};
+#endif
+
+}
+
+namespace
+{
+
+inline std::string GLGetString( GLenum name )
 {
     std::string ret = "";
     const GLubyte* c = NULL;
@@ -28,7 +45,8 @@ std::string GLGetString( GLenum name )
     return ret;
 }
 
-std::string GLUGetString( GLenum name )
+#if defined( KVS_ENABLE_GLU )
+inline std::string GLUGetString( GLenum name )
 {
     std::string ret = "";
     const GLubyte* c = NULL;
@@ -36,8 +54,10 @@ std::string GLUGetString( GLenum name )
     while ( *c ) ret += *c++;
     return ret;
 }
+#endif
 
-std::string GLEWGetString( GLenum name )
+#if defined( KVS_ENABLE_GLEW )
+inline std::string GLEWGetString( GLenum name )
 {
     std::string ret = "";
     const GLubyte* c = NULL;
@@ -45,8 +65,157 @@ std::string GLEWGetString( GLenum name )
     while ( *c ) ret += *c++;
     return ret;
 }
+#endif
+
+inline const GLubyte* GetErrorString( GLenum error_code )
+{
+#if defined( KVS_ENABLE_GLU )
+    const GLubyte* ret;
+    KVS_GL_CALL( ret = gluErrorString( error_code ) );
+    return ret;
+#else
+    if ( error_code == 0 )
+    {
+        return (const GLubyte *) "no error";
+    }
+    if ( ( error_code >= GL_INVALID_ENUM ) && ( error_code <= GL_OUT_OF_MEMORY ) )
+    {
+        return (const GLubyte *) ::GLErrorStrings[error_code - GL_INVALID_ENUM];
+    }
+    if ( error_code == GL_TABLE_TOO_LARGE )
+    {
+        return (const GLubyte *) "table too large";
+    }
+
+#ifdef GL_EXT_framebuffer_object
+    if ( error_code == GL_INVALID_FRAMEBUFFER_OPERATION_EXT )
+    {
+       return (const GLubyte*) "invalid framebuffer operation";
+    }
+#endif
+
+    return 0;
+#endif
+}
+
+#if !defined( KVS_ENABLE_GLU )
+inline void MakeIdentity( GLdouble m[16] )
+{
+    m[0+4*0] = 1; m[0+4*1] = 0; m[0+4*2] = 0; m[0+4*3] = 0;
+    m[1+4*0] = 0; m[1+4*1] = 1; m[1+4*2] = 0; m[1+4*3] = 0;
+    m[2+4*0] = 0; m[2+4*1] = 0; m[2+4*2] = 1; m[2+4*3] = 0;
+    m[3+4*0] = 0; m[3+4*1] = 0; m[3+4*2] = 0; m[3+4*3] = 1;
+}
+
+inline void MultMatrices( const GLdouble a[16], const GLdouble b[16], GLdouble r[16] )
+{
+    for ( int i = 0; i < 4; i++ )
+    {
+        for ( int j = 0; j < 4; j++ )
+        {
+            r[i*4+j] =
+                a[i*4+0]*b[0*4+j] +
+                a[i*4+1]*b[1*4+j] +
+                a[i*4+2]*b[2*4+j] +
+                a[i*4+3]*b[3*4+j];
+        }
+    }
+}
+
+inline void MultMatrixVec(const GLdouble matrix[16], const GLdouble in[4], GLdouble out[4])
+{
+    for ( int i = 0; i < 4; i++ )
+    {
+        out[i] =
+            in[0] * matrix[0*4+i] +
+            in[1] * matrix[1*4+i] +
+            in[2] * matrix[2*4+i] +
+            in[3] * matrix[3*4+i];
+    }
+}
+
+inline int InvertMatrix( const GLdouble src[16], GLdouble inverse[16] )
+{
+    int swap;
+    double t;
+    GLdouble temp[4][4];
+
+    for ( int i = 0; i < 4; i++ )
+    {
+        for ( int j = 0; j < 4; j++ )
+        {
+            temp[i][j] = src[i*4+j];
+        }
+    }
+    ::MakeIdentity( inverse );
+
+    for ( int i = 0; i < 4; i++ )
+    {
+        /*
+        ** Look for largest element in column
+        */
+        swap = i;
+        for ( int j = i + 1; j < 4; j++ )
+        {
+            if ( std::fabs(temp[j][i]) > std::fabs(temp[i][i]) )
+            {
+                swap = j;
+            }
+        }
+
+        if ( swap != i )
+        {
+            /*
+            ** Swap rows.
+            */
+            for ( int k = 0; k < 4; k++ )
+            {
+                t = temp[i][k];
+                temp[i][k] = temp[swap][k];
+                temp[swap][k] = t;
+
+                t = inverse[i*4+k];
+                inverse[i*4+k] = inverse[swap*4+k];
+                inverse[swap*4+k] = t;
+            }
+        }
+
+        if ( temp[i][i] == 0 )
+        {
+            /*
+            ** No non-zero pivot.  The matrix is singular, which shouldn't
+            ** happen.  This means the user gave us a bad matrix.
+            */
+            return GL_FALSE;
+        }
+
+        t = temp[i][i];
+        for ( int k = 0; k < 4; k++ )
+        {
+            temp[i][k] /= t;
+            inverse[i*4+k] /= t;
+        }
+
+        for ( int j = 0; j < 4; j++ )
+        {
+            if ( j != i )
+            {
+                t = temp[j][i];
+                for ( int k = 0; k < 4; k++ )
+                {
+                    temp[j][k] -= temp[i][k]*t;
+                    inverse[j*4+k] -= inverse[i*4+k]*t;
+                }
+            }
+        }
+    }
+
+    return GL_TRUE;
+}
+#endif
 
 }
+
 
 namespace kvs
 {
@@ -201,8 +370,7 @@ bool HasError()
 std::string ErrorString( const GLenum error_code )
 {
     std::string error_string;
-    const GLubyte* c = NULL;
-    KVS_GL_CALL( c = gluErrorString( error_code ) );
+    const GLubyte* c = ::GetErrorString( error_code );
     while ( *c ) error_string += *c++;
     return error_string;
 }
@@ -444,12 +612,39 @@ void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLd
 
 void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top )
 {
+#if defined( KVS_ENABLE_GLU )
     KVS_GL_CALL( gluOrtho2D( left, right, bottom, top ) );
+#else
+    KVS_GL_CALL( glOrtho( left, right, bottom, top, -1, 1 ) );
+#endif
 }
 
 void SetPerspective( GLdouble fovy, GLdouble aspect, GLdouble front, GLdouble back )
 {
+#if defined( KVS_ENABLE_GLU )
     KVS_GL_CALL( gluPerspective( fovy, aspect, front, back ) );
+#else
+    GLdouble m[4][4];
+    double radians = fovy / 2 * (3.14159265358979323846) / 180;
+
+    double delta = back - front;
+    double sine = std::sin( radians );
+    if ( ( delta == 0 ) || ( sine == 0 ) || ( aspect == 0 ) )
+    {
+        return;
+    }
+    double cotangent = std::cos( radians ) / sine;
+
+    ::MakeIdentity( &m[0][0] );
+    m[0][0] = cotangent / aspect;
+    m[1][1] = cotangent;
+    m[2][2] = -(back + front) / delta;
+    m[2][3] = -1;
+    m[3][2] = -2 * front * back / delta;
+    m[3][3] = 0;
+
+    KVS_GL_CALL( glMultMatrixd( &m[0][0] ) );
+#endif
 }
 
 void SetFrustum( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble front, GLdouble back )
@@ -602,6 +797,106 @@ void PopClientAttrib()
 {
     KVS_GL_CALL( glPopClientAttrib() );
 }
+
+GLint Project(
+    GLdouble objx,
+    GLdouble objy,
+    GLdouble objz,
+    const GLdouble modelmat[16],
+    const GLdouble projmat[16],
+    const GLint viewport[4],
+    GLdouble* winx,
+    GLdouble* winy,
+    GLdouble* winz )
+{
+#if defined( KVS_ENABLE_GLU )
+    GLint ret = 0;
+    KVS_GL_CALL( ret = gluProject( objx, objy, objz, modelmat, projmat, viewport, winx, winy, winz ) );
+    return ret;
+#else
+    double in[4];
+    double out[4];
+
+    in[0]=objx;
+    in[1]=objy;
+    in[2]=objz;
+    in[3]=1.0;
+
+    ::MultMatrixVec( modelmat, in, out );
+    ::MultMatrixVec( projmat, out, in );
+    if ( in[3] == 0.0 ) { return GL_FALSE; }
+
+    in[0] /= in[3];
+    in[1] /= in[3];
+    in[2] /= in[3];
+
+    /* Map x, y and z to range 0-1 */
+    in[0] = in[0] * 0.5 + 0.5;
+    in[1] = in[1] * 0.5 + 0.5;
+    in[2] = in[2] * 0.5 + 0.5;
+
+    /* Map x,y to viewport */
+    in[0] = in[0] * viewport[2] + viewport[0];
+    in[1] = in[1] * viewport[3] + viewport[1];
+
+    *winx=in[0];
+    *winy=in[1];
+    *winz=in[2];
+
+    return GL_TRUE;
+#endif
+}
+
+GLint UnProject(
+    GLdouble winx,
+    GLdouble winy,
+    GLdouble winz,
+    const GLdouble modelmat[16],
+    const GLdouble projmat[16],
+    const GLint viewport[4],
+    GLdouble* objx,
+    GLdouble* objy,
+    GLdouble* objz )
+{
+#if defined( KVS_ENABLE_GLU )
+    GLint ret = 0;
+    KVS_GL_CALL( ret = gluUnProject( winx, winy, winz, modelmat, projmat, viewport, objx, objy, objz ) );
+    return ret;
+#else
+    double finalmat[16];
+    double in[4];
+    double out[4];
+
+    ::MultMatrices( modelmat, projmat, finalmat );
+    if ( !::InvertMatrix( finalmat, finalmat ) ) { return GL_FALSE; }
+
+    in[0]=winx;
+    in[1]=winy;
+    in[2]=winz;
+    in[3]=1.0;
+
+    /* Map x and y from window coordinates */
+    in[0] = (in[0] - viewport[0]) / viewport[2];
+    in[1] = (in[1] - viewport[1]) / viewport[3];
+
+    /* Map to range -1 to 1 */
+    in[0] = in[0] * 2 - 1;
+    in[1] = in[1] * 2 - 1;
+    in[2] = in[2] * 2 - 1;
+
+    ::MultMatrixVec( finalmat, in, out );
+    if ( out[3] == 0.0 ) { return GL_FALSE; }
+    out[0] /= out[3];
+    out[1] /= out[3];
+    out[2] /= out[3];
+    *objx = out[0];
+    *objy = out[1];
+    *objz = out[2];
+
+    return GL_TRUE;
+#endif
+}
+
 
 WithPushedMatrix::WithPushedMatrix( GLenum mode )
 {

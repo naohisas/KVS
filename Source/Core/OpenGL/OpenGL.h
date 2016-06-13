@@ -129,6 +129,28 @@ void PopAttrib();
 void PushClientAttrib( GLbitfield mask );
 void PopClientAttrib();
 
+GLint Project(
+    GLdouble objx,
+    GLdouble objy,
+    GLdouble objz,
+    const GLdouble modelmat[16],
+    const GLdouble projmat[16],
+    const GLint viewport[4],
+    GLdouble* winx,
+    GLdouble* winy,
+    GLdouble* winz );
+
+GLint UnProject(
+    GLdouble winx,
+    GLdouble winy,
+    GLdouble winz,
+    const GLdouble modelmat[16],
+    const GLdouble projmat[16],
+    const GLint viewport[4],
+    GLdouble* objx,
+    GLdouble* objy,
+    GLdouble* objz );
+
 class WithPushedMatrix
 {
     GLint m_current_mode;

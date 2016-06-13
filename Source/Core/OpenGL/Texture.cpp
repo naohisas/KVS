@@ -332,7 +332,7 @@ bool Texture::isCreated() const
 
 bool Texture::isValid() const
 {
-    GLboolean result;
+    GLboolean result = GL_FALSE;
     KVS_GL_CALL( result = glIsTexture( m_id ) );
     return result == GL_TRUE;
 }
@@ -394,7 +394,7 @@ void Texture::setImage3D( GLsizei width, GLsizei height, GLsizei depth, const GL
 
 void Texture::setImageRectangle( GLsizei width, GLsizei height, const GLvoid* data )
 {
-    KVS_ASSERT( m_target == GL_TEXTURE_RECTANGLE );
+    KVS_ASSERT( m_target == GL_TEXTURE_RECTANGLE_ARB );
     KVS_ASSERT( this->isBound() );
 
     const GLint level = 0; // level-of-detail number
@@ -431,7 +431,7 @@ void Texture::setSubImage3D( GLsizei width, GLsizei height, GLsizei depth, const
 
 void Texture::setSubImageRectangle( GLsizei width, GLsizei height, const GLvoid* data, GLint xoffset, GLint yoffset )
 {
-    KVS_ASSERT( m_target == GL_TEXTURE_RECTANGLE );
+    KVS_ASSERT( m_target == GL_TEXTURE_RECTANGLE_ARB );
     KVS_ASSERT( this->isBound() );
 
     const GLint level = 0; // level-of-detail number

@@ -255,12 +255,14 @@ void ScreenBase::create()
     ::Context[ m_id ] = this;
 
     // Initialize GLEW.
+#if defined( KVS_ENABLE_GLEW )
     GLenum result = glewInit();
     if ( result != GLEW_OK )
     {
         const GLubyte* message = glewGetErrorString( result );
         kvsMessageError( "GLEW initialization failed: %s.", message );
     }
+#endif
 
     // Register the exit function.
     static bool flag = true;
