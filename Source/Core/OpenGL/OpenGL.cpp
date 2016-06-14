@@ -615,6 +615,21 @@ void SetRasterPos( GLint x, GLint y, GLint z, GLint w )
     KVS_GL_CALL( glRasterPos4i( x, y, z, w ) );
 }
 
+void SetRasterPos( const kvs::Vec2& p )
+{
+    kvs::OpenGL::SetRasterPos( p.x(), p.y() );
+}
+
+void SetRasterPos( const kvs::Vec3& p )
+{
+    kvs::OpenGL::SetRasterPos( p.x(), p.y(), p.z() );
+}
+
+void SetRasterPos( const kvs::Vec4& p )
+{
+    kvs::OpenGL::SetRasterPos( p.x(), p.y(), p.z(), p.w() );
+}
+
 void SetPixelStorageMode( GLenum pname, GLfloat param )
 {
     KVS_GL_CALL( glPixelStoref( pname, param ) );
@@ -723,6 +738,30 @@ void SetLookAt(
 #endif
 }
 
+void SetViewport( const kvs::Vec4& v )
+{
+    const GLint x = GLint(v.x());
+    const GLint y = GLint(v.y());
+    const GLsizei width = GLsizei(v.z());
+    const GLsizei height = GLsizei(v.w());
+    kvs::OpenGL::SetViewport( x, y, width, height );
+}
+
+void SetOrtho( const kvs::Vec4& v )
+{
+    kvs::OpenGL::SetOrtho( v[0], v[1], v[2], v[3] );
+}
+
+void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far )
+{
+    kvs::OpenGL::SetOrtho( v[0], v[1], v[2], v[3], near, far );
+}
+
+void SetLookAt( const kvs::Vec3& eye, const kvs::Vec3& center, const kvs::Vec3& up )
+{
+    kvs::OpenGL::SetLookAt( eye.x(), eye.y(), eye.z(), center.x(), center.y(), center.z(), up.x(), up.y(), up.z() );
+}
+
 void SetLight( GLenum light, GLenum pname, GLfloat param )
 {
     KVS_GL_CALL( glLightf( light, pname, param ) );
@@ -746,6 +785,11 @@ void SetClearDepth( GLfloat depth )
 void SetPolygonOffset( GLfloat factor, GLfloat units )
 {
     KVS_GL_CALL( glPolygonOffset( factor, units ) );
+}
+
+void SetLineWidth( GLfloat width )
+{
+    KVS_GL_CALL( glLineWidth( width ) );
 }
 
 void ReadPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data )
@@ -852,6 +896,611 @@ void Scale( GLfloat x, GLfloat y, GLfloat z )
 void Translate( GLfloat x, GLfloat y, GLfloat z )
 {
     KVS_GL_CALL( glTranslatef( x, y, z ) );
+}
+
+void MultMatrix( const kvs::Xform& x )
+{
+    float m[16]; x.toArray( m );
+    kvs::OpenGL::MultMatrix( &(m[0]) );
+}
+
+void Begin( GLenum mode )
+{
+    KVS_GL_CALL( glBegin( mode ) );
+}
+
+void End()
+{
+    KVS_GL_CALL( glEnd() );
+}
+
+void Vertex( GLshort x, GLshort y )
+{
+    KVS_GL_CALL( glVertex2s( x, y ) );
+}
+
+void Vertex( GLint x, GLint y )
+{
+    KVS_GL_CALL( glVertex2i( x, y ) );
+}
+
+void Vertex( GLfloat x, GLfloat y )
+{
+    KVS_GL_CALL( glVertex2f( x, y ) );
+}
+
+void Vertex( GLdouble x, GLdouble y )
+{
+    KVS_GL_CALL( glVertex2d( x, y ) );
+}
+
+void Vertex( GLshort x, GLshort y, GLshort z )
+{
+    KVS_GL_CALL( glVertex3s( x, y, z ) );
+}
+
+void Vertex( GLint x, GLint y, GLint z )
+{
+    KVS_GL_CALL( glVertex3i( x, y, z ) );
+}
+
+void Vertex( GLfloat x, GLfloat y, GLfloat z )
+{
+    KVS_GL_CALL( glVertex3f( x, y, z ) );
+}
+
+void Vertex( GLdouble x, GLdouble y, GLdouble z )
+{
+    KVS_GL_CALL( glVertex3d( x, y, z ) );
+}
+
+void Vertex( GLshort x, GLshort y, GLshort z, GLshort w )
+{
+    KVS_GL_CALL( glVertex4s( x, y, z, w ) );
+}
+
+void Vertex( GLint x, GLint y, GLint z, GLint w )
+{
+    KVS_GL_CALL( glVertex4i( x, y, z, w ) );
+}
+
+void Vertex( GLfloat x, GLfloat y, GLfloat z, GLfloat w )
+{
+    KVS_GL_CALL( glVertex4f( x, y, z, w ) );
+}
+
+void Vertex( GLdouble x, GLdouble y, GLdouble z, GLdouble w )
+{
+    KVS_GL_CALL( glVertex4d( x, y, z, w ) );
+}
+
+void Vertex2( const GLshort* v )
+{
+    KVS_GL_CALL( glVertex2sv( v ) );
+}
+
+void Vertex2( const GLint* v )
+{
+    KVS_GL_CALL( glVertex2iv( v ) );
+}
+
+void Vertex2( const GLfloat* v )
+{
+    KVS_GL_CALL( glVertex2fv( v ) );
+}
+
+void Vertex2( const GLdouble* v )
+{
+    KVS_GL_CALL( glVertex2dv( v ) );
+}
+
+void Vertex3( const GLshort* v )
+{
+    KVS_GL_CALL( glVertex3sv( v ) );
+}
+
+void Vertex3( const GLint* v )
+{
+    KVS_GL_CALL( glVertex3iv( v ) );
+}
+
+void Vertex3( const GLfloat* v )
+{
+    KVS_GL_CALL( glVertex3fv( v ) );
+}
+
+void Vertex3( const GLdouble* v )
+{
+    KVS_GL_CALL( glVertex3dv( v ) );
+}
+
+void Vertex4( const GLshort* v )
+{
+    KVS_GL_CALL( glVertex4sv( v ) );
+}
+
+void Vertex4( const GLint* v )
+{
+    KVS_GL_CALL( glVertex4iv( v ) );
+}
+
+void Vertex4( const GLfloat* v )
+{
+    KVS_GL_CALL( glVertex4fv( v ) );
+}
+
+void Vertex4( const GLdouble* v )
+{
+    KVS_GL_CALL( glVertex4dv( v ) );
+}
+
+void Vertex( const kvs::Vec2& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y() );
+}
+
+void Vertex( const kvs::Vec2i& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y() );
+}
+
+void Vertex( const kvs::Vec2d& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y() );
+}
+
+void Vertex( const kvs::Vec3& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y(), v.z() );
+}
+
+void Vertex( const kvs::Vec3i& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y(), v.z() );
+}
+
+void Vertex( const kvs::Vec3d& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y(), v.z() );
+}
+
+void Vertex( const kvs::Vec4& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y(), v.z() );
+}
+
+void Vertex( const kvs::Vec4i& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y(), v.z() );
+}
+
+void Vertex( const kvs::Vec4d& v )
+{
+    kvs::OpenGL::Vertex( v.x(), v.y(), v.z() );
+}
+
+void Vertices( const kvs::Vec2& v0, const kvs::Vec2& v1 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+}
+
+void Vertices( const kvs::Vec2& v0, const kvs::Vec2& v1, const kvs::Vec2& v2 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+}
+
+void Vertices( const kvs::Vec2& v0, const kvs::Vec2& v1, const kvs::Vec2& v2, const kvs::Vec2& v3 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+    kvs::OpenGL::Vertex( v3 );
+}
+
+void Vertices( const kvs::Vec3& v0, const kvs::Vec3& v1 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+}
+
+void Vertices( const kvs::Vec3& v0, const kvs::Vec3& v1, const kvs::Vec3& v2 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+}
+
+void Vertices( const kvs::Vec3& v0, const kvs::Vec3& v1, const kvs::Vec3& v2, const kvs::Vec3& v3 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+    kvs::OpenGL::Vertex( v3 );
+}
+
+void Vertices( const kvs::Vec4& v0, const kvs::Vec4& v1 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+}
+
+void Vertices( const kvs::Vec4& v0, const kvs::Vec4& v1, const kvs::Vec4& v2 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+}
+
+void Vertices( const kvs::Vec4& v0, const kvs::Vec4& v1, const kvs::Vec4& v2, const kvs::Vec4& v3 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+    kvs::OpenGL::Vertex( v3 );
+}
+
+void Color( GLbyte r, GLbyte g, GLbyte b )
+{
+    KVS_GL_CALL( glColor3b( r, g, b ) );
+}
+
+void Color( GLshort r, GLshort g, GLshort b )
+{
+    KVS_GL_CALL( glColor3s( r, g, b ) );
+}
+
+void Color( GLint r, GLint g, GLint b )
+{
+    KVS_GL_CALL( glColor3i( r, g, b ) );
+}
+
+void Color( GLfloat r, GLfloat g, GLfloat b )
+{
+    KVS_GL_CALL( glColor3f( r, g, b ) );
+}
+
+void Color( GLdouble r, GLdouble g, GLdouble b )
+{
+    KVS_GL_CALL( glColor3d( r, g, b ) );
+}
+
+void Color( GLubyte r, GLubyte g, GLubyte b )
+{
+    KVS_GL_CALL( glColor3ub( r, g, b ) );
+}
+
+void Color( GLushort r, GLushort g, GLushort b )
+{
+    KVS_GL_CALL( glColor3us( r, g, b ) );
+}
+
+void Color( GLuint r, GLuint g, GLuint b )
+{
+    KVS_GL_CALL( glColor3ui( r, g, b ) );
+}
+
+void Color( GLbyte r, GLbyte g, GLbyte b, GLbyte a )
+{
+    KVS_GL_CALL( glColor4b( r, g, b, a ) );
+}
+
+void Color( GLshort r, GLshort g, GLshort b, GLshort a )
+{
+    KVS_GL_CALL( glColor4s( r, g, b, a ) );
+}
+
+void Color( GLint r, GLint g, GLint b, GLint a )
+{
+    KVS_GL_CALL( glColor4i( r, g, b, a ) );
+}
+
+void Color( GLfloat r, GLfloat g, GLfloat b, GLfloat a )
+{
+    KVS_GL_CALL( glColor4f( r, g, b, a ) );
+}
+
+void Color( GLdouble r, GLdouble g, GLdouble b, GLdouble a )
+{
+    KVS_GL_CALL( glColor4d( r, g, b, a ) );
+}
+
+void Color( GLubyte r, GLubyte g, GLubyte b, GLubyte a )
+{
+    KVS_GL_CALL( glColor4ub( r, g, b, a ) );
+}
+
+void Color( GLushort r, GLushort g, GLushort b, GLushort a )
+{
+    KVS_GL_CALL( glColor4us( r, g, b, a ) );
+}
+
+void Color( GLuint r, GLuint g, GLuint b, GLuint a )
+{
+    KVS_GL_CALL( glColor4ui( r, g, b, a ) );
+}
+
+void Color3( const GLbyte* c )
+{
+    KVS_GL_CALL( glColor3bv( c ) );
+}
+
+void Color3( const GLshort* c )
+{
+    KVS_GL_CALL( glColor3sv( c ) );
+}
+
+void Color3( const GLint* c )
+{
+    KVS_GL_CALL( glColor3iv( c ) );
+}
+
+void Color3( const GLfloat* c )
+{
+    KVS_GL_CALL( glColor3fv( c ) );
+}
+
+void Color3( const GLdouble* c )
+{
+    KVS_GL_CALL( glColor3dv( c ) );
+}
+
+void Color3( const GLubyte* c )
+{
+    KVS_GL_CALL( glColor3ubv( c ) );
+}
+
+void Color3( const GLushort* c )
+{
+    KVS_GL_CALL( glColor3usv( c ) );
+}
+
+void Color3( const GLuint* c )
+{
+    KVS_GL_CALL( glColor3uiv( c ) );
+}
+
+void Color4( const GLbyte* c )
+{
+    KVS_GL_CALL( glColor4bv( c ) );
+}
+
+void Color4( const GLshort* c )
+{
+    KVS_GL_CALL( glColor4sv( c ) );
+}
+
+void Color4( const GLint* c )
+{
+    KVS_GL_CALL( glColor4iv( c ) );
+}
+
+void Color4( const GLfloat* c )
+{
+    KVS_GL_CALL( glColor4fv( c ) );
+}
+
+void Color4( const GLdouble* c )
+{
+    KVS_GL_CALL( glColor4dv( c ) );
+}
+
+void Color4( const GLubyte* c )
+{
+    KVS_GL_CALL( glColor4ubv( c ) );
+}
+
+void Color4( const GLushort* c )
+{
+    KVS_GL_CALL( glColor4usv( c ) );
+}
+
+void Color4( const GLuint* c )
+{
+    KVS_GL_CALL( glColor4uiv( c ) );
+}
+
+void Color( const kvs::Vec3& c )
+{
+    kvs::OpenGL::Color( c.x(), c.y(), c.z() );
+}
+
+void Color( const kvs::Vec4& c )
+{
+    kvs::OpenGL::Color( c.x(), c.y(), c.z(), c.w() );
+}
+
+void Color( const kvs::RGBColor& c )
+{
+    kvs::OpenGL::Color( c.toVec3() );
+}
+
+void Color( const kvs::RGBAColor& c )
+{
+    kvs::OpenGL::Color( c.toVec4() );
+}
+
+void TexCoord( GLshort s )
+{
+    KVS_GL_CALL( glTexCoord1s( s ) );
+}
+
+void TexCoord( GLint s )
+{
+    KVS_GL_CALL( glTexCoord1i( s ) );
+}
+
+void TexCoord( GLfloat s )
+{
+    KVS_GL_CALL( glTexCoord1f( s ) );
+}
+
+void TexCoord( GLdouble s )
+{
+    KVS_GL_CALL( glTexCoord1d( s ) );
+}
+
+void TexCoord( GLshort s, GLshort t )
+{
+    KVS_GL_CALL( glTexCoord2s( s, t ) );
+}
+
+void TexCoord( GLint s, GLint t )
+{
+    KVS_GL_CALL( glTexCoord2i( s, t ) );
+}
+
+void TexCoord( GLfloat s, GLfloat t )
+{
+    KVS_GL_CALL( glTexCoord2f( s, t ) );
+}
+
+void TexCoord( GLdouble s, GLdouble t )
+{
+    KVS_GL_CALL( glTexCoord2d( s, t ) );
+}
+
+void TexCoord( GLshort s, GLshort t, GLshort r )
+{
+    KVS_GL_CALL( glTexCoord3s( s, t, r ) );
+}
+
+void TexCoord( GLint s, GLint t, GLint r )
+{
+    KVS_GL_CALL( glTexCoord3i( s, t, r ) );
+}
+
+void TexCoord( GLfloat s, GLfloat t, GLfloat r )
+{
+    KVS_GL_CALL( glTexCoord3f( s, t, r ) );
+}
+
+void TexCoord( GLdouble s, GLdouble t, GLdouble r )
+{
+    KVS_GL_CALL( glTexCoord3d( s, t, r ) );
+}
+
+void TexCoord( GLshort s, GLshort t, GLshort r, GLshort q )
+{
+    KVS_GL_CALL( glTexCoord4s( s, t, r, q ) );
+}
+
+void TexCoord( GLint s, GLint t, GLint r, GLint q )
+{
+    KVS_GL_CALL( glTexCoord4i( s, t, r, q ) );
+}
+
+void TexCoord( GLfloat s, GLfloat t, GLfloat r, GLfloat q )
+{
+    KVS_GL_CALL( glTexCoord4f( s, t, r, q ) );
+}
+
+void TexCoord( GLdouble s, GLdouble t, GLdouble r, GLfloat q )
+{
+    KVS_GL_CALL( glTexCoord4d( s, t, r, q ) );
+}
+
+void TexCoord1( const GLshort* v )
+{
+    KVS_GL_CALL( glTexCoord1sv( v ) );
+}
+
+void TexCoord1( const GLint* v )
+{
+    KVS_GL_CALL( glTexCoord1iv( v ) );
+}
+
+void TexCoord1( const GLfloat* v )
+{
+    KVS_GL_CALL( glTexCoord1fv( v ) );
+}
+
+void TexCoord1( const GLdouble* v )
+{
+    KVS_GL_CALL( glTexCoord1dv( v ) );
+}
+
+void TexCoord2( const GLshort* v )
+{
+    KVS_GL_CALL( glTexCoord2sv( v ) );
+}
+
+void TexCoord2( const GLint* v )
+{
+    KVS_GL_CALL( glTexCoord2iv( v ) );
+}
+
+void TexCoord2( const GLfloat* v )
+{
+    KVS_GL_CALL( glTexCoord2fv( v ) );
+}
+
+void TexCoord2( const GLdouble* v )
+{
+    KVS_GL_CALL( glTexCoord2dv( v ) );
+}
+
+void TexCoord3( const GLshort* v )
+{
+    KVS_GL_CALL( glTexCoord3sv( v ) );
+}
+
+void TexCoord3( const GLint* v )
+{
+    KVS_GL_CALL( glTexCoord3iv( v ) );
+}
+
+void TexCoord3( const GLfloat* v )
+{
+    KVS_GL_CALL( glTexCoord3fv( v ) );
+}
+
+void TexCoord3( const GLdouble* v )
+{
+    KVS_GL_CALL( glTexCoord3dv( v ) );
+}
+
+void TexCoord4( const GLshort* v )
+{
+    KVS_GL_CALL( glTexCoord4sv( v ) );
+}
+
+void TexCoord4( const GLint* v )
+{
+    KVS_GL_CALL( glTexCoord4iv( v ) );
+}
+
+void TexCoord4( const GLfloat* v )
+{
+    KVS_GL_CALL( glTexCoord4fv( v ) );
+}
+
+void TexCoord4( const GLdouble* v )
+{
+    KVS_GL_CALL( glTexCoord4dv( v ) );
+}
+
+void TexCoord( const kvs::Vec2& v )
+{
+    kvs::OpenGL::TexCoord( v[0], v[1] );
+}
+
+void TexCoord( const kvs::Vec3& v )
+{
+    kvs::OpenGL::TexCoord( v[0], v[1], v[2] );
+}
+
+void TexCoord( const kvs::Vec4& v )
+{
+    kvs::OpenGL::TexCoord( v[0], v[1], v[2], v[3] );
+}
+
+void TexCoordVertex( const kvs::Vec2& tex, const kvs::Vec2& ver )
+{
+    kvs::OpenGL::TexCoord( tex );
+    kvs::OpenGL::Vertex( ver );
 }
 
 void PushMatrix()
@@ -1045,6 +1694,16 @@ WithPushedAttrib::WithPushedAttrib( GLbitfield mask )
 WithPushedAttrib::~WithPushedAttrib()
 {
     kvs::OpenGL::PopAttrib();
+}
+
+void WithPushedAttrib::enable( GLenum cap )
+{
+    kvs::OpenGL::Enable( cap );
+}
+
+void WithPushedAttrib::disable( GLenum cap )
+{
+    kvs::OpenGL::Disable( cap );
 }
 
 WithPushedClientAttrib::WithPushedClientAttrib( GLbitfield mask )
