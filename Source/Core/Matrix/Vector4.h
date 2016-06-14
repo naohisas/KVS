@@ -157,14 +157,16 @@ public:
  */
 /*==========================================================================*/
 typedef Vector4<int>           Vector4i;
-typedef Vector4<unsigned int>  Vector4ui;
+typedef Vector4<unsigned int>  Vector4u;
 typedef Vector4<float>         Vector4f;
 typedef Vector4<double>        Vector4d;
 typedef Vector4<float>         Vec4;
 typedef Vector4<int>           Vec4i;
-typedef Vector4<unsigned int>  Vec4ui;
+typedef Vector4<unsigned int>  Vec4u;
 typedef Vector4<double>        Vec4d;
 
+typedef Vector4<unsigned int>  Vector4ui;
+typedef Vector4<unsigned int>  Vec4ui;
 
 /*===========================================================================*/
 /**
