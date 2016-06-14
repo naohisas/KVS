@@ -15,6 +15,7 @@
 #include "../GLUT.h"
 #include <cstdio>
 #include <cstdarg>
+#include <kvs/OpenGL>
 
 
 namespace
@@ -22,6 +23,25 @@ namespace
 
 const size_t CharacterHeight = 12;
 const size_t MaxLineLength   = 255;
+
+inline void DrawString( const std::string& str, const kvs::Vec2& pos )
+{
+    kvs::OpenGL::SetRasterPos( pos );
+    char* y_char = const_cast<char*>( str.c_str() );
+    for ( char* p = y_char; *p; p++ )
+    {
+        glutBitmapCharacter( GLUT_BITMAP_8_BY_13, *p );
+    }
+}
+
+inline void DrawStrings( const std::vector<std::string>& strs, const kvs::Vec2& pos )
+{
+    for ( size_t line = 0; line < strs.size(); line++ )
+    {
+        const kvs::Vec2 offset( 0.0f, ::CharacterHeight * line );
+        DrawString( strs[line],  pos - offset );
+    }
+}
 
 } // end of namespace
 
@@ -36,7 +56,7 @@ namespace glut
  *  Constructor.
  */
 /*==========================================================================*/
-Text::Text( void ):
+Text::Text():
     m_x( 0 ),
     m_y( 0 ),
     m_color( kvs::RGBColor( 0, 0, 0 ) )
@@ -135,53 +155,28 @@ void Text::addText( const std::string& text )
  *  @param y [in] drawing position (y coordinate value)
  */
 /*==========================================================================*/
-void Text::draw( void )
+void Text::draw()
 {
-    glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_LIGHTING );
+    attrib.disable( GL_TEXTURE_2D );
 
-    glDisable( GL_LIGHTING );
-    glDisable( GL_TEXTURE_2D );
+    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
 
-    // Get viewport information.
-    GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
-    const GLint left   = vp[0];
-    const GLint bottom = vp[1];
-    const GLint right  = vp[2];
-    const GLint top    = vp[3];
-
-    glMatrixMode( GL_PROJECTION );
-    glPushMatrix();
+    kvs::OpenGL::WithPushedMatrix p0( GL_PROJECTION );
+    p0.loadIdentity();
     {
-        glLoadIdentity();
-
         const float front = 0.0f;
         const float back = 2000.0f;
-        glOrtho( left, right, bottom, top, front, back );
+        kvs::OpenGL::SetOrtho( vp, front, back );
 
-        glMatrixMode( GL_MODELVIEW );
-        glPushMatrix();
+        kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
+        p1.loadIdentity();
         {
-            glLoadIdentity();
-            glColor3ub( m_color.r(), m_color.g(), m_color.b() );
-
-            for ( size_t line = 0; line < m_text.size(); line++ )
-            {
-                glRasterPos2i( m_x, m_y -::CharacterHeight * line );
-
-                char* line_head = const_cast<char*>( m_text[line].c_str() );
-                for( char* p = line_head; *p; p++ )
-                {
-                    glutBitmapCharacter( GLUT_BITMAP_8_BY_13, *p );
-                }
-            }
+            kvs::OpenGL::Color( m_color );
+            ::DrawStrings( m_text, kvs::Vec2( m_x, m_y ) );
         }
-        glPopMatrix();
-        glMatrixMode( GL_PROJECTION );
     }
-    glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
-
-    glPopAttrib();
 }
 
 } // end of namespace glut

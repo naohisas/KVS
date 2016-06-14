@@ -19,6 +19,7 @@
 #include <kvs/IgnoreUnusedVariable>
 #include <kvs/ScreenBase>
 #include <kvs/glut/GLUT>
+#include <kvs/OpenGL>
 
 
 // Default parameters.
@@ -52,6 +53,19 @@ void DrawRectangle(
     const kvs::RGBColor& upper_edge_color,
     const kvs::RGBColor& lower_edge_color )
 {
+    kvs::OpenGL::SetLineWidth( width );
+    kvs::OpenGL::Begin( GL_LINES );
+    {
+        kvs::OpenGL::Color( upper_edge_color );
+        kvs::OpenGL::Vertices( kvs::Vec2( rect.x0(), rect.y0() ), kvs::Vec2( rect.x1(), rect.y0() ) ); // top
+        kvs::OpenGL::Vertices( kvs::Vec2( rect.x0(), rect.y0() ), kvs::Vec2( rect.x0(), rect.y1() ) ); // left
+
+        kvs::OpenGL::Color( lower_edge_color );
+        kvs::OpenGL::Vertices( kvs::Vec2( rect.x1(), rect.y1() ), kvs::Vec2( rect.x0(), rect.y1() ) ); // bottom
+        kvs::OpenGL::Vertices( kvs::Vec2( rect.x1(), rect.y0() ), kvs::Vec2( rect.x1(), rect.y1() ) ); // right
+    }
+    kvs::OpenGL::End();
+/*
     glLineWidth( width );
     glBegin( GL_LINES );
     {
@@ -64,6 +78,7 @@ void DrawRectangle(
         glVertex2f( rect.x1(), rect.y0() ); glVertex2f( rect.x1(), rect.y1() ); // right
     }
     glEnd();
+*/
 }
 
 /*
@@ -263,44 +278,36 @@ int Histogram::get_fitted_height()
 /*==========================================================================*/
 void Histogram::draw_palette()
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_TEXTURE_1D );
+    attrib.enable( GL_TEXTURE_2D );
+    attrib.disable( GL_TEXTURE_3D );
 
     const int x0 = m_palette.x0();
     const int x1 = m_palette.x1();
     const int y0 = m_palette.y0();
     const int y1 = m_palette.y1();
+    kvs::OpenGL::Begin( GL_QUADS );
+    kvs::OpenGL::Color( kvs::RGBColor( 240, 240, 240 ) );
+    kvs::OpenGL::Vertex( x0, y0 );
+    kvs::OpenGL::Vertex( x1, y0 );
+    kvs::OpenGL::Vertex( x1, y1 );
+    kvs::OpenGL::Vertex( x0, y1 );
+    kvs::OpenGL::End();
 
-    glColor3ub( 240, 240, 240 );
-    glBegin( GL_QUADS );
-    glVertex2i( x0, y0 );
-    glVertex2i( x1, y0 );
-    glVertex2i( x1, y1 );
-    glVertex2i( x0, y1 );
-    glEnd();
-
-    // Draw checkerboard texture.
-    glDisable( GL_TEXTURE_1D );
-    glEnable( GL_TEXTURE_2D );
-#if defined( GL_TEXTURE_3D )
-    glDisable( GL_TEXTURE_3D );
-#endif
-
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     if ( m_texture.isValid() )
     {
-        m_texture.bind();
-        glBegin( GL_QUADS );
-        glTexCoord2f( 0.0f, 0.0f ); glVertex2i( x0, y1 );
-        glTexCoord2f( 1.0f, 0.0f ); glVertex2i( x1, y1 );
-        glTexCoord2f( 1.0f, 1.0f ); glVertex2i( x1, y0 );
-        glTexCoord2f( 0.0f, 1.0f ); glVertex2i( x0, y0 );
-        glEnd();
-        m_texture.unbind();
+        kvs::Texture::Binder binder( m_texture );
+        kvs::OpenGL::Begin( GL_QUADS );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y1 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y1 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y0 ) );
+        kvs::OpenGL::End();
     }
-
-    glDisable( GL_BLEND );
+    kvs::OpenGL::Disable( GL_BLEND );
 
 /*
     if ( m_density_curve.size() > 0 )
@@ -319,8 +326,6 @@ void Histogram::draw_palette()
         glEnd();
     }
 */
-
-    glPopAttrib();
 
     // Draw border.
     ::DrawRectangle( m_palette, 1, m_upper_edge_color, m_lower_edge_color );

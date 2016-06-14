@@ -348,7 +348,6 @@ void LegendBar::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
-
     this->screenResized();
 }
 
@@ -447,43 +446,37 @@ void LegendBar::release_texture()
 /*===========================================================================*/
 void LegendBar::draw_color_bar( const int x, const int y, const int width, const int height )
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_BLEND );
+    attrib.disable( GL_DEPTH_TEST );
+    attrib.disable( GL_TEXTURE_3D );
+    attrib.enable( GL_TEXTURE_2D );
 
-    glDisable( GL_BLEND );
-    glDisable( GL_DEPTH_TEST );
-    glDisable( GL_TEXTURE_3D );
-    glEnable( GL_TEXTURE_2D );
-
-    m_texture.bind();
-
+    kvs::Texture::Binder binder( m_texture );
     switch ( m_orientation )
     {
     case LegendBar::Horizontal:
     {
-        glBegin( GL_QUADS );
-        glTexCoord2f( 0.0f, 1.0f ); glVertex2f( x,         y );
-        glTexCoord2f( 1.0f, 1.0f ); glVertex2f( x + width, y );
-        glTexCoord2f( 1.0f, 0.0f ); glVertex2f( x + width, y + height );
-        glTexCoord2f( 0.0f, 0.0f ); glVertex2f( x,         y + height );
-        glEnd();
+        kvs::OpenGL::Begin( GL_QUADS );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x,         y ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x + width, y ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x + width, y + height ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x,         y + height ) );
+        kvs::OpenGL::End();
         break;
     }
     case LegendBar::Vertical:
     {
-        glBegin( GL_QUADS );
-        glTexCoord2f( 0.0f, 0.0f ); glVertex2f( x,         y );
-        glTexCoord2f( 0.0f, 1.0f ); glVertex2f( x + width, y );
-        glTexCoord2f( 1.0f, 1.0f ); glVertex2f( x + width, y + height );
-        glTexCoord2f( 1.0f, 0.0f ); glVertex2f( x,         y + height );
-        glEnd();
+        kvs::OpenGL::Begin( GL_QUADS );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x,         y ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x + width, y ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x + width, y + height ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x,         y + height ) );
+        kvs::OpenGL::End();
         break;
     }
     default: break;
     }
-
-    m_texture.unbind();
-
-    glPopAttrib();
 }
 
 /*===========================================================================*/
@@ -497,42 +490,39 @@ void LegendBar::draw_color_bar( const int x, const int y, const int width, const
 /*===========================================================================*/
 void LegendBar::draw_border( const int x, const int y, const int width, const int height )
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
 
     if ( m_enable_anti_aliasing && m_border_width != 1.0f )
     {
-        glEnable( GL_LINE_SMOOTH );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+        kvs::OpenGL::Enable( GL_BLEND );
+        kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     }
 
-    glLineWidth( m_border_width );
-    glBegin( GL_LINE_LOOP );
-    glColor3ub( m_border_color.r(), m_border_color.g(), m_border_color.b() );
-    glVertex2f( x,         y );
-    glVertex2f( x + width, y );
-    glVertex2f( x + width, y + height );
-    glVertex2f( x,         y + height );
-    glEnd();
+    kvs::OpenGL::SetLineWidth( m_border_width );
+    kvs::OpenGL::Begin( GL_LINE_LOOP );
+    kvs::OpenGL::Color( m_border_color );
+    kvs::OpenGL::Vertices( kvs::Vec2( x, y ), kvs::Vec2( x + width, y ), kvs::Vec2( x + width, y + height ), kvs::Vec2( x, y + height ) );
+    kvs::OpenGL::End();
 
     if ( m_enable_anti_aliasing && m_border_width != 1.0f )
     {
-        glDisable( GL_LINE_SMOOTH );
-        glDisable( GL_BLEND );
+        kvs::OpenGL::Disable( GL_LINE_SMOOTH );
+        kvs::OpenGL::Disable( GL_BLEND );
     }
 
     if ( m_ndivisions == 0 ) return;
 
     if ( m_enable_anti_aliasing && m_division_line_width != 1.0f )
     {
-        glEnable( GL_LINE_SMOOTH );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+        kvs::OpenGL::Enable( GL_BLEND );
+        kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     }
 
-    glLineWidth( m_division_line_width );
-    glBegin( GL_LINES );
-    glColor3ub( m_division_line_color.r(), m_division_line_color.g(), m_division_line_color.b() );
+    kvs::OpenGL::SetLineWidth( m_division_line_width );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Color( m_division_line_color );
     switch ( m_orientation )
     {
     case LegendBar::Horizontal:
@@ -541,8 +531,7 @@ void LegendBar::draw_border( const int x, const int y, const int width, const in
         const float h = height;
         for( size_t i = 1; i < m_ndivisions; i++ )
         {
-            glVertex2f( x + w * i, y );
-            glVertex2f( x + w * i, y + h );
+            kvs::OpenGL::Vertices( kvs::Vec2( x + w * i, y ), kvs::Vec2( x + w * i, y + h ) );
         }
         break;
     }
@@ -552,16 +541,13 @@ void LegendBar::draw_border( const int x, const int y, const int width, const in
         const float h = height / m_ndivisions;
         for( size_t i = 1; i < m_ndivisions; i++ )
         {
-            glVertex2f( x,     y + h * i );
-            glVertex2f( x + w, y + h * i );
+            kvs::OpenGL::Vertices( kvs::Vec2( x, y + h * i ), kvs::Vec2( x + w, y + h * i ) );
         }
         break;
     }
     default: break;
     }
-    glEnd();
-
-    glPopAttrib();
+    kvs::OpenGL::End();
 }
 
 } // end of namespace glut
