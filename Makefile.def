@@ -25,9 +25,9 @@ endif
 #=============================================================================
 #  Command macro.
 #=============================================================================
-CCACHE := $(shell type -p ccache)
 SHELL  := /bin/bash
 MAKE   := make
+CCACHE := $(shell $(SHELL) -c "type -p ccache")
 CPP    := $(CCACHE) g++
 LD     := $(CPP)
 AR     := ar -ru
