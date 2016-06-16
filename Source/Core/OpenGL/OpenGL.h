@@ -119,7 +119,7 @@ void SetLight( GLenum light, GLenum pname, GLfloat param );
 void SetLight( GLenum light, GLenum pname, GLfloat* params );
 
 void SetClearDepth( GLdouble depth );
-void SetClearDepth( GLfloat depth );
+//void SetClearDepth( GLfloat depth );
 void SetPolygonOffset( GLfloat factor, GLfloat units );
 void SetLineWidth( GLfloat width );
 

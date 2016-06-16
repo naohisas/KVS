@@ -777,10 +777,10 @@ void SetClearDepth( GLdouble depth )
     KVS_GL_CALL( glClearDepth( depth ) );
 }
 
-void SetClearDepth( GLfloat depth )
-{
-    KVS_GL_CALL( glClearDepthf( depth ) );
-}
+//void SetClearDepth( GLfloat depth )
+//{
+//    KVS_GL_CALL( glClearDepthf( depth ) );
+//}
 
 void SetPolygonOffset( GLfloat factor, GLfloat units )
 {
