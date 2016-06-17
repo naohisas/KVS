@@ -109,6 +109,15 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
       GL_LINK_LIBRARY += -lGL -lm
     else
       ifeq "$(shell uname -s)" "Linux"
+
+        ifeq "$(KVS_ENABLE_OSMESA)" "1"
+          ifdef KVS_OSMESA_DIR
+            GL_INCLUDE_PATH += $(KVS_OSMESA_DIR)/include
+            GL_LIBRARY_PATH += $(KVS_OSMESA_DIR)/lib
+            GL_LINK_LIBRARY += -lOSMesa
+          endif
+        endif
+
         ifeq "$(KVS_ENABLE_GLU)" "1"
           GL_LINK_LIBRARY += -lGLU
         endif
