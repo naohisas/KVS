@@ -42,8 +42,8 @@ public:
 
     void updateInterpolationFunctions( const kvs::Vec3& local ) const;
     void updateDifferentialFunctions( const kvs::Vec3& local ) const;
-    const kvs::Vec3 randomSampling() const;
-    const kvs::Real32 volume() const;
+    kvs::Vec3 randomSampling() const;
+    kvs::Real32 volume() const;
 };
 
 } // end of namespace kvs

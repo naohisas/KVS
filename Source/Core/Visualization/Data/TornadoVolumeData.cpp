@@ -58,7 +58,7 @@ TornadoVolumeData::TornadoVolumeData()
  *  @return time value
  */
 /*===========================================================================*/
-const int TornadoVolumeData::time() const
+int TornadoVolumeData::time() const
 {
     return( m_time );
 }

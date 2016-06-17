@@ -57,34 +57,34 @@ public:
     virtual void bindCell( const kvs::UInt32 index );
     virtual void setLocalPoint( const kvs::Vec3& local ) const;
     virtual bool containsLocalPoint( const kvs::Vec3& local ) const;
-    virtual const kvs::Vec3 globalPoint() const;
-    virtual const kvs::Vec3 globalToLocal( const kvs::Vec3& global ) const;
-    virtual const kvs::Vec3 localToGlobal( const kvs::Vec3& local ) const;
-    virtual const kvs::Vec3 randomSampling() const;
-    virtual const kvs::Real32 volume() const;
-    virtual const kvs::Vec3 localCenter() const;
+    virtual kvs::Vec3 globalPoint() const;
+    virtual kvs::Vec3 globalToLocal( const kvs::Vec3& global ) const;
+    virtual kvs::Vec3 localToGlobal( const kvs::Vec3& local ) const;
+    virtual kvs::Vec3 randomSampling() const;
+    virtual kvs::Real32 volume() const;
+    virtual kvs::Vec3 localCenter() const;
 
     size_t veclen() const { return m_veclen; }
     size_t numberOfCellNodes() const { return m_nnodes; }
-    kvs::Real32* const interpolationFunctions() const { return m_interpolation_functions; }
-    kvs::Real32* const differentialFunctions() const { return m_differential_functions; }
+    kvs::Real32* interpolationFunctions() const { return m_interpolation_functions; }
+    kvs::Real32* differentialFunctions() const { return m_differential_functions; }
     const kvs::Vec3* coords() const { return m_coords; }
     const kvs::Real32* values() const { return m_values; }
     const kvs::Vec3& coord( const size_t index ) const { return m_coords[ index ]; }
-    const kvs::Real32 value( const size_t index ) const { return m_values[ index ]; }
-    const kvs::Vec3 localPoint() const { return m_local_point; }
+    kvs::Real32 value( const size_t index ) const { return m_values[ index ]; }
+    kvs::Vec3 localPoint() const { return m_local_point; }
     const kvs::UnstructuredVolumeObject* referenceVolume() const { return m_reference_volume; }
-    const kvs::Mat3 JacobiMatrix() const;
-    const kvs::Vec3 center() const;
-    const kvs::Real32 scalar() const;
-    const kvs::Vec3 vector() const;
-    const kvs::Vec3 gradientVector() const;
-    const kvs::Mat3 gradientTensor() const;
+    kvs::Mat3 JacobiMatrix() const;
+    kvs::Vec3 center() const;
+    kvs::Real32 scalar() const;
+    kvs::Vec3 vector() const;
+    kvs::Vec3 gradientVector() const;
+    kvs::Mat3 gradientTensor() const;
     bool contains( const kvs::Vec3& global ) const;
 
 protected:
 
-    const kvs::Real32 randomNumber() const;
+    kvs::Real32 randomNumber() const;
     bool containsInBounds( const kvs::Vec3& global ) const;
     kvs::Real32 interpolateValue( const kvs::Real32* values, const kvs::Real32* weights, const size_t nnodes ) const;
     kvs::Vec3 interpolateCoord( const kvs::Vec3* coords, const kvs::Real32* weights, const size_t nnodes ) const;

@@ -109,7 +109,7 @@ bool TetrahedralCell::containsLocalPoint( const kvs::Vec3& local ) const
  *  @return coordinate value of the sampled point
  */
 /*===========================================================================*/
-const kvs::Vec3 TetrahedralCell::randomSampling() const
+kvs::Vec3 TetrahedralCell::randomSampling() const
 {
     // Generate a point in the local coordinate.
     const float p = BaseClass::randomNumber();
@@ -161,7 +161,7 @@ const kvs::Vec3 TetrahedralCell::randomSampling() const
  *  @return volume of the cell
  */
 /*===========================================================================*/
-const kvs::Real32 TetrahedralCell::volume() const
+kvs::Real32 TetrahedralCell::volume() const
 {
     const kvs::Vec3 v01( BaseClass::coord(1) - BaseClass::coord(0) );
     const kvs::Vec3 v02( BaseClass::coord(2) - BaseClass::coord(0) );
@@ -176,7 +176,7 @@ const kvs::Real32 TetrahedralCell::volume() const
  *  @return center of the cell in the local coordinate
  */
 /*===========================================================================*/
-const kvs::Vec3 TetrahedralCell::localCenter() const
+kvs::Vec3 TetrahedralCell::localCenter() const
 {
     return kvs::Vec3( 0.25f, 0.25f, 0.25f );
 }
@@ -187,7 +187,7 @@ const kvs::Vec3 TetrahedralCell::localCenter() const
  *  @return global point
  */
 /*===========================================================================*/
-const kvs::Vec3 TetrahedralCell::globalPoint() const
+kvs::Vec3 TetrahedralCell::globalPoint() const
 {
     const kvs::Vec3 v3( BaseClass::coord(3) );
     const kvs::Vec3 v03( BaseClass::coord(0) - v3 );
@@ -208,7 +208,7 @@ const kvs::Vec3 TetrahedralCell::globalPoint() const
  *  @param  global [in] point in the global coordinate
  */
 /*===========================================================================*/
-const kvs::Vec3 TetrahedralCell::globalToLocal( const kvs::Vec3& global ) const
+kvs::Vec3 TetrahedralCell::globalToLocal( const kvs::Vec3& global ) const
 {
     const kvs::Vec3 v3( BaseClass::coord(3) );
     const kvs::Vec3 v03( BaseClass::coord(0) - v3 );
@@ -229,7 +229,7 @@ const kvs::Vec3 TetrahedralCell::globalToLocal( const kvs::Vec3& global ) const
  *  @param  local [in] point in the local coordinate
  */
 /*===========================================================================*/
-const kvs::Vec3 TetrahedralCell::localToGlobal( const kvs::Vec3& local ) const
+kvs::Vec3 TetrahedralCell::localToGlobal( const kvs::Vec3& local ) const
 {
     this->setLocalPoint( local );
     return this->globalPoint();

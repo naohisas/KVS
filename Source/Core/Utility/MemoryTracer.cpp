@@ -352,7 +352,7 @@ void MemoryTracer::unlock( void )
  *  @return leaked memory size
  */
 /*===========================================================================*/
-const size_t MemoryTracer::leaked_memory_size( void ) const
+size_t MemoryTracer::leaked_memory_size( void ) const
 {
     int bytes = 0;
     Map::const_iterator mem = m_map.begin();
@@ -503,7 +503,7 @@ MemoryTracer::Node::Node( size_t size, char const* name, int line, MemoryTracer:
  *  @return memory size
  */
 /*===========================================================================*/
-const size_t MemoryTracer::Node::size( void ) const
+size_t MemoryTracer::Node::size( void ) const
 {
     return( m_size );
 }
@@ -525,7 +525,7 @@ const char* MemoryTracer::Node::name( void ) const
  *  @return line number
  */
 /*===========================================================================*/
-const int MemoryTracer::Node::line( void ) const
+int MemoryTracer::Node::line( void ) const
 {
     return( m_line );
 }
@@ -536,7 +536,7 @@ const int MemoryTracer::Node::line( void ) const
  *  @return allocation type
  */
 /*===========================================================================*/
-const MemoryTracer::AllocationType MemoryTracer::Node::type( void ) const
+MemoryTracer::AllocationType MemoryTracer::Node::type( void ) const
 {
     return( m_type );
 }

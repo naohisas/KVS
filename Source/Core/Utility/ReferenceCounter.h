@@ -47,7 +47,7 @@ public:
 
     void setValue( size_t value );
 
-    const size_t value( void ) const;
+    size_t value( void ) const;
 
 #if defined ( KVS_ENABLE_THREAD_SAFE )
     kvs::Mutex& key( void ) const;

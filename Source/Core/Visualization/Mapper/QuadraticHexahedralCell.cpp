@@ -164,7 +164,7 @@ void QuadraticHexahedralCell::updateDifferentialFunctions( const kvs::Vec3& loca
  *  @return volume of the cell
  */
 /*===========================================================================*/
-const kvs::Real32 QuadraticHexahedralCell::volume() const
+kvs::Real32 QuadraticHexahedralCell::volume() const
 {
     const size_t resolution = 3;
     const float sampling_length = 1.0f / (float)resolution;

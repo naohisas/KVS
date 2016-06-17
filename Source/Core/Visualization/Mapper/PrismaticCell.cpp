@@ -121,7 +121,7 @@ bool PrismaticCell::containsLocalPoint( const kvs::Vec3& local ) const
  *  @return coordinate value of the sampled point
  */
 /*===========================================================================*/
-const kvs::Vec3 PrismaticCell::randomSampling() const
+kvs::Vec3 PrismaticCell::randomSampling() const
 {
     // Generate a point in the local coordinate.
     const float p = BaseClass::randomNumber();
@@ -151,7 +151,7 @@ const kvs::Vec3 PrismaticCell::randomSampling() const
  *  @return volume of the cell
  */
 /*===========================================================================*/
-const kvs::Real32 PrismaticCell::volume() const
+kvs::Real32 PrismaticCell::volume() const
 {
     const size_t N = 9;
     kvs::Vec3 P[ N ] = {
@@ -184,7 +184,7 @@ const kvs::Real32 PrismaticCell::volume() const
  *  @return center of the cell in the local coordinate
  */
 /*===========================================================================*/
-const kvs::Vec3 PrismaticCell::localCenter() const
+kvs::Vec3 PrismaticCell::localCenter() const
 {
     return kvs::Vec3( 1.0f / 3.0f, 1.0f / 3.0f, 0.5f );
 }

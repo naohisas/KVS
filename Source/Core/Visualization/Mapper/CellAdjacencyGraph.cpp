@@ -51,10 +51,10 @@ public:
         const kvs::UInt32 cell_id,
         const kvs::UInt32 face_id );
 
-    const kvs::UInt32 nodeID( const size_t index ) const;
-    const kvs::UInt32 cellID() const;
-    const kvs::UInt32 faceID() const;
-    friend const bool operator == ( const Face& f0, const Face& f1 );
+    kvs::UInt32 nodeID( const size_t index ) const;
+    kvs::UInt32 cellID() const;
+    kvs::UInt32 faceID() const;
+    friend bool operator == ( const Face& f0, const Face& f1 );
 };
 
 /*===========================================================================*/
@@ -117,7 +117,7 @@ inline Face::Face(
  *  @return node ID
  */
 /*===========================================================================*/
-inline const kvs::UInt32 Face::nodeID( const size_t index ) const
+inline kvs::UInt32 Face::nodeID( const size_t index ) const
 {
     KVS_ASSERT( index < 3 );
 
@@ -130,7 +130,7 @@ inline const kvs::UInt32 Face::nodeID( const size_t index ) const
  *  @return cell ID
  */
 /*===========================================================================*/
-inline const kvs::UInt32 Face::cellID() const
+inline kvs::UInt32 Face::cellID() const
 {
     return m_id[3];
 }
@@ -141,7 +141,7 @@ inline const kvs::UInt32 Face::cellID() const
  *  @return face ID
  */
 /*===========================================================================*/
-inline const kvs::UInt32 Face::faceID() const
+inline kvs::UInt32 Face::faceID() const
 {
     return m_id[4];
 }
@@ -154,7 +154,7 @@ inline const kvs::UInt32 Face::faceID() const
  *  @return true, if the face #0 is equal to the face #1
  */
 /*===========================================================================*/
-inline const bool operator == ( const Face& f0, const Face& f1 )
+inline bool operator == ( const Face& f0, const Face& f1 )
 {
     for ( size_t i = 0; i < 3; i++ )
     {

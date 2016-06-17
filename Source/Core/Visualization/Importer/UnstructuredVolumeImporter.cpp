@@ -29,7 +29,7 @@ namespace
  *  @return cell type
  */
 /*==========================================================================*/
-const kvs::UnstructuredVolumeObject::CellType ElementTypeToCellType(
+kvs::UnstructuredVolumeObject::CellType ElementTypeToCellType(
     const kvs::AVSUcd::ElementType element_type )
 {
     if ( element_type == kvs::AVSUcd::Tetrahedra  )

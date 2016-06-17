@@ -63,13 +63,13 @@ public:
         this->calculate_A_matrix( cell );
     }
 
-    const kvs::Vec4 v( const size_t index ) const { return kvs::Vec4( m_v[index], 1.0f ); }
-    const kvs::Vec4 Lv( const size_t index ) const { return m_Lv[index]; }
+    kvs::Vec4 v( const size_t index ) const { return kvs::Vec4( m_v[index], 1.0f ); }
+    kvs::Vec4 Lv( const size_t index ) const { return m_Lv[index]; }
     const kvs::Mat4& L() const { return m_L; }
     const kvs::Mat4& A() const { return m_A; }
 
-    const kvs::Mat4 invL() const { return m_L.transposed(); }
-    const kvs::Mat4 invA() const
+    kvs::Mat4 invL() const { return m_L.transposed(); }
+    kvs::Mat4 invA() const
     {
         const kvs::Real32 a1 = m_A[0][0];
         const kvs::Real32 a2 = m_A[1][1];
@@ -83,7 +83,7 @@ public:
             0.0f,    0.0f,    1.0f/a3, -b3/a3,
             0.0f,    0.0f,    0.0f,    1.0f    );
     }
-    const kvs::Real32 detA() const
+    kvs::Real32 detA() const
     {
         const kvs::Real32 a1 = m_A[0][0];
         const kvs::Real32 a2 = m_A[1][1];

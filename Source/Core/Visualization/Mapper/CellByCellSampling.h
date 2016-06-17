@@ -393,7 +393,7 @@ public:
 
     const kvs::CellBase* cell() const { return m_cell; }
     const Particles& particles() const { return m_particles; }
-    const kvs::Real32 maxDensity() const
+    kvs::Real32 maxDensity() const
     {
         return m_density_map->maxValueInCell( m_cell, m_cell->referenceVolume() );
     }
