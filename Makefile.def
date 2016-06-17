@@ -100,7 +100,15 @@ GL_LIBRARY_PATH :=
 GL_LINK_LIBRARY :=
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
   ifeq "$(shell uname -s)" "Darwin"
-    GL_LINK_LIBRARY += -framework OpenGL -framework Foundation
+    ifeq "$(KVS_ENABLE_OSMESA)" "1"
+      ifdef KVS_OSMESA_DIR
+        GL_INCLUDE_PATH += -I$(KVS_OSMESA_DIR)/include
+        GL_LIBRARY_PATH += -L$(KVS_OSMESA_DIR)/lib
+      endif
+      GL_LINK_LIBRARY += -lOSMesa
+    else
+      GL_LINK_LIBRARY += -framework OpenGL -framework Foundation
+    endif
   else
     ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
       ifeq "$(KVS_ENABLE_GLU)" "1"
