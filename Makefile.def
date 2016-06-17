@@ -112,8 +112,8 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
 
         ifeq "$(KVS_ENABLE_OSMESA)" "1"
           ifdef KVS_OSMESA_DIR
-            GL_INCLUDE_PATH += $(KVS_OSMESA_DIR)/include
-            GL_LIBRARY_PATH += $(KVS_OSMESA_DIR)/lib
+            GL_INCLUDE_PATH += -I$(KVS_OSMESA_DIR)/include
+            GL_LIBRARY_PATH += -L$(KVS_OSMESA_DIR)/lib
             GL_LINK_LIBRARY += -lOSMesa
           endif
         endif
