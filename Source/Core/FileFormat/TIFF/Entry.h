@@ -47,7 +47,7 @@ public:
     Entry( const kvs::UInt16 tag );
     Entry( std::ifstream& ifs );
 
-    friend const bool operator == ( const Entry& lhs, const Entry& rhs );
+    friend bool operator == ( const Entry& lhs, const Entry& rhs );
     friend std::ostream& operator << ( std::ostream& os, const Entry& entry );
 
     kvs::UInt16 tag() const { return m_tag; }

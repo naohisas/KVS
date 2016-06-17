@@ -147,7 +147,7 @@ const std::string& FileChecker::filename() const
  *  @return file format type
  */
 /*===========================================================================*/
-const FileChecker::FormatType FileChecker::fileFormat( void ) const
+FileChecker::FormatType FileChecker::fileFormat() const
 {
     if ( kvs::AVSField::CheckExtension( m_filename ) )
     {

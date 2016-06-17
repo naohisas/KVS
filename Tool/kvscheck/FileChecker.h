@@ -58,7 +58,7 @@ public:
     FileChecker( const std::string& filename );
 
     const std::string& filename() const;
-    const FormatType fileFormat() const;
+    FormatType fileFormat() const;
     friend std::ostream& operator << ( std::ostream& os, const FileChecker& checker );
 };
 

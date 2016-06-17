@@ -80,7 +80,7 @@ const std::string Argument::outputFilename( const std::string& filename )
  *  @return writing data type
  */
 /*===========================================================================*/
-const kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType( void )
+kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType()
 {
     if ( this->hasOption("b") )
     {

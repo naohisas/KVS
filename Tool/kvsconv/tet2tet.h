@@ -42,8 +42,8 @@ public:
 
     const std::string inputFilename();
     const std::string outputFilename( const std::string& filename );
-    const kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();
-    const kvs::TetrahedraToTetrahedra::Method conversionMethod();
+    kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();
+    kvs::TetrahedraToTetrahedra::Method conversionMethod();
 };
 
 /*===========================================================================*/

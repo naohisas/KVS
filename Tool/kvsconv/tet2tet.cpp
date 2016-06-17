@@ -85,7 +85,7 @@ const std::string Argument::outputFilename( const std::string& filename )
  *  @return writing data type
  */
 /*===========================================================================*/
-const kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType( void )
+kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType()
 {
     if ( this->hasOption("b") )
     {
@@ -108,7 +108,7 @@ const kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataT
  *  @return conversion method
  */
 /*===========================================================================*/
-const kvs::TetrahedraToTetrahedra::Method Argument::conversionMethod()
+kvs::TetrahedraToTetrahedra::Method Argument::conversionMethod()
 {
     kvs::TetrahedraToTetrahedra::Method method = kvs::TetrahedraToTetrahedra::Subdivision8;
 

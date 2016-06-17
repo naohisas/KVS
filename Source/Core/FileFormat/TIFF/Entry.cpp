@@ -36,7 +36,7 @@ Entry::Entry( std::ifstream& ifs )
     this->read( ifs );
 }
 
-const bool operator == ( const Entry& lhs, const Entry& rhs )
+bool operator == ( const Entry& lhs, const Entry& rhs )
 {
     return lhs.tag() == rhs.tag();
 }

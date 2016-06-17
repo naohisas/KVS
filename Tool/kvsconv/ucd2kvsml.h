@@ -40,7 +40,7 @@ public:
 public:
     const std::string inputFilename();
     const std::string outputFilename( const std::string& filename );
-    const kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType( void );
+    kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();
 };
 
 /*===========================================================================*/
