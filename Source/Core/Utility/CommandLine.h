@@ -76,7 +76,7 @@ public:
 
     int argc() const;
 
-    char** const argv() const;
+    char** argv() const;
 
     const std::string& commandName() const;
 

@@ -40,7 +40,7 @@ namespace
  *  @return number of nodes per element
  */
 /*===========================================================================*/
-inline const size_t GetNumberOfNodesPerElement( const std::string& cell_type )
+inline size_t GetNumberOfNodesPerElement( const std::string& cell_type )
 {
     size_t nnodes = 0;
     if ( cell_type == "tetrahedra" ) nnodes = 4;

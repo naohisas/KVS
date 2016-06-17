@@ -336,7 +336,7 @@ int CommandLine::argc() const
  *  @return argument values
  */
 /*==========================================================================*/
-char** const CommandLine::argv() const
+char** CommandLine::argv() const
 {
     return m_argv;
 }
