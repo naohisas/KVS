@@ -25,13 +25,17 @@ endif
 #=============================================================================
 #  Command macro.
 #=============================================================================
+ifndef KVS_CPP
+  KVS_CPP := g++
+endif
+
 SHELL  := /bin/bash
-MAKE   := make
 CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
-CPP    := $(CCACHE) g++
+CPP    := $(CCACHE) $(KVS_CPP)
 LD     := $(CPP)
 AR     := ar -ru
 RANLIB := ranlib
+MAKE   := make
 QMAKE  := qmake
 
 MKDIR := @mkdir -pv
@@ -217,16 +221,27 @@ endif
 #=============================================================================
 #  Compiler option.
 #=============================================================================
-CPPFLAGS := -Wall
+CPPFLAGS :=
 
-ifdef DEBUG
-  CPPFLAGS += -O0 -ggdb3
+# For FCCpx/mpiFCCpx
+ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+  ifdef DEBUG
+    CPPFLAGS += -O0 -g
+  else
+    CPPFLAGS += -O3
+  endif
+
+# For g++
 else
-  CPPFLAGS += -O3
-endif
-
-ifeq "$(shell uname -s)" "Linux"
-  CPPFLAGS += -Wno-unused-result
+  CPPFLAGS += -Wall
+  ifdef DEBUG
+    CPPFLAGS += -O0 -ggdb3
+  else
+    CPPFLAGS += -O3
+  endif
+  ifeq "$(shell uname -s)" "Linux"
+    CPPFLAGS += -Wno-unused-result
+  endif
 endif
 
 
