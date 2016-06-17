@@ -6,7 +6,7 @@
 #  KVS_DIR.
 #=============================================================================
 ifndef KVS_DIR
-$(error KVS_DIR is not defined.)
+  $(error KVS_DIR is not defined.)
 endif
 
 
@@ -27,7 +27,7 @@ endif
 #=============================================================================
 SHELL  := /bin/bash
 MAKE   := make
-CCACHE := $(shell $(SHELL) -c "type -p ccache")
+CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
 CPP    := $(CCACHE) g++
 LD     := $(CPP)
 AR     := ar -ru
@@ -76,9 +76,9 @@ LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
 #  Solution.
 #=============================================================================
 ifdef DEBUG
-SOLUTION := Debug
+  SOLUTION := Debug
 else
-SOLUTION := Release
+  SOLUTION := Release
 endif
 
 
@@ -136,23 +136,23 @@ endif
 #  GLUT_INCLUDE_PATH, GLUT_LIBRARY_PATH, GLUT_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
-GLUT_INCLUDE_PATH :=
-GLUT_LIBRARY_PATH :=
-ifdef KVS_GLUT_DIR
-GLUT_INCLUDE_PATH += -I$(KVS_GLUT_DIR)/include
-GLUT_LIBRARY_PATH += -L$(KVS_GLUT_DIR)/lib
-endif
-ifeq "$(shell uname -s)" "Darwin"
-GLUT_LINK_LIBRARY := -framework GLUT
-else
-ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
-GLUT_LINK_LIBRARY := -lglut
-else
-ifeq "$(shell uname -s)" "Linux"
-GLUT_LINK_LIBRARY := -lglut
-endif
-endif
-endif
+  GLUT_INCLUDE_PATH :=
+  GLUT_LIBRARY_PATH :=
+  ifdef KVS_GLUT_DIR
+    GLUT_INCLUDE_PATH += -I$(KVS_GLUT_DIR)/include
+    GLUT_LIBRARY_PATH += -L$(KVS_GLUT_DIR)/lib
+  endif
+  ifeq "$(shell uname -s)" "Darwin"
+    GLUT_LINK_LIBRARY := -framework GLUT
+  else
+    ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
+      GLUT_LINK_LIBRARY := -lglut
+    else
+      ifeq "$(shell uname -s)" "Linux"
+        GLUT_LINK_LIBRARY := -lglut
+      endif
+    endif
+  endif
 endif
 
 
@@ -160,30 +160,29 @@ endif
 #  CUDA_INCLUDE_PATH, CUDA_LIBRARY_PATH, CUDA_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_CUDA)" "1"
-CUDA_INCLUDE_PATH :=
-CUDA_LIBRARY_PATH :=
-CUDA_LINK_LIBRARY := -lcuda -lcudart
-ifdef KVS_CUDA_DIR
-CUDA_INCLUDE_PATH += -I$(KVS_CUDA_DIR)/include
-ifeq "$(shell uname -m)" "x86_64"
-ifeq "$(shell uname -s)" "Darwin"
-CUDA_LIBRARY_PATH += -L$(KVS_CUDA_DIR)/lib
-CUDA_LINK_LIBRARY += -F/Library/Frameworks -framework CUDA
-else
-CUDA_LIBRARY_PATH += -L$(KVS_CUDA_DIR)/lib64
-endif
-else
-CUDA_LIBRARY_PATH += -L$(KVS_CUDA_DIR)/lib
-endif
-endif
-ifdef KVS_CUDA_SDK_DIR
-CUDA_INCLUDE_PATH += -I$(KVS_CUDA_SDK_DIR)/common/inc
-CUDA_LIBRARY_PATH += -L$(KVS_CUDA_SDK_DIR)/lib
-CUDA_LINK_LIBRARY += -lcutil
-endif
-
-NVCC := nvcc
-NVCCFLAGS := --host-compilation C++
+  CUDA_INCLUDE_PATH :=
+  CUDA_LIBRARY_PATH :=
+  CUDA_LINK_LIBRARY := -lcuda -lcudart
+  ifdef KVS_CUDA_DIR
+    CUDA_INCLUDE_PATH += -I$(KVS_CUDA_DIR)/include
+    ifeq "$(shell uname -m)" "x86_64"
+      ifeq "$(shell uname -s)" "Darwin"
+        CUDA_LIBRARY_PATH += -L$(KVS_CUDA_DIR)/lib
+        CUDA_LINK_LIBRARY += -F/Library/Frameworks -framework CUDA
+      else
+        CUDA_LIBRARY_PATH += -L$(KVS_CUDA_DIR)/lib64
+      endif
+    else
+      CUDA_LIBRARY_PATH += -L$(KVS_CUDA_DIR)/lib
+    endif
+  endif
+  ifdef KVS_CUDA_SDK_DIR
+    CUDA_INCLUDE_PATH += -I$(KVS_CUDA_SDK_DIR)/common/inc
+    CUDA_LIBRARY_PATH += -L$(KVS_CUDA_SDK_DIR)/lib
+    CUDA_LINK_LIBRARY += -lcutil
+  endif
+  NVCC := nvcc
+  NVCCFLAGS := --host-compilation C++
 endif
 
 
@@ -191,13 +190,13 @@ endif
 #  CAVE_INCLUDE_PATH, CAVE_LIBRARY_PATH, CAVE_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_CAVE)" "1"
-CAVE_INCLUDE_PATH :=
-CAVE_LIBRARY_PATH :=
-CAVE_LINK_LIBRARY := -lcave_ogl_mt
-ifdef KVS_CAVE_DIR
-CAVE_INCLUDE_PATH += -I$(KVS_CAVE_DIR)/include
-CAVE_LIBRARY_PATH += -L$(KVS_CAVE_DIR)/lib32
-endif
+  CAVE_INCLUDE_PATH :=
+  CAVE_LIBRARY_PATH :=
+  CAVE_LINK_LIBRARY := -lcave_ogl_mt
+  ifdef KVS_CAVE_DIR
+    CAVE_INCLUDE_PATH += -I$(KVS_CAVE_DIR)/include
+    CAVE_LIBRARY_PATH += -L$(KVS_CAVE_DIR)/lib32
+  endif
 endif
 
 
@@ -205,13 +204,13 @@ endif
 #  OPENCV_INCLUDE_PATH, OPENCV_LIBRARY_PATH, OPENCV_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
-OPENCV_INCLUDE_PATH := `pkg-config --cflags opencv`
-OPENCV_LIBRARY_PATH := `pkg-config --libs-only-L opencv`
-OPENCV_LINK_LIBRARY := `pkg-config --libs opencv`
-ifdef KVS_OPENCV_DIR
-OPENCV_INCLUDE_PATH := -I$(KVS_OPENCV_DIR)/include
-OPENCV_LIBRARY_PATH := -L$(KVS_OPENCV_DIR)/lib
-endif
+  OPENCV_INCLUDE_PATH := `pkg-config --cflags opencv`
+  OPENCV_LIBRARY_PATH := `pkg-config --libs-only-L opencv`
+  OPENCV_LINK_LIBRARY := `pkg-config --libs opencv`
+  ifdef KVS_OPENCV_DIR
+    OPENCV_INCLUDE_PATH := -I$(KVS_OPENCV_DIR)/include
+    OPENCV_LIBRARY_PATH := -L$(KVS_OPENCV_DIR)/lib
+  endif
 endif
 
 
@@ -221,13 +220,13 @@ endif
 CPPFLAGS := -Wall
 
 ifdef DEBUG
-CPPFLAGS += -O0 -ggdb3
+  CPPFLAGS += -O0 -ggdb3
 else
-CPPFLAGS += -O3
+  CPPFLAGS += -O3
 endif
 
 ifeq "$(shell uname -s)" "Linux"
-CPPFLAGS += -Wno-unused-result
+  CPPFLAGS += -Wno-unused-result
 endif
 
 
@@ -237,29 +236,29 @@ endif
 DEFINITIONS :=
 
 ifdef DEBUG
-DEFINITIONS += -D_DEBUG -DKVS_ENABLE_DEBUG
+  DEFINITIONS += -D_DEBUG -DKVS_ENABLE_DEBUG
 else
-DEFINITIONS += -DNDEBUG
+  DEFINITIONS += -DNDEBUG
 endif
 
 ifdef MEM_DEBUG
-DEFINITIONS += -DKVS_ENABLE_MEM_DEBUG
+  DEFINITIONS += -DKVS_ENABLE_MEM_DEBUG
 endif
 
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
-DEFINITIONS += -DKVS_ENABLE_OPENGL
+  DEFINITIONS += -DKVS_ENABLE_OPENGL
 endif
 
 ifeq "$(KVS_ENABLE_GLU)" "1"
-DEFINITIONS += -DKVS_ENABLE_GLU
+  DEFINITIONS += -DKVS_ENABLE_GLU
 endif
 
 ifeq "$(KVS_ENABLE_GLEW)" "1"
-DEFINITIONS += -DKVS_ENABLE_GLEW
+  DEFINITIONS += -DKVS_ENABLE_GLEW
 endif
 
 ifeq "$(KVS_ENABLE_DEPRECATED)" "1"
-DEFINITIONS += -DKVS_ENABLE_DEPRECATED
+  DEFINITIONS += -DKVS_ENABLE_DEPRECATED
 endif
 
 # NOTE: The GLEW header files must be included before including the OpenGL
@@ -267,21 +266,21 @@ endif
 DEFINITIONS += $(GLEW_INCLUDE_PATH)
 
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
-ifeq "$(KVS_SUPPORT_GLUT)" "1"
-DEFINITIONS += -DKVS_SUPPORT_GLUT
-endif
+  ifeq "$(KVS_SUPPORT_GLUT)" "1"
+    DEFINITIONS += -DKVS_SUPPORT_GLUT
+  endif
 endif
 
 ifeq "$(KVS_SUPPORT_QT)" "1"
-DEFINITIONS += -DKVS_SUPPORT_QT
+  DEFINITIONS += -DKVS_SUPPORT_QT
 endif
 
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
-DEFINITIONS += -DKVS_SUPPORT_OPENCV
+  DEFINITIONS += -DKVS_SUPPORT_OPENCV
 endif
 
 ifeq "$(KVS_SUPPORT_CUDA)" "1"
-DEFINITIONS += -DKVS_SUPPORT_CUDA
+  DEFINITIONS += -DKVS_SUPPORT_CUDA
 endif
 
 
