@@ -37,7 +37,7 @@ public:
 
     enum HelpMessageMode
     {
-        UsageOnly,     ///< usage only mode
+        UsageOnly, ///< usage only mode
         UsageAndOption ///< usage and option mode
     };
 
@@ -48,76 +48,64 @@ public:
     class Value;
 
 public:
+
     typedef std::vector<std::string> Arguments;
-    typedef std::vector<Option>      Options;
-    typedef std::vector<Value>       Values;
+    typedef std::vector<Option> Options;
+    typedef std::vector<Value> Values;
 
 protected:
 
-    int          m_argc;         ///< argument count
-    char**       m_argv;         ///< argument values
-    std::string  m_command_name; ///< command name
-    size_t       m_max_length;   ///< max length of the option name
-    bool         m_no_help;      ///< no help option
-    std::string  m_help_option;  ///< help option character (ex: 'h')
-    Arguments    m_arguments;    ///< argument values
-    Options      m_options;      ///< options
-    Values       m_values;       ///< values
+    int m_argc; ///< argument count
+    char** m_argv; ///< argument values
+    std::string m_command_name; ///< command name
+    size_t m_max_length; ///< max length of the option name
+    bool m_no_help; ///< no help option
+    std::string m_help_option; ///< help option character (ex: 'h')
+    Arguments m_arguments; ///< argument values
+    Options m_options; ///< options
+    Values m_values; ///< values
 
 public:
 
+    CommandLine();
     CommandLine( int argc, char** argv );
-
     CommandLine( int argc, char** argv, const std::string& command_name );
-
     virtual ~CommandLine();
 
 public:
 
-    int argc() const;
-
-    char** argv() const;
-
-    const std::string& commandName() const;
+    int argc() const { return m_argc; }
+    char** argv() const { return m_argv; }
+    const std::string& commandName() const { return m_command_name; }
+    void setArguments( int argc, char** argv )
+    {
+        m_argc = argc;
+        m_argv = argv;
+        m_command_name = std::string( m_argv[0] );
+    }
 
     bool parse();
-
     bool read();
-
     void clear();
-
-public:
 
     template <class T>
     T value( size_t index = 0 ) const;
-
     bool hasValues() const;
-
     size_t numberOfValues() const;
-
-public:
 
     template <class T>
     T optionValue( const std::string& option_name, size_t index = 0 ) const;
-
     bool hasOption( const std::string& option_name ) const;
-
     bool hasOptionValue( const std::string& option_name ) const;
-
     size_t numberOfOptions() const;
 
-public:
-
     void addHelpOption( const std::string& help_option = "h" );
-
     void addOption(
         const std::string& name,
         const std::string& description,
-        size_t             nvalues     = 0,
-        bool               is_required = false );
-
+        size_t nvalues = 0,
+        bool is_required = false );
     void addValue( const std::string& description, bool is_required = true );
-
     void showHelpMessage( HelpMessageMode mode = UsageOnly ) const;
 
 #if KVS_ENABLE_DEPRECATED
@@ -145,17 +133,12 @@ protected:
 private:
 
     bool is_option( const std::string& argument ) const;
-
     std::string get_option_name( const std::string& argument ) const;
-
     bool is_help_option( const std::string& value ) const;
-
     Options::iterator find_option( const std::string& argument );
-
     bool read_option_values( 
         Arguments::iterator& argument,
         Options::iterator&   option );
-
     void print_help_message( HelpMessageMode mode ) const;
 };
 
@@ -168,50 +151,35 @@ class CommandLine::Option
 {
 private:
 
-    std::string              m_name;        ///< option name
-    std::string              m_description; ///< option description
-    size_t                   m_nvalues;     ///< number of required values
-    bool                     m_is_required; ///< true, if the option is required
-    bool                     m_is_given;    ///< true, if the option is given
-    std::vector<std::string> m_values;      ///< option values
+    std::string m_name; ///< option name
+    std::string m_description; ///< option description
+    size_t m_nvalues; ///< number of required values
+    bool m_is_required; ///< true, if the option is required
+    bool m_is_given; ///< true, if the option is given
+    std::vector<std::string> m_values; ///< option values
 
 public:
 
     Option();
 
-    explicit Option( 
+    explicit Option(
         const std::string& name,
         const std::string& description = "",
-        size_t             nvalues     = 0,
-        bool               is_required = false );
+        size_t nvalues = 0,
+        bool is_required = false );
 
-public:
-
-    void setValue( const std::string& value );
-
-    void given();
-
-public:
-
-    const std::string& name() const;
-
-    const std::string& description() const;
-
-    size_t numberOfValues() const;
-
-    bool isRequired() const;
-
-    bool isGiven() const;
-
-    const std::vector<std::string>& values() const;
+    void setValue( const std::string& value ) { m_values.push_back( value ); this->given(); }
+    void given() { m_is_given = true; }
+    const std::string& name() const { return m_name; }
+    const std::string& description() const { return m_description; }
+    size_t numberOfValues() const { return m_nvalues; }
+    bool isRequired() const { return m_is_required; }
+    bool isGiven() const { return m_is_given; }
+    const std::vector<std::string>& values() const { return m_values; }
 
     template <typename T>
     T value( size_t index ) const;
-
-public:
-
     friend bool operator <( const Option& lhs, const Option& rhs );
-
     friend bool operator ==( const Option& lhs, const Option& rhs );
 };
 
@@ -225,35 +193,26 @@ class CommandLine::Value
 private:
 
     std::string m_description; ///< value description
-    bool        m_is_required; ///< true, if the value is required
-    bool        m_is_given;    ///< true, if the value is given
-    Argument    m_value;       ///< value (not allocated)
+    bool m_is_required; ///< true, if the value is required
+    bool m_is_given; ///< true, if the value is given
+    Argument m_value; ///< value (not allocated)
 
 public:
 
     Value();
 
-    explicit Value( 
+    explicit Value(
         const std::string& description,
-        bool               is_required = true );
+        bool is_required = true );
 
-public:
-
-    void setValue( const std::string& value );
-
-    const std::string& description() const;
-
-    bool isRequired() const;
-
-    bool isGiven() const;
+    void setValue( const std::string& value ) { m_value = value; m_is_given = true; }
+    const std::string& description() const { return m_description; }
+    bool isRequired() const { return m_is_required; }
+    bool isGiven() const { return m_is_given; }
 
     template <typename T>
     T value() const;
-
-public:
-
     friend bool operator <( const Value& lhs, const Value& rhs );
-
     friend bool operator ==( const Value& lhs, const Value& rhs );
 };
 
