@@ -749,8 +749,10 @@ void CalculateFaces(
     const size_t veclen = volume->veclen();
     const T* value = reinterpret_cast<const T*>( volume->values().data() );
 
-    const size_t nfaces = face_map.bucket().size();
-    const size_t nvertices = nfaces * 4;
+    // A quadrangle face is composed of two triangle faces
+    const size_t nfaces = face_map.bucket().size() * 2;
+//    const size_t nvertices = nfaces * 4;
+    const size_t nvertices = nfaces * 3;
     const kvs::Real32* volume_coord = volume->coords().data();
 
     coords->allocate( nvertices * 3 );
@@ -772,10 +774,10 @@ void CalculateFaces(
         node_index[2] = f->second.id(2);
         node_index[3] = f->second.id(3);
 
-        const kvs::Vector3f v0( volume_coord + 3 * node_index[0] );
-        const kvs::Vector3f v1( volume_coord + 3 * node_index[1] );
-        const kvs::Vector3f v2( volume_coord + 3 * node_index[2] );
-        const kvs::Vector3f v3( volume_coord + 3 * node_index[3] );
+        const kvs::Vec3 v0( volume_coord + 3 * node_index[0] );
+        const kvs::Vec3 v1( volume_coord + 3 * node_index[1] );
+        const kvs::Vec3 v2( volume_coord + 3 * node_index[2] );
+        const kvs::Vec3 v3( volume_coord + 3 * node_index[3] );
         // v0
         *( coord++ ) = v0.x();
         *( coord++ ) = v0.y();
@@ -788,10 +790,19 @@ void CalculateFaces(
         *( coord++ ) = v2.x();
         *( coord++ ) = v2.y();
         *( coord++ ) = v2.z();
+
+        // v2
+        *( coord++ ) = v2.x();
+        *( coord++ ) = v2.y();
+        *( coord++ ) = v2.z();
         // v3
         *( coord++ ) = v3.x();
         *( coord++ ) = v3.y();
         *( coord++ ) = v3.z();
+        // v0
+        *( coord++ ) = v0.x();
+        *( coord++ ) = v0.y();
+        *( coord++ ) = v0.z();
 
         GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
         // c0
@@ -806,12 +817,26 @@ void CalculateFaces(
         *( color++ ) = cmap[ color_level[2] ].r();
         *( color++ ) = cmap[ color_level[2] ].g();
         *( color++ ) = cmap[ color_level[2] ].b();
+
+        // c2
+        *( color++ ) = cmap[ color_level[2] ].r();
+        *( color++ ) = cmap[ color_level[2] ].g();
+        *( color++ ) = cmap[ color_level[2] ].b();
         // c3
         *( color++ ) = cmap[ color_level[3] ].r();
         *( color++ ) = cmap[ color_level[3] ].g();
         *( color++ ) = cmap[ color_level[3] ].b();
+        // c0
+        *( color++ ) = cmap[ color_level[0] ].r();
+        *( color++ ) = cmap[ color_level[0] ].g();
+        *( color++ ) = cmap[ color_level[0] ].b();
 
-        const kvs::Vector3f n( ( v1 - v0 ).cross( v2 - v0 ) );
+        const kvs::Vec3 n( ( v1 - v0 ).cross( v2 - v0 ) );
+        // n0
+        *( normal++ ) = n.x();
+        *( normal++ ) = n.y();
+        *( normal++ ) = n.z();
+
         // n0
         *( normal++ ) = n.x();
         *( normal++ ) = n.y();
@@ -939,7 +964,8 @@ void ExternalFaces::mapping( const kvs::StructuredVolumeObject* volume )
     else if ( type == typeid( kvs::Real32 ) ) { this->calculate_colors<kvs::Real32>( volume ); }
     else if ( type == typeid( kvs::Real64 ) ) { this->calculate_colors<kvs::Real64>( volume ); }
 
-    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
+//    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
     SuperClass::setColorType( kvs::PolygonObject::VertexColor );
     SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
     if ( SuperClass::numberOfOpacities() == 0 ) SuperClass::setOpacity( 255 );
@@ -990,10 +1016,11 @@ void ExternalFaces::calculate_uniform_coords( const kvs::StructuredVolumeObject*
         volume_size.z() / static_cast<float>( ngrids.z() ) );
 
     const size_t nexternal_faces =
-        2 * ngrids.x() * ngrids.y() +
-        2 * ngrids.y() * ngrids.z() +
-        2 * ngrids.z() * ngrids.x();
-    const size_t nexternal_vertices = nexternal_faces * 4;
+        ( 2 * ngrids.x() * ngrids.y() +
+          2 * ngrids.y() * ngrids.z() +
+          2 * ngrids.z() * ngrids.x() ) * 2;
+//    const size_t nexternal_vertices = nexternal_faces * 4;
+    const size_t nexternal_vertices = nexternal_faces * 3;
 
     kvs::ValueArray<kvs::Real32> coords( 3 * nexternal_vertices );
     kvs::Real32* coord = coords.data();
@@ -1023,10 +1050,24 @@ void ExternalFaces::calculate_uniform_coords( const kvs::StructuredVolumeObject*
                 *( coord++ ) = x + grid_size.x();
                 *( coord++ ) = y;
                 *( coord++ ) = z;
+
+                // v1
+                *( coord++ ) = x + grid_size.x();
+                *( coord++ ) = y;
+                *( coord++ ) = z;
                 // v0
                 *( coord++ ) = x;
                 *( coord++ ) = y;
                 *( coord++ ) = z;
+                // v3
+                *( coord++ ) = x;
+                *( coord++ ) = y + grid_size.y();
+                *( coord++ ) = z;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1057,10 +1098,24 @@ void ExternalFaces::calculate_uniform_coords( const kvs::StructuredVolumeObject*
                 *( coord++ ) = x + grid_size.x();
                 *( coord++ ) = y + grid_size.y();
                 *( coord++ ) = z;
+
+                // v2
+                *( coord++ ) = x + grid_size.x();
+                *( coord++ ) = y + grid_size.y();
+                *( coord++ ) = z;
                 // v3
                 *( coord++ ) = x;
                 *( coord++ ) = y + grid_size.y();
                 *( coord++ ) = z;
+                // v0
+                *( coord++ ) = x;
+                *( coord++ ) = y;
+                *( coord++ ) = z;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1091,10 +1146,24 @@ void ExternalFaces::calculate_uniform_coords( const kvs::StructuredVolumeObject*
                 *( coord++ ) = x;
                 *( coord++ ) = y + grid_size.y();
                 *( coord++ ) = z + grid_size.z();
+
+                // v2
+                *( coord++ ) = x;
+                *( coord++ ) = y + grid_size.y();
+                *( coord++ ) = z + grid_size.z();
                 // v3
                 *( coord++ ) = x;
                 *( coord++ ) = y + grid_size.y();
                 *( coord++ ) = z;
+                // v0
+                *( coord++ ) = x;
+                *( coord++ ) = y;
+                *( coord++ ) = z;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1125,10 +1194,24 @@ void ExternalFaces::calculate_uniform_coords( const kvs::StructuredVolumeObject*
                 *( coord++ ) = x;
                 *( coord++ ) = y;
                 *( coord++ ) = z + grid_size.z();
+
+                // v1
+                *( coord++ ) = x;
+                *( coord++ ) = y;
+                *( coord++ ) = z + grid_size.z();
                 // v0
                 *( coord++ ) = x;
                 *( coord++ ) = y;
                 *( coord++ ) = z;
+                // v3
+                *( coord++ ) = x;
+                *( coord++ ) = y + grid_size.y();
+                *( coord++ ) = z;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1159,10 +1242,24 @@ void ExternalFaces::calculate_uniform_coords( const kvs::StructuredVolumeObject*
                 *( coord++ ) = x + grid_size.x();
                 *( coord++ ) = y;
                 *( coord++ ) = z + grid_size.z();
+
+                // v2
+                *( coord++ ) = x + grid_size.x();
+                *( coord++ ) = y;
+                *( coord++ ) = z + grid_size.z();
                 // v3
                 *( coord++ ) = x;
                 *( coord++ ) = y;
                 *( coord++ ) = z + grid_size.z();
+                // v0
+                *( coord++ ) = x;
+                *( coord++ ) = y;
+                *( coord++ ) = z;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1193,10 +1290,24 @@ void ExternalFaces::calculate_uniform_coords( const kvs::StructuredVolumeObject*
                 *( coord++ ) = x + grid_size.x();
                 *( coord++ ) = y;
                 *( coord++ ) = z;
+
+                // v1
+                *( coord++ ) = x + grid_size.x();
+                *( coord++ ) = y;
+                *( coord++ ) = z;
                 // v0
                 *( coord++ ) = x;
                 *( coord++ ) = y;
                 *( coord++ ) = z;
+                // v3
+                *( coord++ ) = x;
+                *( coord++ ) = y;
+                *( coord++ ) = z + grid_size.z();
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1225,10 +1336,11 @@ void ExternalFaces::calculate_rectilinear_coords( const kvs::StructuredVolumeObj
     const kvs::Real32* zcoords = ycoords + dimy;
 
     const size_t nfaces =
-        2 * ( dimx - 1 ) * ( dimy - 1 ) +
-        2 * ( dimy - 1 ) * ( dimz - 1 ) +
-        2 * ( dimz - 1 ) * ( dimx - 1 );
-    const size_t nvertices = nfaces * 4;
+        ( 2 * ( dimx - 1 ) * ( dimy - 1 ) +
+          2 * ( dimy - 1 ) * ( dimz - 1 ) +
+          2 * ( dimz - 1 ) * ( dimx - 1 ) ) * 2;
+//    const size_t nvertices = nfaces * 4;
+    const size_t nvertices = nfaces * 3;
 
     kvs::ValueArray<kvs::Real32> coords( 3 * nvertices );
     kvs::Real32* coord = coords.data();
@@ -1260,10 +1372,24 @@ void ExternalFaces::calculate_rectilinear_coords( const kvs::StructuredVolumeObj
                 *( coord++ ) = x1;
                 *( coord++ ) = y0;
                 *( coord++ ) = z;
+
+                // v1
+                *( coord++ ) = x1;
+                *( coord++ ) = y0;
+                *( coord++ ) = z;
                 // v0
                 *( coord++ ) = x0;
                 *( coord++ ) = y0;
                 *( coord++ ) = z;
+                // v3
+                *( coord++ ) = x0;
+                *( coord++ ) = y1;
+                *( coord++ ) = z;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1296,10 +1422,24 @@ void ExternalFaces::calculate_rectilinear_coords( const kvs::StructuredVolumeObj
                 *( coord++ ) = x1;
                 *( coord++ ) = y1;
                 *( coord++ ) = z;
+
+                // v2
+                *( coord++ ) = x1;
+                *( coord++ ) = y1;
+                *( coord++ ) = z;
                 // v3
                 *( coord++ ) = x0;
                 *( coord++ ) = y1;
                 *( coord++ ) = z;
+                // v0
+                *( coord++ ) = x0;
+                *( coord++ ) = y0;
+                *( coord++ ) = z;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1332,10 +1472,24 @@ void ExternalFaces::calculate_rectilinear_coords( const kvs::StructuredVolumeObj
                 *( coord++ ) = x;
                 *( coord++ ) = y1;
                 *( coord++ ) = z1;
+
+                // v2
+                *( coord++ ) = x;
+                *( coord++ ) = y1;
+                *( coord++ ) = z1;
                 // v3
                 *( coord++ ) = x;
                 *( coord++ ) = y1;
                 *( coord++ ) = z0;
+                // v0
+                *( coord++ ) = x;
+                *( coord++ ) = y0;
+                *( coord++ ) = z0;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1368,10 +1522,24 @@ void ExternalFaces::calculate_rectilinear_coords( const kvs::StructuredVolumeObj
                 *( coord++ ) = x;
                 *( coord++ ) = y0;
                 *( coord++ ) = z1;
+
+                // v1
+                *( coord++ ) = x;
+                *( coord++ ) = y0;
+                *( coord++ ) = z1;
                 // v0
                 *( coord++ ) = x;
                 *( coord++ ) = y0;
                 *( coord++ ) = z0;
+                // v3
+                *( coord++ ) = x;
+                *( coord++ ) = y1;
+                *( coord++ ) = z0;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1404,10 +1572,24 @@ void ExternalFaces::calculate_rectilinear_coords( const kvs::StructuredVolumeObj
                 *( coord++ ) = x1;
                 *( coord++ ) = y;
                 *( coord++ ) = z1;
+
+                // v2
+                *( coord++ ) = x1;
+                *( coord++ ) = y;
+                *( coord++ ) = z1;
                 // v3
                 *( coord++ ) = x0;
                 *( coord++ ) = y;
                 *( coord++ ) = z1;
+                // v0
+                *( coord++ ) = x0;
+                *( coord++ ) = y;
+                *( coord++ ) = z0;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1440,10 +1622,24 @@ void ExternalFaces::calculate_rectilinear_coords( const kvs::StructuredVolumeObj
                 *( coord++ ) = x1;
                 *( coord++ ) = y;
                 *( coord++ ) = z0;
+
+                // v1
+                *( coord++ ) = x1;
+                *( coord++ ) = y;
+                *( coord++ ) = z0;
                 // v0
                 *( coord++ ) = x0;
                 *( coord++ ) = y;
                 *( coord++ ) = z0;
+                // v3
+                *( coord++ ) = x0;
+                *( coord++ ) = y;
+                *( coord++ ) = z1;
+
+                // n0
+                *( normal++ ) = n.x();
+                *( normal++ ) = n.y();
+                *( normal++ ) = n.z();
                 // n0
                 *( normal++ ) = n.x();
                 *( normal++ ) = n.y();
@@ -1491,10 +1687,11 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
     const T* value = reinterpret_cast<const T*>( volume->values().data() );
 
     const size_t nexternal_faces =
-        2 * ngrids.x() * ngrids.y() +
-        2 * ngrids.y() * ngrids.z() +
-        2 * ngrids.z() * ngrids.x();
-    const size_t nexternal_vertices = nexternal_faces * 4;
+        ( 2 * ngrids.x() * ngrids.y() +
+          2 * ngrids.y() * ngrids.z() +
+          2 * ngrids.z() * ngrids.x() ) * 2;
+//    const size_t nexternal_vertices = nexternal_faces * 4;
+    const size_t nexternal_vertices = nexternal_faces * 3;
 
     const kvs::ColorMap cmap( BaseClass::colorMap() );
 
@@ -1529,10 +1726,19 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 *( color++ ) = cmap[ color_level[1] ].r();
                 *( color++ ) = cmap[ color_level[1] ].g();
                 *( color++ ) = cmap[ color_level[1] ].b();
+
+                // v1
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v0
                 *( color++ ) = cmap[ color_level[0] ].r();
                 *( color++ ) = cmap[ color_level[0] ].g();
                 *( color++ ) = cmap[ color_level[0] ].b();
+                // v3
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
             }
         }
     }
@@ -1562,10 +1768,19 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 *( color++ ) = cmap[ color_level[2] ].r();
                 *( color++ ) = cmap[ color_level[2] ].g();
                 *( color++ ) = cmap[ color_level[2] ].b();
+
+                // v2
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v3
                 *( color++ ) = cmap[ color_level[3] ].r();
                 *( color++ ) = cmap[ color_level[3] ].g();
                 *( color++ ) = cmap[ color_level[3] ].b();
+                // v0
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
             }
         }
     }
@@ -1595,10 +1810,19 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 *( color++ ) = cmap[ color_level[2] ].r();
                 *( color++ ) = cmap[ color_level[2] ].g();
                 *( color++ ) = cmap[ color_level[2] ].b();
+
+                // v2
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
                 // v3
                 *( color++ ) = cmap[ color_level[3] ].r();
                 *( color++ ) = cmap[ color_level[3] ].g();
                 *( color++ ) = cmap[ color_level[3] ].b();
+                // v0
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
             }
         }
     }
@@ -1628,10 +1852,19 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 *( color++ ) = cmap[ color_level[1] ].r();
                 *( color++ ) = cmap[ color_level[1] ].g();
                 *( color++ ) = cmap[ color_level[1] ].b();
+
+                // v1
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v0
                 *( color++ ) = cmap[ color_level[0] ].r();
                 *( color++ ) = cmap[ color_level[0] ].g();
                 *( color++ ) = cmap[ color_level[0] ].b();
+                // v3
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
             }
         }
     }
@@ -1661,10 +1894,19 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 *( color++ ) = cmap[ color_level[2] ].r();
                 *( color++ ) = cmap[ color_level[2] ].g();
                 *( color++ ) = cmap[ color_level[2] ].b();
+
                 // v3
                 *( color++ ) = cmap[ color_level[3] ].r();
                 *( color++ ) = cmap[ color_level[3] ].g();
                 *( color++ ) = cmap[ color_level[3] ].b();
+                // v2
+                *( color++ ) = cmap[ color_level[2] ].r();
+                *( color++ ) = cmap[ color_level[2] ].g();
+                *( color++ ) = cmap[ color_level[2] ].b();
+                // v0
+                *( color++ ) = cmap[ color_level[0] ].r();
+                *( color++ ) = cmap[ color_level[0] ].g();
+                *( color++ ) = cmap[ color_level[0] ].b();
             }
         }
     }
@@ -1694,10 +1936,19 @@ void ExternalFaces::calculate_colors( const kvs::StructuredVolumeObject* volume 
                 *( color++ ) = cmap[ color_level[1] ].r();
                 *( color++ ) = cmap[ color_level[1] ].g();
                 *( color++ ) = cmap[ color_level[1] ].b();
+
+                // v1
+                *( color++ ) = cmap[ color_level[1] ].r();
+                *( color++ ) = cmap[ color_level[1] ].g();
+                *( color++ ) = cmap[ color_level[1] ].b();
                 // v0
                 *( color++ ) = cmap[ color_level[0] ].r();
                 *( color++ ) = cmap[ color_level[0] ].g();
                 *( color++ ) = cmap[ color_level[0] ].b();
+                // v3
+                *( color++ ) = cmap[ color_level[3] ].r();
+                *( color++ ) = cmap[ color_level[3] ].g();
+                *( color++ ) = cmap[ color_level[3] ].b();
             }
         }
     }
@@ -1855,7 +2106,8 @@ void ExternalFaces::calculate_hexahedral_faces( const kvs::UnstructuredVolumeObj
     kvs::ValueArray<kvs::Real32> normals;
     ::CalculateFaces<T>( volume, BaseClass::colorMap(), face_map, &coords, &colors, &normals );
 
-    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
+//    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
     SuperClass::setCoords( coords );
     SuperClass::setColors( colors );
     SuperClass::setNormals( normals );
@@ -1878,7 +2130,8 @@ void ExternalFaces::calculate_quadratic_hexahedral_faces( const kvs::Unstructure
     kvs::ValueArray<kvs::Real32> normals;
     ::CalculateFaces<T>( volume, BaseClass::colorMap(), face_map, &coords, &colors, &normals );
 
-    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
+//    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
     SuperClass::setCoords( coords );
     SuperClass::setColors( colors );
     SuperClass::setNormals( normals );
