@@ -78,6 +78,7 @@ protected:
     void resetRepetitions() { m_repetition_count = 0; }
     void countRepetitions() { m_repetition_count++; }
     void attachObject( const kvs::ObjectBase* object ) { m_object = object; }
+    void detachObject() { m_object = NULL; }
     void createRandomTexture();
 };
 

@@ -61,6 +61,7 @@ public:
     virtual ~StochasticRendererBase();
 
     virtual void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+    void release();
     size_t windowWidth() const { return m_width; }
     size_t windowHeight() const { return m_height; }
     size_t repetitionLevel() const { return m_repetition_level; }

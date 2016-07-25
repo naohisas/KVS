@@ -51,6 +51,14 @@ StochasticRendererBase::~StochasticRendererBase()
     if ( m_engine ) delete m_engine;
 }
 
+void StochasticRendererBase::release()
+{
+    KVS_ASSERT( m_engine );
+
+    m_engine->detachObject();
+    m_engine->release();
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Executes the rendering process.
