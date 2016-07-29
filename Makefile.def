@@ -153,6 +153,30 @@ endif
 
 
 #=============================================================================
+#  OPENMP_INCLUDE_PATH, OPENMP_LIBRARY_PATH, OPENMP_LINK_LIBRARY
+#=============================================================================
+OPENMP_INCLUDE_PATH :=
+OPENMP_LIBRARY_PATH :=
+OPENMP_LINK_LIBRARY :=
+ifeq "$(KVS_ENABLE_OPENMP)" "1"
+  # For FCCpx/mpiFCCpx
+  ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+    OPENMP_LINK_LIBRARY +=
+  # For Intel compiler
+  else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
+    OPENMP_LINK_LIBRARY += -liomp
+  # For g++
+  else
+    OPENMP_LINK_LIBRARY += -lgomp
+  endif
+  ifdef KVS_OPENMP_DIR
+    OPENMP_INCLUDE_PATH += -I$(KVS_OPENMP_DIR)/include
+    OPENMP_LIBRARY_PATH += -L$(KVS_OPENMP_DIR)/lib
+  endif
+endif
+
+
+#=============================================================================
 #  GLUT_INCLUDE_PATH, GLUT_LIBRARY_PATH, GLUT_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
