@@ -260,6 +260,20 @@ else
   endif
 endif
 
+# OpenMP
+ifeq "$(KVS_ENABLE_OPENMP)" "1"
+  # For FCCpx/mpiFCCpx
+  ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+    CPPFLAGS += -Kopenmp
+  # For Intel compiler
+  else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
+    CPPFLAGS += -openmp
+  # For g++
+  else
+    CPPFLAGS += -fopenmp
+  endif
+endif
+
 
 #=============================================================================
 #  Definition.

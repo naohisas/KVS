@@ -176,6 +176,11 @@ CPPFLAGS = /W3 /EHsc /GR
   CPPFLAGS = $(CPPFLAGS) /Ox /MD
 !ENDIF
 
+# OpenMP
+!IF "$(KVS_ENABLE_OPENMP)" == "1"
+  CPPFLAGS = $(CPPFLAGS) /openmp
+!ENDIF
+
 
 #=============================================================================
 #  Definition.
