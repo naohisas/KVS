@@ -10,7 +10,11 @@
       #define KVS_STATIC_ASSERT( expr, mes ) typedef char KVS_STATIC_ASSERTION_FAILURE[ ( expr ) ? 1 : -1 ] __attribute__((unused))
     #endif
   #else
-    #if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))) || (defined(__apple_build_version__) && (__apple_build_version__ >= 7000000))
+    #if defined(__apple_build_version__) && (__apple_build_version__ >= 7000000)
+      #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes ) __attribute__((unused))
+    #elif defined(__GNUC__) && ((__GNUC__ >= 6))
+      #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes )
+    #elif defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
       #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes ) __attribute__((unused))
     #else
       #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes )
