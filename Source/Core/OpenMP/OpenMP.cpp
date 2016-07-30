@@ -94,7 +94,7 @@ void SetNested( int nested )
 #ifdef _OPENMP
     omp_set_nested( nested );
 #else
-    return 0;
+    kvs::IgnoreUnusedVariable( nested );
 #endif
 }
 
