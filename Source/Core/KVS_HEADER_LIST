@@ -114,6 +114,8 @@ OpenGL/TextureBinder
 OpenGL/TextureRectangle
 OpenGL/VertexBufferObject
 OpenGL/VertexShader
+OpenMP/OMP
+OpenMP/OpenMP
 Thread/Condition
 Thread/Mutex
 Thread/MutexLocker

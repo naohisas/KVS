@@ -181,6 +181,7 @@ $(OUTDIR)/./OpenGL/TextureBinder.o \
 $(OUTDIR)/./OpenGL/TextureRectangle.o \
 $(OUTDIR)/./OpenGL/VertexBufferObject.o \
 $(OUTDIR)/./OpenGL/VertexShader.o \
+$(OUTDIR)/./OpenMP/OpenMP.o \
 $(OUTDIR)/./Thread/Condition.o \
 $(OUTDIR)/./Thread/Mutex.o \
 $(OUTDIR)/./Thread/MutexLocker.o \
@@ -435,6 +436,10 @@ $(OUTDIR)/./Thread/%.o: ./Thread/%.cpp ./Thread/%.h
 	$(MKDIR) $(OUTDIR)/./Thread
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./OpenMP/%.o: ./OpenMP/%.cpp ./OpenMP/%.h
+	$(MKDIR) $(OUTDIR)/./OpenMP
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./OpenGL/%.o: ./OpenGL/%.cpp ./OpenGL/%.h
 	$(MKDIR) $(OUTDIR)/./OpenGL
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -559,6 +564,8 @@ install::
 	$(INSTALL) ./Numeric/*.h $(INSTALL_DIR)/include/Core/./Numeric
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./OpenGL
 	$(INSTALL) ./OpenGL/*.h $(INSTALL_DIR)/include/Core/./OpenGL
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./OpenMP
+	$(INSTALL) ./OpenMP/*.h $(INSTALL_DIR)/include/Core/./OpenMP
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Thread
 	$(INSTALL) ./Thread/*.h $(INSTALL_DIR)/include/Core/./Thread
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Utility

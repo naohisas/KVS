@@ -114,6 +114,8 @@
 #include <Core/OpenGL/TextureRectangle.h>
 #include <Core/OpenGL/VertexBufferObject.h>
 #include <Core/OpenGL/VertexShader.h>
+#include <Core/OpenMP/OMP.h>
+#include <Core/OpenMP/OpenMP.h>
 #include <Core/Thread/Condition.h>
 #include <Core/Thread/Mutex.h>
 #include <Core/Thread/MutexLocker.h>

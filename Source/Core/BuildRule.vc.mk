@@ -181,6 +181,7 @@ $(OUTDIR)\.\OpenGL\TextureBinder.obj \
 $(OUTDIR)\.\OpenGL\TextureRectangle.obj \
 $(OUTDIR)\.\OpenGL\VertexBufferObject.obj \
 $(OUTDIR)\.\OpenGL\VertexShader.obj \
+$(OUTDIR)\.\OpenMP\OpenMP.obj \
 $(OUTDIR)\.\Thread\Condition.obj \
 $(OUTDIR)\.\Thread\Mutex.obj \
 $(OUTDIR)\.\Thread\MutexLocker.obj \
@@ -459,6 +460,12 @@ $<
 $<
 <<
 
+{.\OpenMP\}.cpp{$(OUTDIR)\.\OpenMP\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\OpenMP $(MKDIR) $(OUTDIR)\.\OpenMP
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\OpenMP\ @<<
+$<
+<<
+
 {.\OpenGL\}.cpp{$(OUTDIR)\.\OpenGL\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\OpenGL $(MKDIR) $(OUTDIR)\.\OpenGL
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\OpenGL\ @<<
@@ -623,6 +630,8 @@ install::
 	$(INSTALL) .\Numeric\*.h $(INSTALL_DIR)\include\Core\.\Numeric
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\OpenGL $(MKDIR) $(INSTALL_DIR)\include\Core\.\OpenGL
 	$(INSTALL) .\OpenGL\*.h $(INSTALL_DIR)\include\Core\.\OpenGL
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\OpenMP $(MKDIR) $(INSTALL_DIR)\include\Core\.\OpenMP
+	$(INSTALL) .\OpenMP\*.h $(INSTALL_DIR)\include\Core\.\OpenMP
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Thread $(MKDIR) $(INSTALL_DIR)\include\Core\.\Thread
 	$(INSTALL) .\Thread\*.h $(INSTALL_DIR)\include\Core\.\Thread
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Utility $(MKDIR) $(INSTALL_DIR)\include\Core\.\Utility
