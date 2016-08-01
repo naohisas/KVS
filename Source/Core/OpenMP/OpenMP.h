@@ -25,7 +25,7 @@ int GetLevel();
 int GetAncestorThreadNumber( int level );
 int GetTeamSize( int level );
 int GetActiveLevel();
-bool InFinal();
+//bool InFinal();
 double GetWTime();
 double GetWTick();
 

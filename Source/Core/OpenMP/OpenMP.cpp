@@ -163,13 +163,15 @@ int GetActiveLevel()
 #endif
 }
 
-bool InFinal()
-{
-#ifdef _OPENMP
-    return static_cast<bool>( omp_in_final() );
-#else
-    return false;
-#endif
+//bool InFinal()
+//{
+//#ifdef _OPENMP
+//#if (_OPENMP >= 201107 ) // OpenMP 3.1
+//    return static_cast<bool>( omp_in_final() );
+//#endif
+//#else
+//    return false;
+//#endif
 }
 
 double GetWTime()
