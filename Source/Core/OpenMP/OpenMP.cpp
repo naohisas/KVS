@@ -71,7 +71,7 @@ bool InParallel()
 #endif
 }
 
-void SetDynamic( int dthreads )
+void SetDynamic( bool dthreads )
 {
 #ifdef _OPENMP
     omp_set_dynamic( dthreads );
@@ -80,16 +80,16 @@ void SetDynamic( int dthreads )
 #endif
 }
 
-int GetDynamic()
+bool GetDynamic()
 {
 #ifdef _OPENMP
-    return omp_get_dynamic();
+    return static_cast<bool>( omp_get_dynamic() );
 #else
     return 0;
 #endif
 }
 
-void SetNested( int nested )
+void SetNested( bool nested )
 {
 #ifdef _OPENMP
     omp_set_nested( nested );
@@ -98,10 +98,10 @@ void SetNested( int nested )
 #endif
 }
 
-int GetNested()
+bool GetNested()
 {
 #ifdef _OPENMP
-    return omp_get_nested();
+    return static_cast<bool>( omp_get_nested() );
 #else
     return 0;
 #endif
@@ -162,17 +162,6 @@ int GetActiveLevel()
     return 0;
 #endif
 }
-
-//bool InFinal()
-//{
-//#ifdef _OPENMP
-//#if (_OPENMP >= 201107 ) // OpenMP 3.1
-//    return static_cast<bool>( omp_in_final() );
-//#endif
-//#else
-//    return false;
-//#endif
-//}
 
 double GetWTime()
 {
