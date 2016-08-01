@@ -64,7 +64,7 @@
   #include <OpenGL/glu.h>
   #endif
 #else
-  // Linux
+  // Windows and Linux
   #include <GL/gl.h>
   #if defined( KVS_ENABLE_GLU )
   #include <GL/glu.h>
