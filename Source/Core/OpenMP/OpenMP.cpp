@@ -172,7 +172,7 @@ int GetActiveLevel()
 //#else
 //    return false;
 //#endif
-}
+//}
 
 double GetWTime()
 {
