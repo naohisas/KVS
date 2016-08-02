@@ -263,8 +263,13 @@ ParticleBasedRenderer::Engine::~Engine()
 /*===========================================================================*/
 void ParticleBasedRenderer::Engine::release()
 {
-    m_shader_program.release();
-    for ( size_t i = 0; i < repetitionLevel(); i++ ) m_vbo[i].release();
+    KVS_ASSERT( m_vbo );
+
+    if ( m_shader_program.isCreated() )
+    {
+        m_shader_program.release();
+        for ( size_t i = 0; i < repetitionLevel(); i++ ) m_vbo[i].release();
+    }
 }
 
 /*===========================================================================*/
