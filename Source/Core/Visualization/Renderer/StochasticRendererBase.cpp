@@ -51,12 +51,20 @@ StochasticRendererBase::~StochasticRendererBase()
     if ( m_engine ) delete m_engine;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Releases object resouces from GPU.
+ */
+/*===========================================================================*/
 void StochasticRendererBase::release()
 {
     KVS_ASSERT( m_engine );
 
-    m_engine->detachObject();
-    m_engine->release();
+    if ( m_engine->object() )
+    {
+        m_engine->detachObject();
+        m_engine->release();
+    }
 }
 
 /*===========================================================================*/
