@@ -37,16 +37,15 @@ public:
 
 private:
 
-    bool m_has_ncells; ///< flag to check whether 'ncells' is specified or not
-    size_t m_ncells; ///< number of cells
+    kvs::kvsml::TagAttribute<size_t> m_ncells; ///< number of cells
 
 public:
 
     CellTag();
 
-    bool hasNCells() const { return m_has_ncells; }
+    bool hasNCells() const { return m_ncells.hasValue(); }
     size_t ncells() const { return m_ncells; }
-    void setNCells( const size_t ncells ) { m_has_ncells = true; m_ncells = ncells; }
+    void setNCells( const size_t ncells ) { m_ncells = ncells; }
 
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );

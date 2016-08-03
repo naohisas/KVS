@@ -38,17 +38,15 @@ public:
 
 private:
 
-    bool m_has_nnodes; ///< flag to check whether 'nnodes' is specified or not
-    size_t m_nnodes; ///< number of nodes
+    kvs::kvsml::TagAttribute<size_t> m_nnodes; ///< number of nodes
 
 public:
 
     NodeTag();
 
-    bool hasNNodes() const { return m_has_nnodes; }
+    bool hasNNodes() const { return m_nnodes.hasValue(); }
     size_t nnodes() const { return m_nnodes; }
-
-    void setNNodes( const size_t nnodes ) { m_has_nnodes = true; m_nnodes = nnodes; }
+    void setNNodes( const size_t nnodes ) { m_nnodes = nnodes; }
 
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );
