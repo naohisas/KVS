@@ -152,23 +152,6 @@ bool StructuredVolumeObject::read( const std::string& filename )
     kvs::KVSMLStructuredVolumeObject kvsml;
     if ( !kvsml.read( filename ) ) { return false; }
 
-    if ( kvsml.objectTag().hasExternalCoord() )
-    {
-        const kvs::Vec3 min_coord( kvsml.objectTag().minExternalCoord() );
-        const kvs::Vec3 max_coord( kvsml.objectTag().maxExternalCoord() );
-        this->setMinMaxExternalCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml.objectTag().hasObjectCoord() )
-    {
-        const kvs::Vec3 min_coord( kvsml.objectTag().minObjectCoord() );
-        const kvs::Vec3 max_coord( kvsml.objectTag().maxObjectCoord() );
-        this->setMinMaxObjectCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml.hasLabel() ) { this->setLabel( kvsml.label() ); }
-    if ( kvsml.hasUnit() ) { this->setUnit( kvsml.unit() ); }
-
     this->setGridType( ::GetGridType( kvsml.gridType() ) );
     this->setResolution( kvsml.resolution() );
     this->setVeclen( kvsml.veclen() );
@@ -179,7 +162,27 @@ bool StructuredVolumeObject::read( const std::string& filename )
     {
         this->setCoords( kvsml.coords() );
     }
-    this->updateMinMaxCoords();
+
+    if ( kvsml.hasExternalCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minExternalCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxExternalCoord() );
+        this->setMinMaxExternalCoords( min_coord, max_coord );
+    }
+
+    if ( kvsml.hasObjectCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minObjectCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxObjectCoord() );
+        this->setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    else
+    {
+        this->updateMinMaxCoords();
+    }
+
+    if ( kvsml.hasLabel() ) { this->setLabel( kvsml.label() ); }
+    if ( kvsml.hasUnit() ) { this->setUnit( kvsml.unit() ); }
 
     if ( kvsml.hasMinValue() && kvsml.hasMaxValue() )
     {
@@ -250,6 +253,16 @@ bool StructuredVolumeObject::write( const std::string& filename, const bool asci
     {
         kvsml.setMinValue( this->minValue() );
         kvsml.setMaxValue( this->maxValue() );
+    }
+
+    if ( this->hasMinMaxObjectCoords() )
+    {
+        kvsml.setMinMaxObjectCoords( this->minObjectCoord(), this->maxObjectCoord() );
+    }
+
+    if ( this->hasMinMaxExternalCoords() )
+    {
+        kvsml.setMinMaxExternalCoords( this->minExternalCoord(), this->maxExternalCoord() );
     }
 
     return kvsml.write( filename );

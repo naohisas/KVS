@@ -69,12 +69,26 @@ public:
     const kvs::ValueArray<kvs::UInt8>& colors() const { return m_colors; }
     const kvs::ValueArray<kvs::Real32>& normals() const { return m_normals; }
     const kvs::ValueArray<kvs::Real32>& sizes() const { return m_sizes; }
+    bool hasObjectCoord() const { return m_object_tag.hasObjectCoord(); }
+    bool hasExternalCoord() const { return m_object_tag.hasExternalCoord(); }
+    const kvs::Vec3& minObjectCoord() const { return m_object_tag.minObjectCoord(); }
+    const kvs::Vec3& maxObjectCoord() const { return m_object_tag.maxObjectCoord(); }
+    const kvs::Vec3& minExternalCoord() const { return m_object_tag.minExternalCoord(); }
+    const kvs::Vec3& maxExternalCoord() const { return m_object_tag.maxExternalCoord(); }
 
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
     void setCoords( const kvs::ValueArray<kvs::Real32>& coords ) { m_coords = coords; }
     void setColors( const kvs::ValueArray<kvs::UInt8>& colors ) { m_colors = colors; }
     void setNormals( const kvs::ValueArray<kvs::Real32>& normals ) { m_normals = normals; }
     void setSizes( const kvs::ValueArray<kvs::Real32>& sizes ) { m_sizes = sizes; }
+    void setMinMaxObjectCoords( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord )
+    {
+        m_object_tag.setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    void setMinMaxExternalCoords( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord )
+    {
+        m_object_tag.setMinMaxExternalCoords( min_coord, max_coord );
+    }
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     bool read( const std::string& filename );

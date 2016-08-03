@@ -256,7 +256,7 @@ bool ObjectTag::write( kvs::XMLNode::SuperClass* parent )
     {
         const std::string min_coord = kvs::String::ToString( m_min_external_coord );
         const std::string max_coord = kvs::String::ToString( m_max_external_coord );
-        const std::string value = min_coord + max_coord; // is this bug? ( min_coord + " " + max_coord )
+        const std::string value = min_coord + " " + max_coord;
         element.setAttribute( "external_coord", value );
     }
 
@@ -264,7 +264,7 @@ bool ObjectTag::write( kvs::XMLNode::SuperClass* parent )
     {
         const std::string min_coord = kvs::String::ToString( m_min_object_coord );
         const std::string max_coord = kvs::String::ToString( m_max_object_coord );
-        const std::string value = min_coord + max_coord; // is this bug? ( min_coord + " " + max_coord )
+        const std::string value = min_coord + " " + max_coord;
         element.setAttribute( "object_coord", value );
     }
 

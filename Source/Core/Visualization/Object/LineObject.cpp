@@ -383,27 +383,30 @@ bool LineObject::read( const std::string& filename )
     kvs::KVSMLLineObject kvsml;
     if ( !kvsml.read( filename ) ) { return false; }
 
-    if ( kvsml.objectTag().hasExternalCoord() )
-    {
-        const kvs::Vec3 min_coord( kvsml.objectTag().minExternalCoord() );
-        const kvs::Vec3 max_coord( kvsml.objectTag().maxExternalCoord() );
-        this->setMinMaxExternalCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml.objectTag().hasObjectCoord() )
-    {
-        const kvs::Vec3 min_coord( kvsml.objectTag().minObjectCoord() );
-        const kvs::Vec3 max_coord( kvsml.objectTag().maxObjectCoord() );
-        this->setMinMaxObjectCoords( min_coord, max_coord );
-    }
-
     this->setLineType( ::GetLineType( kvsml.lineType() ) );
     this->setColorType( ::GetColorType( kvsml.colorType() ) );
     this->setCoords( kvsml.coords() );
     this->setColors( kvsml.colors() );
     this->setSizes( kvsml.sizes() );
     this->setConnections( kvsml.connections() );
-    this->updateMinMaxCoords();
+
+    if ( kvsml.hasExternalCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minExternalCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxExternalCoord() );
+        this->setMinMaxExternalCoords( min_coord, max_coord );
+    }
+
+    if ( kvsml.hasObjectCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minObjectCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxObjectCoord() );
+        this->setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    else
+    {
+        this->updateMinMaxCoords();
+    }
 
     return true;
 }
@@ -421,13 +424,22 @@ bool LineObject::write( const std::string& filename, const bool ascii, const boo
 {
     kvs::KVSMLLineObject kvsml;
     kvsml.setWritingDataType( ::GetWritingDataType( ascii, external ) );
-
     kvsml.setLineType( ::GetLineTypeName( this->lineType() ) );
     kvsml.setColorType( ::GetColorTypeName( this->colorType() ) );
     kvsml.setCoords( this->coords() );
     kvsml.setColors( this->colors() );
     kvsml.setConnections( this->connections() );
     kvsml.setSizes( this->sizes() );
+
+    if ( this->hasMinMaxObjectCoords() )
+    {
+        kvsml.setMinMaxObjectCoords( this->minObjectCoord(), this->maxObjectCoord() );
+    }
+
+    if ( this->hasMinMaxExternalCoords() )
+    {
+        kvsml.setMinMaxExternalCoords( this->minExternalCoord(), this->maxExternalCoord() );
+    }
 
     return kvsml.write( filename );
 }

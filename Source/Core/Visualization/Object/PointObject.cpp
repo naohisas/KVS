@@ -446,25 +446,28 @@ bool PointObject::read( const std::string& filename )
     kvs::KVSMLPointObject kvsml;
     if ( !kvsml.read( filename ) ) { return false; }
 
-    if ( kvsml.objectTag().hasExternalCoord() )
-    {
-        const kvs::Vec3 min_coord( kvsml.objectTag().minExternalCoord() );
-        const kvs::Vec3 max_coord( kvsml.objectTag().maxExternalCoord() );
-        this->setMinMaxExternalCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml.objectTag().hasObjectCoord() )
-    {
-        const kvs::Vec3 min_coord( kvsml.objectTag().minObjectCoord() );
-        const kvs::Vec3 max_coord( kvsml.objectTag().maxObjectCoord() );
-        this->setMinMaxObjectCoords( min_coord, max_coord );
-    }
-
     this->setCoords( kvsml.coords() );
     this->setColors( kvsml.colors() );
     this->setNormals( kvsml.normals() );
     this->setSizes( kvsml.sizes() );
-    this->updateMinMaxCoords();
+
+    if ( kvsml.hasExternalCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minExternalCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxExternalCoord() );
+        this->setMinMaxExternalCoords( min_coord, max_coord );
+    }
+
+    if ( kvsml.hasObjectCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minObjectCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxObjectCoord() );
+        this->setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    else
+    {
+        this->updateMinMaxCoords();
+    }
 
     return true;
 }
@@ -486,6 +489,16 @@ bool PointObject::write( const std::string& filename, const bool ascii, const bo
     kvsml.setColors( this->colors() );
     kvsml.setNormals( this->normals() );
     kvsml.setSizes( this->sizes() );
+
+    if ( this->hasMinMaxObjectCoords() )
+    {
+        kvsml.setMinMaxObjectCoords( this->minObjectCoord(), this->maxObjectCoord() );
+    }
+
+    if ( this->hasMinMaxExternalCoords() )
+    {
+        kvsml.setMinMaxExternalCoords( this->minExternalCoord(), this->maxExternalCoord() );
+    }
 
     return kvsml.write( filename );
 }

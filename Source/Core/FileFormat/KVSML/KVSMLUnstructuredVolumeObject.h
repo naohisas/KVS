@@ -83,6 +83,8 @@ public:
     bool hasUnit() const { return m_has_unit; }
     bool hasMinValue() const { return m_has_min_value; }
     bool hasMaxValue() const { return m_has_max_value; }
+    bool hasObjectCoord() const { return m_object_tag.hasObjectCoord(); }
+    bool hasExternalCoord() const { return m_object_tag.hasExternalCoord(); }
     const std::string& label() const { return m_label; }
     const std::string& unit() const { return m_unit; }
     size_t veclen() const { return m_veclen; }
@@ -90,6 +92,10 @@ public:
     size_t ncells() const { return m_ncells; }
     double minValue() const { return m_min_value; }
     double maxValue() const { return m_max_value; }
+    const kvs::Vec3& minObjectCoord() const { return m_object_tag.minObjectCoord(); }
+    const kvs::Vec3& maxObjectCoord() const { return m_object_tag.maxObjectCoord(); }
+    const kvs::Vec3& minExternalCoord() const { return m_object_tag.minExternalCoord(); }
+    const kvs::Vec3& maxExternalCoord() const { return m_object_tag.maxExternalCoord(); }
     const kvs::AnyValueArray& values() const { return m_values; }
     const kvs::ValueArray<kvs::Real32>& coords() const { return m_coords; }
     const kvs::ValueArray<kvs::UInt32>& connections() const { return m_connections; }
@@ -101,11 +107,22 @@ public:
     void setVeclen( const size_t veclen ) { m_veclen = veclen; }
     void setNNodes( const size_t nnodes ) { m_nnodes = nnodes; }
     void setNCells( const size_t ncells ) { m_ncells = ncells; }
-    void setMinValue( const double value ) { m_min_value = value; }
-    void setMaxValue( const double value ) { m_max_value = value; }
+    void setMinValue( const double value ) { m_has_min_value = true; m_min_value = value; }
+    void setMaxValue( const double value ) { m_has_max_value = true; m_max_value = value; }
     void setValues( const kvs::AnyValueArray& values ) { m_values = values; }
     void setCoords( const kvs::ValueArray<kvs::Real32>& coords ) { m_coords = coords; }
-    void setConnections( const kvs::ValueArray<kvs::UInt32>& connections ) { m_connections = connections; }
+    void setConnections( const kvs::ValueArray<kvs::UInt32>& connections )
+    {
+        m_connections = connections;
+    }
+    void setMinMaxObjectCoords( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord )
+    {
+        m_object_tag.setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    void setMinMaxExternalCoords( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord )
+    {
+        m_object_tag.setMinMaxExternalCoords( min_coord, max_coord );
+    }
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     bool read( const std::string& filename );

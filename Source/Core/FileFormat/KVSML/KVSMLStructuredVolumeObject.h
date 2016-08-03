@@ -81,12 +81,18 @@ public:
     bool hasUnit() const { return m_has_unit; }
     bool hasMinValue() const { return m_has_min_value; }
     bool hasMaxValue() const { return m_has_max_value; }
+    bool hasObjectCoord() const { return m_object_tag.hasObjectCoord(); }
+    bool hasExternalCoord() const { return m_object_tag.hasExternalCoord(); }
     const std::string& label() const { return m_label; }
     const std::string& unit() const { return m_unit; }
     size_t veclen() const { return m_veclen; }
     const kvs::Vec3ui& resolution() const { return m_resolution; }
     double minValue() const { return m_min_value; }
     double maxValue() const { return m_max_value; }
+    const kvs::Vec3& minObjectCoord() const { return m_object_tag.minObjectCoord(); }
+    const kvs::Vec3& maxObjectCoord() const { return m_object_tag.maxObjectCoord(); }
+    const kvs::Vec3& minExternalCoord() const { return m_object_tag.minExternalCoord(); }
+    const kvs::Vec3& maxExternalCoord() const { return m_object_tag.maxExternalCoord(); }
     const kvs::AnyValueArray& values() const { return m_values; }
     const kvs::ValueArray<float>& coords() const { return m_coords; }
 
@@ -100,6 +106,14 @@ public:
     void setMaxValue( const double value ) { m_has_max_value = true; m_max_value = value; }
     void setValues( const kvs::AnyValueArray& values ) { m_values = values; }
     void setCoords( const kvs::ValueArray<float>& coords ) { m_coords = coords; }
+    void setMinMaxObjectCoords( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord )
+    {
+        m_object_tag.setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    void setMinMaxExternalCoords( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord )
+    {
+        m_object_tag.setMinMaxExternalCoords( min_coord, max_coord );
+    }
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     bool read( const std::string& filename );
