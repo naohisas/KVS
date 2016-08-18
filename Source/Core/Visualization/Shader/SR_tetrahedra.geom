@@ -13,8 +13,8 @@
  */
 /*****************************************************************************/
 #version 120
-#extension GL_EXT_geometry_shader4 : enable
-#extension GL_EXT_gpu_shader4 : enable
+//#extension GL_EXT_geometry_shader4 : enable
+//#extension GL_EXT_gpu_shader4 : enable
 #include <qualifire.h>
 #include <texture.h>
 

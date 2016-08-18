@@ -486,16 +486,12 @@ void ProgramObject::deleteID()
 void ProgramObject::setParameter( GLenum pname, GLint value )
 {
     KVS_ASSERT( this->isCreated() );
-#if ( glProgramParameteri != NULL ) 
-    KVS_GL_CALL( glProgramParameteri( this->id(), pname, value ) );
-#else
-#if ( glProgramParameteriARB != NULL )
+#if defined( GL_EXT_geometry_shader4 )
+    KVS_GL_CALL( glProgramParameteriEXT( this->id(), pname, value ) );
+#elif defined( GL_ARB_geometry_shader4 )
     KVS_GL_CALL( glProgramParameteriARB( this->id(), pname, value ) );
 #else
-#if ( glProgramParameteriEXT != NULL )
-    KVS_GL_CALL( glProgramParameteriEXT( this->id(), pname, value ) );
-#endif
-#endif
+    KVS_GL_CALL( glProgramParameteri( this->id(), pname, value ) );
 #endif
 }
 
