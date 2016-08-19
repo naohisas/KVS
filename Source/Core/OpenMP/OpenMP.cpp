@@ -181,6 +181,43 @@ double GetWTick()
 #endif
 }
 
+Mutex::Mutex()
+{
+#ifdef _OPENMP
+    omp_init_lock( &m_handler );
+#endif
+}
+
+Mutex::~Mutex()
+{
+#ifdef _OPENMP
+    omp_destroy_lock( &m_handler );
+#endif
+}
+
+void Mutex::lock()
+{
+#ifdef _OPENMP
+    omp_set_lock( &m_handler );
+#endif
+}
+
+void Mutex::unlock()
+{
+#ifdef _OPENMP
+    omp_unset_lock( &m_handler );
+#endif
+}
+
+bool Mutex::tryLock()
+{
+#ifdef _OPENMP
+    return omp_test_lock( &m_handler );
+#else
+    return false;
+#endif
+}
+
 } // end of namespace OpenMP
 
 } // end of namespace kvs

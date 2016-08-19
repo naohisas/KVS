@@ -28,6 +28,29 @@ int GetActiveLevel();
 double GetWTime();
 double GetWTick();
 
+class Mutex
+{
+public:
+#ifdef _OPENMP
+    typedef omp_lock_t Handler;
+#else
+    typedef void* Handler;
+#endif
+
+private:
+    Handler m_handler; ///< mutex handler
+
+public:
+    Mutex();
+    virtual ~Mutex();
+
+    const Handler& handler() const { return m_handler; }
+
+    void lock();
+    void unlock();
+    bool tryLock();
+};
+
 } // end of namespace OpenMP
 
 } // end of namespace kvs
