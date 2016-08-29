@@ -212,6 +212,8 @@ namespace CellByCellSampling
 /*===========================================================================*/
 kvs::Real32 ParticleDensityMap::at( const float value ) const
 {
+    if ( value == m_min_value ) { return m_table[0]; }
+    if ( value == m_max_value ) { return m_table[ m_resolution - 1 ]; }
     if ( value < m_min_value || m_max_value < value ) { return 0.0f; }
 
     const float r = static_cast<float>( m_resolution - 1 );
@@ -237,7 +239,7 @@ void ParticleDensityMap::create( const kvs::OpacityMap& omap )
     m_max_value = omap.maxValue();
 
     const kvs::Real32 dt = m_sampling_step;
-    const kvs::Real32 length = ::PixelLength( m_camera, m_object ) / m_subpixel_level;
+    const kvs::Real32 length = ::PixelLength( m_camera, m_object );
 
     const kvs::Real32 max_opacity = 1.0f - std::exp( -dt / length );
     const kvs::Real32 max_density = 1.0f / ( length * length * length );
