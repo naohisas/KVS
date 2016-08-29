@@ -18,6 +18,7 @@
 #include <kvs/StructuredVolumeObject>
 #include <kvs/Vector3>
 #include <kvs/Assert>
+#include <cstring>
 
 
 namespace kvs
@@ -60,6 +61,8 @@ inline TrilinearInterpolator::TrilinearInterpolator( const kvs::StructuredVolume
     m_grid_index( 0, 0, 0 ),
     m_reference_volume( volume )
 {
+    std::memset( m_index, 0x00, sizeof( kvs::UInt32 ) * 8 );
+    std::memset( m_weight, 0x00, sizeof( kvs::Real32 ) * 8 );
 }
 
 /*===========================================================================*/
