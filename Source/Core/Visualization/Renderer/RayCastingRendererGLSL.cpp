@@ -412,7 +412,10 @@ void RayCastingRenderer::initialize_shader( const kvs::StructuredVolumeObject* v
             max_value = static_cast<kvs::Real32>( volume->maxValue() );
         }
     }
-    else if ( type == typeid( kvs::UInt32 ) || type == typeid( kvs::Int32  ) || type == typeid( kvs::Real32 ) )
+    else if ( type == typeid( kvs::UInt32 ) ||
+              type == typeid( kvs::Int32  ) ||
+              type == typeid( kvs::Real32 ) ||
+              type == typeid( kvs::Real64 ) )
     {
         min_range = 0.0f;
         max_range = 1.0f;
