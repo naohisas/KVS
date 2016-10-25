@@ -207,13 +207,16 @@ void CellByCellUniformSampling::generate_particles( const kvs::StructuredVolumeO
     const kvs::Vec3ui ncells( volume->resolution() - kvs::Vector3ui::All(1) );
     const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
 
+    kvs::TrilinearInterpolator interpolator( volume );
+    CellByCellSampling::GridSampler<T> sampler( &interpolator, &density_map );
+
     // Calculate number of particles.
     size_t N = 0;
     kvs::ValueArray<kvs::UInt32> nparticles( ncells.x() * ncells.y() * ncells.z() );
     KVS_OMP_PARALLEL()
     {
-        kvs::TrilinearInterpolator interpolator( volume );
-        CellByCellSampling::GridSampler<T> sampler( &interpolator, &density_map );
+//        kvs::TrilinearInterpolator interpolator( volume );
+//        CellByCellSampling::GridSampler<T> sampler( &interpolator, &density_map );
 
         KVS_OMP_FOR( reduction(+:N) )
         for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
@@ -240,8 +243,8 @@ void CellByCellUniformSampling::generate_particles( const kvs::StructuredVolumeO
     kvs::ValueArray<kvs::UInt8> colors( 3 * N * repetitions );
     KVS_OMP_PARALLEL()
     {
-        kvs::TrilinearInterpolator interpolator( volume );
-        CellByCellSampling::GridSampler<T> sampler( &interpolator, &density_map );
+//        kvs::TrilinearInterpolator interpolator( volume );
+//        CellByCellSampling::GridSampler<T> sampler( &interpolator, &density_map );
 
         KVS_OMP_FOR( schedule(dynamic) )
         for ( kvs::UInt32 r = 0; r < repetitions; ++r )
@@ -304,13 +307,16 @@ void CellByCellUniformSampling::generate_particles( const kvs::UnstructuredVolum
     const size_t ncells = volume->numberOfCells();
     const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
 
+    kvs::CellBase* cell = CellByCellSampling::Cell( volume );
+    CellByCellSampling::CellSampler sampler( cell, &density_map );
+
     // Calculate number of particles
     size_t N = 0;
     kvs::ValueArray<kvs::UInt32> nparticles( ncells );
     KVS_OMP_PARALLEL()
     {
-        kvs::CellBase* cell = CellByCellSampling::Cell( volume );
-        CellByCellSampling::CellSampler sampler( cell, &density_map );
+//        kvs::CellBase* cell = CellByCellSampling::Cell( volume );
+//        CellByCellSampling::CellSampler sampler( cell, &density_map );
 
         KVS_OMP_FOR( reduction(+:N) )
         for ( size_t index = 0; index < ncells; ++index )
@@ -322,7 +328,7 @@ void CellByCellUniformSampling::generate_particles( const kvs::UnstructuredVolum
             N += n;
         }
 
-        delete cell;
+//        delete cell;
     }
 
     // Generate particles
@@ -332,8 +338,8 @@ void CellByCellUniformSampling::generate_particles( const kvs::UnstructuredVolum
     kvs::ValueArray<kvs::UInt8> colors( 3 * N * repetitions );
     KVS_OMP_PARALLEL()
     {
-        kvs::CellBase* cell = CellByCellSampling::Cell( volume );
-        CellByCellSampling::CellSampler sampler( cell, &density_map );
+//        kvs::CellBase* cell = CellByCellSampling::Cell( volume );
+//        CellByCellSampling::CellSampler sampler( cell, &density_map );
 
         KVS_OMP_FOR( schedule(dynamic) )
         for ( kvs::UInt32 r = 0; r < repetitions; ++r )
@@ -364,8 +370,10 @@ void CellByCellUniformSampling::generate_particles( const kvs::UnstructuredVolum
             }
         }
 
-        delete cell;
+//        delete cell;
     }
+
+    delete cell;
 
     SuperClass::setCoords( coords );
     SuperClass::setColors( colors );
