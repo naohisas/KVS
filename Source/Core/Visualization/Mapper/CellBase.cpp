@@ -421,6 +421,8 @@ bool CellBase::contains( const kvs::Vec3& global ) const
 /*===========================================================================*/
 kvs::Real32 CellBase::randomNumber() const
 {
+    return m_rand();
+#if 0
     // xorshift RGNs with period at least 2^128 - 1.
     static kvs::Real32 t24 = 1.0/16777216.0; /* 0.5**24 */
     static kvs::UInt32 x=123456789,y=362436069,z=521288629,w=88675123;
@@ -430,6 +432,7 @@ kvs::Real32 CellBase::randomNumber() const
     w=(w^(w>>19))^(t^(t>>8));
 
     return t24*static_cast<kvs::Real32>(w>>8);
+#endif
 }
 
 /*===========================================================================*/

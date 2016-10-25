@@ -31,6 +31,7 @@
 #include <kvs/CellBase>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/UnstructuredVolumeObject>
+#include <kvs/Xorshift128>
 
 
 namespace kvs
@@ -304,6 +305,7 @@ private:
     Particle m_current; ///< current sampled point
     Particle m_trial; ///< trial point
     kvs::Vec3ui m_base_index; ///< base index of grid
+    kvs::Xorshift128 m_rand; ///< random number generator
 
 public:
     GridSampler(){}
@@ -314,6 +316,11 @@ public:
         m_density_map( density_map ) {}
 
     const kvs::TrilinearInterpolator* grid() const { return m_grid; }
+
+    void setSeed( const kvs::UInt32 seed )
+    {
+        m_rand.setSeed( seed );
+    }
 
     void bind( const kvs::Vec3ui& base_index )
     {
@@ -335,7 +342,8 @@ public:
 
     kvs::Real32 sample()
     {
-        m_current.coord = RandomSamplingInCube( m_base_index );
+//        m_current.coord = RandomSamplingInCube( m_base_index );
+        m_current.coord = this->random_sampling( m_base_index );
         m_grid->attachPoint( m_current.coord );
         m_current.normal = m_grid->template gradient<T>();
         m_current.scalar = m_grid->template scalar<T>();
@@ -359,7 +367,8 @@ public:
 
     kvs::Real32 trySample()
     {
-        m_trial.coord = RandomSamplingInCube( m_base_index );
+//        m_trial.coord = RandomSamplingInCube( m_base_index );
+        m_trial.coord = this->random_sampling( m_base_index );
         m_grid->attachPoint( m_trial.coord );
         m_trial.normal = m_grid->template gradient<T>();
         m_trial.scalar = m_grid->template scalar<T>();
@@ -377,6 +386,16 @@ public:
         m_current.normal = m_trial.normal;
         m_current.scalar = m_trial.scalar;
         return m_current;
+    }
+
+private:
+
+    const kvs::Vec3 random_sampling( const kvs::Vec3ui& base_index )
+    {
+        const kvs::Real32 x = m_rand();
+        const kvs::Real32 y = m_rand();
+        const kvs::Real32 z = m_rand();
+        return kvs::Vec3( base_index.x() + x, base_index.y() + y, base_index.z() + z );
     }
 };
 
@@ -403,6 +422,12 @@ public:
         m_density_map( density_map ) {}
 
     const kvs::CellBase* cell() const { return m_cell; }
+
+    void setSeed( const kvs::UInt32 seed )
+    {
+        m_cell->setSeed( seed );
+    }
+
     kvs::Real32 maxDensity() const
     {
         return m_density_map->maxValueInCell( m_cell, m_cell->referenceVolume() );

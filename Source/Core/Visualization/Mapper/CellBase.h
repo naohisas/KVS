@@ -19,6 +19,7 @@
 #include <kvs/Type>
 #include <kvs/Vector4>
 #include <kvs/Matrix44>
+#include <kvs/Xorshift128>
 #include <kvs/UnstructuredVolumeObject>
 #include <kvs/IgnoreUnusedVariable>
 #include <kvs/Message>
@@ -37,7 +38,6 @@ namespace kvs
 class CellBase
 {
 private:
-
     size_t m_nnodes; ///< number of nodes
     size_t m_veclen; ///< vector length
     kvs::Vec3* m_coords; ///< coordinates of the nodes
@@ -46,6 +46,7 @@ private:
     kvs::Real32* m_differential_functions; ///< differential functions
     mutable kvs::Vec3 m_local_point;  ///< sampling point in the local coordinate
     const kvs::UnstructuredVolumeObject* m_reference_volume; ///< reference unstructured volume
+    mutable kvs::Xorshift128 m_rand; ///< random number generator
 
 public:
 
@@ -64,6 +65,7 @@ public:
     virtual kvs::Real32 volume() const;
     virtual kvs::Vec3 localCenter() const;
 
+    void setSeed( const kvs::UInt32 seed ) { m_rand.setSeed( seed ); }
     size_t veclen() const { return m_veclen; }
     size_t numberOfCellNodes() const { return m_nnodes; }
     kvs::Real32* interpolationFunctions() const { return m_interpolation_functions; }

@@ -249,6 +249,7 @@ void CellByCellUniformSampling::generate_particles( const kvs::StructuredVolumeO
         KVS_OMP_FOR( schedule(dynamic) )
         for ( kvs::UInt32 r = 0; r < repetitions; ++r )
         {
+            sampler.setSeed( time(NULL) + kvs::OpenMP::GetThreadNumber() );
             size_t cell_index_counter = 0;
             size_t particle_index_counter = N * r;
             for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
@@ -344,6 +345,8 @@ void CellByCellUniformSampling::generate_particles( const kvs::UnstructuredVolum
         KVS_OMP_FOR( schedule(dynamic) )
         for ( kvs::UInt32 r = 0; r < repetitions; ++r )
         {
+            sampler.setSeed( time(NULL) + kvs::OpenMP::GetThreadNumber() );
+
             size_t particle_index_counter = N * r;
             for ( size_t index = 0; index < ncells; ++index )
             {
