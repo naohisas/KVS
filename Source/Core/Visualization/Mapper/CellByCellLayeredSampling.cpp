@@ -14,7 +14,6 @@
 /*****************************************************************************/
 #include "CellByCellLayeredSampling.h"
 #include <vector>
-#include <kvs/OpenMP>
 #include <kvs/DebugNew>
 #include <kvs/Camera>
 #include <kvs/ValueArray>
@@ -329,37 +328,18 @@ inline size_t ActualNumberOfParticles(
  *  @brief  Uniform sampling.
  *  @param  nparticles [in] number of particles
  *  @param  color_map [in] color map
- *  @param  sampler [int] sampler
- *  @param  particle_index_counter [in/out] reference to particle index counter
- *  @param  coords [out] reference to coordinate value array
- *  @param  normals [out] reference to normal vector array
- *  @param  colors [out] reference to color value array
+ *  @param  sampler [out] point sampler
  */
 /*===========================================================================*/
 inline void UniformSampling(
     const size_t nparticles,
     const kvs::ColorMap& color_map,
-    kvs::CellByCellSampling::CellSampler& sampler,
-    size_t& particle_index_counter,
-    kvs::ValueArray<kvs::Real32>& coords,
-    kvs::ValueArray<kvs::Real32>& normals,
-    kvs::ValueArray<kvs::UInt8>& colors )
+    kvs::CellByCellSampling::CellSampler* sampler )
 {
     for ( size_t i = 0; i < nparticles; ++i )
     {
-        sampler.sample();
-        const kvs::CellByCellSampling::Particle& p = sampler.accept();
-        const kvs::RGBColor color = color_map.at( p.scalar );
-        const size_t index3 = ( particle_index_counter++ ) * 3;
-        coords[ index3 + 0 ] = p.coord.x();
-        coords[ index3 + 1 ] = p.coord.y();
-        coords[ index3 + 2 ] = p.coord.z();
-        normals[ index3 + 0 ] = p.normal.x();
-        normals[ index3 + 1 ] = p.normal.y();
-        normals[ index3 + 2 ] = p.normal.z();
-        colors[ index3 + 0 ] = color.r();
-        colors[ index3 + 1 ] = color.g();
-        colors[ index3 + 2 ] = color.b();
+        sampler->sample();
+        sampler->accept( color_map );
     }
 }
 
@@ -368,45 +348,26 @@ inline void UniformSampling(
  *  @brief  Rejection sampling.
  *  @param  nparticles [in] number of particles
  *  @param  color_map [in] color map
- *  @param  sampler [int] sampler
- *  @param  particle_index_counter [in/out] reference to particle index counter
- *  @param  coords [out] reference to coordinate value array
- *  @param  normals [out] reference to normal vector array
- *  @param  colors [out] reference to color value array
+ *  @param  sampler [out] point sampler
  */
 /*===========================================================================*/
 inline void RejectionSampling(
     const size_t nparticles,
     const kvs::ColorMap& color_map,
-    kvs::CellByCellSampling::CellSampler& sampler,
-    size_t& particle_index_counter,
-    kvs::ValueArray<kvs::Real32>& coords,
-    kvs::ValueArray<kvs::Real32>& normals,
-    kvs::ValueArray<kvs::UInt8>& colors )
+    kvs::CellByCellSampling::CellSampler* sampler )
 {
-    const kvs::Real32 max_density = sampler.maxDensity();
+    const kvs::Real32 max_density = sampler->maxDensity();
     const kvs::Real32 pmax = max_density / nparticles;
 
     size_t counter = 0;
     while ( counter < nparticles )
     {
-        const kvs::Real32 density = sampler.sample();
+        const kvs::Real32 density = sampler->sample();
         const kvs::Real32 p = density / nparticles;
         const kvs::Real32 R = kvs::CellByCellSampling::RandomNumber();
         if ( p > pmax * R )
         {
-            const kvs::CellByCellSampling::Particle& p = sampler.accept();
-            const kvs::RGBColor color = color_map.at( p.scalar );
-            const size_t index3 = ( particle_index_counter++ ) * 3;
-            coords[ index3 + 0 ] = p.coord.x();
-            coords[ index3 + 1 ] = p.coord.y();
-            coords[ index3 + 2 ] = p.coord.z();
-            normals[ index3 + 0 ] = p.normal.x();
-            normals[ index3 + 1 ] = p.normal.y();
-            normals[ index3 + 2 ] = p.normal.z();
-            colors[ index3 + 0 ] = color.r();
-            colors[ index3 + 1 ] = color.g();
-            colors[ index3 + 2 ] = color.b();
+            sampler->accept( color_map );
             counter++;
         }
     }
@@ -420,11 +381,7 @@ inline void RejectionSampling(
  *  @param  particles [in] pre-generated particles
  *  @param  matrices [in] transformation matrices
  *  @param  indices [in] indices of particles in a cell
- *  @param  sampler [int] sampler
- *  @param  particle_index_counter [in/out] reference to particle index counter
- *  @param  coords [out] reference to coordinate value array
- *  @param  normals [out] reference to normal vector array
- *  @param  colors [out] reference to color value array
+ *  @param  sampler [in] point sampler
  */
 /*===========================================================================*/
 inline void RouletteSelection(
@@ -433,16 +390,12 @@ inline void RouletteSelection(
     const kvs::PointObject* particles,
     const Matrices& matrices,
     const kvs::ValueArray<kvs::UInt32>& indices,
-    kvs::CellByCellSampling::CellSampler& sampler,
-    size_t& particle_index_counter,
-    kvs::ValueArray<kvs::Real32>& coords,
-    kvs::ValueArray<kvs::Real32>& normals,
-    kvs::ValueArray<kvs::UInt8>& colors )
+    kvs::CellByCellSampling::CellSampler* sampler )
 {
-    const kvs::Vec3 normal = -sampler.cell()->gradientVector().normalized();
+    const kvs::Vec3 normal = -sampler->cell()->gradientVector().normalized();
     const kvs::Mat4 invLA = matrices.invL() * matrices.invA();
-    const kvs::Real32 min_value = sampler.cell()->referenceVolume()->minValue();
-    const kvs::Real32 max_value = sampler.cell()->referenceVolume()->maxValue();
+    const kvs::Real32 min_value = sampler->cell()->referenceVolume()->minValue();
+    const kvs::Real32 max_value = sampler->cell()->referenceVolume()->maxValue();
     for ( size_t i = 0; i < nparticles; i++ )
     {
         const kvs::Real32 fid = kvs::CellByCellSampling::RandomNumber() * indices.size();
@@ -453,19 +406,8 @@ inline void RouletteSelection(
         const kvs::Real32 scalar = kvs::Math::Mix( min_value, max_value, selected_particle.z() );
 
         // Set coord, color, and normal to the point object.
-        sampler.sample( coord.xyz(), normal, scalar );
-        const kvs::CellByCellSampling::Particle& p = sampler.accept();
-        const kvs::RGBColor color = color_map.at( p.scalar );
-        const size_t index3 = ( particle_index_counter++ ) * 3;
-        coords[ index3 + 0 ] = p.coord.x();
-        coords[ index3 + 1 ] = p.coord.y();
-        coords[ index3 + 2 ] = p.coord.z();
-        normals[ index3 + 0 ] = p.normal.x();
-        normals[ index3 + 1 ] = p.normal.y();
-        normals[ index3 + 2 ] = p.normal.z();
-        colors[ index3 + 0 ] = color.r();
-        colors[ index3 + 1 ] = color.g();
-        colors[ index3 + 2 ] = color.b();
+        sampler->sample( coord.xyz(), normal, scalar );
+        sampler->accept( color_map );
     }
 }
 
@@ -491,7 +433,7 @@ CellByCellLayeredSampling::CellByCellLayeredSampling():
 /**
  *  @brief  Constructs a new CellByCellLayeredSampling class.
  *  @param  volume [in] pointer to the volume object
- *  @param  repetition_level [in] repetition level
+ *  @param  subpixel_level [in] sub-pixel level
  *  @param  sampling_step [in] sapling step
  *  @param  transfer_function [in] transfer function
  *  @param  object_depth [in] depth value of the input volume at the CoG
@@ -499,15 +441,15 @@ CellByCellLayeredSampling::CellByCellLayeredSampling():
 /*===========================================================================*/
 CellByCellLayeredSampling::CellByCellLayeredSampling(
     const kvs::VolumeObjectBase* volume,
-    const size_t repetition_level,
-    const float sampling_step,
+    const size_t                 subpixel_level,
+    const float                  sampling_step,
     const kvs::TransferFunction& transfer_function,
-    const float object_depth ):
+    const float                  object_depth ):
     kvs::MapperBase( transfer_function ),
     kvs::PointObject(),
     m_camera( 0 )
 {
-    this->setRepetitionLevel( repetition_level );
+    this->setSubpixelLevel( subpixel_level );
     this->setSamplingStep( sampling_step );
     this->setObjectDepth( object_depth );
     this->exec( volume );
@@ -518,25 +460,25 @@ CellByCellLayeredSampling::CellByCellLayeredSampling(
  *  @brief  Constructs a new CellByCellLayeredSampling class.
  *  @param  camera [in] pointer to the camera
  *  @param  volume [in] pointer to the volume object
- *  @param  repetition_level [in] repetition level
+ *  @param  subpixel_level [in] sub-pixel level
  *  @param  sampling_step [in] sapling step
  *  @param  transfer_function [in] transfer function
  *  @param  object_depth [in] depth value of the input volume at the CoG
  */
 /*===========================================================================*/
 CellByCellLayeredSampling::CellByCellLayeredSampling(
-    const kvs::Camera* camera,
+    const kvs::Camera*           camera,
     const kvs::VolumeObjectBase* volume,
-    const size_t repetition_level,
-    const float sampling_step,
+    const size_t                 subpixel_level,
+    const float                  sampling_step,
     const kvs::TransferFunction& transfer_function,
-    const float object_depth ):
+    const float                  object_depth ):
     kvs::MapperBase( transfer_function ),
     kvs::PointObject(),
     m_camera( 0 )
 {
     this->attachCamera( camera );
-    this->setRepetitionLevel( repetition_level );
+    this->setSubpixelLevel( subpixel_level );
     this->setSamplingStep( sampling_step );
     this->setObjectDepth( object_depth );
     this->exec( volume );
@@ -620,137 +562,71 @@ void CellByCellLayeredSampling::mapping( const kvs::UnstructuredVolumeObject* vo
 /*===========================================================================*/
 void CellByCellLayeredSampling::generate_particles( const kvs::UnstructuredVolumeObject* volume )
 {
-    CellByCellSampling::ParticleDensityMap density_map;
+    kvs::CellByCellSampling::ParticleDensityMap density_map;
     density_map.setSamplingStep( m_sampling_step );
+    density_map.setSubpixelLevel( m_subpixel_level );
     density_map.attachCamera( m_camera );
     density_map.attachObject( volume );
     density_map.create( BaseClass::transferFunction().opacityMap() );
 
     kvs::Real32 integral = 0.0f;
     kvs::PointObject* particles = ::PregenerateParticles( 800000, density_map, &integral );
+    kvs::TetrahedralCell* cell = new kvs::TetrahedralCell( volume );
 
     const size_t resolution = density_map.resolution();
     const float tiny_value = 1.0f / resolution;
 
+    // Generate particles for each cell.
+    kvs::CellByCellSampling::CellSampler sampler( cell, &density_map );
     const size_t ncells = volume->numberOfCells();
     const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
-
-    // Calculate number of particles
-    size_t N = 0;
-    kvs::ValueArray<kvs::UInt32> nparticles( ncells );
-    KVS_OMP_PARALLEL()
+    for ( size_t index = 0; index < ncells; ++index )
     {
-        kvs::TetrahedralCell* cell = new kvs::TetrahedralCell( volume );
-        CellByCellSampling::CellSampler sampler( cell, &density_map );
+        sampler.bind( index );
 
-        KVS_OMP_FOR( reduction(+:N) )
-        for ( size_t index = 0; index < ncells; ++index )
+        const kvs::Real32* s = sampler.cell()->values();
+        const kvs::Real32 smin = kvs::Math::Min( s[0], s[1], s[2], s[3] );
+        const kvs::Real32 smax = kvs::Math::Max( s[0], s[1], s[2], s[3] );
+
+        if ( ::Equal( s[0], s[1], s[2], s[3] ) )
         {
-            sampler.bind( index );
+            const size_t nparticles = sampler.numberOfParticles();
+            ::UniformSampling( nparticles, color_map, &sampler );
+        }
+        else if ( smax - smin < tiny_value )
+        {
+            const size_t nparticles = sampler.numberOfParticles();
+            ::RejectionSampling( nparticles, color_map, &sampler );
+        }
+        else
+        {
+            const kvs::Real32 min_value = density_map.minValue();
+            const kvs::Real32 max_value = density_map.maxValue();
+            ::Matrices matrices( cell, min_value, max_value );
 
-            size_t n = 0;
-            const kvs::Real32* s = sampler.cell()->values();
-            const kvs::Real32 smin = kvs::Math::Min( s[0], s[1], s[2], s[3] );
-            const kvs::Real32 smax = kvs::Math::Max( s[0], s[1], s[2], s[3] );
-            if ( ::Equal( s[0], s[1], s[2], s[3] ) )
+            typedef kvs::ValueArray<kvs::UInt32> Indices;
+            const Indices indices = ::ParticlesInCell( cell, particles, matrices );
+            const size_t Nin = indices.size();
+            const size_t Nall = particles->numberOfVertices();
+            const size_t Ntet = ::ActualNumberOfParticles( Nin, Nall, integral, matrices );
+            if ( Nin > Ntet )
             {
-                n = sampler.numberOfParticles();
-            }
-            else if ( smax - smin < tiny_value )
-            {
-                n = sampler.numberOfParticles();
+                ::RouletteSelection( Ntet, color_map, particles, matrices, indices, &sampler );
             }
             else
             {
-                const kvs::Real32 min_value = density_map.minValue();
-                const kvs::Real32 max_value = density_map.maxValue();
-                ::Matrices matrices( cell, min_value, max_value );
-
-                typedef kvs::ValueArray<kvs::UInt32> Indices;
-                const Indices indices = ::ParticlesInCell( cell, particles, matrices );
-                const size_t Nin = indices.size();
-                const size_t Nall = particles->numberOfVertices();
-                const size_t Ntet = ::ActualNumberOfParticles( Nin, Nall, integral, matrices );
-                n = Ntet;
-            }
-
-            nparticles[index] = n;
-
-            N += n;
-        }
-
-        delete cell;
-    }
-
-    // Generate particles for each cell.
-    const kvs::UInt32 repetitions = m_repetition_level;
-    kvs::ValueArray<kvs::Real32> coords( 3 * N * repetitions );
-    kvs::ValueArray<kvs::Real32> normals( 3 * N * repetitions );
-    kvs::ValueArray<kvs::UInt8> colors( 3 * N * repetitions );
-    KVS_OMP_PARALLEL()
-    {
-        kvs::TetrahedralCell* cell = new kvs::TetrahedralCell( volume );
-        CellByCellSampling::CellSampler sampler( cell, &density_map );
-
-        KVS_OMP_FOR( schedule(dynamic) )
-        for ( kvs::UInt32 r = 0; r < repetitions; ++r )
-        {
-            size_t particle_index_counter = N * r;
-            for ( size_t index = 0; index < ncells; ++index )
-            {
-                const size_t n = nparticles[index];
-                if ( n == 0 ) continue;
-
-                sampler.bind( index );
-
-                const kvs::Real32* s = sampler.cell()->values();
-                const kvs::Real32 smin = kvs::Math::Min( s[0], s[1], s[2], s[3] );
-                const kvs::Real32 smax = kvs::Math::Max( s[0], s[1], s[2], s[3] );
-
-                if ( ::Equal( s[0], s[1], s[2], s[3] ) )
-                {
-                    ::UniformSampling( n, color_map, sampler,
-                                       particle_index_counter, coords, normals, colors );
-                }
-                else if ( smax - smin < tiny_value )
-                {
-                    ::RejectionSampling( n, color_map, sampler,
-                                         particle_index_counter, coords, normals, colors );
-                }
-                else
-                {
-                    const kvs::Real32 min_value = density_map.minValue();
-                    const kvs::Real32 max_value = density_map.maxValue();
-                    ::Matrices matrices( cell, min_value, max_value );
-
-                    typedef kvs::ValueArray<kvs::UInt32> Indices;
-                    const Indices indices = ::ParticlesInCell( cell, particles, matrices );
-                    const size_t Nin = indices.size();
-                    const size_t Ntet = n;
-                    if ( Nin > Ntet )
-                    {
-                        ::RouletteSelection( Ntet, color_map, particles, matrices, indices, sampler,
-                                             particle_index_counter, coords, normals, colors );
-                    }
-                    else
-                    {
-                        ::RouletteSelection( Nin, color_map, particles, matrices, indices, sampler,
-                                             particle_index_counter, coords, normals, colors );
-                        ::RejectionSampling( Ntet - Nin, color_map, sampler,
-                                             particle_index_counter, coords, normals, colors );
-                    }
-                }
+                ::RouletteSelection( Nin, color_map, particles, matrices, indices, &sampler );
+                ::RejectionSampling( Ntet - Nin, color_map, &sampler );
             }
         }
-
-        delete cell;
     }
 
+    delete cell;
     delete particles;
 
-    SuperClass::setCoords( coords );
-    SuperClass::setColors( colors );
-    SuperClass::setNormals( normals );
+    SuperClass::setCoords( sampler.particles().coords() );
+    SuperClass::setColors( sampler.particles().colors() );
+    SuperClass::setNormals( sampler.particles().normals() );
     SuperClass::setSize( 1.0f );
 }
 

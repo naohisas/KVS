@@ -135,13 +135,12 @@ const void SetupMapper(
     Mapper* mapper )
 {
     const size_t repetition_level = arg.repetitionLevel();
-//    const size_t subpixel_level = ::GetSubpixelLevel( repetition_level );
+    const size_t subpixel_level = ::GetSubpixelLevel( repetition_level );
     const float step = 0.5f;
     const float depth = 0.0f;
     mapper->attachCamera( screen.scene()->camera() );
     mapper->setTransferFunction( tfunc );
-//    mapper->setSubpixelLevel( subpixel_level );
-    mapper->setRepetitionLevel( repetition_level );
+    mapper->setSubpixelLevel( subpixel_level );
     mapper->setSamplingStep( step );
     mapper->setObjectDepth( depth );
 }

@@ -31,7 +31,6 @@
 #include <kvs/CellBase>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/UnstructuredVolumeObject>
-#include <kvs/Xorshift128>
 
 
 namespace kvs
@@ -164,36 +163,27 @@ struct Particle
 class Particles
 {
 private:
-    kvs::ValueArray<kvs::Real32> m_coords; ///< coorinate value array
-    kvs::ValueArray<kvs::Real32> m_normals; ///< normal vector array
-    kvs::ValueArray<kvs::UInt8> m_colors; ///< color value array
+    std::vector<kvs::Real32> m_coords; ///< coorinate value array
+    std::vector<kvs::Real32> m_normals; ///< normal vector array
+    std::vector<kvs::UInt8> m_colors; ///< color value array
 
 public:
     Particles() {}
-    void allocate( const size_t nparticles )
-    {
-        m_coords.allocate( nparticles * 3 );
-        m_normals.allocate( nparticles * 3 );
-        m_colors.allocate( nparticles * 3 );
-    }
-
-    const kvs::ValueArray<kvs::Real32>& coords() const { return m_coords; }
-    const kvs::ValueArray<kvs::Real32>& normals() const { return m_normals; }
-    const kvs::ValueArray<kvs::UInt8>& colors() const { return m_colors; }
-
-    void push( const size_t index, const Particle& particle, const kvs::ColorMap& color_map )
+    kvs::ValueArray<kvs::Real32> coords() const { return kvs::ValueArray<kvs::Real32>( m_coords ); }
+    kvs::ValueArray<kvs::Real32> normals() const { return kvs::ValueArray<kvs::Real32>( m_normals ); }
+    kvs::ValueArray<kvs::UInt8> colors() const { return kvs::ValueArray<kvs::UInt8>( m_colors ); }
+    void push( const Particle& particle, const kvs::ColorMap& color_map )
     {
         const kvs::RGBColor color = color_map.at( particle.scalar );
-        const size_t index3 = index * 3;
-        m_coords[ index3 + 0 ] = particle.coord.x();
-        m_coords[ index3 + 1 ] = particle.coord.y();
-        m_coords[ index3 + 2 ] = particle.coord.z();
-        m_normals[ index3 + 0 ] = particle.normal.x();
-        m_normals[ index3 + 1 ] = particle.normal.y();
-        m_normals[ index3 + 2 ] = particle.normal.z();
-        m_colors[ index3 + 0 ] = color.r();
-        m_colors[ index3 + 1 ] = color.g();
-        m_colors[ index3 + 2 ] = color.b();
+        m_coords.push_back( particle.coord.x() );
+        m_coords.push_back( particle.coord.y() );
+        m_coords.push_back( particle.coord.z() );
+        m_normals.push_back( particle.normal.x() );
+        m_normals.push_back( particle.normal.y() );
+        m_normals.push_back( particle.normal.z() );
+        m_colors.push_back( color.r() );
+        m_colors.push_back( color.g() );
+        m_colors.push_back( color.b() );
     }
 };
 
@@ -213,11 +203,13 @@ private:
     kvs::Real32 m_max_value; ///< max. value
     Table m_table; ///< value table
     kvs::Real32 m_sampling_step; ///< length of the ray segment (dt)
+    kvs::UInt32 m_subpixel_level; ///< subpixel level
     const kvs::Camera* m_camera; ///< pointer to the referenced camera
     const kvs::ObjectBase* m_object; ///< pointer to the referenced object
 
 public:
     void setSamplingStep( const kvs::Real32 step ) { m_sampling_step = step; }
+    void setSubpixelLevel( const kvs::UInt32 level ) { m_subpixel_level = level; }
     void attachCamera( const kvs::Camera* camera ) { m_camera = camera; }
     void attachObject( const kvs::ObjectBase* object ) { m_object = object; }
     size_t resolution() const { return m_resolution; }
@@ -255,7 +247,6 @@ inline kvs::Real32 ParticleDensityMap::maxValueInGrid(
     const kvs::UInt32* const indices = grid.indices();
     kvs::Real32 smin = static_cast<kvs::Real32>( values[ indices[0] ] );
     kvs::Real32 smax = static_cast<kvs::Real32>( values[ indices[0] ] );
-
     for ( size_t i = 1; i < 8; i++ )
     {
         const kvs::Real32 s = static_cast<kvs::Real32>( values[ indices[i] ] );
@@ -302,13 +293,12 @@ class GridSampler
 private:
     kvs::TrilinearInterpolator* m_grid; ///< trilinear interpolator
     ParticleDensityMap* m_density_map; ///< particle density map
+    Particles m_particles; ///< particles
     Particle m_current; ///< current sampled point
     Particle m_trial; ///< trial point
     kvs::Vec3ui m_base_index; ///< base index of grid
-    kvs::Xorshift128 m_rand; ///< random number generator
 
 public:
-    GridSampler(){}
     GridSampler(
         kvs::TrilinearInterpolator* grid,
         ParticleDensityMap* density_map ):
@@ -316,16 +306,9 @@ public:
         m_density_map( density_map ) {}
 
     const kvs::TrilinearInterpolator* grid() const { return m_grid; }
+    const Particles& particles() const { return m_particles; }
 
-    void setSeed( const kvs::UInt32 seed )
-    {
-        m_rand.setSeed( seed );
-    }
-
-    void bind( const kvs::Vec3ui& base_index )
-    {
-        m_base_index = base_index;
-    }
+    void bind( const kvs::Vec3ui& base_index ) { m_base_index = base_index; }
 
     size_t numberOfParticles()
     {
@@ -342,8 +325,7 @@ public:
 
     kvs::Real32 sample()
     {
-//        m_current.coord = RandomSamplingInCube( m_base_index );
-        m_current.coord = this->random_sampling( m_base_index );
+        m_current.coord = RandomSamplingInCube( m_base_index );
         m_grid->attachPoint( m_current.coord );
         m_current.normal = m_grid->template gradient<T>();
         m_current.scalar = m_grid->template scalar<T>();
@@ -367,35 +349,24 @@ public:
 
     kvs::Real32 trySample()
     {
-//        m_trial.coord = RandomSamplingInCube( m_base_index );
-        m_trial.coord = this->random_sampling( m_base_index );
+        m_trial.coord = RandomSamplingInCube( m_base_index );
         m_grid->attachPoint( m_trial.coord );
         m_trial.normal = m_grid->template gradient<T>();
         m_trial.scalar = m_grid->template scalar<T>();
         return m_density_map->at( m_trial.scalar );
     }
 
-    const Particle& accept()
+    void accept( const kvs::ColorMap& cmap )
     {
-        return m_current;
+        m_particles.push( m_current, cmap );
     }
 
-    const Particle& acceptTrial()
+    void acceptTrial( const kvs::ColorMap& cmap )
     {
+        m_particles.push( m_trial, cmap );
         m_current.coord = m_trial.coord;
         m_current.normal = m_trial.normal;
         m_current.scalar = m_trial.scalar;
-        return m_current;
-    }
-
-private:
-
-    const kvs::Vec3 random_sampling( const kvs::Vec3ui& base_index )
-    {
-        const kvs::Real32 x = m_rand();
-        const kvs::Real32 y = m_rand();
-        const kvs::Real32 z = m_rand();
-        return kvs::Vec3( base_index.x() + x, base_index.y() + y, base_index.z() + z );
     }
 };
 
@@ -409,12 +380,11 @@ class CellSampler
 private:
     kvs::CellBase* m_cell; ///< cell interpolator
     ParticleDensityMap* m_density_map; ///< particle density map
+    Particles m_particles; ///< particles
     Particle m_current; ///< current sampled point
     Particle m_trial; ///< trial point
 
 public:
-
-    CellSampler() {}
     CellSampler(
         kvs::CellBase* cell,
         ParticleDensityMap* density_map ):
@@ -422,12 +392,7 @@ public:
         m_density_map( density_map ) {}
 
     const kvs::CellBase* cell() const { return m_cell; }
-
-    void setSeed( const kvs::UInt32 seed )
-    {
-        m_cell->setSeed( seed );
-    }
-
+    const Particles& particles() const { return m_particles; }
     kvs::Real32 maxDensity() const
     {
         return m_density_map->maxValueInCell( m_cell, m_cell->referenceVolume() );
@@ -482,17 +447,17 @@ public:
         return m_density_map->at( m_trial.scalar );
     }
 
-    const Particle& accept()
+    void accept( const kvs::ColorMap& cmap )
     {
-        return m_current;
+        m_particles.push( m_current, cmap );
     }
 
-    const Particle& acceptTrial()
+    void acceptTrial( const kvs::ColorMap& cmap )
     {
+        m_particles.push( m_trial, cmap );
         m_current.coord = m_trial.coord;
         m_current.normal = m_trial.normal;
         m_current.scalar = m_trial.scalar;
-        return m_current;
     }
 };
 

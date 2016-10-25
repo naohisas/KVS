@@ -14,7 +14,6 @@
 /****************************************************************************/
 #include "CellByCellRejectionSampling.h"
 #include <vector>
-#include <kvs/OpenMP>
 #include <kvs/DebugNew>
 #include <kvs/Camera>
 #include <kvs/TrilinearInterpolator>
@@ -43,7 +42,7 @@ CellByCellRejectionSampling::CellByCellRejectionSampling():
 /**
  *  @brief  Constructs a new CellByCellRejectionSampling class.
  *  @param  volume [in] pointer to the volume object
- *  @param  repetition_level [in] repetition level
+ *  @param  subpixel_level [in] sub-pixel level
  *  @param  sampling_step [in] sapling step
  *  @param  transfer_function [in] transfer function
  *  @param  object_depth [in] depth value of the input volume at the CoG
@@ -51,15 +50,15 @@ CellByCellRejectionSampling::CellByCellRejectionSampling():
 /*===========================================================================*/
 CellByCellRejectionSampling::CellByCellRejectionSampling(
     const kvs::VolumeObjectBase* volume,
-    const size_t repetition_level,
-    const float sampling_step,
+    const size_t                 subpixel_level,
+    const float                  sampling_step,
     const kvs::TransferFunction& transfer_function,
-    const float object_depth ):
+    const float                  object_depth ):
     kvs::MapperBase( transfer_function ),
     kvs::PointObject(),
     m_camera( 0 )
 {
-    this->setRepetitionLevel( repetition_level );
+    this->setSubpixelLevel( subpixel_level );
     this->setSamplingStep( sampling_step );
     this->setObjectDepth( object_depth );
     this->exec( volume );
@@ -70,24 +69,24 @@ CellByCellRejectionSampling::CellByCellRejectionSampling(
  *  @brief  Constructs a new CellByCellRejectionSampling class.
  *  @param  camera [in] pointer to the camera
  *  @param  volume [in] pointer to the volume object
- *  @param  repetition_level [in] repetition level
+ *  @param  subpixel_level [in] sub-pixel level
  *  @param  sampling_step [in] sapling step
  *  @param  transfer_function [in] transfer function
  *  @param  object_depth [in] depth value of the input volume at the CoG
  */
 /*===========================================================================*/
 CellByCellRejectionSampling::CellByCellRejectionSampling(
-    const kvs::Camera* camera,
+    const kvs::Camera*           camera,
     const kvs::VolumeObjectBase* volume,
-    const size_t repetition_level,
-    const float sampling_step,
+    const size_t                 subpixel_level,
+    const float                  sampling_step,
     const kvs::TransferFunction& transfer_function,
-    const float object_depth ):
+    const float                  object_depth ):
     kvs::MapperBase( transfer_function ),
     kvs::PointObject()
 {
     this->attachCamera( camera ),
-    this->setRepetitionLevel( repetition_level );
+    this->setSubpixelLevel( subpixel_level );
     this->setSamplingStep( sampling_step );
     this->setObjectDepth( object_depth );
     this->exec( volume );
@@ -158,12 +157,9 @@ void CellByCellRejectionSampling::mapping( const kvs::StructuredVolumeObject* vo
 
     // Generate the particles.
     const std::type_info& type = volume->values().typeInfo()->type();
-    if (      type == typeid( kvs::Int8   ) ) this->generate_particles<kvs::Int8>( volume );
-    else if ( type == typeid( kvs::Int16  ) ) this->generate_particles<kvs::Int16>( volume );
-    else if ( type == typeid( kvs::Int32  ) ) this->generate_particles<kvs::Int32>( volume );
-    else if ( type == typeid( kvs::UInt8  ) ) this->generate_particles<kvs::UInt8>( volume );
+    if (      type == typeid( kvs::UInt8  ) ) this->generate_particles<kvs::UInt8>( volume );
     else if ( type == typeid( kvs::UInt16 ) ) this->generate_particles<kvs::UInt16>( volume );
-    else if ( type == typeid( kvs::UInt32 ) ) this->generate_particles<kvs::UInt32>( volume );
+    else if ( type == typeid( kvs::Int16  ) ) this->generate_particles<kvs::Int16>( volume );
     else if ( type == typeid( kvs::Real32 ) ) this->generate_particles<kvs::Real32>( volume );
     else if ( type == typeid( kvs::Real64 ) ) this->generate_particles<kvs::Real64>( volume );
     else
@@ -199,104 +195,52 @@ void CellByCellRejectionSampling::mapping( const kvs::UnstructuredVolumeObject* 
 template <typename T>
 void CellByCellRejectionSampling::generate_particles( const kvs::StructuredVolumeObject* volume )
 {
-    CellByCellSampling::ParticleDensityMap density_map;
+    kvs::TrilinearInterpolator grid( volume );
+
+    kvs::CellByCellSampling::ParticleDensityMap density_map;
     density_map.setSamplingStep( m_sampling_step );
+    density_map.setSubpixelLevel( m_subpixel_level );
     density_map.attachCamera( m_camera );
     density_map.attachObject( volume );
     density_map.create( BaseClass::transferFunction().opacityMap() );
 
-    const kvs::Vec3ui ncells( volume->resolution() - kvs::Vec3u::All(1) );
-    const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
-
-    // Calculate number of particles.
-    size_t N = 0;
-    kvs::ValueArray<kvs::UInt32> nparticles( ncells.x() * ncells.y() * ncells.z() );
-    KVS_OMP_PARALLEL()
-    {
-        kvs::TrilinearInterpolator interpolator( volume );
-        CellByCellSampling::GridSampler<T> sampler( &interpolator, &density_map );
-
-        sampler.bind( kvs::Vec3u( 0, 0, 0 ) );
-
-        KVS_OMP_FOR( reduction(+:N) )
-        for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
-        {
-            size_t cell_index_counter = z * ncells.x() * ncells.y();
-            for ( kvs::UInt32 y = 0; y < ncells.y(); ++y )
-            {
-                for ( kvs::UInt32 x = 0; x < ncells.x(); ++x )
-                {
-                    sampler.bind( kvs::Vec3ui( x, y, z ) );
-                    const size_t n = sampler.numberOfParticles();
-                    const kvs::UInt32 index = cell_index_counter++;
-                    nparticles[index] = n;
-                    N += n;
-                }
-            }
-        }
-    }
-
     // Generate particles for each cell.
-    const kvs::UInt32 repetitions = m_repetition_level;
-    kvs::ValueArray<kvs::Real32> coords( 3 * N * repetitions );
-    kvs::ValueArray<kvs::Real32> normals( 3 * N * repetitions );
-    kvs::ValueArray<kvs::UInt8> colors( 3 * N * repetitions );
-    KVS_OMP_PARALLEL()
+    kvs::CellByCellSampling::GridSampler<T> sampler( &grid, &density_map );
+    const kvs::Vec3ui ncells( volume->resolution() - kvs::Vector3ui::All(1) );
+    const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
+    for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
     {
-        kvs::TrilinearInterpolator interpolator( volume );
-        CellByCellSampling::GridSampler<T> sampler( &interpolator, &density_map );
-
-        KVS_OMP_FOR( schedule(dynamic) )
-        for ( kvs::UInt32 r = 0; r < repetitions; r++ )
+        for ( kvs::UInt32 y = 0; y < ncells.y(); ++y )
         {
-            size_t cell_index_counter = 0;
-            size_t particle_index_counter = N * r;
-            for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
+            for ( kvs::UInt32 x = 0; x < ncells.x(); ++x )
             {
-                for ( kvs::UInt32 y = 0; y < ncells.y(); ++y )
+                sampler.bind( kvs::Vec3ui( x, y, z ) );
+
+                const size_t nparticles = sampler.numberOfParticles();
+                if ( nparticles == 0 ) continue;
+
+                const kvs::Real32 max_density = density_map.maxValueInGrid<T>( grid, volume );
+                const kvs::Real32 pmax = max_density / nparticles;
+
+                size_t counter = 0;
+                while ( counter < nparticles )
                 {
-                    for ( kvs::UInt32 x = 0; x < ncells.x(); ++x )
+                    const kvs::Real32 density = sampler.sample();
+                    const kvs::Real32 p = density / nparticles;
+                    const kvs::Real32 R = kvs::CellByCellSampling::RandomNumber();
+                    if ( p > pmax * R )
                     {
-                        const kvs::UInt32 index = cell_index_counter++;
-                        const size_t n = nparticles[index];
-                        if ( n == 0 ) continue;
-
-                        sampler.bind( kvs::Vec3ui( x, y, z ) );
-                        const kvs::Real32 max_density = density_map.maxValueInGrid<T>( interpolator, volume );
-                        const kvs::Real32 pmax = max_density / n;
-
-                        size_t counter = 0;
-                        while ( counter < n )
-                        {
-                            const kvs::Real32 density = sampler.sample();
-                            const kvs::Real32 p = density / n;
-                            const kvs::Real32 R = CellByCellSampling::RandomNumber();
-                            if ( p > pmax * R )
-                            {
-                                const CellByCellSampling::Particle& p = sampler.accept();
-                                const kvs::RGBColor color = color_map.at( p.scalar );
-                                const size_t index3 = ( particle_index_counter++ ) * 3;
-                                coords[ index3 + 0 ] = p.coord.x();
-                                coords[ index3 + 1 ] = p.coord.y();
-                                coords[ index3 + 2 ] = p.coord.z();
-                                normals[ index3 + 0 ] = p.normal.x();
-                                normals[ index3 + 1 ] = p.normal.y();
-                                normals[ index3 + 2 ] = p.normal.z();
-                                colors[ index3 + 0 ] = color.r();
-                                colors[ index3 + 1 ] = color.g();
-                                colors[ index3 + 2 ] = color.b();
-                                counter++;
-                            }
-                        }
+                        sampler.accept( color_map );
+                        counter++;
                     }
                 }
             }
         }
     }
 
-    SuperClass::setCoords( coords );
-    SuperClass::setColors( colors );
-    SuperClass::setNormals( normals );
+    SuperClass::setCoords( sampler.particles().coords() );
+    SuperClass::setColors( sampler.particles().colors() );
+    SuperClass::setNormals( sampler.particles().normals() );
     SuperClass::setSize( 1.0f );
 }
 
@@ -308,94 +252,55 @@ void CellByCellRejectionSampling::generate_particles( const kvs::StructuredVolum
 /*===========================================================================*/
 void CellByCellRejectionSampling::generate_particles( const kvs::UnstructuredVolumeObject* volume )
 {
-    CellByCellSampling::ParticleDensityMap density_map;
+    kvs::CellBase* cell = kvs::CellByCellSampling::Cell( volume );
+    if ( !cell )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Unsupported cell type.");
+        return;
+    }
+
+    kvs::CellByCellSampling::ParticleDensityMap density_map;
     density_map.setSamplingStep( m_sampling_step );
+    density_map.setSubpixelLevel( m_subpixel_level );
     density_map.attachCamera( m_camera );
     density_map.attachObject( volume );
     density_map.create( BaseClass::transferFunction().opacityMap() );
 
+    // Generate particles for each cell.
+    kvs::CellByCellSampling::CellSampler sampler( cell, &density_map );
     const size_t ncells = volume->numberOfCells();
     const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
-
-    // Calculate number of particles
-    size_t N = 0;
-    kvs::ValueArray<kvs::UInt32> nparticles( ncells );
-    KVS_OMP_PARALLEL()
+    for ( size_t index = 0; index < ncells; ++index )
     {
-        kvs::CellBase* cell = CellByCellSampling::Cell( volume );
-        CellByCellSampling::CellSampler sampler( cell, &density_map );
+        sampler.bind( index );
 
-        KVS_OMP_FOR( reduction(+:N) )
-        for ( size_t index = 0; index < ncells; ++index )
+        const size_t nparticles = sampler.numberOfParticles();
+        if ( nparticles == 0 ) continue;
+
+        const kvs::Real32 max_density = density_map.maxValueInCell( cell, volume );
+        const kvs::Real32 pmax = max_density / nparticles;
+
+        size_t counter = 0;
+        while ( counter < nparticles )
         {
-            sampler.bind( index );
-            const size_t n = sampler.numberOfParticles();
-            nparticles[index] = n;
-
-            N += n;
-        }
-
-        delete cell;
-    }
-
-    // Generate particles for each cell.
-    const kvs::UInt32 repetitions = m_repetition_level;
-    kvs::ValueArray<kvs::Real32> coords( 3 * N * repetitions );
-    kvs::ValueArray<kvs::Real32> normals( 3 * N * repetitions );
-    kvs::ValueArray<kvs::UInt8> colors( 3 * N * repetitions );
-    KVS_OMP_PARALLEL()
-    {
-        kvs::CellBase* cell = CellByCellSampling::Cell( volume );
-        CellByCellSampling::CellSampler sampler( cell, &density_map );
-
-        KVS_OMP_FOR( schedule(dynamic) )
-        for ( kvs::UInt32 r = 0; r < repetitions; ++r )
-        {
-            size_t particle_index_counter = N * r;
-            for ( size_t index = 0; index < ncells; ++index )
+            const kvs::Real32 density = sampler.sample();
+            const kvs::Real32 p = density / nparticles;
+            const kvs::Real32 R = kvs::CellByCellSampling::RandomNumber();
+            if ( p > pmax * R )
             {
-                const size_t n = nparticles[index];
-                if ( n == 0 ) continue;
-
-                sampler.bind( index );
-
-                const kvs::Real32 max_density = density_map.maxValueInCell( cell, volume );
-                const kvs::Real32 pmax = max_density / n;
-
-                size_t counter = 0;
-                while ( counter < n )
-                {
-                    const kvs::Real32 density = sampler.sample();
-                    const kvs::Real32 p = density / n;
-                    const kvs::Real32 R = CellByCellSampling::RandomNumber();
-                    if ( p > pmax * R )
-                    {
-                        const CellByCellSampling::Particle& p = sampler.accept();
-                        const kvs::RGBColor color = color_map.at( p.scalar );
-                        const size_t index3 = ( particle_index_counter++ ) * 3;
-                        coords[ index3 + 0 ] = p.coord.x();
-                        coords[ index3 + 1 ] = p.coord.y();
-                        coords[ index3 + 2 ] = p.coord.z();
-                        normals[ index3 + 0 ] = p.normal.x();
-                        normals[ index3 + 1 ] = p.normal.y();
-                        normals[ index3 + 2 ] = p.normal.z();
-                        colors[ index3 + 0 ] = color.r();
-                        colors[ index3 + 1 ] = color.g();
-                        colors[ index3 + 2 ] = color.b();
-
-                        counter++;
-                    }
-                }
+                sampler.accept( color_map );
+                counter++;
             }
         }
-
-        delete cell;
     }
 
-    SuperClass::setCoords( coords );
-    SuperClass::setColors( colors );
-    SuperClass::setNormals( normals );
+    SuperClass::setCoords( sampler.particles().coords() );
+    SuperClass::setColors( sampler.particles().colors() );
+    SuperClass::setNormals( sampler.particles().normals() );
     SuperClass::setSize( 1.0f );
+
+    delete cell;
 }
 
 } // end of namespace kvs
