@@ -749,12 +749,22 @@ void SetViewport( const kvs::Vec4& v )
 
 void SetOrtho( const kvs::Vec4& v )
 {
-    kvs::OpenGL::SetOrtho( v[0], v[1], v[2], v[3] );
+    const GLdouble left = v[0];
+    const GLdouble right = v[1];
+    const GLdouble bottom = v[2];
+    const GLdouble top = v[3];
+    kvs::OpenGL::SetOrtho( left, right, bottom, top );
 }
 
 void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far )
 {
-    kvs::OpenGL::SetOrtho( v[0], v[1], v[2], v[3], near, far );
+    const GLdouble left = v[0];
+    const GLdouble right = v[1];
+    const GLdouble bottom = v[2];
+    const GLdouble top = v[3];
+    const GLdouble dnear = GLdouble( near );
+    const GLdouble dfar = GLdouble( far );
+    kvs::OpenGL::SetOrtho( left, right, bottom, top, dnear, dfar );
 }
 
 void SetLookAt( const kvs::Vec3& eye, const kvs::Vec3& center, const kvs::Vec3& up )

@@ -38,7 +38,7 @@ inline void DrawStrings( const std::vector<std::string>& strs, const kvs::Vec2& 
 {
     for ( size_t line = 0; line < strs.size(); line++ )
     {
-        const kvs::Vec2 offset( 0.0f, ::CharacterHeight * line );
+        const kvs::Vec2 offset( 0.0f, CharacterHeight * line );
         DrawString( strs[line],  pos - offset );
     }
 }
