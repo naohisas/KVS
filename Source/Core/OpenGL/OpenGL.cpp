@@ -296,10 +296,14 @@ std::string GLSLVersion()
 /*===========================================================================*/
 std::string GLUVersion()
 {
-#if defined( GLU_VERSION )
+#if defined( KVS_ENABLE_GLU )
+  #if defined( GLU_VERSION )
     return ::GLUGetString( GLU_VERSION );
-#else
+  #else
     return "Unknown";
+  #endif
+#else
+    return "GLU is not enabled";
 #endif
 }
 
@@ -311,10 +315,14 @@ std::string GLUVersion()
 /*===========================================================================*/
 std::string GLEWVersion()
 {
-#if defined( GLEW_VERSION )
+#if defined( KVS_ENABLE_GLEW )
+  #if defined( GLEW_VERSION )
     return ::GLEWGetString( GLEW_VERSION );
-#else
+  #else
     return "Unknown";
+  #endif
+#else
+    return "GLEW is not enabled";
 #endif
 }
 
