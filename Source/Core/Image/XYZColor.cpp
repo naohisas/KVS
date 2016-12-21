@@ -16,6 +16,7 @@
 #include "LabColor.h"
 #include <kvs/RGBColor>
 #include <kvs/Matrix33>
+#include <kvs/Math>
 
 
 namespace
@@ -26,7 +27,7 @@ kvs::Real32 ToStandard( const kvs::Real32 C )
     kvs::Real32 Cs = 0;
     if ( C <= 0.0031308 ) { Cs = 12.92 * C; }
     else { Cs = 1.055 * std::pow( C, 1.0f / 2.4f ) - 0.055; }
-    return Cs;
+    return kvs::Math::Clamp( Cs, 0.0f, 1.0f );
 }
 
 kvs::Real32 ToLinear( const kvs::Real32 C )
@@ -34,7 +35,7 @@ kvs::Real32 ToLinear( const kvs::Real32 C )
     kvs::Real32 Cl = 0;
     if ( C <= 0.04045 ) { Cl = C / 12.92; }
     else { Cl = std::pow( ( C + 0.055f ) / 1.055, 2.4 ); }
-    return Cl;
+    return kvs::Math::Clamp( Cl, 0.0f, 1.0f );
 }
 
 kvs::Vec3 sRGB2PhysicallyLinearRGB( const kvs::Vec3 sRGB )
