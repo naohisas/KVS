@@ -38,6 +38,7 @@
 #include <Core/Image/BitImage.h>
 #include <Core/Image/ColorImage.h>
 #include <Core/Image/GrayImage.h>
+#include <Core/Image/HCLColor.h>
 #include <Core/Image/HSVColor.h>
 #include <Core/Image/ImageBase.h>
 #include <Core/Image/LabColor.h>

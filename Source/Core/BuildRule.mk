@@ -106,6 +106,7 @@ $(OUTDIR)/./FileFormat/XML/XMLNode.o \
 $(OUTDIR)/./Image/BitImage.o \
 $(OUTDIR)/./Image/ColorImage.o \
 $(OUTDIR)/./Image/GrayImage.o \
+$(OUTDIR)/./Image/HCLColor.o \
 $(OUTDIR)/./Image/HSVColor.o \
 $(OUTDIR)/./Image/ImageBase.o \
 $(OUTDIR)/./Image/LabColor.o \

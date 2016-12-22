@@ -106,6 +106,7 @@ $(OUTDIR)\.\FileFormat\XML\XMLNode.obj \
 $(OUTDIR)\.\Image\BitImage.obj \
 $(OUTDIR)\.\Image\ColorImage.obj \
 $(OUTDIR)\.\Image\GrayImage.obj \
+$(OUTDIR)\.\Image\HCLColor.obj \
 $(OUTDIR)\.\Image\HSVColor.obj \
 $(OUTDIR)\.\Image\ImageBase.obj \
 $(OUTDIR)\.\Image\LabColor.obj \

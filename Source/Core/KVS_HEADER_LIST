@@ -38,6 +38,7 @@ FileFormat/XML/XMLNode
 Image/BitImage
 Image/ColorImage
 Image/GrayImage
+Image/HCLColor
 Image/HSVColor
 Image/ImageBase
 Image/LabColor
