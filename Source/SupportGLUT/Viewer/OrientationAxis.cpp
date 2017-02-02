@@ -185,13 +185,7 @@ void OrientationAxis::paintEvent()
         kvs::OpenGL::SetLookAt( eye, center, up );
 
         // Rotate the axis and the box using the object's rotation matrix.
-        kvs::Xform xform = m_object->xform();
-        const kvs::Vec3 trans = xform.translation();
-        const kvs::Vec3 scale = xform.scaling();
-        const float max_scale = kvs::Math::Max( scale.x(), scale.y(), scale.z() );
-        xform = kvs::Xform::Translation( -trans ) * xform; // Remove translation.
-        xform = kvs::Xform::Scaling( 1.0f / max_scale ) * xform; // Normalize by maximum scale.
-        kvs::OpenGL::MultMatrix( xform );
+        kvs::OpenGL::MultMatrix( kvs::Xform::Rotation( m_object->xform().rotation() ) );
 
         // Fixed length of the axis
         const float length = 4.0f;
