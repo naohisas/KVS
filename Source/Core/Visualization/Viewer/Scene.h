@@ -116,6 +116,15 @@ public:
     kvs::IDManager* IDManager() { return m_id_manager; }
     ControlTarget& controlTarget() { return m_target; }
 
+    const kvs::Camera* camera() const { return m_camera; }
+    const kvs::Light* light() const { return m_light; }
+    const kvs::Mouse* mouse() const { return m_mouse; }
+    const kvs::Background* background() const { return m_background; }
+    const kvs::ObjectManager* objectManager() const { return m_object_manager; }
+    const kvs::RendererManager* rendererManager() const { return m_renderer_manager; }
+    const kvs::IDManager* IDManager() const { return m_id_manager; }
+    const ControlTarget& controlTarget() const { return m_target; }
+
     void initializeFunction();
     void paintFunction();
     void resizeFunction( int width, int height );

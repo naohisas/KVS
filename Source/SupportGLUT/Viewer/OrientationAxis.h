@@ -19,6 +19,8 @@
 #include <kvs/RGBColor>
 #if KVS_ENABLE_DEPRECATED
 #include <kvs/ObjectBase>
+#include <kvs/ScreenBase>
+#include <kvs/Scene>
 #include <kvs/glut/Screen>
 #endif
 #include <kvs/glut/WidgetBase>
@@ -82,6 +84,8 @@ protected:
 public:
 
     OrientationAxis( kvs::glut::Screen* screen );
+
+    OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene );
     OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase* object );
     virtual ~OrientationAxis();
 

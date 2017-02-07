@@ -924,132 +924,132 @@ void MultMatrix( const kvs::Xform& x )
 
 void Begin( GLenum mode )
 {
-    KVS_GL_CALL( glBegin( mode ) );
+    KVS_GL_CALL_BEG( glBegin( mode ) );
 }
 
 void End()
 {
-    KVS_GL_CALL( glEnd() );
+    KVS_GL_CALL_END( glEnd() );
 }
 
 void Vertex( GLshort x, GLshort y )
 {
-    KVS_GL_CALL( glVertex2s( x, y ) );
+    KVS_GL_CALL_VER( glVertex2s( x, y ) );
 }
 
 void Vertex( GLint x, GLint y )
 {
-    KVS_GL_CALL( glVertex2i( x, y ) );
+    KVS_GL_CALL_VER( glVertex2i( x, y ) );
 }
 
 void Vertex( GLfloat x, GLfloat y )
 {
-    KVS_GL_CALL( glVertex2f( x, y ) );
+    KVS_GL_CALL_VER( glVertex2f( x, y ) );
 }
 
 void Vertex( GLdouble x, GLdouble y )
 {
-    KVS_GL_CALL( glVertex2d( x, y ) );
+    KVS_GL_CALL_VER( glVertex2d( x, y ) );
 }
 
 void Vertex( GLshort x, GLshort y, GLshort z )
 {
-    KVS_GL_CALL( glVertex3s( x, y, z ) );
+    KVS_GL_CALL_VER( glVertex3s( x, y, z ) );
 }
 
 void Vertex( GLint x, GLint y, GLint z )
 {
-    KVS_GL_CALL( glVertex3i( x, y, z ) );
+    KVS_GL_CALL_VER( glVertex3i( x, y, z ) );
 }
 
 void Vertex( GLfloat x, GLfloat y, GLfloat z )
 {
-    KVS_GL_CALL( glVertex3f( x, y, z ) );
+    KVS_GL_CALL_VER( glVertex3f( x, y, z ) );
 }
 
 void Vertex( GLdouble x, GLdouble y, GLdouble z )
 {
-    KVS_GL_CALL( glVertex3d( x, y, z ) );
+    KVS_GL_CALL_VER( glVertex3d( x, y, z ) );
 }
 
 void Vertex( GLshort x, GLshort y, GLshort z, GLshort w )
 {
-    KVS_GL_CALL( glVertex4s( x, y, z, w ) );
+    KVS_GL_CALL_VER( glVertex4s( x, y, z, w ) );
 }
 
 void Vertex( GLint x, GLint y, GLint z, GLint w )
 {
-    KVS_GL_CALL( glVertex4i( x, y, z, w ) );
+    KVS_GL_CALL_VER( glVertex4i( x, y, z, w ) );
 }
 
 void Vertex( GLfloat x, GLfloat y, GLfloat z, GLfloat w )
 {
-    KVS_GL_CALL( glVertex4f( x, y, z, w ) );
+    KVS_GL_CALL_VER( glVertex4f( x, y, z, w ) );
 }
 
 void Vertex( GLdouble x, GLdouble y, GLdouble z, GLdouble w )
 {
-    KVS_GL_CALL( glVertex4d( x, y, z, w ) );
+    KVS_GL_CALL_VER( glVertex4d( x, y, z, w ) );
 }
 
 void Vertex2( const GLshort* v )
 {
-    KVS_GL_CALL( glVertex2sv( v ) );
+    KVS_GL_CALL_VER( glVertex2sv( v ) );
 }
 
 void Vertex2( const GLint* v )
 {
-    KVS_GL_CALL( glVertex2iv( v ) );
+    KVS_GL_CALL_VER( glVertex2iv( v ) );
 }
 
 void Vertex2( const GLfloat* v )
 {
-    KVS_GL_CALL( glVertex2fv( v ) );
+    KVS_GL_CALL_VER( glVertex2fv( v ) );
 }
 
 void Vertex2( const GLdouble* v )
 {
-    KVS_GL_CALL( glVertex2dv( v ) );
+    KVS_GL_CALL_VER( glVertex2dv( v ) );
 }
 
 void Vertex3( const GLshort* v )
 {
-    KVS_GL_CALL( glVertex3sv( v ) );
+    KVS_GL_CALL_VER( glVertex3sv( v ) );
 }
 
 void Vertex3( const GLint* v )
 {
-    KVS_GL_CALL( glVertex3iv( v ) );
+    KVS_GL_CALL_VER( glVertex3iv( v ) );
 }
 
 void Vertex3( const GLfloat* v )
 {
-    KVS_GL_CALL( glVertex3fv( v ) );
+    KVS_GL_CALL_VER( glVertex3fv( v ) );
 }
 
 void Vertex3( const GLdouble* v )
 {
-    KVS_GL_CALL( glVertex3dv( v ) );
+    KVS_GL_CALL_VER( glVertex3dv( v ) );
 }
 
 void Vertex4( const GLshort* v )
 {
-    KVS_GL_CALL( glVertex4sv( v ) );
+    KVS_GL_CALL_VER( glVertex4sv( v ) );
 }
 
 void Vertex4( const GLint* v )
 {
-    KVS_GL_CALL( glVertex4iv( v ) );
+    KVS_GL_CALL_VER( glVertex4iv( v ) );
 }
 
 void Vertex4( const GLfloat* v )
 {
-    KVS_GL_CALL( glVertex4fv( v ) );
+    KVS_GL_CALL_VER( glVertex4fv( v ) );
 }
 
 void Vertex4( const GLdouble* v )
 {
-    KVS_GL_CALL( glVertex4dv( v ) );
+    KVS_GL_CALL_VER( glVertex4dv( v ) );
 }
 
 void Vertex( const kvs::Vec2& v )
@@ -1162,162 +1162,162 @@ void Vertices( const kvs::Vec4& v0, const kvs::Vec4& v1, const kvs::Vec4& v2, co
 
 void Color( GLbyte r, GLbyte g, GLbyte b )
 {
-    KVS_GL_CALL( glColor3b( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3b( r, g, b ) );
 }
 
 void Color( GLshort r, GLshort g, GLshort b )
 {
-    KVS_GL_CALL( glColor3s( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3s( r, g, b ) );
 }
 
 void Color( GLint r, GLint g, GLint b )
 {
-    KVS_GL_CALL( glColor3i( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3i( r, g, b ) );
 }
 
 void Color( GLfloat r, GLfloat g, GLfloat b )
 {
-    KVS_GL_CALL( glColor3f( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3f( r, g, b ) );
 }
 
 void Color( GLdouble r, GLdouble g, GLdouble b )
 {
-    KVS_GL_CALL( glColor3d( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3d( r, g, b ) );
 }
 
 void Color( GLubyte r, GLubyte g, GLubyte b )
 {
-    KVS_GL_CALL( glColor3ub( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3ub( r, g, b ) );
 }
 
 void Color( GLushort r, GLushort g, GLushort b )
 {
-    KVS_GL_CALL( glColor3us( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3us( r, g, b ) );
 }
 
 void Color( GLuint r, GLuint g, GLuint b )
 {
-    KVS_GL_CALL( glColor3ui( r, g, b ) );
+    KVS_GL_CALL_VER( glColor3ui( r, g, b ) );
 }
 
 void Color( GLbyte r, GLbyte g, GLbyte b, GLbyte a )
 {
-    KVS_GL_CALL( glColor4b( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4b( r, g, b, a ) );
 }
 
 void Color( GLshort r, GLshort g, GLshort b, GLshort a )
 {
-    KVS_GL_CALL( glColor4s( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4s( r, g, b, a ) );
 }
 
 void Color( GLint r, GLint g, GLint b, GLint a )
 {
-    KVS_GL_CALL( glColor4i( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4i( r, g, b, a ) );
 }
 
 void Color( GLfloat r, GLfloat g, GLfloat b, GLfloat a )
 {
-    KVS_GL_CALL( glColor4f( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4f( r, g, b, a ) );
 }
 
 void Color( GLdouble r, GLdouble g, GLdouble b, GLdouble a )
 {
-    KVS_GL_CALL( glColor4d( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4d( r, g, b, a ) );
 }
 
 void Color( GLubyte r, GLubyte g, GLubyte b, GLubyte a )
 {
-    KVS_GL_CALL( glColor4ub( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4ub( r, g, b, a ) );
 }
 
 void Color( GLushort r, GLushort g, GLushort b, GLushort a )
 {
-    KVS_GL_CALL( glColor4us( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4us( r, g, b, a ) );
 }
 
 void Color( GLuint r, GLuint g, GLuint b, GLuint a )
 {
-    KVS_GL_CALL( glColor4ui( r, g, b, a ) );
+    KVS_GL_CALL_VER( glColor4ui( r, g, b, a ) );
 }
 
 void Color3( const GLbyte* c )
 {
-    KVS_GL_CALL( glColor3bv( c ) );
+    KVS_GL_CALL_VER( glColor3bv( c ) );
 }
 
 void Color3( const GLshort* c )
 {
-    KVS_GL_CALL( glColor3sv( c ) );
+    KVS_GL_CALL_VER( glColor3sv( c ) );
 }
 
 void Color3( const GLint* c )
 {
-    KVS_GL_CALL( glColor3iv( c ) );
+    KVS_GL_CALL_VER( glColor3iv( c ) );
 }
 
 void Color3( const GLfloat* c )
 {
-    KVS_GL_CALL( glColor3fv( c ) );
+    KVS_GL_CALL_VER( glColor3fv( c ) );
 }
 
 void Color3( const GLdouble* c )
 {
-    KVS_GL_CALL( glColor3dv( c ) );
+    KVS_GL_CALL_VER( glColor3dv( c ) );
 }
 
 void Color3( const GLubyte* c )
 {
-    KVS_GL_CALL( glColor3ubv( c ) );
+    KVS_GL_CALL_VER( glColor3ubv( c ) );
 }
 
 void Color3( const GLushort* c )
 {
-    KVS_GL_CALL( glColor3usv( c ) );
+    KVS_GL_CALL_VER( glColor3usv( c ) );
 }
 
 void Color3( const GLuint* c )
 {
-    KVS_GL_CALL( glColor3uiv( c ) );
+    KVS_GL_CALL_VER( glColor3uiv( c ) );
 }
 
 void Color4( const GLbyte* c )
 {
-    KVS_GL_CALL( glColor4bv( c ) );
+    KVS_GL_CALL_VER( glColor4bv( c ) );
 }
 
 void Color4( const GLshort* c )
 {
-    KVS_GL_CALL( glColor4sv( c ) );
+    KVS_GL_CALL_VER( glColor4sv( c ) );
 }
 
 void Color4( const GLint* c )
 {
-    KVS_GL_CALL( glColor4iv( c ) );
+    KVS_GL_CALL_VER( glColor4iv( c ) );
 }
 
 void Color4( const GLfloat* c )
 {
-    KVS_GL_CALL( glColor4fv( c ) );
+    KVS_GL_CALL_VER( glColor4fv( c ) );
 }
 
 void Color4( const GLdouble* c )
 {
-    KVS_GL_CALL( glColor4dv( c ) );
+    KVS_GL_CALL_VER( glColor4dv( c ) );
 }
 
 void Color4( const GLubyte* c )
 {
-    KVS_GL_CALL( glColor4ubv( c ) );
+    KVS_GL_CALL_VER( glColor4ubv( c ) );
 }
 
 void Color4( const GLushort* c )
 {
-    KVS_GL_CALL( glColor4usv( c ) );
+    KVS_GL_CALL_VER( glColor4usv( c ) );
 }
 
 void Color4( const GLuint* c )
 {
-    KVS_GL_CALL( glColor4uiv( c ) );
+    KVS_GL_CALL_VER( glColor4uiv( c ) );
 }
 
 void Color( const kvs::Vec3& c )
@@ -1342,162 +1342,162 @@ void Color( const kvs::RGBAColor& c )
 
 void TexCoord( GLshort s )
 {
-    KVS_GL_CALL( glTexCoord1s( s ) );
+    KVS_GL_CALL_VER( glTexCoord1s( s ) );
 }
 
 void TexCoord( GLint s )
 {
-    KVS_GL_CALL( glTexCoord1i( s ) );
+    KVS_GL_CALL_VER( glTexCoord1i( s ) );
 }
 
 void TexCoord( GLfloat s )
 {
-    KVS_GL_CALL( glTexCoord1f( s ) );
+    KVS_GL_CALL_VER( glTexCoord1f( s ) );
 }
 
 void TexCoord( GLdouble s )
 {
-    KVS_GL_CALL( glTexCoord1d( s ) );
+    KVS_GL_CALL_VER( glTexCoord1d( s ) );
 }
 
 void TexCoord( GLshort s, GLshort t )
 {
-    KVS_GL_CALL( glTexCoord2s( s, t ) );
+    KVS_GL_CALL_VER( glTexCoord2s( s, t ) );
 }
 
 void TexCoord( GLint s, GLint t )
 {
-    KVS_GL_CALL( glTexCoord2i( s, t ) );
+    KVS_GL_CALL_VER( glTexCoord2i( s, t ) );
 }
 
 void TexCoord( GLfloat s, GLfloat t )
 {
-    KVS_GL_CALL( glTexCoord2f( s, t ) );
+    KVS_GL_CALL_VER( glTexCoord2f( s, t ) );
 }
 
 void TexCoord( GLdouble s, GLdouble t )
 {
-    KVS_GL_CALL( glTexCoord2d( s, t ) );
+    KVS_GL_CALL_VER( glTexCoord2d( s, t ) );
 }
 
 void TexCoord( GLshort s, GLshort t, GLshort r )
 {
-    KVS_GL_CALL( glTexCoord3s( s, t, r ) );
+    KVS_GL_CALL_VER( glTexCoord3s( s, t, r ) );
 }
 
 void TexCoord( GLint s, GLint t, GLint r )
 {
-    KVS_GL_CALL( glTexCoord3i( s, t, r ) );
+    KVS_GL_CALL_VER( glTexCoord3i( s, t, r ) );
 }
 
 void TexCoord( GLfloat s, GLfloat t, GLfloat r )
 {
-    KVS_GL_CALL( glTexCoord3f( s, t, r ) );
+    KVS_GL_CALL_VER( glTexCoord3f( s, t, r ) );
 }
 
 void TexCoord( GLdouble s, GLdouble t, GLdouble r )
 {
-    KVS_GL_CALL( glTexCoord3d( s, t, r ) );
+    KVS_GL_CALL_VER( glTexCoord3d( s, t, r ) );
 }
 
 void TexCoord( GLshort s, GLshort t, GLshort r, GLshort q )
 {
-    KVS_GL_CALL( glTexCoord4s( s, t, r, q ) );
+    KVS_GL_CALL_VER( glTexCoord4s( s, t, r, q ) );
 }
 
 void TexCoord( GLint s, GLint t, GLint r, GLint q )
 {
-    KVS_GL_CALL( glTexCoord4i( s, t, r, q ) );
+    KVS_GL_CALL_VER( glTexCoord4i( s, t, r, q ) );
 }
 
 void TexCoord( GLfloat s, GLfloat t, GLfloat r, GLfloat q )
 {
-    KVS_GL_CALL( glTexCoord4f( s, t, r, q ) );
+    KVS_GL_CALL_VER( glTexCoord4f( s, t, r, q ) );
 }
 
 void TexCoord( GLdouble s, GLdouble t, GLdouble r, GLfloat q )
 {
-    KVS_GL_CALL( glTexCoord4d( s, t, r, q ) );
+    KVS_GL_CALL_VER( glTexCoord4d( s, t, r, q ) );
 }
 
 void TexCoord1( const GLshort* v )
 {
-    KVS_GL_CALL( glTexCoord1sv( v ) );
+    KVS_GL_CALL_VER( glTexCoord1sv( v ) );
 }
 
 void TexCoord1( const GLint* v )
 {
-    KVS_GL_CALL( glTexCoord1iv( v ) );
+    KVS_GL_CALL_VER( glTexCoord1iv( v ) );
 }
 
 void TexCoord1( const GLfloat* v )
 {
-    KVS_GL_CALL( glTexCoord1fv( v ) );
+    KVS_GL_CALL_VER( glTexCoord1fv( v ) );
 }
 
 void TexCoord1( const GLdouble* v )
 {
-    KVS_GL_CALL( glTexCoord1dv( v ) );
+    KVS_GL_CALL_VER( glTexCoord1dv( v ) );
 }
 
 void TexCoord2( const GLshort* v )
 {
-    KVS_GL_CALL( glTexCoord2sv( v ) );
+    KVS_GL_CALL_VER( glTexCoord2sv( v ) );
 }
 
 void TexCoord2( const GLint* v )
 {
-    KVS_GL_CALL( glTexCoord2iv( v ) );
+    KVS_GL_CALL_VER( glTexCoord2iv( v ) );
 }
 
 void TexCoord2( const GLfloat* v )
 {
-    KVS_GL_CALL( glTexCoord2fv( v ) );
+    KVS_GL_CALL_VER( glTexCoord2fv( v ) );
 }
 
 void TexCoord2( const GLdouble* v )
 {
-    KVS_GL_CALL( glTexCoord2dv( v ) );
+    KVS_GL_CALL_VER( glTexCoord2dv( v ) );
 }
 
 void TexCoord3( const GLshort* v )
 {
-    KVS_GL_CALL( glTexCoord3sv( v ) );
+    KVS_GL_CALL_VER( glTexCoord3sv( v ) );
 }
 
 void TexCoord3( const GLint* v )
 {
-    KVS_GL_CALL( glTexCoord3iv( v ) );
+    KVS_GL_CALL_VER( glTexCoord3iv( v ) );
 }
 
 void TexCoord3( const GLfloat* v )
 {
-    KVS_GL_CALL( glTexCoord3fv( v ) );
+    KVS_GL_CALL_VER( glTexCoord3fv( v ) );
 }
 
 void TexCoord3( const GLdouble* v )
 {
-    KVS_GL_CALL( glTexCoord3dv( v ) );
+    KVS_GL_CALL_VER( glTexCoord3dv( v ) );
 }
 
 void TexCoord4( const GLshort* v )
 {
-    KVS_GL_CALL( glTexCoord4sv( v ) );
+    KVS_GL_CALL_VER( glTexCoord4sv( v ) );
 }
 
 void TexCoord4( const GLint* v )
 {
-    KVS_GL_CALL( glTexCoord4iv( v ) );
+    KVS_GL_CALL_VER( glTexCoord4iv( v ) );
 }
 
 void TexCoord4( const GLfloat* v )
 {
-    KVS_GL_CALL( glTexCoord4fv( v ) );
+    KVS_GL_CALL_VER( glTexCoord4fv( v ) );
 }
 
 void TexCoord4( const GLdouble* v )
 {
-    KVS_GL_CALL( glTexCoord4dv( v ) );
+    KVS_GL_CALL_VER( glTexCoord4dv( v ) );
 }
 
 void TexCoord( const kvs::Vec2& v )

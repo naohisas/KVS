@@ -78,6 +78,38 @@ OrientationAxis::OrientationAxis( kvs::glut::Screen* screen ):
 /**
  *  @brief  Constructs a new orientation axis class.
  *  @param  screen [in] pointer to the screen
+ *  @param  scene [in] pointer to the scene
+ */
+/*===========================================================================*/
+OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene ):
+    kvs::glut::WidgetBase( screen ),
+    m_object( scene->objectManager() ),
+    m_x_tag( "x" ),
+    m_y_tag( "y" ),
+    m_z_tag( "z" ),
+    m_x_axis_color( kvs::RGBColor( 200, 10, 10 ) ),
+    m_y_axis_color( kvs::RGBColor( 10, 200, 10 ) ),
+    m_z_axis_color( kvs::RGBColor( 10, 10, 200 ) ),
+    m_axis_line_width( 1.0f ),
+    m_box_color( kvs::RGBColor( 200, 200, 200 ) ),
+    m_box_line_color( kvs::RGBColor( 10, 10, 10 ) ),
+    m_box_line_width( 1.0f ),
+    m_enable_anti_aliasing( false ),
+    m_axis_type( OrientationAxis::CorneredAxis ),
+    m_box_type( OrientationAxis::NoneBox ),
+    m_projection_type( kvs::Camera::Perspective )
+{
+    BaseClass::setEventType(
+        kvs::EventBase::PaintEvent |
+        kvs::EventBase::ResizeEvent );
+
+    BaseClass::setMargin( 0 );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new orientation axis class.
+ *  @param  screen [in] pointer to the screen
  */
 /*===========================================================================*/
 OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase* object ):
