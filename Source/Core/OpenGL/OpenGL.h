@@ -70,6 +70,8 @@ void Enable( GLenum cap );
 void Disable( GLenum cap );
 bool IsEnabled( GLenum cap );
 
+void Hint( GLenum target, GLenum mode );
+
 void SetColorMask( GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha );
 void SetDepthMask( GLboolean flag );
 void SetDepthFunc( GLenum func );
@@ -118,6 +120,9 @@ void SetLookAt( const kvs::Vec3& eye, const kvs::Vec3& center, const kvs::Vec3& 
 void SetLight( GLenum light, GLenum pname, GLfloat param );
 void SetLight( GLenum light, GLenum pname, GLfloat* params );
 
+void SetLightModel( GLenum pname, GLfloat param );
+void SetLightModel( GLenum pname, GLint param );
+
 void SetClearDepth( GLdouble depth );
 //void SetClearDepth( GLfloat depth );
 void SetPolygonOffset( GLfloat factor, GLfloat units );
@@ -145,7 +150,11 @@ void Rotate( GLfloat angle, GLfloat x, GLfloat y, GLfloat z );
 void Scale( GLfloat x, GLfloat y, GLfloat z );
 void Translate( GLfloat x, GLfloat y, GLfloat z );
 
+void LoadMatrix( const kvs::Xform& x );
 void MultMatrix( const kvs::Xform& x );
+void Rotate( GLfloat angle, const kvs::Vec3& r );
+void Scale( const kvs::Vec3& s );
+void Translate( const kvs::Vec3& t );
 
 void Begin( GLenum mode );
 void End();
@@ -174,7 +183,6 @@ void Vertex4( const GLshort* v );
 void Vertex4( const GLint* v );
 void Vertex4( const GLfloat* v );
 void Vertex4( const GLdouble* v );
-
 void Vertex( const kvs::Vec2& v );
 void Vertex( const kvs::Vec3& v );
 void Vertex( const kvs::Vec4& v );
@@ -220,11 +228,22 @@ void Color4( const GLdouble* c );
 void Color4( const GLubyte* c );
 void Color4( const GLushort* c );
 void Color4( const GLuint* c );
-
 void Color( const kvs::Vec3& c );
 void Color( const kvs::Vec4& c );
 void Color( const kvs::RGBColor& c );
 void Color( const kvs::RGBAColor& c );
+
+void Normal( GLbyte x, GLbyte y, GLbyte z );
+void Normal( GLshort x, GLshort y, GLshort z );
+void Normal( GLint x, GLint y, GLint z );
+void Normal( GLfloat x, GLfloat y, GLfloat z );
+void Normal( GLdouble x, GLdouble y, GLdouble z );
+void Normal3( const GLbyte* n );
+void Normal3( const GLshort* n );
+void Normal3( const GLint* n );
+void Normal3( const GLfloat* n );
+void Normal3( const GLdouble* n );
+void Normal( const kvs::Vec3& n );
 
 void TexCoord( GLshort s );
 void TexCoord( GLint s );
@@ -258,7 +277,6 @@ void TexCoord4( const GLshort* v );
 void TexCoord4( const GLint* v );
 void TexCoord4( const GLfloat* v );
 void TexCoord4( const GLdouble* v );
-
 void TexCoord( const kvs::Vec2& v );
 void TexCoord( const kvs::Vec3& v );
 void TexCoord( const kvs::Vec4& v );
@@ -281,6 +299,9 @@ GLint UnProject(
     GLdouble winx, GLdouble winy, GLdouble winz,
     const GLdouble modelmat[16], const GLdouble projmat[16], const GLint viewport[4],
     GLdouble* objx, GLdouble* objy, GLdouble* objz );
+
+void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, GLint stacks );
+void DrawSphere( GLdouble radius, GLint slices, GLint stacks );
 
 class WithPushedMatrix
 {
@@ -328,6 +349,21 @@ class WithDisabled
 public:
     WithDisabled( GLenum cap );
     ~WithDisabled();
+};
+
+class Render2D
+{
+private:
+    kvs::Vec4 m_viewport;
+
+public:
+    Render2D();
+    Render2D( GLint x, GLint y, GLint width, GLint height );
+    Render2D( const kvs::Vec4& viewport );
+    void begin();
+    void end();
+    void setViewport( const kvs::Vec4& viewport ) { m_viewport = viewport; }
+    void setViewport( GLint x, GLint y, GLint width, GLint height );
 };
 
 /*KVS_DEPRECATED*/ void ActivateTextureUnit( GLint unit );

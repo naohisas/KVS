@@ -518,6 +518,11 @@ bool IsEnabled( GLenum cap )
     return result == GL_TRUE;
 }
 
+void Hint( GLenum target, GLenum mode )
+{
+    KVS_GL_CALL( glHint( target, mode ) );
+}
+
 void SetColorMask( GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha )
 {
     KVS_GL_CALL( glColorMask( red, green, blue, alpha ) );
@@ -790,6 +795,16 @@ void SetLight( GLenum light, GLenum pname, GLfloat* params )
     KVS_GL_CALL( glLightfv( light, pname, params ) );
 }
 
+void SetLightModel( GLenum pname, GLfloat param )
+{
+    KVS_GL_CALL( glLightModelf( pname, param ) );
+}
+
+void SetLightModel( GLenum pname, GLint param )
+{
+    KVS_GL_CALL( glLightModeli( pname, param ) );
+}
+
 void SetClearDepth( GLdouble depth )
 {
     KVS_GL_CALL( glClearDepth( depth ) );
@@ -916,10 +931,31 @@ void Translate( GLfloat x, GLfloat y, GLfloat z )
     KVS_GL_CALL( glTranslatef( x, y, z ) );
 }
 
+void LoadMatrix( const kvs::Xform& x )
+{
+    float m[16]; x.toArray( m );
+    kvs::OpenGL::LoadMatrix( &(m[0]) );
+}
+
 void MultMatrix( const kvs::Xform& x )
 {
     float m[16]; x.toArray( m );
     kvs::OpenGL::MultMatrix( &(m[0]) );
+}
+
+void Rotate( GLfloat angle, const kvs::Vec3& r )
+{
+    kvs::OpenGL::Rotate( angle, r.x(), r.y(), r.z() );
+}
+
+void Scale( const kvs::Vec3& s )
+{
+    kvs::OpenGL::Scale( s.x(), s.y(), s.z() );
+}
+
+void Translate( const kvs::Vec3& t )
+{
+    kvs::OpenGL::Translate( t.x(), t.y(), t.z() );
 }
 
 void Begin( GLenum mode )
@@ -1340,6 +1376,61 @@ void Color( const kvs::RGBAColor& c )
     kvs::OpenGL::Color( c.toVec4() );
 }
 
+void Normal( GLbyte x, GLbyte y, GLbyte z )
+{
+    KVS_GL_CALL_VER( glNormal3b( x, y, z ) );
+}
+
+void Normal( GLshort x, GLshort y, GLshort z )
+{
+    KVS_GL_CALL_VER( glNormal3s( x, y, z ) );
+}
+
+void Normal( GLint x, GLint y, GLint z )
+{
+    KVS_GL_CALL_VER( glNormal3i( x, y, z ) );
+}
+
+void Normal( GLfloat x, GLfloat y, GLfloat z )
+{
+    KVS_GL_CALL_VER( glNormal3f( x, y, z ) );
+}
+
+void Normal( GLdouble x, GLdouble y, GLdouble z )
+{
+    KVS_GL_CALL_VER( glNormal3d( x, y, z ) );
+}
+
+void Normal3( const GLbyte* n )
+{
+    KVS_GL_CALL_VER( glNormal3bv( n ) );
+}
+
+void Normal3( const GLshort* n )
+{
+    KVS_GL_CALL_VER( glNormal3sv( n ) );
+}
+
+void Normal3( const GLint* n )
+{
+    KVS_GL_CALL_VER( glNormal3iv( n ) );
+}
+
+void Normal3( const GLfloat* n )
+{
+    KVS_GL_CALL_VER( glNormal3fv( n ) );
+}
+
+void Normal( const kvs::Vec3& n )
+{
+    kvs::OpenGL::Normal( n.x(), n.y(), n.z() );
+}
+
+void Normal3( const GLdouble* n )
+{
+    KVS_GL_CALL_VER( glNormal3dv( n ) );
+}
+
 void TexCoord( GLshort s )
 {
     KVS_GL_CALL_VER( glTexCoord1s( s ) );
@@ -1650,6 +1741,274 @@ GLint UnProject(
 #endif
 }
 
+void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, GLint stacks )
+{
+    const int CacheSize = 240;
+    const float Pi = 3.14159265358979323846;
+
+    GLint i,j;
+    GLfloat sinCache[CacheSize];
+    GLfloat cosCache[CacheSize];
+    GLfloat sinCache2[CacheSize];
+    GLfloat cosCache2[CacheSize];
+    GLfloat sinCache3[CacheSize];
+    GLfloat cosCache3[CacheSize];
+    GLfloat angle;
+    GLfloat zLow, zHigh;
+    GLfloat length;
+    GLfloat deltaRadius;
+    GLfloat zNormal;
+    GLfloat xyNormalRatio;
+    GLfloat radiusLow, radiusHigh;
+    int needCache2, needCache3;
+
+    if (slices >= CacheSize) slices = CacheSize-1;
+
+    if (slices < 2 || stacks < 1 || base < 0.0 || top < 0.0 || height < 0.0)
+    {
+        kvsMessageError("Invalid value.");
+        return;
+    }
+
+    /* Compute length (needed for normal calculations) */
+    deltaRadius = base - top;
+    length = std::sqrt(deltaRadius*deltaRadius + height*height);
+    if ( length == 0.0 )
+    {
+        kvsMessageError("Invalid value.");
+        return;
+    }
+
+    /* Cache is the vertex locations cache */
+    /* Cache2 is the various normals at the vertices themselves */
+    /* Cache3 is the various normals for the faces */
+    needCache2 = 1;
+    needCache3 = 0;
+
+    zNormal = deltaRadius / length;
+    xyNormalRatio = height / length;
+
+    for (i = 0; i < slices; i++)
+    {
+        angle = 2 * Pi * i / slices;
+        if (needCache2)
+        {
+            sinCache2[i] = xyNormalRatio * std::sin(angle);
+            cosCache2[i] = xyNormalRatio * std::cos(angle);
+        }
+        sinCache[i] = std::sin(angle);
+        cosCache[i] = std::cos(angle);
+    }
+
+    if (needCache3)
+    {
+        for (i = 0; i < slices; i++)
+        {
+            angle = 2 * Pi * (i-0.5) / slices;
+            sinCache3[i] = xyNormalRatio * std::sin(angle);
+            cosCache3[i] = xyNormalRatio * std::cos(angle);
+        }
+    }
+
+    sinCache[slices] = sinCache[0];
+    cosCache[slices] = cosCache[0];
+    if (needCache2)
+    {
+        sinCache2[slices] = sinCache2[0];
+        cosCache2[slices] = cosCache2[0];
+    }
+    if (needCache3)
+    {
+        sinCache3[slices] = sinCache3[0];
+        cosCache3[slices] = cosCache3[0];
+    }
+
+    /* Note:
+    ** An argument could be made for using a TRIANGLE_FAN for the end
+    ** of the cylinder of either radii is 0.0 (a cone).  However, a
+    ** TRIANGLE_FAN would not work in smooth shading mode (the common
+    ** case) because the normal for the apex is different for every
+    ** triangle (and TRIANGLE_FAN doesn't let me respecify that normal).
+    ** Now, my choice is GL_TRIANGLES, or leave the GL_QUAD_STRIP and
+    ** just let the GL trivially reject one of the two triangles of the
+    ** QUAD.  GL_QUAD_STRIP is probably faster, so I will leave this code
+    ** alone.
+    */
+    for (j = 0; j < stacks; j++)
+    {
+        zLow = j * height / stacks;
+        zHigh = (j + 1) * height / stacks;
+        radiusLow = base - deltaRadius * ((float) j / stacks);
+        radiusHigh = base - deltaRadius * ((float) (j + 1) / stacks);
+
+        kvs::OpenGL::Begin( GL_QUAD_STRIP );
+        for (i = 0; i <= slices; i++)
+        {
+            kvs::OpenGL::Normal( sinCache2[i], cosCache2[i], zNormal );
+            kvs::OpenGL::Vertex( radiusLow  * sinCache[i], radiusLow  * cosCache[i], zLow );
+            kvs::OpenGL::Vertex( radiusHigh * sinCache[i], radiusHigh * cosCache[i], zHigh );
+        }
+        kvs::OpenGL::End();
+    }
+}
+
+void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
+{
+    const int CacheSize = 240;
+    const float Pi = 3.14159265358979323846;
+
+    GLint i,j;
+    GLfloat sinCache1a[CacheSize];
+    GLfloat cosCache1a[CacheSize];
+    GLfloat sinCache2a[CacheSize];
+    GLfloat cosCache2a[CacheSize];
+    GLfloat sinCache3a[CacheSize];
+    GLfloat cosCache3a[CacheSize];
+    GLfloat sinCache1b[CacheSize];
+    GLfloat cosCache1b[CacheSize];
+    GLfloat sinCache2b[CacheSize];
+    GLfloat cosCache2b[CacheSize];
+//    GLfloat sinCache3b[CacheSize];
+//    GLfloat cosCache3b[CacheSize];
+    GLfloat angle;
+    GLfloat zLow, zHigh;
+    GLfloat sintemp1 = 0.0, sintemp2 = 0.0, sintemp3 = 0.0, sintemp4 = 0.0;
+    GLfloat costemp3 = 0.0, costemp4 = 0.0;
+    GLboolean needCache2, needCache3;
+    GLint start, finish;
+
+    if (slices >= CacheSize) slices = CacheSize-1;
+    if (stacks >= CacheSize) stacks = CacheSize-1;
+    if (slices < 2 || stacks < 1 || radius < 0.0)
+    {
+        kvsMessageError("Invalid value.");
+        return;
+    }
+
+    /* Cache is the vertex locations cache */
+    /* Cache2 is the various normals at the vertices themselves */
+    /* Cache3 is the various normals for the faces */
+    needCache2 = GL_TRUE;
+    needCache3 = GL_FALSE;
+
+    for (i = 0; i < slices; i++)
+    {
+        angle = 2 * Pi * i / slices;
+        sinCache1a[i] = std::sin(angle);
+        cosCache1a[i] = std::cos(angle);
+        if (needCache2)
+        {
+            sinCache2a[i] = sinCache1a[i];
+            cosCache2a[i] = cosCache1a[i];
+        }
+    }
+
+    for (j = 0; j <= stacks; j++)
+    {
+        angle = Pi * j / stacks;
+        if (needCache2)
+        {
+            sinCache2b[j] = std::sin(angle);
+            cosCache2b[j] = std::cos(angle);
+        }
+        sinCache1b[j] = radius * std::sin(angle);
+        cosCache1b[j] = radius * std::cos(angle);
+    }
+    /* Make sure it comes to a point */
+    sinCache1b[0] = 0;
+    sinCache1b[stacks] = 0;
+
+    if (needCache3) {
+        for (i = 0; i < slices; i++)
+        {
+            angle = 2 * Pi * (i-0.5) / slices;
+            sinCache3a[i] = std::sin(angle);
+            cosCache3a[i] = std::cos(angle);
+        }
+//        for (j = 0; j <= stacks; j++)
+//        {
+//            angle = Pi * (j - 0.5) / stacks;
+//            sinCache3b[j] = std::sin(angle);
+//            cosCache3b[j] = std::cos(angle);
+//        }
+    }
+
+    sinCache1a[slices] = sinCache1a[0];
+    cosCache1a[slices] = cosCache1a[0];
+    if (needCache2)
+    {
+        sinCache2a[slices] = sinCache2a[0];
+        cosCache2a[slices] = cosCache2a[0];
+    }
+    if (needCache3)
+    {
+        sinCache3a[slices] = sinCache3a[0];
+        cosCache3a[slices] = cosCache3a[0];
+    }
+
+    /* Do ends of sphere as TRIANGLE_FAN's (if not texturing)
+    ** We don't do it when texturing because we need to respecify the
+    ** texture coordinates of the apex for every adjacent vertex (because
+    ** it isn't a constant for that point)
+    */
+    start = 1;
+    finish = stacks - 1;
+
+    /* Low end first (j == 0 iteration) */
+    sintemp2 = sinCache1b[1];
+    zHigh = cosCache1b[1];
+    sintemp3 = sinCache2b[1];
+    costemp3 = cosCache2b[1];
+
+    kvs::OpenGL::Begin(GL_TRIANGLE_FAN);
+    kvs::OpenGL::Normal(sinCache2a[0] * sinCache2b[0], cosCache2a[0] * sinCache2b[0], cosCache2b[0]);
+    kvs::OpenGL::Vertex(0.0, 0.0, radius);
+    for (i = slices; i >= 0; i--)
+    {
+        kvs::OpenGL::Normal(sinCache2a[i] * sintemp3, cosCache2a[i] * sintemp3, costemp3);
+        kvs::OpenGL::Vertex(sintemp2 * sinCache1a[i], sintemp2 * cosCache1a[i], zHigh);
+    }
+    kvs::OpenGL::End();
+
+    /* High end next (j == stacks-1 iteration) */
+    sintemp2 = sinCache1b[stacks-1];
+    zHigh = cosCache1b[stacks-1];
+    sintemp3 = sinCache2b[stacks-1];
+    costemp3 = cosCache2b[stacks-1];
+
+    kvs::OpenGL::Begin(GL_TRIANGLE_FAN);
+    kvs::OpenGL::Normal(sinCache2a[stacks] * sinCache2b[stacks], cosCache2a[stacks] * sinCache2b[stacks], cosCache2b[stacks]);
+    kvs::OpenGL::Vertex(0.0, 0.0, -radius);
+    for (i = 0; i <= slices; i++)
+    {
+        kvs::OpenGL::Normal(sinCache2a[i] * sintemp3, cosCache2a[i] * sintemp3, costemp3);
+        kvs::OpenGL::Normal(sintemp2 * sinCache1a[i], sintemp2 * cosCache1a[i], zHigh);
+    }
+    kvs::OpenGL::End();
+
+    for (j = start; j < finish; j++)
+    {
+        zLow = cosCache1b[j];
+        zHigh = cosCache1b[j+1];
+        sintemp1 = sinCache1b[j];
+        sintemp2 = sinCache1b[j+1];
+        sintemp3 = sinCache2b[j+1];
+        costemp3 = cosCache2b[j+1];
+        sintemp4 = sinCache2b[j];
+        costemp4 = cosCache2b[j];
+
+        kvs::OpenGL::Begin(GL_QUAD_STRIP);
+        for (i = 0; i <= slices; i++)
+        {
+            kvs::OpenGL::Normal(sinCache2a[i] * sintemp3, cosCache2a[i] * sintemp3, costemp3);
+            kvs::OpenGL::Vertex(sintemp2 * sinCache1a[i], sintemp2 * cosCache1a[i], zHigh);
+
+            kvs::OpenGL::Normal(sinCache2a[i] * sintemp4, cosCache2a[i] * sintemp4, costemp4);
+            kvs::OpenGL::Vertex(sintemp1 * sinCache1a[i], sintemp1 * cosCache1a[i], zLow);
+        }
+        kvs::OpenGL::End();
+    }
+}
 
 WithPushedMatrix::WithPushedMatrix( GLenum mode )
 {
@@ -1754,6 +2113,60 @@ WithDisabled::WithDisabled( GLenum cap ):
 WithDisabled::~WithDisabled()
 {
     kvs::OpenGL::Enable( m_cap );
+}
+
+Render2D::Render2D()
+{
+}
+
+Render2D::Render2D( GLint x, GLint y, GLint width, GLint height )
+{
+    this->setViewport( x, y, width, height );
+}
+
+Render2D::Render2D( const kvs::Vec4& viewport )
+{
+    this->setViewport( viewport );
+}
+
+void Render2D::begin()
+{
+    kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
+
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
+    kvs::OpenGL::PushMatrix();
+    kvs::OpenGL::LoadIdentity();
+
+    kvs::OpenGL::SetMatrixMode( GL_PROJECTION );
+    kvs::OpenGL::PushMatrix();
+    kvs::OpenGL::LoadIdentity();
+
+    // The origin is upper-left.
+    const GLint left = m_viewport[0];
+    const GLint top = m_viewport[1];
+    const GLint right = m_viewport[0] + m_viewport[2];
+    const GLint bottom = m_viewport[1] + m_viewport[3];
+    kvs::OpenGL::SetOrtho( left, right, bottom, top, -1, 1 );
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
+}
+
+void Render2D::end()
+{
+    kvs::OpenGL::SetMatrixMode( GL_PROJECTION );
+    kvs::OpenGL::PopMatrix();
+
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
+    kvs::OpenGL::PopMatrix();
+
+    kvs::OpenGL::PopAttrib();
+}
+
+void Render2D::setViewport( GLint x, GLint y, GLint width, GLint height )
+{
+    m_viewport[0] = x;
+    m_viewport[1] = y;
+    m_viewport[2] = width;
+    m_viewport[3] = height;
 }
 
 void ActivateTextureUnit( GLint unit )

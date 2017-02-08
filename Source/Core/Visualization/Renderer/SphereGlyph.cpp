@@ -16,170 +16,6 @@
 #include <kvs/OpenGL>
 
 
-namespace
-{
-
-const int CacheSize = 240;
-const float Pi = 3.14159265358979323846;
-
-void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
-{
-    GLint i,j;
-    GLfloat sinCache1a[CacheSize];
-    GLfloat cosCache1a[CacheSize];
-    GLfloat sinCache2a[CacheSize];
-    GLfloat cosCache2a[CacheSize];
-    GLfloat sinCache3a[CacheSize];
-    GLfloat cosCache3a[CacheSize];
-    GLfloat sinCache1b[CacheSize];
-    GLfloat cosCache1b[CacheSize];
-    GLfloat sinCache2b[CacheSize];
-    GLfloat cosCache2b[CacheSize];
-//    GLfloat sinCache3b[CacheSize];
-//    GLfloat cosCache3b[CacheSize];
-    GLfloat angle;
-    GLfloat zLow, zHigh;
-    GLfloat sintemp1 = 0.0, sintemp2 = 0.0, sintemp3 = 0.0, sintemp4 = 0.0;
-    GLfloat costemp3 = 0.0, costemp4 = 0.0;
-    GLboolean needCache2, needCache3;
-    GLint start, finish;
-
-    if (slices >= CacheSize) slices = CacheSize-1;
-    if (stacks >= CacheSize) stacks = CacheSize-1;
-    if (slices < 2 || stacks < 1 || radius < 0.0)
-    {
-        kvsMessageError("Invalid value.");
-        return;
-    }
-
-    /* Cache is the vertex locations cache */
-    /* Cache2 is the various normals at the vertices themselves */
-    /* Cache3 is the various normals for the faces */
-    needCache2 = GL_TRUE;
-    needCache3 = GL_FALSE;
-
-    for (i = 0; i < slices; i++)
-    {
-        angle = 2 * Pi * i / slices;
-        sinCache1a[i] = std::sin(angle);
-        cosCache1a[i] = std::cos(angle);
-        if (needCache2)
-        {
-            sinCache2a[i] = sinCache1a[i];
-            cosCache2a[i] = cosCache1a[i];
-        }
-    }
-
-    for (j = 0; j <= stacks; j++)
-    {
-        angle = Pi * j / stacks;
-        if (needCache2)
-        {
-            sinCache2b[j] = std::sin(angle);
-            cosCache2b[j] = std::cos(angle);
-        }
-        sinCache1b[j] = radius * std::sin(angle);
-        cosCache1b[j] = radius * std::cos(angle);
-    }
-    /* Make sure it comes to a point */
-    sinCache1b[0] = 0;
-    sinCache1b[stacks] = 0;
-
-    if (needCache3) {
-        for (i = 0; i < slices; i++)
-        {
-            angle = 2 * Pi * (i-0.5) / slices;
-            sinCache3a[i] = std::sin(angle);
-            cosCache3a[i] = std::cos(angle);
-        }
-//        for (j = 0; j <= stacks; j++)
-//        {
-//            angle = Pi * (j - 0.5) / stacks;
-//            sinCache3b[j] = std::sin(angle);
-//            cosCache3b[j] = std::cos(angle);
-//        }
-    }
-
-    sinCache1a[slices] = sinCache1a[0];
-    cosCache1a[slices] = cosCache1a[0];
-    if (needCache2)
-    {
-        sinCache2a[slices] = sinCache2a[0];
-        cosCache2a[slices] = cosCache2a[0];
-    }
-    if (needCache3)
-    {
-        sinCache3a[slices] = sinCache3a[0];
-        cosCache3a[slices] = cosCache3a[0];
-    }
-
-    /* Do ends of sphere as TRIANGLE_FAN's (if not texturing)
-    ** We don't do it when texturing because we need to respecify the
-    ** texture coordinates of the apex for every adjacent vertex (because
-    ** it isn't a constant for that point)
-    */
-    start = 1;
-    finish = stacks - 1;
-
-    /* Low end first (j == 0 iteration) */
-    sintemp2 = sinCache1b[1];
-    zHigh = cosCache1b[1];
-    sintemp3 = sinCache2b[1];
-    costemp3 = cosCache2b[1];
-    KVS_GL_CALL_VER( glNormal3f(sinCache2a[0] * sinCache2b[0], cosCache2a[0] * sinCache2b[0], cosCache2b[0]) );
-
-    KVS_GL_CALL_BEG( glBegin(GL_TRIANGLE_FAN) );
-    KVS_GL_CALL_VER( glVertex3f(0.0, 0.0, radius) );
-    for (i = slices; i >= 0; i--)
-    {
-        KVS_GL_CALL_VER( glNormal3f(sinCache2a[i] * sintemp3, cosCache2a[i] * sintemp3, costemp3) );
-        KVS_GL_CALL_VER( glVertex3f(sintemp2 * sinCache1a[i], sintemp2 * cosCache1a[i], zHigh) );
-    }
-    KVS_GL_CALL_END( glEnd() );
-
-    /* High end next (j == stacks-1 iteration) */
-    sintemp2 = sinCache1b[stacks-1];
-    zHigh = cosCache1b[stacks-1];
-    sintemp3 = sinCache2b[stacks-1];
-    costemp3 = cosCache2b[stacks-1];
-    KVS_GL_CALL_VER( glNormal3f(sinCache2a[stacks] * sinCache2b[stacks], cosCache2a[stacks] * sinCache2b[stacks], cosCache2b[stacks]) );
-
-    KVS_GL_CALL_BEG( glBegin(GL_TRIANGLE_FAN) );
-    KVS_GL_CALL_VER( glVertex3f(0.0, 0.0, -radius) );
-    for (i = 0; i <= slices; i++)
-    {
-        KVS_GL_CALL_VER( glNormal3f(sinCache2a[i] * sintemp3, cosCache2a[i] * sintemp3, costemp3) );
-        KVS_GL_CALL_VER( glVertex3f(sintemp2 * sinCache1a[i], sintemp2 * cosCache1a[i], zHigh) );
-    }
-    KVS_GL_CALL_END( glEnd() );
-
-    for (j = start; j < finish; j++)
-    {
-        zLow = cosCache1b[j];
-        zHigh = cosCache1b[j+1];
-        sintemp1 = sinCache1b[j];
-        sintemp2 = sinCache1b[j+1];
-        sintemp3 = sinCache2b[j+1];
-        costemp3 = cosCache2b[j+1];
-        sintemp4 = sinCache2b[j];
-        costemp4 = cosCache2b[j];
-
-        KVS_GL_CALL_BEG( glBegin(GL_QUAD_STRIP) );
-        for (i = 0; i <= slices; i++)
-        {
-            KVS_GL_CALL_VER( glNormal3f(sinCache2a[i] * sintemp3, cosCache2a[i] * sintemp3, costemp3) );
-            KVS_GL_CALL_VER( glVertex3f(sintemp2 * sinCache1a[i], sintemp2 * cosCache1a[i], zHigh) );
-
-            KVS_GL_CALL_VER( glNormal3f(sinCache2a[i] * sintemp4, cosCache2a[i] * sintemp4, costemp4) );
-            KVS_GL_CALL_VER( glVertex3f(sintemp1 * sinCache1a[i], sintemp1 * cosCache1a[i], zLow) );
-        }
-        KVS_GL_CALL_END( glEnd() );
-    }
-}
-
-} // end of namespace
-
-
 namespace kvs
 {
 
@@ -460,10 +296,12 @@ void SphereGlyph::attach_volume( const kvs::VolumeObjectBase* volume )
 /*===========================================================================*/
 void SphereGlyph::draw_element( const kvs::RGBColor& color, const kvs::UInt8 opacity )
 {
-    KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), opacity ) );
-
     const GLdouble radius = 0.5;
-    ::DrawSphere( radius, static_cast<GLint>(m_nslices), static_cast<GLint>(m_nstacks) );
+    const GLint slices = static_cast<GLint>( m_nslices );
+    const GLint stacks = static_cast<GLint>( m_nstacks );
+
+    kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
+    kvs::OpenGL::DrawSphere( radius, slices, stacks );
 }
 
 /*===========================================================================*/

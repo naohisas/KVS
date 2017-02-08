@@ -108,7 +108,7 @@ void DiamondGlyph::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
     kvs::IgnoreUnusedVariable( camera );
 
     const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( object );
-    if ( !volume ) { kvsMessageError("Input object is not volume dat."); return; }
+    if ( !volume ) { kvsMessageError("Input object is not volume data."); return; }
     if ( m_volume != volume ) { this->attach_volume( volume ); }
 
     BaseClass::startTimer();
@@ -117,7 +117,6 @@ void DiamondGlyph::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     this->initialize();
     this->draw();
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
 
     BaseClass::stopTimer();
 }
@@ -220,7 +219,7 @@ void DiamondGlyph::draw()
     {
         for ( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
         {
-            const kvs::Vector3f position( BaseClass::coords().data() + index );
+            const kvs::Vec3 position( BaseClass::coords().data() + index );
             const kvs::Real32 size = BaseClass::sizes()[i];
             const kvs::RGBColor color( BaseClass::colors().data() + index );
             const kvs::UInt8 opacity = BaseClass::opacities()[i];
@@ -234,10 +233,10 @@ void DiamondGlyph::draw()
     }
     else
     {
-        for( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
+        for ( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
         {
-            const kvs::Vector3f position( BaseClass::coords().data() + index );
-            const kvs::Vector3f direction( BaseClass::directions().data() + index );
+            const kvs::Vec3 position( BaseClass::coords().data() + index );
+            const kvs::Vec3 direction( BaseClass::directions().data() + index );
             const kvs::Real32 size = BaseClass::sizes()[i];
             const kvs::RGBColor color( BaseClass::colors().data() + index );
             const kvs::UInt8 opacity = BaseClass::opacities()[i];
@@ -260,29 +259,23 @@ void DiamondGlyph::draw()
 /*===========================================================================*/
 void DiamondGlyph::draw_element( const kvs::RGBColor& color, const kvs::UInt8 opacity )
 {
-    KVS_GL_CALL_BEG( glBegin( GL_TRIANGLES ) );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
+    kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
+    for ( size_t i = 0, index = 0; i < 8; i++, index += 3 )
     {
-        KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), opacity ) );
-
-        for ( size_t i = 0, index = 0; i < 8; i++, index += 3 )
-        {
-            const kvs::UInt32 offset0 = ::Connections[index] * 3;
-            const kvs::UInt32 offset1 = ::Connections[index+1] * 3;
-            const kvs::UInt32 offset2 = ::Connections[index+2] * 3;
-
-            const kvs::Vector3f v0( ::Vertices + offset0 );
-            const kvs::Vector3f v1( ::Vertices + offset1 );
-            const kvs::Vector3f v2( ::Vertices + offset2 );
-            const kvs::Vector3f v10 = v0 - v1;
-            const kvs::Vector3f v12 = v2 - v1;
-            const kvs::Vector3f n = v12.cross( v10 );
-            KVS_GL_CALL_VER( glNormal3f( n.x(), n.y(), n.z() ) );
-            KVS_GL_CALL_VER( glVertex3fv( ::Vertices + offset0 ) );
-            KVS_GL_CALL_VER( glVertex3fv( ::Vertices + offset1 ) );
-            KVS_GL_CALL_VER( glVertex3fv( ::Vertices + offset2 ) );
-        }
+        const kvs::UInt32 offset0 = ::Connections[index] * 3;
+        const kvs::UInt32 offset1 = ::Connections[index+1] * 3;
+        const kvs::UInt32 offset2 = ::Connections[index+2] * 3;
+        const kvs::Vec3 v0( ::Vertices + offset0 );
+        const kvs::Vec3 v1( ::Vertices + offset1 );
+        const kvs::Vec3 v2( ::Vertices + offset2 );
+        const kvs::Vec3 v10 = v0 - v1;
+        const kvs::Vec3 v12 = v2 - v1;
+        const kvs::Vec3 n = v12.cross( v10 );
+        kvs::OpenGL::Normal( n );
+        kvs::OpenGL::Vertices( v0, v1, v2 );
     }
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -292,16 +285,13 @@ void DiamondGlyph::draw_element( const kvs::RGBColor& color, const kvs::UInt8 op
 /*===========================================================================*/
 void DiamondGlyph::initialize()
 {
-    kvs::OpenGL::Disable( GL_LINE_SMOOTH );
-
-    kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
     kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
     kvs::OpenGL::SetShadeModel( GL_SMOOTH );
-
     kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+
+    kvs::OpenGL::Disable( GL_LINE_SMOOTH );
+    kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
 
     if ( !BaseClass::isEnabledShading() )
