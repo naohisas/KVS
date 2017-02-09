@@ -347,26 +347,29 @@ const kvs::ValueArray<kvs::UInt8> Histogram::get_histogram_image() const
     kvs::ValueArray<kvs::UInt8> data( npixels * nchannels );
     data.fill( 0 );
 
-    const float g = kvs::Math::Clamp( m_bias_parameter, 0.0f, 1.0f );
-    const kvs::Real32 normalized_factor = 1.0f / m_table.maxCount();
-    for ( size_t i = 0; i < width; i++ )
+    if ( m_table.bin().size() == width )
     {
-        // Calculate bias parameter.
-        // Bias function: b(f,g) = f^{ln(g)/ln(0.5)}
-        //  f: frequecny count that is normalized in [0,1]
-        //  g: bias parameter in [0,1]
-        const size_t n = m_table.bin().at(i); // frequency count
-        const float f = n * normalized_factor; // normalized frequency count in [0,1]
-        const float b = std::pow( f, static_cast<float>( std::log(g) / std::log(0.5) ) );
-
-        const size_t h = static_cast<size_t>( b * height + 0.5f );
-        for ( size_t j = 0; j < h; j++ )
+        const float g = kvs::Math::Clamp( m_bias_parameter, 0.0f, 1.0f );
+        const kvs::Real32 normalized_factor = 1.0f / m_table.maxCount();
+        for ( size_t i = 0; i < width; i++ )
         {
-            const size_t index = i + j * width;
-            data[ 4 * index + 0 ] = m_graph_color.r();
-            data[ 4 * index + 1 ] = m_graph_color.g();
-            data[ 4 * index + 2 ] = m_graph_color.b();
-            data[ 4 * index + 3 ] = static_cast<kvs::UInt8>( m_graph_color.a() * 255.0f );
+            // Calculate bias parameter.
+            // Bias function: b(f,g) = f^{ln(g)/ln(0.5)}
+            //  f: frequecny count that is normalized in [0,1]
+            //  g: bias parameter in [0,1]
+            const size_t n = m_table.bin().at(i); // frequency count
+            const float f = n * normalized_factor; // normalized frequency count in [0,1]
+            const float b = std::pow( f, static_cast<float>( std::log(g) / std::log(0.5) ) );
+
+            const size_t h = static_cast<size_t>( b * height + 0.5f );
+            for ( size_t j = 0; j < h; j++ )
+            {
+                const size_t index = i + j * width;
+                data[ 4 * index + 0 ] = m_graph_color.r();
+                data[ 4 * index + 1 ] = m_graph_color.g();
+                data[ 4 * index + 2 ] = m_graph_color.b();
+                data[ 4 * index + 3 ] = static_cast<kvs::UInt8>( m_graph_color.a() * 255.0f );
+            }
         }
     }
 

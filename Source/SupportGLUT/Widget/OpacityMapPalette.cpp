@@ -129,7 +129,7 @@ void OpacityMapPalette::setOpacityMap( const kvs::OpacityMap& opacity_map )
     // Deep copy.
     kvs::OpacityMap::Table opacity_map_table( opacity_map.table().data(), opacity_map.table().size() );
     m_opacity_map = kvs::OpacityMap( opacity_map_table );
-    this->initialize_texture( m_opacity_map );
+//    this->initialize_texture( m_opacity_map );
 }
 
 void OpacityMapPalette::paintEvent( void )

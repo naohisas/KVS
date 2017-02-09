@@ -171,7 +171,7 @@ void ColorMapPalette::setColorMap( const kvs::ColorMap& color_map )
     // Deep copy.
     kvs::ColorMap::Table color_map_table( color_map.table().data(), color_map.table().size() );
     m_color_map = kvs::ColorMap( color_map_table );
-    this->initialize_texture( m_color_map );
+//    this->initialize_texture( m_color_map );
 }
 
 /*===========================================================================*/
