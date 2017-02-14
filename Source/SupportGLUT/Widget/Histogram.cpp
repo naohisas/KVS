@@ -155,7 +155,6 @@ void Histogram::create( const kvs::VolumeObjectBase* volume )
 void Histogram::create( const kvs::ImageObject* image )
 {
     m_table.create( image );
-//    this->calculate_density_curve();
 }
 
 void Histogram::paintEvent()
@@ -164,7 +163,8 @@ void Histogram::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     if ( !m_texture.isValid() ) this->create_texture();
@@ -187,7 +187,7 @@ void Histogram::paintEvent()
 
     this->draw_palette();
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 void Histogram::resizeEvent( int width, int height )

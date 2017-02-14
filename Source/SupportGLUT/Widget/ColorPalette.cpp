@@ -159,7 +159,8 @@ void ColorPalette::paintEvent( void )
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     // Draw the caption.
@@ -208,7 +209,7 @@ void ColorPalette::paintEvent( void )
     this->draw_selected_color_box();
     this->draw_selected_color_value();
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 void ColorPalette::resizeEvent( int width, int height )

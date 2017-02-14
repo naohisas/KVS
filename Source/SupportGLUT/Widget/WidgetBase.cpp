@@ -72,127 +72,6 @@ WidgetBase::~WidgetBase()
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the margin.
- *  @return margin
- */
-/*===========================================================================*/
-int WidgetBase::margin() const
-{
-    return m_margin;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the text color.
- *  @return text color
- */
-/*===========================================================================*/
-const kvs::RGBColor& WidgetBase::textColor() const
-{
-    return m_text_color;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the background color.
- *  @return background color
- */
-/*===========================================================================*/
-const kvs::RGBAColor& WidgetBase::backgroundColor() const
-{
-    return m_background_color;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the background border color.
- *  @return background border color
- */
-/*===========================================================================*/
-const kvs::RGBAColor& WidgetBase::backgroundBorderColor() const
-{
-    return m_background_border_color;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the background width.
- *  @return background width
- */
-/*===========================================================================*/
-float WidgetBase::backgroundBorderWidth() const
-{
-    return m_background_border_width;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the character width.
- *  @return character width
- */
-/*===========================================================================*/
-int WidgetBase::characterWidth() const
-{
-    return m_character_width;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the character height.
- *  @return character height
- */
-/*===========================================================================*/
-int WidgetBase::characterHeight() const
-{
-    return m_character_height;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Checks whether the widget is shown or not.
- *  @return true, if the widget is shown
- */
-/*===========================================================================*/
-bool WidgetBase::isShown() const
-{
-    return m_is_shown;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a margin.
- *  @param  margin [in] margin
- */
-/*===========================================================================*/
-void WidgetBase::setMargin( const int margin )
-{
-    m_margin = margin;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a text color.
- *  @param  color [in] text color
- */
-/*===========================================================================*/
-void WidgetBase::setTextColor( const kvs::RGBColor& color )
-{
-    m_text_color = color;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a background color.
- *  @param  background_color [in] background color
- */
-/*===========================================================================*/
-void WidgetBase::setBackgroundColor( const kvs::RGBAColor& background_color )
-{
-    m_background_color = background_color;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Sets a background opacity value.
  *  @param  opacity [in] opacity value
  */
@@ -203,17 +82,6 @@ void WidgetBase::setBackgroundOpacity( const float opacity )
     const kvs::UInt8 g = m_background_color.g();
     const kvs::UInt8 b = m_background_color.b();
     m_background_color = kvs::RGBAColor( r, g, b, opacity );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a background color.
- *  @param  background_border_color [in] background color
- */
-/*===========================================================================*/
-void WidgetBase::setBackgroundBorderColor( const kvs::RGBAColor& background_border_color )
-{
-    m_background_border_color = background_border_color;
 }
 
 /*===========================================================================*/
@@ -232,17 +100,6 @@ void WidgetBase::setBackgroundBorderOpacity( const float opacity )
 
 /*===========================================================================*/
 /**
- *  @brief  Sets a background border width.
- *  @param  background_border_width [in] background border width
- */
-/*===========================================================================*/
-void WidgetBase::setBackgroundBorderWidth( const float background_border_width )
-{
-    m_background_border_width = background_border_width;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Shows the screen.
  */
 /*===========================================================================*/
@@ -250,7 +107,6 @@ void WidgetBase::show()
 {
     if ( m_width == 0 ) m_width = this->get_fitted_width();
     if ( m_height == 0 ) m_height = this->get_fitted_height();
-
     m_is_shown = true;
 }
 
@@ -262,50 +118,6 @@ void WidgetBase::show()
 void WidgetBase::hide()
 {
     m_is_shown = false;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the pointer to the screen.
- *  @return pointer to the screen
- */
-/*===========================================================================*/
-kvs::ScreenBase* WidgetBase::screen()
-{
-    return m_screen;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Delimits the drawing.
- */
-/*===========================================================================*/
-void WidgetBase::begin_draw()
-{
-    GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
-    const GLint left   = vp[0];
-    const GLint bottom = vp[1];
-    const GLint right  = vp[2];
-    const GLint top    = vp[3];
-
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
-    glMatrixMode( GL_MODELVIEW );  glPushMatrix(); glLoadIdentity();
-    glMatrixMode( GL_PROJECTION ); glPushMatrix(); glLoadIdentity();
-    glOrtho( left, right, top, bottom, -1, 1 ); // The origin is upper-left.
-    glDisable( GL_DEPTH_TEST );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Delimits the drawing.
- */
-/*===========================================================================*/
-void WidgetBase::end_draw()
-{
-    glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
-    glPopMatrix();
-    glPopAttrib();
 }
 
 /*==========================================================================*/
@@ -426,28 +238,6 @@ kvs::RGBColor WidgetBase::get_darkened_color( const kvs::RGBColor& color, const 
     hsv.set( hsv.h(), hsv.s(), hsv.v() * darkness );
 
     return kvs::RGBColor( hsv );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the fitted width.
- *  @return fitted width
- */
-/*===========================================================================*/
-int WidgetBase::get_fitted_width()
-{
-    return 0;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the fitted height.
- *  @return fitted height
- */
-/*===========================================================================*/
-int WidgetBase::get_fitted_height()
-{
-    return 0;
 }
 
 } // end of namespace glut

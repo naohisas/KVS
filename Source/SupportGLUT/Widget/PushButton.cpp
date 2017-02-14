@@ -224,7 +224,8 @@ void PushButton::paintEvent( void )
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     this->draw_button();
@@ -233,7 +234,7 @@ void PushButton::paintEvent( void )
     const int y = this->get_aligned_y();
     BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/

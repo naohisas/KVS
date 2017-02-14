@@ -19,6 +19,7 @@
 #include <kvs/RGBAColor>
 #include <kvs/EventListener>
 #include <kvs/glut/Rectangle>
+#include <kvs/OpenGL>
 
 
 namespace kvs
@@ -39,6 +40,7 @@ class WidgetBase : public kvs::glut::Rectangle, public kvs::EventListener
 protected:
 
     kvs::ScreenBase* m_screen; ///< pointer to the screen
+    kvs::OpenGL::Render2D m_render_2d; ///< 2D rendering
     int m_margin; ///< margin
     bool m_is_shown; ///< check flag whether the widget is shown or not
     kvs::RGBColor m_text_color; ///< text color
@@ -55,38 +57,35 @@ public:
 
 public:
 
-    int margin() const;
-    bool isShown() const;
-    const kvs::RGBColor& textColor() const;
-    const kvs::RGBAColor& backgroundColor() const;
-    const kvs::RGBAColor& backgroundBorderColor() const;
-    float backgroundBorderWidth() const;
-    int characterWidth() const;
-    int characterHeight() const;
+    int margin() const { return m_margin; }
+    bool isShown() const { return m_is_shown; }
+    const kvs::RGBColor& textColor() const { return m_text_color; }
+    const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
+    const kvs::RGBAColor& backgroundBorderColor() const { return m_background_border_color; }
+    float backgroundBorderWidth() const { return m_background_border_width; }
+    int characterWidth() const { return m_character_width; }
+    int characterHeight() const { return m_character_height; }
 
-    void setMargin( const int margin );
-    void setTextColor( const kvs::RGBColor& text_color );
-    void setBackgroundColor( const kvs::RGBAColor& background_color );
+    void setMargin( const int margin ) { m_margin = margin; }
+    void setTextColor( const kvs::RGBColor& color ) { m_text_color = color; }
+    void setBackgroundColor( const kvs::RGBAColor& color ) { m_background_color = color; }
+    void setBackgroundBorderColor( const kvs::RGBAColor& color ) { m_background_border_color = color; }
+    void setBackgroundBorderWidth( const float width ) { m_background_border_width = width; }
     void setBackgroundOpacity( const float opacity );
-    void setBackgroundBorderColor( const kvs::RGBAColor& border_color );
     void setBackgroundBorderOpacity( const float opacity );
-    void setBackgroundBorderWidth( const float border_width );
 
     void show();
     void hide();
 
 protected:
-
-    kvs::ScreenBase* screen();
-
-    virtual void begin_draw();
-    virtual void end_draw();
+    kvs::ScreenBase* screen() { return m_screen; }
+    kvs::OpenGL::Render2D& render2D() { return m_render_2d; }
     virtual void draw_background();
     virtual void draw_text( const int x, const int y, const std::string& text );
     virtual void swap_color( kvs::RGBColor& color1, kvs::RGBColor& color2 );
     virtual kvs::RGBColor get_darkened_color( const kvs::RGBColor& color, const float darkness );
-    virtual int get_fitted_width();
-    virtual int get_fitted_height();
+    virtual int get_fitted_width() { return 0; }
+    virtual int get_fitted_height() { return 0; }
 
 private:
 

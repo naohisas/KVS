@@ -60,21 +60,19 @@ protected:
 public:
 
     OpacityMapPalette( kvs::ScreenBase* screen = 0 );
-    virtual ~OpacityMapPalette( void );
+    virtual ~OpacityMapPalette();
 
-    virtual void screenUpdated( void ) {};
-    virtual void screenResized( void ) {};
+    virtual void screenUpdated() {};
+    virtual void screenResized() {};
 
-    const std::string& caption( void ) const;
-    const kvs::glut::Rectangle& palette( void ) const;
-    const kvs::OpacityMap opacityMap( void ) const;
-
-    void setCaption( const std::string& caption );
+    const std::string& caption() const { return m_caption; }
+    const kvs::glut::Rectangle& palette() const { return m_palette; }
+    const kvs::OpacityMap opacityMap() const;
+    void setCaption( const std::string& caption ) { m_caption = caption; }
     void setOpacityMap( const kvs::OpacityMap& opacity_map );
+    void update() { this->initialize_texture( m_opacity_map ); }
 
-public:
-
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseMoveEvent( kvs::MouseEvent* event );
@@ -82,11 +80,11 @@ public:
 
 protected:
 
-    int get_fitted_width( void );
-    int get_fitted_height( void );
+    int get_fitted_width();
+    int get_fitted_height();
     void initialize_texture( const kvs::OpacityMap& opacity_map );
-    void initialize_checkerboard( void );
-    void draw_palette( void );
+    void initialize_checkerboard();
+    void draw_palette();
     void draw_free_hand_line( kvs::MouseEvent* event );
     void draw_straight_line( kvs::MouseEvent* event );
 };

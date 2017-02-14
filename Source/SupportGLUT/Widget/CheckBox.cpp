@@ -264,7 +264,8 @@ void CheckBox::paintEvent( void )
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     this->draw_box();
@@ -274,7 +275,7 @@ void CheckBox::paintEvent( void )
     const int y = BaseClass::y0() + BaseClass::margin();
     BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/

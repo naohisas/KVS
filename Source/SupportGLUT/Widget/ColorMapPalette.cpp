@@ -113,28 +113,8 @@ ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
  *  @brief  Destroys the ColorMapPalette class.
  */
 /*===========================================================================*/
-ColorMapPalette::~ColorMapPalette( void )
+ColorMapPalette::~ColorMapPalette()
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns caption string.
- */
-/*===========================================================================*/
-const std::string& ColorMapPalette::caption( void ) const
-{
-    return( m_caption );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the palette.
- */
-/*===========================================================================*/
-const kvs::glut::Rectangle& ColorMapPalette::palette( void ) const
-{
-    return( m_palette );
 }
 
 /*===========================================================================*/
@@ -146,18 +126,7 @@ const kvs::glut::Rectangle& ColorMapPalette::palette( void ) const
 const kvs::ColorMap ColorMapPalette::colorMap( void ) const
 {
     kvs::ColorMap::Table color_map_table( m_color_map.table().data(), m_color_map.table().size() );
-    return( kvs::ColorMap( color_map_table ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a caption.
- *  @param  caption [in] caption
- */
-/*===========================================================================*/
-void ColorMapPalette::setCaption( const std::string& caption )
-{
-    m_caption = caption;
+    return kvs::ColorMap( color_map_table );
 }
 
 /*===========================================================================*/
@@ -171,39 +140,6 @@ void ColorMapPalette::setColorMap( const kvs::ColorMap& color_map )
     // Deep copy.
     kvs::ColorMap::Table color_map_table( color_map.table().data(), color_map.table().size() );
     m_color_map = kvs::ColorMap( color_map_table );
-//    this->initialize_texture( m_color_map );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a drawing color.
- *  @param  color [in] drawing color
- */
-/*===========================================================================*/
-void ColorMapPalette::setDrawingColor( const kvs::RGBColor& color )
-{
-    m_drawing_color = color;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Attach color palette.
- *  @param  palette [in] color palette
- */
-/*===========================================================================*/
-void ColorMapPalette::attachColorPalette( const kvs::glut::ColorPalette* palette )
-{
-    m_color_palette = palette;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Detach color palette.
- */
-/*===========================================================================*/
-void ColorMapPalette::detachColorPalette( void )
-{
-    m_color_palette = NULL;
 }
 
 /*===========================================================================*/
@@ -211,7 +147,7 @@ void ColorMapPalette::detachColorPalette( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void ColorMapPalette::paintEvent( void )
+void ColorMapPalette::paintEvent()
 {
     this->screenUpdated();
 
@@ -219,7 +155,8 @@ void ColorMapPalette::paintEvent( void )
 
     if ( !glIsTexture( m_texture.id() ) ) this->initialize_texture( m_color_map );
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     // Draw the caption.
@@ -240,7 +177,7 @@ void ColorMapPalette::paintEvent( void )
 
     this->draw_palette();
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/
@@ -395,15 +332,15 @@ void ColorMapPalette::mouseReleaseEvent( kvs::MouseEvent* event )
     }
 }
 
-int ColorMapPalette::get_fitted_width( void )
+int ColorMapPalette::get_fitted_width()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
-    return( kvs::Math::Max( width, ::Default::Width ) );
+    return kvs::Math::Max( width, ::Default::Width );
 }
 
-int ColorMapPalette::get_fitted_height( void )
+int ColorMapPalette::get_fitted_height()
 {
-    return( ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2 );
+    return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }
 
 void ColorMapPalette::initialize_texture( const kvs::ColorMap& color_map )
@@ -419,7 +356,7 @@ void ColorMapPalette::initialize_texture( const kvs::ColorMap& color_map )
     m_texture.create( width, data );
 }
 
-void ColorMapPalette::draw_palette( void )
+void ColorMapPalette::draw_palette()
 {
     glPushAttrib( GL_ALL_ATTRIB_BITS );
 

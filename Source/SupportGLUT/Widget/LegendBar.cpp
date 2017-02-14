@@ -259,14 +259,14 @@ void LegendBar::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-//    if ( !glIsTexture( m_texture.id() ) ) this->create_texture();
     if ( !m_texture_downloaded )
     {
          this->create_texture();
         m_texture_downloaded = true;
     }
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     const std::string min_value = kvs::String::ToString( m_min_value );
@@ -334,7 +334,7 @@ void LegendBar::paintEvent()
         }
     }
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/

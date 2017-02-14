@@ -99,29 +99,15 @@ OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
     m_opacity_map.create();
 }
 
-OpacityMapPalette::~OpacityMapPalette( void )
+OpacityMapPalette::~OpacityMapPalette()
 {
 }
 
-const std::string& OpacityMapPalette::caption( void ) const
+const kvs::OpacityMap OpacityMapPalette::opacityMap() const
 {
-    return( m_caption );
-}
-
-const kvs::glut::Rectangle& OpacityMapPalette::palette( void ) const
-{
-    return( m_palette );
-}
-
-const kvs::OpacityMap OpacityMapPalette::opacityMap( void ) const
-{
+    // Deep copy.
     kvs::OpacityMap::Table opacity_map_table( m_opacity_map.table().data(), m_opacity_map.table().size() );
-    return( kvs::OpacityMap( opacity_map_table ) );
-}
-
-void OpacityMapPalette::setCaption( const std::string& caption )
-{
-    m_caption = caption;
+    return kvs::OpacityMap( opacity_map_table );
 }
 
 void OpacityMapPalette::setOpacityMap( const kvs::OpacityMap& opacity_map )
@@ -129,16 +115,16 @@ void OpacityMapPalette::setOpacityMap( const kvs::OpacityMap& opacity_map )
     // Deep copy.
     kvs::OpacityMap::Table opacity_map_table( opacity_map.table().data(), opacity_map.table().size() );
     m_opacity_map = kvs::OpacityMap( opacity_map_table );
-//    this->initialize_texture( m_opacity_map );
 }
 
-void OpacityMapPalette::paintEvent( void )
+void OpacityMapPalette::paintEvent()
 {
     this->screenUpdated();
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     if ( !m_texture.isValid() ) this->initialize_texture( m_opacity_map );
@@ -162,7 +148,7 @@ void OpacityMapPalette::paintEvent( void )
 
     this->draw_palette();
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 void OpacityMapPalette::resizeEvent( int width, int height )
@@ -257,15 +243,15 @@ void OpacityMapPalette::mouseReleaseEvent( kvs::MouseEvent* event )
     }
 }
 
-int OpacityMapPalette::get_fitted_width( void )
+int OpacityMapPalette::get_fitted_width()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
-    return( kvs::Math::Max( width, ::Default::Width ) );
+    return kvs::Math::Max( width, ::Default::Width );
 }
 
-int OpacityMapPalette::get_fitted_height( void )
+int OpacityMapPalette::get_fitted_height()
 {
-    return( ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2 );
+    return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }
 
 void OpacityMapPalette::initialize_texture( const kvs::OpacityMap& opacity_map )
@@ -280,7 +266,7 @@ void OpacityMapPalette::initialize_texture( const kvs::OpacityMap& opacity_map )
     m_texture.create( width, data );
 }
 
-void OpacityMapPalette::initialize_checkerboard( void )
+void OpacityMapPalette::initialize_checkerboard()
 {
     const size_t nchannels = 3;
     const int width = 32;
@@ -319,7 +305,7 @@ void OpacityMapPalette::initialize_checkerboard( void )
     delete [] data;
 }
 
-void OpacityMapPalette::draw_palette( void )
+void OpacityMapPalette::draw_palette()
 {
     glPushAttrib( GL_ALL_ATTRIB_BITS );
 

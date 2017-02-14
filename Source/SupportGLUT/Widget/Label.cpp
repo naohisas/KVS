@@ -127,7 +127,8 @@ void Label::paintEvent( void )
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
     BaseClass::draw_background();
 
     const int x = BaseClass::x() + BaseClass::margin();
@@ -137,7 +138,7 @@ void Label::paintEvent( void )
         BaseClass::draw_text( x, y + ::Default::CharacterHeight * ( line + 1 ), m_text[line] );
     }
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/

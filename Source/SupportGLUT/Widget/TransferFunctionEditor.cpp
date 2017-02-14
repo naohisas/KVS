@@ -129,7 +129,6 @@ namespace kvs
 namespace glut
 {
 
-
 TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
     m_screen( parent ),
     m_color_palette( NULL ),
@@ -354,6 +353,8 @@ void TransferFunctionEditor::reset()
     m_color_map_palette->setColorMap( m_initial_transfer_function.colorMap() );
     m_opacity_map_palette->setOpacityMap( m_initial_transfer_function.opacityMap() );
 
+    m_color_map_palette->update();
+    m_opacity_map_palette->update();
     this->redraw();
 }
 
@@ -383,6 +384,8 @@ void TransferFunctionEditor::undo()
         m_color_map_palette->setColorMap( transfer_function.colorMap() );
         m_opacity_map_palette->setOpacityMap( transfer_function.opacityMap() );
 
+        m_color_map_palette->update();
+        m_opacity_map_palette->update();
         this->redraw();
     }
 }
@@ -399,6 +402,8 @@ void TransferFunctionEditor::redo()
         m_undo_stack.push_front( m_redo_stack.front() );
         m_redo_stack.pop_front();
 
+        m_color_map_palette->update();
+        m_opacity_map_palette->update();
         this->redraw();
     }
 }
