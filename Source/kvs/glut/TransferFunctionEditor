@@ -1,1 +1,1 @@
-#include <SupportGLUT/Viewer/TransferFunctionEditor.h>
+#include <SupportGLUT/Widget/TransferFunctionEditor.h>
