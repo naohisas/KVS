@@ -123,18 +123,18 @@ void OpacityMapPalette::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
-    BaseClass::render2D().begin();
-    BaseClass::draw_background();
-
     if ( !m_texture.isValid() ) this->initialize_texture( m_opacity_map );
     if ( !m_checkerboard.isValid() ) this->initialize_checkerboard();
+
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
+    BaseClass::drawBackground();
 
     // Draw the caption.
     {
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin();
-        BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+        BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
     }
 
     // Draw palette.

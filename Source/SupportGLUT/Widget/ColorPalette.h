@@ -55,19 +55,19 @@ protected:
 public:
 
     ColorPalette( kvs::ScreenBase* screen = 0 );
-    virtual ~ColorPalette( void );
+    virtual ~ColorPalette();
 
-    virtual void screenUpdated( void ) {};
-    virtual void screenResized( void ) {};
+    virtual void screenUpdated() {};
+    virtual void screenResized() {};
 
-    const std::string& caption( void ) const;
-    const kvs::RGBColor color( void ) const;
+    const std::string& caption() const;
+    const kvs::RGBColor color() const;
 
     void setCaption( const std::string& caption );
 
 public:
 
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseMoveEvent( kvs::MouseEvent* event );
@@ -75,15 +75,15 @@ public:
 
 protected:
 
-    void draw_SV_palette( void );
-    void draw_H_palette( void );
-    void draw_selected_color_box( void );
-    void draw_selected_color_value( void );
-    int get_fitted_width( void );
-    int get_fitted_height( void );
-    float get_H_value( void ) const;
-    float get_S_value( void ) const;
-    float get_V_value( void ) const;
+    void draw_SV_palette();
+    void draw_H_palette();
+    void draw_selected_color_box();
+    void draw_selected_color_value();
+    int get_fitted_width();
+    int get_fitted_height();
+    float get_H_value() const;
+    float get_S_value() const;
+    float get_V_value() const;
 };
 
 } // end of namespace glut

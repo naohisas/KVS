@@ -54,18 +54,18 @@ public:
     virtual void pressed( int id ) { kvs::IgnoreUnusedVariable( id ); };
     virtual void released( kvs::glut::CheckBox* box ) { kvs::IgnoreUnusedVariable( box ); };
     virtual void released( int id ) { kvs::IgnoreUnusedVariable( id ); };
-    virtual void screenUpdated( void ) {};
-    virtual void screenResized( void ) {};
+    virtual void screenUpdated() {};
+    virtual void screenResized() {};
 
-    const std::list<kvs::glut::CheckBox*>& checkBoxes( void ) const;
+    const std::list<kvs::glut::CheckBox*>& checkBoxes() const { return m_boxes; }
     void add( kvs::glut::CheckBox* box );
     void remove( kvs::glut::CheckBox* box );
-    void show( void );
-    void hide( void );
+    void show();
+    void hide();
 
 private:
 
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseReleaseEvent( kvs::MouseEvent* event );

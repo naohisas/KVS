@@ -267,7 +267,7 @@ void LegendBar::paintEvent()
 
     BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
     BaseClass::render2D().begin();
-    BaseClass::draw_background();
+    BaseClass::drawBackground();
 
     const std::string min_value = kvs::String::ToString( m_min_value );
     const std::string max_value = kvs::String::ToString( m_max_value );
@@ -294,7 +294,7 @@ void LegendBar::paintEvent()
     {
         const int x = m_x + m_margin;
         const int y = m_y + m_margin;
-        BaseClass::draw_text( x, y + character_height, m_caption );
+        BaseClass::drawText( x, y + character_height, m_caption );
     }
 
     // Draw the values.
@@ -307,12 +307,12 @@ void LegendBar::paintEvent()
             {
                 const int x = m_x + m_margin;
                 const int y = BaseClass::y1() - m_margin - character_height;
-                BaseClass::draw_text( x, y + character_height, min_value );
+                BaseClass::drawText( x, y + character_height, min_value );
             }
             {
                 const int x = BaseClass::x1() - m_margin - max_value.size() * character_width;
                 const int y = BaseClass::y1() - m_margin - character_height;
-                BaseClass::draw_text( x, y + character_height, max_value );
+                BaseClass::drawText( x, y + character_height, max_value );
             }
             break;
         }
@@ -321,12 +321,12 @@ void LegendBar::paintEvent()
             {
                 const int x = BaseClass::x1() - m_margin - value_width;
                 const int y = m_y + m_margin + caption_height;
-                BaseClass::draw_text( x, y + character_height, min_value );
+                BaseClass::drawText( x, y + character_height, min_value );
             }
             {
                 const int x = BaseClass::x1() - m_margin - value_width;
                 const int y = BaseClass::y1() - m_margin - character_height;
-                BaseClass::draw_text( x, y + character_height, max_value );
+                BaseClass::drawText( x, y + character_height, max_value );
             }
             break;
         }

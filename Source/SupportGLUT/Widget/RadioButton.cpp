@@ -306,14 +306,14 @@ void RadioButton::paintEvent( void )
 
     BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
     BaseClass::render2D().begin();
-    BaseClass::draw_background();
+    BaseClass::drawBackground();
 
     this->draw_box();
     if ( this->state() ) this->draw_mark();
 
     const int x = BaseClass::x0() + BaseClass::margin() + ::Default::CircleWidth + ::Default::TextMargin;
     const int y = BaseClass::y0() + BaseClass::margin();
-    BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+    BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
 
     BaseClass::render2D().end();
 }

@@ -161,13 +161,13 @@ void ColorPalette::paintEvent( void )
 
     BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
     BaseClass::render2D().begin();
-    BaseClass::draw_background();
+    BaseClass::drawBackground();
 
     // Draw the caption.
     {
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin();
-        BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+        BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
     }
 
     // Selected color box.
@@ -414,13 +414,13 @@ void ColorPalette::draw_selected_color_value( void )
 
     int x = m_selected_color_box.x0();
     int y = m_selected_color_box.y1() + 10;
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), R );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), G );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), B );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), "" );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), H );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), S );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), V );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), R );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), G );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), B );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), "" );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), H );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), S );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), V );
 }
 
 int ColorPalette::get_fitted_width( void )

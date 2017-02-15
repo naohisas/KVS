@@ -385,7 +385,7 @@ void Slider::paintEvent( void )
 //    BaseClass::begin_draw();
     BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
     BaseClass::render2D().begin();
-    BaseClass::draw_background();
+    BaseClass::drawBackground();
 
     const int character_width  = BaseClass::characterWidth();
     const int character_height = BaseClass::characterHeight();
@@ -394,7 +394,7 @@ void Slider::paintEvent( void )
     {
         const int x = m_x + m_margin;
         const int y = m_y + m_margin;
-        BaseClass::draw_text( x, y + character_height, m_caption );
+        BaseClass::drawText( x, y + character_height, m_caption );
     }
 
     // Draw the slider bar and cursor.
@@ -413,14 +413,14 @@ void Slider::paintEvent( void )
             std::string min_value = kvs::String::ToString( m_min_value );
             const int x = m_x + m_margin;
             const int y = m_y + m_margin + character_height + ::Default::SliderHeight;
-            BaseClass::draw_text( x, y + character_height, min_value );
+            BaseClass::drawText( x, y + character_height, min_value );
         }
 
         {
             std::string max_value = kvs::String::ToString( m_max_value );
             const int x = BaseClass::x1() - m_margin - max_value.size() * character_width;
             const int y = m_y + m_margin + character_height + ::Default::SliderHeight;
-            BaseClass::draw_text( x, y + character_height, max_value );
+            BaseClass::drawText( x, y + character_height, max_value );
         }
     }
 

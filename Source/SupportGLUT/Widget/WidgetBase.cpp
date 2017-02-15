@@ -125,61 +125,44 @@ void WidgetBase::hide()
  *  @brief  Draws the background.
  */
 /*==========================================================================*/
-void WidgetBase::draw_background()
+void WidgetBase::drawBackground()
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_TEXTURE_1D );
+    attrib.disable( GL_TEXTURE_2D );
+    attrib.enable( GL_BLEND );
+
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    if ( m_background_color.a() > 0.0f )
     {
-        glDisable( GL_TEXTURE_1D );
-        glDisable( GL_TEXTURE_2D );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-        if ( m_background_color.a() > 0.0f )
+        // Draw background.
+        kvs::OpenGL::Begin( GL_POLYGON );
         {
-            // Draw background.
-            glBegin( GL_POLYGON );
-            {
-                const GLubyte r = static_cast<GLubyte>( m_background_color.r() );
-                const GLubyte g = static_cast<GLubyte>( m_background_color.g() );
-                const GLubyte b = static_cast<GLubyte>( m_background_color.b() );
-                const GLubyte a = static_cast<GLubyte>( m_background_color.a() * 255.0f );
-                const GLfloat x0 = static_cast<GLfloat>( this->x0() );
-                const GLfloat x1 = static_cast<GLfloat>( this->x1() );
-                const GLfloat y0 = static_cast<GLfloat>( this->y0() );
-                const GLfloat y1 = static_cast<GLfloat>( this->y1() );
-                glColor4ub( r, g, b, a );
-                glVertex2f( x0, y1 );
-                glVertex2f( x0, y0 );
-                glVertex2f( x1, y0 );
-                glVertex2f( x1, y1 );
-            }
-            glEnd();
+            kvs::OpenGL::Color( m_background_color );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y1() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y0() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y0() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y1() ) );
         }
-
-        if ( m_background_border_width > 0.0f && m_background_border_color.a() > 0.0f )
-        {
-            // Draw outline of the background.
-            glLineWidth( m_background_border_width );
-            glBegin( GL_LINE_LOOP );
-            {
-                const GLubyte r = static_cast<GLubyte>( m_background_border_color.r() );
-                const GLubyte g = static_cast<GLubyte>( m_background_border_color.g() );
-                const GLubyte b = static_cast<GLubyte>( m_background_border_color.b() );
-                const GLubyte a = static_cast<GLubyte>( m_background_border_color.a() * 255.0f );
-                const GLfloat x0 = static_cast<GLfloat>( this->x0() );
-                const GLfloat x1 = static_cast<GLfloat>( this->x1() );
-                const GLfloat y0 = static_cast<GLfloat>( this->y0() );
-                const GLfloat y1 = static_cast<GLfloat>( this->y1() );
-                glColor4ub( r, g, b, a );
-                glVertex2f( x0, y1 );
-                glVertex2f( x0, y0 );
-                glVertex2f( x1, y0 );
-                glVertex2f( x1, y1 );
-            }
-            glEnd();
-        }
+        kvs::OpenGL::End();
     }
-    glPopAttrib();
+
+
+    if ( m_background_border_width > 0.0f && m_background_border_color.a() > 0.0f )
+    {
+        // Draw outline of the background.
+        kvs::OpenGL::SetLineWidth( m_background_border_width );
+        kvs::OpenGL::Begin( GL_POLYGON );
+        {
+            kvs::OpenGL::Color( m_background_border_color );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y1() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y0() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y0() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y1() ) );
+        }
+        kvs::OpenGL::End();
+    }
 }
 
 /*===========================================================================*/
@@ -190,24 +173,20 @@ void WidgetBase::draw_background()
  *  @param  text [in] text
  */
 /*===========================================================================*/
-void WidgetBase::draw_text( const int x, const int y, const std::string& text )
+void WidgetBase::drawText( const int x, const int y, const std::string& text )
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_TEXTURE_1D );
+    attrib.disable( GL_TEXTURE_2D );
+    attrib.disable( GL_BLEND );
+
+    kvs::OpenGL::Color( m_text_color );
+    kvs::OpenGL::SetRasterPos( x, y );
+    char* line_head = const_cast<char*>( text.c_str() );
+    for ( char* p = line_head; *p; p++ )
     {
-        glColor3ub( m_text_color.r(), m_text_color.g(), m_text_color.b() );
-
-        glDisable( GL_TEXTURE_1D );
-        glDisable( GL_TEXTURE_2D );
-        glDisable( GL_BLEND );
-
-        glRasterPos2i( x, y );
-        char* line_head = const_cast<char*>( text.c_str() );
-        for( char* p = line_head; *p; p++ )
-        {
-            glutBitmapCharacter( ::Default::CharacterFont, *p );
-        }
+        glutBitmapCharacter( ::Default::CharacterFont, *p );
     }
-    glPopAttrib();
 }
 
 /*===========================================================================*/

@@ -129,13 +129,13 @@ void Label::paintEvent( void )
 
     BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
     BaseClass::render2D().begin();
-    BaseClass::draw_background();
+    BaseClass::drawBackground();
 
     const int x = BaseClass::x() + BaseClass::margin();
     const int y = BaseClass::y() + BaseClass::margin();
     for ( size_t line = 0; line < m_text.size(); line++ )
     {
-        BaseClass::draw_text( x, y + ::Default::CharacterHeight * ( line + 1 ), m_text[line] );
+        BaseClass::drawText( x, y + ::Default::CharacterHeight * ( line + 1 ), m_text[line] );
     }
 
     BaseClass::render2D().end();

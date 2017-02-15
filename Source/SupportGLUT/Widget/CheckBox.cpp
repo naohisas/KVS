@@ -68,54 +68,10 @@ CheckBox::CheckBox( kvs::ScreenBase* screen ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the caption.
- *  @return caption string
- */
-/*===========================================================================*/
-const std::string& CheckBox::caption( void ) const
-{
-    return( m_caption );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the check status.
- *  @return true if the box is checked
- */
-/*===========================================================================*/
-bool CheckBox::state( void ) const
-{
-    return( m_state );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a caption string.
- *  @param  caption [in] caption string
- */
-/*===========================================================================*/
-void CheckBox::setCaption( const std::string caption )
-{
-    m_caption = caption;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a check status.
- *  @param  state [in] check status
- */
-/*===========================================================================*/
-void CheckBox::setState( const bool state )
-{
-    m_state = state;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Draws the box.
  */
 /*===========================================================================*/
-void CheckBox::draw_box( void )
+void CheckBox::draw_box()
 {
     const int dy = BaseClass::characterHeight() - ::Default::BoxHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
@@ -123,46 +79,32 @@ void CheckBox::draw_box( void )
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
     const GLfloat y1 = static_cast<GLfloat>( y0 + ::Default::BoxHeight );
 
-    glLineWidth( 1 );
+    kvs::OpenGL::SetLineWidth( 1 );
 
-    {
-        const GLubyte r = static_cast<GLubyte>( ::Default::BoxColor.r() );
-        const GLubyte g = static_cast<GLubyte>( ::Default::BoxColor.g() );
-        const GLubyte b = static_cast<GLubyte>( ::Default::BoxColor.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_POLYGON );
-        glVertex2f( x0, y1 );
-        glVertex2f( x0, y0 );
-        glVertex2f( x1, y0 );
-        glVertex2f( x1, y1 );
-        glEnd();
-    }
+    // Square
+    kvs::OpenGL::Begin( GL_POLYGON );
+    kvs::OpenGL::Color( ::Default::BoxColor );
+    kvs::OpenGL::Vertex( x0, y1 );
+    kvs::OpenGL::Vertex( x0, y0 );
+    kvs::OpenGL::Vertex( x1, y0 );
+    kvs::OpenGL::Vertex( x1, y1 );
+    kvs::OpenGL::End();
 
-    // Lower edge.
-    {
-        const GLubyte r = static_cast<GLubyte>( m_lower_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_lower_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_lower_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
-        glVertex2f( x0, y1 );
-        glVertex2f( x1, y1 );
-        glVertex2f( x1, y0 );
-        glEnd();
-    }
+    // Lower edge
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Color( m_lower_edge_color );
+    kvs::OpenGL::Vertex( x0, y1 );
+    kvs::OpenGL::Vertex( x1, y1 );
+    kvs::OpenGL::Vertex( x1, y0 );
+    kvs::OpenGL::End();
 
-    // Upper edge.
-    {
-        const GLubyte r = static_cast<GLubyte>( m_upper_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_upper_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_upper_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
-        glVertex2f( x1, y0 );
-        glVertex2f( x0, y0 );
-        glVertex2f( x0, y1 );
-        glEnd();
-    }
+    // Upper edge
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Color( m_upper_edge_color );
+    kvs::OpenGL::Vertex( x1, y0 );
+    kvs::OpenGL::Vertex( x0, y0 );
+    kvs::OpenGL::Vertex( x0, y1 );
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -170,25 +112,24 @@ void CheckBox::draw_box( void )
  *  @brief  Draw the check mark.
  */
 /*===========================================================================*/
-void CheckBox::draw_mark( void )
+void CheckBox::draw_mark()
 {
     const int dy = BaseClass::characterHeight() - ::Default::BoxHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
 
-    glEnable( GL_LINE_SMOOTH );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::Hint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    kvs::OpenGL::SetLineWidth( 1.5 );
 
-    glLineWidth( 1.5 );
-
-    glColor3ub( 0, 0, 0 );
-    glBegin( GL_LINE_STRIP );
-    glVertex2f( x0 + 2, y0 + 4 );
-    glVertex2f( x0 + 4, y0 + 8 );
-    glVertex2f( x0 + 7, y0 + 3 );
-    glEnd();
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Color( kvs::RGBColor::Black() );
+    kvs::OpenGL::Vertex( x0 + 2, y0 + 4 );
+    kvs::OpenGL::Vertex( x0 + 4, y0 + 8 );
+    kvs::OpenGL::Vertex( x0 + 7, y0 + 3 );
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -234,31 +175,10 @@ bool CheckBox::contains( int x, int y )
 
 /*===========================================================================*/
 /**
- *  @brief  Attaches the check box group.
- *  @param  group [in] pointer to the check box group
- */
-/*===========================================================================*/
-void CheckBox::attach_group( kvs::glut::CheckBoxGroup* group )
-{
-    m_group = group;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Detaches the check box group.
- */
-/*===========================================================================*/
-void CheckBox::detach_group( void )
-{
-    m_group = NULL;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void CheckBox::paintEvent( void )
+void CheckBox::paintEvent()
 {
     this->screenUpdated();
 
@@ -266,14 +186,13 @@ void CheckBox::paintEvent( void )
 
     BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
     BaseClass::render2D().begin();
-    BaseClass::draw_background();
-
+    BaseClass::drawBackground();
     this->draw_box();
-    if ( this->state() ) this->draw_mark();
+    if ( this->state() ) { this->draw_mark(); }
 
     const int x = BaseClass::x0() + BaseClass::margin() + ::Default::BoxWidth + ::Default::TextMargin;
     const int y = BaseClass::y0() + BaseClass::margin();
-    BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+    BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
 
     BaseClass::render2D().end();
 }

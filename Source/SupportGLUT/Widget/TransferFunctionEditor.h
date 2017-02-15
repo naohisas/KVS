@@ -81,26 +81,26 @@ public:
     TransferFunctionEditor( kvs::ScreenBase* parent = 0 );
     virtual ~TransferFunctionEditor();
 
-    kvs::ScreenBase* screen();
-    const kvs::glut::ColorPalette* colorPalette() const;
-    const kvs::glut::ColorMapPalette* colorMapPalette() const;
-    const kvs::glut::OpacityMapPalette* opacityMapPalette() const;
-    const kvs::ColorMap colorMap() const;
-    const kvs::OpacityMap opacityMap() const;
+    kvs::ScreenBase* screen() { return m_screen; }
+    const kvs::glut::ColorPalette* colorPalette() const { return m_color_palette; }
+    const kvs::glut::ColorMapPalette* colorMapPalette() const { return m_color_map_palette; }
+    const kvs::glut::OpacityMapPalette* opacityMapPalette() const { return m_opacity_map_palette; }
+    const kvs::ColorMap colorMap() const { return m_color_map_palette->colorMap(); }
+    const kvs::OpacityMap opacityMap() const { return m_opacity_map_palette->opacityMap(); }
     const kvs::TransferFunction transferFunction() const;
-    size_t undoStackSize() const;
-    size_t redoStackSize() const;
-    size_t maxStackSize() const;
+    size_t undoStackSize() const { return m_undo_stack.size(); }
+    size_t redoStackSize() const { return m_redo_stack.size(); }
+    size_t maxStackSize() const { return m_max_stack_size; }
 
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
     void setVolumeObject( const kvs::VolumeObjectBase* object );
-    void setMaxStackSize( const size_t stack_size );
+    void setMaxStackSize( const size_t stack_size ) { m_max_stack_size = stack_size; }
 
     virtual void reset();
     virtual void undo();
     virtual void redo();
     virtual void save();
-    virtual void apply();
+    virtual void apply() {}
 
 protected:
 
