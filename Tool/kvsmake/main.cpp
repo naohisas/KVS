@@ -47,6 +47,8 @@ int main( int argc, char** argv )
     argument.addValue( "project_name/make_options", false );
     argument.addOption( "g", "Generate a makefile.", 1 );
     argument.addOption( "G", "Generate a makefile and set it's target name to the current directory name", 0 );
+    argument.addOption( "q", "Generate a project file for Qt.", 1 );
+    argument.addOption( "Q", "Generate a project file for Qt and set it's target name to the current directory name.", 0 );
     argument.addOption( "qtproj", "Generate a project file for Qt.", 1 );
     argument.addOption( "Qtproj", "Generate a project file for Qt and set it's target name to the current directory name.", 0 );
 #if defined ( KVS_COMPILER_VC )
@@ -70,13 +72,13 @@ int main( int argc, char** argv )
         return kvsmake::WriteMakefile( project_name );
     }
 
-    if ( argument.hasOption( "qtproj" ) )
+    if ( argument.hasOption( "q" ) || argument.hasOption( "qtproj" ) )
     {
         const std::string project_name( argument.optionValue<std::string>( "qtproj" ) );
         return kvsmake::WriteQtProject( project_name );
     }
 
-    if ( argument.hasOption( "Qtproj" ) )
+    if ( argument.hasOption( "Q" ) || argument.hasOption( "Qtproj" ) )
     {
         const kvs::Directory dir( "." );
         const std::string project_name( dir.directoryName() );

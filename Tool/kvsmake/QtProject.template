@@ -6,6 +6,9 @@ KVS_DIR = $$(KVS_DIR)
 isEmpty( KVS_DIR ) {
     error( "KVS_DIR is not defined." )
 }
+else {
+    include( $$KVS_DIR/kvs.conf )
+}
 
 
 #=============================================================================
@@ -57,32 +60,25 @@ INCLUDEPATH += $$GLEW_INCLUDE_PATH
 #  Link library.
 #=============================================================================
 win32 {
-    LIBS += \
-$$KVS_DIR/lib/kvsSupportQt.lib \
-$$KVS_DIR/lib/kvsSupportGLUT.lib \
-$$KVS_DIR/lib/kvsCore.lib \
-glew32.lib
-
+    LIBS += $$KVS_DIR/lib/kvsSupportQt.lib
+    LIBS += $$KVS_DIR/lib/kvsCore.lib
+    equals( KVS_ENABLE_GLEW, "1" ) { LIBS += glew32.lib }
+    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/kvsSupportGLUT.lib }
 }
 
 macx {
-    LIBS += \
-$$KVS_DIR/lib/libkvsSupportQt.a \
-$$KVS_DIR/lib/libkvsSupportGLUT.a \
-$$KVS_DIR/lib/libkvsCore.a \
--framework GLUT \
--L$$GLEW_LIBRARY_PATH -lGLEW \
-
+    LIBS += $$KVS_DIR/lib/libkvsSupportQt.a
+    LIBS += $$KVS_DIR/lib/libkvsCore.a
+    equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
+    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -framework GLUT }
 }
 
-x11 {
-    LIBS += \
-$$KVS_DIR/lib/libkvsSupportQt.a \
-$$KVS_DIR/lib/libkvsSupportGLUT.a \
-$$KVS_DIR/lib/libkvsCore.a \
--lglut \
--L$$GLEW_LIBRARY_PATH -lGLEW \
-
+unix:!macx {
+    LIBS += $$KVS_DIR/lib/libkvsSupportQt.a
+    LIBS += $$KVS_DIR/lib/libkvsCore.a
+    equals( KVS_ENABLE_GLU, "1" ) { LIBS += -lGLU }
+    equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
+    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -lglut }
 }
 
 #=============================================================================
