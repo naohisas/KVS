@@ -56,6 +56,13 @@ GLEW_LIBRARY_PATH =
 
 INCLUDEPATH += $$GLEW_INCLUDE_PATH
 
+
+#=============================================================================
+#  Include.
+#=============================================================================
+exists( kvsmake.qt.conf ) { include( kvsmake.qt.conf ) }
+
+
 #=============================================================================
 #  Link library.
 #=============================================================================
@@ -74,17 +81,12 @@ macx {
 }
 
 unix:!macx {
+    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -lglut }
     LIBS += $$KVS_DIR/lib/libkvsSupportQt.a
     LIBS += $$KVS_DIR/lib/libkvsCore.a
     equals( KVS_ENABLE_GLU, "1" ) { LIBS += -lGLU }
     equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
-    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -lglut }
 }
-
-#=============================================================================
-#  Include.
-#=============================================================================
-exists( kvsmake.qt.conf ) { include( kvsmake.qt.conf ) }
 
 
 #=============================================================================
