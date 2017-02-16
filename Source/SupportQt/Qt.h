@@ -19,7 +19,9 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#if defined( KVS_ENABLE_GLEW )
 #include <GL/glew.h>
+#endif
 
 #include <string>
 
