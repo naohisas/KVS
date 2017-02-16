@@ -54,12 +54,12 @@ public:
 
 private:
 
-    int get_fitted_width( void );
-    int get_fitted_height( void );
+    int get_fitted_width();
+    int get_fitted_height();
 
 public:
 
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
 };
 

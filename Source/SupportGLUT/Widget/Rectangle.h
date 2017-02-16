@@ -39,31 +39,31 @@ protected:
 
 public:
 
-    Rectangle( void );
+    Rectangle();
     Rectangle( const int width, const int height );
     Rectangle( const int x, const int y, const int width, const int height );
-    virtual ~Rectangle( void );
+    virtual ~Rectangle();
 
-    int x( void ) const;
-    int y( void ) const;
-    int width( void ) const;
-    int height( void ) const;
-    int x0( void ) const;
-    int y0( void ) const;
-    int x1( void ) const;
-    int y1( void ) const;
-    bool isActive( void ) const;
+    int x() const { return m_x; }
+    int y() const { return m_y; }
+    int width() const { return m_width; }
+    int height() const { return m_height; }
+    int x0() const { return m_x; }
+    int y0() const { return m_y; }
+    int x1() const { return m_x + m_width; }
+    int y1() const { return m_y + m_height; }
+    bool isActive() const { return m_is_active; }
 
-    void setX( const int x );
-    void setY( const int y );
-    void setWidth( const int width );
-    void setHeight( const int height );
-    void setPosition( const int x, const int y );
-    void setSize( const int width, const int height );
-    void setGeometry( const int x, const int y, const int width, const int height );
+    void setX( const int x ) { m_x = x; }
+    void setY( const int y ) { m_y = y; }
+    void setWidth( const int width ) { m_width = width; }
+    void setHeight( const int height ) { m_height = height; }
+    void setPosition( const int x, const int y ) { m_x = x; m_y = y; }
+    void setSize( const int width, const int height ) { m_width = width; m_height = height; }
+    void setGeometry( const int x, const int y, const int width, const int height ) { this->setPosition( x, y ); this->setSize( width, height ); }
 
-    void activate( void );
-    void deactivate( void );
+    void activate() { m_is_active = true; }
+    void deactivate() { m_is_active = false; }
     bool contains( const int x, const int y, const bool proper = false );
 };
 

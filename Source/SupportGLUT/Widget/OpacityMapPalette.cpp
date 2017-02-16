@@ -57,18 +57,17 @@ void DrawRectangle(
     GLfloat x1 = static_cast<GLfloat>( rect.x1() );
     GLfloat y1 = static_cast<GLfloat>( rect.y1() );
 
-    glLineWidth( width );
-    glBegin( GL_LINES );
+    kvs::OpenGL::SetLineWidth( width );
+    kvs::OpenGL::Begin( GL_LINES );
     {
-        glColor3ub( upper_edge_color.r(), upper_edge_color.g(), upper_edge_color.b() );
-        glVertex2f( x0, y0 ); glVertex2f( x1, y0 ); // top
-        glVertex2f( x0, y0 ); glVertex2f( x0, y1 ); // left
-
-        glColor3ub( lower_edge_color.r(), lower_edge_color.g(), lower_edge_color.b() );
-        glVertex2f( x1, y1 ); glVertex2f( x0, y1 ); // bottom
-        glVertex2f( x1, y0 ); glVertex2f( x1, y1 ); // right
+        kvs::OpenGL::Color( upper_edge_color );
+        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x1, y0 ) ); // top
+        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x0, y1 ) ); // left
+        kvs::OpenGL::Color( lower_edge_color );
+        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 ), kvs::Vec2( x0, y1 ) ); // bottom
+        kvs::OpenGL::Vertices( kvs::Vec2( x1, y0 ), kvs::Vec2( x1, y1 ) ); // right
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 } // end of namespace
@@ -307,70 +306,70 @@ void OpacityMapPalette::initialize_checkerboard()
 
 void OpacityMapPalette::draw_palette()
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
-
-    const int x0 = m_palette.x0();
-    const int x1 = m_palette.x1();
-    const int y0 = m_palette.y0();
-    const int y1 = m_palette.y1();
-
-    // Draw checkerboard texture.
-    glDisable( GL_TEXTURE_1D );
-    glEnable( GL_TEXTURE_2D );
-#if defined( GL_TEXTURE_3D )
-    glDisable( GL_TEXTURE_3D );
-#endif
-
-    m_checkerboard.bind();
-    glBegin( GL_QUADS );
-    const float w = ( m_palette.width() / 32.0f );
-    const float h = ( m_palette.height() / 32.0f );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex2i( x0, y0 );
-    glTexCoord2f( w,    0.0f ); glVertex2i( x1, y0 );
-    glTexCoord2f( w,    h    ); glVertex2i( x1, y1 );
-    glTexCoord2f( 0.0f, h    ); glVertex2i( x0, y1 );
-    glEnd();
-    m_checkerboard.unbind();
-
-    glEnable( GL_BLEND );
-    glEnable( GL_TEXTURE_1D );
-    glDisable( GL_TEXTURE_2D );
-
-    // Draw opacity map.
-    glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_ALPHA );
-    m_texture.bind();
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex2i( x0, y0 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex2i( x1, y0 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex2i( x1, y1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex2i( x0, y1 );
-    glEnd();
-    m_texture.unbind();
-
-    // Draw lines.
-    const int width = m_palette.width();
-    const int height = m_palette.height();
-    const int resolution = m_opacity_map.resolution();
-    const float stride_x = static_cast<float>( width ) / ( resolution - 1 );
-    const kvs::Real32* data = m_opacity_map.table().data();
-    const kvs::Vector2f range_min( static_cast<float>(x0), static_cast<float>(y0+1) );
-    const kvs::Vector2f range_max( static_cast<float>(x1-1), static_cast<float>(y1) );
-
-    glEnable( GL_LINE_SMOOTH );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-
-    glLineWidth( 1.5 );
-    glColor3ub( 0, 0, 0 );
-    glBegin( GL_LINE_STRIP );
-    for( int i = 0; i < resolution; i++ )
     {
-        const float x = kvs::Math::Clamp( x0 + i * stride_x,     range_min.x(), range_max.x() );
-        const float y = kvs::Math::Clamp( y1 - height * data[i], range_min.y(), range_max.y() );
-        glVertex2f( x, y );
-    }
-    glEnd();
+        kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+        attrib.disable( GL_TEXTURE_1D );
+        attrib.enable( GL_TEXTURE_2D );
+        attrib.disable( GL_TEXTURE_3D );
 
-    glPopAttrib();
+        const int x0 = m_palette.x0();
+        const int x1 = m_palette.x1();
+        const int y0 = m_palette.y0();
+        const int y1 = m_palette.y1();
+        const float w = ( m_palette.width() / 32.0f );
+        const float h = ( m_palette.height() / 32.0f );
+
+        m_checkerboard.bind();
+        kvs::OpenGL::Begin( GL_QUADS );
+        {
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    0.0f ), kvs::Vec2( x1, y0 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    h    ), kvs::Vec2( x1, y1 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, h    ), kvs::Vec2( x0, y1 ) );
+        }
+        kvs::OpenGL::End();
+        m_checkerboard.unbind();
+
+        attrib.enable( GL_BLEND );
+        attrib.enable( GL_TEXTURE_1D );
+        attrib.disable( GL_TEXTURE_2D );
+        kvs::OpenGL::SetBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_ALPHA );
+
+        // Draw opacity map.
+        m_texture.bind();
+        kvs::OpenGL::Begin( GL_QUADS );
+        {
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y0 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y1 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y1 ) );
+        }
+        kvs::OpenGL::End();
+        m_texture.unbind();
+
+        // Draw lines.
+        const int width = m_palette.width();
+        const int height = m_palette.height();
+        const int resolution = m_opacity_map.resolution();
+        const float stride_x = static_cast<float>( width ) / ( resolution - 1 );
+        const kvs::Real32* data = m_opacity_map.table().data();
+        const kvs::Vec2 range_min( static_cast<float>(x0), static_cast<float>(y0+1) );
+        const kvs::Vec2 range_max( static_cast<float>(x1-1), static_cast<float>(y1) );
+
+        attrib.enable( GL_LINE_SMOOTH );
+        kvs::OpenGL::Hint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+
+        kvs::OpenGL::SetLineWidth( 1.5 );
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        kvs::OpenGL::Color( kvs::RGBColor::Black() );
+        for ( int i = 0; i < resolution; i++ )
+        {
+            const float x = kvs::Math::Clamp( x0 + i * stride_x,     range_min.x(), range_max.x() );
+            const float y = kvs::Math::Clamp( y1 - height * data[i], range_min.y(), range_max.y() );
+            kvs::OpenGL::Vertex( x, y );
+        }
+        kvs::OpenGL::End();
+    }
 
     // Draw border.
     ::DrawRectangle( m_palette, 1, m_upper_edge_color, m_lower_edge_color );

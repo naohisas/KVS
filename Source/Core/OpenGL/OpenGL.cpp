@@ -825,6 +825,11 @@ void SetLineWidth( GLfloat width )
     KVS_GL_CALL( glLineWidth( width ) );
 }
 
+void SetPointSize( GLfloat size )
+{
+    KVS_GL_CALL( glPointSize( size ) );
+}
+
 void ReadPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data )
 {
     KVS_GL_CALL( glReadPixels( x, y, width, height, format, type, data ) );

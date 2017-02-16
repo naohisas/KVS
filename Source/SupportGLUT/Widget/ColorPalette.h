@@ -60,10 +60,10 @@ public:
     virtual void screenUpdated() {};
     virtual void screenResized() {};
 
-    const std::string& caption() const;
+    const std::string& caption() const { return m_caption; }
     const kvs::RGBColor color() const;
 
-    void setCaption( const std::string& caption );
+    void setCaption( const std::string& caption ) { m_caption = caption; }
 
 public:
 

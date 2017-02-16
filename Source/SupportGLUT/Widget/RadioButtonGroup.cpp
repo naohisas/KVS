@@ -43,16 +43,6 @@ RadioButtonGroup::RadioButtonGroup( kvs::ScreenBase* screen ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the radio button list.
- */
-/*===========================================================================*/
-const std::list<kvs::glut::RadioButton*>& RadioButtonGroup::radioButtons( void ) const
-{
-    return( m_buttons );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Adds a radio button.
  *  @param  button [in] pointer to the radio button
  */
@@ -80,7 +70,7 @@ void RadioButtonGroup::remove( kvs::glut::RadioButton* button )
  *  @brief  Shows the buttons in the group.
  */
 /*===========================================================================*/
-void RadioButtonGroup::show( void )
+void RadioButtonGroup::show()
 {
     BaseClass::show();
 
@@ -97,7 +87,7 @@ void RadioButtonGroup::show( void )
  *  @brief  Hides the buttons in the group.
  */
 /*===========================================================================*/
-void RadioButtonGroup::hide( void )
+void RadioButtonGroup::hide()
 {
     BaseClass::hide();
 
@@ -114,7 +104,7 @@ void RadioButtonGroup::hide( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void RadioButtonGroup::paintEvent( void )
+void RadioButtonGroup::paintEvent()
 {
     this->screenUpdated();
 }

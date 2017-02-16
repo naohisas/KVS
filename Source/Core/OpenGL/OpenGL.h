@@ -127,6 +127,7 @@ void SetClearDepth( GLdouble depth );
 //void SetClearDepth( GLfloat depth );
 void SetPolygonOffset( GLfloat factor, GLfloat units );
 void SetLineWidth( GLfloat width );
+void SetPointSize( GLfloat size );
 
 void ReadPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data );
 void DrawPixels( GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* data );

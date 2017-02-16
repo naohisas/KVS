@@ -54,31 +54,31 @@ public:
 
     RadioButton( kvs::ScreenBase* screen = 0 );
 
-    virtual void pressed( void ) {};
-    virtual void released( void ) {};
-    virtual void screenUpdated( void ) {};
-    virtual void screenResized( void ) {};
-    virtual void stateChanged( void ) {};
+    virtual void pressed() {};
+    virtual void released() {};
+    virtual void screenUpdated() {};
+    virtual void screenResized() {};
+    virtual void stateChanged() {};
 
-    const std::string& caption( void ) const;
-    bool state( void ) const;
+    const std::string& caption() const { return m_caption; }
+    bool state() const { return m_state; }
 
-    void setCaption( const std::string caption );
-    void setState( const bool state );
+    void setCaption( const std::string caption ) { m_caption = caption; }
+    void setState( const bool state ) { m_state = state; }
 
 private:
 
-    void draw_box( void );
-    void draw_mark( void );
-    int get_fitted_width( void );
-    int get_fitted_height( void );
+    void draw_box();
+    void draw_mark();
+    int get_fitted_width();
+    int get_fitted_height();
     bool contains( int x, int y );
-    void attach_group( kvs::glut::RadioButtonGroup* group );
-    void detach_group( void );
+    void attach_group( kvs::glut::RadioButtonGroup* group ) { m_group = group; }
+    void detach_group() { m_group = NULL; }
 
 private:
 
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseReleaseEvent( kvs::MouseEvent* event );

@@ -63,39 +63,6 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the caption.
- *  @return caption string
- */
-/*===========================================================================*/
-const std::string& PushButton::caption( void ) const
-{
-    return( m_caption );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a caption string.
- *  @param  caption [in] caption string
- */
-/*===========================================================================*/
-void PushButton::setCaption( const std::string caption )
-{
-    m_caption = caption;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a text margin.
- *  @param  margin [in] margin width
- */
-/*===========================================================================*/
-void PushButton::setTextMargin( const int margin )
-{
-    m_text_margin = margin;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Sets a button color.
  *  @param  color [in] button color
  */
@@ -114,9 +81,9 @@ void PushButton::setButtonColor( const kvs::RGBColor& color )
  *  @return fitted width
  */
 /*===========================================================================*/
-int PushButton::get_fitted_width( void )
+int PushButton::get_fitted_width()
 {
-    return( m_caption.size() * BaseClass::characterWidth() + ( m_text_margin + m_margin ) * 2 );
+    return m_caption.size() * BaseClass::characterWidth() + ( m_text_margin + m_margin ) * 2;
 }
 
 /*===========================================================================*/
@@ -125,9 +92,9 @@ int PushButton::get_fitted_width( void )
  *  @return fitted height
  */
 /*===========================================================================*/
-int PushButton::get_fitted_height( void )
+int PushButton::get_fitted_height()
 {
-    return( BaseClass::characterHeight() + ( m_text_margin + m_margin ) * 2 );
+    return BaseClass::characterHeight() + ( m_text_margin + m_margin ) * 2;
 }
 
 /*===========================================================================*/
@@ -136,12 +103,12 @@ int PushButton::get_fitted_height( void )
  *  @return x coordinate
  */
 /*===========================================================================*/
-int PushButton::get_aligned_x( void )
+int PushButton::get_aligned_x()
 {
     // Centering the caption along the x axis.
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat x1 = static_cast<GLfloat>( BaseClass::x1() - BaseClass::margin() );
-    return( static_cast<int>( x0 + ( x1 - x0 - m_caption.size() * BaseClass::characterWidth() ) * 0.5f + 0.5f ) );
+    return static_cast<int>( x0 + ( x1 - x0 - m_caption.size() * BaseClass::characterWidth() ) * 0.5f + 0.5f );
 }
 
 /*===========================================================================*/
@@ -150,12 +117,12 @@ int PushButton::get_aligned_x( void )
  *  @return y coordinate
  */
 /*===========================================================================*/
-int PushButton::get_aligned_y( void )
+int PushButton::get_aligned_y()
 {
     // Centering the caption along the y axis.
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() );
     const GLfloat y1 = static_cast<GLfloat>( BaseClass::y1() - BaseClass::margin() );
-    return( static_cast<int>( y0 + ( y1 - y0 - BaseClass::characterHeight() ) * 0.5f + 0.5f ) );
+    return static_cast<int>( y0 + ( y1 - y0 - BaseClass::characterHeight() ) * 0.5f + 0.5f );
 }
 
 /*===========================================================================*/
@@ -163,53 +130,44 @@ int PushButton::get_aligned_y( void )
  *  @brief  Draws the button.
  */
 /*===========================================================================*/
-void PushButton::draw_button( void )
+void PushButton::draw_button()
 {
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat x1 = static_cast<GLfloat>( BaseClass::x1() - BaseClass::margin() );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() );
     const GLfloat y1 = static_cast<GLfloat>( BaseClass::y1() - BaseClass::margin() );
 
-    glLineWidth( 1 );
+    kvs::OpenGL::SetLineWidth( 1 );
 
     // Button.
     {
-        const GLubyte r = static_cast<GLubyte>( m_button_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_button_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_button_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_POLYGON );
-        glVertex2f( x0, y1 );
-        glVertex2f( x0, y0 );
-        glVertex2f( x1, y0 );
-        glVertex2f( x1, y1 );
-        glEnd();
+        kvs::OpenGL::Begin( GL_POLYGON );
+        kvs::OpenGL::Color( m_button_color );
+        kvs::OpenGL::Vertex( x0, y1 );
+        kvs::OpenGL::Vertex( x0, y0 );
+        kvs::OpenGL::Vertex( x1, y0 );
+        kvs::OpenGL::Vertex( x1, y1 );
+        kvs::OpenGL::End();
     }
 
     // Lower edge.
     {
-        const GLubyte r = static_cast<GLubyte>( m_lower_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_lower_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_lower_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
-        glVertex2f( x0, y1 );
-        glVertex2f( x1, y1 );
-        glVertex2f( x1, y0 );
-        glEnd();
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        kvs::OpenGL::Color( m_lower_edge_color );
+        kvs::OpenGL::Vertex( x0, y1 );
+        kvs::OpenGL::Vertex( x1, y1 );
+        kvs::OpenGL::Vertex( x1, y0 );
+        kvs::OpenGL::End();
     }
 
     // Upper edge.
     {
-        const GLubyte r = static_cast<GLubyte>( m_upper_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_upper_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_upper_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
-        glVertex2f( x1, y0 );
-        glVertex2f( x0, y0 );
-        glVertex2f( x0, y1 );
-        glEnd();
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        kvs::OpenGL::Color( m_upper_edge_color );
+        kvs::OpenGL::Vertex( x1, y0 );
+        kvs::OpenGL::Vertex( x0, y0 );
+        kvs::OpenGL::Vertex( x0, y1 );
+        kvs::OpenGL::End();
     }
 }
 
@@ -218,7 +176,7 @@ void PushButton::draw_button( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void PushButton::paintEvent( void )
+void PushButton::paintEvent()
 {
     this->screenUpdated();
 
