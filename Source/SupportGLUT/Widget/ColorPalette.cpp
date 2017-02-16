@@ -118,7 +118,7 @@ ColorPalette::ColorPalette( kvs::ScreenBase* screen ):
     BaseClass::setMargin( ::Default::Margin );
     this->setCaption( "Color palette " + kvs::String::ToString( ::InstanceCounter++ ) );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::RectColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );
     m_lower_edge_color = ::Default::RectEdgeColor;
 }
 
@@ -126,7 +126,7 @@ ColorPalette::~ColorPalette()
 {
 }
 
-const kvs::RGBColor ColorPalette::color( void ) const
+const kvs::RGBColor ColorPalette::color() const
 {
     const float h = this->get_H_value();
     const kvs::RGBColor c0( kvs::HSVColor( h, 1, 1 ) ); // top-right
@@ -426,13 +426,13 @@ void ColorPalette::draw_selected_color_value()
     BaseClass::drawText( x, y += BaseClass::characterHeight(), V );
 }
 
-int ColorPalette::get_fitted_width()
+int ColorPalette::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
     return kvs::Math::Max( width, ::Default::Width );
 }
 
-int ColorPalette::get_fitted_height()
+int ColorPalette::adjustedHeight()
 {
     return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }

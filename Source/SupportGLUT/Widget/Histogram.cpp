@@ -120,7 +120,7 @@ Histogram::Histogram( kvs::ScreenBase* screen ):
     this->setCaption( "Histogram " + kvs::String::ToString( ::InstanceCounter++ ) );
     this->setNumberOfBins( 256 );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::RectColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );
     m_lower_edge_color = ::Default::RectEdgeColor;
 }
 
@@ -260,13 +260,13 @@ void Histogram::mouseReleaseEvent( kvs::MouseEvent* event )
     }
 }
 
-int Histogram::get_fitted_width()
+int Histogram::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
     return kvs::Math::Max( width, ::Default::Width );
 }
 
-int Histogram::get_fitted_height()
+int Histogram::adjustedHeight()
 {
     return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }

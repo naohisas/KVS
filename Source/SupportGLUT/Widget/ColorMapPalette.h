@@ -40,11 +40,9 @@ namespace glut
 class ColorMapPalette : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     kvs::ColorMap m_color_map; ///< color map
     kvs::Texture1D m_texture; ///< color map texture
@@ -56,7 +54,6 @@ protected:
     const kvs::glut::ColorPalette* m_color_palette; ///< pointer to the color palette
 
 public:
-
     ColorMapPalette( kvs::ScreenBase* screen = 0 );
     virtual ~ColorMapPalette();
 
@@ -80,10 +77,11 @@ public:
     void mouseMoveEvent( kvs::MouseEvent* event );
     void mouseReleaseEvent( kvs::MouseEvent* event );
 
-public:
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
-    int get_fitted_width();
-    int get_fitted_height();
+private:
     void initialize_texture( const kvs::ColorMap& color_map );
     void draw_palette();
 };

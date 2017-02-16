@@ -82,14 +82,12 @@ protected:
     kvs::OpenGL::Render2D& render2D() { return m_render_2d; }
     virtual void drawBackground();
     virtual void drawText( const int x, const int y, const std::string& text );
-
-    virtual void swap_color( kvs::RGBColor& color1, kvs::RGBColor& color2 );
-    virtual kvs::RGBColor get_darkened_color( const kvs::RGBColor& color, const float darkness );
-    virtual int get_fitted_width() { return 0; }
-    virtual int get_fitted_height() { return 0; }
+    virtual void swapColor( kvs::RGBColor& color1, kvs::RGBColor& color2 );
+    virtual kvs::RGBColor darkenedColor( const kvs::RGBColor& color, const float darkness );
+    virtual int adjustedWidth() { return 0; }
+    virtual int adjustedHeight() { return 0; }
 
 private:
-
     WidgetBase(){}
 };
 

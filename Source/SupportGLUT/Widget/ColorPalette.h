@@ -37,11 +37,9 @@ namespace glut
 class ColorPalette : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     kvs::glut::Rectangle m_SV_palette; ///< SV (saturation/value) palette
     kvs::glut::Rectangle m_H_palette; ///< H (hue) palette
@@ -53,7 +51,6 @@ protected:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-
     ColorPalette( kvs::ScreenBase* screen = 0 );
     virtual ~ColorPalette();
 
@@ -66,7 +63,6 @@ public:
     void setCaption( const std::string& caption ) { m_caption = caption; }
 
 public:
-
     void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
@@ -74,13 +70,14 @@ public:
     void mouseReleaseEvent( kvs::MouseEvent* event );
 
 protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
+private:
     void draw_SV_palette();
     void draw_H_palette();
     void draw_selected_color_box();
     void draw_selected_color_value();
-    int get_fitted_width();
-    int get_fitted_height();
     float get_H_value() const;
     float get_S_value() const;
     float get_V_value() const;

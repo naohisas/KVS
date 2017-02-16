@@ -60,7 +60,7 @@ ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
     BaseClass::setMargin( ::Default::Margin );
     this->setCaption( "Color map palette " + kvs::String::ToString( ::InstanceCounter++ ) );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::RectColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );
     m_lower_edge_color = ::Default::RectEdgeColor;
     m_drawing_color = kvs::RGBColor( 0, 0, 0 );
 
@@ -291,13 +291,13 @@ void ColorMapPalette::mouseReleaseEvent( kvs::MouseEvent* event )
     }
 }
 
-int ColorMapPalette::get_fitted_width()
+int ColorMapPalette::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
     return kvs::Math::Max( width, ::Default::Width );
 }
 
-int ColorMapPalette::get_fitted_height()
+int ColorMapPalette::adjustedHeight()
 {
     return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }

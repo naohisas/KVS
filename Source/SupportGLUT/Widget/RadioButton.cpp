@@ -81,7 +81,7 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
     this->setCaption( "RadioButton " + kvs::String::ToString( ::InstanceCounter++ ) );
     this->setState( false );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::CircleColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::CircleColor, 0.6f );
     m_lower_edge_color = ::Default::CircleEdgeColor;
 }
 
@@ -184,7 +184,7 @@ void RadioButton::draw_mark()
  *  @return fitted width
  */
 /*===========================================================================*/
-int RadioButton::get_fitted_width()
+int RadioButton::adjustedWidth()
 {
     return m_caption.size() * BaseClass::characterWidth() + ::Default::TextMargin + BaseClass::margin() * 2;
 }
@@ -195,7 +195,7 @@ int RadioButton::get_fitted_width()
  *  @return fitted height
  */
 /*===========================================================================*/
-int RadioButton::get_fitted_height()
+int RadioButton::adjustedHeight()
 {
     return BaseClass::characterHeight() + BaseClass::margin() * 2;
 }

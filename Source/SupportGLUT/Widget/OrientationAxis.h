@@ -45,7 +45,6 @@ class Screen;
 class OrientationAxis : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
     typedef kvs::Camera::ProjectionType ProjectionType;
 
@@ -63,8 +62,7 @@ public:
         NoneBox
     };
 
-protected:
-
+private:
     const kvs::ObjectBase* m_object; ///< pointer to the object
     std::string m_x_tag; ///< x axis tag
     std::string m_y_tag; ///< y axis tag
@@ -82,7 +80,6 @@ protected:
     ProjectionType m_projection_type; ///< projection type
 
 public:
-
     OrientationAxis( kvs::glut::Screen* screen );
 
     OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene );
@@ -90,7 +87,6 @@ public:
     virtual ~OrientationAxis();
 
 public:
-
     virtual void screenUpdated() {}
     virtual void screenResized() {}
 
@@ -131,10 +127,11 @@ public:
     void paintEvent();
     void resizeEvent( int width, int height );
 
-private:
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
-    int get_fitted_width();
-    int get_fitted_height();
+private:
     void draw_centered_axis( const float length );
     void draw_cornered_axis( const float length );
     void draw_wired_box( const float length );

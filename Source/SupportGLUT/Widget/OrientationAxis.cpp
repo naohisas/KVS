@@ -262,7 +262,7 @@ void OrientationAxis::resizeEvent( int width, int height )
  *  @return screen width
  */
 /*===========================================================================*/
-int OrientationAxis::get_fitted_width()
+int OrientationAxis::adjustedWidth()
 {
     return ::Default::AxisWindowSize;
 }
@@ -273,7 +273,7 @@ int OrientationAxis::get_fitted_width()
  *  @return screen height
  */
 /*===========================================================================*/
-int OrientationAxis::get_fitted_height()
+int OrientationAxis::adjustedHeight()
 {
     return ::Default::AxisWindowSize;
 }

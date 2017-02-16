@@ -357,7 +357,7 @@ void LegendBar::resizeEvent( int width, int height )
  *  @return screen width
  */
 /*===========================================================================*/
-int LegendBar::get_fitted_width()
+int LegendBar::adjustedWidth()
 {
     size_t width = 0;
     switch ( m_orientation )
@@ -389,7 +389,7 @@ int LegendBar::get_fitted_width()
  *  @return screen height
  */
 /*===========================================================================*/
-int LegendBar::get_fitted_height()
+int LegendBar::adjustedHeight()
 {
     size_t height = 0;
     switch( m_orientation )

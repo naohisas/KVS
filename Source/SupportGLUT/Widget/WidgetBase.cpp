@@ -105,8 +105,8 @@ void WidgetBase::setBackgroundBorderOpacity( const float opacity )
 /*===========================================================================*/
 void WidgetBase::show()
 {
-    if ( m_width == 0 ) m_width = this->get_fitted_width();
-    if ( m_height == 0 ) m_height = this->get_fitted_height();
+    if ( m_width == 0 ) m_width = this->adjustedWidth();
+    if ( m_height == 0 ) m_height = this->adjustedHeight();
     m_is_shown = true;
 }
 
@@ -196,7 +196,7 @@ void WidgetBase::drawText( const int x, const int y, const std::string& text )
  *  @param  color2 [in] color 2
  */
 /*===========================================================================*/
-void WidgetBase::swap_color( kvs::RGBColor& color1, kvs::RGBColor& color2 )
+void WidgetBase::swapColor( kvs::RGBColor& color1, kvs::RGBColor& color2 )
 {
     const kvs::RGBColor temp = color1;
     color1 = color2;
@@ -211,11 +211,10 @@ void WidgetBase::swap_color( kvs::RGBColor& color1, kvs::RGBColor& color2 )
  *  @return darkened color
  */
 /*===========================================================================*/
-kvs::RGBColor WidgetBase::get_darkened_color( const kvs::RGBColor& color, const float darkness )
+kvs::RGBColor WidgetBase::darkenedColor( const kvs::RGBColor& color, const float darkness )
 {
     kvs::HSVColor hsv( color );
     hsv.set( hsv.h(), hsv.s(), hsv.v() * darkness );
-
     return kvs::RGBColor( hsv );
 }
 

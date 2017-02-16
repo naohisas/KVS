@@ -37,13 +37,10 @@ class RadioButtonGroup;
 class RadioButton : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
-
     friend class kvs::glut::RadioButtonGroup;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     kvs::RGBColor m_upper_edge_color; ///< upper edge color
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
@@ -51,7 +48,6 @@ protected:
     kvs::glut::RadioButtonGroup* m_group; ///< pointer to the radio button group
 
 public:
-
     RadioButton( kvs::ScreenBase* screen = 0 );
 
     virtual void pressed() {};
@@ -66,18 +62,18 @@ public:
     void setCaption( const std::string caption ) { m_caption = caption; }
     void setState( const bool state ) { m_state = state; }
 
-private:
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
+private:
     void draw_box();
     void draw_mark();
-    int get_fitted_width();
-    int get_fitted_height();
     bool contains( int x, int y );
     void attach_group( kvs::glut::RadioButtonGroup* group ) { m_group = group; }
     void detach_group() { m_group = NULL; }
 
 private:
-
     void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );

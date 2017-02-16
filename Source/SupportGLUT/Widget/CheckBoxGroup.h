@@ -39,15 +39,12 @@ class CheckBox;
 class CheckBoxGroup : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
 protected:
-
     std::list<kvs::glut::CheckBox*> m_boxes; ///< check box list
 
 public:
-
     CheckBoxGroup( kvs::ScreenBase* screen = 0 );
 
     virtual void pressed( kvs::glut::CheckBox* box ) { kvs::IgnoreUnusedVariable( box ); };
@@ -64,7 +61,6 @@ public:
     void hide();
 
 private:
-
     void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );

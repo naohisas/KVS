@@ -97,9 +97,9 @@ void Slider::setSliderColor( const kvs::RGBColor& color )
 {
     m_slider_color = color;
 
-    m_clicked_slider_color = BaseClass::get_darkened_color( color, 0.95f );
+    m_clicked_slider_color = BaseClass::darkenedColor( color, 0.95f );
     m_upper_edge_color = ::Default::SliderEdgeColor;
-    m_lower_edge_color = BaseClass::get_darkened_color( color, 0.6f );
+    m_lower_edge_color = BaseClass::darkenedColor( color, 0.6f );
 }
 
 /*===========================================================================*/
@@ -269,7 +269,7 @@ float Slider::get_value( const int x )
  *  @return fitted width
  */
 /*===========================================================================*/
-int Slider::get_fitted_width()
+int Slider::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
     return kvs::Math::Max( width, ::Default::SliderWidth );
@@ -281,7 +281,7 @@ int Slider::get_fitted_width()
  *  @return fitted height
  */
 /*===========================================================================*/
-int Slider::get_fitted_height()
+int Slider::adjustedHeight()
 {
     return ::Default::SliderHeight + ( BaseClass::characterHeight() + BaseClass::margin() ) * 2;
 }
@@ -371,7 +371,7 @@ void Slider::mousePressEvent( kvs::MouseEvent* event )
         BaseClass::screen()->disable();
         BaseClass::activate();
         this->sliderPressed();
-        BaseClass::swap_color( m_slider_color, m_clicked_slider_color );
+        BaseClass::swapColor( m_slider_color, m_clicked_slider_color );
         BaseClass::screen()->redraw();
     }
     else
@@ -435,7 +435,7 @@ void Slider::mouseReleaseEvent( kvs::MouseEvent* event )
     if ( BaseClass::isActive() )
     {
         this->sliderReleased();
-        BaseClass::swap_color( m_slider_color, m_clicked_slider_color );
+        BaseClass::swapColor( m_slider_color, m_clicked_slider_color );
 
         if ( m_change_value )
         {

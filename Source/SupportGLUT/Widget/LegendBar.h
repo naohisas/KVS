@@ -36,7 +36,6 @@ namespace glut
 class LegendBar : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
     enum OrientationType
@@ -45,8 +44,7 @@ public:
         Vertical        ///< vertical bar
     };
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     OrientationType m_orientation; ///< bar layout
     size_t m_ndivisions; ///< number of divisions of the bar
@@ -63,7 +61,6 @@ protected:
     bool m_texture_downloaded; ///< check flag for texture
 
 public:
-
     LegendBar( kvs::ScreenBase* screen = 0 );
     virtual ~LegendBar();
 
@@ -91,10 +88,11 @@ public:
     void paintEvent();
     void resizeEvent( int width, int height );
 
-private:
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
-    int get_fitted_width();
-    int get_fitted_height();
+private:
     void create_texture();
     void release_texture();
     void draw_color_bar( const int x, const int y, const int width, const int height );

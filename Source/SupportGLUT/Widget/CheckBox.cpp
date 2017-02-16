@@ -62,7 +62,7 @@ CheckBox::CheckBox( kvs::ScreenBase* screen ):
     this->setCaption( "CheckBox " + kvs::String::ToString( ::InstanceCounter++ ) );
     this->setState( false );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::BoxColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::BoxColor, 0.6f );
     m_lower_edge_color = ::Default::BoxEdgeColor;
 }
 
@@ -138,9 +138,9 @@ void CheckBox::draw_mark()
  *  @return fitted width
  */
 /*===========================================================================*/
-int CheckBox::get_fitted_width( void )
+int CheckBox::adjustedWidth()
 {
-    return( m_caption.size() * BaseClass::characterWidth() + ::Default::TextMargin + BaseClass::margin() * 2 );
+    return m_caption.size() * BaseClass::characterWidth() + ::Default::TextMargin + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -149,9 +149,9 @@ int CheckBox::get_fitted_width( void )
  *  @return fitted height
  */
 /*===========================================================================*/
-int CheckBox::get_fitted_height( void )
+int CheckBox::adjustedHeight()
 {
-    return( BaseClass::characterHeight() + BaseClass::margin() * 2 );
+    return BaseClass::characterHeight() + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -170,7 +170,7 @@ bool CheckBox::contains( int x, int y )
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
     const GLfloat y1 = static_cast<GLfloat>( y0 + ::Default::BoxHeight );
 
-    return( ( x0 <= x ) && ( x <= x1 ) && ( y0 <= y ) && ( y <= y1 ) );
+    return ( x0 <= x ) && ( x <= x1 ) && ( y0 <= y ) && ( y <= y1 );
 }
 
 /*===========================================================================*/

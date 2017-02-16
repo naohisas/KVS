@@ -93,7 +93,7 @@ void Label::addText( const char* text, ... )
  *  @return fitted width
  */
 /*===========================================================================*/
-int Label::get_fitted_width()
+int Label::adjustedWidth()
 {
     size_t width = 0;
 
@@ -111,7 +111,7 @@ int Label::get_fitted_width()
  *  @return fitted height
  */
 /*===========================================================================*/
-int Label::get_fitted_height()
+int Label::adjustedHeight()
 {
     return m_text.size() * ::Default::CharacterHeight + BaseClass::margin() * 2;
 }

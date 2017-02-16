@@ -21,7 +21,6 @@
 #include <kvs/OpacityMap>
 #include <kvs/glut/WidgetBase>
 #include <kvs/glut/Rectangle>
-#include <kvs/glut/ColorMapPalette>
 
 
 namespace kvs
@@ -41,11 +40,9 @@ namespace glut
 class OpacityMapPalette : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     kvs::OpacityMap m_opacity_map; ///< opacity map
     kvs::Texture1D m_texture; ///< opacity map texture
@@ -55,10 +52,8 @@ protected:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
     kvs::Vector2i m_pressed_position; ///< mouse pressed position
     kvs::Vector2i m_previous_position; ///< mouse previous position
-    const kvs::glut::ColorMapPalette* m_color_map_palette; ///< pointer to the color map palette
 
 public:
-
     OpacityMapPalette( kvs::ScreenBase* screen = 0 );
     virtual ~OpacityMapPalette();
 
@@ -79,9 +74,10 @@ public:
     void mouseReleaseEvent( kvs::MouseEvent* event );
 
 protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
-    int get_fitted_width();
-    int get_fitted_height();
+private:
     void initialize_texture( const kvs::OpacityMap& opacity_map );
     void initialize_checkerboard();
     void draw_palette();

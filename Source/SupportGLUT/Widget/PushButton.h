@@ -33,11 +33,9 @@ namespace glut
 class PushButton : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     int m_text_margin; ///< text margin
     kvs::RGBColor m_button_color; ///< button color
@@ -46,7 +44,6 @@ protected:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-
     PushButton( kvs::ScreenBase* screen = 0 );
 
     virtual void pressed(){};
@@ -60,16 +57,16 @@ public:
     void setTextMargin( const int margin ) { m_text_margin = margin; }
     void setButtonColor( const kvs::RGBColor& color );
 
-private:
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
+private:
     void draw_button();
-    int get_fitted_width();
-    int get_fitted_height();
     int get_aligned_x();
     int get_aligned_y();
 
 private:
-
     void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );

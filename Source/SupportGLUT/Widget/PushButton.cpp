@@ -70,9 +70,9 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
 void PushButton::setButtonColor( const kvs::RGBColor& color )
 {
     m_button_color = color;
-    m_clicked_button_color = BaseClass::get_darkened_color( color, 0.95f );
+    m_clicked_button_color = BaseClass::darkenedColor( color, 0.95f );
     m_upper_edge_color = ::Default::ButtonEdgeColor;
-    m_lower_edge_color = BaseClass::get_darkened_color( color, 0.6f );
+    m_lower_edge_color = BaseClass::darkenedColor( color, 0.6f );
 }
 
 /*===========================================================================*/
@@ -81,7 +81,7 @@ void PushButton::setButtonColor( const kvs::RGBColor& color )
  *  @return fitted width
  */
 /*===========================================================================*/
-int PushButton::get_fitted_width()
+int PushButton::adjustedWidth()
 {
     return m_caption.size() * BaseClass::characterWidth() + ( m_text_margin + m_margin ) * 2;
 }
@@ -92,7 +92,7 @@ int PushButton::get_fitted_width()
  *  @return fitted height
  */
 /*===========================================================================*/
-int PushButton::get_fitted_height()
+int PushButton::adjustedHeight()
 {
     return BaseClass::characterHeight() + ( m_text_margin + m_margin ) * 2;
 }
@@ -225,8 +225,8 @@ void PushButton::mousePressEvent( kvs::MouseEvent* event )
         BaseClass::screen()->disable();
         BaseClass::activate();
         this->pressed();
-        BaseClass::swap_color( m_button_color, m_clicked_button_color );
-        BaseClass::swap_color( m_upper_edge_color, m_lower_edge_color );
+        BaseClass::swapColor( m_button_color, m_clicked_button_color );
+        BaseClass::swapColor( m_upper_edge_color, m_lower_edge_color );
         BaseClass::screen()->redraw();
     }
 }
@@ -246,8 +246,8 @@ void PushButton::mouseReleaseEvent( kvs::MouseEvent* event )
     if ( BaseClass::isActive() )
     {
         this->released();
-        BaseClass::swap_color( m_button_color, m_clicked_button_color );
-        BaseClass::swap_color( m_upper_edge_color, m_lower_edge_color );
+        BaseClass::swapColor( m_button_color, m_clicked_button_color );
+        BaseClass::swapColor( m_upper_edge_color, m_lower_edge_color );
         BaseClass::deactivate();
         BaseClass::screen()->redraw();
     }

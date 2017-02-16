@@ -48,11 +48,9 @@ namespace glut
 class Histogram : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     kvs::FrequencyTable m_table; ///< frequency distribution table
     kvs::RGBAColor m_graph_color; ///< graph color
@@ -64,7 +62,6 @@ protected:
     kvs::Vector2i m_previous_position; ///< mouse previous position
 
 public:
-
     Histogram( kvs::ScreenBase* screen = 0 );
     virtual ~Histogram();
 
@@ -90,10 +87,11 @@ public:
     void mouseMoveEvent( kvs::MouseEvent* event );
     void mouseReleaseEvent( kvs::MouseEvent* event );
 
-private:
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
-    int get_fitted_width();
-    int get_fitted_height();
+private:
     void draw_palette();
     const kvs::ValueArray<kvs::UInt8> get_histogram_image() const;
 //    void calculate_density_curve();

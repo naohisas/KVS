@@ -35,30 +35,25 @@ namespace glut
 class Label : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::vector<std::string> m_text; ///< text list
 
 public:
-
     Label( kvs::ScreenBase* screen = 0 );
 
-    virtual void screenUpdated( void ){};
-    virtual void screenResized( void ){};
+    virtual void screenUpdated(){};
+    virtual void screenResized(){};
 
     void setText( const char* text, ... );
     void addText( const char* text, ... );
 
-private:
-
-    int get_fitted_width();
-    int get_fitted_height();
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
 public:
-
     void paintEvent();
     void resizeEvent( int width, int height );
 };
