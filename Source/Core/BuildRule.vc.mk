@@ -205,6 +205,7 @@ $(OUTDIR)\.\Utility\MemoryTracer.obj \
 $(OUTDIR)\.\Utility\Message.obj \
 $(OUTDIR)\.\Utility\Program.obj \
 $(OUTDIR)\.\Utility\Range.obj \
+$(OUTDIR)\.\Utility\Rectangle.obj \
 $(OUTDIR)\.\Utility\ReferenceCounter.obj \
 $(OUTDIR)\.\Utility\String.obj \
 $(OUTDIR)\.\Utility\SystemInformation.obj \

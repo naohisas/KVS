@@ -12,16 +12,13 @@
  *  $Id: Rectangle.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__GLUT__RECTANGLE_H_INCLUDE
-#define KVS__GLUT__RECTANGLE_H_INCLUDE
+#ifndef KVS__RECTANGLE_H_INCLUDE
+#define KVS__RECTANGLE_H_INCLUDE
 
 #include <kvs/Vector2>
 
 
 namespace kvs
-{
-
-namespace glut
 {
 
 /*===========================================================================*/
@@ -73,8 +70,6 @@ public:
     bool contains( const int x, const int y, const bool proper = false );
 };
 
-} // end of namespace glut
-
 } // end of namespace kvs
 
-#endif // KVS__GLUT__RECTANGLE_H_INCLUDE
+#endif // KVS__RECTANGLE_H_INCLUDE

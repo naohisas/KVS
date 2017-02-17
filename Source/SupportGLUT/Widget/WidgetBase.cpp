@@ -191,7 +191,7 @@ void WidgetBase::drawText( const int x, const int y, const std::string& text )
 }
 
 void WidgetBase::drawRect(
-    const kvs::glut::Rectangle& rect,
+    const kvs::Rectangle& rect,
     const kvs::RGBColor& upper_color,
     const kvs::RGBColor& lower_color,
     const float width )

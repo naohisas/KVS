@@ -205,6 +205,7 @@ $(OUTDIR)/./Utility/MemoryTracer.o \
 $(OUTDIR)/./Utility/Message.o \
 $(OUTDIR)/./Utility/Program.o \
 $(OUTDIR)/./Utility/Range.o \
+$(OUTDIR)/./Utility/Rectangle.o \
 $(OUTDIR)/./Utility/ReferenceCounter.o \
 $(OUTDIR)/./Utility/String.o \
 $(OUTDIR)/./Utility/SystemInformation.o \

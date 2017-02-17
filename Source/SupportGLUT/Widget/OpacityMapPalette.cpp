@@ -34,45 +34,6 @@ const kvs::RGBColor RectEdgeColor = kvs::RGBColor( 230, 230, 230 );
 static int InstanceCounter = 0;
 
 
-namespace
-{
-
-/*===========================================================================*/
-/**
- *  @brief  Draws a rectangle as lines.
- *  @param  rect [in] rectangle
- *  @param  width [in] line width
- *  @param  upper_edge_color [in] upper edge color
- *  @param  lower_edge_color [in] lower edge color
- */
-/*===========================================================================*/
-void DrawRectangle(
-    const kvs::glut::Rectangle rect,
-    const float width,
-    const kvs::RGBColor& upper_edge_color,
-    const kvs::RGBColor& lower_edge_color )
-{
-    GLfloat x0 = static_cast<GLfloat>( rect.x0() );
-    GLfloat y0 = static_cast<GLfloat>( rect.y0() );
-    GLfloat x1 = static_cast<GLfloat>( rect.x1() );
-    GLfloat y1 = static_cast<GLfloat>( rect.y1() );
-
-    kvs::OpenGL::SetLineWidth( width );
-    kvs::OpenGL::Begin( GL_LINES );
-    {
-        kvs::OpenGL::Color( upper_edge_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x1, y0 ) ); // top
-        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x0, y1 ) ); // left
-        kvs::OpenGL::Color( lower_edge_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 ), kvs::Vec2( x0, y1 ) ); // bottom
-        kvs::OpenGL::Vertices( kvs::Vec2( x1, y0 ), kvs::Vec2( x1, y1 ) ); // right
-    }
-    kvs::OpenGL::End();
-}
-
-} // end of namespace
-
-
 namespace kvs
 {
 
@@ -308,7 +269,7 @@ void OpacityMapPalette::initialize_checkerboard()
 void OpacityMapPalette::draw_palette()
 {
     // Draw border
-    ::DrawRectangle( m_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_palette, m_upper_edge_color, m_lower_edge_color, 1 );
 
     // Draw palette
     kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );

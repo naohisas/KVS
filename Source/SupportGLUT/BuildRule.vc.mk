@@ -24,7 +24,6 @@ $(OUTDIR)\.\Widget\OrientationAxis.obj \
 $(OUTDIR)\.\Widget\PushButton.obj \
 $(OUTDIR)\.\Widget\RadioButton.obj \
 $(OUTDIR)\.\Widget\RadioButtonGroup.obj \
-$(OUTDIR)\.\Widget\Rectangle.obj \
 $(OUTDIR)\.\Widget\Slider.obj \
 $(OUTDIR)\.\Widget\TransferFunctionEditor.obj \
 $(OUTDIR)\.\Widget\WidgetBase.obj \

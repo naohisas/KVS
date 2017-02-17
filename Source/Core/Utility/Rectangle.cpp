@@ -18,9 +18,6 @@
 namespace kvs
 {
 
-namespace glut
-{
-
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Rectangle class.
@@ -110,7 +107,5 @@ bool Rectangle::contains( const int x, const int y, const bool proper )
         return( ( x0 <= x ) && ( x <= x1 ) && ( y0 <= y ) && ( y <= y1 ) );
     }
 }
-
-} // end of namespace glut
 
 } // end of namespace kvs

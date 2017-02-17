@@ -44,39 +44,6 @@ namespace
 
 /*===========================================================================*/
 /**
- *  @brief  Draws a rectangle as lines.
- *  @param  rect [in] rectangle
- *  @param  width [in] line width
- *  @param  upper_edge_color [in] upper edge color
- *  @param  lower_edge_color [in] lower edge color
- */
-/*===========================================================================*/
-void DrawRectangle(
-    const kvs::glut::Rectangle rect,
-    const float width,
-    const kvs::RGBColor& upper_edge_color,
-    const kvs::RGBColor& lower_edge_color )
-{
-    GLfloat x0 = static_cast<GLfloat>( rect.x0() );
-    GLfloat y0 = static_cast<GLfloat>( rect.y0() );
-    GLfloat x1 = static_cast<GLfloat>( rect.x1() );
-    GLfloat y1 = static_cast<GLfloat>( rect.y1() );
-
-    kvs::OpenGL::SetLineWidth( width );
-    kvs::OpenGL::Begin( GL_LINES );
-    {
-        kvs::OpenGL::Color( upper_edge_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x1, y0 ) ); // top
-        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x0, y1 ) ); // left
-        kvs::OpenGL::Color( lower_edge_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 ), kvs::Vec2( x0, y1 ) ); // bottom
-        kvs::OpenGL::Vertices( kvs::Vec2( x1, y0 ), kvs::Vec2( x1, y1 ) ); // right
-    }
-    kvs::OpenGL::End();
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Interpolates color values.
  *  @param  ratio [in] ratio [0-1]
  *  @param  c0 [in] color value 0
@@ -90,7 +57,7 @@ const kvs::RGBColor GetInterpolatedColor( const float ratio, const kvs::RGBColor
     const kvs::UInt8 g = static_cast<kvs::UInt8>( ratio * c0.g() + ( 1.0f - ratio ) * c1.g() + 0.5f );
     const kvs::UInt8 b = static_cast<kvs::UInt8>( ratio * c0.b() + ( 1.0f - ratio ) * c1.b() + 0.5f );
 
-    return( kvs::RGBColor( r, g, b ) );
+    return kvs::RGBColor( r, g, b );
 }
 
 } // end of namespace
@@ -399,8 +366,6 @@ void ColorPalette::draw_selected_color_box()
     kvs::OpenGL::End();
 
     // Draw border.
-//    ::DrawRectangle( m_selected_color_box, 1, m_upper_edge_color, m_lower_edge_color );
-//    m_selected_color_box.drawRect( m_upper_edge_color, m_lower_edge_color, 1 );
     BaseClass::drawRect( m_selected_color_box, m_upper_edge_color, m_lower_edge_color );
 }
 

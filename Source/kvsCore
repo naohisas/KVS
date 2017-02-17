@@ -155,6 +155,7 @@
 #include <Core/Utility/Platform.h>
 #include <Core/Utility/Program.h>
 #include <Core/Utility/Range.h>
+#include <Core/Utility/Rectangle.h>
 #include <Core/Utility/ReferenceCounter.h>
 #include <Core/Utility/SharedPointer.h>
 #include <Core/Utility/SmartPointer.h>

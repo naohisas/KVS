@@ -20,7 +20,6 @@ Widget/OrientationAxis
 Widget/PushButton
 Widget/RadioButton
 Widget/RadioButtonGroup
-Widget/Rectangle
 Widget/Slider
 Widget/TransferFunctionEditor
 Widget/WidgetBase

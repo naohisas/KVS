@@ -24,7 +24,6 @@ $(OUTDIR)/./Widget/OrientationAxis.o \
 $(OUTDIR)/./Widget/PushButton.o \
 $(OUTDIR)/./Widget/RadioButton.o \
 $(OUTDIR)/./Widget/RadioButtonGroup.o \
-$(OUTDIR)/./Widget/Rectangle.o \
 $(OUTDIR)/./Widget/Slider.o \
 $(OUTDIR)/./Widget/TransferFunctionEditor.o \
 $(OUTDIR)/./Widget/WidgetBase.o \

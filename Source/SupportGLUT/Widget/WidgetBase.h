@@ -18,7 +18,7 @@
 #include <kvs/ClassName>
 #include <kvs/RGBAColor>
 #include <kvs/EventListener>
-#include <kvs/glut/Rectangle>
+#include <kvs/Rectangle>
 #include <kvs/OpenGL>
 
 
@@ -35,7 +35,7 @@ namespace glut
  *  @brief  Base class of the widget.
  */
 /*===========================================================================*/
-class WidgetBase : public kvs::glut::Rectangle, public kvs::EventListener
+class WidgetBase : public kvs::Rectangle, public kvs::EventListener
 {
 protected:
 
@@ -88,7 +88,7 @@ protected:
     virtual void drawBackground();
     virtual void drawText( const int x, const int y, const std::string& text );
     virtual void drawRect(
-        const kvs::glut::Rectangle& rect,
+        const kvs::Rectangle& rect,
         const kvs::RGBColor& upper_color,
         const kvs::RGBColor& lower_color,
         const float width = 1.0f );

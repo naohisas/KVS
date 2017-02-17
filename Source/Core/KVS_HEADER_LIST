@@ -155,6 +155,7 @@ Utility/Noncopyable
 Utility/Platform
 Utility/Program
 Utility/Range
+Utility/Rectangle
 Utility/ReferenceCounter
 Utility/SharedPointer
 Utility/SmartPointer

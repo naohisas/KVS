@@ -48,7 +48,7 @@ namespace
  */
 /*===========================================================================*/
 void DrawRectangle(
-    const kvs::glut::Rectangle rect,
+    const kvs::Rectangle rect,
     const float width,
     const kvs::RGBColor& upper_edge_color,
     const kvs::RGBColor& lower_edge_color )
@@ -329,7 +329,7 @@ void Histogram::draw_palette()
 */
 
     // Draw border.
-    ::DrawRectangle( m_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_palette, m_upper_edge_color, m_lower_edge_color, 1 );
 }
 
 /*===========================================================================*/

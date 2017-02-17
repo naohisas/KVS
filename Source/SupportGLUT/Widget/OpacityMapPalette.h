@@ -20,7 +20,6 @@
 #include <kvs/Texture2D>
 #include <kvs/OpacityMap>
 #include <kvs/glut/WidgetBase>
-#include <kvs/glut/Rectangle>
 
 
 namespace kvs
@@ -50,8 +49,8 @@ private:
     kvs::glut::WidgetBase m_palette; ///< palette
     kvs::RGBColor m_upper_edge_color; ///< upper edge color
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
-    kvs::Vector2i m_pressed_position; ///< mouse pressed position
-    kvs::Vector2i m_previous_position; ///< mouse previous position
+    kvs::Vec2i m_pressed_position; ///< mouse pressed position
+    kvs::Vec2i m_previous_position; ///< mouse previous position
 
 public:
     OpacityMapPalette( kvs::ScreenBase* screen = 0 );
