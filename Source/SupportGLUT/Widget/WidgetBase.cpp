@@ -48,7 +48,8 @@ namespace glut
 WidgetBase::WidgetBase( kvs::ScreenBase* screen ):
     m_screen( screen ),
     m_margin( 0 ),
-    m_is_shown( false )
+    m_is_shown( false ),
+    m_is_active( false )
 {
     if ( screen ) screen->eventHandler()->attach( this );
 
@@ -187,6 +188,27 @@ void WidgetBase::drawText( const int x, const int y, const std::string& text )
     {
         glutBitmapCharacter( ::Default::CharacterFont, *p );
     }
+}
+
+void WidgetBase::drawRect(
+    const kvs::glut::Rectangle& rect,
+    const kvs::RGBColor& upper_color,
+    const kvs::RGBColor& lower_color,
+    const float width )
+{
+    kvs::OpenGL::SetLineWidth( width );
+    kvs::OpenGL::Begin( GL_LINES );
+    {
+        // Top and left side lines
+        kvs::OpenGL::Color( upper_color );
+        kvs::OpenGL::Vertices( rect.topLeft(), rect.topRight() );
+        kvs::OpenGL::Vertices( rect.topLeft(), rect.bottomLeft() );
+        // Bottom and right side lines
+        kvs::OpenGL::Color( lower_color );
+        kvs::OpenGL::Vertices( rect.bottomLeft(), rect.bottomRight() );
+        kvs::OpenGL::Vertices( rect.topRight(), rect.bottomRight() );
+    }
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/

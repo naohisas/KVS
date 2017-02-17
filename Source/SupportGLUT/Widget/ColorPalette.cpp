@@ -104,6 +104,9 @@ namespace glut
 
 ColorPalette::ColorPalette( kvs::ScreenBase* screen ):
     kvs::glut::WidgetBase( screen ),
+    m_SV_palette( NULL ),
+    m_H_palette( NULL ),
+    m_selected_color_box( NULL ),
     m_H_indicator( -1 ),
     m_S_indicator( -1 ),
     m_V_indicator( -1 )
@@ -341,7 +344,8 @@ void ColorPalette::draw_SV_palette()
     }
 
     // Draw border.
-    ::DrawRectangle( m_SV_palette, 1, m_upper_edge_color, m_lower_edge_color );
+//    ::DrawRectangle( m_SV_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_SV_palette, m_upper_edge_color, m_lower_edge_color );
 }
 
 void ColorPalette::draw_H_palette()
@@ -375,7 +379,8 @@ void ColorPalette::draw_H_palette()
     kvs::OpenGL::End();
 
     // Draw border.
-    ::DrawRectangle( m_H_palette, 1, m_upper_edge_color, m_lower_edge_color );
+//    ::DrawRectangle( m_H_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_H_palette, m_upper_edge_color, m_lower_edge_color );
 }
 
 void ColorPalette::draw_selected_color_box()
@@ -394,7 +399,9 @@ void ColorPalette::draw_selected_color_box()
     kvs::OpenGL::End();
 
     // Draw border.
-    ::DrawRectangle( m_selected_color_box, 1, m_upper_edge_color, m_lower_edge_color );
+//    ::DrawRectangle( m_selected_color_box, 1, m_upper_edge_color, m_lower_edge_color );
+//    m_selected_color_box.drawRect( m_upper_edge_color, m_lower_edge_color, 1 );
+    BaseClass::drawRect( m_selected_color_box, m_upper_edge_color, m_lower_edge_color );
 }
 
 void ColorPalette::draw_selected_color_value()

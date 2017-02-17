@@ -185,8 +185,14 @@ void Vertex4( const GLint* v );
 void Vertex4( const GLfloat* v );
 void Vertex4( const GLdouble* v );
 void Vertex( const kvs::Vec2& v );
+void Vertex( const kvs::Vec2i& v );
+void Vertex( const kvs::Vec2d& v );
 void Vertex( const kvs::Vec3& v );
+void Vertex( const kvs::Vec3i& v );
+void Vertex( const kvs::Vec3d& v );
 void Vertex( const kvs::Vec4& v );
+void Vertex( const kvs::Vec4i& v );
+void Vertex( const kvs::Vec4d& v );
 void Vertices( const kvs::Vec2& v0, const kvs::Vec2& v1 );
 void Vertices( const kvs::Vec2& v0, const kvs::Vec2& v1, const kvs::Vec2& v2 );
 void Vertices( const kvs::Vec2& v0, const kvs::Vec2& v1, const kvs::Vec2& v2, const kvs::Vec2& v3 );
@@ -196,6 +202,9 @@ void Vertices( const kvs::Vec3& v0, const kvs::Vec3& v1, const kvs::Vec3& v2, co
 void Vertices( const kvs::Vec4& v0, const kvs::Vec4& v1 );
 void Vertices( const kvs::Vec4& v0, const kvs::Vec4& v1, const kvs::Vec4& v2 );
 void Vertices( const kvs::Vec4& v0, const kvs::Vec4& v1, const kvs::Vec4& v2, const kvs::Vec4& v3 );
+void Vertices( const kvs::Vec2i& v0, const kvs::Vec2i& v1 );
+void Vertices( const kvs::Vec2i& v0, const kvs::Vec2i& v1, const kvs::Vec2i& v2 );
+void Vertices( const kvs::Vec2i& v0, const kvs::Vec2i& v1, const kvs::Vec2i& v2, const kvs::Vec2i& v3 );
 
 void Color( GLbyte r, GLbyte g, GLbyte b );
 void Color( GLshort r, GLshort g, GLshort b );

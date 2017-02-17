@@ -47,7 +47,7 @@ private:
     kvs::OpacityMap m_opacity_map; ///< opacity map
     kvs::Texture1D m_texture; ///< opacity map texture
     kvs::Texture2D m_checkerboard; ///< checkerboard texture
-    kvs::glut::Rectangle m_palette; ///< palette
+    kvs::glut::WidgetBase m_palette; ///< palette
     kvs::RGBColor m_upper_edge_color; ///< upper edge color
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
     kvs::Vector2i m_pressed_position; ///< mouse pressed position
@@ -61,7 +61,7 @@ public:
     virtual void screenResized() {};
 
     const std::string& caption() const { return m_caption; }
-    const kvs::glut::Rectangle& palette() const { return m_palette; }
+    const kvs::glut::WidgetBase& palette() const { return m_palette; }
     const kvs::OpacityMap opacityMap() const;
     void setCaption( const std::string& caption ) { m_caption = caption; }
     void setOpacityMap( const kvs::OpacityMap& opacity_map );

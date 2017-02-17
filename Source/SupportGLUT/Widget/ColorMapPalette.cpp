@@ -48,6 +48,7 @@ namespace glut
 /*===========================================================================*/
 ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
     kvs::glut::WidgetBase( screen ),
+    m_palette( NULL ),
     m_color_palette( NULL )
 {
     BaseClass::setEventType(
@@ -341,6 +342,8 @@ void ColorMapPalette::draw_palette()
     m_texture.unbind();
 
     // Draw border.
+    BaseClass::drawRect( m_palette, m_upper_edge_color, m_lower_edge_color );
+/*
     kvs::OpenGL::SetLineWidth( 1 );
     kvs::OpenGL::Begin( GL_LINES );
     {
@@ -352,6 +355,7 @@ void ColorMapPalette::draw_palette()
         kvs::OpenGL::Vertices( kvs::Vec2( x1, y0 ), kvs::Vec2( x1, y1 ) ); // right
     }
     kvs::OpenGL::End();
+*/
 }
 
 } // end of namespace glut

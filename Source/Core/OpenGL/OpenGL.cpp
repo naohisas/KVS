@@ -1159,6 +1159,27 @@ void Vertices( const kvs::Vec2& v0, const kvs::Vec2& v1, const kvs::Vec2& v2, co
     kvs::OpenGL::Vertex( v3 );
 }
 
+void Vertices( const kvs::Vec2i& v0, const kvs::Vec2i& v1 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+}
+
+void Vertices( const kvs::Vec2i& v0, const kvs::Vec2i& v1, const kvs::Vec2i& v2 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+}
+
+void Vertices( const kvs::Vec2i& v0, const kvs::Vec2i& v1, const kvs::Vec2i& v2, const kvs::Vec2i& v3 )
+{
+    kvs::OpenGL::Vertex( v0 );
+    kvs::OpenGL::Vertex( v1 );
+    kvs::OpenGL::Vertex( v2 );
+    kvs::OpenGL::Vertex( v3 );
+}
+
 void Vertices( const kvs::Vec3& v0, const kvs::Vec3& v1 )
 {
     kvs::OpenGL::Vertex( v0 );

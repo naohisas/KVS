@@ -80,7 +80,8 @@ namespace glut
 {
 
 OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
-    kvs::glut::WidgetBase( screen )
+    kvs::glut::WidgetBase( screen ),
+    m_palette( NULL )
 {
     BaseClass::setEventType(
         kvs::EventBase::PaintEvent |

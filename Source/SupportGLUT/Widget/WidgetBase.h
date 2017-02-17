@@ -49,6 +49,7 @@ protected:
     float m_background_border_width; ///< background border width
     int m_character_width; ///< character width
     int m_character_height; ///< character height
+    bool m_is_active; ///< check flag for widget activation
 
 public:
 
@@ -65,6 +66,9 @@ public:
     float backgroundBorderWidth() const { return m_background_border_width; }
     int characterWidth() const { return m_character_width; }
     int characterHeight() const { return m_character_height; }
+    bool isActive() const { return m_is_active; }
+    void activate() { m_is_active = true; }
+    void deactivate() { m_is_active = false; }
 
     void setMargin( const int margin ) { m_margin = margin; }
     void setTextColor( const kvs::RGBColor& color ) { m_text_color = color; }
@@ -80,8 +84,15 @@ public:
 protected:
     kvs::ScreenBase* screen() { return m_screen; }
     kvs::OpenGL::Render2D& render2D() { return m_render_2d; }
+
     virtual void drawBackground();
     virtual void drawText( const int x, const int y, const std::string& text );
+    virtual void drawRect(
+        const kvs::glut::Rectangle& rect,
+        const kvs::RGBColor& upper_color,
+        const kvs::RGBColor& lower_color,
+        const float width = 1.0f );
+
     virtual void swapColor( kvs::RGBColor& color1, kvs::RGBColor& color2 );
     virtual kvs::RGBColor darkenedColor( const kvs::RGBColor& color, const float darkness );
     virtual int adjustedWidth() { return 0; }

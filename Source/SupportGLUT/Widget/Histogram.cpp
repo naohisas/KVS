@@ -107,7 +107,8 @@ namespace glut
 Histogram::Histogram( kvs::ScreenBase* screen ):
     kvs::glut::WidgetBase( screen ),
     m_graph_color( kvs::RGBAColor( 0, 0, 0, 1.0f ) ),
-    m_bias_parameter( 0.5f )
+    m_bias_parameter( 0.5f ),
+    m_palette( NULL )
 {
     BaseClass::setEventType(
         kvs::EventBase::PaintEvent |

@@ -30,8 +30,7 @@ Rectangle::Rectangle():
     m_x( 0 ),
     m_y( 0 ),
     m_width( 0 ),
-    m_height( 0 ),
-    m_is_active( false )
+    m_height( 0 )
 {
 }
 
@@ -46,8 +45,7 @@ Rectangle::Rectangle( const int width, const int height ):
     m_x( 0 ),
     m_y( 0 ),
     m_width( width ),
-    m_height( height ),
-    m_is_active( false )
+    m_height( height )
 {
 }
 
@@ -64,8 +62,7 @@ Rectangle::Rectangle( const int x, const int y, const int width, const int heigh
     m_x( x ),
     m_y( y ),
     m_width( width ),
-    m_height( height ),
-    m_is_active( false )
+    m_height( height )
 {
 }
 
@@ -87,10 +84,7 @@ Rectangle::~Rectangle()
  *  @return true if the given point is inside the width
  */
 /*===========================================================================*/
-bool Rectangle::contains(
-    const int x,
-    const int y,
-    const bool proper )
+bool Rectangle::contains( const int x, const int y, const bool proper )
 {
     /*
      *   p0 ------------ *

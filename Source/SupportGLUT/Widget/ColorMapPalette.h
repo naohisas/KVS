@@ -20,7 +20,6 @@
 #include <kvs/ColorMap>
 #include <kvs/Vector2>
 #include <kvs/glut/WidgetBase>
-#include <kvs/glut/Rectangle>
 #include <kvs/glut/ColorPalette>
 
 
@@ -46,7 +45,7 @@ private:
     std::string m_caption; ///< caption
     kvs::ColorMap m_color_map; ///< color map
     kvs::Texture1D m_texture; ///< color map texture
-    kvs::glut::Rectangle m_palette; ///< palette
+    kvs::glut::WidgetBase m_palette; ///< palette
     kvs::RGBColor m_upper_edge_color; ///< upper edge color
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
     kvs::RGBColor m_drawing_color; ///< drawing color
@@ -61,7 +60,7 @@ public:
     virtual void screenResized() {};
 
     const std::string& caption() const { return m_caption; }
-    const kvs::glut::Rectangle& palette() const { return m_palette; }
+    const kvs::glut::WidgetBase& palette() const { return m_palette; }
     const kvs::ColorMap colorMap() const;
 
     void setCaption( const std::string& caption ) { m_caption = caption; }

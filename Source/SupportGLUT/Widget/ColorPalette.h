@@ -17,7 +17,6 @@
 
 #include <string>
 #include <kvs/glut/WidgetBase>
-#include <kvs/glut/Rectangle>
 
 
 namespace kvs
@@ -41,9 +40,9 @@ public:
 
 private:
     std::string m_caption; ///< caption
-    kvs::glut::Rectangle m_SV_palette; ///< SV (saturation/value) palette
-    kvs::glut::Rectangle m_H_palette; ///< H (hue) palette
-    kvs::glut::Rectangle m_selected_color_box; ///< selected color box
+    kvs::glut::WidgetBase m_SV_palette; ///< SV (saturation/value) palette
+    kvs::glut::WidgetBase m_H_palette; ///< H (hue) palette
+    kvs::glut::WidgetBase m_selected_color_box; ///< selected color box
     int m_H_indicator; ///< hue indicator
     int m_S_indicator; ///< saturation indicator
     int m_V_indicator; ///< value indicator
