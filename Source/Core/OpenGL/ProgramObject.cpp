@@ -487,7 +487,7 @@ void ProgramObject::setParameter( GLenum pname, GLint value )
 {
     KVS_ASSERT( this->isCreated() );
 
-#if defined( ARB_get_program_binary )
+#if defined( GL_ARB_get_program_binary )
     KVS_GL_CALL( glProgramParameteri( this->id(), pname, value ) );
 #elif defined( GL_ARB_geometry_shader4 )
     KVS_GL_CALL( glProgramParameteriARB( this->id(), pname, value ) );
