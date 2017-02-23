@@ -486,20 +486,14 @@ void ProgramObject::deleteID()
 void ProgramObject::setParameter( GLenum pname, GLint value )
 {
     KVS_ASSERT( this->isCreated() );
-#if defined( KVS_ENABLE_OSMESA )
-    KVS_GL_CALL( glProgramParameteriARB( this->id(), pname, value ) );
-#else
-    KVS_GL_CALL( glProgramParameteriEXT( this->id(), pname, value ) );
-#endif
-/*
-#if defined( GL_ARB_geometry_shader4 )
+
+#if defined( ARB_get_program_binary )
+    KVS_GL_CALL( glProgramParameteri( this->id(), pname, value ) );
+#elif defined( GL_ARB_geometry_shader4 )
     KVS_GL_CALL( glProgramParameteriARB( this->id(), pname, value ) );
 #elif defined( GL_EXT_geometry_shader4 )
     KVS_GL_CALL( glProgramParameteriEXT( this->id(), pname, value ) );
-#else
-    KVS_GL_CALL( glProgramParameteri( this->id(), pname, value ) );
 #endif
-*/
 }
 
 ProgramObject::Binder::Binder( const ProgramObject& po ) :
@@ -514,7 +508,6 @@ ProgramObject::Binder::~Binder()
     KVS_ASSERT( m_po.isCreated() );
     KVS_GL_CALL( glUseProgram( 0 ) );
 }
-
 
 
 /*===========================================================================*/
