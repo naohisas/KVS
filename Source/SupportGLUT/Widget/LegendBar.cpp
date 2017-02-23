@@ -12,12 +12,13 @@
  */
 /****************************************************************************/
 #include "LegendBar.h"
-#include "../GLUT.h"
 #include <kvs/Type>
 #include <kvs/Message>
 #include <kvs/String>
 #include <kvs/Math>
 #include <kvs/EventBase>
+#include <kvs/IgnoreUnusedVariable>
+
 
 // Default parameters.
 namespace { namespace Default
@@ -77,117 +78,6 @@ LegendBar::~LegendBar()
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the legend bar caption.
- *  @return legend bar caption
- */
-/*===========================================================================*/
-const std::string& LegendBar::caption() const
-{
-    return( m_caption );
-}
-
-double LegendBar::minValue() const
-{
-    return( m_min_value );
-}
-
-double LegendBar::maxValue() const
-{
-    return( m_max_value );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a legend bar caption.
- *  @param  title [in] legend bar caption
- */
-/*===========================================================================*/
-void LegendBar::setCaption( const std::string& caption )
-{
-    m_caption = caption;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Set the bar orientation.
- *  @param  orientation [in] bar orientation
- */
-/*===========================================================================*/
-void LegendBar::setOrientation( const OrientationType orientation )
-{
-    m_orientation = orientation;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Set the number of divisions of the range.
- *  @param  ndivisions [in] number of divisions
- */
-/*===========================================================================*/
-void LegendBar::setNumberOfDivisions( const size_t ndivisions )
-{
-    m_ndivisions = ndivisions;
-}
-
-/*============================================================================*/
-/**
- *  @brief  Sets the division line width.
- *  @param  division_line_width [in] division line width
- */
-/*============================================================================*/
-void LegendBar::setDivisionLineWidth( const float division_line_width )
-{
-    m_division_line_width = division_line_width;
-}
-
-/*============================================================================*/
-/**
- *  @brief  Sets the division line color.
- *  @param  division_line_color [in] division line color
- */
-/*============================================================================*/
-void LegendBar::setDivisionLineColor( const kvs::RGBColor& division_line_color )
-{
-    m_division_line_color = division_line_color;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Set the value range.
- *  @param  min_value [in] min value
- *  @param  max_value [in] max value
- */
-/*===========================================================================*/
-void LegendBar::setRange( const double min_value, const double max_value )
-{
-    m_min_value = min_value;
-    m_max_value = max_value;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Set the border width of the bar.
- *  @param  border_width [in] border width
- */
-/*===========================================================================*/
-void LegendBar::setBorderWidth( const float border_width )
-{
-    m_border_width = border_width;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Set the border color of the bar
- *  @param  border_color [in] border color
- */
-/*===========================================================================*/
-void LegendBar::setBorderColor( const kvs::RGBColor& border_color )
-{
-    m_border_color = border_color;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Set the color map to the texture.
  *  @param  colormap [in] color map
  */
@@ -206,46 +96,6 @@ void LegendBar::setColorMap( const kvs::ColorMap& colormap )
 
     // Download the texture data onto GPU.
     m_texture_downloaded = false;
-}
-
-/*============================================================================*/
-/**
- *  @brief  Enables anti-aliasing.
- */
-/*============================================================================*/
-void LegendBar::enableAntiAliasing()
-{
-    m_enable_anti_aliasing = true;
-}
-
-/*============================================================================*/
-/**
- *  @brief  Disables anti-aliasing.
- */
-/*============================================================================*/
-void LegendBar::disableAntiAliasing()
-{
-    m_enable_anti_aliasing = false;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Shows the range values.
- */
-/*===========================================================================*/
-void LegendBar::showRange()
-{
-    m_show_range_value = true;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Hides the range values.
- */
-/*===========================================================================*/
-void LegendBar::hideRange()
-{
-    m_show_range_value = false;
 }
 
 /*===========================================================================*/

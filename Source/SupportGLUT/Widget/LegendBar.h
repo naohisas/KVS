@@ -18,7 +18,7 @@
 #include <kvs/ColorMap>
 #include <kvs/RGBColor>
 #include <kvs/Texture2D>
-#include <kvs/glut/Screen>
+#include <kvs/ScreenBase>
 #include <kvs/glut/WidgetBase>
 
 
@@ -67,23 +67,23 @@ public:
     virtual void screenUpdated(){};
     virtual void screenResized(){};
 
-    const std::string& caption() const;
-    double minValue() const;
-    double maxValue() const;
+    const std::string& caption() const { return m_caption; }
+    double minValue() const { return m_min_value; }
+    double maxValue() const { return m_max_value; }
 
-    void setCaption( const std::string& caption );
-    void setOrientation( const OrientationType orientation );
-    void setNumberOfDivisions( const size_t ndivisions );
-    void setDivisionLineWidth( const float division_line_width );
-    void setDivisionLineColor( const kvs::RGBColor& division_line_color );
-    void setRange( const double min_value, const double max_value );
-    void setBorderWidth( const float border_width );
-    void setBorderColor( const kvs::RGBColor& border_color );
+    void setCaption( const std::string& caption ) { m_caption = caption; }
+    void setOrientation( const OrientationType orientation ) { m_orientation = orientation; }
+    void setNumberOfDivisions( const size_t ndivisions ) { m_ndivisions = ndivisions; }
+    void setDivisionLineWidth( const float width ) { m_division_line_width = width; }
+    void setDivisionLineColor( const kvs::RGBColor& color ) { m_division_line_color = color; }
+    void setRange( const double min_value, const double max_value ) { m_min_value = min_value; m_max_value = max_value; }
+    void setBorderWidth( const float width ) { m_border_width = width; }
+    void setBorderColor( const kvs::RGBColor& color ) { m_border_color = color; }
     void setColorMap( const kvs::ColorMap& colormap );
-    void enableAntiAliasing();
-    void disableAntiAliasing();
-    void showRange();
-    void hideRange();
+    void enableAntiAliasing() { m_enable_anti_aliasing = true; }
+    void disableAntiAliasing() { m_enable_anti_aliasing = false; }
+    void showRange() { m_show_range_value = true; }
+    void hideRange() { m_show_range_value = false; }
 
     void paintEvent();
     void resizeEvent( int width, int height );

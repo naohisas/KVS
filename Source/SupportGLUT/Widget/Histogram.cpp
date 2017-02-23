@@ -38,49 +38,6 @@ static int InstanceCounter = 0;
 namespace
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Draws a rectangle as lines.
- *  @param  rect [in] rectangle
- *  @param  width [in] line width
- *  @param  upper_edge_color [in] upper edge color
- *  @param  lower_edge_color [in] lower edge color
- */
-/*===========================================================================*/
-void DrawRectangle(
-    const kvs::Rectangle rect,
-    const float width,
-    const kvs::RGBColor& upper_edge_color,
-    const kvs::RGBColor& lower_edge_color )
-{
-    kvs::OpenGL::SetLineWidth( width );
-    kvs::OpenGL::Begin( GL_LINES );
-    {
-        kvs::OpenGL::Color( upper_edge_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( rect.x0(), rect.y0() ), kvs::Vec2( rect.x1(), rect.y0() ) ); // top
-        kvs::OpenGL::Vertices( kvs::Vec2( rect.x0(), rect.y0() ), kvs::Vec2( rect.x0(), rect.y1() ) ); // left
-
-        kvs::OpenGL::Color( lower_edge_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( rect.x1(), rect.y1() ), kvs::Vec2( rect.x0(), rect.y1() ) ); // bottom
-        kvs::OpenGL::Vertices( kvs::Vec2( rect.x1(), rect.y0() ), kvs::Vec2( rect.x1(), rect.y1() ) ); // right
-    }
-    kvs::OpenGL::End();
-/*
-    glLineWidth( width );
-    glBegin( GL_LINES );
-    {
-        glColor3ub( upper_edge_color.r(), upper_edge_color.g(), upper_edge_color.b() );
-        glVertex2f( rect.x0(), rect.y0() ); glVertex2f( rect.x1(), rect.y0() ); // top
-        glVertex2f( rect.x0(), rect.y0() ); glVertex2f( rect.x0(), rect.y1() ); // left
-
-        glColor3ub( lower_edge_color.r(), lower_edge_color.g(), lower_edge_color.b() );
-        glVertex2f( rect.x1(), rect.y1() ); glVertex2f( rect.x0(), rect.y1() ); // bottom
-        glVertex2f( rect.x1(), rect.y0() ); glVertex2f( rect.x1(), rect.y1() ); // right
-    }
-    glEnd();
-*/
-}
-
 /*
 const kvs::Real32 GaussianKernel( const kvs::Real32 x )
 {
