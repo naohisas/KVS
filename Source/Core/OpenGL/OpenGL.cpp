@@ -810,10 +810,25 @@ void SetClearDepth( GLdouble depth )
     KVS_GL_CALL( glClearDepth( depth ) );
 }
 
-//void SetClearDepth( GLfloat depth )
-//{
-//    KVS_GL_CALL( glClearDepthf( depth ) );
-//}
+void SetClearColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha )
+{
+    KVS_GL_CALL( glClearColor( red, green, blue, alpha ) );
+}
+
+void SetClearColor( const kvs::Vec3& color )
+{
+    kvs::OpenGL::SetClearColor( color[0], color[1], color[2], 1.0f );
+}
+
+void SetClearColor( const kvs::Vec4& color )
+{
+    kvs::OpenGL::SetClearColor( color[0], color[1], color[2], color[3] );
+}
+
+void SetClearColor( const kvs::RGBAColor& color )
+{
+    kvs::OpenGL::SetClearColor( color.toVec4() );
+}
 
 void SetPolygonOffset( GLfloat factor, GLfloat units )
 {

@@ -194,11 +194,8 @@ void Background::apply()
 /*==========================================================================*/
 void Background::apply_mono_color()
 {
-    float r = static_cast<float>( m_color[0].r() ) / 255.0f;
-    float g = static_cast<float>( m_color[0].g() ) / 255.0f;
-    float b = static_cast<float>( m_color[0].b() ) / 255.0f;
-    KVS_GL_CALL( glClearDepth( 1.0 ) );
-    KVS_GL_CALL( glClearColor( r, g, b, 1.0f ) );
+    kvs::OpenGL::SetClearDepth( 1.0 );
+    kvs::OpenGL::SetClearColor( m_color[0] );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
 
@@ -209,7 +206,7 @@ void Background::apply_mono_color()
 /*==========================================================================*/
 void Background::apply_gradation_color()
 {
-    KVS_GL_CALL( glClearDepth( 1.0 ) );
+    kvs::OpenGL::SetClearDepth( 1.0f );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     kvs::OpenGL::WithPushedAttrib a( GL_ALL_ATTRIB_BITS );
@@ -227,13 +224,13 @@ void Background::apply_gradation_color()
             kvs::OpenGL::WithPushedMatrix p( GL_PROJECTION );
             p.loadIdentity();
             {
-                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[0].r(), m_color[0].g(), m_color[0].b() ) ); KVS_GL_CALL_VER( glVertex2d( 0.0, 0.0 ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[1].r(), m_color[1].g(), m_color[1].b() ) ); KVS_GL_CALL_VER( glVertex2d( 1.0, 0.0 ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[2].r(), m_color[2].g(), m_color[2].b() ) ); KVS_GL_CALL_VER( glVertex2d( 1.0, 1.0 ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[3].r(), m_color[3].g(), m_color[3].b() ) ); KVS_GL_CALL_VER( glVertex2d( 0.0, 1.0 ) );
-                KVS_GL_CALL_END( glEnd() );
+                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, 0, 1 );
+                kvs::OpenGL::Begin( GL_QUADS );
+                kvs::OpenGL::Color( m_color[0] ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 0 ) );
+                kvs::OpenGL::Color( m_color[1] ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 0 ) );
+                kvs::OpenGL::Color( m_color[2] ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 1 ) );
+                kvs::OpenGL::Color( m_color[3] ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 1 ) );
+                kvs::OpenGL::End();
             }
         }
     }
@@ -246,7 +243,7 @@ void Background::apply_gradation_color()
 /*==========================================================================*/
 void Background::apply_image()
 {
-    KVS_GL_CALL( glClearDepth( 1.0 ) );
+    kvs::OpenGL::SetClearDepth( 1.0 );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     kvs::OpenGL::WithPushedAttrib a( GL_ALL_ATTRIB_BITS );
@@ -277,13 +274,13 @@ void Background::apply_image()
             kvs::OpenGL::WithPushedMatrix p( GL_PROJECTION );
             p.loadIdentity();
             {
-                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  1.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  0.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  0.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  1.0 ) );
-                KVS_GL_CALL_END( glEnd() );
+                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, 0, 1 );
+                kvs::OpenGL::Begin( GL_QUADS );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 0 ), kvs::Vec2( 1, 1 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 1 ), kvs::Vec2( 1, 0 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 1 ), kvs::Vec2( 0, 0 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 0 ), kvs::Vec2( 0, 1 ) );
+                kvs::OpenGL::End();
             }
         }
     }

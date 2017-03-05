@@ -124,7 +124,10 @@ void SetLightModel( GLenum pname, GLfloat param );
 void SetLightModel( GLenum pname, GLint param );
 
 void SetClearDepth( GLdouble depth );
-//void SetClearDepth( GLfloat depth );
+void SetClearColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha );
+void SetClearColor( const kvs::Vec3& color );
+void SetClearColor( const kvs::Vec4& color );
+void SetClearColor( const kvs::RGBAColor& color );
 void SetPolygonOffset( GLfloat factor, GLfloat units );
 void SetLineWidth( GLfloat width );
 void SetPointSize( GLfloat size );
