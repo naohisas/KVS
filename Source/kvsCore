@@ -344,3 +344,6 @@
 #include <Core/Visualization/Viewer/Trackball.h>
 #include <Core/Visualization/Viewer/Xform.h>
 #include <Core/Visualization/Viewer/XformControl.h>
+#include <Core/Visualization/Widget/Font.h>
+#include <Core/Visualization/Widget/TextEngine.h>
+#include <Core/Visualization/Widget/WidgetBase.h>

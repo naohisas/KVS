@@ -344,3 +344,6 @@ Visualization/Viewer/ScreenBase
 Visualization/Viewer/Trackball
 Visualization/Viewer/Xform
 Visualization/Viewer/XformControl
+Visualization/Widget/Font
+Visualization/Widget/TextEngine
+Visualization/Widget/WidgetBase

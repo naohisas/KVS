@@ -389,8 +389,15 @@ $(OUTDIR)/./Visualization/Viewer/WindowCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/WorldCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/Xform.o \
 $(OUTDIR)/./Visualization/Viewer/XformControl.o \
+$(OUTDIR)/./Visualization/Widget/Font.o \
+$(OUTDIR)/./Visualization/Widget/TextEngine.o \
+$(OUTDIR)/./Visualization/Widget/WidgetBase.o \
 
 
+
+$(OUTDIR)/./Visualization/Widget/%.o: ./Visualization/Widget/%.cpp ./Visualization/Widget/%.h
+	$(MKDIR) $(OUTDIR)/./Visualization/Widget
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./Visualization/Viewer/%.o: ./Visualization/Viewer/%.cpp ./Visualization/Viewer/%.h
 	$(MKDIR) $(OUTDIR)/./Visualization/Viewer
@@ -604,6 +611,8 @@ install::
 	$(INSTALL) ./Visualization/Shader/*.h $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Viewer
 	$(INSTALL) ./Visualization/Viewer/*.h $(INSTALL_DIR)/include/Core/./Visualization/Viewer
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Widget
+	$(INSTALL) ./Visualization/Widget/*.h $(INSTALL_DIR)/include/Core/./Visualization/Widget
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(INSTALL) ./Visualization/Shader/*.vert $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Shader

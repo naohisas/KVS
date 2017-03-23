@@ -389,8 +389,17 @@ $(OUTDIR)\.\Visualization\Viewer\WindowCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\WorldCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\Xform.obj \
 $(OUTDIR)\.\Visualization\Viewer\XformControl.obj \
+$(OUTDIR)\.\Visualization\Widget\Font.obj \
+$(OUTDIR)\.\Visualization\Widget\TextEngine.obj \
+$(OUTDIR)\.\Visualization\Widget\WidgetBase.obj \
 
 
+
+{.\Visualization\Widget\}.cpp{$(OUTDIR)\.\Visualization\Widget\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\Visualization\Widget $(MKDIR) $(OUTDIR)\.\Visualization\Widget
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\Visualization\Widget\ @<<
+$<
+<<
 
 {.\Visualization\Viewer\}.cpp{$(OUTDIR)\.\Visualization\Viewer\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\Visualization\Viewer $(MKDIR) $(OUTDIR)\.\Visualization\Viewer
@@ -672,6 +681,8 @@ install::
 	$(INSTALL) .\Visualization\Shader\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Viewer $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Viewer
 	$(INSTALL) .\Visualization\Viewer\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Viewer
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Widget $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Widget
+	$(INSTALL) .\Visualization\Widget\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Widget
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Shader $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	$(INSTALL) .\Visualization\Shader\*.vert $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Shader $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Shader
