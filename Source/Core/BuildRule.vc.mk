@@ -678,3 +678,5 @@ install::
 	$(INSTALL) .\Visualization\Shader\*.geom $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Shader $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	$(INSTALL) .\Visualization\Shader\*.frag $(INSTALL_DIR)\include\Core\.\Visualization\Shader
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Font $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Font
+	$(INSTALL) .\Visualization\Font\*.ttf $(INSTALL_DIR)\include\Core\.\Visualization\Font
