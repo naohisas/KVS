@@ -183,7 +183,7 @@ public:
         }
         else
         {
-            const std::string filename = ::search_path.find( source );
+            const std::string filename = search_path.find( source );
             if ( filename.empty() )
             {
                 kvsMessageError( "Cannot find '%s'.", source.c_str() );
