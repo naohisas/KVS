@@ -235,6 +235,10 @@ DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_OPENCV
 DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_CUDA
 !ENDIF
 
+!IF "$(KVS_SUPPORT_OPENMP)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_OPENMP
+!ENDIF
+
 
 #=============================================================================
 #  Linker option.

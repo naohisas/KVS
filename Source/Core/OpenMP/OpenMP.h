@@ -31,7 +31,7 @@ double GetWTick();
 class Mutex
 {
 public:
-#ifdef _OPENMP
+#if defined(_OPENMP) && defined(KVS_ENABLE_OPENMP)
     typedef omp_lock_t Handler;
 #else
     typedef void* Handler;

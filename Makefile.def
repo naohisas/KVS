@@ -356,6 +356,10 @@ ifeq "$(KVS_SUPPORT_CUDA)" "1"
   DEFINITIONS += -DKVS_SUPPORT_CUDA
 endif
 
+ifeq "$(KVS_SUPPORT_OPENMP)" "1"
+  DEFINITIONS += -DKVS_SUPPORT_OPENMP
+endif
+
 
 #=============================================================================
 #  Linker option.

@@ -2,7 +2,7 @@
 #include <kvs/Compiler>
 
 
-#ifdef _OPENMP
+#if defined(_OPENMP) && defined(KVS_ENABLE_OPENMP)
 #include <omp.h>
 #if defined(KVS_COMPILER_VC)
 #define KVS_OMP_PRAGMA(x) __pragma(x)
