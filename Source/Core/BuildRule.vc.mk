@@ -129,6 +129,8 @@ $(OUTDIR)\.\Matrix\Vector2.obj \
 $(OUTDIR)\.\Matrix\Vector3.obj \
 $(OUTDIR)\.\Matrix\Vector4.obj \
 $(OUTDIR)\.\Matrix\ViewingMatrix44.obj \
+$(OUTDIR)\.\NanoVG\NanoVG.obj \
+$(OUTDIR)\.\NanoVG\nvg.obj \
 $(OUTDIR)\.\Network\Acceptor.obj \
 $(OUTDIR)\.\Network\Connector.obj \
 $(OUTDIR)\.\Network\HttpConnector.obj \
@@ -486,6 +488,12 @@ $<
 $<
 <<
 
+{.\NanoVG\}.cpp{$(OUTDIR)\.\NanoVG\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\NanoVG $(MKDIR) $(OUTDIR)\.\NanoVG
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\NanoVG\ @<<
+$<
+<<
+
 {.\Matrix\}.cpp{$(OUTDIR)\.\Matrix\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\Matrix $(MKDIR) $(OUTDIR)\.\Matrix
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\Matrix\ @<<
@@ -626,6 +634,8 @@ install::
 	$(INSTALL) .\Image\*.h $(INSTALL_DIR)\include\Core\.\Image
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Matrix $(MKDIR) $(INSTALL_DIR)\include\Core\.\Matrix
 	$(INSTALL) .\Matrix\*.h $(INSTALL_DIR)\include\Core\.\Matrix
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\NanoVG $(MKDIR) $(INSTALL_DIR)\include\Core\.\NanoVG
+	$(INSTALL) .\NanoVG\*.h $(INSTALL_DIR)\include\Core\.\NanoVG
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Network $(MKDIR) $(INSTALL_DIR)\include\Core\.\Network
 	$(INSTALL) .\Network\*.h $(INSTALL_DIR)\include\Core\.\Network
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Numeric $(MKDIR) $(INSTALL_DIR)\include\Core\.\Numeric

@@ -61,6 +61,7 @@
 #include <Core/Matrix/Vector3.h>
 #include <Core/Matrix/Vector4.h>
 #include <Core/Matrix/ViewingMatrix44.h>
+#include <Core/NanoVG/NanoVG.h>
 #include <Core/Network/Acceptor.h>
 #include <Core/Network/Connector.h>
 #include <Core/Network/HttpConnector.h>

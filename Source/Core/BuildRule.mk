@@ -129,6 +129,8 @@ $(OUTDIR)/./Matrix/Vector2.o \
 $(OUTDIR)/./Matrix/Vector3.o \
 $(OUTDIR)/./Matrix/Vector4.o \
 $(OUTDIR)/./Matrix/ViewingMatrix44.o \
+$(OUTDIR)/./NanoVG/NanoVG.o \
+$(OUTDIR)/./NanoVG/nvg.o \
 $(OUTDIR)/./Network/Acceptor.o \
 $(OUTDIR)/./Network/Connector.o \
 $(OUTDIR)/./Network/HttpConnector.o \
@@ -454,6 +456,10 @@ $(OUTDIR)/./Network/%.o: ./Network/%.cpp ./Network/%.h
 	$(MKDIR) $(OUTDIR)/./Network
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./NanoVG/%.o: ./NanoVG/%.cpp ./NanoVG/%.h
+	$(MKDIR) $(OUTDIR)/./NanoVG
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./Matrix/%.o: ./Matrix/%.cpp ./Matrix/%.h
 	$(MKDIR) $(OUTDIR)/./Matrix
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -560,6 +566,8 @@ install::
 	$(INSTALL) ./Image/*.h $(INSTALL_DIR)/include/Core/./Image
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Matrix
 	$(INSTALL) ./Matrix/*.h $(INSTALL_DIR)/include/Core/./Matrix
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./NanoVG
+	$(INSTALL) ./NanoVG/*.h $(INSTALL_DIR)/include/Core/./NanoVG
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Network
 	$(INSTALL) ./Network/*.h $(INSTALL_DIR)/include/Core/./Network
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Numeric
