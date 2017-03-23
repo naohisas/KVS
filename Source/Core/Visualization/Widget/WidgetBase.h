@@ -80,16 +80,7 @@ protected:
     kvs::OpenGL::Render2D& render2D() { return m_render_2d; }
     kvs::NanoVG& renderEngine() { return *m_render_engine; }
     kvs::TextEngine& textEngine() { return *m_text_engine; }
-
     virtual void drawBackground();
-    virtual void drawRect(
-        const kvs::Rectangle& rect,
-        const kvs::RGBColor& upper_color,
-        const kvs::RGBColor& lower_color,
-        const float width = 1.0f );
-
-    virtual void swapColor( kvs::RGBColor& color1, kvs::RGBColor& color2 );
-    virtual kvs::RGBColor darkenedColor( const kvs::RGBColor& color, const float darkness );
     virtual int adjustedWidth() { return 0; }
     virtual int adjustedHeight() { return 0; }
 
