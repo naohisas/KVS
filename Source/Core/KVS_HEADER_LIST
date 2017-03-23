@@ -344,6 +344,17 @@ Visualization/Viewer/ScreenBase
 Visualization/Viewer/Trackball
 Visualization/Viewer/Xform
 Visualization/Viewer/XformControl
+Visualization/Widget/CheckBox
+Visualization/Widget/CheckBoxGroup
+Visualization/Widget/ColorMapBar
 Visualization/Widget/Font
+Visualization/Widget/HistogramBar
+Visualization/Widget/Label
+Visualization/Widget/OpacityMapBar
+Visualization/Widget/OrientationAxis
+Visualization/Widget/PushButton
+Visualization/Widget/RadioButton
+Visualization/Widget/RadioButtonGroup
+Visualization/Widget/Slider
 Visualization/Widget/TextEngine
 Visualization/Widget/WidgetBase

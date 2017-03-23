@@ -389,7 +389,18 @@ $(OUTDIR)\.\Visualization\Viewer\WindowCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\WorldCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\Xform.obj \
 $(OUTDIR)\.\Visualization\Viewer\XformControl.obj \
+$(OUTDIR)\.\Visualization\Widget\CheckBox.obj \
+$(OUTDIR)\.\Visualization\Widget\CheckBoxGroup.obj \
+$(OUTDIR)\.\Visualization\Widget\ColorMapBar.obj \
 $(OUTDIR)\.\Visualization\Widget\Font.obj \
+$(OUTDIR)\.\Visualization\Widget\HistogramBar.obj \
+$(OUTDIR)\.\Visualization\Widget\Label.obj \
+$(OUTDIR)\.\Visualization\Widget\OpacityMapBar.obj \
+$(OUTDIR)\.\Visualization\Widget\OrientationAxis.obj \
+$(OUTDIR)\.\Visualization\Widget\PushButton.obj \
+$(OUTDIR)\.\Visualization\Widget\RadioButton.obj \
+$(OUTDIR)\.\Visualization\Widget\RadioButtonGroup.obj \
+$(OUTDIR)\.\Visualization\Widget\Slider.obj \
 $(OUTDIR)\.\Visualization\Widget\TextEngine.obj \
 $(OUTDIR)\.\Visualization\Widget\WidgetBase.obj \
 
