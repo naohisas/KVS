@@ -5,14 +5,21 @@ Kyoto Visualization System (KVS) is a multi-platform, open-source C++ library fo
 
 # Installation
 
+## Getting KVS
+The source code of KVS can be downloaded via GitHub as follows:
+```
+$ git clone https://github.com/naohisas/KVS.git
+```
+
 ## Requirements
-* GLEW
+Some of software are required for compiling of KVS. Please install them as needed before building KVS.
 * GLUT
+* GLEW (optional but recommended)
 * Qt (optional)
 * CUDA (optional)
 * OpenCV (optional)
 
-## Settings
+## Configuration
 
 + Windows
 
