@@ -21,7 +21,7 @@ Some of software are required for compiling KVS. Please install them as needed b
 * OpenCV (optional)
 
 ## Configuration
-The environment variable ```KVS_DIR``` should be set to the install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
+The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
 
 + Windows
 
