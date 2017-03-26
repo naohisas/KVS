@@ -37,7 +37,7 @@ export PATH=$KVS_DIR/bin:$PATH
 ```
 
 ## Build and install
-By using make command, KVS can be easily build and install to ```KVS_DIR```.
+By using the make command, KVS can be easily build and install to ```KVS_DIR```.
 
 + Windows
 ```
