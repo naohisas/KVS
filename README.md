@@ -1,5 +1,6 @@
 Kyoto Visualization System
 ===
+[![Join the chat at https://gitter.im/naohisas/KVS](https://badges.gitter.im/naohisas/KVS.svg)](https://gitter.im/naohisas/KVS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Kyoto Visualization System (KVS) is a multi-platform, open-source C++ library for developing scientific visualization applications. KVS provides various classes and interfaces, such as isosurace extraction, streamlines and volume rendering, to visualize medical data obtained by computerized tomography or magnetic resonance imaging, numerical data from computational fluid dynamics and so on.
 
@@ -20,7 +21,7 @@ Some of software are required for compiling of KVS. Please install them as neede
 * OpenCV (optional)
 
 ## Configuration
-
+The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
 + Windows
 
 |Variable|Value|
@@ -47,5 +48,3 @@ nmake install
 make
 make install
 ```
-
-[![Join the chat at https://gitter.im/naohisas/KVS](https://badges.gitter.im/naohisas/KVS.svg)](https://gitter.im/naohisas/KVS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
