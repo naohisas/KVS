@@ -13,7 +13,7 @@ $ git clone https://github.com/naohisas/KVS.git
 ```
 
 ## Requirements
-Some of software are required for compiling of KVS. Please install them as needed before building KVS.
+Some of software are required for compiling KVS. Please install them as needed before building KVS.
 * GLUT
 * GLEW (optional but recommended)
 * Qt (optional)
@@ -22,6 +22,7 @@ Some of software are required for compiling of KVS. Please install them as neede
 
 ## Configuration
 The environment variable ```KVS_DIR``` should be set to the install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
+
 + Windows
 
 |Variable|Value|
@@ -36,6 +37,7 @@ export PATH=$KVS_DIR/bin:$PATH
 ```
 
 ## Build and install
+By using make command, KVS can be easily build and install to ```KVS_DIR```.
 
 + Windows
 ```
