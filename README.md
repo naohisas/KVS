@@ -41,12 +41,14 @@ By using make command, KVS can be easily build and install to ```KVS_DIR```.
 
 + Windows
 ```
-nmake
-nmake install
+$ cd
+$ nmake
+$ nmake install
 ```
 
 + Linux and Mac OS X
 ```
-make
-make install
+$ cd
+$ make
+$ make install
 ```
