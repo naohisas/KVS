@@ -18,6 +18,7 @@
 #include <kvs/Vector3>
 #include <kvs/Vector4>
 #include <kvs/Matrix44>
+#include <kvs/OpenMP>
 
 
 namespace
@@ -32,8 +33,7 @@ namespace
 /*===========================================================================*/
 inline kvs::Mat4 ScalingMatrix( const kvs::Vec3& s )
 {
-    const kvs::Real32 elements[16] =
-    {
+    const kvs::Real32 elements[16] = {
         s[0], 0.0f, 0.0f, 0.0f,
         0.0f, s[1], 0.0f, 0.0f,
         0.0f, 0.0f, s[2], 0.0f,
@@ -51,8 +51,7 @@ inline kvs::Mat4 ScalingMatrix( const kvs::Vec3& s )
 /*===========================================================================*/
 inline kvs::Mat4 TranslationMatrix( const kvs::Vec3& t )
 {
-    const kvs::Real32 elements[16] =
-    {
+    const kvs::Real32 elements[16] = {
         1.0f, 0.0f, 0.0f, t[0],
         0.0f, 1.0f, 0.0f, t[1],
         0.0f, 0.0f, 1.0f, t[2],
@@ -212,6 +211,8 @@ namespace CellByCellSampling
 /*===========================================================================*/
 kvs::Real32 ParticleDensityMap::at( const float value ) const
 {
+    if ( value == m_min_value ) { return m_table[0]; }
+    if ( value == m_max_value ) { return m_table[ m_resolution - 1 ]; }
     if ( value < m_min_value || m_max_value < value ) { return 0.0f; }
 
     const float r = static_cast<float>( m_resolution - 1 );
@@ -237,23 +238,28 @@ void ParticleDensityMap::create( const kvs::OpacityMap& omap )
     m_max_value = omap.maxValue();
 
     const kvs::Real32 dt = m_sampling_step;
-    const kvs::Real32 length = ::PixelLength( m_camera, m_object ) / m_subpixel_level;
+    const kvs::Real32 length = ::PixelLength( m_camera, m_object );
 
     const kvs::Real32 max_opacity = 1.0f - std::exp( -dt / length );
     const kvs::Real32 max_density = 1.0f / ( length * length * length );
     const kvs::Real32 inv_volume = 1.0f / ( length * length * dt );
 
     m_table = Table( m_resolution );
-    for ( size_t i = 0; i < m_resolution; i++ )
+
+    KVS_OMP_PARALLEL()
     {
-        const kvs::Real32 opacity = omap[i];
-        if ( opacity < max_opacity )
+        KVS_OMP_FOR( schedule(static) )
+        for ( size_t i = 0; i < m_resolution; i++ )
         {
-            m_table[i] = -std::log( 1.0f - opacity ) * inv_volume;
-        }
-        else
-        {
-            m_table[i] = max_density;
+            const kvs::Real32 opacity = omap[i];
+            if ( opacity < max_opacity )
+            {
+                m_table[i] = -std::log( 1.0f - opacity ) * inv_volume;
+            }
+            else
+            {
+                m_table[i] = max_density;
+            }
         }
     }
 }
@@ -278,12 +284,16 @@ kvs::Real32 ParticleDensityMap::max_density( const kvs::Real32 s0, const kvs::Re
     i1 = kvs::Math::Clamp( i1, size_t(0), dims );
 
     kvs::Real32 max_density = this->table().at( i0 );
-    for ( size_t i = i0; i <= i1; i++ )
-    {
-        const kvs::Real32 density =  this->table().at(i);
-        max_density = kvs::Math::Max( max_density, density );
-    }
 
+    KVS_OMP_PARALLEL()
+    {
+        KVS_OMP_FOR( reduction(max:max_density) )
+        for( size_t i = i0; i <= i1; i++ )
+        {
+            const kvs::Real32 density =  this->table().at(i);
+            max_density = kvs::Math::Max( max_density, density );
+        }
+    }
     return max_density;
 }
 
