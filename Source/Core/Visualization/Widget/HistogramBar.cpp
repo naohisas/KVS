@@ -64,7 +64,7 @@ HistogramBar::HistogramBar( kvs::ScreenBase* screen ):
     m_bias_parameter( 0.5f ),
     m_palette( NULL )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent |
         kvs::EventBase::MousePressEvent |

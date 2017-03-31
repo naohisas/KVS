@@ -20,6 +20,10 @@
 #include <kvs/glut/LegendBar>
 #include <kvs/glut/OrientationAxis>
 
+#include <kvs/Label>
+#include <kvs/ColorMapBar>
+#include <kvs/OrientationAxis>
+
 
 namespace kvsview
 {
@@ -32,7 +36,7 @@ namespace Widget
  *  @brief  Label class to show the frame rate.
  */
 /*===========================================================================*/
-class FPSLabel : public kvs::glut::Label
+class FPSLabel : public kvs::Label
 {
     std::string m_renderer_name; ///< renderer name
 
@@ -48,7 +52,7 @@ public:
  *  @brief  Legend bar class.
  */
 /*===========================================================================*/
-class LegendBar : public kvs::glut::LegendBar
+class LegendBar : public kvs::ColorMapBar
 {
 public:
 
@@ -62,7 +66,7 @@ public:
  *  @brief  Orientation axis class.
  */
 /*===========================================================================*/
-class OrientationAxis : public kvs::glut::OrientationAxis
+class OrientationAxis : public kvs::OrientationAxis
 {
 public:
 

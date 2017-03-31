@@ -49,6 +49,7 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* sce
     m_y_axis_color( kvs::RGBColor( 10, 180, 10 ) ),
     m_z_axis_color( kvs::RGBColor( 10, 10, 180 ) ),
     m_axis_line_width( 2.0f ),
+    m_axis_length( 4.0f ),
     m_box_color( kvs::RGBColor( 200, 200, 200 ) ),
     m_box_line_color( kvs::RGBColor( 10, 10, 10 ) ),
     m_box_line_width( 1.0f ),
@@ -57,7 +58,7 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* sce
     m_box_type( OrientationAxis::NoneBox ),
     m_projection_type( kvs::Camera::Perspective )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent );
 
@@ -89,7 +90,7 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase
     m_box_type( OrientationAxis::NoneBox ),
     m_projection_type( kvs::Camera::Perspective )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent );
 
@@ -165,7 +166,7 @@ void OrientationAxis::paintEvent()
     const int y = screen()->height() - m_y - m_height + BaseClass::margin();
     const int width = m_width - BaseClass::margin();
     const int height = m_height - BaseClass::margin();
-    kvs::OpenGL::SetViewport( x, y, width, height);
+    kvs::OpenGL::SetViewport( x, y, width, height );
 
     kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );
     p2.loadIdentity();
@@ -179,8 +180,8 @@ void OrientationAxis::paintEvent()
         // Rotate the axis and the box using the object's rotation matrix.
         kvs::OpenGL::MultMatrix( kvs::Xform::Rotation( m_object->xform().rotation() ) );
 
-        // Fixed length of the axis
-        const float length = 4.0f;
+        // Length of the axis
+        const float length = m_axis_length;
 
         // Draw the box.
         switch ( m_box_type )

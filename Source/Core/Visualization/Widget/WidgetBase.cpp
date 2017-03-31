@@ -144,7 +144,6 @@ void WidgetBase::drawBackground()
         kvs::OpenGL::End();
     }
 
-
     if ( m_background_border_width > 0.0f && m_background_border_color.a() > 0.0f )
     {
         // Draw outline of the background.

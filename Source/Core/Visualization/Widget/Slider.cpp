@@ -55,7 +55,7 @@ Slider::Slider( kvs::ScreenBase* screen ):
     m_show_range_value( true ),
     m_pushed( false )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent |
         kvs::EventBase::MousePressEvent |

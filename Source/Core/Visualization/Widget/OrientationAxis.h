@@ -59,6 +59,7 @@ private:
     kvs::RGBColor m_y_axis_color; ///< y axis color
     kvs::RGBColor m_z_axis_color; ///< z axis color
     float m_axis_line_width; ///< axis line width
+    float m_axis_length; ///< axis length
     kvs::RGBColor m_box_color; ///< box color
     kvs::RGBColor m_box_line_color; ///< box line color
     float m_box_line_width; ///< box line width
@@ -85,6 +86,7 @@ public:
     const kvs::RGBColor& boxColor() const { return m_box_color; }
     const kvs::RGBColor& boxLineColor() const { return m_box_line_color; }
     float axisLineWidth() const { return m_axis_line_width; }
+    float axisLength() const { return m_axis_length; }
     float boxLineWidth() const { return m_box_line_width; }
     AxisType axisType() const { return m_axis_type; }
     BoxType boxType() const { return m_box_type; }
@@ -100,6 +102,7 @@ public:
     void setYAxisColor( const kvs::RGBColor& color ) { m_y_axis_color = color; }
     void setZAxisColor( const kvs::RGBColor& color ) { m_z_axis_color = color; }
     void setAxisLineWidth( const float width ) { m_axis_line_width = width; }
+    void setAxisLength( const float length ) { m_axis_length = length; }
     void setBoxColor( const kvs::RGBColor& color ) { m_box_color = color; }
     void setBoxLineColor( const kvs::RGBColor& color ) { m_box_line_color = color; }
     void setBoxLineWidth( const float width ) { m_box_line_width = width; }

@@ -122,7 +122,7 @@ private:
 
 public:
     FontStash(): m_context( NULL ) {}
-    ~FontStash() { glfonsDelete( m_context ); }
+    ~FontStash() { if ( m_context ) { glfonsDelete( m_context ); } }
 
     void create( const int width, const int height, const int flag )
     {

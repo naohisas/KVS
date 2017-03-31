@@ -51,37 +51,40 @@ Argument::Argument( int argc, char** argv ):
  *  @param  argv [in] argument values
  */
 /*===========================================================================*/
+/*
 Main::Main( int argc, char** argv )
 {
     m_argc = argc;
     m_argv = argv;
 }
+*/
 
 /*===========================================================================*/
 /**
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    kvsview::PointRenderer::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    kvsview::PointRenderer::Argument arg( argc, argv );
+    if( !arg.parse() ) return false;
 
     // Create screen.
     kvs::glut::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::PointRenderer::CommandName );
+    screen.show();
 
     // Check the input data.
     m_input_name = arg.value<std::string>();
     if ( !kvsview::FileChecker::ImportablePoint( m_input_name ) )
     {
         kvsMessageError("%s is not point data.", m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Visualization pipeline.
@@ -120,10 +123,7 @@ const bool Main::exec( void )
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
-    // Show the screen.
-    screen.show();
-
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace PointRenderer

@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   main.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: main.h 602 2010-08-19 02:43:34Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__MAIN_H_INCLUDE
-#define KVSVIEW__MAIN_H_INCLUDE
+#pragma once
 
 
 namespace kvsview
@@ -25,20 +25,8 @@ namespace kvsview
 /*===========================================================================*/
 class Main
 {
-protected:
-
-    int    m_argc; ///< argument count
-    char** m_argv; ///< argument values
-
 public:
-
-    Main( int argc, char** argv );
-
-public:
-
-    bool exec( void );
+    bool exec( int argc, char** argv );
 };
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__MAIN_H_INCLUDE

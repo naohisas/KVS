@@ -284,31 +284,20 @@ const bool Argument::hasOpacityMapOption()
     return this->hasOption("a");
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
-}
-
-/*===========================================================================*/
+ /*===========================================================================*/
 /**
  *  @brief  Executes main process.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-const bool Main::exec()
+int Main::exec( int argc, char** argv )
 {
     // Setup GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Commandline arguments.
-    kvsview::TransferFunction::Argument arg( m_argc, m_argv );
+    kvsview::TransferFunction::Argument arg( argc, argv );
     if ( !arg.parse() ) exit( EXIT_FAILURE );
     m_input_name = arg.value<std::string>();
 

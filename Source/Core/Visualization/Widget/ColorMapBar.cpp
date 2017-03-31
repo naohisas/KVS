@@ -46,7 +46,7 @@ ColorMapBar::ColorMapBar( kvs::ScreenBase* screen ):
     m_show_range_value( true ),
     m_texture_downloaded( false )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent );
 

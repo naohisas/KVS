@@ -45,7 +45,7 @@ OpacityMapBar::OpacityMapBar( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_show_range_value( true )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent );
 

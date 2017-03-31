@@ -12,9 +12,7 @@
  *  $Id: FileChecker.h 1313 2012-09-19 08:19:01Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__FILE_CHECKER_H_INCLUDE
-#define KVSVIEW__FILE_CHECKER_H_INCLUDE
-
+#pragma once
 #include <kvs/File>
 #include <kvs/AVSField>
 #include <kvs/AVSUcd>
@@ -48,11 +46,11 @@ inline const bool ImportablePoint( const std::string& filename )
     {
         if ( kvs::KVSMLPointObject::CheckFormat( filename ) )
         {
-            return( true );
+            return true;
         }
     }
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -69,11 +67,11 @@ inline const bool ImportableLine( const std::string& filename )
     {
         if ( kvs::KVSMLLineObject::CheckFormat( filename ) )
         {
-            return( true );
+            return true;
         }
     }
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -90,23 +88,23 @@ inline const bool ImportablePolygon( const std::string& filename )
     {
         if ( kvs::KVSMLPolygonObject::CheckFormat( filename ) )
         {
-            return( true );
+            return true;
         }
     }
 
     // STL format.
     if ( kvs::Stl::CheckExtension( filename ) )
     {
-        return( true );
+        return true;
     }
 
     // Ply format.
     if ( kvs::Ply::CheckExtension( filename ) )
     {
-        return( true );
+        return true;
     }
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -126,14 +124,14 @@ inline const bool ImportableStructuredVolume( const std::string& filename )
         {
             if ( kvs::KVSMLStructuredVolumeObject::CheckFormat( filename ) )
             {
-                return( true );
+                return true;
             }
         }
 
         // AVS field format.
         if ( kvs::AVSField::CheckExtension( filename ) )
         {
-            return( true );
+            return true;
         }
     }
     else
@@ -141,11 +139,11 @@ inline const bool ImportableStructuredVolume( const std::string& filename )
         // DICOM list.
         if ( kvs::DicomList::CheckDirectory( filename ) )
         {
-            return( true );
+            return true;
         }
     }
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -162,21 +160,19 @@ inline const bool ImportableUnstructuredVolume( const std::string& filename )
     {
         if ( kvs::KVSMLUnstructuredVolumeObject::CheckFormat( filename ) )
         {
-            return( true );
+            return true;
         }
     }
 
     // AVS UCD format.
     if ( kvs::AVSUcd::CheckExtension( filename ) )
     {
-        return( true );
+        return true;
     }
 
-    return( false );
+    return false;
 }
 
 } // end of namespace FileChecker
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__FILE_CHECKER_H_INCLUDE

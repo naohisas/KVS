@@ -32,7 +32,7 @@ namespace Widget
  */
 /*===========================================================================*/
 FPSLabel::FPSLabel( kvs::ScreenBase* screen, const std::string renderer_name ):
-    kvs::glut::Label( screen ),
+    kvs::Label( screen ),
     m_renderer_name( renderer_name )
 {
     setMargin( 10 );
@@ -43,7 +43,7 @@ FPSLabel::FPSLabel( kvs::ScreenBase* screen, const std::string renderer_name ):
  *  @brief  Update FPS string.
  */
 /*===========================================================================*/
-void FPSLabel::screenUpdated( void )
+void FPSLabel::screenUpdated()
 {
     kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
     const kvs::RendererBase* renderer = glut_screen->scene()->rendererManager()->renderer( m_renderer_name );
@@ -60,10 +60,10 @@ void FPSLabel::screenUpdated( void )
  */
 /*===========================================================================*/
 LegendBar::LegendBar( kvs::ScreenBase* screen ):
-    kvs::glut::LegendBar( screen )
+        kvs::ColorMapBar( screen )
 {
-    setWidth( 200 );
-    setHeight( 50 );
+    setWidth( 150 );
+    setHeight( 60 );
 }
 
 /*===========================================================================*/
@@ -84,11 +84,12 @@ void LegendBar::screenResized( void )
  */
 /*===========================================================================*/
 OrientationAxis::OrientationAxis( kvs::glut::Screen* screen ):
-    kvs::glut::OrientationAxis( screen )
+    kvs::OrientationAxis( screen, screen->scene() )
 {
-    setMargin( 10 );
-    setSize( 90 );
-    setBoxType( kvs::glut::OrientationAxis::SolidBox );
+    setMargin( 0 );
+    setSize( 100 );
+    setAxisLength( 3.2f );
+    setBoxType( kvs::OrientationAxis::SolidBox );
     enableAntiAliasing();
 }
 
@@ -97,7 +98,7 @@ OrientationAxis::OrientationAxis( kvs::glut::Screen* screen ):
  *  @brief  Anchor the OrientationAxis to the left-bottom on the screen.
  */
 /*===========================================================================*/
-void OrientationAxis::screenResized( void )
+void OrientationAxis::screenResized()
 {
     setY( screen()->height() - height() );
 }

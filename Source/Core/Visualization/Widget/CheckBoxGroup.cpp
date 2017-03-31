@@ -31,7 +31,7 @@ namespace kvs
 CheckBoxGroup::CheckBoxGroup( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent |
         kvs::EventBase::MousePressEvent |

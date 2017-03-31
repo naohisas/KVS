@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   ObjectInformation.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -28,7 +29,7 @@ namespace kvsview
  *  @brief  Constructs a new ObjectInformation class.
  */
 /*===========================================================================*/
-ObjectInformation::ObjectInformation( void ):
+ObjectInformation::ObjectInformation():
     m_object( NULL )
 {
 }
@@ -52,51 +53,7 @@ ObjectInformation::ObjectInformation( const kvs::ObjectBase* object ):
 std::ostream& operator << ( std::ostream& os, const ObjectInformation& info )
 {
     info.m_object->print( os );
-/*
-    // Image object.
-    if ( info.m_object->objectType() == kvs::ObjectBase::Image )
-    {
-        os << *reinterpret_cast<const kvs::ImageObject*>( info.m_object );
-    }
-
-    // Geometry object.
-    else if ( info.m_object->objectType() == kvs::ObjectBase::Geometry )
-    {
-        const kvs::GeometryObjectBase* geometry =
-            reinterpret_cast<const kvs::GeometryObjectBase*>( info.m_object );
-        if ( geometry->geometryType() == kvs::GeometryObjectBase::Point )
-        {
-            os << *reinterpret_cast<const kvs::PointObject*>( geometry );
-        }
-        else if ( geometry->geometryType() == kvs::GeometryObjectBase::Line )
-        {
-            os << *reinterpret_cast<const kvs::LineObject*>( geometry );
-        }
-        else if ( geometry->geometryType() == kvs::GeometryObjectBase::Polygon )
-        {
-            os << *reinterpret_cast<const kvs::PolygonObject*>( geometry );
-        }
-    }
-
-    // Volume object.
-    else if ( info.m_object->objectType() == kvs::ObjectBase::Volume )
-    {
-        const kvs::VolumeObjectBase* volume =
-            reinterpret_cast<const kvs::VolumeObjectBase*>( info.m_object );
-
-        if ( !volume->hasMinMaxValues() ) volume->updateMinMaxValues();
-
-        if ( volume->volumeType() == kvs::VolumeObjectBase::Structured )
-        {
-            os << *reinterpret_cast<const kvs::StructuredVolumeObject*>( volume );
-        }
-        else if ( volume->volumeType() == kvs::VolumeObjectBase::Unstructured )
-        {
-            os << *reinterpret_cast<const kvs::UnstructuredVolumeObject*>( volume );
-        }
-    }
-*/
-    return( os );
+    return os;
 }
 
 } // end of namespace kvsview

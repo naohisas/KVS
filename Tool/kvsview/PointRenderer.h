@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   PointRenderer.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,11 +12,10 @@
  *  $Id: PointRenderer.h 621 2010-09-30 08:04:55Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__POINT_RENDERER_H_INCLUDE
-#define KVSVIEW__POINT_RENDERER_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/CommandLine>
+#include <kvs/Program>
 #include "Argument.h"
 
 
@@ -36,7 +36,6 @@ const std::string Description("Rendering a point object. (optional)");
 class Argument : public kvsview::Argument::Common
 {
 public:
-
     Argument( int argc, char** argv );
 };
 
@@ -45,26 +44,16 @@ public:
  *  Main class for PointRenderer.
  */
 /*===========================================================================*/
-class Main
+class Main : public kvs::Program
 {
-protected:
-
-    int         m_argc;         ///< argument count
-    char**      m_argv;         ///< argument values
-    std::string m_input_name;   ///< input filename
-    std::string m_output_name;  ///< output filename
+private:
+    std::string m_input_name; ///< input filename
+    std::string m_output_name; ///< output filename
 
 public:
-
-    Main( int argc, char** argv );
-
-public:
-
-    const bool exec( void );
+    int exec( int argc, char** argv );
 };
 
 } // end of namespace PointRenderer
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__POINT_RENDERER_H_INCLUDE

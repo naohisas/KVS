@@ -95,10 +95,9 @@ void TextEngine::draw( const kvs::Vec3& p, const std::string& text, kvs::ScreenB
                 const GLint top = view[1];
                 const GLint right = view[0] + view[2];
                 const GLint bottom = view[1] + view[3];
-                const float height = screen->height();
                 kvs::OpenGL::SetOrtho( left, right, bottom, top, 0, 1 );
                 kvs::OpenGL::Translate( 0, 0, -winz );
-                m_font.draw( kvs::Vec2( winx, ( height - winy ) + top ), text );
+                m_font.draw( kvs::Vec2( winx, top - ( winy - bottom ) ), text );
             }
         }
     }

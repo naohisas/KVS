@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   SlicePlane.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -58,21 +59,21 @@ Argument::Argument( int argc, char** argv ):
  *  @return coefficients
  */
 /*===========================================================================*/
-const kvs::Vector4f Argument::coefficients( void )
+const kvs::Vec4 Argument::coefficients()
 {
-    const kvs::Vector4f default_value( 0.0f, 0.0f, 0.0f, 0.0f );
+    const kvs::Vec4 default_value( 0.0f, 0.0f, 0.0f, 0.0f );
 
     if ( this->hasOption("c") )
     {
-        const kvs::Vector4f coefficients(
+        const kvs::Vec4 coefficients(
             this->optionValue<float>("c",0),
             this->optionValue<float>("c",1),
             this->optionValue<float>("c",2),
             this->optionValue<float>("c",3) );
 
-        return( coefficients );
+        return coefficients;
     }
-    else return( default_value );
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -81,20 +82,20 @@ const kvs::Vector4f Argument::coefficients( void )
  *  @return position of the point
  */
 /*===========================================================================*/
-const kvs::Vector3f Argument::point( void )
+const kvs::Vec3 Argument::point()
 {
-    const kvs::Vector3f default_value( 0.0f, 0.0f, 0.0f );
+    const kvs::Vec3 default_value( 0.0f, 0.0f, 0.0f );
 
     if ( this->hasOption("p") )
     {
-        const kvs::Vector3f point(
+        const kvs::Vec3 point(
             this->optionValue<float>("p",0),
             this->optionValue<float>("p",1),
             this->optionValue<float>("p",2) );
 
-        return( point );
+        return point;
     }
-    else return( default_value );
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -103,20 +104,20 @@ const kvs::Vector3f Argument::point( void )
  *  @return normal vector
  */
 /*===========================================================================*/
-const kvs::Vector3f Argument::normal( void )
+const kvs::Vec3 Argument::normal()
 {
-    const kvs::Vector3f default_value( 0.0f, 0.0f, 0.0f );
+    const kvs::Vec3 default_value( 0.0f, 0.0f, 0.0f );
 
     if ( this->hasOption("n") )
     {
-        const kvs::Vector3f point(
+        const kvs::Vec3 point(
             this->optionValue<float>("n",0),
             this->optionValue<float>("n",1),
             this->optionValue<float>("n",2) );
 
-        return( point );
+        return point;
     }
-    else return( default_value );
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -131,53 +132,43 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
     if ( this->hasOption("t") )
     {
         const std::string filename = this->optionValue<std::string>("t");
-        return( kvs::TransferFunction( filename ) );
+        return kvs::TransferFunction( filename );
     }
     else if ( this->hasOption("T") )
     {
         const std::string filename = this->optionValue<std::string>("T");
         kvs::TransferFunction tfunc( filename );
         tfunc.adjustRange( volume );
-        return( tfunc );
+        return tfunc;
     }
     else
     {
         const size_t resolution = 256;
-        return( kvs::TransferFunction( resolution ) );
+        return kvs::TransferFunction( resolution );
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Executes main process.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    kvsview::SlicePlane::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    kvsview::SlicePlane::Argument arg( argc, argv );
+    if( !arg.parse() ) return false;
 
     // Create a global and screen class.
     kvs::glut::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::SlicePlane::CommandName );
+    screen.show();
 
     // Check the input point data.
     m_input_name = arg.value<std::string>();
@@ -185,7 +176,7 @@ const bool Main::exec( void )
             kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
     {
         kvsMessageError("%s is not volume data.", m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Visualization pipeline.
@@ -249,7 +240,7 @@ const bool Main::exec( void )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return false;
     }
 
     screen.registerObject( &pipe );
@@ -271,10 +262,7 @@ const bool Main::exec( void )
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
-    // Show the screen.
-    screen.show();
-
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace SlicePlane

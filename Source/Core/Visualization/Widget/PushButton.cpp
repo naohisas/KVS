@@ -51,7 +51,7 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
     m_border_light_color( kvs::RGBColor( 250, 250, 250 ) ),
     m_border_dark_color( kvs::RGBColor( 0, 0, 0 ) )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent |
         kvs::EventBase::MousePressEvent |

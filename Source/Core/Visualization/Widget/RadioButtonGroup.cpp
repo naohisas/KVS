@@ -31,7 +31,7 @@ namespace kvs
 RadioButtonGroup::RadioButtonGroup( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent |
         kvs::EventBase::MousePressEvent |

@@ -39,7 +39,7 @@ namespace kvs
 Label::Label( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent );
 }

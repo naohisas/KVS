@@ -50,7 +50,7 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_group( NULL )
 {
-    BaseClass::setEventType(
+    BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent |
         kvs::EventBase::MousePressEvent |

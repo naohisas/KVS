@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   Isosurface.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -22,8 +23,7 @@
 #include <kvs/ObjectManager>
 #include <kvs/glut/Screen>
 #include <kvs/glut/Application>
-#include <kvs/glut/LegendBar>
-#include <kvs/glut/OrientationAxis>
+#include <kvs/Slider>
 #include "CommandName.h"
 #include "ObjectInformation.h"
 #include "FileChecker.h"
@@ -41,16 +41,16 @@ namespace Isosurface
  *  @brief  Isolevel slider class.
  */
 /*===========================================================================*/
-class IsolevelSlider : public kvs::glut::Slider
+class IsolevelSlider : public kvs::Slider
 {
-    const kvs::VolumeObjectBase*   m_volume; ///< pointer to the volume object
-    kvs::TransferFunction          m_tfunc;  ///< transfer function
+    const kvs::VolumeObjectBase* m_volume; ///< pointer to the volume object
+    kvs::TransferFunction m_tfunc; ///< transfer function
     kvs::PolygonObject::NormalType m_normal; ///< normal vector type
 
 public:
 
     IsolevelSlider( kvs::glut::Screen* screen ):
-        kvs::glut::Slider( screen ),
+        kvs::Slider( screen ),
         m_volume( NULL ),
         m_normal( kvs::PolygonObject::PolygonNormal ) {}
 
@@ -139,8 +139,8 @@ const kvs::Real64 Argument::isolevel(
     }
     const kvs::Real64 default_value = ( max_value + min_value ) * 0.5;
 
-    if ( this->hasOption("l") ) return( this->optionValue<kvs::Real64>("l") );
-    else return( default_value );
+    if ( this->hasOption("l") ) return this->optionValue<kvs::Real64>("l");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -173,7 +173,7 @@ const kvs::PolygonObject::NormalType Argument::normalType( void )
         }
     }
 
-    return( normal_type );
+    return normal_type;
 }
 
 /*===========================================================================*/
@@ -188,33 +188,20 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
     if ( this->hasOption("t") )
     {
         const std::string filename = this->optionValue<std::string>("t");
-        return( kvs::TransferFunction( filename ) );
+        return kvs::TransferFunction( filename );
     }
     else if ( this->hasOption("T") )
     {
         const std::string filename = this->optionValue<std::string>("T");
         kvs::TransferFunction tfunc( filename );
         tfunc.adjustRange( volume );
-        return( tfunc );
+        return tfunc;
     }
     else
     {
         const size_t resolution = 256;
-        return( kvs::TransferFunction( resolution ) );
+        return kvs::TransferFunction( resolution );
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
 }
 
 /*===========================================================================*/
@@ -222,14 +209,14 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    Isosurface::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    Isosurface::Argument arg( argc, argv );
+    if ( !arg.parse() ) return false;
 
     // Event.
     kvsview::Isosurface::KeyPressEvent key_press_event;
@@ -239,6 +226,7 @@ const bool Main::exec( void )
     screen.addEvent( &key_press_event );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::Isosurface::CommandName );
+    screen.show();
 
     // Check the input point data.
     m_input_name = arg.value<std::string>();
@@ -246,7 +234,7 @@ const bool Main::exec( void )
            kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
     {
         kvsMessageError("%s is not volume data.", m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Visualization pipeline.
@@ -296,7 +284,7 @@ const bool Main::exec( void )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return false;
     }
 
     screen.registerObject( &pipe );
@@ -315,9 +303,6 @@ const bool Main::exec( void )
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
-    // Show the screen and the slider widget.
-    screen.show();
-
     // Slider.
     kvsview::Isosurface::IsolevelSlider slider( &screen );
     slider.setMargin( 10 );
@@ -329,7 +314,7 @@ const bool Main::exec( void )
     slider.setRange( static_cast<float>( legend_bar.minValue() ), static_cast<float>( legend_bar.maxValue() ) );
     slider.show();
 
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace Isosurface

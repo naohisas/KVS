@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   ExternalFaces.cpp
+ *  @auhtor Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -60,8 +61,8 @@ const kvs::UInt8 Argument::opacity( void )
 {
     const kvs::UInt8 default_value = 255;
 
-    if ( this->hasOption("a") ) return( this->optionValue<kvs::UInt8>("a") );
-    else return( default_value );
+    if ( this->hasOption("a") ) return this->optionValue<kvs::UInt8>("a");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -76,33 +77,20 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
     if ( this->hasOption("t") )
     {
         const std::string filename = this->optionValue<std::string>("t");
-        return( kvs::TransferFunction( filename ) );
+        return kvs::TransferFunction( filename );
     }
     else if ( this->hasOption("T") )
     {
         const std::string filename = this->optionValue<std::string>("T");
         kvs::TransferFunction tfunc( filename );
         tfunc.adjustRange( volume );
-        return( tfunc );
+        return tfunc;
     }
     else
     {
         const size_t resolution = 256;
-        return( kvs::TransferFunction( resolution ) );
+        return kvs::TransferFunction( resolution );
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
 }
 
 /*===========================================================================*/
@@ -110,19 +98,20 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    kvsview::ExternalFaces::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    kvsview::ExternalFaces::Argument arg( argc, argv );
+    if ( !arg.parse() ) return false;
 
     // Create screen.
     kvs::glut::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::ExternalFaces::CommandName );
+    screen.show();
 
     // Check the input volume data.
     m_input_name = arg.value<std::string>();
@@ -130,7 +119,7 @@ const bool Main::exec( void )
             kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
     {
         kvsMessageError("%s is not volume data.", m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Visualization pipeline.
@@ -177,7 +166,7 @@ const bool Main::exec( void )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return false;
     }
     screen.registerObject( &pipe );
 
@@ -195,10 +184,7 @@ const bool Main::exec( void )
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
-    // Show the screen.
-    screen.show();
-
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace ExternalFaces

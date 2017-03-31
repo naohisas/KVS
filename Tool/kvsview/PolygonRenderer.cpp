@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   PolygonRenderer.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -62,20 +63,7 @@ const int Argument::twoSideLighting( void ) const
         return( this->optionValue<int>("t") );
     }
 
-    return( default_value );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
+    return default_value;
 }
 
 /*===========================================================================*/
@@ -83,26 +71,27 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    kvsview::PolygonRenderer::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    kvsview::PolygonRenderer::Argument arg( argc, argv );
+    if( !arg.parse() ) return false;
 
     // Create a global and screen class.
     kvs::glut::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::PolygonRenderer::CommandName );
+    screen.show();
 
     // Check the input data.
     m_input_name = arg.value<std::string>();
     if ( !kvsview::FileChecker::ImportablePolygon( m_input_name ) )
     {
         kvsMessageError("%s is not polygon data.", m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Visualization pipeline.
@@ -145,10 +134,7 @@ const bool Main::exec( void )
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
-    // Show the screen.
-    screen.show();
-
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace PolygonRenderer

@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   Default.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -44,22 +45,22 @@ const bool CheckTransferFunctionFormat( const std::string& filename )
     {
         // Find a TransferFunction tag without error messages.
         kvs::XMLDocument document;
-        if ( !document.read( filename ) ) return( false );
+        if ( !document.read( filename ) ) return false;
 
         // <KVSML>
         const std::string kvsml_tag("KVSML");
         const kvs::XMLNode::SuperClass* kvsml_node = kvs::XMLDocument::FindNode( &document, kvsml_tag );
-        if ( !kvsml_node ) return( false );
+        if ( !kvsml_node ) return false;
 
         // <TransferFunction>
         const std::string tfunc_tag("TransferFunction");
         const kvs::XMLNode::SuperClass* tfunc_node = kvs::XMLNode::FindChildNode( kvsml_node, tfunc_tag );
-        if ( !tfunc_node ) return( false );
+        if ( !tfunc_node ) return false;
 
-        return( true );
+        return true;
     }
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -76,30 +77,17 @@ Argument::Argument( int argc, char** argv ):
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Main class for a default viewer.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    kvsview::Default::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    kvsview::Default::Argument arg( argc, argv );
+    if ( !arg.parse() ) { return false; }
 
     /* Transfer function data is checked here, since default visualization
      * method for the transfer function data hasn't yet been implemented in
@@ -107,13 +95,14 @@ const bool Main::exec( void )
      */
     if ( kvsview::Default::CheckTransferFunctionFormat( arg.value<std::string>() ) )
     {
-        return( kvsview::TransferFunction::Main( m_argc, m_argv ).exec() );
+        return kvsview::TransferFunction::Main().start( argc, argv );
     }
 
     // Create a global and screen class.
     kvs::glut::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle("kvsview - Default");
+    screen.show();
 
     // Visualization pipeline.
     m_input_name = arg.value<std::string>();
@@ -168,10 +157,7 @@ const bool Main::exec( void )
         screen.setSize( width, height );
     }
 
-    // Show the screen.
-    screen.show();
-
-    return( arg.clear(), app.run() );
+    return arg.clear(), app.run();
 }
 
 } // end of namespace Default
