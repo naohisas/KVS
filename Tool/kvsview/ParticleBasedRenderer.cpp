@@ -527,7 +527,7 @@ int Main::exec( int argc, char** argv )
 
     // Parse specified arguments.
     kvsview::ParticleBasedRenderer::Argument arg( argc, argv );
-    if( !arg.parse() ) return false;
+    if ( !arg.parse() ) return false;
 
     // Events.
     kvsview::ParticleBasedRenderer::KeyPressEvent key_press_event;

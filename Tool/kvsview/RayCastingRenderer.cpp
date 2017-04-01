@@ -452,13 +452,6 @@ int Main::exec( int argc, char** argv )
     kvsview::Widget::OrientationAxis orientation_axis( &screen );
     orientation_axis.show();
 
-
-
-//    kvs::OrientationAxis axis( &screen, screen.scene() );
-//    axis.show();
-
-
-
     // Bounding box.
     if ( arg.hasOption("bounds") )
     {
@@ -513,7 +506,6 @@ int Main::exec( int argc, char** argv )
         kvsMessageError("Cannot execute the visulization pipeline.");
         return( false );
     }
-//    screen.registerObject( &pipe );
 
     // Verbose information.
     if ( arg.verboseMode() )

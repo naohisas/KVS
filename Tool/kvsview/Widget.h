@@ -12,17 +12,12 @@
  *  $Id: Widget.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__WIDGET_H_INCLUDE
-#define KVSVIEW__WIDGET_H_INCLUDE
-
+#pragma once
 #include <string>
-#include <kvs/glut/Label>
-#include <kvs/glut/LegendBar>
-#include <kvs/glut/OrientationAxis>
-
 #include <kvs/Label>
 #include <kvs/ColorMapBar>
 #include <kvs/OrientationAxis>
+#include <kvs/glut/Screen>
 
 
 namespace kvsview
@@ -41,10 +36,8 @@ class FPSLabel : public kvs::Label
     std::string m_renderer_name; ///< renderer name
 
 public:
-
     FPSLabel( kvs::ScreenBase* screen, const std::string renderer_name );
-
-    void screenUpdated( void );
+    void screenUpdated();
 };
 
 /*===========================================================================*/
@@ -55,10 +48,8 @@ public:
 class LegendBar : public kvs::ColorMapBar
 {
 public:
-
     LegendBar( kvs::ScreenBase* screen );
-
-    void screenResized( void );
+    void screenResized();
 };
 
 /*===========================================================================*/
@@ -69,14 +60,10 @@ public:
 class OrientationAxis : public kvs::OrientationAxis
 {
 public:
-
     OrientationAxis( kvs::glut::Screen* screen );
-
-    void screenResized( void );
+    void screenResized();
 };
 
 } // end of namespace Widget
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__WIDGET_H_INCLUDE

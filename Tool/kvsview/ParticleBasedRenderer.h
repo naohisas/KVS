@@ -65,6 +65,7 @@ class Main : public kvs::Program
 private:
     std::string m_input_name; ///< input filename
     std::string m_output_name; ///< output filename
+
 public:
     int exec( int argc, char** argv );
 };

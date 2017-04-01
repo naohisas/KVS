@@ -45,12 +45,12 @@ FPSLabel::FPSLabel( kvs::ScreenBase* screen, const std::string renderer_name ):
 /*===========================================================================*/
 void FPSLabel::screenUpdated()
 {
-    kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-    const kvs::RendererBase* renderer = glut_screen->scene()->rendererManager()->renderer( m_renderer_name );
+    kvs::Scene* scene = static_cast<kvs::glut::Screen*>( screen() )->scene();
+    const kvs::RendererBase* renderer = scene->renderer( m_renderer_name );
 
     std::stringstream fps;
     fps << std::setprecision(4) << renderer->timer().fps();
-    setText( std::string( "fps: " + fps.str() ).c_str() );
+    setText( std::string( "FPS: " + fps.str() ).c_str() );
 }
 
 /*===========================================================================*/
@@ -60,7 +60,7 @@ void FPSLabel::screenUpdated()
  */
 /*===========================================================================*/
 LegendBar::LegendBar( kvs::ScreenBase* screen ):
-        kvs::ColorMapBar( screen )
+    kvs::ColorMapBar( screen )
 {
     setWidth( 150 );
     setHeight( 60 );
@@ -71,7 +71,7 @@ LegendBar::LegendBar( kvs::ScreenBase* screen ):
  *  @brief  Anchor the LegendBar to the left-bottom on the screen.
  */
 /*===========================================================================*/
-void LegendBar::screenResized( void )
+void LegendBar::screenResized()
 {
     setX( screen()->width() - width() );
     setY( screen()->height() - height() );

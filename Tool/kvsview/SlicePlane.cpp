@@ -162,7 +162,7 @@ int Main::exec( int argc, char** argv )
 
     // Parse specified arguments.
     kvsview::SlicePlane::Argument arg( argc, argv );
-    if( !arg.parse() ) return false;
+    if ( !arg.parse() ) return false;
 
     // Create a global and screen class.
     kvs::glut::Screen screen( &app );
