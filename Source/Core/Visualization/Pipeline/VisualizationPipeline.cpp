@@ -194,6 +194,15 @@ bool VisualizationPipeline::exec()
         }
 
         ++module;
+
+        // Don't delete the last module of the pipeline since the object will be registered
+        // and managed in the screen class.
+        if ( module == last )
+        {
+            module--;
+            module->disable_auto_delete();
+            module++;
+        }
     }
 
     // Attache the pointer to the object that is registered in the object manager.
