@@ -25,7 +25,6 @@
 #include <kvs/glut/Application>
 #include <kvs/Slider>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 #include "Widget.h"
 
@@ -54,28 +53,22 @@ public:
         m_volume( NULL ),
         m_normal( kvs::PolygonObject::PolygonNormal ) {}
 
-    void setVolumeObject( const kvs::VolumeObjectBase* volume )
-    {
-        m_volume = volume;
-    }
+    void setVolumeObject( const kvs::VolumeObjectBase* volume ) { m_volume = volume; }
+    void setTransferFunction( const kvs::TransferFunction& tfunc ) { m_tfunc = tfunc; }
+    void setNormal( const kvs::PolygonObject::NormalType normal ) { m_normal = normal; }
 
-    void setTransferFunction( const kvs::TransferFunction& tfunc )
-    {
-        m_tfunc = tfunc;
-    }
-
-    void setNormal( const kvs::PolygonObject::NormalType normal )
-    {
-        m_normal = normal;
-    }
-
-    void valueChanged( void )
+    void valueChanged()
     {
         kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
         const double level = this->value();
         const bool d = true;
         kvs::PolygonObject* object = new kvs::Isosurface( m_volume, level, m_normal, d, m_tfunc );
         if ( object ) glut_screen->scene()->objectManager()->change( 1, object );
+    }
+
+    void screenResized()
+    {
+        setX( screen()->width() - width() - margin() );
     }
 };
 
@@ -230,8 +223,8 @@ int Main::exec( int argc, char** argv )
 
     // Check the input point data.
     m_input_name = arg.value<std::string>();
-    if ( !(kvsview::FileChecker::ImportableStructuredVolume( m_input_name ) ||
-           kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
+    if ( !( kvsview::FileChecker::ImportableStructuredVolume( m_input_name ) ||
+            kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
     {
         kvsMessageError("%s is not volume data.", m_input_name.c_str());
         return false;
@@ -244,9 +237,7 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Pointer to the volume object data.
@@ -255,17 +246,17 @@ int Main::exec( int argc, char** argv )
     // Transfer function.
     const kvs::TransferFunction tfunc = arg.transferFunction( volume );
 
-    // Legend bar.
-    kvsview::Widget::LegendBar legend_bar( &screen );
-    legend_bar.setColorMap( tfunc.colorMap() );
+    // Colormap bar.
+    kvsview::Widget::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setColorMap( tfunc.colorMap() );
     if ( !tfunc.hasRange() )
     {
         const kvs::VolumeObjectBase* object = kvs::VolumeObjectBase::DownCast( pipe.object() );
         const kvs::Real32 min_value = static_cast<kvs::Real32>( object->minValue() );
         const kvs::Real32 max_value = static_cast<kvs::Real32>( object->maxValue() );
-        legend_bar.setRange( min_value, max_value );
+        colormap_bar.setRange( min_value, max_value );
     }
-    legend_bar.show();
+    colormap_bar.show();
 
     // Orientation axis.
     kvsview::Widget::OrientationAxis orientation_axis( &screen );
@@ -292,11 +283,8 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
@@ -311,7 +299,7 @@ int Main::exec( int argc, char** argv )
     slider.setTransferFunction( tfunc );
     slider.setNormal( normal );
     slider.setValue( static_cast<float>( level ) );
-    slider.setRange( static_cast<float>( legend_bar.minValue() ), static_cast<float>( legend_bar.maxValue() ) );
+    slider.setRange( static_cast<float>( colormap_bar.minValue() ), static_cast<float>( colormap_bar.maxValue() ) );
     slider.show();
 
     return ( arg.clear(), app.run() );

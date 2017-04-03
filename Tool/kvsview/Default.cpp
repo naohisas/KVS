@@ -22,7 +22,6 @@
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
 #include <kvs/RayCastingRenderer>
-#include "ObjectInformation.h"
 #include "TransferFunction.h"
 
 
@@ -78,6 +77,8 @@ Argument::Argument( int argc, char** argv ):
 /*===========================================================================*/
 /**
  *  @brief  Executes main process.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
  */
 /*===========================================================================*/
 int Main::exec( int argc, char** argv )
@@ -112,9 +113,7 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     if ( pipe.object()->objectType() == kvs::ObjectBase::Volume )
@@ -137,11 +136,8 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print(  std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.

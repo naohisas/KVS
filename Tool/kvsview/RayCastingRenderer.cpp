@@ -32,7 +32,6 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/TransferFunctionEditor>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 #include "Widget.h"
 
@@ -110,7 +109,7 @@ const void SetupRenderer(
 class TransferFunctionEditor : public kvs::glut::TransferFunctionEditor
 {
     bool m_no_gpu; ///!< flag to check if the GPU shader is enabled
-    kvs::ColorMapBar* m_legend_bar; ///!< pointer to the legend bar
+    kvs::ColorMapBar* m_colormap_bar; ///!< pointer to the colormap bar
 
 public:
 
@@ -133,14 +132,14 @@ public:
             renderer->setTransferFunction( transferFunction() );
         }
 
-        m_legend_bar->setColorMap( transferFunction().colorMap() );
+        m_colormap_bar->setColorMap( transferFunction().colorMap() );
 
         screen()->redraw();
     }
 
-    void attachLegendBar( kvs::ColorMapBar* legend_bar )
+    void attachColorMapBar( kvs::ColorMapBar* colormap_bar )
     {
-        m_legend_bar = legend_bar;
+        m_colormap_bar = colormap_bar;
     }
 };
 
@@ -422,9 +421,7 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Pointer to the volume object data.
@@ -437,16 +434,16 @@ int Main::exec( int argc, char** argv )
     kvsview::Widget::FPSLabel label( &screen, ::RendererName );
     label.show();
 
-    // Legend bar.
-    kvsview::Widget::LegendBar legend_bar( &screen );
-    legend_bar.setColorMap( tfunc.colorMap() );
+    // Colormap bar.
+    kvsview::Widget::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setColorMap( tfunc.colorMap() );
     if ( !tfunc.hasRange() )
     {
         const kvs::Real32 min_value = static_cast<kvs::Real32>( volume->minValue() );
         const kvs::Real32 max_value = static_cast<kvs::Real32>( volume->maxValue() );
-        legend_bar.setRange( min_value, max_value );
+        colormap_bar.setRange( min_value, max_value );
     }
-    legend_bar.show();
+    colormap_bar.show();
 
     // Orientation axis.
     kvsview::Widget::OrientationAxis orientation_axis( &screen );
@@ -510,11 +507,8 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
@@ -528,7 +522,7 @@ int Main::exec( int argc, char** argv )
     kvsview::RayCastingRenderer::TransferFunctionEditor editor( &screen, arg.noGPU() );
     editor.setVolumeObject( kvs::VolumeObjectBase::DownCast( pipe.object() ) );
     editor.setTransferFunction( tfunc );
-    editor.attachLegendBar( &legend_bar );
+    editor.attachColorMapBar( &colormap_bar );
     editor.show();
     editor.hide();
     ::Shown = false;

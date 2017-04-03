@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   PointRenderer.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -20,7 +21,6 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/Application>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 
 
@@ -43,21 +43,6 @@ Argument::Argument( int argc, char** argv ):
     // Parameters for the point renderer class.
     addOption( kvsview::PointRenderer::CommandName, kvsview::PointRenderer::Description, 0 );
 }
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-/*
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
-}
-*/
 
 /*===========================================================================*/
 /**
@@ -94,9 +79,7 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Set a point renderer.
@@ -105,18 +88,15 @@ int Main::exec( int argc, char** argv )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return false;
     }
     screen.registerObject( &pipe );
 
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.

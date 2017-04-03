@@ -121,15 +121,15 @@ void TableObject::print( std::ostream& os, const kvs::Indent& indent ) const
     os << indent << "Number of columns : " << this->numberOfColumns() << std::endl;
     os << indent << "Number of rows : " << this->numberOfRows() << std::endl;
     os << indent << "Labels for each column : ";
-    for ( size_t i = 0; i < this->labels().size(); i++ ) os << "\"" << this->labels()[i] << "\", "; os << std::endl;
+    for ( size_t i = 0; i < this->labels().size(); i++ ) { os << "\"" << this->labels()[i] << "\", "; } os << std::endl;
     os << indent << "Min. values for each column : ";
-    for ( size_t i = 0; i < this->minValues().size(); i++ ) os << this->minValues()[i] << ", "; os << std::endl;
+    for ( size_t i = 0; i < this->minValues().size(); i++ ) { os << this->minValues()[i] << ", "; } os << std::endl;
     os << indent << "Max. values for each column : ";
-    for ( size_t i = 0; i < this->maxValues().size(); i++ ) os << this->maxValues()[i] << ", "; os << std::endl;
+    for ( size_t i = 0; i < this->maxValues().size(); i++ ) { os << this->maxValues()[i] << ", "; } os << std::endl;
     os << indent << "Min. ranges for each column : ";
-    for ( size_t i = 0; i < this->minRanges().size(); i++ ) os << this->minRanges()[i] << ", "; os << std::endl;
+    for ( size_t i = 0; i < this->minRanges().size(); i++ ) { os << this->minRanges()[i] << ", "; } os << std::endl;
     os << indent << "Max. ranges for each column : ";
-    for ( size_t i = 0; i < this->maxRanges().size(); i++ ) os << this->maxRanges()[i] << ", "; os << std::endl;
+    for ( size_t i = 0; i < this->maxRanges().size(); i++ ) { os << this->maxRanges()[i] << ", "; } os << std::endl;
 }
 
 /*===========================================================================*/

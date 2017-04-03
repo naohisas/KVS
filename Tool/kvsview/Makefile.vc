@@ -98,7 +98,6 @@ $(OUTDIR)/OrthoSlice.obj \
 $(OUTDIR)/PointRenderer.obj \
 $(OUTDIR)/LineRenderer.obj \
 $(OUTDIR)/PolygonRenderer.obj \
-$(OUTDIR)/ObjectInformation.obj \
 $(OUTDIR)/TransferFunction.obj \
 $(OUTDIR)/ExtractEdges.obj \
 $(OUTDIR)/ExtractVertices.obj \

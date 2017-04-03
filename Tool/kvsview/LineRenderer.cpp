@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   LineRenderer.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -20,7 +21,6 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/Application>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 
 
@@ -79,9 +79,7 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Set a line renderer.
@@ -97,11 +95,8 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.

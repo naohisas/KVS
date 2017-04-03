@@ -55,11 +55,11 @@ void FPSLabel::screenUpdated()
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new LegendBar.
+ *  @brief  Constructs a new ColorMapBar.
  *  @param  screen [in] pointer to the screen
  */
 /*===========================================================================*/
-LegendBar::LegendBar( kvs::ScreenBase* screen ):
+ColorMapBar::ColorMapBar( kvs::ScreenBase* screen ):
     kvs::ColorMapBar( screen )
 {
     setWidth( 150 );
@@ -68,10 +68,10 @@ LegendBar::LegendBar( kvs::ScreenBase* screen ):
 
 /*===========================================================================*/
 /**
- *  @brief  Anchor the LegendBar to the left-bottom on the screen.
+ *  @brief  Anchor the ColorMapBar to the left-bottom on the screen.
  */
 /*===========================================================================*/
-void LegendBar::screenResized()
+void ColorMapBar::screenResized()
 {
     setX( screen()->width() - width() );
     setY( screen()->height() - height() );

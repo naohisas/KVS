@@ -37,7 +37,6 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/TransferFunctionEditor>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 #include "Widget.h"
 
@@ -153,7 +152,7 @@ const void SetupMapper(
 class TransferFunctionEditor : public kvs::glut::TransferFunctionEditor
 {
     kvsview::ParticleBasedRenderer::Argument* m_arg; ///< pointer to the argument
-    kvs::ColorMapBar* m_legend_bar; ///< pointer to the legend bar
+    kvs::ColorMapBar* m_colormap_bar; ///< pointer to the colormap bar
     const kvs::VolumeObjectBase* m_volume; ///< pointer to the volume object
 
 public:
@@ -161,7 +160,7 @@ public:
     TransferFunctionEditor( kvs::glut::Screen* screen, kvsview::ParticleBasedRenderer::Argument* arg ):
         kvs::glut::TransferFunctionEditor( screen ),
         m_arg( arg ),
-        m_legend_bar( NULL ),
+        m_colormap_bar( NULL ),
         m_volume( NULL ) {}
 
     void apply()
@@ -248,7 +247,7 @@ public:
             glut_screen->registerObject( object, renderer );
         }
 
-        m_legend_bar->setColorMap( transferFunction().colorMap() );
+        m_colormap_bar->setColorMap( transferFunction().colorMap() );
 
         glut_screen->redraw();
     }
@@ -258,9 +257,9 @@ public:
         m_volume = volume;
     }
 
-    void attachLegendBar( kvs::ColorMapBar* legend_bar )
+    void attachColorMapBar( kvs::ColorMapBar* colormap_bar )
     {
-        m_legend_bar = legend_bar;
+        m_colormap_bar = colormap_bar;
     }
 };
 
@@ -560,9 +559,7 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Pointer to the volume object data.
@@ -575,16 +572,16 @@ int Main::exec( int argc, char** argv )
     kvsview::Widget::FPSLabel label( &screen, ::RendererName );
     label.show();
 
-    // Legend bar.
-    kvsview::Widget::LegendBar legend_bar( &screen );
-    legend_bar.setColorMap( tfunc.colorMap() );
+    // Colormap bar.
+    kvsview::Widget::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setColorMap( tfunc.colorMap() );
     if ( !tfunc.hasRange() )
     {
         const kvs::Real32 min_value = static_cast<kvs::Real32>( volume->minValue() );
         const kvs::Real32 max_value = static_cast<kvs::Real32>( volume->maxValue() );
-        legend_bar.setRange( min_value, max_value );
+        colormap_bar.setRange( min_value, max_value );
     }
-    legend_bar.show();
+    colormap_bar.show();
 
     // Orientation axis.
     kvsview::Widget::OrientationAxis orientation_axis( &screen );
@@ -697,11 +694,8 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
@@ -713,7 +707,7 @@ int Main::exec( int argc, char** argv )
     editor.setVolumeObject( volume );
     editor.setTransferFunction( arg.transferFunction( volume ) );
     editor.attachVolume( volume );
-    editor.attachLegendBar( &legend_bar );
+    editor.attachColorMapBar( &colormap_bar );
     editor.show();
     editor.hide();
     ::Shown = false;

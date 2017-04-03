@@ -42,13 +42,13 @@ public:
 
 /*===========================================================================*/
 /**
- *  @brief  Legend bar class.
+ *  @brief  Color map bar class.
  */
 /*===========================================================================*/
-class LegendBar : public kvs::ColorMapBar
+class ColorMapBar : public kvs::ColorMapBar
 {
 public:
-    LegendBar( kvs::ScreenBase* screen );
+    ColorMapBar( kvs::ScreenBase* screen );
     void screenResized();
 };
 

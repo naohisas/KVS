@@ -23,7 +23,6 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/Application>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 
 
@@ -54,13 +53,13 @@ Argument::Argument( int argc, char** argv ):
  *  @return 1, if two-side lighting is enable
  */
 /*===========================================================================*/
-const int Argument::twoSideLighting( void ) const
+const int Argument::twoSideLighting() const
 {
     int default_value = 0;
 
     if ( this->hasOption("t") )
     {
-        return( this->optionValue<int>("t") );
+        return this->optionValue<int>("t");
     }
 
     return default_value;
@@ -101,9 +100,7 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Set a polygon renderer.
@@ -112,7 +109,7 @@ int Main::exec( int argc, char** argv )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return false;
     }
     if ( arg.twoSideLighting() != 0 )
     {
@@ -123,11 +120,8 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.

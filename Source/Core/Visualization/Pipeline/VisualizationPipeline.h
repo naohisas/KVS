@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <kvs/Indent>
 #include <kvs/ObjectBase>
 #include <kvs/GeometryObjectBase>
 #include <kvs/VolumeObjectBase>
@@ -71,7 +72,7 @@ public:
     bool hasRenderer() const;
     const kvs::ObjectBase* object() const;
     const kvs::RendererBase* renderer() const;
-    void print() const;
+    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
 
     friend std::string& operator << ( std::string& str, const VisualizationPipeline& pipeline );
     friend std::ostream& operator << ( std::ostream& os, const VisualizationPipeline& pipeline );

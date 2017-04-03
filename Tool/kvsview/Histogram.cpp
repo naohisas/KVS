@@ -366,11 +366,12 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
+        std::cout << std::endl;
         std::cout << "HISTOGRAM INFORMATION" << std::endl;
-        std::cout << "min range: " << params.frequency_table.minRange() << std::endl;
-        std::cout << "max range: " << params.frequency_table.maxRange() << std::endl;
-        std::cout << "number of bins: " << params.frequency_table.numberOfBins() << std::endl;
-        std::cout << "max count: " << params.frequency_table.maxCount() << std::endl;
+        std::cout << "    min range: " << params.frequency_table.minRange() << std::endl;
+        std::cout << "    max range: " << params.frequency_table.maxRange() << std::endl;
+        std::cout << "    number of bins: " << params.frequency_table.numberOfBins() << std::endl;
+        std::cout << "    max count: " << params.frequency_table.maxCount() << std::endl;
     }
 
     // Viewer events.
