@@ -19,11 +19,11 @@
 #include <cstdlib>
 #include <cstring>
 //#include <Core/NanoVG/fontstash.h>
-#include "../..//NanoVG/fontstash.h"
+#include "../../NanoVG/fons.h"
 #include <kvs/OpenGL>
 #define GLFONTSTASH_IMPLEMENTATION
 //#include <Core/NanoVG/glfontstash.h>
-#include "../../NanoVG/glfontstash.h"
+#include "../../NanoVG/fons_gl.h"
 // }
 #include <string>
 #include <vector>
@@ -248,6 +248,17 @@ public:
         fonsClearState( m_context );
     }
 
+
+    void pushState()
+    {
+        fonsPushState( m_context );
+    }
+
+    void popState()
+    {
+        fonsPopState( m_context );
+    }
+
     void draw( const kvs::Vec2& p, const std::string& text )
     {
         fonsDrawText( m_context, p.x(), p.y(), text.c_str(), NULL );
@@ -441,11 +452,13 @@ void Font::draw( const kvs::Vec2& p, const std::string& text ) const
     const kvs::Vec2 v( this->shadowDistance(), 0.0f );
     if ( this->isEnabledShadow() )
     {
+        ::Stash.pushState();
         ::Stash.setAlign( this->horizontalAlign() | this->verticalAlign() );
         ::Stash.setBlur( this->shadowBlur() );
         ::Stash.setColor( ::Stash.colorID( this->shadowColor() ) );
         ::Stash.setSize( this->size() * this->shadowSizeRatio() );
         ::Stash.draw( p + d + r * v, text );
+        ::Stash.popState();
     }
 
     ::Stash.setAlign( this->horizontalAlign() | this->verticalAlign() );

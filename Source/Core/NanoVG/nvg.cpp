@@ -30,7 +30,8 @@
 #include <cstdio>
 #include <cstring>
 #define FONTSTASH_IMPLEMENTATION
-#include "fontstash.h"
+//#include "fontstash.h"
+#include "fons.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
