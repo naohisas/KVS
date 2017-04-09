@@ -264,6 +264,9 @@ void ScreenBase::create()
     }
 #endif
 
+    // Create paint device.
+    BaseClass::paintDevice()->create();
+
     // Register the exit function.
     static bool flag = true;
     if ( flag ) { atexit( ::ExitFunction ); flag = false; }
@@ -275,9 +278,6 @@ void ScreenBase::create()
     glutSpecialFunc( SpecialKeyPressFunction );
     glutDisplayFunc( DisplayFunction );
     glutReshapeFunc( ResizeFunction );
-
-    // Callback the initialize event.
-    this->initializeEvent();
 }
 
 /*===========================================================================*/

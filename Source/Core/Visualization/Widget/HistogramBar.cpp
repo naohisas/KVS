@@ -119,8 +119,7 @@ void HistogramBar::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
-    BaseClass::render2D().begin();
+    BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
 
     if ( !m_texture.isValid() ) this->create_texture();
@@ -129,13 +128,13 @@ void HistogramBar::paintEvent()
     {
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin();
-        const kvs::Vec2 p( x, y + BaseClass::textEngine().height() );
-        BaseClass::textEngine().draw( p, m_caption, BaseClass::screen() );
+        const kvs::Vec2 p( x, y + BaseClass::painter().fontMetrics().height() );
+        BaseClass::painter().drawText( p, m_caption );
     }
 
     // Draw palette.
     {
-        const int text_height = BaseClass::textEngine().height();
+        const int text_height = BaseClass::painter().fontMetrics().height();
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin() + text_height + 5;
         const int width = BaseClass::width() - BaseClass::margin() * 2;
@@ -145,7 +144,7 @@ void HistogramBar::paintEvent()
 
     this->draw_palette();
 
-    BaseClass::render2D().end();
+    BaseClass::painter().end();
 }
 
 /*===========================================================================*/
@@ -251,8 +250,11 @@ void HistogramBar::mouseReleaseEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 int HistogramBar::adjustedWidth()
 {
-    const size_t text_width = BaseClass::textEngine().width( m_caption );
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const size_t text_width = metrics.width( m_caption );
     const size_t width = text_width + BaseClass::margin() * 2;
+    BaseClass::painter().end();
     return kvs::Math::Max( width, ::Width );
 }
 
@@ -264,7 +266,10 @@ int HistogramBar::adjustedWidth()
 /*===========================================================================*/
 int HistogramBar::adjustedHeight()
 {
-    return ::Height + BaseClass::textEngine().height() + BaseClass::margin() * 2;
+    BaseClass::painter().begin( BaseClass::screen() );
+    const int text_height = BaseClass::painter().fontMetrics().height();
+    BaseClass::painter().end();
+    return ::Height + text_height + BaseClass::margin() * 2;
 }
 
 /*==========================================================================*/
@@ -305,44 +310,27 @@ void HistogramBar::draw_palette()
     }
     kvs::OpenGL::Disable( GL_BLEND );
 
-/*
-    if ( m_density_curve.size() > 0 )
-    {
-        const float g = m_bias_parameter;
-        const float scale_width = static_cast<float>( m_palette.width() ) / m_table.numberOfBins();
-        const float scale_height = static_cast<float>( m_palette.height() );
-        glBegin( GL_LINE_STRIP );
-        glColor3ub( 255, 0, 0 );
-        for ( size_t i = 0; i < m_density_curve.size(); i++ )
-        {
-            const float x = m_palette.x0() + i * scale_width;
-            const float y = m_palette.y0() + m_density_curve[i] * scale_height;
-            glVertex2f( x, y );
-        }
-        glEnd();
-    }
-*/
-
     // Draw border.
-    float x = x0;
-    float y = y0;
-    float width = x1 - x0;
-    float height = y1 - y0;
-    BaseClass::renderEngine().beginFrame( screen()->width(), screen()->height() );
+    const float x = x0;
+    const float y = y0;
+    const float width = x1 - x0;
+    const float height = y1 - y0;
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+    engine->beginFrame( screen()->width(), screen()->height() );
 
-    BaseClass::renderEngine().beginPath();
-    BaseClass::renderEngine().setStrokeWidth( 1.0f );
-    BaseClass::renderEngine().roundedRect( x - 0.5f, y + 2.0f, width + 1.0f, height, 3 );
-    BaseClass::renderEngine().setStrokeColor( kvs::RGBAColor( 250, 250, 250, 0.6f ) );
-    BaseClass::renderEngine().stroke();
+    engine->beginPath();
+    engine->setStrokeWidth( 1.0f );
+    engine->roundedRect( x - 0.5f, y + 2.0f, width + 1.0f, height, 3 );
+    engine->setStrokeColor( kvs::RGBAColor( 250, 250, 250, 0.6f ) );
+    engine->stroke();
 
-    BaseClass::renderEngine().beginPath();
-    BaseClass::renderEngine().setStrokeWidth( 1.0f );
-    BaseClass::renderEngine().roundedRect( x - 0.5f, y, width + 1.0f, height, 3 );
-    BaseClass::renderEngine().setStrokeColor( kvs::RGBAColor( 0, 0, 0, 1.0f ) );
-    BaseClass::renderEngine().stroke();
+    engine->beginPath();
+    engine->setStrokeWidth( 1.0f );
+    engine->roundedRect( x - 0.5f, y, width + 1.0f, height, 3 );
+    engine->setStrokeColor( kvs::RGBAColor( 0, 0, 0, 1.0f ) );
+    engine->stroke();
 
-    BaseClass::renderEngine().endFrame();
+    engine->endFrame();
 }
 
 /*===========================================================================*/

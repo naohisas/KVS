@@ -14,6 +14,8 @@
 /*****************************************************************************/
 #include "Application.h"
 #include <kvs/glut/GLUT>
+#include <kvs/ScreenBase>
+#include <kvs/glut/ScreenBase>
 #include <cstdlib>
 
 
@@ -61,8 +63,19 @@ int Application::run()
     static bool flag = true;
     if ( flag )
     {
-        flag = false;
+        // Call initialize event function for each screen.
+        std::list<kvs::ScreenBase*>::iterator screen = screens().begin();
+        std::list<kvs::ScreenBase*>::iterator end = screens().end();
+        while ( screen != end )
+        {
+            static_cast<kvs::glut::ScreenBase*>(*screen)->initializeEvent();
+            screen++;
+        }
+
+        // Run GLUT main loop.
         glutMainLoop();
+
+        flag = false;
     }
 
     return true;

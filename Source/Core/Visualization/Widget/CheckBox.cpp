@@ -65,9 +65,10 @@ CheckBox::CheckBox( kvs::ScreenBase* screen ):
 /*===========================================================================*/
 void CheckBox::draw_box()
 {
-    BaseClass::renderEngine().beginFrame( screen()->width(), screen()->height() );
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+    engine->beginFrame( screen()->width(), screen()->height() );
 
-    const int dy = BaseClass::textEngine().height() - ::BoxHeight;
+    const int dy = BaseClass::painter().fontMetrics().height() - ::BoxHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat x1 = static_cast<GLfloat>( x0 + ::BoxWidth );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
@@ -76,25 +77,25 @@ void CheckBox::draw_box()
     const float h = y1 - y0;
 
     const kvs::RGBColor color = m_state ? kvs::RGBColor( 60, 150, 250 ) : ::BoxColor;
-    BaseClass::renderEngine().beginPath();
-    BaseClass::renderEngine().roundedRect( x0, y0, w, h, 3 );
-    BaseClass::renderEngine().setFillColor( color );
+    engine->beginPath();
+    engine->roundedRect( x0, y0, w, h, 3 );
+    engine->setFillColor( color );
 
-    BaseClass::renderEngine().setStrokeWidth( 1.0f );
-    BaseClass::renderEngine().setStrokeColor( kvs::RGBColor::Black() );
+    engine->setStrokeWidth( 1.0f );
+    engine->setStrokeColor( kvs::RGBColor::Black() );
 
-    BaseClass::renderEngine().stroke();
-    BaseClass::renderEngine().fill();
+    engine->stroke();
+    engine->fill();
 
     const float x = x0 + 1.5f;
     const float y = y0 + 1.5f;
     const NVGcolor c0 = nvgRGBA( 0, 0, 0, 32 );
     const NVGcolor c1 = nvgRGBA( 0, 0, 0, 128 );
-    NVGpaint bg = BaseClass::renderEngine().boxGradient( x, y, w, h, 3, 3, c0, c1 );
-    BaseClass::renderEngine().setFillPaint( bg );
-    BaseClass::renderEngine().fill();
+    NVGpaint bg = engine->boxGradient( x, y, w, h, 3, 3, c0, c1 );
+    engine->setFillPaint( bg );
+    engine->fill();
 
-    BaseClass::renderEngine().endFrame();
+    engine->endFrame();
 }
 
 /*===========================================================================*/
@@ -104,13 +105,13 @@ void CheckBox::draw_box()
 /*===========================================================================*/
 void CheckBox::draw_mark()
 {
-    const int dy = BaseClass::textEngine().height() - ::BoxHeight;
+    const int dy = BaseClass::painter().fontMetrics().height() - ::BoxHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
-    const kvs::RGBColor color = BaseClass::textEngine().font().color();
-    BaseClass::textEngine().font().setColor( kvs::RGBColor::White() );
-    BaseClass::textEngine().draw( kvs::Vec2( x0 + 2, y0 + 18 ), kvs::Font::Check, 28 );
-    BaseClass::textEngine().font().setColor( color );
+    const kvs::RGBColor color = BaseClass::painter().font().color();
+    BaseClass::painter().font().setColor( kvs::RGBColor::White() );
+    BaseClass::painter().drawText( kvs::Vec2( x0 + 2, y0 + 18 ), kvs::Font::Check, 28 );
+    BaseClass::painter().font().setColor( color );
 }
 
 /*===========================================================================*/
@@ -121,7 +122,11 @@ void CheckBox::draw_mark()
 /*===========================================================================*/
 int CheckBox::adjustedWidth()
 {
-    const size_t text_width = BaseClass::textEngine().width( m_caption );
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const size_t text_width = metrics.width( m_caption );
+    BaseClass::painter().end();
+
     return ::BoxWidth + text_width + ::TextMargin + BaseClass::margin() * 2;
 }
 
@@ -133,7 +138,12 @@ int CheckBox::adjustedWidth()
 /*===========================================================================*/
 int CheckBox::adjustedHeight()
 {
-    return BaseClass::textEngine().height() + BaseClass::margin() * 2;
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const int line_height = metrics.height();
+    BaseClass::painter().end();
+
+    return line_height + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -146,7 +156,11 @@ int CheckBox::adjustedHeight()
 /*===========================================================================*/
 bool CheckBox::contains( int x, int y )
 {
-    const int dy = BaseClass::textEngine().height() - ::BoxHeight;
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const int dy = metrics.height() - ::BoxHeight;
+    BaseClass::painter().end();
+
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat x1 = static_cast<GLfloat>( x0 + ::BoxWidth );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
@@ -166,8 +180,7 @@ void CheckBox::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
-    BaseClass::render2D().begin();
+    BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
 
     this->draw_box();
@@ -175,10 +188,11 @@ void CheckBox::paintEvent()
 
     const int x = BaseClass::x0() + BaseClass::margin() + ::BoxWidth + ::TextMargin;
     const int y = BaseClass::y0() + BaseClass::margin();
-    const kvs::Vec2 p( x, y + BaseClass::textEngine().height() );
-    BaseClass::textEngine().draw( p, m_caption, BaseClass::screen() );
+    const int height = BaseClass::painter().fontMetrics().height();
+    const kvs::Vec2 p( x, y + height );
+    BaseClass::painter().drawText( p, m_caption );
 
-    BaseClass::render2D().end();
+    BaseClass::painter().end();
 }
 
 /*===========================================================================*/

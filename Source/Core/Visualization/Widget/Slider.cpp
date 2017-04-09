@@ -107,37 +107,39 @@ void Slider::setSliderColor( const kvs::RGBColor& color )
 /*===========================================================================*/
 void Slider::draw_slider_bar( const int x, const int y, const int width )
 {
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+
     const float w = width;
     const float h = 6.0f;
     const float w0 = width * ( m_value - m_min_value ) / ( m_max_value - m_min_value );
 
-    BaseClass::renderEngine().beginPath();
-    BaseClass::renderEngine().roundedRect( x, y, w, h, 2 );
+    engine->beginPath();
+    engine->roundedRect( x, y, w, h, 2 );
 
-    BaseClass::renderEngine().setStrokeWidth( 1.0f );
-    BaseClass::renderEngine().setStrokeColor( kvs::RGBColor::Black() );
-    BaseClass::renderEngine().stroke();
+    engine->setStrokeWidth( 1.0f );
+    engine->setStrokeColor( kvs::RGBColor::Black() );
+    engine->stroke();
 
-    BaseClass::renderEngine().setFillColor( m_slider_color );
-    BaseClass::renderEngine().fill();
+    engine->setFillColor( m_slider_color );
+    engine->fill();
 
     const NVGcolor c032 = nvgRGBA( 0, 0, 0, 32 );
     const NVGcolor c128 = nvgRGBA( 0, 0, 0, 128 );
     const NVGcolor c064 = nvgRGBA( 0, 0, 0, 64 );
-    NVGpaint bg = BaseClass::renderEngine().boxGradient( x, y + 1.0f, w, h, 2, 2, c032, c128 );
-    BaseClass::renderEngine().setFillPaint( bg );
-    BaseClass::renderEngine().fill();
+    NVGpaint bg = engine->boxGradient( x, y + 1.0f, w, h, 2, 2, c032, c128 );
+    engine->setFillPaint( bg );
+    engine->fill();
 
     if ( true )
     {
-        BaseClass::renderEngine().beginPath();
-        BaseClass::renderEngine().roundedRect( x, y, w0, h, 2 );
-        BaseClass::renderEngine().setFillColor( kvs::RGBColor( 60, 150, 250 ) );
-        BaseClass::renderEngine().fill();
+        engine->beginPath();
+        engine->roundedRect( x, y, w0, h, 2 );
+        engine->setFillColor( kvs::RGBColor( 60, 150, 250 ) );
+        engine->fill();
 
-        bg = BaseClass::renderEngine().boxGradient( x, y + 4.0f, w0, h, 2, 3, c064, c032 );
-        BaseClass::renderEngine().setFillPaint( bg );
-        BaseClass::renderEngine().fill();
+        bg = engine->boxGradient( x, y + 4.0f, w0, h, 2, 3, c064, c032 );
+        engine->setFillPaint( bg );
+        engine->fill();
     }
 }
 
@@ -151,6 +153,8 @@ void Slider::draw_slider_bar( const int x, const int y, const int width )
 /*===========================================================================*/
 void Slider::draw_cursor( const int x, const int y, const int width )
 {
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+
     const int p = static_cast<int>( width * ( m_value - m_min_value ) / ( m_max_value - m_min_value ) + 0.5 );
     const int x0 = static_cast<int>( x + p - ::Default::CursorWidth * 0.5 + 0.5 );
     const int x1 = static_cast<int>( x + p + ::Default::CursorWidth * 0.5 + 0.5 );
@@ -166,48 +170,48 @@ void Slider::draw_cursor( const int x, const int y, const int width )
         const kvs::RGBColor shadow_color = kvs::RGBColor::Black();
         const kvs::RGBAColor color0( shadow_color, 0.25f );
         const kvs::RGBAColor color1( shadow_color, 0.0f );
-        NVGpaint bg = BaseClass::renderEngine().radialGradient( center, radius - shadow_size, radius + shadow_size, color0, color1 );
-        BaseClass::renderEngine().beginPath();
-        BaseClass::renderEngine().circle( center, radius + shadow_size );
-        BaseClass::renderEngine().setFillPaint( bg );
-        BaseClass::renderEngine().fill();
+        NVGpaint bg = engine->radialGradient( center, radius - shadow_size, radius + shadow_size, color0, color1 );
+        engine->beginPath();
+        engine->circle( center, radius + shadow_size );
+        engine->setFillPaint( bg );
+        engine->fill();
     }
 
     // Knob
     {
         // Outer circle
-        BaseClass::renderEngine().beginPath();
-        BaseClass::renderEngine().circle( center, radius );
-        BaseClass::renderEngine().setFillColor( m_slider_color );
-        BaseClass::renderEngine().fill();
+        engine->beginPath();
+        engine->circle( center, radius );
+        engine->setFillColor( m_slider_color );
+        engine->fill();
 
         const float stroke_width = 1.0f;
         const kvs::RGBAColor stroke_color( 0, 0, 0, 0.8f );
-        BaseClass::renderEngine().setStrokeWidth( stroke_width );
-        BaseClass::renderEngine().setStrokeColor( stroke_color );
-        BaseClass::renderEngine().stroke();
+        engine->setStrokeWidth( stroke_width );
+        engine->setStrokeColor( stroke_color );
+        engine->stroke();
 
         const kvs::Vec2 start( x0, y0 );
         const kvs::Vec2 end( x1, y1 );
         const kvs::RGBAColor color0( 0, 0, 0, m_pushed ? 0.2f : 0.01f );
         const kvs::RGBAColor color1( 0, 0, 0, m_pushed ? 0.6f : 0.4f );
-        NVGpaint bg = BaseClass::renderEngine().linearGradient( start, end, color0, color1 );
-        BaseClass::renderEngine().setFillPaint( bg );
-        BaseClass::renderEngine().fill();
+        NVGpaint bg = engine->linearGradient( start, end, color0, color1 );
+        engine->setFillPaint( bg );
+        engine->fill();
 
         // Inner circle
-        BaseClass::renderEngine().beginPath();
-        BaseClass::renderEngine().circle( center, radius / 2.0f );
+        engine->beginPath();
+        engine->circle( center, radius / 2.0f );
 
-        BaseClass::renderEngine().setFillColor( m_cursor_color );
-        BaseClass::renderEngine().fill();
+        engine->setFillColor( m_cursor_color );
+        engine->fill();
 
         const kvs::RGBAColor color2( 0, 0, 0, 0.8f );
         const kvs::RGBAColor color3( 0, 0, 0, 0.2f );
-        bg = BaseClass::renderEngine().linearGradient( start, end, color2, color3 );
-        BaseClass::renderEngine().setStrokePaint( bg );
-        BaseClass::renderEngine().stroke();
-        BaseClass::renderEngine().fill();
+        bg = engine->linearGradient( start, end, color2, color3 );
+        engine->setStrokePaint( bg );
+        engine->stroke();
+        engine->fill();
     }
 }
 
@@ -222,8 +226,13 @@ void Slider::draw_cursor( const int x, const int y, const int width )
 /*===========================================================================*/
 bool Slider::is_in_slider( const int x, const int y, const bool proper )
 {
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const int character_height = metrics.height();
+    BaseClass::painter().end();
+
     const int bar_x = m_x + BaseClass::margin();
-    const int bar_y = m_y + BaseClass::margin() + BaseClass::textEngine().height() + ::Default::SliderHeight / 2;
+    const int bar_y = m_y + BaseClass::margin() + character_height + ::Default::SliderHeight / 2;
     const int bar_width = BaseClass::width() - BaseClass::margin() * 2;
 
     const int x0 = bar_x;
@@ -252,8 +261,13 @@ bool Slider::is_in_slider( const int x, const int y, const bool proper )
 /*===========================================================================*/
 bool Slider::is_in_cursor( const int x, const int y, const bool proper )
 {
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const int character_height = metrics.height();
+    BaseClass::painter().end();
+
     const int bar_x = m_x + BaseClass::margin();
-    const int bar_y = m_y + BaseClass::margin() + BaseClass::textEngine().height() + ::Default::SliderHeight / 2;
+    const int bar_y = m_y + BaseClass::margin() + character_height + ::Default::SliderHeight / 2;
     const int bar_width = BaseClass::width() - BaseClass::margin() * 2;
 
     const int p = static_cast<int>( bar_width * ( m_value - m_min_value ) / ( m_max_value - m_min_value ) + 0.5f );
@@ -283,7 +297,6 @@ float Slider::get_value( const int x )
 {
     const float bar_x = static_cast<float>( BaseClass::x() + BaseClass::margin() );
     const float bar_width = static_cast<float>( BaseClass::width() - BaseClass::margin() * 2 );
-
     return m_min_value + ( x - bar_x ) / bar_width * ( m_max_value - m_min_value );
 }
 
@@ -295,8 +308,12 @@ float Slider::get_value( const int x )
 /*===========================================================================*/
 int Slider::adjustedWidth()
 {
-    const size_t text_width = BaseClass::textEngine().width( m_caption );
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const size_t text_width = metrics.width( m_caption );
     const size_t width = text_width + BaseClass::margin() * 2;
+    BaseClass::painter().end();
+
     return kvs::Math::Max( width, ::Default::SliderWidth );
 }
 
@@ -308,7 +325,11 @@ int Slider::adjustedWidth()
 /*===========================================================================*/
 int Slider::adjustedHeight()
 {
-    const size_t text_height = BaseClass::textEngine().height();
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const size_t text_height = metrics.height();
+    BaseClass::painter().end();
+
     return ::Default::SliderHeight + ( text_height + BaseClass::margin() ) * 2;
 }
 
@@ -323,19 +344,19 @@ void Slider::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
-    BaseClass::render2D().begin();
+    BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
 
-    BaseClass::renderEngine().beginFrame( screen()->width(), screen()->height() );
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+    engine->beginFrame( screen()->width(), screen()->height() );
 
-    const float height = BaseClass::textEngine().height();
+    const float height = BaseClass::painter().fontMetrics().height();
     // Draw the caption.
     {
         const int x = m_x + BaseClass::margin();
         const int y = m_y + BaseClass::margin();
         const kvs::Vec2 p( x, y + height );
-        BaseClass::textEngine().draw( p, m_caption, BaseClass::screen() );
+        BaseClass::painter().drawText( p, m_caption );
     }
 
     // Draw the slider bar and cursor.
@@ -355,22 +376,22 @@ void Slider::paintEvent()
             const int x = m_x + BaseClass::margin();
             const int y = m_y + BaseClass::margin() + height + ::Default::SliderHeight;
             const kvs::Vec2 p( x, y + height );
-            BaseClass::textEngine().draw( p, min_value, BaseClass::screen() );
+            BaseClass::painter().drawText( p, min_value );
         }
 
         {
             const std::string max_value = kvs::String::ToString( m_max_value );
-            const size_t text_width = BaseClass::textEngine().width( max_value );
+            const size_t text_width = BaseClass::painter().fontMetrics().width( max_value );
             const int x = BaseClass::x1() - BaseClass::margin() - text_width;
             const int y = m_y + BaseClass::margin() + height + ::Default::SliderHeight;
             const kvs::Vec2 p( x, y + height );
-            BaseClass::textEngine().draw( p, max_value, BaseClass::screen() );
+            BaseClass::painter().drawText( p, max_value );
         }
     }
 
-    BaseClass::renderEngine().endFrame();
+    engine->endFrame();
 
-    BaseClass::render2D().end();
+    BaseClass::painter().end();
 }
 
 /*===========================================================================*/

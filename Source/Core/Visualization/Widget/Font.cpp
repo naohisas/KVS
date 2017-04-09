@@ -13,6 +13,7 @@
  */
 /*****************************************************************************/
 #include "Font.h"
+/*
 // NanoVG related headers
 // {
 #include <cstdio>
@@ -29,8 +30,9 @@
 #include <vector>
 #include <kvs/File>
 #include <kvs/Matrix22>
+*/
 
-
+/*
 namespace
 {
 
@@ -305,11 +307,31 @@ const std::string StyleName[] =
 };
 
 }
+*/
 
+namespace
+{
+
+const std::string FamilyName[] =
+{
+    "Sans",
+    "Serif"
+};
+
+const std::string StyleName[] =
+{
+    "Regular",
+    "Italic",
+    "Bold",
+    "BoldItalic"
+};
+
+}
 
 namespace kvs
 {
 
+/*
 void Font::AddSearchPath( const std::string& path )
 {
     ::search_path.add( path );
@@ -331,6 +353,7 @@ void Font::RemoveSearchPath()
 {
     ::search_path.del();
 }
+*/
 
 Font::Font()
 {
@@ -346,7 +369,7 @@ Font::Font()
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
     this->setShadowBlur( 4.0f );
-    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
+//    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
 }
 
 Font::Font( const Family& family, const float size )
@@ -363,7 +386,7 @@ Font::Font( const Family& family, const float size )
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
     this->setShadowBlur( 4.0f );
-    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
+//    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
 }
 
 Font::Font( const Family& family, const float size, const kvs::RGBAColor& color )
@@ -380,7 +403,7 @@ Font::Font( const Family& family, const float size, const kvs::RGBAColor& color 
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
     this->setShadowBlur( 4.0f );
-    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
+//    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
 }
 
 Font::Font( const Family& family, const Style& style, const float size )
@@ -397,7 +420,7 @@ Font::Font( const Family& family, const Style& style, const float size )
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
     this->setShadowBlur( 4.0f );
-    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
+//    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
 }
 
 Font::Font( const Family& family, const Style& style, const float size, const kvs::RGBAColor& color )
@@ -414,33 +437,55 @@ Font::Font( const Family& family, const Style& style, const float size, const kv
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
     this->setShadowBlur( 4.0f );
-    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
+//    ::Stash.create( 512, 512, FONS_ZERO_TOPLEFT );
 }
 
 Font::~Font()
 {
 }
 
+std::string Font::familyName() const
+{
+    return ::FamilyName[ this->family() ];
+}
+
+std::string Font::styleName() const
+{
+    return ::StyleName[ this->style() ];
+}
+
+std::string Font::fontName() const
+{
+    return this->familyName() + this->styleName();
+}
+
 float Font::width( const std::string& text ) const
 {
+    /*
     const std::string name = ::FamilyName[this->family()] + ::StyleName[this->style()];
     const int font_id = ::Stash.fontID( name );
     ::Stash.setFont( font_id );
     ::Stash.setSize( this->size() );
     return ::Stash.textBounds( kvs::Vec2( 0.0f, 0.0f ), text );
+    */
+    return 0.0f;
 }
 
 float Font::height() const
 {
+    /*
     const std::string name = ::FamilyName[this->family()] + ::StyleName[this->style()];
     const int font_id = ::Stash.fontID( name );
     ::Stash.setFont( font_id );
     ::Stash.setSize( this->size() );
     return ::Stash.lineHeight();
+    */
+    return 0.0f;
 }
 
 void Font::draw( const kvs::Vec2& p, const std::string& text ) const
 {
+/*
     ::Stash.clearState();
 
     const std::string name = ::FamilyName[this->family()] + ::StyleName[this->style()];
@@ -466,10 +511,12 @@ void Font::draw( const kvs::Vec2& p, const std::string& text ) const
     ::Stash.setColor( ::Stash.colorID( this->color() ) );
     ::Stash.setSize( this->size() );
     ::Stash.draw( p + d, text );
+*/
 }
 
 void Font::draw( const kvs::Vec2& p, const Font::Icon& icon, const float size ) const
 {
+    /*
     ::Stash.clearState();
 
     const int font_id = ::Stash.fontID( "Icon" );
@@ -479,6 +526,7 @@ void Font::draw( const kvs::Vec2& p, const Font::Icon& icon, const float size ) 
     ::Stash.setColor( ::Stash.colorID( this->color() ) );
     ::Stash.setSize( size );
     ::Stash.draw( p + d, ::ToUTF8( icon ) );
+    */
 }
 
 } // end of namespace kvs

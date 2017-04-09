@@ -82,10 +82,10 @@ private:
     float m_shadow_blur; ///< shadow blur level
 
 public:
-    static void AddSearchPath( const std::string& path );
-    static void SetSearchPath( const std::string& path );
-    static void ResetSearchPath();
-    static void RemoveSearchPath();
+//    static void AddSearchPath( const std::string& path );
+//    static void SetSearchPath( const std::string& path );
+//    static void ResetSearchPath();
+//    static void RemoveSearchPath();
 
 public:
     Font();
@@ -133,6 +133,10 @@ public:
     void setShadowDistance( const float distance ) { m_shadow_distance = distance; }
     void setShadowAngle( const float angle ) { m_shadow_angle = angle; }
     void setShadowBlur( const float blur ) { m_shadow_blur = blur; }
+
+    std::string familyName() const;
+    std::string styleName() const;
+    std::string fontName() const;
 
     float width( const std::string& text ) const;
     float height() const;

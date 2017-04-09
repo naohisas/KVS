@@ -63,7 +63,7 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* sce
         kvs::EventBase::ResizeEvent );
 
     BaseClass::setMargin( 0 );
-    BaseClass::textEngine().font().setStyleToBold();
+    BaseClass::painter().font().setStyleToBold();
 }
 
 /*===========================================================================*/
@@ -95,7 +95,7 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase
         kvs::EventBase::ResizeEvent );
 
     BaseClass::setMargin( 0 );
-    BaseClass::textEngine().font().setStyleToBold();
+    BaseClass::painter().font().setStyleToBold();
 }
 
 /*===========================================================================*/
@@ -120,85 +120,91 @@ void OrientationAxis::paintEvent()
 
     const kvs::Vec4 vp = kvs::OpenGL::Viewport();
 
-    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
-
-    kvs::OpenGL::Disable( GL_LIGHTING );
-    kvs::OpenGL::Disable( GL_TEXTURE_2D );
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-
-    kvs::OpenGL::SetClearDepth( 1.0 );
-    kvs::OpenGL::Clear( GL_DEPTH_BUFFER_BIT );
-
-    // Anti-aliasing.
-    if ( m_enable_anti_aliasing )
+    BaseClass::painter().begin( BaseClass::screen() );
+    BaseClass::drawBackground();
     {
-        kvs::OpenGL::Enable( GL_LINE_SMOOTH );
-        kvs::OpenGL::Enable( GL_BLEND );
-        kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+        {
+            kvs::OpenGL::Disable( GL_LIGHTING );
+            kvs::OpenGL::Disable( GL_TEXTURE_2D );
+            kvs::OpenGL::Enable( GL_DEPTH_TEST );
+
+            kvs::OpenGL::SetClearDepth( 1.0 );
+            kvs::OpenGL::Clear( GL_DEPTH_BUFFER_BIT );
+
+            // Anti-aliasing.
+            if ( m_enable_anti_aliasing )
+            {
+                kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+                kvs::OpenGL::Enable( GL_BLEND );
+                kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+            }
+
+            // Set the projection parameters.
+            kvs::OpenGL::WithPushedMatrix p1( GL_PROJECTION );
+            p1.loadIdentity();
+            {
+                const float front = 1.0f;
+                const float back = 2000.0f;
+                if ( m_projection_type == kvs::Camera::Perspective )
+                {
+                    // Perspective projection.
+                    const float field_of_view = 45.0f;
+                    const float aspect = 1.0f;
+                    kvs::OpenGL::SetPerspective( field_of_view, aspect, front, back );
+                }
+                else
+                {
+                    // Orthogonal projection.
+                    const float left = -5.0f;
+                    const float bottom = -5.0f;
+                    const float right = 5.0f;
+                    const float top = 5.0f;
+                    kvs::OpenGL::SetOrtho( left, right, bottom, top, front, back );
+                }
+            }
+
+            // The origin is set to the top-left on the screen.
+            const int x = m_x + BaseClass::margin();
+            const int y = screen()->height() - m_y - m_height + BaseClass::margin();
+            const int width = m_width - BaseClass::margin();
+            const int height = m_height - BaseClass::margin();
+            kvs::OpenGL::SetViewport( x, y, width, height );
+
+            kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );
+            p2.loadIdentity();
+            {
+                // Viewing transformation.
+                const kvs::Vec3 eye( 0.0f, 0.0f, 13.0f );
+                const kvs::Vec3 center( 0.0f, 0.0f, 0.0f );
+                const kvs::Vec3 up( 0.0f, 1.0f, 0.0f );
+                kvs::OpenGL::SetLookAt( eye, center, up );
+
+                // Rotate the axis and the box using the object's rotation matrix.
+                kvs::OpenGL::MultMatrix( kvs::Xform::Rotation( m_object->xform().rotation() ) );
+
+                // Length of the axis
+                const float length = m_axis_length;
+
+                // Draw the box.
+                switch ( m_box_type )
+                {
+                case OrientationAxis::WiredBox: { this->draw_wired_box( length ); break; }
+                case OrientationAxis::SolidBox: { this->draw_solid_box( length ); break; }
+                default: break;
+                }
+
+                // Draw the axis.
+                switch ( m_axis_type )
+                {
+                case OrientationAxis::CorneredAxis: { this->draw_cornered_axis( length ); break; }
+                case OrientationAxis::CenteredAxis: { this->draw_centered_axis( length ); break; }
+                default: break;
+                }
+            }
+        }
     }
-
-    // Set the projection parameters.
-    kvs::OpenGL::WithPushedMatrix p1( GL_PROJECTION );
-    p1.loadIdentity();
-    {
-        const float front = 1.0f;
-        const float back = 2000.0f;
-        if ( m_projection_type == kvs::Camera::Perspective )
-        {
-            // Perspective projection.
-            const float field_of_view = 45.0f;
-            const float aspect = 1.0f;
-            kvs::OpenGL::SetPerspective( field_of_view, aspect, front, back );
-        }
-        else
-        {
-            // Orthogonal projection.
-            const float left = -5.0f;
-            const float bottom = -5.0f;
-            const float right = 5.0f;
-            const float top = 5.0f;
-            kvs::OpenGL::SetOrtho( left, right, bottom, top, front, back );
-        }
-    }
-
-    // The origin is set to the top-left on the screen.
-    const int x = m_x + BaseClass::margin();
-    const int y = screen()->height() - m_y - m_height + BaseClass::margin();
-    const int width = m_width - BaseClass::margin();
-    const int height = m_height - BaseClass::margin();
-    kvs::OpenGL::SetViewport( x, y, width, height );
-
-    kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );
-    p2.loadIdentity();
-    {
-        // Viewing transformation.
-        const kvs::Vec3 eye( 0.0f, 0.0f, 13.0f );
-        const kvs::Vec3 center( 0.0f, 0.0f, 0.0f );
-        const kvs::Vec3 up( 0.0f, 1.0f, 0.0f );
-        kvs::OpenGL::SetLookAt( eye, center, up );
-
-        // Rotate the axis and the box using the object's rotation matrix.
-        kvs::OpenGL::MultMatrix( kvs::Xform::Rotation( m_object->xform().rotation() ) );
-
-        // Length of the axis
-        const float length = m_axis_length;
-
-        // Draw the box.
-        switch ( m_box_type )
-        {
-        case OrientationAxis::WiredBox: { this->draw_wired_box( length ); break; }
-        case OrientationAxis::SolidBox: { this->draw_solid_box( length ); break; }
-        default: break;
-        }
-
-        // Draw the axis.
-        switch ( m_axis_type )
-        {
-        case OrientationAxis::CorneredAxis: { this->draw_cornered_axis( length ); break; }
-        case OrientationAxis::CenteredAxis: { this->draw_centered_axis( length ); break; }
-        default: break;
-        }
-    }
+    BaseClass::painter().end();
 
     kvs::OpenGL::SetViewport( vp );
 }
@@ -266,24 +272,24 @@ void OrientationAxis::draw_centered_axis( const float length )
     kvs::OpenGL::Color( m_x_axis_color );
     kvs::OpenGL::Vertices( v0, v1 );
     kvs::OpenGL::End();
-    BaseClass::textEngine().font().setColor( m_x_axis_color );
-    BaseClass::textEngine().draw( v1 - offsetx, m_x_tag, BaseClass::screen() );
+    BaseClass::painter().font().setColor( m_x_axis_color );
+    BaseClass::painter().drawText( v1 - offsetx, m_x_tag );
 
     // Y-axis.
     kvs::OpenGL::Begin( GL_LINES );
     kvs::OpenGL::Color( m_y_axis_color );
     kvs::OpenGL::Vertices( v0, v4 );
     kvs::OpenGL::End();
-    BaseClass::textEngine().font().setColor( m_y_axis_color );
-    BaseClass::textEngine().draw( v4 - offsety, m_y_tag, BaseClass::screen() );
+    BaseClass::painter().font().setColor( m_y_axis_color );
+    BaseClass::painter().drawText( v4 - offsety, m_y_tag );
 
     // Z-axis.
     kvs::OpenGL::Begin( GL_LINES );
     kvs::OpenGL::Color( m_z_axis_color );
     kvs::OpenGL::Vertices( v0, v3 );
     kvs::OpenGL::End();
-    BaseClass::textEngine().font().setColor( m_z_axis_color );
-    BaseClass::textEngine().draw( v3 - offsetz, m_z_tag, BaseClass::screen() );
+    BaseClass::painter().font().setColor( m_z_axis_color );
+    BaseClass::painter().drawText( v3 - offsetz, m_z_tag );
 }
 
 /*===========================================================================*/
@@ -313,24 +319,24 @@ void OrientationAxis::draw_cornered_axis( const float length )
     kvs::OpenGL::Color( m_x_axis_color );
     kvs::OpenGL::Vertices( v0, v1 );
     kvs::OpenGL::End();
-    BaseClass::textEngine().font().setColor( m_x_axis_color );
-    BaseClass::textEngine().draw( v1 - offsetx, m_x_tag, BaseClass::screen() );
+    BaseClass::painter().font().setColor( m_x_axis_color );
+    BaseClass::painter().drawText( v1 - offsetx, m_x_tag );
 
     // Y-axis.
     kvs::OpenGL::Begin( GL_LINES );
     kvs::OpenGL::Color( m_y_axis_color );
     kvs::OpenGL::Vertices( v0, v4 );
     kvs::OpenGL::End();
-    BaseClass::textEngine().font().setColor( m_y_axis_color );
-    BaseClass::textEngine().draw( v4 - offsety, m_y_tag, BaseClass::screen() );
+    BaseClass::painter().font().setColor( m_y_axis_color );
+    BaseClass::painter().drawText( v4 - offsety, m_y_tag );
 
     // Z-axis.
     kvs::OpenGL::Begin( GL_LINES );
     kvs::OpenGL::Color( m_z_axis_color );
     kvs::OpenGL::Vertices( v0, v3 );
     kvs::OpenGL::End();
-    BaseClass::textEngine().font().setColor( m_z_axis_color );
-    BaseClass::textEngine().draw( v3 - offsetz, m_z_tag, BaseClass::screen() );
+    BaseClass::painter().font().setColor( m_z_axis_color );
+    BaseClass::painter().drawText( v3 - offsetz, m_z_tag );
 }
 
 /*===========================================================================*/

@@ -91,11 +91,15 @@ void Label::addText( const char* text, ... )
 int Label::adjustedWidth()
 {
     size_t max_width = 0;
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
     for ( size_t i = 0; i < m_text.size(); i++ )
     {
-        const size_t line_width = BaseClass::textEngine().width( m_text[i] );
+        const size_t line_width = metrics.width( m_text[i] );
         max_width = kvs::Math::Max( max_width, line_width );
     }
+    BaseClass::painter().end();
+
     return max_width + BaseClass::margin() * 2;
 }
 
@@ -107,8 +111,11 @@ int Label::adjustedWidth()
 /*===========================================================================*/
 int Label::adjustedHeight()
 {
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
     const size_t nlines = m_text.size();
-    const size_t character_height = BaseClass::textEngine().height();
+    const size_t character_height = metrics.height();
+    BaseClass::painter().end();
     return nlines * character_height + BaseClass::margin() * 2;
 }
 
@@ -123,20 +130,19 @@ void Label::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
-    BaseClass::render2D().begin();
+    BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
 
     const int x = BaseClass::x() + BaseClass::margin();
     const int y = BaseClass::y() + BaseClass::margin();
-    const size_t character_height = BaseClass::textEngine().height();
+    const size_t character_height = BaseClass::painter().fontMetrics().height();
     for ( size_t line = 0; line < m_text.size(); line++ )
     {
         const kvs::Vec2i p( x, y + character_height * ( line + 1 ) );
-        BaseClass::textEngine().draw( p, m_text[line], BaseClass::screen() );
+        BaseClass::painter().drawText( p, m_text[line] );
     }
 
-    BaseClass::render2D().end();
+    BaseClass::painter().end();
 }
 
 /*===========================================================================*/
@@ -150,7 +156,6 @@ void Label::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
-
     this->screenResized();
 }
 

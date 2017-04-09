@@ -61,6 +61,7 @@ Matrix/Vector2
 Matrix/Vector3
 Matrix/Vector4
 Matrix/ViewingMatrix44
+NanoVG/FontStash
 NanoVG/NanoVG
 Network/Acceptor
 Network/Connector
@@ -331,6 +332,7 @@ Visualization/Viewer/Background
 Visualization/Viewer/Camera
 Visualization/Viewer/Coordinate
 Visualization/Viewer/DisplayFormat
+Visualization/Viewer/FontMetrics
 Visualization/Viewer/IDManager
 Visualization/Viewer/Key
 Visualization/Viewer/Light
@@ -338,6 +340,8 @@ Visualization/Viewer/Material
 Visualization/Viewer/Mouse
 Visualization/Viewer/MouseButton
 Visualization/Viewer/ObjectManager
+Visualization/Viewer/PaintDevice
+Visualization/Viewer/Painter
 Visualization/Viewer/RendererManager
 Visualization/Viewer/Scene
 Visualization/Viewer/ScreenBase

@@ -61,6 +61,7 @@
 #include <Core/Matrix/Vector3.h>
 #include <Core/Matrix/Vector4.h>
 #include <Core/Matrix/ViewingMatrix44.h>
+#include <Core/NanoVG/FontStash.h>
 #include <Core/NanoVG/NanoVG.h>
 #include <Core/Network/Acceptor.h>
 #include <Core/Network/Connector.h>
@@ -331,6 +332,7 @@
 #include <Core/Visualization/Viewer/Camera.h>
 #include <Core/Visualization/Viewer/Coordinate.h>
 #include <Core/Visualization/Viewer/DisplayFormat.h>
+#include <Core/Visualization/Viewer/FontMetrics.h>
 #include <Core/Visualization/Viewer/IDManager.h>
 #include <Core/Visualization/Viewer/Key.h>
 #include <Core/Visualization/Viewer/Light.h>
@@ -338,6 +340,8 @@
 #include <Core/Visualization/Viewer/Mouse.h>
 #include <Core/Visualization/Viewer/MouseButton.h>
 #include <Core/Visualization/Viewer/ObjectManager.h>
+#include <Core/Visualization/Viewer/PaintDevice.h>
+#include <Core/Visualization/Viewer/Painter.h>
 #include <Core/Visualization/Viewer/RendererManager.h>
 #include <Core/Visualization/Viewer/Scene.h>
 #include <Core/Visualization/Viewer/ScreenBase.h>

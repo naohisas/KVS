@@ -60,8 +60,6 @@ OpacityMapBar::OpacityMapBar( kvs::ScreenBase* screen ):
     this->setBorderColor( kvs::RGBColor( 0, 0, 0 ) );
     this->disableAntiAliasing();
 
-//    m_colormap.setResolution( 256 );
-//    m_colormap.create();
     m_opacity_map.setResolution( 256 );
     m_opacity_map.create();
 }
@@ -75,29 +73,6 @@ OpacityMapBar::~OpacityMapBar()
 {
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Set the color map to the texture.
- *  @param  colormap [in] color map
- */
-/*===========================================================================*/
-/*
-void OpacityMapBar::setColorMap( const kvs::ColorMap& colormap )
-{
-    // Deep copy.
-    kvs::ColorMap::Table colormap_table( colormap.table().data(), colormap.table().size() );
-    m_colormap = kvs::ColorMap( colormap_table );
-
-    if ( colormap.hasRange() )
-    {
-        m_min_value = colormap.minValue();
-        m_max_value = colormap.maxValue();
-    }
-
-    // Download the texture data onto GPU.
-    m_texture_downloaded = false;
-}
-*/
 void OpacityMapBar::setOpacityMap( const kvs::OpacityMap& opacity_map )
 {
     // Deep copy.
@@ -124,15 +99,15 @@ void OpacityMapBar::paintEvent()
     if ( !m_texture.isValid() ) { this->create_texture(); }
     if ( !m_checkerboard.isValid() ) { this->create_checkerboard(); }
 
-    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
-    BaseClass::render2D().begin();
+    BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
 
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
     const std::string min_value = kvs::String::ToString( m_min_value );
     const std::string max_value = kvs::String::ToString( m_max_value );
-    const int text_height = BaseClass::textEngine().height();
-    const int min_text_width = BaseClass::textEngine().width( min_value );
-    const int max_text_width = BaseClass::textEngine().width( max_value );
+    const int text_height = metrics.height();
+    const int min_text_width = metrics.width( min_value );
+    const int max_text_width = metrics.width( max_value );
     const int caption_height = ( m_caption.size() == 0 ) ? 0 : text_height + 5;
     const int value_width = ( min_value.size() > max_value.size() ) ? min_text_width : max_text_width;
     const int value_height = ( m_show_range_value ) ? text_height : 0;
@@ -155,7 +130,7 @@ void OpacityMapBar::paintEvent()
         const int x = m_x + BaseClass::margin();
         const int y = m_y + BaseClass::margin();
         const kvs::Vec2 p( x, y + text_height );
-        BaseClass::textEngine().draw( p, m_caption, BaseClass::screen() );
+        BaseClass::painter().drawText( p, m_caption );
     }
 
     // Draw the values.
@@ -169,13 +144,13 @@ void OpacityMapBar::paintEvent()
                 const int x = m_x + BaseClass::margin();
                 const int y = BaseClass::y1() - BaseClass::margin() - text_height;
                 const kvs::Vec2 p( x, y + text_height );
-                BaseClass::textEngine().draw( p, min_value, BaseClass::screen() );
+                BaseClass::painter().drawText( p, min_value );
             }
             {
                 const int x = BaseClass::x1() - BaseClass::margin() - max_text_width;
                 const int y = BaseClass::y1() - BaseClass::margin() - text_height;
                 const kvs::Vec2 p( x, y + text_height );
-                BaseClass::textEngine().draw( p, max_value, BaseClass::screen() );
+                BaseClass::painter().drawText( p, max_value );
             }
             break;
         }
@@ -185,13 +160,13 @@ void OpacityMapBar::paintEvent()
                 const int x = BaseClass::x1() - BaseClass::margin() - value_width;
                 const int y = m_y + BaseClass::margin() + caption_height;
                 const kvs::Vec2 p( x, y + text_height );
-                BaseClass::textEngine().draw( p, min_value, BaseClass::screen() );
+                BaseClass::painter().drawText( p, min_value );
             }
             {
                 const int x = BaseClass::x1() - BaseClass::margin() - value_width;
                 const int y = BaseClass::y1() - BaseClass::margin() - text_height;
                 const kvs::Vec2 p( x, y + text_height );
-                BaseClass::textEngine().draw( p, max_value, BaseClass::screen() );
+                BaseClass::painter().drawText( p, max_value );
             }
             break;
         }
@@ -199,7 +174,7 @@ void OpacityMapBar::paintEvent()
         }
     }
 
-    BaseClass::render2D().end();
+    BaseClass::painter().end();
 }
 
 /*===========================================================================*/
@@ -224,12 +199,15 @@ void OpacityMapBar::resizeEvent( int width, int height )
 /*===========================================================================*/
 int OpacityMapBar::adjustedWidth()
 {
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+
     size_t width = 0;
     switch ( m_orientation )
     {
     case OpacityMapBar::Horizontal:
     {
-        width = BaseClass::textEngine().width( m_caption ) + BaseClass::margin() * 2;
+        width = metrics.width( m_caption ) + BaseClass::margin() * 2;
         width = kvs::Math::Max( width, ::OpacityMapBarWidth );
         break;
     }
@@ -237,8 +215,8 @@ int OpacityMapBar::adjustedWidth()
     {
         const std::string min_value = kvs::String::ToString( m_min_value );
         const std::string max_value = kvs::String::ToString( m_max_value );
-        const size_t min_text_width = BaseClass::textEngine().width( min_value );
-        const size_t max_text_width = BaseClass::textEngine().width( max_value );
+        const size_t min_text_width = metrics.width( min_value );
+        const size_t max_text_width = metrics.width( max_value );
         width = ( min_value.size() > max_value.size() ) ? min_text_width : max_text_width;
         width += BaseClass::margin() * 2;
         width = kvs::Math::Max( width, ::OpacityMapBarHeight );
@@ -246,6 +224,7 @@ int OpacityMapBar::adjustedWidth()
     }
     default: break;
     }
+    BaseClass::painter().end();
 
     return static_cast<int>( width );
 }
@@ -258,8 +237,12 @@ int OpacityMapBar::adjustedWidth()
 /*===========================================================================*/
 int OpacityMapBar::adjustedHeight()
 {
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const size_t text_height = metrics.height();
+    BaseClass::painter().end();
+
     size_t height = 0;
-    const size_t text_height = BaseClass::textEngine().height();
     switch( m_orientation )
     {
     case OpacityMapBar::Horizontal:
@@ -410,21 +393,22 @@ void OpacityMapBar::draw_opacity_bar( const int x, const int y, const int width,
 /*===========================================================================*/
 void OpacityMapBar::draw_border( const int x, const int y, const int width, const int height )
 {
-    BaseClass::renderEngine().beginFrame( screen()->width(), screen()->height() );
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+    engine->beginFrame( screen()->width(), screen()->height() );
 
-    BaseClass::renderEngine().beginPath();
-    BaseClass::renderEngine().setStrokeWidth( m_border_width );
-    BaseClass::renderEngine().roundedRect( x - 0.5f, y + 2.0f, width + 1.0f, height, 3 );
-    BaseClass::renderEngine().setStrokeColor( kvs::RGBAColor( 250, 250, 250, 0.6f ) );
-    BaseClass::renderEngine().stroke();
+    engine->beginPath();
+    engine->setStrokeWidth( m_border_width );
+    engine->roundedRect( x - 0.5f, y + 2.0f, width + 1.0f, height, 3 );
+    engine->setStrokeColor( kvs::RGBAColor( 250, 250, 250, 0.6f ) );
+    engine->stroke();
 
-    BaseClass::renderEngine().beginPath();
-    BaseClass::renderEngine().setStrokeWidth( m_border_width );
-    BaseClass::renderEngine().roundedRect( x - 0.5f, y, width + 1.0f, height, 3 );
-    BaseClass::renderEngine().setStrokeColor( m_border_color );
-    BaseClass::renderEngine().stroke();
+    engine->beginPath();
+    engine->setStrokeWidth( m_border_width );
+    engine->roundedRect( x - 0.5f, y, width + 1.0f, height, 3 );
+    engine->setStrokeColor( m_border_color );
+    engine->stroke();
 
-    BaseClass::renderEngine().endFrame();
+    engine->endFrame();
 }
 
 } // end of namespace kvs

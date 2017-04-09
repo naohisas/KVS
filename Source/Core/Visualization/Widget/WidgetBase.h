@@ -17,9 +17,13 @@
 #include <kvs/RGBAColor>
 #include <kvs/EventListener>
 #include <kvs/Rectangle>
+#include <kvs/Painter>
+
+/**/
 #include <kvs/OpenGL>
 #include <kvs/NanoVG>
 #include "TextEngine.h"
+/**/
 
 
 namespace kvs
@@ -36,9 +40,7 @@ class WidgetBase : public kvs::Rectangle, public kvs::EventListener
 {
 private:
     kvs::ScreenBase* m_screen; ///< pointer to the screen
-    kvs::OpenGL::Render2D m_render_2d; ///< 2D rendering
-    kvs::NanoVG* m_render_engine; ///< vector graphics engine
-    kvs::TextEngine* m_text_engine; ///< pointer to the text engine
+    kvs::Painter m_painter; ///< painter
 
     int m_margin; ///< margin
     kvs::RGBAColor m_background_color; ///< background color
@@ -68,31 +70,19 @@ public:
     void setBackgroundOpacity( const float opacity );
     void setBackgroundBorderOpacity( const float opacity );
 
-    template <typename Engine>
-    void setTextEngine( const Engine& engine );
-    const kvs::TextEngine& textEngine() const { return *m_text_engine; }
-
     void show();
     void hide();
 
 protected:
     kvs::ScreenBase* screen() { return m_screen; }
-    kvs::OpenGL::Render2D& render2D() { return m_render_2d; }
-    kvs::NanoVG& renderEngine() { return *m_render_engine; }
-    kvs::TextEngine& textEngine() { return *m_text_engine; }
+    kvs::Painter& painter() { return m_painter; }
     virtual void drawBackground();
     virtual int adjustedWidth() { return 0; }
     virtual int adjustedHeight() { return 0; }
+    virtual void initializeEvent();
 
 private:
-    WidgetBase(){}
+//    WidgetBase(){}
 };
-
-template <typename Engine>
-inline void WidgetBase::setTextEngine( const Engine& engine )
-{
-    if ( m_text_engine ) { delete m_text_engine; }
-    m_text_engine = new Engine( engine );
-}
 
 } // end of namespace kvs

@@ -33,14 +33,12 @@ class ScreenBase;
 /*===========================================================================*/
 class ApplicationBase
 {
-protected:
-
+private:
     int m_argc; ///< argument count
     char** m_argv; ///< argument values
     std::list<kvs::ScreenBase*> m_screens; ///< list of the pointer to the screen
 
 public:
-
     ApplicationBase( int argc, char** argv ): m_argc( argc ), m_argv( argv ) {}
     virtual ~ApplicationBase() {}
 
@@ -50,6 +48,9 @@ public:
     void detach( kvs::ScreenBase* screen );
     virtual int run() = 0;
     virtual void quit() = 0;
+
+protected:
+    std::list<kvs::ScreenBase*>& screens() { return m_screens; }
 };
 
 } // end of namespace kvs

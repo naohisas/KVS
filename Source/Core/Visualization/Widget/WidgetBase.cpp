@@ -40,12 +40,13 @@ namespace kvs
 /*===========================================================================*/
 WidgetBase::WidgetBase( kvs::ScreenBase* screen ):
     m_screen( screen ),
-    m_render_engine( new kvs::NanoVG( kvs::NanoVG::Antialias ) ),
-    m_text_engine( new kvs::TextEngine() ),
+    m_painter(),
     m_margin( 0 ),
     m_is_shown( false ),
     m_is_active( false )
 {
+    addEventType( kvs::EventBase::InitializeEvent );
+
     if ( screen ) screen->eventHandler()->attach( this );
 
     // Set default parameters.
@@ -61,8 +62,6 @@ WidgetBase::WidgetBase( kvs::ScreenBase* screen ):
 /*===========================================================================*/
 WidgetBase::~WidgetBase()
 {
-    if ( m_render_engine ) { delete m_render_engine; }
-    if ( m_text_engine ) { delete m_text_engine; }
 }
 
 /*===========================================================================*/
@@ -100,8 +99,6 @@ void WidgetBase::setBackgroundBorderOpacity( const float opacity )
 /*===========================================================================*/
 void WidgetBase::show()
 {
-    if ( m_width == 0 ) m_width = this->adjustedWidth();
-    if ( m_height == 0 ) m_height = this->adjustedHeight();
     m_is_shown = true;
 }
 
@@ -158,6 +155,12 @@ void WidgetBase::drawBackground()
         }
         kvs::OpenGL::End();
     }
+}
+
+void WidgetBase::initializeEvent()
+{
+    if ( m_width == 0 ) m_width = this->adjustedWidth();
+    if ( m_height == 0 ) m_height = this->adjustedHeight();
 }
 
 } // end of namespace kvs

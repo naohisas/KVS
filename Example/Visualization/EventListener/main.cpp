@@ -179,6 +179,7 @@ int main( int argc, char** argv )
 
     // Screen.
     kvs::glut::Screen screen( &app );
+    screen.addEvent( &initialize_event );
     screen.addEvent( &paint_event );
     screen.addEvent( &resize_event );
     screen.addEvent( &mouse_press_event );

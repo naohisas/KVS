@@ -68,9 +68,10 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
 /*===========================================================================*/
 void RadioButton::draw_box()
 {
-    BaseClass::renderEngine().beginFrame( screen()->width(), screen()->height() );
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+    engine->beginFrame( screen()->width(), screen()->height() );
 
-    const int dy = BaseClass::textEngine().height() - ::Default::CircleHeight;
+    const int dy = BaseClass::painter().fontMetrics().height() - ::Default::CircleHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
 
@@ -79,27 +80,27 @@ void RadioButton::draw_box()
     const kvs::Vec2 center( cx, cy );
     const float radius = ::Default::CircleWidth * 0.5f;
 
-    BaseClass::renderEngine().beginPath();
+    engine->beginPath();
 
     const kvs::RGBColor color = m_state ? kvs::RGBColor( 60, 150, 250 ) : ::Default::CircleColor;
-    BaseClass::renderEngine().circle( center, radius );
-    BaseClass::renderEngine().setFillColor( color );
-    BaseClass::renderEngine().fill();
+    engine->circle( center, radius );
+    engine->setFillColor( color );
+    engine->fill();
 
     const float stroke_width = 1.0f;
     const kvs::RGBAColor stroke_color( 0, 0, 0, 0.8f );
-    BaseClass::renderEngine().setStrokeWidth( stroke_width );
-    BaseClass::renderEngine().setStrokeColor( stroke_color );
-    BaseClass::renderEngine().stroke();
+    engine->setStrokeWidth( stroke_width );
+    engine->setStrokeColor( stroke_color );
+    engine->stroke();
 
     const float w = ::Default::CircleWidth;
     const float h = ::Default::CircleHeight;
-    NVGpaint bg = BaseClass::renderEngine().boxGradient( x0 + 1.5f, y0 + 1.5f, w, h, 8, 3, nvgRGBA( 0, 0, 0, 32 ), nvgRGBA( 0, 0, 0, 128 ) );
+    NVGpaint bg = engine->boxGradient( x0 + 1.5f, y0 + 1.5f, w, h, 8, 3, nvgRGBA( 0, 0, 0, 32 ), nvgRGBA( 0, 0, 0, 128 ) );
 
-    BaseClass::renderEngine().setFillPaint( bg );
-    BaseClass::renderEngine().fill();
+    engine->setFillPaint( bg );
+    engine->fill();
 
-    BaseClass::renderEngine().endFrame();
+    engine->endFrame();
 }
 
 /*===========================================================================*/
@@ -109,7 +110,7 @@ void RadioButton::draw_box()
 /*===========================================================================*/
 void RadioButton::draw_mark()
 {
-    const int dy = BaseClass::textEngine().height() - ::Default::CircleHeight;
+    const int dy = BaseClass::painter().fontMetrics().height() - ::Default::CircleHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
 
@@ -119,13 +120,14 @@ void RadioButton::draw_mark()
     const kvs::Vec2 center( cx, cy );
     const float radius = ::Default::CircleWidth * 0.5f / 2.5f;
 
-    BaseClass::renderEngine().beginPath();
+    kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
+    engine->beginPath();
 
-    BaseClass::renderEngine().circle( center, radius );
-    BaseClass::renderEngine().setFillColor( kvs::RGBColor::White() );
-    BaseClass::renderEngine().fill();
+    engine->circle( center, radius );
+    engine->setFillColor( kvs::RGBColor::White() );
+    engine->fill();
 
-    BaseClass::renderEngine().endFrame();
+    engine->endFrame();
 }
 
 /*===========================================================================*/
@@ -136,7 +138,10 @@ void RadioButton::draw_mark()
 /*===========================================================================*/
 int RadioButton::adjustedWidth()
 {
-    return BaseClass::textEngine().width( m_caption ) + ::Default::TextMargin + BaseClass::margin() * 2;
+    BaseClass::painter().begin( BaseClass::screen() );
+    const int text_width = BaseClass::painter().fontMetrics().width( m_caption );
+    BaseClass::painter().end();
+    return text_width + ::Default::TextMargin + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -147,7 +152,10 @@ int RadioButton::adjustedWidth()
 /*===========================================================================*/
 int RadioButton::adjustedHeight()
 {
-    return BaseClass::textEngine().height() + BaseClass::margin() * 2;
+    BaseClass::painter().begin( BaseClass::screen() );
+    const int text_height = BaseClass::painter().fontMetrics().height();
+    BaseClass::painter().end();
+    return text_height + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -160,7 +168,11 @@ int RadioButton::adjustedHeight()
 /*===========================================================================*/
 bool RadioButton::contains( int x, int y )
 {
-    const int dy = BaseClass::textEngine().height() - ::Default::CircleHeight;
+    BaseClass::painter().begin( BaseClass::screen() );
+    const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const int dy = metrics.height() - ::Default::CircleHeight;
+    BaseClass::painter().end();
+
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat x1 = static_cast<GLfloat>( x0 + ::Default::CircleWidth );
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
@@ -180,8 +192,7 @@ void RadioButton::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
-    BaseClass::render2D().begin();
+    BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
 
     this->draw_box();
@@ -189,9 +200,9 @@ void RadioButton::paintEvent()
 
     const int x = BaseClass::x0() + BaseClass::margin() + ::Default::CircleWidth + ::Default::TextMargin;
     const int y = BaseClass::y0() + BaseClass::margin();
-    BaseClass::textEngine().draw( kvs::Vec2( x, y + BaseClass::textEngine().height() ), m_caption, BaseClass::screen() );
+    BaseClass::painter().drawText( kvs::Vec2( x, y + BaseClass::painter().fontMetrics().height() ), m_caption );
 
-    BaseClass::render2D().end();
+    BaseClass::painter().end();
 }
 
 /*===========================================================================*/

@@ -129,6 +129,7 @@ $(OUTDIR)\.\Matrix\Vector2.obj \
 $(OUTDIR)\.\Matrix\Vector3.obj \
 $(OUTDIR)\.\Matrix\Vector4.obj \
 $(OUTDIR)\.\Matrix\ViewingMatrix44.obj \
+$(OUTDIR)\.\NanoVG\FontStash.obj \
 $(OUTDIR)\.\NanoVG\NanoVG.obj \
 $(OUTDIR)\.\NanoVG\nvg.obj \
 $(OUTDIR)\.\Network\Acceptor.obj \
@@ -374,6 +375,7 @@ $(OUTDIR)\.\Visualization\Viewer\Background.obj \
 $(OUTDIR)\.\Visualization\Viewer\Camera.obj \
 $(OUTDIR)\.\Visualization\Viewer\CameraCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\DisplayFormat.obj \
+$(OUTDIR)\.\Visualization\Viewer\FontMetrics.obj \
 $(OUTDIR)\.\Visualization\Viewer\IDManager.obj \
 $(OUTDIR)\.\Visualization\Viewer\Light.obj \
 $(OUTDIR)\.\Visualization\Viewer\Material.obj \
@@ -381,6 +383,8 @@ $(OUTDIR)\.\Visualization\Viewer\Mouse.obj \
 $(OUTDIR)\.\Visualization\Viewer\NormalizedDeviceCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\ObjectCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\ObjectManager.obj \
+$(OUTDIR)\.\Visualization\Viewer\PaintDevice.obj \
+$(OUTDIR)\.\Visualization\Viewer\Painter.obj \
 $(OUTDIR)\.\Visualization\Viewer\RendererManager.obj \
 $(OUTDIR)\.\Visualization\Viewer\Scene.obj \
 $(OUTDIR)\.\Visualization\Viewer\ScreenBase.obj \

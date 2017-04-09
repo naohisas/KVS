@@ -129,6 +129,7 @@ $(OUTDIR)/./Matrix/Vector2.o \
 $(OUTDIR)/./Matrix/Vector3.o \
 $(OUTDIR)/./Matrix/Vector4.o \
 $(OUTDIR)/./Matrix/ViewingMatrix44.o \
+$(OUTDIR)/./NanoVG/FontStash.o \
 $(OUTDIR)/./NanoVG/NanoVG.o \
 $(OUTDIR)/./NanoVG/nvg.o \
 $(OUTDIR)/./Network/Acceptor.o \
@@ -374,6 +375,7 @@ $(OUTDIR)/./Visualization/Viewer/Background.o \
 $(OUTDIR)/./Visualization/Viewer/Camera.o \
 $(OUTDIR)/./Visualization/Viewer/CameraCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/DisplayFormat.o \
+$(OUTDIR)/./Visualization/Viewer/FontMetrics.o \
 $(OUTDIR)/./Visualization/Viewer/IDManager.o \
 $(OUTDIR)/./Visualization/Viewer/Light.o \
 $(OUTDIR)/./Visualization/Viewer/Material.o \
@@ -381,6 +383,8 @@ $(OUTDIR)/./Visualization/Viewer/Mouse.o \
 $(OUTDIR)/./Visualization/Viewer/NormalizedDeviceCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/ObjectCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/ObjectManager.o \
+$(OUTDIR)/./Visualization/Viewer/PaintDevice.o \
+$(OUTDIR)/./Visualization/Viewer/Painter.o \
 $(OUTDIR)/./Visualization/Viewer/RendererManager.o \
 $(OUTDIR)/./Visualization/Viewer/Scene.o \
 $(OUTDIR)/./Visualization/Viewer/ScreenBase.o \
