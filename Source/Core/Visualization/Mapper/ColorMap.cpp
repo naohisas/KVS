@@ -340,7 +340,7 @@ const kvs::RGBColor ColorMap::at( const float value ) const
     const float r = static_cast<float>( m_resolution - 1 );
     const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;
     const size_t s0 = static_cast<size_t>( v );
-    const size_t s1 = s0 + 1;
+    const size_t s1 = kvs::Math::Min( s0 + 1, m_resolution - 1 );
 
     const kvs::RGBColor c0( m_table.data() + ::NumberOfChannels * s0 );
     const kvs::RGBColor c1( m_table.data() + ::NumberOfChannels * s1 );

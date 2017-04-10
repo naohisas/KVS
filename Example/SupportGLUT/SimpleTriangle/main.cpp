@@ -33,7 +33,7 @@
 /*===========================================================================*/
 class PaintEvent : public kvs::PaintEventListener
 {
-    void update( void )
+    void update()
     {
         /* This sample method draws a rainbow colored triangle in the screen by
          * using GL_TRIANGLES.
@@ -77,5 +77,5 @@ int main( int argc, char** argv )
     message.addText( "Quit:        [Esc] or [q]" );
     message.show();
 
-    return( app.run() );
+    return app.run();
 }

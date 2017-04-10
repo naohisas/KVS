@@ -98,6 +98,7 @@ public:
     const std::pair<int,int> registerObject( kvs::ObjectBase* object, kvs::RendererBase* renderer = 0 );
     const std::pair<int,int> registerObject( kvs::VisualizationPipeline* pipeline );
 
+    virtual void create();
     virtual void enable();
     virtual void disable();
     virtual void reset();

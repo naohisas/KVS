@@ -299,6 +299,17 @@ const std::pair<int,int> Screen::registerObject( kvs::VisualizationPipeline* pip
 
 /*===========================================================================*/
 /**
+ *  @brief  Creates a screen.
+ */
+/*===========================================================================*/
+void Screen::create()
+{
+    kvs::glut::ScreenBase::create();
+    m_scene->initializeFunction();
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Enables mosue operation.
  */
 /*===========================================================================*/
@@ -344,8 +355,6 @@ void Screen::initializeEvent()
         (*timer)->start();
         ++timer;
     }
-
-    m_scene->initializeFunction();
 
     kvs::InitializeEvent event;
     BaseClass::eventHandler()->notify( &event );
