@@ -58,12 +58,12 @@ bool Painter::begin( kvs::ScreenBase* screen )
     m_device = screen->paintDevice();
 
     kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
-    kvs::OpenGL::Disable( GL_TEXTURE_1D );
-    kvs::OpenGL::Disable( GL_TEXTURE_2D );
-    kvs::OpenGL::Disable( GL_TEXTURE_3D );
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
-    kvs::OpenGL::Enable( GL_BLEND );
-    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//    kvs::OpenGL::Disable( GL_TEXTURE_1D );
+//    kvs::OpenGL::Disable( GL_TEXTURE_2D );
+//    kvs::OpenGL::Disable( GL_TEXTURE_3D );
+//    kvs::OpenGL::Disable( GL_DEPTH_TEST );
+//    kvs::OpenGL::Enable( GL_BLEND );
+//    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
     kvs::OpenGL::PushMatrix();
@@ -113,32 +113,14 @@ void Painter::drawText( const kvs::Vec2& p, const std::string& text ) const
 {
     KVS_ASSERT( this->isActive() );
 
-    kvs::FontStash* engine = m_device->textEngine();
-    engine->clearState();
-
-    const std::string name = m_font.fontName();
-    const int font_id = engine->fontID( name );
-    engine->setFont( font_id );
-
-    const kvs::Vec2 d( 0.0f, engine->descender() );
-    const kvs::Mat2 r( kvs::Mat2::Rotation( m_font.shadowAngle() ) );
-    const kvs::Vec2 v( m_font.shadowDistance(), 0.0f );
-    if ( m_font.isEnabledShadow() )
-    {
-        engine->pushState();
-        engine->setAlign( m_font.horizontalAlign() | m_font.verticalAlign() );
-        engine->setBlur( m_font.shadowBlur() );
-        engine->setColor( engine->colorID( m_font.shadowColor() ) );
-        engine->setSize( m_font.size() * m_font.shadowSizeRatio() );
-        engine->draw( p + d + r * v, text );
-        engine->popState();
-    }
-
-    engine->setAlign( m_font.horizontalAlign() | m_font.verticalAlign() );
-    engine->setBlur( 0.0f );
-    engine->setColor( engine->colorID( m_font.color() ) );
-    engine->setSize( m_font.size() );
-    engine->draw( p + d, text );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_TEXTURE_1D );
+    attrib.disable( GL_TEXTURE_2D );
+    attrib.disable( GL_TEXTURE_3D );
+    attrib.disable( GL_DEPTH_TEST );
+    attrib.enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    this->draw_text( p, text );
 }
 
 void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
@@ -171,15 +153,23 @@ void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
                 const GLint bottom = view[1] + view[3];
                 kvs::OpenGL::SetOrtho( left, right, bottom, top, 0, 1 );
                 kvs::OpenGL::Translate( 0, 0, -winz );
-                this->drawText( kvs::Vec2( winx, top - ( winy - bottom ) ), text );
+                this->draw_text( kvs::Vec2( winx, top - ( winy - bottom ) ), text );
             }
         }
     }
 }
 
-void Painter::drawText( const kvs::Vec2& p, const kvs::Font::Icon& icon, const float size ) const
+void Painter::drawIcon( const kvs::Vec2& p, const kvs::Font::Icon& icon, const float size ) const
 {
     KVS_ASSERT( this->isActive() );
+
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_TEXTURE_1D );
+    attrib.disable( GL_TEXTURE_2D );
+    attrib.disable( GL_TEXTURE_3D );
+    attrib.disable( GL_DEPTH_TEST );
+    attrib.enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     kvs::FontStash* engine = m_device->textEngine();
     engine->clearState();
@@ -192,6 +182,36 @@ void Painter::drawText( const kvs::Vec2& p, const kvs::Font::Icon& icon, const f
     engine->setColor( engine->colorID( m_font.color() ) );
     engine->setSize( size );
     engine->draw( p + d, ::ToUTF8( icon ) );
+}
+
+void Painter::draw_text( const kvs::Vec2& p, const std::string& text ) const
+{
+    kvs::FontStash* engine = m_device->textEngine();
+    engine->clearState();
+
+    const std::string name = m_font.fontName();
+    const int font_id = engine->fontID( name );
+    engine->setFont( font_id );
+
+    const kvs::Vec2 d( 0.0f, engine->descender() );
+    const kvs::Mat2 r( kvs::Mat2::Rotation( m_font.shadowAngle() ) );
+    const kvs::Vec2 v( m_font.shadowDistance(), 0.0f );
+    if ( m_font.isEnabledShadow() )
+    {
+        engine->pushState();
+        engine->setAlign( m_font.horizontalAlign() | m_font.verticalAlign() );
+        engine->setBlur( m_font.shadowBlur() );
+        engine->setColor( engine->colorID( m_font.shadowColor() ) );
+        engine->setSize( m_font.size() * m_font.shadowSizeRatio() );
+        engine->draw( p + d + r * v, text );
+        engine->popState();
+    }
+
+    engine->setAlign( m_font.horizontalAlign() | m_font.verticalAlign() );
+    engine->setBlur( 0.0f );
+    engine->setColor( engine->colorID( m_font.color() ) );
+    engine->setSize( m_font.size() );
+    engine->draw( p + d, text );
 }
 
 } // end of namespace kvs

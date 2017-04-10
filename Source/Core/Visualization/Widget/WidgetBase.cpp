@@ -99,6 +99,9 @@ void WidgetBase::setBackgroundBorderOpacity( const float opacity )
 /*===========================================================================*/
 void WidgetBase::show()
 {
+    if ( m_width == 0 ) m_width = this->adjustedWidth();
+    if ( m_height == 0 ) m_height = this->adjustedHeight();
+
     m_is_shown = true;
 }
 

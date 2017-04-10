@@ -63,6 +63,7 @@ public:
     void activate() { m_is_active = true; }
     void deactivate() { m_is_active = false; }
 
+    void setFont( const kvs::Font& font ) { m_painter.setFont( font ); }
     void setMargin( const int margin ) { m_margin = margin; }
     void setBackgroundColor( const kvs::RGBAColor& color ) { m_background_color = color; }
     void setBackgroundBorderColor( const kvs::RGBAColor& color ) { m_background_border_color = color; }

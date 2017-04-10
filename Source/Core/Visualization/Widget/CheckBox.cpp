@@ -110,7 +110,7 @@ void CheckBox::draw_mark()
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
     const kvs::RGBColor color = BaseClass::painter().font().color();
     BaseClass::painter().font().setColor( kvs::RGBColor::White() );
-    BaseClass::painter().drawText( kvs::Vec2( x0 + 2, y0 + 18 ), kvs::Font::Check, 28 );
+    BaseClass::painter().drawIcon( kvs::Vec2( x0 + 2, y0 + 18 ), kvs::Font::Check, 28 );
     BaseClass::painter().font().setColor( color );
 }
 

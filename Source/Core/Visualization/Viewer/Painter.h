@@ -35,7 +35,10 @@ public:
     void drawText( const kvs::Vec2i& p, const std::string& text ) const;
     void drawText( const kvs::Vec2& p, const std::string& text ) const;
     void drawText( const kvs::Vec3& p, const std::string& text ) const;
-    void drawText( const kvs::Vec2& p, const kvs::Font::Icon& icon, const float size ) const;
+    void drawIcon( const kvs::Vec2& p, const kvs::Font::Icon& icon, const float size ) const;
+
+private:
+    void draw_text( const kvs::Vec2& p, const std::string& text ) const;
 };
 
 } // end of namespace kvs

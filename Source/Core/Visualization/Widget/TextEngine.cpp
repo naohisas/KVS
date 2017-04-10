@@ -59,14 +59,37 @@ void TextEngine::draw( const kvs::Vec2i& p, const std::string& text, kvs::Screen
 
 void TextEngine::draw( const kvs::Vec2& p, const std::string& text, kvs::ScreenBase* screen ) const
 {
+    GLint view[4]; kvs::OpenGL::GetViewport( view );
+
     kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
     attrib.disable( GL_TEXTURE_1D );
     attrib.disable( GL_TEXTURE_2D );
+//    attrib.enable( GL_TEXTURE_2D );
     attrib.disable( GL_TEXTURE_3D );
     attrib.disable( GL_DEPTH_TEST );
     attrib.enable( GL_BLEND );
-    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    m_font.draw( p, text );
+    attrib.enable( GL_CULL_FACE );
+    {
+        kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        kvs::OpenGL::WithPushedMatrix modelview( GL_MODELVIEW );
+        modelview.loadIdentity();
+        {
+            kvs::OpenGL::WithPushedMatrix projection( GL_PROJECTION );
+            projection.loadIdentity();
+            {
+                kvs::OpenGL::Enable( GL_TEXTURE_2D );
+                kvs::OpenGL::Enable( GL_BLEND );
+                kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+                const GLint left = view[0];
+                const GLint top = view[1];
+                const GLint right = view[0] + view[2];
+                const GLint bottom = view[1] + view[3];
+                kvs::OpenGL::SetOrtho( left, right, bottom, top, 0, 1 );
+                m_font.draw( p, text );
+            }
+        }
+    }
 }
 
 void TextEngine::draw( const kvs::Vec3& p, const std::string& text, kvs::ScreenBase* screen ) const
@@ -80,6 +103,7 @@ void TextEngine::draw( const kvs::Vec3& p, const std::string& text, kvs::ScreenB
     kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
     attrib.disable( GL_TEXTURE_1D );
     attrib.disable( GL_TEXTURE_2D );
+//    attrib.enable( GL_TEXTURE_2D );
     attrib.disable( GL_TEXTURE_3D );
     attrib.enable( GL_DEPTH_TEST );
     attrib.enable( GL_BLEND );
@@ -108,6 +132,7 @@ void TextEngine::draw( const kvs::Vec2& p, const kvs::Font::Icon& icon, const fl
     kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
     attrib.disable( GL_TEXTURE_1D );
     attrib.disable( GL_TEXTURE_2D );
+//    attrib.enable( GL_TEXTURE_2D );
     attrib.disable( GL_TEXTURE_3D );
     attrib.disable( GL_DEPTH_TEST );
     attrib.enable( GL_BLEND );

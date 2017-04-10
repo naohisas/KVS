@@ -459,8 +459,9 @@ std::string Font::fontName() const
     return this->familyName() + this->styleName();
 }
 
-float Font::width( const std::string& text ) const
-{
+
+//float Font::width( const std::string& text ) const
+//{
     /*
     const std::string name = ::FamilyName[this->family()] + ::StyleName[this->style()];
     const int font_id = ::Stash.fontID( name );
@@ -468,11 +469,11 @@ float Font::width( const std::string& text ) const
     ::Stash.setSize( this->size() );
     return ::Stash.textBounds( kvs::Vec2( 0.0f, 0.0f ), text );
     */
-    return 0.0f;
-}
+//    return 0.0f;
+//}
 
-float Font::height() const
-{
+//float Font::height() const
+//{
     /*
     const std::string name = ::FamilyName[this->family()] + ::StyleName[this->style()];
     const int font_id = ::Stash.fontID( name );
@@ -480,11 +481,11 @@ float Font::height() const
     ::Stash.setSize( this->size() );
     return ::Stash.lineHeight();
     */
-    return 0.0f;
-}
+//    return 0.0f;
+//}
 
-void Font::draw( const kvs::Vec2& p, const std::string& text ) const
-{
+//void Font::draw( const kvs::Vec2& p, const std::string& text ) const
+//{
 /*
     ::Stash.clearState();
 
@@ -512,10 +513,10 @@ void Font::draw( const kvs::Vec2& p, const std::string& text ) const
     ::Stash.setSize( this->size() );
     ::Stash.draw( p + d, text );
 */
-}
+//}
 
-void Font::draw( const kvs::Vec2& p, const Font::Icon& icon, const float size ) const
-{
+//void Font::draw( const kvs::Vec2& p, const Font::Icon& icon, const float size ) const
+//{
     /*
     ::Stash.clearState();
 
@@ -527,6 +528,6 @@ void Font::draw( const kvs::Vec2& p, const Font::Icon& icon, const float size ) 
     ::Stash.setSize( size );
     ::Stash.draw( p + d, ::ToUTF8( icon ) );
     */
-}
+//}
 
 } // end of namespace kvs
