@@ -89,7 +89,7 @@ Screen::Screen( kvs::glut::Application* application ):
     m_enable_default_wheel_event( true ),
     m_enable_default_key_press_event( true )
 {
-    m_scene = new kvs::Scene();
+    m_scene = new kvs::Scene( this );
     m_idle_mouse_event_listener = new ::IdleMouseEvent( this );
     m_idle_mouse_timer = new kvs::glut::Timer( m_idle_mouse_event_listener );
 }

@@ -14,6 +14,7 @@
 /*****************************************************************************/
 #include "Scene.h"
 #include <kvs/OpenGL>
+#include <kvs/ScreenBase>
 #include <kvs/Camera>
 #include <kvs/Light>
 #include <kvs/Mouse>
@@ -55,7 +56,8 @@ namespace kvs
  *  @brief  Constructs a new Scene class.
  */
 /*===========================================================================*/
-Scene::Scene():
+Scene::Scene( kvs::ScreenBase* screen ):
+    m_screen( screen ),
     m_target( Scene::TargetObject ),
     m_enable_object_operation( true ),
     m_enable_collision_detection( false )
@@ -126,6 +128,7 @@ const std::pair<int,int> Scene::registerObject( kvs::ObjectBase* object, kvs::Re
 
     // Insert the IDs into the ID manager.
     m_id_manager->insert( object_id, renderer_id );
+    renderer->setScreen( this->screen() );
 
     return std::pair<int,int>( object_id, renderer_id );
 }

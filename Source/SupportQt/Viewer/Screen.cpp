@@ -68,7 +68,7 @@ Screen::Screen( kvs::qt::Application* application, QWidget* parent ):
     m_enable_default_wheel_event( true ),
     m_enable_default_key_press_event( true )
 {
-    m_scene = new kvs::Scene();
+    m_scene = new kvs::Scene( this );
     m_idle_mouse_timer = new QTimer( this );
 }
 

@@ -15,6 +15,7 @@
 #pragma once
 
 #include <kvs/Mouse>
+#include <kvs/ScreenBase>
 
 
 namespace kvs
@@ -49,6 +50,7 @@ public:
 
 private:
 
+    kvs::ScreenBase* m_screen; ///< screen
     kvs::Camera* m_camera; ///< camera
     kvs::Light* m_light; ///< light
     kvs::Mouse* m_mouse; ///< mouse
@@ -62,7 +64,7 @@ private:
 
 public:
 
-    Scene();
+    Scene( kvs::ScreenBase* screen );
     virtual ~Scene();
 
     const std::pair<int,int> registerObject( kvs::ObjectBase* object, kvs::RendererBase* renderer = 0 );
@@ -107,6 +109,7 @@ public:
     void disableObjectOperation() { this->setEnabledObjectOperation( false ); }
     bool isEnabledObjectOperation() const { return m_enable_object_operation; }
 
+    kvs::ScreenBase* screen() { return m_screen; }
     kvs::Camera* camera() { return m_camera; }
     kvs::Light* light() { return m_light; }
     kvs::Mouse* mouse() { return m_mouse; }
