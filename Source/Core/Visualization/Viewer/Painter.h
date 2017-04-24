@@ -11,11 +11,19 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Painter class
+ */
+/*===========================================================================*/
 class Painter
 {
 private:
     kvs::PaintDevice* m_device; ///< paint device (not allocated, just reference)
-    kvs::Font m_font;
+    kvs::Font m_font; ///< font
+    GLdouble m_model[16]; ///< modelview matrix
+    GLdouble m_proj[16]; ///< projection matrix
+    GLint m_view[4]; ///< viewport
 
 public:
     Painter();

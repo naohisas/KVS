@@ -3,6 +3,7 @@
 #include <kvs/Vector2>
 #include <kvs/Matrix22>
 #include <kvs/Assert>
+#include <cstring>
 
 
 namespace
@@ -39,6 +40,9 @@ namespace kvs
 Painter::Painter():
     m_device( NULL )
 {
+    memset( m_model, 0, sizeof( GLdouble ) * 16 );
+    memset( m_proj, 0, sizeof( GLdouble ) * 16 );
+    memset( m_view, 0, sizeof( GLint ) * 4 );
 }
 
 Painter::Painter( kvs::ScreenBase* screen )
@@ -56,14 +60,11 @@ bool Painter::begin( kvs::ScreenBase* screen )
     if ( this->isActive() ) return false;
 
     m_device = screen->paintDevice();
+    kvs::OpenGL::GetModelViewMatrix( m_model );
+    kvs::OpenGL::GetProjectionMatrix( m_proj );
+    kvs::OpenGL::GetViewport( m_view );
 
     kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
-//    kvs::OpenGL::Disable( GL_TEXTURE_1D );
-//    kvs::OpenGL::Disable( GL_TEXTURE_2D );
-//    kvs::OpenGL::Disable( GL_TEXTURE_3D );
-//    kvs::OpenGL::Disable( GL_DEPTH_TEST );
-//    kvs::OpenGL::Enable( GL_BLEND );
-//    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
     kvs::OpenGL::PushMatrix();
@@ -93,6 +94,9 @@ bool Painter::end()
     kvs::OpenGL::PopMatrix();
     kvs::OpenGL::PopAttrib();
     m_device = NULL;
+    memset( m_model, 0, sizeof( GLdouble ) * 16 );
+    memset( m_proj, 0, sizeof( GLdouble ) * 16 );
+    memset( m_view, 0, sizeof( GLint ) * 4 );
 
     return true;
 }
@@ -127,11 +131,8 @@ void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
 {
     KVS_ASSERT( this->isActive() );
 
-    GLdouble model[16]; kvs::OpenGL::GetModelViewMatrix( model );
-    GLdouble proj[16]; kvs::OpenGL::GetProjectionMatrix( proj );
-    GLint view[4]; kvs::OpenGL::GetViewport( view );
     GLdouble winx = 0, winy = 0, winz = 0;
-    kvs::OpenGL::Project( p.x(), p.y(), p.z(), model, proj, view, &winx, &winy, &winz );
+    kvs::OpenGL::Project( p.x(), p.y(), p.z(), m_model, m_proj, m_view, &winx, &winy, &winz );
 
     kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
     attrib.disable( GL_TEXTURE_1D );
@@ -147,10 +148,10 @@ void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
             kvs::OpenGL::WithPushedMatrix projection( GL_PROJECTION );
             projection.loadIdentity();
             {
-                const GLint left = view[0];
-                const GLint top = view[1];
-                const GLint right = view[0] + view[2];
-                const GLint bottom = view[1] + view[3];
+                const GLint left = m_view[0];
+                const GLint top = m_view[1];
+                const GLint right = m_view[0] + m_view[2];
+                const GLint bottom = m_view[1] + m_view[3];
                 kvs::OpenGL::SetOrtho( left, right, bottom, top, 0, 1 );
                 kvs::OpenGL::Translate( 0, 0, -winz );
                 this->draw_text( kvs::Vec2( winx, top - ( winy - bottom ) ), text );
