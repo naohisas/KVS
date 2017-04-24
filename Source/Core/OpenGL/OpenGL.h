@@ -129,7 +129,9 @@ void SetClearColor( const kvs::Vec3& color );
 void SetClearColor( const kvs::Vec4& color );
 void SetClearColor( const kvs::RGBAColor& color );
 void SetPolygonOffset( GLfloat factor, GLfloat units );
+void SetPolygonStipple( const GLubyte* pattern );
 void SetLineWidth( GLfloat width );
+void SetLineStipple( GLint factor, GLushort pattern );
 void SetPointSize( GLfloat size );
 
 void ReadPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data );

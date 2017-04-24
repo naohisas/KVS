@@ -835,9 +835,19 @@ void SetPolygonOffset( GLfloat factor, GLfloat units )
     KVS_GL_CALL( glPolygonOffset( factor, units ) );
 }
 
+void SetPolygonStipple( const GLubyte* pattern )
+{
+    KVS_GL_CALL( glPolygonStipple( pattern ) );
+}
+
 void SetLineWidth( GLfloat width )
 {
     KVS_GL_CALL( glLineWidth( width ) );
+}
+
+void SetLineStipple( GLint factor, GLushort pattern )
+{
+    KVS_GL_CALL( glLineStipple( factor, pattern ) );
 }
 
 void SetPointSize( GLfloat size )
