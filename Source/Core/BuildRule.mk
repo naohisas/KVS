@@ -396,10 +396,13 @@ $(OUTDIR)/./Visualization/Viewer/XformControl.o \
 $(OUTDIR)/./Visualization/Widget/CheckBox.o \
 $(OUTDIR)/./Visualization/Widget/CheckBoxGroup.o \
 $(OUTDIR)/./Visualization/Widget/ColorMapBar.o \
+$(OUTDIR)/./Visualization/Widget/ColorMapPalette.o \
+$(OUTDIR)/./Visualization/Widget/ColorPalette.o \
 $(OUTDIR)/./Visualization/Widget/Font.o \
 $(OUTDIR)/./Visualization/Widget/HistogramBar.o \
 $(OUTDIR)/./Visualization/Widget/Label.o \
 $(OUTDIR)/./Visualization/Widget/OpacityMapBar.o \
+$(OUTDIR)/./Visualization/Widget/OpacityMapPalette.o \
 $(OUTDIR)/./Visualization/Widget/OrientationAxis.o \
 $(OUTDIR)/./Visualization/Widget/PushButton.o \
 $(OUTDIR)/./Visualization/Widget/RadioButton.o \

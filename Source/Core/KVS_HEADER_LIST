@@ -351,10 +351,13 @@ Visualization/Viewer/XformControl
 Visualization/Widget/CheckBox
 Visualization/Widget/CheckBoxGroup
 Visualization/Widget/ColorMapBar
+Visualization/Widget/ColorMapPalette
+Visualization/Widget/ColorPalette
 Visualization/Widget/Font
 Visualization/Widget/HistogramBar
 Visualization/Widget/Label
 Visualization/Widget/OpacityMapBar
+Visualization/Widget/OpacityMapPalette
 Visualization/Widget/OrientationAxis
 Visualization/Widget/PushButton
 Visualization/Widget/RadioButton

@@ -351,10 +351,13 @@
 #include <Core/Visualization/Widget/CheckBox.h>
 #include <Core/Visualization/Widget/CheckBoxGroup.h>
 #include <Core/Visualization/Widget/ColorMapBar.h>
+#include <Core/Visualization/Widget/ColorMapPalette.h>
+#include <Core/Visualization/Widget/ColorPalette.h>
 #include <Core/Visualization/Widget/Font.h>
 #include <Core/Visualization/Widget/HistogramBar.h>
 #include <Core/Visualization/Widget/Label.h>
 #include <Core/Visualization/Widget/OpacityMapBar.h>
+#include <Core/Visualization/Widget/OpacityMapPalette.h>
 #include <Core/Visualization/Widget/OrientationAxis.h>
 #include <Core/Visualization/Widget/PushButton.h>
 #include <Core/Visualization/Widget/RadioButton.h>

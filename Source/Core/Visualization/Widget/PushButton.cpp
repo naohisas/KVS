@@ -63,6 +63,7 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
     this->setButtonColor( ::Default::ButtonColor );
 
     BaseClass::painter().font().setStyleToBold();
+    BaseClass::painter().font().setColor( kvs::RGBColor::White() );
 }
 
 /*===========================================================================*/
@@ -211,11 +212,13 @@ void PushButton::paintEvent()
 
     const size_t text_height = BaseClass::painter().fontMetrics().height();
     const kvs::Vec2 p( this->get_aligned_x(), this->get_aligned_y() + text_height );
+    const kvs::Font font = BaseClass::painter().font();
     BaseClass::painter().font().setColor( kvs::RGBColor::Black() );
     BaseClass::painter().drawText( p, m_caption );
+    BaseClass::painter().setFont( font );
 
     const kvs::Vec2 d( 0.5, 1 );
-    BaseClass::painter().font().setColor( kvs::RGBColor::White() );
+//    BaseClass::painter().font().setColor( kvs::RGBColor::White() );
     BaseClass::painter().drawText( p + d, m_caption );
 
     BaseClass::painter().end();
