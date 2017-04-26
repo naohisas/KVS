@@ -288,6 +288,9 @@
 #include <Core/Visualization/Pipeline/PipelineModule.h>
 #include <Core/Visualization/Pipeline/VisualizationPipeline.h>
 #include <Core/Visualization/Renderer/ArrowGlyph.h>
+#include <Core/Visualization/Renderer/Axis2D.h>
+#include <Core/Visualization/Renderer/Axis2DMatrix.h>
+#include <Core/Visualization/Renderer/Axis3D.h>
 #include <Core/Visualization/Renderer/Bounds.h>
 #include <Core/Visualization/Renderer/DiamondGlyph.h>
 #include <Core/Visualization/Renderer/EnsembleAverageBuffer.h>
@@ -295,6 +298,7 @@
 #include <Core/Visualization/Renderer/HAVSVolumeRenderer.h>
 #include <Core/Visualization/Renderer/ImageRenderer.h>
 #include <Core/Visualization/Renderer/LineRenderer.h>
+#include <Core/Visualization/Renderer/ParallelAxis.h>
 #include <Core/Visualization/Renderer/ParallelCoordinatesRenderer.h>
 #include <Core/Visualization/Renderer/ParticleBasedRenderer.h>
 #include <Core/Visualization/Renderer/ParticleBuffer.h>

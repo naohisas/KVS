@@ -326,6 +326,9 @@ $(OUTDIR)\.\Visualization\Pipeline\ObjectImporter.obj \
 $(OUTDIR)\.\Visualization\Pipeline\PipelineModule.obj \
 $(OUTDIR)\.\Visualization\Pipeline\VisualizationPipeline.obj \
 $(OUTDIR)\.\Visualization\Renderer\ArrowGlyph.obj \
+$(OUTDIR)\.\Visualization\Renderer\Axis2D.obj \
+$(OUTDIR)\.\Visualization\Renderer\Axis2DMatrix.obj \
+$(OUTDIR)\.\Visualization\Renderer\Axis3D.obj \
 $(OUTDIR)\.\Visualization\Renderer\Bounds.obj \
 $(OUTDIR)\.\Visualization\Renderer\DiamondGlyph.obj \
 $(OUTDIR)\.\Visualization\Renderer\EnsembleAverageBuffer.obj \
@@ -334,6 +337,7 @@ $(OUTDIR)\.\Visualization\Renderer\HAVSVolumeRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ImageRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\LineRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\LineRendererGLSL.obj \
+$(OUTDIR)\.\Visualization\Renderer\ParallelAxis.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParallelCoordinatesRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBasedRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBasedRendererGLSL.obj \

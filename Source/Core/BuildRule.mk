@@ -326,6 +326,9 @@ $(OUTDIR)/./Visualization/Pipeline/ObjectImporter.o \
 $(OUTDIR)/./Visualization/Pipeline/PipelineModule.o \
 $(OUTDIR)/./Visualization/Pipeline/VisualizationPipeline.o \
 $(OUTDIR)/./Visualization/Renderer/ArrowGlyph.o \
+$(OUTDIR)/./Visualization/Renderer/Axis2D.o \
+$(OUTDIR)/./Visualization/Renderer/Axis2DMatrix.o \
+$(OUTDIR)/./Visualization/Renderer/Axis3D.o \
 $(OUTDIR)/./Visualization/Renderer/Bounds.o \
 $(OUTDIR)/./Visualization/Renderer/DiamondGlyph.o \
 $(OUTDIR)/./Visualization/Renderer/EnsembleAverageBuffer.o \
@@ -334,6 +337,7 @@ $(OUTDIR)/./Visualization/Renderer/HAVSVolumeRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ImageRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/LineRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/LineRendererGLSL.o \
+$(OUTDIR)/./Visualization/Renderer/ParallelAxis.o \
 $(OUTDIR)/./Visualization/Renderer/ParallelCoordinatesRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBasedRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBasedRendererGLSL.o \

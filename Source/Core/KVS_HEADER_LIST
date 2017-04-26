@@ -288,6 +288,9 @@ Visualization/Pipeline/ObjectImporter
 Visualization/Pipeline/PipelineModule
 Visualization/Pipeline/VisualizationPipeline
 Visualization/Renderer/ArrowGlyph
+Visualization/Renderer/Axis2D
+Visualization/Renderer/Axis2DMatrix
+Visualization/Renderer/Axis3D
 Visualization/Renderer/Bounds
 Visualization/Renderer/DiamondGlyph
 Visualization/Renderer/EnsembleAverageBuffer
@@ -295,6 +298,7 @@ Visualization/Renderer/GlyphBase
 Visualization/Renderer/HAVSVolumeRenderer
 Visualization/Renderer/ImageRenderer
 Visualization/Renderer/LineRenderer
+Visualization/Renderer/ParallelAxis
 Visualization/Renderer/ParallelCoordinatesRenderer
 Visualization/Renderer/ParticleBasedRenderer
 Visualization/Renderer/ParticleBuffer
