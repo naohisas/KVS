@@ -1,17 +1,3 @@
-/*****************************************************************************/
-/**
- *  @file   TransferFunctionEditor.cpp
- *  @author Naohisa Sakamoto
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TransferFunctionEditor.cpp 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
- */
-/*****************************************************************************/
 #include "TransferFunctionEditor.h"
 #include <kvs/DebugNew>
 #include <kvs/MouseEvent>
@@ -30,14 +16,14 @@
 namespace
 {
 
-class ResetButton : public kvs::glut::PushButton
+class ResetButton : public kvs::PushButton
 {
     kvs::glut::TransferFunctionEditor* m_editor;
 
 public:
 
     ResetButton( kvs::glut::TransferFunctionEditor* editor ):
-        kvs::glut::PushButton( editor ),
+        kvs::PushButton( editor ),
         m_editor( editor )
     {
     }
@@ -48,14 +34,14 @@ public:
     }
 };
 
-class ApplyButton : public kvs::glut::PushButton
+class ApplyButton : public kvs::PushButton
 {
     kvs::glut::TransferFunctionEditor* m_editor;
 
 public:
 
     ApplyButton( kvs::glut::TransferFunctionEditor* editor ):
-        kvs::glut::PushButton( editor ),
+        kvs::PushButton( editor ),
         m_editor( editor )
     {
     }
@@ -66,14 +52,14 @@ public:
     }
 };
 
-class SaveButton : public kvs::glut::PushButton
+class SaveButton : public kvs::PushButton
 {
     kvs::glut::TransferFunctionEditor* m_editor;
 
 public:
 
     SaveButton( kvs::glut::TransferFunctionEditor* editor ):
-        kvs::glut::PushButton( editor ),
+        kvs::PushButton( editor ),
         m_editor( editor )
     {
     }
@@ -84,14 +70,14 @@ public:
     }
 };
 
-class UndoButton : public kvs::glut::PushButton
+class UndoButton : public kvs::PushButton
 {
     kvs::glut::TransferFunctionEditor* m_editor;
 
 public:
 
     UndoButton( kvs::glut::TransferFunctionEditor* editor ):
-        kvs::glut::PushButton( editor ),
+        kvs::PushButton( editor ),
         m_editor( editor )
     {
     }
@@ -102,14 +88,14 @@ public:
     }
 };
 
-class RedoButton : public kvs::glut::PushButton
+class RedoButton : public kvs::PushButton
 {
     kvs::glut::TransferFunctionEditor* m_editor;
 
 public:
 
     RedoButton( kvs::glut::TransferFunctionEditor* editor ):
-        kvs::glut::PushButton( editor ),
+        kvs::PushButton( editor ),
         m_editor( editor )
     {
     }
@@ -149,12 +135,17 @@ TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
     const int width = 350;
     const int height = 512;
     const int margin = 10;
-    const kvs::RGBColor color( 200, 200, 200 );
+    const kvs::RGBColor base_color( 50, 50, 50 );
 
-    SuperClass::scene()->background()->setColor( color );
+    kvs::Font caption_font;
+    caption_font.setStyleToBold();
+    caption_font.setColor( kvs::RGBColor( 180, 180, 180 ) );
+
+    SuperClass::setBackgroundColor( base_color );
     SuperClass::setTitle( title );
     SuperClass::setPosition( x, y );
     SuperClass::setSize( width, height );
+    SuperClass::create();
 
     const size_t resolution = 256;
     m_initial_transfer_function.create( resolution );
@@ -166,28 +157,33 @@ TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
 
     m_max_stack_size = 10;
 
-    m_color_palette = new kvs::glut::ColorPalette( this );
+    m_color_palette = new kvs::ColorPalette( this );
     m_color_palette->setCaption( "Color palette" );
+    m_color_palette->setFont( caption_font );
+    m_color_palette->setY( -7 );
+    m_color_palette->setHeight( 170 );
     m_color_palette->show();
 
-    m_color_map_palette = new kvs::glut::ColorMapPalette( this );
-    m_color_map_palette->setCaption( "Color" );
+    m_color_map_palette = new kvs::ColorMapPalette( this );
+    m_color_map_palette->setCaption( "Color map" );
+    m_color_map_palette->setFont( caption_font );
     m_color_map_palette->setColorMap( m_initial_transfer_function.colorMap() );
     m_color_map_palette->setX( m_color_palette->x0() );
     m_color_map_palette->setY( m_color_palette->y1() - m_color_palette->margin() );
     m_color_map_palette->attachColorPalette( m_color_palette );
     m_color_map_palette->show();
 
-    m_opacity_map_palette = new kvs::glut::OpacityMapPalette( this );
-    m_opacity_map_palette->setCaption( "Opacity" );
+    m_opacity_map_palette = new kvs::OpacityMapPalette( this );
+    m_opacity_map_palette->setCaption( "Opacity map" );
+    m_opacity_map_palette->setFont( caption_font );
     m_opacity_map_palette->setOpacityMap( m_initial_transfer_function.opacityMap() );
     m_opacity_map_palette->setX( m_color_map_palette->x0() );
     m_opacity_map_palette->setY( m_color_map_palette->y1() - m_color_map_palette->margin() );
-    m_opacity_map_palette->setHeight( 100 );
     m_opacity_map_palette->show();
 
-    m_histogram = new kvs::glut::Histogram( this );
+    m_histogram = new kvs::HistogramBar( this );
     m_histogram->setCaption( "Histogram" );
+    m_histogram->setFont( caption_font );
     m_histogram->setX( m_opacity_map_palette->x0() );
     m_histogram->setY( m_opacity_map_palette->y1() - m_opacity_map_palette->margin() );
     m_histogram->setHeight( 100 );
@@ -199,37 +195,47 @@ TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
 
     m_reset_button = new ::ResetButton( this );
     m_reset_button->setCaption( "Reset" );
+    m_reset_button->setFont( caption_font );
     m_reset_button->setX( m_histogram->x0() + m_histogram->margin() );
-    m_reset_button->setY( m_histogram->y1() );
+    m_reset_button->setY( m_histogram->y1() + 10 );
     m_reset_button->setWidth( button_width );
+    m_reset_button->setButtonColor( base_color * 1.5 );
     m_reset_button->show();
 
     m_undo_button = new ::UndoButton( this );
     m_undo_button->setCaption( "Undo" );
+    m_undo_button->setFont( caption_font );
     m_undo_button->setX( m_reset_button->x1() + button_margin );
     m_undo_button->setY( m_reset_button->y() );
     m_undo_button->setWidth( ( button_width - button_margin ) / 2 );
+    m_undo_button->setButtonColor( base_color * 1.5 );
     m_undo_button->show();
 
     m_redo_button = new ::RedoButton( this );
     m_redo_button->setCaption( "Redo" );
+    m_redo_button->setFont( caption_font );
     m_redo_button->setX( m_undo_button->x1() + button_margin );
     m_redo_button->setY( m_undo_button->y() );
     m_redo_button->setWidth( ( button_width - button_margin ) / 2 );
+    m_redo_button->setButtonColor( base_color * 1.5 );
     m_redo_button->show();
 
     m_save_button = new ::SaveButton( this );
     m_save_button->setCaption( "Save" );
+    m_save_button->setFont( caption_font );
     m_save_button->setX( m_reset_button->x0() );
     m_save_button->setY( m_reset_button->y1() + button_margin );
     m_save_button->setWidth( button_width );
+    m_save_button->setButtonColor( base_color * 1.5 );
     m_save_button->show();
 
     m_apply_button = new ::ApplyButton( this );
     m_apply_button->setCaption( "Apply" );
+    m_apply_button->setFont( caption_font );
     m_apply_button->setX( m_save_button->x1() + button_margin );
     m_apply_button->setY( m_save_button->y0() );
     m_apply_button->setWidth( ( width -margin ) / 2 - m_opacity_map_palette->margin() );
+    m_apply_button->setButtonColor( base_color * 1.5 );
     m_apply_button->show();
 }
 
