@@ -497,8 +497,6 @@ void Screen::defaultPaintEvent()
         kvs::PaintEvent event;
         BaseClass::eventHandler()->notify( &event );
     }
-
-    kvs::OpenGL::Flush();
 }
 
 /*===========================================================================*/

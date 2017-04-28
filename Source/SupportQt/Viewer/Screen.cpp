@@ -462,12 +462,8 @@ void Screen::defaultPaintEvent()
         kvs::PaintEvent event;
         BaseClass::eventHandler()->notify( &event );
     }
-
-    kvs::OpenGL::Flush();
-    /* There is no need to explicitly call 'QGLWidget::swapBuffers()', because
-     * it is done automatically after paintGL() has been executed.
-     */
 }
+
 /*===========================================================================*/
 /**
  *  @brief  Default resize event.

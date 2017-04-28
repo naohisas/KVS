@@ -92,9 +92,6 @@ void ScreenBase::create()
 
     QGLWidget::makeCurrent();
 
-    // Create paint device.
-    BaseClass::paintDevice()->create();
-
     // Create window.
     static int counter = 0;
     m_id = counter++;
@@ -250,6 +247,9 @@ void ScreenBase::initializeGL()
         kvsMessageError( "GLEW initialization failed: %s.", message );
     }
 #endif
+
+    // Create paint device.
+    BaseClass::paintDevice()->create();
 
     this->initializeEvent();
 }
