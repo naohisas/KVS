@@ -285,15 +285,19 @@ kvs::Real32 ParticleDensityMap::max_density( const kvs::Real32 s0, const kvs::Re
 
     kvs::Real32 max_density = this->table().at( i0 );
 
+#if defined(_OPENMP) && (_OPENMP >= 201107)
     KVS_OMP_PARALLEL()
     {
         KVS_OMP_FOR( reduction(max:max_density) )
+#endif
         for( size_t i = i0; i <= i1; i++ )
         {
             const kvs::Real32 density =  this->table().at(i);
             max_density = kvs::Math::Max( max_density, density );
         }
+#if defined(_OPENMP) && (_OPENMP >= 201107)
     }
+#endif
     return max_density;
 }
 
