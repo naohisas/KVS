@@ -1,3 +1,38 @@
+### Version 2.7.0 Released (20xx.x.x)
+**Add new classes and functions**
++ kvs::Vec2u
++ kvs::Vec3u
++ kvs::Vec4u
++ kvs::OpenGL::Vertex
++ kvs::OpenGL::Color
++ kvs::OpenGL::TexCoord
++ kvs::OpenMP::SetNumberOfThreads
++ kvs::OpenMP::GetNumberOfThreads
++ kvs::OpenMP::GetMaxThreads
++ kvs::OpenMP::GetThreadNumber
++ kvs::OpenMP::GetThreadLimit
++ kvs::OpenMP::GetNumberOfProcessors
++ kvs::OpenMP::InParallel
++ kvs::OpenMP::SetDynamic
++ kvs::OpenMP::GetNested
++ kvs::OpenMP::SetNested
++ kvs::OpenMP::SetMaxActiveLevels
++ kvs::OpenMP::GetMaxActiveLevels
++ kvs::OpenMP::GetLevel
++ kvs::OpenMP::GetAncestorThreadNumber
++ kvs::OpenMP::GetTeamSize
++ kvs::OpenMP::GetActiveLevel
++ kvs::OpenMP::InFinal
++ kvs::OpenMP::GetWTime
++ kvs::OpenMP::GetWTick
+
+**Add new example**
++ Example/OpenMP/Hello
+
+**Supported environment parameter KVS_CPP**
+**Supported compiler option KVS_ENABLE_OSMESA for OSMesa**
+**Supported compiler option KVS_ENABLE_OPENMP for OpenMP**
+
 ### Version 2.6.0 Released (2016.4.5)
 **Add new classes and functions**
 + kvs::StylizedLineRenderer
