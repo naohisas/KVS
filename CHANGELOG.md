@@ -1,11 +1,22 @@
 ### Version 2.7.0 Released (20xx.x.x)
 **Add new classes and functions**
++ kvs::HCLColor
 + kvs::Vec2u
 + kvs::Vec3u
 + kvs::Vec4u
 + kvs::OpenGL::Vertex
 + kvs::OpenGL::Color
++ kvs::OpenGL::Normal
 + kvs::OpenGL::TexCoord
++ kvs::OpenGL::Hint
++ kvs::OpenGL::SetLightModel
++ kvs::OpenGL::LoadMatrix
++ kvs::OpenGL::Rotate
++ kvs::OpenGL::Scale
++ kvs::OpenGL::Translate
++ kvs::OpenGL::DrawCylinder
++ kvs::OpenGL::DrawSphere
++ kvs::OpenGL::Render2D
 + kvs::OpenMP::SetNumberOfThreads
 + kvs::OpenMP::GetNumberOfThreads
 + kvs::OpenMP::GetMaxThreads
@@ -25,12 +36,19 @@
 + kvs::OpenMP::InFinal
 + kvs::OpenMP::GetWTime
 + kvs::OpenMP::GetWTick
++ kvs::OpenMP::Mutex
+
+**Removed setSubpixelLevel in particle sampling classes**
++ setSubpixelLevel( subpixel_level ) -> (removed, use setRepetitionLevel( subpixel_level * subpixel_level ))
++ Note: An argument in constructor of particle sampling class is modified to repetition_level not subpixel_level.
 
 **Add new example**
 + Example/OpenMP/Hello
 
 **Supported environment parameter KVS_CPP**
+
 **Supported compiler option KVS_ENABLE_OSMESA for OSMesa**
+
 **Supported compiler option KVS_ENABLE_OPENMP for OpenMP**
 
 ### Version 2.6.0 Released (2016.4.5)
