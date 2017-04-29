@@ -1,6 +1,7 @@
 ### Version 2.7.0 Released (20xx.x.x)
-**Add new classes and functions**
+**Added new classes and functions**
 + kvs::HCLColor
++ kvs::Rectangle
 + kvs::Vec2u
 + kvs::Vec3u
 + kvs::Vec4u
@@ -10,6 +11,7 @@
 + kvs::OpenGL::TexCoord
 + kvs::OpenGL::Hint
 + kvs::OpenGL::SetLightModel
++ kvs::OpenGL::SetPointSize
 + kvs::OpenGL::LoadMatrix
 + kvs::OpenGL::Rotate
 + kvs::OpenGL::Scale
@@ -37,19 +39,55 @@
 + kvs::OpenMP::GetWTime
 + kvs::OpenMP::GetWTick
 + kvs::OpenMP::Mutex
++ kvs::NanoVG
++ kvs::Font
++ kvs::WidgetBase
++ kvs::CheckBox
++ kvs::CheckBoxGroup
++ kvs::ColorMapMar
++ kvs::HistogramBar
++ kvs::Label
++ kvs::OpacityMapBar
++ kvs::OrientationAxis
++ kvs::PushButton
++ kvs::RadioButton
++ kvs::RadioButtonGroup
++ kvs::Slider
+
+**Removed classes**
++ kvs::glut::Rectangle (use kvs::Rectangle)
 
 **Removed setSubpixelLevel in particle sampling classes**
 + setSubpixelLevel( subpixel_level ) -> (removed, use setRepetitionLevel( subpixel_level * subpixel_level ))
 + Note: An argument in constructor of particle sampling class is modified to repetition_level not subpixel_level.
 
-**Add new example**
+**Reimplemented with OpenMP**
++ kvs::CellByCellLayeredSampling
++ kvs::CellByCellMetropolisSampling
++ kvs::CellByCellRejectionSampling
++ kvs::CellByCellUniformSampling
+
+**Added TrueType fonts**
++ NotoSans-Regular.ttf
++ NotoSans-Bold.ttf
++ NotoSans-Italic.ttf
++ NotoSans-BoldItalic.ttf
++ NotoSerif-Regular.ttf
++ NotoSerif-Bold.ttf
++ NotoSerif-Italic.ttf
++ NotoSerif-BoldItalic.ttf
++ entypo.ttf
+
+**Added new example**
 + Example/OpenMP/Hello
 
-**Supported environment parameter KVS_CPP**
+**Added some new option in KVS**
++ Environment parameter KVS_CPP for c++ compiler
++ Compiler option KVS_ENABLE_OSMESA for OSMesa
++ Compiler option KVS_ENABLE_OPENMP for OpenMP
 
-**Supported compiler option KVS_ENABLE_OSMESA for OSMesa**
-
-**Supported compiler option KVS_ENABLE_OPENMP for OpenMP**
+**Added a new option in kvsmake**
++ Options 'q' and 'Q' for compiling Qt program with kvsmake
 
 ### Version 2.6.0 Released (2016.4.5)
 **Add new classes and functions**
