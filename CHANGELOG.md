@@ -12,6 +12,8 @@
 + kvs::OpenGL::Hint
 + kvs::OpenGL::SetLightModel
 + kvs::OpenGL::SetPointSize
++ kvs::OpenGL::SetPolygonStipple
++ kvs::OpenGL::SetLineStipple
 + kvs::OpenGL::LoadMatrix
 + kvs::OpenGL::Rotate
 + kvs::OpenGL::Scale
@@ -40,19 +42,30 @@
 + kvs::OpenMP::GetWTick
 + kvs::OpenMP::Mutex
 + kvs::NanoVG
++ kvs::FontStash
 + kvs::Font
++ kvs::FontMetrics
++ kvs::Painter
++ kvs::PaintDevice
 + kvs::WidgetBase
 + kvs::CheckBox
 + kvs::CheckBoxGroup
 + kvs::ColorMapMar
++ kvs::ColorMapPalette
++ kvs::ColorPalette
 + kvs::HistogramBar
 + kvs::Label
 + kvs::OpacityMapBar
++ kvs::OpacityMapPalette
 + kvs::OrientationAxis
 + kvs::PushButton
 + kvs::RadioButton
 + kvs::RadioButtonGroup
 + kvs::Slider
++ kvs::Axis2D
++ kvs::Axis2DMatrix
++ kvs::Axis3D
++ kvs::ParallelAxis
 
 **Removed classes**
 + kvs::glut::Rectangle (use kvs::Rectangle)
