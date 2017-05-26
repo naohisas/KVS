@@ -25,6 +25,7 @@
 #include <kvs/Ply>
 #include <kvs/Tiff>
 #include <kvs/Dicom>
+#include <kvs/IPLab>
 #include <kvs/KVSMLImageObject>
 #include <kvs/KVSMLPointObject>
 #include <kvs/KVSMLLineObject>
@@ -178,6 +179,12 @@ bool ObjectImporter::estimate_file_format()
     {
         m_importer_type = ObjectImporter::Image;
         m_file_format = new kvs::Dicom;
+    }
+
+    else if ( kvs::IPLab::CheckExtension( file.filePath() ) )
+    {
+        m_importer_type = ObjectImporter::Image;
+        m_file_format = new kvs::IPLab;
     }
 
     else if ( file.extension() == "kvsml" ||

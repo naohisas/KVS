@@ -9,6 +9,8 @@ FileFormat/FrontFlow/FrontFlow
 FileFormat/FrontSTR/FrontSTR
 FileFormat/GIS/Gis
 FileFormat/GrADS/GrADS
+FileFormat/IPLab/IPLab
+FileFormat/IPLab/IPLabList
 FileFormat/KVSML/KVSMLImageObject
 FileFormat/KVSML/KVSMLLineObject
 FileFormat/KVSML/KVSMLObjectImage

@@ -170,6 +170,27 @@ ImageImporter::ImageImporter( const std::string& filename )
         this->import( file_format );
         delete file_format;
     }
+    else if ( kvs::IPLab::CheckExtension( filename ) )
+    {
+        kvs::IPLab* file_format = new kvs::IPLab( filename );
+        if( !file_format )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            return;
+        }
+
+        if( file_format->isFailure() )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            delete file_format;
+            return;
+        }
+
+        this->import( file_format );
+        delete file_format;
+    }
 
     else
     {
@@ -240,6 +261,10 @@ ImageImporter::SuperClass* ImageImporter::exec( const kvs::FileFormatBase* file_
         this->import( image );
     }
     else if ( const kvs::Dicom* image = dynamic_cast<const kvs::Dicom*>( file_format ) )
+    {
+        this->import( image );
+    }
+    else if ( const kvs::IPLab* image = dynamic_cast<const kvs::IPLab*>( file_format ) )
     {
         this->import( image );
     }
@@ -355,6 +380,19 @@ void ImageImporter::import( const kvs::Dicom* dicom )
 {
     SuperClass::setSize( dicom->column(), dicom->row() );
     SuperClass::setPixels( dicom->pixelData(), kvs::ImageObject::Gray8 ); // shallow copy
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Imports IPLab image format data.
+ *  @param  dicom [in] pointer to IPLab image format data
+ */
+/*==========================================================================*/
+void ImageImporter::import( const kvs::IPLab* ipl )
+{
+    const size_t index = ipl->importingFrameIndex();
+    SuperClass::setSize( ipl->width(), ipl->height() );
+    SuperClass::setPixels( ipl->data( index ), kvs::ImageObject::Gray8 ); // shallow copy
 }
 
 } // end of namespace kvs

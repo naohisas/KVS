@@ -45,6 +45,8 @@ $(OUTDIR)\.\FileFormat\GrADS\Title.obj \
 $(OUTDIR)\.\FileFormat\GrADS\Undef.obj \
 $(OUTDIR)\.\FileFormat\GrADS\Vars.obj \
 $(OUTDIR)\.\FileFormat\GrADS\XYZDef.obj \
+$(OUTDIR)\.\FileFormat\IPLab\IPLab.obj \
+$(OUTDIR)\.\FileFormat\IPLab\IPLabList.obj \
 $(OUTDIR)\.\FileFormat\KVSML\CellTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\ColorMapTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\ColorTag.obj \
@@ -573,6 +575,12 @@ $<
 $<
 <<
 
+{.\FileFormat\IPLab\}.cpp{$(OUTDIR)\.\FileFormat\IPLab\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\IPLab $(MKDIR) $(OUTDIR)\.\FileFormat\IPLab
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\IPLab\ @<<
+$<
+<<
+
 {.\FileFormat\GrADS\}.cpp{$(OUTDIR)\.\FileFormat\GrADS\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\GrADS $(MKDIR) $(OUTDIR)\.\FileFormat\GrADS
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\GrADS\ @<<
@@ -649,6 +657,8 @@ install::
 	$(INSTALL) .\FileFormat\GIS\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\GIS
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS
 	$(INSTALL) .\FileFormat\GrADS\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
+	$(INSTALL) .\FileFormat\IPLab\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML
 	$(INSTALL) .\FileFormat\KVSML\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\PLY $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\PLY

@@ -45,6 +45,8 @@ $(OUTDIR)/./FileFormat/GrADS/Title.o \
 $(OUTDIR)/./FileFormat/GrADS/Undef.o \
 $(OUTDIR)/./FileFormat/GrADS/Vars.o \
 $(OUTDIR)/./FileFormat/GrADS/XYZDef.o \
+$(OUTDIR)/./FileFormat/IPLab/IPLab.o \
+$(OUTDIR)/./FileFormat/IPLab/IPLabList.o \
 $(OUTDIR)/./FileFormat/KVSML/CellTag.o \
 $(OUTDIR)/./FileFormat/KVSML/ColorMapTag.o \
 $(OUTDIR)/./FileFormat/KVSML/ColorTag.o \
@@ -521,6 +523,10 @@ $(OUTDIR)/./FileFormat/KVSML/%.o: ./FileFormat/KVSML/%.cpp ./FileFormat/KVSML/%.
 	$(MKDIR) $(OUTDIR)/./FileFormat/KVSML
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/IPLab/%.o: ./FileFormat/IPLab/%.cpp ./FileFormat/IPLab/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/IPLab
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/GrADS/%.o: ./FileFormat/GrADS/%.cpp ./FileFormat/GrADS/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/GrADS
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -579,6 +585,8 @@ install::
 	$(INSTALL) ./FileFormat/GIS/*.h $(INSTALL_DIR)/include/Core/./FileFormat/GIS
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/GrADS
 	$(INSTALL) ./FileFormat/GrADS/*.h $(INSTALL_DIR)/include/Core/./FileFormat/GrADS
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
+	$(INSTALL) ./FileFormat/IPLab/*.h $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(INSTALL) ./FileFormat/KVSML/*.h $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PLY

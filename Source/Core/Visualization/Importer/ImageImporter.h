@@ -24,6 +24,7 @@
 #include <kvs/Pgm>
 #include <kvs/Pbm>
 #include <kvs/Dicom>
+#include <kvs/IPLab>
 
 
 namespace kvs
@@ -55,6 +56,7 @@ private:
     void import( const kvs::Pgm* pgm );
     void import( const kvs::Pbm* pbm );
     void import( const kvs::Dicom* dicom );
+    void import( const kvs::IPLab* ipl );
 };
 
 } // end of namespace kvs

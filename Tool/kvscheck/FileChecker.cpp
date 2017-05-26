@@ -33,6 +33,7 @@
 #include <kvs/Ppm>
 #include <kvs/Stl>
 #include <kvs/Tiff>
+#include <kvs/IPLab>
 #include <kvs/File>
 #include <kvs/Timer>
 #include <iostream>
@@ -223,6 +224,11 @@ FileChecker::FormatType FileChecker::fileFormat() const
         return FileChecker::TIFFFormat;
     }
 
+    if ( kvs::IPLab::CheckExtension( m_filename ) )
+    {
+        return FileChecker::IPLabFormat;
+    }
+
     return FileChecker::UnknownFormat;
 }
 
@@ -301,6 +307,10 @@ std::ostream& operator << ( std::ostream& os, const FileChecker& checker )
 
     case FileChecker::TIFFFormat:
         PRINT_INFO( kvs::Tiff, os, checker );
+        break;
+
+    case FileChecker::IPLabFormat:
+        PRINT_INFO( kvs::IPLab, os, checker );
         break;
 
     default:

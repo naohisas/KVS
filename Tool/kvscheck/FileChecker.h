@@ -46,7 +46,8 @@ public:
         PGMFormat,         ///< PGM image format
         PPMFormat,         ///< PPM image format
         STLFormat,         ///< STL format
-        TIFFFormat         ///< TIFF image format
+        TIFFFormat,        ///< TIFF image format
+        IPLabFormat        ///< IPLab image format
     };
 
 private:
