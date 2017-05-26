@@ -67,6 +67,23 @@
 + kvs::Axis3D
 + kvs::ParallelAxis
 
+**Added SupportPython**
++ kvs::python::Array
++ kvs::python::Bool
++ kvs::python::Callable
++ kvs::python::Dict
++ kvs::python::Float
++ kvs::python::Int
++ kvs::python::Interpreter
++ kvs::python::List
++ kvs::python::Module
++ kvs::python::NumPy
++ kvs::python::Object
++ kvs::python::Python
++ kvs::python::String
++ kvs::python::Table
++ kvs::python::Tuple
+
 **Removed classes**
 + kvs::glut::Rectangle (use kvs::Rectangle)
 
