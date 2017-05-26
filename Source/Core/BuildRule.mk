@@ -5,6 +5,19 @@
 OBJECTS := \
 $(OUTDIR)/./FileFormat/AVSField/AVSField.o \
 $(OUTDIR)/./FileFormat/AVSUCD/AVSUcd.o \
+$(OUTDIR)/./FileFormat/BDML/BDMLData.o \
+$(OUTDIR)/./FileFormat/BDML/BDMLTag.o \
+$(OUTDIR)/./FileFormat/BDML/ComponentTag.o \
+$(OUTDIR)/./FileFormat/BDML/DataTag.o \
+$(OUTDIR)/./FileFormat/BDML/FeatureTag.o \
+$(OUTDIR)/./FileFormat/BDML/InfoTag.o \
+$(OUTDIR)/./FileFormat/BDML/LineTag.o \
+$(OUTDIR)/./FileFormat/BDML/MeasurementTag.o \
+$(OUTDIR)/./FileFormat/BDML/PropertyTag.o \
+$(OUTDIR)/./FileFormat/BDML/ScaleUnitTag.o \
+$(OUTDIR)/./FileFormat/BDML/Tag.o \
+$(OUTDIR)/./FileFormat/BDML/XYZSequenceTag.o \
+$(OUTDIR)/./FileFormat/BDML/XYZTag.o \
 $(OUTDIR)/./FileFormat/BMP/Bmp.o \
 $(OUTDIR)/./FileFormat/BMP/FileHeader.o \
 $(OUTDIR)/./FileFormat/BMP/InfoHeader.o \
@@ -555,6 +568,10 @@ $(OUTDIR)/./FileFormat/BMP/%.o: ./FileFormat/BMP/%.cpp ./FileFormat/BMP/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/BMP
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/BDML/%.o: ./FileFormat/BDML/%.cpp ./FileFormat/BDML/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/BDML
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/AVSUCD/%.o: ./FileFormat/AVSUCD/%.cpp ./FileFormat/AVSUCD/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/AVSUCD
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -571,6 +588,8 @@ install::
 	$(INSTALL) ./FileFormat/AVSField/*.h $(INSTALL_DIR)/include/Core/./FileFormat/AVSField
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/AVSUCD
 	$(INSTALL) ./FileFormat/AVSUCD/*.h $(INSTALL_DIR)/include/Core/./FileFormat/AVSUCD
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/BDML
+	$(INSTALL) ./FileFormat/BDML/*.h $(INSTALL_DIR)/include/Core/./FileFormat/BDML
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/BMP
 	$(INSTALL) ./FileFormat/BMP/*.h $(INSTALL_DIR)/include/Core/./FileFormat/BMP
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/CSV

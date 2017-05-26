@@ -5,6 +5,19 @@
 OBJECTS = \
 $(OUTDIR)\.\FileFormat\AVSField\AVSField.obj \
 $(OUTDIR)\.\FileFormat\AVSUCD\AVSUcd.obj \
+$(OUTDIR)\.\FileFormat\BDML\BDMLData.obj \
+$(OUTDIR)\.\FileFormat\BDML\BDMLTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\ComponentTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\DataTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\FeatureTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\InfoTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\LineTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\MeasurementTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\PropertyTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\ScaleUnitTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\Tag.obj \
+$(OUTDIR)\.\FileFormat\BDML\XYZSequenceTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\XYZTag.obj \
 $(OUTDIR)\.\FileFormat\BMP\Bmp.obj \
 $(OUTDIR)\.\FileFormat\BMP\FileHeader.obj \
 $(OUTDIR)\.\FileFormat\BMP\InfoHeader.obj \
@@ -623,6 +636,12 @@ $<
 $<
 <<
 
+{.\FileFormat\BDML\}.cpp{$(OUTDIR)\.\FileFormat\BDML\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\BDML $(MKDIR) $(OUTDIR)\.\FileFormat\BDML
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\BDML\ @<<
+$<
+<<
+
 {.\FileFormat\AVSUCD\}.cpp{$(OUTDIR)\.\FileFormat\AVSUCD\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\AVSUCD $(MKDIR) $(OUTDIR)\.\FileFormat\AVSUCD
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\AVSUCD\ @<<
@@ -643,6 +662,8 @@ install::
 	$(INSTALL) .\FileFormat\AVSField\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\AVSField
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\AVSUCD $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\AVSUCD
 	$(INSTALL) .\FileFormat\AVSUCD\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\AVSUCD
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\BDML $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\BDML
+	$(INSTALL) .\FileFormat\BDML\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\BDML
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\BMP $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\BMP
 	$(INSTALL) .\FileFormat\BMP\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\BMP
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\CSV $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\CSV
