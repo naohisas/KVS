@@ -33,3 +33,5 @@ Debug
 /build
 /BUILD
 /Build
+
+*.stash
