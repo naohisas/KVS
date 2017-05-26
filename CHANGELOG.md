@@ -77,9 +77,7 @@
 + kvs::python::Interpreter
 + kvs::python::List
 + kvs::python::Module
-+ kvs::python::NumPy
 + kvs::python::Object
-+ kvs::python::Python
 + kvs::python::String
 + kvs::python::Table
 + kvs::python::Tuple
