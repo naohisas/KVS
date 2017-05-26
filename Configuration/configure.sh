@@ -9,6 +9,7 @@ printf 'configure BuildRule... '
 ./configure_BuildRule.py SupportGLUT
 ./configure_BuildRule.py SupportOpenCV
 ./configure_BuildRule.py SupportCUDA
+./configure_BuildRule.py SupportPython
 
 printf 'success\n'
 
@@ -38,6 +39,7 @@ rm -f $( find ../Source/kvs -type f -not -path '*/.git/*' )
 ./configure_header_list.py SupportOpenCV    kvs/opencv
 ./configure_header_list.py SupportQt        kvs/qt
 ./configure_header_list.py SupportCUDA      kvs/cuda
+./configure_header_list.py SupportPython    kvs/python
 
 printf 'success\n'
 

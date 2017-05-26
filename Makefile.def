@@ -74,6 +74,7 @@ LIB_KVS_SUPPORT_CUDA      := libkvsSupportCUDA.a
 LIB_KVS_SUPPORT_GLUT      := libkvsSupportGLUT.a
 LIB_KVS_SUPPORT_OPENCV    := libkvsSupportOpenCV.a
 LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
+LIB_KVS_SUPPORT_PYTHON    := libkvsSupportPython.a
 
 
 #=============================================================================
@@ -259,6 +260,26 @@ endif
 
 
 #=============================================================================
+#  PYTHON_INCLUDE_PATH, PYTHON_LIBRARY_PATH
+#  NUMPY_INCLUDE_PATH, NUMPY_LIBRARY_PATH
+#=============================================================================
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+  PYTHON_INCLUDE_PATH := $(shell python-config --includes)
+  PYTHON_LIBRARY_PATH := $(shell python-config --ldflags)
+  ifdef KVS_PYTHON_DIR
+    PYTHON_INCLUDE_PATH := -I$(KVS_PYTHON_DIR)/include
+    PYTHON_LIBRARY_PATH := -L$(KVS_PYTHON_DIR)/lib
+  endif
+  NUMPY_INCLUDE_PATH := -I$(shell python -c "import numpy; print numpy.get_include()")
+  NUMPY_LIBRARY_PATH :=
+  ifdef KVS_NUMPY_DIR
+    NUMPY_INCLUDE_PATH := -I$(KVS_NUMPY_DIR)/include
+    NUMPY_LIBRARY_PATH := -L$(KVS_NUMPY_DIR)/lib
+  endif
+endif
+
+
+#=============================================================================
 #  Compiler option.
 #=============================================================================
 CPPFLAGS :=
@@ -358,6 +379,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_CUDA)" "1"
   DEFINITIONS += -DKVS_SUPPORT_CUDA
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+  DEFINITIONS += -DKVS_SUPPORT_PYTHON
 endif
 
 

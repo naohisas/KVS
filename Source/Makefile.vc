@@ -45,6 +45,10 @@ SUBDIRS = $(SUBDIRS) SupportOpenCV
 SUBDIRS = $(SUBDIRS) SupportCUDA
 !ENDIF
 
+!IF "$(KVS_SUPPORT_PYTHON)" == "1"
+SUBDIRS = $(SUBDIRS) SupportPython
+!ENDIF
+
 
 #=============================================================================
 #  build.
@@ -93,6 +97,11 @@ install:
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\sage" $(MKDIR) "$(INSTALL_DIR)\include\kvs\sage"
 	$(INSTALL) kvsSupportSAGE "$(INSTALL_DIR)\include"
 	$(INSTALL) kvs\sage\* "$(INSTALL_DIR)\include\kvs\sage"
+!ENDIF
+!IF "$(KVS_SUPPORT_PYTHON)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\python" $(MKDIR) "$(INSTALL_DIR)\include\kvs\python"
+	$(INSTALL) kvsSupportPython "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\python\* "$(INSTALL_DIR)\include\kvs\python"
 !ENDIF
 	FOR %%i IN ( $(SUBDIRS) ) DO \
 	CD %%i && $(MAKE) /f $(MAKEFILE) /$(MAKEFLAGS) install && CD ..
