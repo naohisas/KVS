@@ -66,6 +66,9 @@
 + kvs::Axis2DMatrix
 + kvs::Axis3D
 + kvs::ParallelAxis
++ kvs::BDMLData 
++ kvs::IPLab
++ kvs::IPLabList
 
 **Added SupportPython**
 + kvs::python::Array
