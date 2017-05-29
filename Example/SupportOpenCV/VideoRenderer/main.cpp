@@ -17,6 +17,13 @@
 #include <kvs/glut/Screen>
 #include <kvs/opencv/VideoObject>
 #include <kvs/opencv/VideoRenderer>
+#include <kvs/IdleEventListener>
+
+
+class IdleEvent : public kvs::IdleEventListener
+{
+    void update() { screen()->redraw(); }
+};
 
 /*===========================================================================*/
 /**
@@ -46,6 +53,7 @@ int main( int argc, char** argv )
     screen.setTitle( "kvs::opencv::VideoRenderer" );
     screen.setSize( width, height );
     screen.registerObject( object, renderer );
+    screen.addEvent( new IdleEvent() );
     screen.show();
 
     return app.run();

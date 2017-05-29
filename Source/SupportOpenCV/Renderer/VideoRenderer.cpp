@@ -16,9 +16,8 @@
 #include <kvs/Camera>
 #include <kvs/Message>
 #include <kvs/IgnoreUnusedVariable>
-#ifdef KVS_SUPPORT_GLUT
-#include <kvs/glut/GLUT>
-#endif
+#include <kvs/Vector2>
+#include <kvs/OpenGL>
 
 
 namespace kvs
@@ -43,7 +42,7 @@ VideoRenderer::VideoRenderer( const Type type ):
  *  @brief  Destructs the VideoRenderer class.
  */
 /*===========================================================================*/
-VideoRenderer::~VideoRenderer( void )
+VideoRenderer::~VideoRenderer()
 {
 }
 
@@ -59,24 +58,25 @@ void VideoRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
 {
     kvs::IgnoreUnusedVariable( light );
 
-    kvs::opencv::VideoObject* video = reinterpret_cast<kvs::opencv::VideoObject*>( object );
-
     BaseClass::startTimer();
+    kvs::opencv::VideoObject* video = reinterpret_cast<kvs::opencv::VideoObject*>( object );
+    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
 
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    if ( !m_texture.isValid() )
+    {
+        this->create_texture( video );
+    }
 
-    glPushAttrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_TEXTURE_2D );
 
-    if ( !glIsTexture( m_texture.id() ) ) this->create_texture( video );
-
-    glDisable( GL_DEPTH_TEST );
-    glEnable( GL_TEXTURE_2D );
-
-    switch( m_type )
+    switch ( m_type )
     {
     case VideoRenderer::Centering:
+    {
         this->centering( camera->windowWidth(), camera->windowHeight() );
         break;
+    }
     default: break;
     }
 
@@ -85,47 +85,35 @@ void VideoRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     const int height = frame->height;
     const char* data = frame->imageData; // BGRBGRBGR...
     m_texture.bind();
-    m_texture.download( width, height, data );
+    m_texture.load( width, height, data );
 
-    glMatrixMode( GL_MODELVIEW );
-    glPushMatrix();
+    kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
+    p1.loadIdentity();
     {
-        glLoadIdentity();
-
-        glMatrixMode( GL_PROJECTION );
-        glPushMatrix();
+        kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
+        p2.loadIdentity();
         {
-            glLoadIdentity();
-            glOrtho( m_left, m_right, m_bottom, m_top, -1, 1 );
-
-            glBegin( GL_QUADS );
+            kvs::OpenGL::SetOrtho( m_left, m_right, m_bottom, m_top, -1, 1 );
+            kvs::OpenGL::Begin( GL_QUADS );
 /* mirror */
-            glTexCoord2f( 0.0, 0.0 ); glVertex2f( 1.0, 1.0 );
-            glTexCoord2f( 0.0, 1.0 ); glVertex2f( 1.0, 0.0 );
-            glTexCoord2f( 1.0, 1.0 ); glVertex2f( 0.0, 0.0 );
-            glTexCoord2f( 1.0, 0.0 ); glVertex2f( 0.0, 1.0 );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( 1.0f, 1.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( 1.0f, 0.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( 0.0f, 0.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( 0.0f, 1.0f ) );
 /* normal */
 /*
-            glTexCoord2f( 0.0, 0.0 ); glVertex2f( 0.0, 1.0 );
-            glTexCoord2f( 0.0, 1.0 ); glVertex2f( 0.0, 0.0 );
-            glTexCoord2f( 1.0, 1.0 ); glVertex2f( 1.0, 0.0 );
-            glTexCoord2f( 1.0, 0.0 ); glVertex2f( 1.0, 1.0 );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( 0.0f, 1.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( 0.0f, 0.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( 1.0f, 0.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( 1.0f, 1.0f ) );
 */
-            glEnd();
+            kvs::OpenGL::End();
         }
-        glPopMatrix();
-        glMatrixMode( GL_MODELVIEW );
     }
-    glPopMatrix();
 
     m_texture.unbind();
 
-    glClearDepth( 1000 );
-    glEnable( GL_DEPTH_TEST );
-    glDisable( GL_TEXTURE_2D );
-
-    glPopAttrib();
-
+    kvs::OpenGL::SetClearDepth( 1000 );
     BaseClass::stopTimer();
 }
 
@@ -140,10 +128,10 @@ void VideoRenderer::create_texture( const kvs::opencv::VideoObject* video )
     const double width  = video->width();
     const double height = video->height();
     m_initial_aspect_ratio = width / height;
-    m_left   = 0.0;
-    m_right  = 1.0;
+    m_left = 0.0;
+    m_right = 1.0;
     m_bottom = 0.0;
-    m_top    = 1.0;
+    m_top = 1.0;
 
     if ( video->type() == kvs::opencv::VideoObject::Gray8 )
     {
@@ -164,11 +152,6 @@ void VideoRenderer::create_texture( const kvs::opencv::VideoObject* video )
 
     const IplImage* frame = video->device().queryFrame();
     m_texture.create( frame->width, frame->height );
-
-#ifdef KVS_SUPPORT_GLUT
-    // Auto-play mode (auto-redraw).
-    glutIdleFunc( glutPostRedisplay );
-#endif
 }
 
 /*===========================================================================*/
@@ -184,17 +167,17 @@ void VideoRenderer::centering( const double width, const double height )
     double aspect_ratio = current_aspect_ratio / m_initial_aspect_ratio;
     if( aspect_ratio >= 1.0 )
     {
-        m_left   = ( 1.0 - aspect_ratio ) * 0.5;
-        m_right  = ( 1.0 + aspect_ratio ) * 0.5;
+        m_left = ( 1.0 - aspect_ratio ) * 0.5;
+        m_right = ( 1.0 + aspect_ratio ) * 0.5;
         m_bottom = 0.0;
-        m_top    = 1.0;
+        m_top = 1.0;
     }
     else
     {
-        m_left   = 0.0;
-        m_right  = 1.0;
+        m_left = 0.0;
+        m_right = 1.0;
         m_bottom = ( 1.0 - 1.0 / aspect_ratio ) * 0.5;
-        m_top    = ( 1.0 + 1.0 / aspect_ratio ) * 0.5;
+        m_top = ( 1.0 + 1.0 / aspect_ratio ) * 0.5;
     }
 }
 

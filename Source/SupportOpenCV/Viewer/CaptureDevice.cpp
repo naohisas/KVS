@@ -26,7 +26,7 @@ namespace opencv
  *  @brief  Constructs a new CaptureDevice class.
  */
 /*===========================================================================*/
-CaptureDevice::CaptureDevice( void ):
+CaptureDevice::CaptureDevice():
     m_handler( 0 )
 {
 }
@@ -36,7 +36,7 @@ CaptureDevice::CaptureDevice( void ):
  *  @brief  Destructs the CaptureDevice class.
  */
 /*===========================================================================*/
-CaptureDevice::~CaptureDevice( void )
+CaptureDevice::~CaptureDevice()
 {
     this->release();
 }
@@ -51,7 +51,7 @@ CaptureDevice::~CaptureDevice( void )
 bool CaptureDevice::create( const int index )
 {
     m_handler = cvCreateCameraCapture( index );
-    return( m_handler != NULL );
+    return m_handler != NULL;
 }
 
 /*===========================================================================*/
@@ -64,7 +64,7 @@ bool CaptureDevice::create( const int index )
 bool CaptureDevice::create( const std::string filename )
 {
     m_handler = cvCreateFileCapture( filename.c_str() );
-    return( m_handler != NULL );
+    return m_handler != NULL;
 }
 
 /*===========================================================================*/
@@ -72,7 +72,7 @@ bool CaptureDevice::create( const std::string filename )
  *  @brief  Releases the capture device.
  */
 /*===========================================================================*/
-void CaptureDevice::release( void )
+void CaptureDevice::release()
 {
     if ( m_handler ) cvReleaseCapture( &m_handler );
 }
@@ -83,9 +83,9 @@ void CaptureDevice::release( void )
  *  @return capture device handler
  */
 /*===========================================================================*/
-const CvCapture* CaptureDevice::handler( void )
+const CvCapture* CaptureDevice::handler()
 {
-    return( m_handler );
+    return m_handler;
 }
 
 /*===========================================================================*/
@@ -94,9 +94,9 @@ const CvCapture* CaptureDevice::handler( void )
  *  @return frame width
  */
 /*===========================================================================*/
-const double CaptureDevice::frameWidth( void )
+double CaptureDevice::frameWidth()
 {
-    return( cvGetCaptureProperty( m_handler, CV_CAP_PROP_FRAME_WIDTH ) );
+    return cvGetCaptureProperty( m_handler, CV_CAP_PROP_FRAME_WIDTH );
 }
 
 /*===========================================================================*/
@@ -105,9 +105,9 @@ const double CaptureDevice::frameWidth( void )
  *  @return frame height
  */
 /*===========================================================================*/
-const double CaptureDevice::frameHeight( void )
+double CaptureDevice::frameHeight()
 {
-    return( cvGetCaptureProperty( m_handler, CV_CAP_PROP_FRAME_HEIGHT ) );
+    return cvGetCaptureProperty( m_handler, CV_CAP_PROP_FRAME_HEIGHT );
 }
 
 /*===========================================================================*/
@@ -116,9 +116,9 @@ const double CaptureDevice::frameHeight( void )
  *  @return frame rate
  */
 /*===========================================================================*/
-const double CaptureDevice::frameRate( void )
+double CaptureDevice::frameRate()
 {
-    return( cvGetCaptureProperty( m_handler, CV_CAP_PROP_FPS ) );
+    return cvGetCaptureProperty( m_handler, CV_CAP_PROP_FPS );
 }
 
 /*===========================================================================*/
@@ -126,9 +126,9 @@ const double CaptureDevice::frameRate( void )
  *  @brief  Grabs frame and the grabbed frame is stored internally.
  */
 /*===========================================================================*/
-const int CaptureDevice::grabFrame( void ) const
+int CaptureDevice::grabFrame() const
 {
-    return( cvGrabFrame( m_handler ) );
+    return cvGrabFrame( m_handler );
 }
 
 /*===========================================================================*/
@@ -137,9 +137,9 @@ const int CaptureDevice::grabFrame( void ) const
  *  @return pointer to the grabbed image
  */
 /*===========================================================================*/
-const IplImage* CaptureDevice::retrieveFrame( void ) const
+const IplImage* CaptureDevice::retrieveFrame() const
 {
-    return( cvRetrieveFrame( m_handler ) );
+    return cvRetrieveFrame( m_handler );
 }
 
 /*===========================================================================*/
@@ -148,9 +148,9 @@ const IplImage* CaptureDevice::retrieveFrame( void ) const
  *  @return pointer to the grabbed image
  */
 /*===========================================================================*/
-const IplImage* CaptureDevice::queryFrame( void ) const
+const IplImage* CaptureDevice::queryFrame() const
 {
-    return( cvQueryFrame( m_handler ) );
+    return cvQueryFrame( m_handler );
 }
 
 } // end of namespace opencv

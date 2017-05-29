@@ -25,14 +25,14 @@
  *  @brief  Main function.
  */
 /*===========================================================================*/
-int main( void )
+int main()
 {
     // Initialize capture device.
     kvs::opencv::CaptureDevice device;
     if ( !device.create( CV_CAP_ANY ) )
     {
         kvsMessageError("Capture device is NULL.");
-        return( false );
+        return false;
     }
 
     // Create window.
@@ -43,10 +43,10 @@ int main( void )
     {
         // Capture frame.
         const IplImage* frame = device.queryFrame();
-        if( !frame )
+        if ( !frame )
         {
             kvsMessageError("Frame is NULL.");
-            return( 0 );
+            return false;
         }
 
         window.show( frame );
@@ -55,8 +55,8 @@ int main( void )
         /* If ESC key pressed, Key=0x10001B under OpenCV 0.9.7 (linux version),
          * remove higher bits using AND operator.
          */
-        if( ( kvs::opencv::Window::WaitKey(1) & 255 ) == 27 ) break;
+        if ( ( kvs::opencv::Window::WaitKey(1) & 255 ) == 27 ) break;
     }
 
-    return( 1 );
+    return true;
 }

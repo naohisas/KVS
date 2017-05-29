@@ -26,7 +26,7 @@ namespace opencv
  *  @brief  Constructs a new VideoObject class.
  */
 /*===========================================================================*/
-VideoObject::VideoObject( void ):
+VideoObject::VideoObject():
     m_device_id( CV_CAP_ANY ),
     m_type( kvs::opencv::VideoObject::Color24 )
 {
@@ -49,88 +49,13 @@ VideoObject::VideoObject( const int device_id ):
 
 /*===========================================================================*/
 /**
- *  @brief  Destructs the VideoObject class.
- */
-/*===========================================================================*/
-VideoObject::~VideoObject( void )
-{
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Returns the object type.
  *  @return object type
  */
 /*===========================================================================*/
-kvs::ObjectBase::ObjectType VideoObject::objectType( void ) const
+kvs::ObjectBase::ObjectType VideoObject::objectType() const
 {
-    return( kvs::ObjectBase::Image );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the device ID.
- *  @return device ID
- */
-/*===========================================================================*/
-const int VideoObject::deviceID( void ) const
-{
-    return( m_device_id );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the capture device.
- *  @return capture device
- */
-/*===========================================================================*/
-const kvs::opencv::CaptureDevice& VideoObject::device( void ) const
-{
-    return( m_device );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the pixel type.
- *  @return pixel type
- */
-/*===========================================================================*/
-const VideoObject::PixelType VideoObject::type( void ) const
-{
-    return( m_type );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the capture width.
- *  @return capture width
- */
-/*===========================================================================*/
-const size_t VideoObject::width( void ) const
-{
-    return( m_width );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns teh capture height.
- *  @return capture height
- */
-/*===========================================================================*/
-const size_t VideoObject::height( void ) const
-{
-    return( m_height );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the number of channels.
- *  @return number of channels
- */
-/*===========================================================================*/
-const size_t VideoObject::nchannels( void ) const
-{
-    return( m_nchannels );
+    return kvs::ObjectBase::Image;
 }
 
 /*===========================================================================*/
@@ -145,17 +70,17 @@ const bool VideoObject::initialize( const size_t device_id )
     if ( !m_device.create( device_id ) )
     {
         kvsMessageError("Cannot create a capture device (%d).", device_id);
-        return( false );
+        return false;
     }
 
     const IplImage* frame = m_device.queryFrame();
     if ( !frame )
     {
         kvsMessageError("Cannot query a new frame from the capture device.");
-        return( false );
+        return false;
     }
 
-    m_width  = static_cast<size_t>( frame->width );
+    m_width = static_cast<size_t>( frame->width );
     m_height = static_cast<size_t>( frame->height );
     m_nchannels = static_cast<size_t>( frame->nChannels );
 
@@ -163,12 +88,12 @@ const bool VideoObject::initialize( const size_t device_id )
     if ( depth != IPL_DEPTH_8U )
     {
         kvsMessageError("The depth of the grabbed image isn't 'IPL_DEPTH_8U'.");
-        return( false );
+        return false;
     }
 
     m_type = m_nchannels == 1 ? Gray8 : Color24;
 
-    return( true );
+    return true;
 }
 
 } // end of namespace opencv

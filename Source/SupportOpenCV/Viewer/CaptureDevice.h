@@ -34,41 +34,26 @@ class CaptureDevice
 {
     kvsClassName_without_virtual( kvs::opencv::CaptureDevice );
 
-protected:
+private:
 
     CvCapture* m_handler; ///< handler
 
 public:
-
-    CaptureDevice( void );
-
-    ~CaptureDevice( void );
-
-public:
+    CaptureDevice();
+    ~CaptureDevice( );
 
     bool create( const int index );
-
     bool create( const std::string filename );
+    void release();
 
-    void release( void );
+    const CvCapture* handler();
+    double frameWidth();
+    double frameHeight();
+    double frameRate();
 
-public:
-
-    const CvCapture* handler( void );
-
-    const double frameWidth( void );
-
-    const double frameHeight( void );
-
-    const double frameRate( void );
-
-public:
-
-    const int grabFrame( void ) const;
-
-    const IplImage* retrieveFrame( void ) const;
-
-    const IplImage* queryFrame( void ) const;
+    int grabFrame() const;
+    const IplImage* retrieveFrame() const;
+    const IplImage* queryFrame() const;
 };
 
 } // end of namespace opencv

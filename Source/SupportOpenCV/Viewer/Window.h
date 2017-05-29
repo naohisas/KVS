@@ -35,41 +35,26 @@ class Window
 {
     kvsClassName_without_virtual( kvs::opencv::Window );
 
-protected:
+public:
+    static void* Handle( const std::string name );
+    static const char* Name( void* handle );
+    static int WaitKey( const int delay = 0 );
+    static void DestroyAll();
 
+private:
     std::string m_name; ///< window name
 
 public:
+    Window();
+    ~Window();
 
-    Window( void );
-
-    ~Window( void );
-
-public:
-
-    const std::string name( void );
-
-public:
+    const std::string& name() const { return m_name; }
 
     int create( const std::string name, int flag = CV_WINDOW_AUTOSIZE );
-
-    void destroy( void );
-
+    void destroy();
     void show( const CvArr* image );
-
     void resize( const int width, const int height );
-
     void move( const int x, const int y );
-
-public:
-
-    static void* Handle( const std::string name );
-
-    static const char* Name( void* handle );
-
-    static int WaitKey( const int delay = 0 );
-
-    static void DestroyAll( void );
 };
 
 } // end of namespace opencv

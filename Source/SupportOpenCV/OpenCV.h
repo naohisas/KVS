@@ -32,7 +32,7 @@ namespace opencv
  *  @return description
  */
 /*===========================================================================*/
-inline const std::string Description( void )
+inline const std::string Description()
 {
     const std::string description( "OpenCV - Intel Open Source Computer Vision Library" );
     return description;
@@ -44,7 +44,7 @@ inline const std::string Description( void )
  *  @return OpenCV version
  */
 /*===========================================================================*/
-inline const std::string Version( void )
+inline const std::string Version()
 {
     const std::string version = kvs::String::ToString( CV_VERSION );
     return version;
