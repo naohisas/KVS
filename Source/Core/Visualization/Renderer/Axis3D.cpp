@@ -7,7 +7,6 @@
 #include <kvs/Camera>
 #include <kvs/Light>
 #include <kvs/LineObject>
-#include <kvs/glut/GLUT>
 
 
 namespace kvs

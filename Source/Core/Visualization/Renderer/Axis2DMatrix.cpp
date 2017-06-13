@@ -6,7 +6,6 @@
 #include <kvs/String>
 #include <kvs/RGBColor>
 #include <kvs/RGBAColor>
-#include <kvs/glut/GLUT>
 #include <kvs/TableObject>
 
 

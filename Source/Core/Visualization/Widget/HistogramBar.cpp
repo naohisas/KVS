@@ -19,7 +19,6 @@
 #include <kvs/MouseEvent>
 #include <kvs/IgnoreUnusedVariable>
 #include <kvs/ScreenBase>
-#include <kvs/glut/GLUT>
 #include <kvs/OpenGL>
 
 

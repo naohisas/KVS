@@ -14,7 +14,6 @@
 /*****************************************************************************/
 #include "WidgetBase.h"
 #include <kvs/OpenGL>
-#include <kvs/glut/GLUT>
 #include <kvs/HSVColor>
 #include <kvs/RGBColor>
 #include <kvs/EventHandler>
