@@ -19,7 +19,6 @@
 #include <kvs/Scene>
 #include <kvs/ObjectManager>
 #include <kvs/OpenGL>
-#include <kvs/glut/GLUT>
 
 
 // Constant variables
