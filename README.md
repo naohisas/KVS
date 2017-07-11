@@ -32,7 +32,7 @@ The environment variable ```KVS_DIR``` should be set to an install directory of 
 
 + Linux and Mac OS X
 ```
-export KVS_DIR=/usr/local/kvs
+export KVS_DIR=~/local/kvs
 export PATH=$KVS_DIR/bin:$PATH
 ```
 
