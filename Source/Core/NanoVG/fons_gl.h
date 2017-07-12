@@ -38,16 +38,16 @@ static int glfons__renderCreate(void* userPtr, int width, int height)
     GLFONScontext* gl = (GLFONScontext*)userPtr;
     // Create may be called multiple times, delete existing texture.
     if (gl->tex != 0) {
-        glDeleteTextures(1, &gl->tex);
+        KVS_GL_CALL( glDeleteTextures(1, &gl->tex) );
         gl->tex = 0;
     }
-    glGenTextures(1, &gl->tex);
+    KVS_GL_CALL( glGenTextures(1, &gl->tex) );
     if (!gl->tex) return 0;
     gl->width = width;
     gl->height = height;
-    glBindTexture(GL_TEXTURE_2D, gl->tex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, gl->width, gl->height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    KVS_GL_CALL( glBindTexture(GL_TEXTURE_2D, gl->tex) );
+    KVS_GL_CALL( glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, gl->width, gl->height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0) );
+    KVS_GL_CALL( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
     return 1;
 }
 
@@ -64,43 +64,43 @@ static void glfons__renderUpdate(void* userPtr, int* rect, const unsigned char* 
     int h = rect[3] - rect[1];
 
     if (gl->tex == 0) return;
-    glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
-    glBindTexture(GL_TEXTURE_2D, gl->tex);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, gl->width);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, rect[0]);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, rect[1]);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_ALPHA,GL_UNSIGNED_BYTE, data);
-    glPopClientAttrib();
+    KVS_GL_CALL( glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT) );
+    KVS_GL_CALL( glBindTexture(GL_TEXTURE_2D, gl->tex) );
+    KVS_GL_CALL( glPixelStorei(GL_UNPACK_ALIGNMENT,1) );
+    KVS_GL_CALL( glPixelStorei(GL_UNPACK_ROW_LENGTH, gl->width) );
+    KVS_GL_CALL( glPixelStorei(GL_UNPACK_SKIP_PIXELS, rect[0]) );
+    KVS_GL_CALL( glPixelStorei(GL_UNPACK_SKIP_ROWS, rect[1]) );
+    KVS_GL_CALL( glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_ALPHA,GL_UNSIGNED_BYTE, data) );
+    KVS_GL_CALL( glPopClientAttrib() );
 }
 
 static void glfons__renderDraw(void* userPtr, const float* verts, const float* tcoords, const unsigned int* colors, int nverts)
 {
     GLFONScontext* gl = (GLFONScontext*)userPtr;
     if (gl->tex == 0) return;
-    glBindTexture(GL_TEXTURE_2D, gl->tex);
-    glEnable(GL_TEXTURE_2D);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
+    KVS_GL_CALL( glBindTexture(GL_TEXTURE_2D, gl->tex) );
+    KVS_GL_CALL( glEnable(GL_TEXTURE_2D) );
+    KVS_GL_CALL( glEnableClientState(GL_VERTEX_ARRAY) );
+    KVS_GL_CALL( glEnableClientState(GL_TEXTURE_COORD_ARRAY) );
+    KVS_GL_CALL( glEnableClientState(GL_COLOR_ARRAY) );
 
-    glVertexPointer(2, GL_FLOAT, sizeof(float)*2, verts);
-    glTexCoordPointer(2, GL_FLOAT, sizeof(float)*2, tcoords);
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(unsigned int), colors);
+    KVS_GL_CALL( glVertexPointer(2, GL_FLOAT, sizeof(float)*2, verts) );
+    KVS_GL_CALL( glTexCoordPointer(2, GL_FLOAT, sizeof(float)*2, tcoords) );
+    KVS_GL_CALL( glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(unsigned int), colors) );
 
-    glDrawArrays(GL_TRIANGLES, 0, nverts);
+    KVS_GL_CALL( glDrawArrays(GL_TRIANGLES, 0, nverts) );
 
-    glDisable(GL_TEXTURE_2D);
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
+    KVS_GL_CALL( glDisable(GL_TEXTURE_2D) );
+    KVS_GL_CALL( glDisableClientState(GL_VERTEX_ARRAY) );
+    KVS_GL_CALL( glDisableClientState(GL_TEXTURE_COORD_ARRAY) );
+    KVS_GL_CALL( glDisableClientState(GL_COLOR_ARRAY) );
 }
 
 static void glfons__renderDelete(void* userPtr)
 {
     GLFONScontext* gl = (GLFONScontext*)userPtr;
     if (gl->tex != 0)
-        glDeleteTextures(1, &gl->tex);
+        KVS_GL_CALL( glDeleteTextures(1, &gl->tex) );
     gl->tex = 0;
     free(gl);
 }

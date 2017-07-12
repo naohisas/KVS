@@ -470,7 +470,7 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
     const kvs::Vec3 center = ( max_coord + min_coord ) * 0.5f;
 
     // Depth values (Z values) in the camera coordinate system.
-    GLfloat m[16]; glGetFloatv( GL_MODELVIEW_MATRIX, m );
+    GLfloat m[16]; kvs::OpenGL::GetFloatv( GL_MODELVIEW_MATRIX, m );
     const kvs::Real32 x_min = min_coord.x() * m[2] + center.y() * m[6] + center.z() * m[10] + m[14];
     const kvs::Real32 x_max = max_coord.x() * m[2] + center.y() * m[6] + center.z() * m[10] + m[14];
     const kvs::Real32 y_min = center.x() * m[2] + min_coord.y() * m[6] + center.z() * m[10] + m[14];
