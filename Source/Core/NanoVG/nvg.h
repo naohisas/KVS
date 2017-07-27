@@ -19,9 +19,9 @@
 #ifndef NANOVG_H
 #define NANOVG_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 #define NVG_PI 3.14159265358979323846264338327f
 
@@ -675,8 +675,8 @@ void nvgDebugDumpPathCache(NVGcontext* ctx);
 
 #define NVG_NOTUSED(v) for (;;) { (void)(1 ? (void)0 : ( (void)(v) ) ); break; }
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
 
 #endif // NANOVG_H
