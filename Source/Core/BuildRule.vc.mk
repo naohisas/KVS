@@ -31,6 +31,7 @@ $(OUTDIR)\.\FileFormat\DICOM\Tag.obj \
 $(OUTDIR)\.\FileFormat\DICOM\VR.obj \
 $(OUTDIR)\.\FileFormat\DICOM\Value.obj \
 $(OUTDIR)\.\FileFormat\DICOM\Window.obj \
+$(OUTDIR)\.\FileFormat\FieldView\FieldViewData.obj \
 $(OUTDIR)\.\FileFormat\FrontFlow\BoundaryData.obj \
 $(OUTDIR)\.\FileFormat\FrontFlow\Data.obj \
 $(OUTDIR)\.\FileFormat\FrontFlow\DataSet.obj \
@@ -618,6 +619,12 @@ $<
 $<
 <<
 
+{.\FileFormat\FieldView\}.cpp{$(OUTDIR)\.\FileFormat\FieldView\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\FieldView $(MKDIR) $(OUTDIR)\.\FileFormat\FieldView
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\FieldView\ @<<
+$<
+<<
+
 {.\FileFormat\DICOM\}.cpp{$(OUTDIR)\.\FileFormat\DICOM\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\DICOM $(MKDIR) $(OUTDIR)\.\FileFormat\DICOM
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\DICOM\ @<<
@@ -670,6 +677,8 @@ install::
 	$(INSTALL) .\FileFormat\CSV\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\CSV
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\DICOM $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\DICOM
 	$(INSTALL) .\FileFormat\DICOM\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\DICOM
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\FieldView $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\FieldView
+	$(INSTALL) .\FileFormat\FieldView\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\FieldView
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\FrontFlow $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\FrontFlow
 	$(INSTALL) .\FileFormat\FrontFlow\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\FrontFlow
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\FrontSTR $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\FrontSTR

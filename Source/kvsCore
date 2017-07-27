@@ -5,6 +5,7 @@
 #include <Core/FileFormat/CSV/Csv.h>
 #include <Core/FileFormat/DICOM/Dicom.h>
 #include <Core/FileFormat/DICOM/DicomList.h>
+#include <Core/FileFormat/FieldView/FieldViewData.h>
 #include <Core/FileFormat/FileFormatBase.h>
 #include <Core/FileFormat/FrontFlow/FrontFlow.h>
 #include <Core/FileFormat/FrontSTR/FrontSTR.h>

@@ -5,6 +5,7 @@ FileFormat/BMP/Bmp
 FileFormat/CSV/Csv
 FileFormat/DICOM/Dicom
 FileFormat/DICOM/DicomList
+FileFormat/FieldView/FieldViewData
 FileFormat/FileFormatBase
 FileFormat/FrontFlow/FrontFlow
 FileFormat/FrontSTR/FrontSTR

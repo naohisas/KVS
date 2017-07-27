@@ -31,6 +31,7 @@ $(OUTDIR)/./FileFormat/DICOM/Tag.o \
 $(OUTDIR)/./FileFormat/DICOM/VR.o \
 $(OUTDIR)/./FileFormat/DICOM/Value.o \
 $(OUTDIR)/./FileFormat/DICOM/Window.o \
+$(OUTDIR)/./FileFormat/FieldView/FieldViewData.o \
 $(OUTDIR)/./FileFormat/FrontFlow/BoundaryData.o \
 $(OUTDIR)/./FileFormat/FrontFlow/Data.o \
 $(OUTDIR)/./FileFormat/FrontFlow/DataSet.o \
@@ -556,6 +557,10 @@ $(OUTDIR)/./FileFormat/FrontFlow/%.o: ./FileFormat/FrontFlow/%.cpp ./FileFormat/
 	$(MKDIR) $(OUTDIR)/./FileFormat/FrontFlow
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/FieldView/%.o: ./FileFormat/FieldView/%.cpp ./FileFormat/FieldView/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/FieldView
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/DICOM/%.o: ./FileFormat/DICOM/%.cpp ./FileFormat/DICOM/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/DICOM
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -596,6 +601,8 @@ install::
 	$(INSTALL) ./FileFormat/CSV/*.h $(INSTALL_DIR)/include/Core/./FileFormat/CSV
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/DICOM
 	$(INSTALL) ./FileFormat/DICOM/*.h $(INSTALL_DIR)/include/Core/./FileFormat/DICOM
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/FieldView
+	$(INSTALL) ./FileFormat/FieldView/*.h $(INSTALL_DIR)/include/Core/./FileFormat/FieldView
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/FrontFlow
 	$(INSTALL) ./FileFormat/FrontFlow/*.h $(INSTALL_DIR)/include/Core/./FileFormat/FrontFlow
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/FrontSTR
