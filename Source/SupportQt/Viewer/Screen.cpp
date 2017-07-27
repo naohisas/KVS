@@ -70,6 +70,9 @@ Screen::Screen( kvs::qt::Application* application, QWidget* parent ):
 {
     m_scene = new kvs::Scene( this );
     m_idle_mouse_timer = new QTimer( this );
+
+    // Change default focus policy to Qt::StrongFocus from Qt::NoFocus.
+    QWidget::setFocusPolicy( Qt::StrongFocus );
 }
 
 /*===========================================================================*/
