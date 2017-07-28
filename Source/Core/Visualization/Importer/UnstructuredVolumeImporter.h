@@ -19,6 +19,7 @@
 #include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/AVSUcd>
 #include <kvs/AVSField>
+#include <kvs/FieldViewData>
 
 
 namespace kvs
@@ -46,6 +47,7 @@ public:
 private:
     void import( const kvs::AVSUcd* const ucd );
     void import( const kvs::AVSField* const field );
+    void import( const kvs::FieldViewData* const fvdata );
 };
 
 } // end of namespace kvs

@@ -96,6 +96,10 @@ public:
         std::vector<Variable> variables_on_face; // variables on the face
     };
 
+public:
+
+    static bool CheckExtension( const std::string& filename );
+
 private:
 
     Version m_version; // version numbers
@@ -107,6 +111,9 @@ private:
     std::vector<std::string> m_variable_names; ///< variable names
     std::vector<std::string> m_variable_names_on_face; ///< variable names on the boundary face
     std::vector<Grid> m_grids; ///< grid data
+    mutable int m_importing_element_type; ///< importing element type
+    mutable size_t m_importing_grid_index; ///< importing grid index
+    mutable size_t m_importing_variable_index; ///< importing variable index
 
 public:
 
@@ -114,6 +121,11 @@ public:
         m_nvariables( 0 ),
         m_nvariables_on_face( 0 ),
         m_ngrids( 0 ) {}
+
+    FieldViewData( const std::string& filename )
+    {
+        this->read( filename );
+    }
 
     const Version& version() const { return m_version; }
     const Constant& constant() const { return m_constant; }
@@ -131,6 +143,19 @@ public:
     size_t totalNumberOfHexElements() const { return this->totalNumberOfElements(2); }
     size_t totalNumberOfPrismElements() const { return this->totalNumberOfElements(3); }
     size_t totalNumberOfPyramidElements() const { return this->totalNumberOfElements(4); }
+
+    int importingElementType() const { return m_importing_element_type; }
+    size_t importingGridIndex() const { return m_importing_grid_index; }
+    size_t importingVariableIndex() const { return m_importing_variable_index; }
+
+    void setImportingElementType( const int etype ) const { m_importing_element_type = etype; }
+    void setImportingElementTypeToAll() const { this->setImportingElementType(0); }
+    void setImportingElementTypeToTet() const { this->setImportingElementType(1); }
+    void setImportingElementTypeToHex() const { this->setImportingElementType(2); }
+    void setImportingElementTypeToPrism() const { this->setImportingElementType(3); }
+    void setImportingElementTypeToPyramid() const { this->setImportingElementType(4); }
+    void setImportingGridIndex( const size_t gindex ) const { m_importing_grid_index = gindex; }
+    void setImportingVariableIndex( const size_t vindex ) const { m_importing_variable_index = vindex; }
 
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     bool read( const std::string& filename );

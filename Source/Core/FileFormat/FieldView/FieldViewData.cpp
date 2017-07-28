@@ -19,6 +19,7 @@
 #include <kvs/Message>
 #include <kvs/Endian>
 #include <kvs/ValueArray>
+#include <kvs/File>
 
 
 namespace
@@ -215,6 +216,17 @@ private:
 namespace kvs
 {
 
+bool FieldViewData::CheckExtension( const std::string& filename )
+{
+    const kvs::File file( filename );
+    if ( file.extension() == "fv" )
+    {
+        return true;
+    }
+
+    return false;
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Returns total number of nodes.
@@ -365,6 +377,11 @@ bool FieldViewData::readAscii( const std::string& filename )
 
     fclose( fp );
 
+    // Initialize variables for importing
+    m_importing_element_type = 0;
+    m_importing_grid_index = m_ngrids;
+    m_importing_variable_index = 0;
+
     return true;
 }
 
@@ -444,6 +461,11 @@ bool FieldViewData::readBinary( const std::string& filename, bool swap, size_t o
 
     fclose( fp );
 
+    // Initialize variables for importing
+    m_importing_element_type = 0;
+    m_importing_grid_index = m_ngrids;
+    m_importing_variable_index = 0;
+
     return true;
 }
 
@@ -518,6 +540,11 @@ bool FieldViewData::readBinaryGrid( const std::string& filename, bool swap, size
 
     fclose( fp );
 
+    // Initialize variables for importing
+    m_importing_element_type = 0;
+    m_importing_grid_index = m_ngrids;
+    m_importing_variable_index = 0;
+
     return true;
 }
 
@@ -591,6 +618,11 @@ bool FieldViewData::readBinaryResult( const std::string& filename, bool swap, si
     }
 
     fclose( fp );
+
+    // Initialize variables for importing
+    m_importing_element_type = 0;
+    m_importing_grid_index = m_ngrids;
+    m_importing_variable_index = 0;
 
     return true;
 }
