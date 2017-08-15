@@ -339,7 +339,7 @@ void UnstructuredVolumeImporter::import( const kvs::FieldViewData* const data )
         const size_t vindex = data->importingVariableIndex();
 
         KVS_ASSERT( FieldViewData::Tet <= etype && etype <= FieldViewData::Pyr );
-        KVS_ASSERT( vindex < data.numberOfVariables() );
+        KVS_ASSERT( vindex < data->numberOfVariables() );
 
         const size_t veclen = data->grid(0).variables[ vindex ].type;
         const size_t nnodes_per_cell = NumberOfNodesPerElement[ etype ];
@@ -518,7 +518,7 @@ void UnstructuredVolumeImporter::import( const kvs::FieldViewData* const data )
         }
         else if ( veclen == 3 )
         {
-            KVS_ASSERT( vindex + 2 < data.numberOfVariables() );
+            KVS_ASSERT( vindex + 2 < data->numberOfVariables() );
             KVS_ASSERT( grid.variables[ vindex + 0 ].type == grid.variables[ vindex + 1 ].type );
             KVS_ASSERT( grid.variables[ vindex + 1 ].type == grid.variables[ vindex + 2 ].type );
             for ( size_t i = 0; i < nnodes; i++ )
