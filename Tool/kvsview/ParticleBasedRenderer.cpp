@@ -167,14 +167,6 @@ public:
     {
         kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
 
-        // Erase the object and renderer.
-        const kvs::ObjectBase* obj = glut_screen->scene()->objectManager()->object( ::ObjectName );
-        const kvs::Xform xform = obj->xform();
-        const int obj_id = glut_screen->scene()->objectManager()->objectID( obj );
-        glut_screen->scene()->IDManager()->eraseByObjectID( obj_id );
-        glut_screen->scene()->objectManager()->erase( ::ObjectName );
-        glut_screen->scene()->rendererManager()->erase( ::RendererName );
-
         // Current transfer function.
         kvs::TransferFunction tfunc( transferFunction() );
 
@@ -187,8 +179,6 @@ public:
             kvs::CellByCellMetropolisSampling* mapper = new kvs::CellByCellMetropolisSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
             break;
         }
         case 2: // Rejection sampling
@@ -196,8 +186,6 @@ public:
             kvs::CellByCellRejectionSampling* mapper = new kvs::CellByCellRejectionSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
             break;
         }
         case 3: // Layered sampling
@@ -205,8 +193,6 @@ public:
             kvs::CellByCellLayeredSampling* mapper = new kvs::CellByCellLayeredSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
             break;
         }
         default: // Uniform sampling
@@ -214,11 +200,13 @@ public:
             kvs::CellByCellUniformSampling* mapper = new kvs::CellByCellUniformSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
+
             break;
         }
         }
+
+        object->setName( ::ObjectName );
+        glut_screen->scene()->replaceObject( ::ObjectName, object );
 
         // Create new particle volume renderer.
         if ( m_arg->noGPU() )
@@ -231,7 +219,7 @@ public:
             const size_t subpixel_level = ::GetSubpixelLevel( repetition_level );
             renderer->setSubpixelLevel( subpixel_level );
 
-            glut_screen->registerObject( object, renderer );
+            glut_screen->scene()->replaceRenderer( ::RendererName, renderer );
         }
         else
         {
@@ -244,7 +232,7 @@ public:
 
             if ( !m_arg->noLOD() ) renderer->enableLODControl();
 
-            glut_screen->registerObject( object, renderer );
+            glut_screen->scene()->replaceRenderer( ::RendererName, renderer );
         }
 
         m_colormap_bar->setColorMap( transferFunction().colorMap() );
