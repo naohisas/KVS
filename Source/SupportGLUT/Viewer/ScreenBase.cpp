@@ -30,7 +30,7 @@ namespace
 {
 
 const size_t MaxNumberOfScreens = 256;
-kvs::glut::ScreenBase* Context[ MaxNumberOfScreens ];
+kvs::glut::ScreenBase* Context[ MaxNumberOfScreens ] = {};
 
 /*===========================================================================*/
 /**
@@ -218,7 +218,7 @@ ScreenBase::~ScreenBase()
     delete m_key_event;
     delete m_wheel_event;
 
-    ::Context[ m_id ] = 0;
+    ::Context[ m_id ] = NULL;
     glutDestroyWindow( m_id );
 }
 

@@ -20,9 +20,9 @@ PyObject* Convert( const kvs::ValueTable<T>& table )
     npy_intp dims[2] = { nrows, ncols };
 
     PyArrayObject* array = (PyArrayObject*)PyArray_SimpleNew( ndim, dims, Type<T>() );
-    for ( size_t i = 0; i < nrows; i++ )
+    for ( int i = 0; i < nrows; i++ )
     {
-        for ( size_t j = 0; j < ncols; j++ )
+        for ( int j = 0; j < ncols; j++ )
         {
             *(T*)PyArray_GETPTR2( array, i, j ) = table[j][i];
         }
@@ -39,9 +39,9 @@ kvs::ValueTable<T> Convert( const PyArrayObject* array )
     const int ncols = PyArray_DIMS( array )[1];
 
     kvs::ValueTable<T> table( ncols, nrows );
-    for ( size_t i = 0; i < nrows; i++ )
+    for ( int i = 0; i < nrows; i++ )
     {
-        for ( size_t j = 0; j < ncols; j++ )
+        for ( int j = 0; j < ncols; j++ )
         {
             table[j][i] = *(T*)PyArray_GETPTR2( array, i, j );
         }

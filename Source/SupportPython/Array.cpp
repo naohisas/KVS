@@ -15,7 +15,7 @@ template <typename T>
 PyObject* Convert( const kvs::ValueArray<T>& array )
 {
     const int ndim = 1;
-    npy_intp dims[1] = { array.size() };
+    npy_intp dims[1] = { (npy_intp)(array.size()) };
 
     PyArrayObject* object = (PyArrayObject*)PyArray_SimpleNew( ndim, dims, Type<T>() );
     for ( size_t i = 0; i < array.size(); i++ )

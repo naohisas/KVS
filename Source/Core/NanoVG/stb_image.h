@@ -1356,6 +1356,8 @@ static unsigned char *stbi__convert_format(unsigned char *data, int img_n, int r
       unsigned char *src  = data + j * x * img_n   ;
       unsigned char *dest = good + j * x * req_comp;
 
+      #pragma GCC diagnostic push
+      #pragma GCC diagnostic ignored "-Wmisleading-indentation"
       #define COMBO(a,b)  ((a)*8+(b))
       #define CASE(a,b)   case COMBO(a,b): for(i=x-1; i >= 0; --i, src += a, dest += b)
       // convert source image with img_n components to one with req_comp components;
@@ -1376,6 +1378,7 @@ static unsigned char *stbi__convert_format(unsigned char *data, int img_n, int r
          default: STBI_ASSERT(0);
       }
       #undef CASE
+      #pragma GCC diagnostic pop
    }
 
    STBI_FREE(data);
@@ -4045,6 +4048,8 @@ static int stbi__create_png_image_raw(stbi__png *a, stbi_uc *raw, stbi__uint32 r
       // this is a little gross, so that we don't switch per-pixel or per-component
       if (depth < 8 || img_n == out_n) {
          int nk = (width - 1)*img_n;
+         #pragma GCC diagnostic push
+         #pragma GCC diagnostic ignored "-Wmisleading-indentation"
          #define CASE(f) \
              case f:     \
                 for (k=0; k < nk; ++k)
@@ -4059,9 +4064,12 @@ static int stbi__create_png_image_raw(stbi__png *a, stbi_uc *raw, stbi__uint32 r
             CASE(STBI__F_paeth_first)  cur[k] = STBI__BYTECAST(raw[k] + stbi__paeth(cur[k-filter_bytes],0,0)); break;
          }
          #undef CASE
+         #pragma GCC diagnostic pop
          raw += nk;
       } else {
          STBI_ASSERT(img_n+1 == out_n);
+         #pragma GCC diagnostic push
+         #pragma GCC diagnostic ignored "-Wmisleading-indentation"
          #define CASE(f) \
              case f:     \
                 for (i=x-1; i >= 1; --i, cur[img_n]=255,raw+=img_n,cur+=out_n,prior+=out_n) \
@@ -4076,6 +4084,7 @@ static int stbi__create_png_image_raw(stbi__png *a, stbi_uc *raw, stbi__uint32 r
             CASE(STBI__F_paeth_first)  cur[k] = STBI__BYTECAST(raw[k] + stbi__paeth(cur[k-out_n],0,0)); break;
          }
          #undef CASE
+         #pragma GCC diagnostic pop
       }
    }
 

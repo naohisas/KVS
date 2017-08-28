@@ -241,16 +241,16 @@ TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
 
 TransferFunctionEditor::~TransferFunctionEditor()
 {
-    if ( m_stack_event ) delete m_stack_event;
-    if ( m_color_palette ) delete m_color_palette;
-    if ( m_color_map_palette ) delete m_color_map_palette;
-    if ( m_opacity_map_palette ) delete m_opacity_map_palette;
-    if ( m_histogram ) delete m_histogram;
-    if ( m_reset_button ) delete m_reset_button;
-    if ( m_undo_button ) delete m_undo_button;
-    if ( m_redo_button ) delete m_redo_button;
-    if ( m_apply_button ) delete m_apply_button;
-    if ( m_save_button ) delete m_save_button;
+    if ( m_stack_event ) { delete m_stack_event; m_stack_event = NULL; }
+    if ( m_color_palette ) { delete m_color_palette; m_color_palette = NULL; }
+    if ( m_color_map_palette ) { delete m_color_map_palette; m_color_map_palette = NULL; }
+    if ( m_opacity_map_palette ) { delete m_opacity_map_palette; m_opacity_map_palette = NULL; }
+    if ( m_histogram ) { delete m_histogram; m_histogram = NULL; }
+    if ( m_reset_button ) { delete m_reset_button; m_reset_button = NULL; }
+    if ( m_undo_button ) { delete m_undo_button; m_undo_button = NULL; }
+    if ( m_redo_button ) { delete m_redo_button; m_redo_button = NULL; }
+    if ( m_apply_button ) { delete m_apply_button; m_apply_button = NULL; }
+    if ( m_save_button ) { delete m_save_button; m_save_button = NULL; }
 }
 
 const kvs::TransferFunction TransferFunctionEditor::transferFunction() const
