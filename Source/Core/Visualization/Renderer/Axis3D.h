@@ -52,6 +52,7 @@ private:
     std::string m_z_label; ///< label of the z axis
     kvs::RGBColor m_label_color; ///< label color
     kvs::RGBColor m_value_color; ///< value color
+    kvs::RGBAColor m_background_color; ///< background color
     bool m_enable_anti_aliasing; ///< flag for anti-aliasing
     bool m_show_labels; ///< flags for showing the labels
     bool m_show_values; ///< flags for showing the values
@@ -79,6 +80,7 @@ public:
     void setZLabel( const std::string& label ) { m_z_label = label; }
     void setLabelColor( const kvs::RGBColor& color ) { m_label_color = color; }
     void setValueColor( const kvs::RGBColor& color ) { m_value_color = color; }
+    void setBackgroundColor( const kvs::RGBAColor color ) { m_background_color = color; }
     void setEnabledAntiAliasing( const bool enable ) { m_enable_anti_aliasing = enable; }
 
     void enableAntiAliasing() { this->setEnabledAntiAliasing( true ); }
@@ -107,6 +109,7 @@ public:
     const std::string& zLabel() const { return m_z_label; }
     const kvs::RGBColor& labelColor() const { return m_label_color; }
     const kvs::RGBColor& valueColor() const { return m_value_color; }
+    const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
 
     kvs::LineObject* outputLineObject( const kvs::ObjectBase* object ) const;
 

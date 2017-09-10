@@ -348,4 +348,54 @@ void NanoVG::stroke()
     nvgStroke( m_context() );
 }
 
+void NanoVG::resetTransform()
+{
+    nvgResetTransform( m_context() );
+}
+
+void NanoVG::transform( float a, float b, float c, float d, float e, float f )
+{
+    nvgTransform( m_context(), a, b, c, d, e, f );
+}
+
+void NanoVG::transform( const kvs::Mat2& r, const kvs::Vec2& t )
+{
+    this->transform( r[0][0], r[1][0], r[0][1], r[1][1], t[0], t[1] );
+}
+
+void NanoVG::translate( float x, float y )
+{
+    nvgTranslate( m_context(), x, y );
+}
+
+void NanoVG::translate( const kvs::Vec2& t )
+{
+    this->translate( t[0], t[1] );
+}
+
+void NanoVG::rotate( float angle )
+{
+    nvgRotate( m_context(), angle );
+}
+
+void NanoVG::skewX( float angle )
+{
+    nvgSkewX( m_context(), angle );
+}
+
+void NanoVG::skewY( float angle )
+{
+    nvgSkewY( m_context(), angle );
+}
+
+void NanoVG::scale( float x, float y )
+{
+    nvgScale( m_context(), x, y );
+}
+
+void NanoVG::scale( const kvs::Vec2& s )
+{
+    this->scale( s[0], s[1] );
+}
+
 } // end of namespace kvs

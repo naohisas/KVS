@@ -17,6 +17,7 @@
 #include <kvs/RGBAColor>
 #include <kvs/Vector2>
 #include <kvs/Vector4>
+#include <kvs/Matrix22>
 #include <kvs/Rectangle>
 
 
@@ -126,6 +127,18 @@ public:
     void circle( const kvs::Vec2& c, float r );
     void fill();
     void stroke();
+
+    // Transformation
+    void resetTransform();
+    void transform( float a, float b, float c, float d, float e, float f );
+    void transform( const kvs::Mat2& r, const kvs::Vec2& t );
+    void translate( float x, float y );
+    void translate( const kvs::Vec2& t );
+    void rotate( float angle );
+    void skewX( float angle );
+    void skewY( float angle );
+    void scale( float x, float y );
+    void scale( const kvs::Vec2& s );
 };
 
 } // end of namespace kvs

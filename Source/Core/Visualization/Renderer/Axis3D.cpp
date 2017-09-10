@@ -1,6 +1,7 @@
 #include "Axis3D.h"
 #include <kvs/OpenGL>
 #include <kvs/Vector3>
+#include <kvs/Matrix44>
 #include <kvs/RGBColor>
 #include <kvs/String>
 #include <kvs/ObjectBase>
@@ -30,6 +31,7 @@ Axis3D::Axis3D():
     m_z_label("Z"),
     m_label_color( kvs::RGBColor::Black() ),
     m_value_color( kvs::RGBColor::Black() ),
+    m_background_color( kvs::RGBAColor::White() ),
     m_enable_anti_aliasing( false ),
     m_show_labels( true ),
     m_show_values( true ),
@@ -257,10 +259,21 @@ kvs::LineObject* Axis3D::outputLineObject( const kvs::ObjectBase* object ) const
 void Axis3D::draw_xy_axes( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord, const kvs::Real32 depth_z )
 {
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
+    kvs::OpenGL::SetPolygonOffset( 1, -m_axis_width );
     kvs::OpenGL::Color( m_axis_color );
     kvs::OpenGL::SetLineWidth( m_axis_width );
     kvs::OpenGL::Begin( GL_LINE_LOOP );
+    kvs::OpenGL::Vertex( min_coord.x(), min_coord.y(), depth_z );
+    kvs::OpenGL::Vertex( max_coord.x(), min_coord.y(), depth_z );
+    kvs::OpenGL::Vertex( max_coord.x(), max_coord.y(), depth_z );
+    kvs::OpenGL::Vertex( min_coord.x(), max_coord.y(), depth_z );
+    kvs::OpenGL::End();
+
+    kvs::OpenGL::SetPolygonOffset( 1, m_axis_width );
+    kvs::OpenGL::Begin( GL_QUADS );
+    kvs::OpenGL::Color( m_background_color );
     kvs::OpenGL::Vertex( min_coord.x(), min_coord.y(), depth_z );
     kvs::OpenGL::Vertex( max_coord.x(), min_coord.y(), depth_z );
     kvs::OpenGL::Vertex( max_coord.x(), max_coord.y(), depth_z );
@@ -279,11 +292,21 @@ void Axis3D::draw_xy_axes( const kvs::Vec3& min_coord, const kvs::Vec3& max_coor
 void Axis3D::draw_yz_axes( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord, const kvs::Real32 depth_x )
 {
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
+    kvs::OpenGL::SetPolygonOffset( 1, -m_axis_width );
     kvs::OpenGL::Color( m_axis_color );
     kvs::OpenGL::SetLineWidth( m_axis_width );
-
     kvs::OpenGL::Begin( GL_LINE_LOOP );
+    kvs::OpenGL::Vertex( depth_x, min_coord.y(), min_coord.z() );
+    kvs::OpenGL::Vertex( depth_x, max_coord.y(), min_coord.z() );
+    kvs::OpenGL::Vertex( depth_x, max_coord.y(), max_coord.z() );
+    kvs::OpenGL::Vertex( depth_x, min_coord.y(), max_coord.z() );
+    kvs::OpenGL::End();
+
+    kvs::OpenGL::SetPolygonOffset( 1, m_axis_width );
+    kvs::OpenGL::Begin( GL_QUADS );
+    kvs::OpenGL::Color( m_background_color );
     kvs::OpenGL::Vertex( depth_x, min_coord.y(), min_coord.z() );
     kvs::OpenGL::Vertex( depth_x, max_coord.y(), min_coord.z() );
     kvs::OpenGL::Vertex( depth_x, max_coord.y(), max_coord.z() );
@@ -302,11 +325,21 @@ void Axis3D::draw_yz_axes( const kvs::Vec3& min_coord, const kvs::Vec3& max_coor
 void Axis3D::draw_zx_axes( const kvs::Vector3f& min_coord, const kvs::Vector3f& max_coord, const kvs::Real32 depth_y )
 {
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
+    kvs::OpenGL::SetPolygonOffset( 1, -m_axis_width );
     kvs::OpenGL::Color( m_axis_color );
     kvs::OpenGL::SetLineWidth( m_axis_width );
-
     kvs::OpenGL::Begin( GL_LINE_LOOP );
+    kvs::OpenGL::Vertex( min_coord.x(), depth_y, min_coord.z() );
+    kvs::OpenGL::Vertex( min_coord.x(), depth_y, max_coord.z() );
+    kvs::OpenGL::Vertex( max_coord.x(), depth_y, max_coord.z() );
+    kvs::OpenGL::Vertex( max_coord.x(), depth_y, min_coord.z() );
+    kvs::OpenGL::End();
+
+    kvs::OpenGL::SetPolygonOffset( 1, m_axis_width );
+    kvs::OpenGL::Begin( GL_QUADS );
+    kvs::OpenGL::Color( m_background_color );
     kvs::OpenGL::Vertex( min_coord.x(), depth_y, min_coord.z() );
     kvs::OpenGL::Vertex( min_coord.x(), depth_y, max_coord.z() );
     kvs::OpenGL::Vertex( max_coord.x(), depth_y, max_coord.z() );
@@ -467,32 +500,37 @@ void Axis3D::draw_zx_gridlines( const kvs::Vec3& min_coord, const kvs::Vec3& max
 /*===========================================================================*/
 void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord )
 {
+    const kvs::Mat4 m = kvs::OpenGL::ModelViewMatrix();
+
+    // Center of the boundary box in the object coordinate system.
     const kvs::Vec3 center = ( max_coord + min_coord ) * 0.5f;
 
-    // Depth values (Z values) in the camera coordinate system.
-    GLfloat m[16]; kvs::OpenGL::GetFloatv( GL_MODELVIEW_MATRIX, m );
-    const kvs::Real32 x_min = min_coord.x() * m[2] + center.y() * m[6] + center.z() * m[10] + m[14];
-    const kvs::Real32 x_max = max_coord.x() * m[2] + center.y() * m[6] + center.z() * m[10] + m[14];
-    const kvs::Real32 y_min = center.x() * m[2] + min_coord.y() * m[6] + center.z() * m[10] + m[14];
-    const kvs::Real32 y_max = center.x() * m[2] + max_coord.y() * m[6] + center.z() * m[10] + m[14];
-    const kvs::Real32 z_min = center.x() * m[2] + center.y() * m[6] + min_coord.z() * m[10] + m[14];
-    const kvs::Real32 z_max = center.x() * m[2] + center.y() * m[6] + max_coord.z() * m[10] + m[14];
+    // X-coordinate of the center in the camera coordinate system.
+    const kvs::Real32 camx_cen = m[0].dot( kvs::Vec4( center, 1.0f ) );
 
-    kvs::Vector3f min_value = min_coord;
-    kvs::Vector3f max_value = max_coord;
-    kvs::Vector3f dvalue = max_value - min_value;
+    // Depth values (Z values) at each boundary plane in the camera coordinate system.
+    const kvs::Real32 x_min = m[2].dot( kvs::Vec4( min_coord.x(), center.y(), center.z(), 1.0f ) );
+    const kvs::Real32 x_max = m[2].dot( kvs::Vec4( max_coord.x(), center.y(), center.z(), 1.0f ) );
+    const kvs::Real32 y_min = m[2].dot( kvs::Vec4( center.x(), min_coord.y(), center.z(), 1.0f ) );
+    const kvs::Real32 y_max = m[2].dot( kvs::Vec4( center.x(), max_coord.y(), center.z(), 1.0f ) );
+    const kvs::Real32 z_min = m[2].dot( kvs::Vec4( center.x(), center.y(), min_coord.z(), 1.0f ) );
+    const kvs::Real32 z_max = m[2].dot( kvs::Vec4( center.x(), center.y(), max_coord.z(), 1.0f ) );
+
+    const kvs::Vec3 min_value = min_coord;
+    const kvs::Vec3 max_value = max_coord;
+    kvs::Vec3 dvalue = max_value - min_value;
     dvalue.x() /= static_cast<float>( m_ngridlines.x() + 1 );
     dvalue.y() /= static_cast<float>( m_ngridlines.y() + 1 );
     dvalue.z() /= static_cast<float>( m_ngridlines.z() + 1 );
 
-    kvs::Vector3f interval = max_value - min_value;
+    kvs::Vec3 interval = max_value - min_value;
     interval.x() /= static_cast<float>( m_ngridlines.x() + 1 );
     interval.y() /= static_cast<float>( m_ngridlines.y() + 1 );
     interval.z() /= static_cast<float>( m_ngridlines.z() + 1 );
 
-    const kvs::Vector3f diff( max_coord - min_coord );
+    const kvs::Vec3 diff( max_coord - min_coord );
     const kvs::Real32 length = kvs::Math::Max( diff.x(), diff.y(), diff.z() );
-    const kvs::Real32 label_offset = length * 0.1f;
+    const kvs::Real32 label_offset = length * 0.4f;
     const kvs::Real32 value_offset = length * 0.05f;
 
     m_painter.begin( screen() );
@@ -506,13 +544,17 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
             position.z() = z_min <= z_max ? max_coord.z() : min_coord.z();
         }
 
+        const kvs::Real32 camx_pos = m[0].dot( kvs::Vec4( position, 1.0f ) );
+        if ( camx_cen <= camx_pos ) m_painter.font().setHorizontalAlign( kvs::Font::Left );
+        else m_painter.font().setHorizontalAlign( kvs::Font::Right );
+
         // Label.
         if ( m_show_labels )
         {
-            kvs::Vector3f offset( 0.0f, -label_offset, -label_offset );
+            kvs::Vec3 offset( 0.0f, -label_offset, -label_offset );
             if ( m_grid_draw_mode == FarGrid )
             {
-                offset.y() = y_min <= y_max ? -label_offset :  label_offset;
+                offset.y() = 0.0f;
                 offset.z() = z_min <= z_max ?  label_offset : -label_offset;
             }
 
@@ -523,10 +565,10 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
         // Values.
         if ( m_show_values )
         {
-            kvs::Vector3f offset( 0.0f, -value_offset, -value_offset );
+            kvs::Vec3 offset( 0.0f, -value_offset, -value_offset );
             if ( m_grid_draw_mode == FarGrid )
             {
-                offset.y() = y_min <= y_max ? -value_offset :  value_offset;
+                offset.y() = 0.0f;
                 offset.z() = z_min <= z_max ?  value_offset : -value_offset;
             }
 
@@ -541,6 +583,8 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
                 m_painter.drawText( kvs::Vec3( x, y, z ), number );
             }
         }
+
+        m_painter.font().setHorizontalAlign( kvs::Font::Left );
     }
 
     // Draw Y label and values.
@@ -552,13 +596,17 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
             position.z() = z_min <= z_max ? max_coord.z() : min_coord.z();
         }
 
+        const kvs::Real32 camx_pos = m[0].dot( kvs::Vec4( position, 1.0f ) );
+        if ( camx_cen <= camx_pos ) m_painter.font().setHorizontalAlign( kvs::Font::Left );
+        else m_painter.font().setHorizontalAlign( kvs::Font::Right );
+
         // Label.
         if ( m_show_labels )
         {
-            kvs::Vector3f offset( -label_offset, 0.0f, -label_offset );
+            kvs::Vec3 offset( -label_offset, 0.0f, -label_offset );
             if ( m_grid_draw_mode == FarGrid )
             {
-                offset.x() = x_min <= x_max ? -label_offset :  label_offset;
+                offset.x() = 0.0f;
                 offset.z() = z_min <= z_max ?  label_offset : -label_offset;
             }
 
@@ -572,7 +620,7 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
             kvs::Vector3f offset( -value_offset, 0.0f, -value_offset );
             if ( m_grid_draw_mode == FarGrid )
             {
-                offset.x() = x_min <= x_max ? -value_offset :  value_offset;
+                offset.x() = 0.0f;
                 offset.z() = z_min <= z_max ?  value_offset : -value_offset;
             }
 
@@ -583,7 +631,7 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
                 std::string number = kvs::String::ToString( min_value.y() + dvalue.y() * i );
                 const float x = position.x() + offset.x();
                 const float y = min_coord.y() + interval.y() * i;
-                const float z = position.z() + offset.y();
+                const float z = position.z() + offset.z();
                 m_painter.drawText( kvs::Vec3( x, y, z ), number );
             }
         }
@@ -598,14 +646,18 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
             position.y() = y_min <= y_max ? min_coord.y() : max_coord.y();
         }
 
+        const kvs::Real32 camx_pos = m[0].dot( kvs::Vec4( position, 1.0f ) );
+        if ( camx_cen <= camx_pos ) m_painter.font().setHorizontalAlign( kvs::Font::Left );
+        else m_painter.font().setHorizontalAlign( kvs::Font::Right );
+
         // Label.
         if ( m_show_labels )
         {
-            kvs::Vector3f offset( -label_offset, -label_offset, 0.0f );
+            kvs::Vec3 offset( -label_offset, -label_offset, 0.0f );
             if ( m_grid_draw_mode == FarGrid )
             {
                 offset.x() = x_min <= x_max ?  label_offset : -label_offset;
-                offset.y() = y_min <= y_max ? -label_offset :  label_offset;
+                offset.y() = 0.0f;
             }
 
             m_painter.font().setColor( m_label_color );
@@ -615,11 +667,11 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
         // Values.
         if ( m_show_values )
         {
-            kvs::Vector3f offset( -value_offset, -value_offset, 0.0f );
+            kvs::Vec3 offset( -value_offset, -value_offset, 0.0f );
             if ( m_grid_draw_mode == FarGrid )
             {
                 offset.x() = x_min <= x_max ?  value_offset : -value_offset;
-                offset.y() = y_min <= y_max ? -value_offset :  value_offset;
+                offset.y() = 0.0f;
             }
 
             m_painter.font().setColor( m_value_color );

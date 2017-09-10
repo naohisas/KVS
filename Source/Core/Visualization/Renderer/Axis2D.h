@@ -4,6 +4,7 @@
 #include <kvs/RGBColor>
 #include <kvs/RGBAColor>
 #include <kvs/Painter>
+#include <string>
 
 
 namespace kvs
@@ -33,6 +34,9 @@ private:
     kvs::RGBColor m_axis_color; ///< axis color
     kvs::RGBColor m_value_color; ///< value color
     kvs::RGBColor m_label_color; ///< label color
+    kvs::RGBAColor m_background_color; ///< background color
+    std::string m_x_label; ///< label for x axis
+    std::string m_y_label; ///< label for y axis
     kvs::Painter m_painter; ///< painter
 
 public:
@@ -46,6 +50,9 @@ public:
     void setAxisColor( const kvs::RGBColor color ) { m_axis_color = color; }
     void setValueColor( const kvs::RGBColor color ) { m_value_color = color; }
     void setLabelColor( const kvs::RGBColor color ) { m_label_color = color; }
+    void setBackgroundColor( const kvs::RGBAColor color ) { m_background_color = color; }
+    void setXLabel( const std::string& label ) { m_x_label = label; }
+    void setYLabel( const std::string& label ) { m_y_label = label; }
 
     int topMargin() const { return m_top_margin; }
     int bottomMargin() const { return m_bottom_margin; }
@@ -55,6 +62,9 @@ public:
     const kvs::RGBColor& axisColor() const { return m_axis_color; }
     const kvs::RGBColor& valueColor() const { return m_value_color; }
     const kvs::RGBColor& labelColor() const { return m_label_color; }
+    const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
+    const std::string& xLabel() const { return m_x_label; }
+    const std::string& yLabel() const { return m_y_label; }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 };
