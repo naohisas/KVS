@@ -98,7 +98,11 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
 
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
+
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
+
+    // Rounded shape.
+    kvs::OpenGL::Enable( GL_POINT_SMOOTH );
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
