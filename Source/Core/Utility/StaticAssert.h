@@ -18,7 +18,11 @@
       #if (__cplusplus >= 201103)
         #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes )
       #else
-        #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes ) __attribute__((unused))
+        #if defined(__clang__) && ((__clang_major__ >= 9))
+          #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes )
+        #else
+          #define KVS_STATIC_ASSERT( expr, mes ) static_assert( expr, mes ) __attribute__((unused))
+        #endif
       #endif
     #endif
   #endif
