@@ -35,21 +35,32 @@ class CaptureDevice
     kvsClassName_without_virtual( kvs::opencv::CaptureDevice );
 
 private:
-
     CvCapture* m_handler; ///< handler
 
 public:
     CaptureDevice();
     ~CaptureDevice( );
 
+    const CvCapture* handler();
+    double property( const int property_id ) const;
+    int setProperty( const int property_id, const double value ) const;
+
+    double frameWidth() const;
+    double frameHeight() const;
+    double frameRate() const;
+    double numberOfFrames() const;
+
+    double currentPosition() const;
+    double relativePosition() const;
+    double nextFrameIndex() const;
+
+    int setCurrentPosition( const double msec ) const;
+    int setRelativePosition( const double pos ) const;
+    int setNextFrameIndex( const double index ) const;
+
     bool create( const int index );
     bool create( const std::string filename );
     void release();
-
-    const CvCapture* handler();
-    double frameWidth();
-    double frameHeight();
-    double frameRate();
 
     int grabFrame() const;
     const IplImage* retrieveFrame() const;
