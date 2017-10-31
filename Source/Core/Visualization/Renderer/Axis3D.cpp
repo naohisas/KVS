@@ -8,6 +8,7 @@
 #include <kvs/Camera>
 #include <kvs/Light>
 #include <kvs/LineObject>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace kvs

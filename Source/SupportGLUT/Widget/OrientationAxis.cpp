@@ -19,6 +19,7 @@
 #include <kvs/OpenGL>
 #include <kvs/glut/Screen>
 #include <kvs/glut/GLUT>
+#include <kvs/IgnoreUnusedVariable>
 
 
 // Default parameters.

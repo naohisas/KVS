@@ -14,6 +14,7 @@
 /*****************************************************************************/
 #include "SphereGlyph.h"
 #include <kvs/OpenGL>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace kvs

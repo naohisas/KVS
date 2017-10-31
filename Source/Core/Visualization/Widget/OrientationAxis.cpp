@@ -19,6 +19,7 @@
 #include <kvs/Scene>
 #include <kvs/ObjectManager>
 #include <kvs/OpenGL>
+#include <kvs/IgnoreUnusedVariable>
 
 
 // Constant variables

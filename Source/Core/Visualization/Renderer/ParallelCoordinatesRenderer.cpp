@@ -18,6 +18,7 @@
 #include <kvs/Light>
 #include <kvs/ObjectBase>
 #include <kvs/TableObject>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace kvs

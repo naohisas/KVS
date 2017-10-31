@@ -14,6 +14,7 @@
 /*****************************************************************************/
 #include "DiamondGlyph.h"
 #include <kvs/OpenGL>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace
