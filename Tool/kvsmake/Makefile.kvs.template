@@ -15,6 +15,7 @@ endif
 #=============================================================================
 SOURCES :=
 OBJECTS :=
+MODULES :=
 
 INCLUDE_PATH :=
 LIBRARY_PATH :=
@@ -76,6 +77,12 @@ PYTHON_OBJECTS := $(wildcard *.pyc)
 
 OBJECTS += $(PYTHON_OBJECTS)
 endif
+
+
+#=============================================================================
+#  Module (Fortran).
+#=============================================================================
+MODULES += $(wildcard *.mod)
 
 
 #=============================================================================
@@ -176,6 +183,39 @@ $(TARGET_OCL): $(OBJECTS)
 
 %.o: %.cpp
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.f
+	$(FC) -c $<
+
+%.o: %.f90
+	$(FC) -c $<
+
+%.o: %.f03
+	$(FC) -c $<
+
+%.o: %.f %.mod
+	$(FC) -c $<
+
+%.o: %.f90 %.mod
+	$(FC) -c $<
+
+%.o: %.f03 %.mod
+	$(FC) -c $<
+
+%.mod: %.f %.o
+	@:
+
+%.mod: %.f90 %.o
+	@:
+
+%.mod: %.f03 %.o
+	@:
 
 ifeq "$(KVS_SUPPORT_CUDA)" "1"
 %.o: %.cu %.cuh
