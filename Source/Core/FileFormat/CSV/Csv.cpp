@@ -235,6 +235,7 @@ bool Csv::write( const std::string& filename )
         Csv::Row::iterator c = row->begin();
         ofs << *(c++); while ( c != row->end() ) ofs << ", " << *(c++);
         ofs << std::endl;
+        row++;
     }
 
     ofs.close();

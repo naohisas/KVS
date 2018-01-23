@@ -103,6 +103,7 @@ public:
     DayOfWeek dayOfWeek() const;
     std::string dayOfWeekString( const bool abbr = true ) const;
     int daysInMonth() const;
+    int daysInYear() const;
     std::string toString( const std::string sep = "" ) const;
     void fromString( const std::string date, const std::string sep = "" );
 
@@ -110,17 +111,17 @@ public:
     bool isValid() const;
 
     void addYears( const int years );
-    void subYears( const int years );
     void addMonths( const int months );
-    void subMonths( const int months );
     void addDays( const int days );
-    void subDays( const int days );
+    void subYears( const int years ) { this->addYears( -1 * years ); }
+    void subMonths( const int months ) { this->addMonths( -1 * months ); }
+    void subDays( const int days ) { this->addDays( -1 * days ); }
 
 private:
 
-    void adjust_days();
-    long convert_to_julian_date( const int year, const int month, const int day ) const;
-    Date convert_from_julian_date( const long julian_day ) const;
+//    void adjust_days();
+//    long convert_to_julian_date( const int year, const int month, const int day ) const;
+//    Date convert_from_julian_date( const long julian_day ) const;
 
 public:
     KVS_DEPRECATED( void subtractYears( const int years ) ) { this->subYears( years ); }
