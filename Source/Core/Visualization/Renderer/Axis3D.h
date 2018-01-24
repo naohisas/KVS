@@ -22,8 +22,7 @@ class LineObject;
 /*===========================================================================*/
 class Axis3D : public kvs::RendererBase
 {
-    kvsModuleName( kvs::Axis3D );
-    kvsModuleCategory( Renderer );
+    kvsModule( kvs::Axis3D, Renderer );
     kvsModuleBaseClass( kvs::RendererBase );
 
 public:

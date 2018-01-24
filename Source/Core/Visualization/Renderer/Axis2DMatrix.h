@@ -20,8 +20,7 @@ class Light;
 /*===========================================================================*/
 class Axis2DMatrix : public kvs::RendererBase
 {
-    kvsModuleName( kvs::Axis2DMatrix );
-    kvsModuleCategory( Renderer );
+    kvsModule( kvs::Axis2DMatrix, Renderer );
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:

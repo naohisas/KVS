@@ -21,8 +21,7 @@ class Light;
 /*===========================================================================*/
 class Axis2D : public kvs::RendererBase
 {
-    kvsModuleName( kvs::Axis2D );
-    kvsModuleCategory( Renderer );
+    kvsModule( kvs::Axis2D, Renderer );
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:

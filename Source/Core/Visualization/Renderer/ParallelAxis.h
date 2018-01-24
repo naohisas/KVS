@@ -19,8 +19,7 @@ class Light;
 /*===========================================================================*/
 class ParallelAxis : public kvs::RendererBase
 {
-    kvsModuleName( kvs::ParallelAxis );
-    kvsModuleCategory( Renderer );
+    kvsModule( kvs::ParallelAxis, Renderer );
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
