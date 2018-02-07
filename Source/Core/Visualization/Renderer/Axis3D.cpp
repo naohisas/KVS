@@ -421,7 +421,7 @@ void Axis3D::draw_yz_gridlines( const kvs::Vec3& min_coord, const kvs::Vec3& max
 
     // Y lines.
     kvs::OpenGL::Begin( GL_LINES );
-    kvs::Real32 y = min_coord.z();
+    kvs::Real32 y = min_coord.y();
     const kvs::Real32 y_interval = ( max_coord.y() - min_coord.y() ) / ( m_ngridlines.y() + 1 );
     for ( size_t i = 0; i < m_ngridlines.y(); i++ )
     {
