@@ -112,11 +112,14 @@ if(TRUE)
 
 endif()
 
-
 #
 # kvsSupportGLUT
 #
 if(KVS_SUPPORT_GLUT)
+
+	# set flag
+	add_definitions(-DKVS_ENABLE_OPENGL=1)
+
 	# Glob resources
 	file(GLOB_RECURSE kvsSupportGLUT_SOURCES "${PROJECT_SOURCE_DIR}/SupportGLUT/*.cpp")
 	file(GLOB_RECURSE kvsSupportGLUT_HEADERS "${PROJECT_SOURCE_DIR}/SupportGLUT/*.h")
@@ -133,6 +136,12 @@ if(KVS_SUPPORT_GLUT)
 		${PROJECT_SOURCE_DIR}
 	)
 
+	# Link GLUT
+	find_package(GLUT REQUIRED)
+	if (GLUT_FOUND)
+		include_directories(${GLUT_INCLUDE_DIRS})
+		link_libraries(${GLUT_LIBRARIES})
+	endif()
 
 	# Create kvsSupportGLUT
 	add_library(kvsSupportGLUT ${kvsSupportGLUT_SOURCES})
@@ -142,6 +151,19 @@ if(KVS_SUPPORT_GLUT)
 	set_property(TARGET kvsSupportGLUT PROPERTY SOVERSION ${soversion})
 	set_property(TARGET kvsSupportGLUT PROPERTY INTERFACE_kvsSupportGLUT_MAJOR_VERSION ${serial})
 	set_property(TARGET kvsSupportGLUT PROPERTY COMPATIBLE_INTERFACE_STRING kvs_MAJOR_VERSION 2)
+
+	# Lin kvsCore
+	target_link_libraries(kvsSupportGLUT kvsCore)
+	
+	# Link OpenGL
+	find_library(OPENGL OpenGL)
+	if (NOT OPENGL)
+		message(FATAL_ERROR "OpenGL Framework not found")
+	endif()
+	target_link_libraries(kvsSupportGLUT ${OPENGL})
+    target_link_libraries(kvsCore ${OPENGL})
+
+
 
 	# Install kvsSupportGLUT
 	INSTALL(
