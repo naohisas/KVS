@@ -22,6 +22,9 @@ VertIn vec2 random_index; // index for accessing to the random texture
 // Output parameters to fragment shader.
 VertOut vec2 index; // index for accessing to the random texture
 
+// Uniform parameter.
+uniform float line_offset; // line offset in clip coordinate
+
 // Uniform variables (OpenGL variables).
 uniform mat4 ModelViewProjectionMatrix; // model-view projection matrix
 
@@ -34,6 +37,7 @@ uniform mat4 ModelViewProjectionMatrix; // model-view projection matrix
 void main()
 {
     gl_Position = ModelViewProjectionMatrix * gl_Vertex;
+    gl_Position.z -= line_offset;
     gl_FrontColor = gl_Color;
 
     index = random_index;
