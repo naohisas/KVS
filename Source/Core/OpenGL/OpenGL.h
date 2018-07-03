@@ -75,6 +75,7 @@ void Hint( GLenum target, GLenum mode );
 void SetColorMask( GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha );
 void SetDepthMask( GLboolean flag );
 void SetDepthFunc( GLenum func );
+void SetAlphaFunc( GLenum func, GLclampf ref );
 void SetBlendFunc( GLenum sfactor, GLenum dfactor );
 void SetShadeModel( GLenum mode );
 void SetMatrixMode( GLenum mode );

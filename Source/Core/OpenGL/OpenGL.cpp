@@ -538,6 +538,11 @@ void SetDepthFunc( GLenum func )
     KVS_GL_CALL( glDepthFunc( func ) );
 }
 
+void SetAlphaFunc( GLenum func, GLclampf ref )
+{
+    KVS_GL_CALL( glAlphaFunc( func, ref ) );
+}
+
 void SetBlendFunc( GLenum sfactor, GLenum dfactor )
 {
     KVS_GL_CALL( glBlendFunc( sfactor, dfactor ) );

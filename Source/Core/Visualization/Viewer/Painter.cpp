@@ -139,8 +139,10 @@ void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
     attrib.disable( GL_TEXTURE_2D );
     attrib.disable( GL_TEXTURE_3D );
     attrib.enable( GL_DEPTH_TEST );
+    attrib.enable( GL_ALPHA_TEST );
     attrib.enable( GL_BLEND );
     {
+        kvs::OpenGL::SetAlphaFunc( GL_GREATER, 0.0f );
         kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         kvs::OpenGL::WithPushedMatrix modelview( GL_MODELVIEW );
         modelview.loadIdentity();
