@@ -1,4 +1,4 @@
-### Version x.x.x Released (20xx.x.x)
+### Version 2.7.0 Released (2018.8.4)
 **Added new classes and functions**
 + kvs::HCLColor
 + kvs::Rectangle
