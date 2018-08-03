@@ -14,6 +14,7 @@
 + kvs::OpenGL::SetPointSize
 + kvs::OpenGL::SetPolygonStipple
 + kvs::OpenGL::SetLineStipple
++ kvs::OpenGL::SetAlphFunc
 + kvs::OpenGL::LoadMatrix
 + kvs::OpenGL::Rotate
 + kvs::OpenGL::Scale
@@ -66,9 +67,12 @@
 + kvs::Axis2DMatrix
 + kvs::Axis3D
 + kvs::ParallelAxis
-+ kvs::BDMLData 
++ kvs::BDMLData
 + kvs::IPLab
 + kvs::IPLabList
+
+**Add new methods**
++ kvs::StochasticLineRenderer::setLineOffset
 
 **Added SupportPython**
 + kvs::python::Array
@@ -113,7 +117,9 @@
 + Example/OpenMP/Hello
 
 **Added some new option in KVS**
-+ Environment parameter KVS_CPP for c++ compiler
++ Environment parameter KVS_CPP for C++ compiler
++ Environment parameter KVS_CC for C compiler
++ Environment parameter KVS_FCC for Fortran compiler
 + Compiler option KVS_ENABLE_OSMESA for OSMesa
 + Compiler option KVS_ENABLE_OPENMP for OpenMP
 
