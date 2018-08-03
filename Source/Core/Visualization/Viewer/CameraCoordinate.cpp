@@ -28,7 +28,7 @@ namespace kvs
  *  @param  camera [in] pointer to a camera defines camera coordinates
  */
 /*===========================================================================*/
-CameraCoordinate::CameraCoordinate( const kvs::Vector3f& position, const kvs::Camera* camera ):
+CameraCoordinate::CameraCoordinate( const kvs::Vec3& position, const kvs::Camera* camera ):
     m_position( position ),
     m_camera( camera )
 {

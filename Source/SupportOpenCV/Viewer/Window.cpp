@@ -23,10 +23,56 @@ namespace opencv
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns the window handle.
+ *  @param  name [in] window name
+ *  @return window handle
+ */
+/*===========================================================================*/
+void* Window::Handle( const std::string name )
+{
+    return cvGetWindowHandle( name.c_str() );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the window name.
+ *  @param  handle [in] window handle
+ *  @return window name
+ */
+/*===========================================================================*/
+const char* Window::Name( void* handle )
+{
+    return cvGetWindowName( handle );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Waits for a pressed key.
+ *  @param  delay [in] delay in milliseconds
+ *  @return pressed key code
+ */
+/*===========================================================================*/
+int Window::WaitKey( const int delay )
+{
+    return cvWaitKey( delay );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Destroys all the window.
+ */
+/*===========================================================================*/
+void Window::DestroyAll()
+{
+    cvDestroyAllWindows();
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Constructs a new OpenCV window class.
  */
 /*===========================================================================*/
-Window::Window( void ):
+Window::Window():
     m_name("")
 {
 }
@@ -36,20 +82,9 @@ Window::Window( void ):
  *  @brief  Destructs the OpenCV window class.
  */
 /*===========================================================================*/
-Window::~Window( void )
+Window::~Window()
 {
     this->destroy();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a window name.
- *  @return window name
- */
-/*===========================================================================*/
-const std::string Window::name( void )
-{
-    return( m_name );
 }
 
 /*===========================================================================*/
@@ -62,8 +97,7 @@ const std::string Window::name( void )
 int Window::create( const std::string name, int flag )
 {
     m_name = name;
-
-    return( cvNamedWindow( m_name.c_str(), flag ) );
+    return cvNamedWindow( m_name.c_str(), flag );
 }
 
 /*===========================================================================*/
@@ -71,7 +105,7 @@ int Window::create( const std::string name, int flag )
  *  @brief  Destroy the window.
  */
 /*===========================================================================*/
-void Window::destroy( void )
+void Window::destroy()
 {
     cvDestroyWindow( m_name.c_str() );
 }
@@ -109,52 +143,6 @@ void Window::resize( const int width, const int height )
 void Window::move( const int x, const int y )
 {
     cvMoveWindow( m_name.c_str(), x, y );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the window handle.
- *  @param  name [in] window name
- *  @return window handle
- */
-/*===========================================================================*/
-void* Window::Handle( const std::string name )
-{
-    return( cvGetWindowHandle( name.c_str() ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the window name.
- *  @param  handle [in] window handle
- *  @return window name
- */
-/*===========================================================================*/
-const char* Window::Name( void* handle )
-{
-    return( cvGetWindowName( handle ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Waits for a pressed key.
- *  @param  delay [in] delay in milliseconds
- *  @return pressed key code
- */
-/*===========================================================================*/
-int Window::WaitKey( const int delay )
-{
-    return( cvWaitKey( delay ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys all the window.
- */
-/*===========================================================================*/
-void Window::DestroyAll( void )
-{
-    cvDestroyAllWindows();
 }
 
 } // end of namespace opencv

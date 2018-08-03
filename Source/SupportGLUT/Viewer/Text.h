@@ -41,7 +41,7 @@ protected:
 
 public:
 
-    Text( void );
+    Text();
 
     void setPosition( const size_t x, const size_t y );
     void setColor( const kvs::RGBColor& color );
@@ -50,7 +50,7 @@ public:
     void addText( const char* text, ... );
     void addText( const std::string& text );
 
-    void draw( void );
+    void draw();
 };
 
 } // end of namespace glut

@@ -43,7 +43,7 @@ public:
     TornadoVolumeData( const kvs::Vector3ui resolution, const int time = 0 );
     virtual ~TornadoVolumeData();
 
-    const int time() const;
+    int time() const;
     void setTime( const int time );
 
     SuperClass* exec();

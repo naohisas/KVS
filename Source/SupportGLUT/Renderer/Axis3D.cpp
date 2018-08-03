@@ -22,6 +22,7 @@
 #include <kvs/Light>
 #include <kvs/LineObject>
 #include <kvs/glut/GLUT>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace kvs

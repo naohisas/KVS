@@ -16,11 +16,6 @@
 #include <string>
 #include <kvs/File>
 #include <kvs/IgnoreUnusedVariable>
-#include <kvs/AVSField>
-#include <kvs/KVSMLObjectStructuredVolume>
-#include <kvs/StructuredVolumeObject>
-#include <kvs/StructuredVolumeImporter>
-#include <kvs/StructuredVolumeExporter>
 
 
 namespace kvsconv
@@ -65,9 +60,9 @@ Argument::Argument( int argc, char** argv ):
  *  @return input filename
  */
 /*===========================================================================*/
-const std::string Argument::inputFilename( void )
+const std::string Argument::inputFilename()
 {
-    return( this->value<std::string>() );
+    return this->value<std::string>();
 }
 
 /*===========================================================================*/
@@ -83,11 +78,11 @@ const std::string Argument::outputFilename( const std::string& filename )
 
     if ( this->hasOption("output") )
     {
-        return( this->optionValue<std::string>("output") );
+        return this->optionValue<std::string>("output");
     }
     else
     {
-        return( "" );
+        return "";
     }
 }
 
@@ -100,14 +95,14 @@ const std::string Argument::outputFilename( const std::string& filename )
 /*===========================================================================*/
 const kvs::GrayImage Argument::grayImage( const kvs::ColorImage& image )
 {
-    switch( this->optionValue<int>("g") )
+    switch ( this->optionValue<int>("g") )
     {
-    case 0: return( kvs::GrayImage( image, kvs::GrayImage::MeanValue() ) );
-    case 1: return( kvs::GrayImage( image, kvs::GrayImage::MiddleValue() ) );
-    case 2: return( kvs::GrayImage( image, kvs::GrayImage::MedianValue() ) );
-    case 3: return( kvs::GrayImage( image, kvs::GrayImage::NTSCWeightedMeanValue() ) );
-    case 4: return( kvs::GrayImage( image, kvs::GrayImage::HDTVWeightedMeanValue() ) );
-    default:return( kvs::GrayImage( image, kvs::GrayImage::MeanValue() ) );
+    case 0:  return kvs::GrayImage( image, kvs::GrayImage::MeanValue() );
+    case 1:  return kvs::GrayImage( image, kvs::GrayImage::MiddleValue() );
+    case 2:  return kvs::GrayImage( image, kvs::GrayImage::MedianValue() );
+    case 3:  return kvs::GrayImage( image, kvs::GrayImage::NTSCWeightedMeanValue() );
+    case 4:  return kvs::GrayImage( image, kvs::GrayImage::HDTVWeightedMeanValue() );
+    default: return kvs::GrayImage( image, kvs::GrayImage::MeanValue() );
     }
 }
 
@@ -120,31 +115,18 @@ const kvs::GrayImage Argument::grayImage( const kvs::ColorImage& image )
 /*===========================================================================*/
 const kvs::BitImage Argument::bitImage( const kvs::GrayImage& image )
 {
-    switch( this->optionValue<int>("b") )
+    switch ( this->optionValue<int>("b") )
     {
-    case 0: return( kvs::BitImage( image, kvs::BitImage::PTile() ) );
-    case 1: return( kvs::BitImage( image, kvs::BitImage::Distinction() ) );
-    case 2: return( kvs::BitImage( image, kvs::BitImage::Byer() ) );
-    case 3: return( kvs::BitImage( image, kvs::BitImage::Halftone() ) );
-    case 4: return( kvs::BitImage( image, kvs::BitImage::EmphasizedHalftone() ) );
-    case 5: return( kvs::BitImage( image, kvs::BitImage::Screw() ) );
-    case 6: return( kvs::BitImage( image, kvs::BitImage::DeformedScrew() ) );
-    case 7: return( kvs::BitImage( image, kvs::BitImage::DotConcentrate() ) );
-    default:return( kvs::BitImage( image, kvs::BitImage::PTile() ) );
+    case 0:  return kvs::BitImage( image, kvs::BitImage::PTile() );
+    case 1:  return kvs::BitImage( image, kvs::BitImage::Distinction() );
+    case 2:  return kvs::BitImage( image, kvs::BitImage::Byer() );
+    case 3:  return kvs::BitImage( image, kvs::BitImage::Halftone() );
+    case 4:  return kvs::BitImage( image, kvs::BitImage::EmphasizedHalftone() );
+    case 5:  return kvs::BitImage( image, kvs::BitImage::Screw() );
+    case 6:  return kvs::BitImage( image, kvs::BitImage::DeformedScrew() );
+    case 7:  return kvs::BitImage( image, kvs::BitImage::DotConcentrate() );
+    default: return kvs::BitImage( image, kvs::BitImage::PTile() );
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new main class for img2img.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
 }
 
 /*===========================================================================*/
@@ -152,11 +134,11 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+bool Main::exec()
 {
     // Parse specified arguments.
     img2img::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    if ( !arg.parse() ) { return false; }
 
     // Set a input filename and a output filename.
     m_input_name = arg.inputFilename();
@@ -166,13 +148,13 @@ const bool Main::exec( void )
     if ( !file.isExisted() )
     {
         kvsMessageError("Input data file '%s' is not existed.",m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     if ( m_output_name.empty() )
     {
         kvsMessageError("Output filename is required for img2img.");
-        return( false );
+        return false;
     }
 
     // Read the input image file.
@@ -180,7 +162,7 @@ const bool Main::exec( void )
     if ( !image.read( m_input_name ) )
     {
         kvsMessageError("Cannot read image data file '%s'.",m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     if ( arg.hasOption("s") )
@@ -204,19 +186,19 @@ const bool Main::exec( void )
         {
             // Binarization.
             kvs::BitImage bit = arg.bitImage( gray );
-            return( bit.write( m_output_name ) );
+            return bit.write( m_output_name );
         }
-        return( gray.write( m_output_name ) );
+        return gray.write( m_output_name );
     }
 
     if ( arg.hasOption("b") )
     {
         // Binarization.
         kvs::BitImage bit = arg.bitImage( kvs::GrayImage( image ) );
-        return( bit.write( m_output_name ) );
+        return bit.write( m_output_name );
     }
 
-    return ( image.write( m_output_name ) );
+    return image.write( m_output_name );
 }
 
 } // end of namespace img2img

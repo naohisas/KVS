@@ -61,6 +61,7 @@ LIB_KVS_SUPPORT_CUDA   = libkvsSupportCUDA.lib
 LIB_KVS_SUPPORT_GLUT   = kvsSupportGLUT.lib
 LIB_KVS_SUPPORT_QT     = kvsSupportQt.lib
 LIB_KVS_SUPPORT_OPENCV = kvsSupportOpenCV.lib
+LIB_KVS_SUPPORT_PYTHON = kvsSupportPython.lib
 
 
 #=============================================================================
@@ -84,7 +85,13 @@ OUTDIR = $(SOLUTION)
 #=============================================================================
 GL_INCLUDE_PATH =
 GL_LIBRARY_PATH =
-GL_LINK_LIBRARY = glu32.lib opengl32.lib
+GL_LINK_LIBRARY =
+!IF "$(KVS_ENABLE_OPENGL)" == "1"
+GL_LINK_LIBRARY = $(GL_LINK_LIBRARY) opengl32.lib
+!IF "$(KVS_ENABLE_GLU)" == "1"
+GL_LINK_LIBRARY = $(GL_LINK_LIBRARY) glu32.lib
+!ENDIF
+!ENDIF
 
 
 #=============================================================================
@@ -92,11 +99,17 @@ GL_LINK_LIBRARY = glu32.lib opengl32.lib
 #=============================================================================
 GLEW_INCLUDE_PATH =
 GLEW_LIBRARY_PATH =
+GLEW_LINK_LIBRARY =
+!IF "$(KVS_ENABLE_OPENGL)" == "1"
+!IF "$(KVS_ENABLE_GLEW)" == "1"
 GLEW_LINK_LIBRARY = glew32.lib
 !IFDEF KVS_GLEW_DIR
 GLEW_INCLUDE_PATH = $(GLEW_INCLUDE_PATH) /I"$(KVS_GLEW_DIR)\include"
 GLEW_LIBRARY_PATH = $(GLEW_LIBRARY_PATH) /LIBPATH:"$(KVS_GLEW_DIR)\lib"
 !ENDIF
+!ENDIF
+!ENDIF
+
 
 #=============================================================================
 #  GLUT_INCLUDE_PATH, GLUT_LIBRARY_PATH, GLUT_LINK_LIBRARY
@@ -128,7 +141,6 @@ CUDA_LIBRARY_PATH = $(CUDA_LIBRARY_PATH) /LIBPATH:"$(KVS_CUDA_SDK_DIR)\lib\win32
 #CUDA_LINK_LIBRARY = cutil.lib
 CUDA_LINK_LIBRARY = $(CUDA_LINK_LIBRARY)
 !ENDIF
-
 NVCC = nvcc
 NVCCFLAGS = --host-compilation C++
 !ENDIF
@@ -155,6 +167,34 @@ OPENCV_LIBRARY_PATH = $(OPENCV_LIBRARY_PATH) /LIBPATH:"$(KVS_OPENCV_DIR)\lib"
 
 
 #=============================================================================
+#  PYTHON_INCLUDE_PATH, PYTHON_LIBRARY_PATH, PYTHON_LINK_LIBRARY
+#  NUMPY_INCLUDE_PATH, NUMPY_LIBRARY_PATH, NUMPY_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_PYTHON)" == "1"
+PYTHON_INCLUDE_PATH = 
+PYTHON_LIBRARY_PATH = 
+PYTHON_LINK_LIBRARY = 
+!IFDEF KVS_PYTHON_DIR
+PYTHON_INCLUDE_PATH = $(PYTHON_INCLUDE_PATH) /I"$(KVS_PYTHON_DIR)\include"
+PYTHON_LIBRARY_PATH = $(PYTHON_LIBRARY_PATH) /LIBPATH:"$(KVS_PYTHON_DIR)\lib"
+!ENDIF
+!IFDEF KVS_PYTHON_LINK_LIBRARY
+PYTHON_LINK_LIBRARY = $(KVS_PYTHON_LINK_LIBRARY)
+!ENDIF
+NUMPY_INCLUDE_PATH = 
+NUMPY_LIBRARY_PATH = 
+NUMPY_LINK_LIBRARY = 
+!IFDEF KVS_NUMPY_DIR
+NUMPY_INCLUDE_PATH = $(NUMPY_INCLUDE_PATH) /I"$(KVS_NUMPY_DIR)\include"
+NUMPY_LIBRARY_PATH = $(NUMPY_LIBRARY_PATH) /LIBPATH:"$(KVS_NUMPY_DIR)\lib"
+!ENDIF
+!IFDEF KVS_NUMPY_LINK_LIBRARY
+NUMPY_LINK_LIBRARY = $(KVS_NUMPY_LINK_LIBRARY)
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
 #  Compiler option.
 #=============================================================================
 CPPFLAGS = /W3 /EHsc /GR
@@ -163,6 +203,11 @@ CPPFLAGS = /W3 /EHsc /GR
 CPPFLAGS = $(CPPFLAGS) /Od /MDd
 !ELSE
 CPPFLAGS = $(CPPFLAGS) /Ox /MD
+!ENDIF
+
+# OpenMP
+!IF "$(KVS_ENABLE_OPENMP)" == "1"
+CPPFLAGS = $(CPPFLAGS) /openmp
 !ENDIF
 
 
@@ -183,6 +228,18 @@ DEFINITIONS = $(DEFINITIONS) /DKVS_ENABLE_MEM_DEBUG
 
 !IF "$(KVS_ENABLE_OPENGL)" == "1"
 DEFINITIONS = $(DEFINITIONS) /DKVS_ENABLE_OPENGL
+!ENDIF
+
+!IF "$(KVS_ENABLE_GLU)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_ENABLE_GLU
+!ENDIF
+
+!IF "$(KVS_ENABLE_GLEW)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_ENABLE_GLEW
+!ENDIF
+
+!IF "$(KVS_ENABLE_OPENMP)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_ENABLE_OPENMP
 !ENDIF
 
 !IF "$(KVS_ENABLE_DEPRECATED)" == "1"
@@ -209,6 +266,10 @@ DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_OPENCV
 
 !IF "$(KVS_SUPPORT_CUDA)" == "1"
 DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_CUDA
+!ENDIF
+
+!IF "$(KVS_SUPPORT_PYTHON)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_PYTHON
 !ENDIF
 
 

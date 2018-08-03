@@ -14,6 +14,7 @@
 /*****************************************************************************/
 #include "Scene.h"
 #include <kvs/OpenGL>
+#include <kvs/ScreenBase>
 #include <kvs/Camera>
 #include <kvs/Light>
 #include <kvs/Mouse>
@@ -27,6 +28,26 @@
 #include <kvs/Coordinate>
 
 
+namespace
+{
+
+inline kvs::Vec3 World2Camera( const kvs::Vec3& p, const kvs::Camera* camera )
+{
+    return kvs::WorldCoordinate( p ).
+        toCameraCoordinate( camera ).position();
+}
+
+inline kvs::Vec2 Object2Window( const kvs::Vec3& p, const kvs::Camera* camera )
+{
+    const float w = camera->windowWidth();
+    const float h = camera->windowHeight();
+    const kvs::Xform pvm( camera->projectionMatrix() * kvs::OpenGL::ModelViewMatrix() );
+    const kvs::Vec3 p_cam = pvm.project( p );
+    return ( kvs::Vec2( 1, 1 ) + p_cam.xy() ) * kvs::Vec2( w, h ) * 0.5f;
+}
+
+}
+
 namespace kvs
 {
 
@@ -35,7 +56,8 @@ namespace kvs
  *  @brief  Constructs a new Scene class.
  */
 /*===========================================================================*/
-Scene::Scene():
+Scene::Scene( kvs::ScreenBase* screen ):
+    m_screen( screen ),
     m_target( Scene::TargetObject ),
     m_enable_object_operation( true ),
     m_enable_collision_detection( false )
@@ -106,6 +128,7 @@ const std::pair<int,int> Scene::registerObject( kvs::ObjectBase* object, kvs::Re
 
     // Insert the IDs into the ID manager.
     m_id_manager->insert( object_id, renderer_id );
+    renderer->setScreen( this->screen() );
 
     return std::pair<int,int>( object_id, renderer_id );
 }
@@ -569,7 +592,7 @@ void Scene::updateGLProjectionMatrix() const
 /*===========================================================================*/
 void Scene::updateGLLightParameters() const
 {
-    const kvs::Vec3 p = kvs::WorldCoordinate( m_light->position() ).toCameraCoordinate( m_camera ).position();
+    const kvs::Vec3 p = ::World2Camera( m_light->position(), m_camera );
     const kvs::Vec4 position( p, 1.0f );
     const kvs::Vec4 diffuse( m_light->diffuse(), 1.0f );
     const kvs::Vec4 ambient( m_light->ambient(), 1.0f );
@@ -736,9 +759,9 @@ void Scene::wheelFunction( int value )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the gravity of the center of the object in device nordinates.
+ *  @brief  Returns the gravity of the center of the object in device coordinates.
  *  @param  object [in] pointer to the object
- *  @return gravity of the center of the object in device nordinates
+ *  @return gravity of the center of the object in device coordinates
  */
 /*===========================================================================*/
 kvs::Vec2 Scene::position_in_device( const kvs::ObjectBase* object ) const
@@ -751,8 +774,9 @@ kvs::Vec2 Scene::position_in_device( const kvs::ObjectBase* object ) const
         this->updateGLViewingMatrix();
         this->updateGLModelingMatrix( object );
 
-        p_dev = m_camera->projectObjectToWindow( p_obj );
-        p_dev.y() = m_camera->windowHeight() - p_dev.y();
+        const kvs::Vec2 p_win = ::Object2Window( p_obj, m_camera );
+        p_dev.x() = p_win.x();
+        p_dev.y() = m_camera->windowHeight() - p_win.y();
     }
     kvs::OpenGL::PopMatrix();
 
@@ -761,8 +785,8 @@ kvs::Vec2 Scene::position_in_device( const kvs::ObjectBase* object ) const
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the gravity of the center of the object manager in device nordinates.
- *  @return gravity of the center of the object manager in device nordinates
+ *  @brief  Returns the gravity of the center of the object manager in device coordinates.
+ *  @return gravity of the center of the object manager in device coordinates
  */
 /*===========================================================================*/
 kvs::Vec2 Scene::position_in_device() const
@@ -774,8 +798,9 @@ kvs::Vec2 Scene::position_in_device() const
         this->updateGLProjectionMatrix();
         this->updateGLViewingMatrix();
 
-        p_dev = m_camera->projectObjectToWindow( p_obj );
-        p_dev.y() = m_camera->windowHeight() - p_dev.y();
+        const kvs::Vec2 p_win = ::Object2Window( p_obj, m_camera );
+        p_dev.x() = p_win.x();
+        p_dev.y() = m_camera->windowHeight() - p_win.y();
     }
     kvs::OpenGL::PopMatrix();
 
@@ -842,7 +867,7 @@ bool Scene::detect_collision( const kvs::ObjectBase* object, const kvs::Vec2& p_
         this->updateGLViewingMatrix();
         this->updateGLModelingMatrix( object );
 
-        center = m_camera->projectObjectToWindow( object->objectCenter() );
+        center = ::Object2Window( object->objectCenter(), m_camera );
 
         // Object's corner points in the object coordinate system.
         const kvs::Vec3 min_object_coord = object->minObjectCoord();
@@ -861,7 +886,7 @@ bool Scene::detect_collision( const kvs::ObjectBase* object, const kvs::Vec2& p_
         // the window coordinate system.
         for( int i = 0; i < 8; i++ )
         {
-            const kvs::Vec2 corner = m_camera->projectObjectToWindow( corners[i] );
+            const kvs::Vec2 corner = ::Object2Window( corners[i], m_camera );
             const float distance = static_cast<float>( ( corner - center ).length() );
             max_distance = kvs::Math::Max( max_distance, distance );
         }

@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   PolygonRenderer.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -22,7 +23,6 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/Application>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 
 
@@ -53,29 +53,16 @@ Argument::Argument( int argc, char** argv ):
  *  @return 1, if two-side lighting is enable
  */
 /*===========================================================================*/
-const int Argument::twoSideLighting( void ) const
+const int Argument::twoSideLighting() const
 {
     int default_value = 0;
 
     if ( this->hasOption("t") )
     {
-        return( this->optionValue<int>("t") );
+        return this->optionValue<int>("t");
     }
 
-    return( default_value );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
+    return default_value;
 }
 
 /*===========================================================================*/
@@ -83,26 +70,27 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    kvsview::PolygonRenderer::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    kvsview::PolygonRenderer::Argument arg( argc, argv );
+    if( !arg.parse() ) return false;
 
     // Create a global and screen class.
     kvs::glut::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::PolygonRenderer::CommandName );
+    screen.show();
 
     // Check the input data.
     m_input_name = arg.value<std::string>();
     if ( !kvsview::FileChecker::ImportablePolygon( m_input_name ) )
     {
         kvsMessageError("%s is not polygon data.", m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Visualization pipeline.
@@ -112,9 +100,7 @@ const bool Main::exec( void )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Set a polygon renderer.
@@ -123,7 +109,7 @@ const bool Main::exec( void )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return false;
     }
     if ( arg.twoSideLighting() != 0 )
     {
@@ -134,21 +120,15 @@ const bool Main::exec( void )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
-    // Show the screen.
-    screen.show();
-
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace PolygonRenderer

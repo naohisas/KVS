@@ -12,14 +12,13 @@
  *  $Id: TransferFunction.h 621 2010-09-30 08:04:55Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__TRANSFER_FUNCTION_H_INCLUDE
-#define KVSVIEW__TRANSFER_FUNCTION_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/TransferFunction>
 #include <kvs/Texture1D>
 #include <kvs/Texture2D>
 #include <kvs/CommandLine>
+#include <kvs/Program>
 #include "Argument.h"
 
 
@@ -31,7 +30,6 @@ namespace TransferFunction
 
 const std::string CommandName("TransferFunction");
 const std::string Description("Rendering a transfer function. (optional)");
-
 
 /*===========================================================================*/
 /**
@@ -52,26 +50,16 @@ public:
  *  @brief  Main class.
  */
 /*===========================================================================*/
-class Main
+class Main : public kvs::Program
 {
-protected:
-
-    int m_argc; ///< argument count
-    char** m_argv; ///< argument values
-    std::string m_input_name;  ///< input filename
+private:
+    std::string m_input_name; ///< input filename
     std::string m_output_name; ///< output filename
 
 public:
-
-    Main( int argc, char** argv );
-
-public:
-
-    const bool exec();
+    int exec( int argc, char** argv );
 };
 
 } // end of namespace TransferFunction
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__TRANSFER_FUNCTION_H_INCLUDE

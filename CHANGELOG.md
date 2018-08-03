@@ -1,4 +1,174 @@
-### Version 2.5.0 Released (2015.11.1x)
+### Version 2.7.0 Released (2018.8.4)
+**Added new classes and functions**
++ kvs::HCLColor
++ kvs::Rectangle
++ kvs::Vec2u
++ kvs::Vec3u
++ kvs::Vec4u
++ kvs::OpenGL::Vertex
++ kvs::OpenGL::Color
++ kvs::OpenGL::Normal
++ kvs::OpenGL::TexCoord
++ kvs::OpenGL::Hint
++ kvs::OpenGL::SetLightModel
++ kvs::OpenGL::SetPointSize
++ kvs::OpenGL::SetPolygonStipple
++ kvs::OpenGL::SetLineStipple
++ kvs::OpenGL::SetAlphFunc
++ kvs::OpenGL::LoadMatrix
++ kvs::OpenGL::Rotate
++ kvs::OpenGL::Scale
++ kvs::OpenGL::Translate
++ kvs::OpenGL::DrawCylinder
++ kvs::OpenGL::DrawSphere
++ kvs::OpenGL::Render2D
++ kvs::OpenMP::SetNumberOfThreads
++ kvs::OpenMP::GetNumberOfThreads
++ kvs::OpenMP::GetMaxThreads
++ kvs::OpenMP::GetThreadNumber
++ kvs::OpenMP::GetThreadLimit
++ kvs::OpenMP::GetNumberOfProcessors
++ kvs::OpenMP::InParallel
++ kvs::OpenMP::SetDynamic
++ kvs::OpenMP::GetNested
++ kvs::OpenMP::SetNested
++ kvs::OpenMP::SetMaxActiveLevels
++ kvs::OpenMP::GetMaxActiveLevels
++ kvs::OpenMP::GetLevel
++ kvs::OpenMP::GetAncestorThreadNumber
++ kvs::OpenMP::GetTeamSize
++ kvs::OpenMP::GetActiveLevel
++ kvs::OpenMP::InFinal
++ kvs::OpenMP::GetWTime
++ kvs::OpenMP::GetWTick
++ kvs::OpenMP::Mutex
++ kvs::NanoVG
++ kvs::FontStash
++ kvs::Font
++ kvs::FontMetrics
++ kvs::Painter
++ kvs::PaintDevice
++ kvs::WidgetBase
++ kvs::CheckBox
++ kvs::CheckBoxGroup
++ kvs::ColorMapMar
++ kvs::ColorMapPalette
++ kvs::ColorPalette
++ kvs::HistogramBar
++ kvs::Label
++ kvs::OpacityMapBar
++ kvs::OpacityMapPalette
++ kvs::OrientationAxis
++ kvs::PushButton
++ kvs::RadioButton
++ kvs::RadioButtonGroup
++ kvs::Slider
++ kvs::Axis2D
++ kvs::Axis2DMatrix
++ kvs::Axis3D
++ kvs::ParallelAxis
++ kvs::BDMLData
++ kvs::IPLab
++ kvs::IPLabList
+
+**Add new methods**
++ kvs::StochasticLineRenderer::setLineOffset
+
+**Added SupportPython**
++ kvs::python::Array
++ kvs::python::Bool
++ kvs::python::Callable
++ kvs::python::Dict
++ kvs::python::Float
++ kvs::python::Int
++ kvs::python::Interpreter
++ kvs::python::List
++ kvs::python::Module
++ kvs::python::Object
++ kvs::python::String
++ kvs::python::Table
++ kvs::python::Tuple
+
+**Removed classes**
++ kvs::glut::Rectangle (use kvs::Rectangle)
+
+**Removed setSubpixelLevel in particle sampling classes**
++ setSubpixelLevel( subpixel_level ) -> (removed, use setRepetitionLevel( subpixel_level * subpixel_level ))
++ Note: An argument in constructor of particle sampling class is modified to repetition_level not subpixel_level.
+
+**Reimplemented with OpenMP**
++ kvs::CellByCellLayeredSampling
++ kvs::CellByCellMetropolisSampling
++ kvs::CellByCellRejectionSampling
++ kvs::CellByCellUniformSampling
+
+**Added TrueType fonts**
++ NotoSans-Regular.ttf
++ NotoSans-Bold.ttf
++ NotoSans-Italic.ttf
++ NotoSans-BoldItalic.ttf
++ NotoSerif-Regular.ttf
++ NotoSerif-Bold.ttf
++ NotoSerif-Italic.ttf
++ NotoSerif-BoldItalic.ttf
++ entypo.ttf
+
+**Added new example**
++ Example/OpenMP/Hello
+
+**Added some new option in KVS**
++ Environment parameter KVS_CPP for C++ compiler
++ Environment parameter KVS_CC for C compiler
++ Environment parameter KVS_FCC for Fortran compiler
++ Compiler option KVS_ENABLE_OSMESA for OSMesa
++ Compiler option KVS_ENABLE_OPENMP for OpenMP
+
+**Added a new option in kvsmake**
++ Options 'q' and 'Q' for compiling Qt program with kvsmake
+
+### Version 2.6.0 Released (2016.4.5)
+**Add new classes and functions**
++ kvs::StylizedLineRenderer
+
+**Add new methods**
++ kvs::ObjectBase::read/write
++ kvs::LineObject::read/write
++ kvs::PointObject::read/write
++ kvs::PolygonObject::read/write
++ kvs::StructuredVolumeObject::read/write
++ kvs::UnstructuredVolumeObject::read/write
++ kvs::ImageObject::read/write
++ kvs::TableObject::read/write
+
+**Fixed problem**
++ kvs::NormalizedDeviceCoordinate::toCameraCoordinate()
++ kvs::Matrix::invert()
++ kvs::gis::GSIMesh
+
+**Supported prism cell**
++ kvs::SlicePlane
+
+**Supported polygon color and normal type of polygon object**
++ kvs::StochasticPolygonRenderer
+
+**Duprecated methods in kvs::Camera class**
++ modelViewMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix() instead)
++ projectionModelViewMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix(), kvs::Camera::projectionMatrix() instead)
++ getProjectionMatrix() -> (deprecated, use kvs::Camera::projectionMatrix() instead)
++ getModelViewMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix())
++ getProjectionModelViewMatrix() -> (deprecated)
++ getCombinedMatrix() -> (deprecated, use kvs::ObjectBase::modelingMatrix() and kvs::Camera::viewingMatrix(), kvs::Camera::projectionMatrix() instead)
++ projectObjectToWindow() -> (deprecated, use Coordinate classes instead)
++ projectWindowToObject() -> (deprecated, use Coordinate classes instead)
++ projectWindowToCamera() -> (deprecated, use Coordinate classes instead)
++ projectObjectToCamera() -> (deprecated, use Coordinate classes instead)
++ projectCameraToObject() -> (deprecated, use Coordinate classes instead)
++ projectWorldToCamera() -> (deprecated, use Coordinate classes instead)
++ projectCameraToWorld() -> (deprecated, use Coordinate classes instead)
++ projectWorldToObject() -> (deprecated, use Coordinate classes instead)
++ projectObjectToWorld() -> (deprecated, use Coordinate classes instead)
+
+### Version 2.5.0 Released (2015.11.18)
 **Add new classes and functions**
 + kvs::MarchingPrism
 + kvs::GridBase

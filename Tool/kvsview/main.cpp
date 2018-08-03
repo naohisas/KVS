@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   main.cpp
+ *  @author Naohisa Sakamto
  */
 /*----------------------------------------------------------------------------
  *
@@ -12,6 +13,7 @@
  */
 /*****************************************************************************/
 #include <kvs/MemoryDebugger>
+#include <kvs/Message>
 #include "main.h"
 #include "Argument.h"
 #include "Default.h"
@@ -28,42 +30,31 @@
 #include "RayCastingRenderer.h"
 #include "ParticleBasedRenderer.h"
 #include "Histogram.h"
-#include <kvs/Message>
+
 
 KVS_MEMORY_DEBUGGER;
 
-
 #define KVSVIEW_HELP( method )                                          \
-    if ( help == #method ) return( method ::Argument( m_argc, m_argv ).parse() )
+    if ( help == #method ) { return method ::Argument( argc, argv ).parse(); }
 
 #define KVSVIEW_EXEC( method )                                          \
-    if ( arg.hasOption( #method ) ) { return( arg.clear(), method ::Main( m_argc, m_argv ).exec() ); }
+    if ( arg.hasOption( #method ) ) { return ( arg.clear(), method ::Main().start( argc, argv ) ); }
+
 
 namespace kvsview
 {
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Main class.
+ *  @brief  Execute main process.
  *  @param  argc [i] argument count
  *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-Main::Main( int argc, char** argv )
+bool Main::exec( int argc, char** argv )
 {
-    m_argc = argc;
-    m_argv = argv;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Execute main process.
- */
-/*===========================================================================*/
-bool Main::exec( void )
-{
-    Argument arg( m_argc, m_argv );
-    if( !arg.read() ) return( false );
+    Argument arg( argc, argv );
+    if ( !arg.read() ) { return false; }
 
     // Output help messsage for the specified visualization method.
     if ( arg.hasOption("help") )
@@ -83,12 +74,12 @@ bool Main::exec( void )
         KVSVIEW_HELP( RayCastingRenderer );
         KVSVIEW_HELP( ParticleBasedRenderer );
         KVSVIEW_HELP( Histogram );
-
         kvsMessageError( "Unknown visualization method '%s'.", help.c_str() );
-        return( false );
+        return false;
     }
 
     // Execute the specified visualization method.
+    else
     {
         KVSVIEW_EXEC( Default );
         KVSVIEW_EXEC( PointRenderer );
@@ -104,9 +95,8 @@ bool Main::exec( void )
         KVSVIEW_EXEC( RayCastingRenderer );
         KVSVIEW_EXEC( ParticleBasedRenderer );
         KVSVIEW_EXEC( Histogram );
+        return ( arg.clear(), Default::Main().start( argc, argv ) );
     }
-
-    return( arg.clear(), Default::Main( m_argc, m_argv ).exec() );
 }
 
 } // end of namespace kvsview
@@ -122,7 +112,6 @@ bool Main::exec( void )
 int main( int argc, char** argv )
 {
     KVS_MEMORY_DEBUGGER__SET_ARGUMENT( argc, argv );
-
-    kvsview::Main m( argc, argv );
-    return( m.exec() );
+    kvsview::Main program;
+    return program.exec( argc, argv );
 }

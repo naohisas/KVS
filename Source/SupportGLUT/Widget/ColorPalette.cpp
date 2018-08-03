@@ -44,40 +44,6 @@ namespace
 
 /*===========================================================================*/
 /**
- *  @brief  Draws a rectangle as lines.
- *  @param  rect [in] rectangle
- *  @param  width [in] line width
- *  @param  upper_edge_color [in] upper edge color
- *  @param  lower_edge_color [in] lower edge color
- */
-/*===========================================================================*/
-void DrawRectangle(
-    const kvs::glut::Rectangle rect,
-    const float width,
-    const kvs::RGBColor& upper_edge_color,
-    const kvs::RGBColor& lower_edge_color )
-{
-    GLfloat x0 = static_cast<GLfloat>( rect.x0() );
-    GLfloat y0 = static_cast<GLfloat>( rect.y0() );
-    GLfloat x1 = static_cast<GLfloat>( rect.x1() );
-    GLfloat y1 = static_cast<GLfloat>( rect.y1() );
-
-    glLineWidth( width );
-    glBegin( GL_LINES );
-    {
-        glColor3ub( upper_edge_color.r(), upper_edge_color.g(), upper_edge_color.b() );
-        glVertex2f( x0, y0 ); glVertex2f( x1, y0 ); // top
-        glVertex2f( x0, y0 ); glVertex2f( x0, y1 ); // left
-
-        glColor3ub( lower_edge_color.r(), lower_edge_color.g(), lower_edge_color.b() );
-        glVertex2f( x1, y1 ); glVertex2f( x0, y1 ); // bottom
-        glVertex2f( x1, y0 ); glVertex2f( x1, y1 ); // right
-    }
-    glEnd();
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Interpolates color values.
  *  @param  ratio [in] ratio [0-1]
  *  @param  c0 [in] color value 0
@@ -91,7 +57,7 @@ const kvs::RGBColor GetInterpolatedColor( const float ratio, const kvs::RGBColor
     const kvs::UInt8 g = static_cast<kvs::UInt8>( ratio * c0.g() + ( 1.0f - ratio ) * c1.g() + 0.5f );
     const kvs::UInt8 b = static_cast<kvs::UInt8>( ratio * c0.b() + ( 1.0f - ratio ) * c1.b() + 0.5f );
 
-    return( kvs::RGBColor( r, g, b ) );
+    return kvs::RGBColor( r, g, b );
 }
 
 } // end of namespace
@@ -105,6 +71,9 @@ namespace glut
 
 ColorPalette::ColorPalette( kvs::ScreenBase* screen ):
     kvs::glut::WidgetBase( screen ),
+    m_SV_palette( NULL ),
+    m_H_palette( NULL ),
+    m_selected_color_box( NULL ),
     m_H_indicator( -1 ),
     m_S_indicator( -1 ),
     m_V_indicator( -1 )
@@ -119,20 +88,15 @@ ColorPalette::ColorPalette( kvs::ScreenBase* screen ):
     BaseClass::setMargin( ::Default::Margin );
     this->setCaption( "Color palette " + kvs::String::ToString( ::InstanceCounter++ ) );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::RectColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );
     m_lower_edge_color = ::Default::RectEdgeColor;
 }
 
-ColorPalette::~ColorPalette( void )
+ColorPalette::~ColorPalette()
 {
 }
 
-const std::string& ColorPalette::caption( void ) const
-{
-    return( m_caption );
-}
-
-const kvs::RGBColor ColorPalette::color( void ) const
+const kvs::RGBColor ColorPalette::color() const
 {
     const float h = this->get_H_value();
     const kvs::RGBColor c0( kvs::HSVColor( h, 1, 1 ) ); // top-right
@@ -145,28 +109,24 @@ const kvs::RGBColor ColorPalette::color( void ) const
     const kvs::RGBColor v1( ::GetInterpolatedColor( v, c0, c3 ) );
 
     const float s = this->get_S_value();
-    return( ::GetInterpolatedColor( s, v1, v0 ) );
+    return ::GetInterpolatedColor( s, v1, v0 );
 }
 
-void ColorPalette::setCaption( const std::string& caption )
-{
-    m_caption = caption;
-}
-
-void ColorPalette::paintEvent( void )
+void ColorPalette::paintEvent()
 {
     this->screenUpdated();
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
-    BaseClass::draw_background();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
+    BaseClass::drawBackground();
 
     // Draw the caption.
     {
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin();
-        BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+        BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
     }
 
     // Selected color box.
@@ -208,7 +168,7 @@ void ColorPalette::paintEvent( void )
     this->draw_selected_color_box();
     this->draw_selected_color_value();
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 void ColorPalette::resizeEvent( int width, int height )
@@ -282,7 +242,7 @@ void ColorPalette::mouseReleaseEvent( kvs::MouseEvent* event )
     }
 }
 
-void ColorPalette::draw_SV_palette( void )
+void ColorPalette::draw_SV_palette()
 {
     const int x0 = m_SV_palette.x0();
     const int y0 = m_SV_palette.y0();
@@ -296,48 +256,66 @@ void ColorPalette::draw_SV_palette( void )
     const kvs::RGBColor c3( kvs::HSVColor( h, 1, 0 ) ); // bottom-right
 
     // Draw SV palette.
-    glBegin( GL_QUADS );
-    glColor3ub( c0.r(), c0.g(), c0.b() ); glVertex2i( x1, y0 );
-    glColor3ub( c1.r(), c1.g(), c1.b() ); glVertex2i( x0, y0 );
-    glColor3ub( c2.r(), c2.g(), c2.b() ); glVertex2i( x0, y1 );
-    glColor3ub( c3.r(), c3.g(), c3.b() ); glVertex2i( x1, y1 );
-    glEnd();
+    kvs::OpenGL::Begin( GL_QUADS );
+    {
+        kvs::OpenGL::Color( c0 ); kvs::OpenGL::Vertex( x1, y0 );
+        kvs::OpenGL::Color( c1 ); kvs::OpenGL::Vertex( x0, y0 );
+        kvs::OpenGL::Color( c2 ); kvs::OpenGL::Vertex( x0, y1 );
+        kvs::OpenGL::Color( c3 ); kvs::OpenGL::Vertex( x1, y1 );
+    }
+    kvs::OpenGL::End();
 
     // Draw the cross lines.
     {
         const int margin = 4;
-        const float color = 1.0f;
         const int cursor_x0 = kvs::Math::Max( m_S_indicator - margin, m_SV_palette.x0() );
         const int cursor_y0 = kvs::Math::Max( m_V_indicator - margin, m_SV_palette.y0() );
         const int cursor_x1 = kvs::Math::Min( m_S_indicator + margin, m_SV_palette.x1() );
         const int cursor_y1 = kvs::Math::Min( m_V_indicator + margin, m_SV_palette.y1() );
 
-        glLineWidth( 1 );
-        glBegin( GL_LINES );
-        glColor3f( color, color, color );
-        glVertex2i( cursor_x0, cursor_y0 ); glVertex2i( cursor_x1, cursor_y0 );     // top
-        glVertex2i( cursor_x0, cursor_y1 ); glVertex2i( cursor_x1, cursor_y1 );     // bottom
-        glVertex2i( cursor_x0, cursor_y0 ); glVertex2i( cursor_x0, cursor_y1 + 1 ); // left
-        glVertex2i( cursor_x1, cursor_y0 ); glVertex2i( cursor_x1, cursor_y1 + 1 ); // right
-        glEnd();
+        kvs::OpenGL::SetLineWidth( 1 );
+        kvs::OpenGL::Begin( GL_LINES );
+        {
+            kvs::OpenGL::Color( kvs::RGBColor::White() );
+            // Top
+            kvs::OpenGL::Vertex( cursor_x0, cursor_y0 );
+            kvs::OpenGL::Vertex( cursor_x1, cursor_y0 );
+            // Bottom
+            kvs::OpenGL::Vertex( cursor_x0, cursor_y1 );
+            kvs::OpenGL::Vertex( cursor_x1, cursor_y1 );
+            // Left
+            kvs::OpenGL::Vertex( cursor_x0, cursor_y0 );
+            kvs::OpenGL::Vertex( cursor_x0, cursor_y1 + 1 );
+            // Right
+            kvs::OpenGL::Vertex( cursor_x1, cursor_y0 );
+            kvs::OpenGL::Vertex( cursor_x1, cursor_y1 + 1 );
+        }
+        kvs::OpenGL::End();
 
-        glLineWidth( 1 );
-        glBegin( GL_LINES );
-        glColor3f( color, color, color );
-        // Horizontal lines.
-        glVertex2i( x0, m_V_indicator ); glVertex2i( cursor_x0, m_V_indicator );
-        glVertex2i( cursor_x1, m_V_indicator ); glVertex2i( x1, m_V_indicator );
-        // Vertical lines.
-        glVertex2i( m_S_indicator, y0 ); glVertex2i( m_S_indicator, cursor_y0 );
-        glVertex2i( m_S_indicator, cursor_y1 ); glVertex2i( m_S_indicator, y1 );
-        glEnd();
+        kvs::OpenGL::SetLineWidth( 1 );
+        kvs::OpenGL::Begin( GL_LINES );
+        {
+            kvs::OpenGL::Color( kvs::RGBColor::White() );
+            // Horizontal lines.
+            kvs::OpenGL::Vertex( x0, m_V_indicator );
+            kvs::OpenGL::Vertex( cursor_x0, m_V_indicator );
+            kvs::OpenGL::Vertex( cursor_x1, m_V_indicator );
+            kvs::OpenGL::Vertex( x1, m_V_indicator );
+            // Vertical lines.
+            kvs::OpenGL::Vertex( m_S_indicator, y0 );
+            kvs::OpenGL::Vertex( m_S_indicator, cursor_y0 );
+            kvs::OpenGL::Vertex( m_S_indicator, cursor_y1 );
+            kvs::OpenGL::Vertex( m_S_indicator, y1 );
+        }
+        kvs::OpenGL::End();
     }
 
     // Draw border.
-    ::DrawRectangle( m_SV_palette, 1, m_upper_edge_color, m_lower_edge_color );
+//    ::DrawRectangle( m_SV_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_SV_palette, m_upper_edge_color, m_lower_edge_color );
 }
 
-void ColorPalette::draw_H_palette( void )
+void ColorPalette::draw_H_palette()
 {
     const int x0 = m_H_palette.x0();
     const int y0 = m_H_palette.y0();
@@ -348,52 +326,50 @@ void ColorPalette::draw_H_palette( void )
     const int dx = m_H_palette.width() / 2;
 
     // Draw H palette.
-    glLineWidth( static_cast<GLfloat>( m_H_palette.width() ) );
-    glBegin( GL_LINE_STRIP );
-    glColor3ub( 255,   0,   0 ); glVertex2i( x0 + dx, y1 );
-    glColor3ub( 255, 255,   0 ); glVertex2i( x0 + dx, y0 + stride * 5 );
-    glColor3ub(   0, 255,   0 ); glVertex2i( x0 + dx, y0 + stride * 4 );
-    glColor3ub(   0, 255, 255 ); glVertex2i( x0 + dx, y0 + stride * 3 );
-    glColor3ub(   0,   0, 255 ); glVertex2i( x0 + dx, y0 + stride * 2 );
-    glColor3ub( 255,   0, 255 ); glVertex2i( x0 + dx, y0 + stride * 1 );
-    glColor3ub( 255,   0,   0 ); glVertex2i( x0 + dx, y0 );
-    glEnd();
+    kvs::OpenGL::SetLineWidth( static_cast<GLfloat>( m_H_palette.width() ) );
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Color( kvs::RGBColor::Red()     ); kvs::OpenGL::Vertex( x0 + dx, y1 );
+    kvs::OpenGL::Color( kvs::RGBColor::Yellow()  ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 5 );
+    kvs::OpenGL::Color( kvs::RGBColor::Green()   ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 4 );
+    kvs::OpenGL::Color( kvs::RGBColor::Cyan()    ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 3 );
+    kvs::OpenGL::Color( kvs::RGBColor::Blue()    ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 2 );
+    kvs::OpenGL::Color( kvs::RGBColor::Magenta() ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 1 );
+    kvs::OpenGL::Color( kvs::RGBColor::Red()     ); kvs::OpenGL::Vertex( x0 + dx, y0 );
+    kvs::OpenGL::End();
 
-    // Draw the line
-    const float color = 1.0f;
-    glLineWidth( 1 );
-    glBegin( GL_LINES );
-    glColor3f( color, color, color );
-    glVertex2i( x0, m_H_indicator );
-    glVertex2i( x1, m_H_indicator );
-    glEnd();
+    // Draw line
+    kvs::OpenGL::SetLineWidth( 1 );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Color( kvs::RGBColor::White() );
+    kvs::OpenGL::Vertex( x0, m_H_indicator );
+    kvs::OpenGL::Vertex( x1, m_H_indicator );
+    kvs::OpenGL::End();
 
     // Draw border.
-    ::DrawRectangle( m_H_palette, 1, m_upper_edge_color, m_lower_edge_color );
+//    ::DrawRectangle( m_H_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_H_palette, m_upper_edge_color, m_lower_edge_color );
 }
 
-void ColorPalette::draw_selected_color_box( void )
+void ColorPalette::draw_selected_color_box()
 {
     const int x0 = m_selected_color_box.x0();
     const int y0 = m_selected_color_box.y0();
     const int x1 = m_selected_color_box.x1();
     const int y1 = m_selected_color_box.y1();
 
-    const kvs::RGBColor current_color = this->color();
-
-    glBegin( GL_QUADS );
-    glColor3ub( current_color.r(), current_color.g(), current_color.b() );
-    glVertex2i( x1, y1 );
-    glVertex2i( x0, y1 );
-    glVertex2i( x0, y0 );
-    glVertex2i( x1, y0 );
-    glEnd();
+    kvs::OpenGL::Begin( GL_QUADS );
+    kvs::OpenGL::Color( this->color() );
+    kvs::OpenGL::Vertex( x1, y1 );
+    kvs::OpenGL::Vertex( x0, y1 );
+    kvs::OpenGL::Vertex( x0, y0 );
+    kvs::OpenGL::Vertex( x1, y0 );
+    kvs::OpenGL::End();
 
     // Draw border.
-    ::DrawRectangle( m_selected_color_box, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_selected_color_box, m_upper_edge_color, m_lower_edge_color );
 }
 
-void ColorPalette::draw_selected_color_value( void )
+void ColorPalette::draw_selected_color_value()
 {
     const kvs::RGBColor current_color = this->color();
     const int r = static_cast<int>( current_color.r() );
@@ -413,39 +389,39 @@ void ColorPalette::draw_selected_color_value( void )
 
     int x = m_selected_color_box.x0();
     int y = m_selected_color_box.y1() + 10;
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), R );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), G );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), B );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), "" );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), H );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), S );
-    BaseClass::draw_text( x, y += BaseClass::characterHeight(), V );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), R );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), G );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), B );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), "" );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), H );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), S );
+    BaseClass::drawText( x, y += BaseClass::characterHeight(), V );
 }
 
-int ColorPalette::get_fitted_width( void )
+int ColorPalette::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
-    return( kvs::Math::Max( width, ::Default::Width ) );
+    return kvs::Math::Max( width, ::Default::Width );
 }
 
-int ColorPalette::get_fitted_height( void )
+int ColorPalette::adjustedHeight()
 {
-    return( ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2 );
+    return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }
 
-float ColorPalette::get_H_value( void ) const
+float ColorPalette::get_H_value() const
 {
-    return( static_cast<float>( m_H_palette.y1() - m_H_indicator ) / m_H_palette.height() );
+    return static_cast<float>( m_H_palette.y1() - m_H_indicator ) / m_H_palette.height();
 }
 
-float ColorPalette::get_S_value( void ) const
+float ColorPalette::get_S_value() const
 {
-    return( static_cast<float>( m_S_indicator - m_SV_palette.x0() ) / m_SV_palette.width() );
+    return static_cast<float>( m_S_indicator - m_SV_palette.x0() ) / m_SV_palette.width();
 }
 
-float ColorPalette::get_V_value( void ) const
+float ColorPalette::get_V_value() const
 {
-    return( static_cast<float>( m_SV_palette.y1() - m_V_indicator ) / m_SV_palette.height() );
+    return static_cast<float>( m_SV_palette.y1() - m_V_indicator ) / m_SV_palette.height();
 }
 
 } // end of namespace glut

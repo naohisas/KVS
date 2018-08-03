@@ -93,7 +93,7 @@ void Label::addText( const char* text, ... )
  *  @return fitted width
  */
 /*===========================================================================*/
-int Label::get_fitted_width( void )
+int Label::adjustedWidth()
 {
     size_t width = 0;
 
@@ -102,7 +102,7 @@ int Label::get_fitted_width( void )
         width = kvs::Math::Max( width, m_text[i].size() );
     }
 
-    return( width * ::Default::CharacterWidth + BaseClass::margin() * 2 );
+    return width * ::Default::CharacterWidth + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -111,9 +111,9 @@ int Label::get_fitted_width( void )
  *  @return fitted height
  */
 /*===========================================================================*/
-int Label::get_fitted_height( void )
+int Label::adjustedHeight()
 {
-    return( m_text.size() * ::Default::CharacterHeight + BaseClass::margin() * 2 );
+    return m_text.size() * ::Default::CharacterHeight + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -121,23 +121,24 @@ int Label::get_fitted_height( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void Label::paintEvent( void )
+void Label::paintEvent()
 {
     this->screenUpdated();
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
-    BaseClass::draw_background();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
+    BaseClass::drawBackground();
 
     const int x = BaseClass::x() + BaseClass::margin();
     const int y = BaseClass::y() + BaseClass::margin();
     for ( size_t line = 0; line < m_text.size(); line++ )
     {
-        BaseClass::draw_text( x, y + ::Default::CharacterHeight * ( line + 1 ), m_text[line] );
+        BaseClass::drawText( x, y + ::Default::CharacterHeight * ( line + 1 ), m_text[line] );
     }
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/

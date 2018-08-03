@@ -13,6 +13,7 @@
  */
 /****************************************************************************/
 #include "UnstructuredVolumeObject.h"
+#include <kvs/KVSMLUnstructuredVolumeObject>
 
 
 namespace
@@ -39,6 +40,50 @@ size_t NumberOfCellNodes[9] = {
     1,  // Point
     6   // Prism
 };
+
+/*==========================================================================*/
+/**
+ *  @brief  Converts to the cell type from the given string.
+ *  @param  cell_type [in] grid type string
+ *  @return cell type
+ */
+/*==========================================================================*/
+const kvs::UnstructuredVolumeObject::CellType GetCellType( const std::string& cell_type )
+{
+    if (      cell_type == "tetrahedra" ) { return kvs::UnstructuredVolumeObject::Tetrahedra; }
+    else if ( cell_type == "quadratic tetrahedra" ) { return kvs::UnstructuredVolumeObject::QuadraticTetrahedra; }
+    else if ( cell_type == "hexahedra"  ) { return kvs::UnstructuredVolumeObject::Hexahedra;  }
+    else if ( cell_type == "quadratic hexahedra"  ) { return kvs::UnstructuredVolumeObject::QuadraticHexahedra;  }
+    else if ( cell_type == "pyramid"  ) { return kvs::UnstructuredVolumeObject::Pyramid;  }
+    else if ( cell_type == "point"  ) { return kvs::UnstructuredVolumeObject::Point;  }
+    else if ( cell_type == "prism"  ) { return kvs::UnstructuredVolumeObject::Prism;  }
+    else
+    {
+        kvsMessageError( "Unknown cell type '%s'.", cell_type.c_str() );
+        return kvs::UnstructuredVolumeObject::UnknownCellType;
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a writing data type.
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return writing data type
+ */
+/*===========================================================================*/
+kvs::KVSMLUnstructuredVolumeObject::WritingDataType GetWritingDataType( const bool ascii, const bool external )
+{
+    if ( ascii )
+    {
+        if ( external ) { return kvs::KVSMLUnstructuredVolumeObject::ExternalAscii; }
+        else { return kvs::KVSMLUnstructuredVolumeObject::Ascii; }
+    }
+    else
+    {
+        return kvs::KVSMLUnstructuredVolumeObject::ExternalBinary;
+    }
+}
 
 } // end of namespace
 
@@ -108,6 +153,162 @@ void UnstructuredVolumeObject::print( std::ostream& os, const kvs::Indent& inden
     os << indent << "Number of cells : " << this->numberOfCells() << std::endl;
     os << indent << "Min. value : " << this->minValue() << std::endl;
     os << indent << "Max. value : " << this->maxValue() << std::endl;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Read a unstructured volume object from the specified file in KVSML.
+ *  @param  filename [in] input filename
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool UnstructuredVolumeObject::read( const std::string& filename )
+{
+    if ( !kvs::KVSMLUnstructuredVolumeObject::CheckExtension( filename ) )
+    {
+        kvsMessageError("%s is not an unstructured volume object file in KVSML.", filename.c_str());
+        return false;
+    }
+
+    kvs::KVSMLUnstructuredVolumeObject kvsml;
+    if ( !kvsml.read( filename ) ) { return false; }
+
+    this->setVeclen( kvsml.veclen() );
+    this->setNumberOfNodes( kvsml.nnodes() );
+    this->setNumberOfCells( kvsml.ncells() );
+    this->setCellType( ::GetCellType( kvsml.cellType() ) );
+    this->setCoords( kvsml.coords() );
+    this->setConnections( kvsml.connections() );
+    this->setValues( kvsml.values() );
+
+    if ( kvsml.hasExternalCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minExternalCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxExternalCoord() );
+        this->setMinMaxExternalCoords( min_coord, max_coord );
+    }
+
+    if ( kvsml.hasObjectCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minObjectCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxObjectCoord() );
+        this->setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    else
+    {
+        this->updateMinMaxCoords();
+    }
+
+    if ( kvsml.hasLabel() ) { this->setLabel( kvsml.label() ); }
+    if ( kvsml.hasUnit() ) { this->setUnit( kvsml.unit() ); }
+
+    if ( kvsml.hasMinValue() && kvsml.hasMaxValue() )
+    {
+        const double min_value = kvsml.minValue();
+        const double max_value = kvsml.maxValue();
+        this->setMinMaxValues( min_value, max_value );
+    }
+    else
+    {
+        this->updateMinMaxValues();
+        const double min_value = kvsml.hasMinValue() ? kvsml.minValue() : this->minValue();
+        const double max_value = kvsml.hasMaxValue() ? kvsml.maxValue() : this->maxValue();
+        this->setMinMaxValues( min_value, max_value );
+    }
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Write the unstructured volume object to the specfied file in KVSML.
+ *  @param  filename [in] output filename
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return true, if the writing process is done successfully
+ */
+/*===========================================================================*/
+bool UnstructuredVolumeObject::write( const std::string& filename, const bool ascii, const bool external ) const
+{
+    kvs::KVSMLUnstructuredVolumeObject kvsml;
+    kvsml.setWritingDataType( ::GetWritingDataType( ascii, external ) );
+
+    if ( this->label() != "" ) { kvsml.setLabel( this->label() ); }
+    if ( this->unit() != "" ) { kvsml.setUnit( this->unit() ); }
+
+    switch ( this->cellType() )
+    {
+    case kvs::UnstructuredVolumeObject::UnknownCellType:
+    {
+        kvsMessageError("Unknown cell type.");
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::Tetrahedra:
+    {
+        kvsml.setCellType("tetrahedra");
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::QuadraticTetrahedra:
+    {
+        kvsml.setCellType("quadratic tetrahedra");
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::Hexahedra:
+    {
+        kvsml.setCellType("hexahedra");
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::QuadraticHexahedra:
+    {
+        kvsml.setCellType("quadratic hexahedra");
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::Pyramid:
+    {
+        kvsml.setCellType("pyramid");
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::Prism:
+    {
+        kvsml.setCellType("prism");
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::Point:
+    {
+        kvsml.setCellType("point");
+        break;
+    }
+    default:
+    {
+        kvsMessageError("Not supported cell type.");
+        break;
+    }
+    }
+
+    kvsml.setVeclen( this->veclen() );
+    kvsml.setNNodes( this->numberOfNodes() );
+    kvsml.setNCells( this->numberOfCells() );
+    kvsml.setValues( this->values() );
+    kvsml.setCoords( this->coords() );
+    kvsml.setConnections( this->connections() );
+
+    if ( this->hasMinMaxValues() )
+    {
+        kvsml.setMinValue( this->minValue() );
+        kvsml.setMaxValue( this->maxValue() );
+    }
+
+    if ( this->hasMinMaxObjectCoords() )
+    {
+        kvsml.setMinMaxObjectCoords( this->minObjectCoord(), this->maxObjectCoord() );
+    }
+
+    if ( this->hasMinMaxExternalCoords() )
+    {
+        kvsml.setMinMaxExternalCoords( this->minExternalCoord(), this->maxExternalCoord() );
+    }
+
+    return kvsml.write( filename );
 }
 
 /*===========================================================================*/

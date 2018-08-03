@@ -81,52 +81,8 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
     this->setCaption( "RadioButton " + kvs::String::ToString( ::InstanceCounter++ ) );
     this->setState( false );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::CircleColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::CircleColor, 0.6f );
     m_lower_edge_color = ::Default::CircleEdgeColor;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the caption.
- *  @return caption string
- */
-/*===========================================================================*/
-const std::string& RadioButton::caption( void ) const
-{
-    return( m_caption );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the check status.
- *  @return true if the box is checked
- */
-/*===========================================================================*/
-bool RadioButton::state( void ) const
-{
-    return( m_state );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a caption string.
- *  @param  caption [in] caption string
- */
-/*===========================================================================*/
-void RadioButton::setCaption( const std::string caption )
-{
-    m_caption = caption;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a check status.
- *  @param  state [in] check status
- */
-/*===========================================================================*/
-void RadioButton::setState( const bool state )
-{
-    m_state = state;
 }
 
 /*===========================================================================*/
@@ -134,7 +90,7 @@ void RadioButton::setState( const bool state )
  *  @brief  Draws the box.
  */
 /*===========================================================================*/
-void RadioButton::draw_box( void )
+void RadioButton::draw_box()
 {
     const int dy = BaseClass::characterHeight() - ::Default::CircleHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
@@ -143,52 +99,43 @@ void RadioButton::draw_box( void )
     const float cx = x0 + ::Default::CircleWidth * 0.5f;
     const float cy = y0 + ::Default::CircleHeight * 0.5f;
 
-    glLineWidth( 1 );
+    kvs::OpenGL::SetLineWidth( 1 );
 
     // Circle.
     {
-        const GLubyte r = static_cast<GLubyte>( ::Default::CircleColor.r() );
-        const GLubyte g = static_cast<GLubyte>( ::Default::CircleColor.g() );
-        const GLubyte b = static_cast<GLubyte>( ::Default::CircleColor.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_POLYGON );
-        glVertex2f( ::Default::CircleVertices[ 0] + cx, ::Default::CircleVertices[ 1] + cy );
-        glVertex2f( ::Default::CircleVertices[ 2] + cx, ::Default::CircleVertices[ 3] + cy );
-        glVertex2f( ::Default::CircleVertices[ 4] + cx, ::Default::CircleVertices[ 5] + cy );
-        glVertex2f( ::Default::CircleVertices[ 6] + cx, ::Default::CircleVertices[ 7] + cy );
-        glVertex2f( ::Default::CircleVertices[ 8] + cx, ::Default::CircleVertices[ 9] + cy );
-        glVertex2f( ::Default::CircleVertices[10] + cx, ::Default::CircleVertices[11] + cy );
-        glVertex2f( ::Default::CircleVertices[12] + cx, ::Default::CircleVertices[13] + cy );
-        glEnd();
+        kvs::OpenGL::Begin( GL_POLYGON );
+        kvs::OpenGL::Color( ::Default::CircleColor );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 0] + cx, ::Default::CircleVertices[ 1] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 2] + cx, ::Default::CircleVertices[ 3] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 4] + cx, ::Default::CircleVertices[ 5] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 6] + cx, ::Default::CircleVertices[ 7] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 8] + cx, ::Default::CircleVertices[ 9] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[10] + cx, ::Default::CircleVertices[11] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[12] + cx, ::Default::CircleVertices[13] + cy );
+        kvs::OpenGL::End();
     }
 
     // Lower edge.
     {
-        const GLubyte r = static_cast<GLubyte>( m_lower_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_lower_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_lower_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
-        glVertex2f( ::Default::CircleVertices[12] + cx, ::Default::CircleVertices[13] + cy );
-        glVertex2f( ::Default::CircleVertices[ 0] + cx, ::Default::CircleVertices[ 1] + cy );
-        glVertex2f( ::Default::CircleVertices[ 2] + cx, ::Default::CircleVertices[ 3] + cy );
-        glVertex2f( ::Default::CircleVertices[ 4] + cx, ::Default::CircleVertices[ 5] + cy );
-        glVertex2f( ::Default::CircleVertices[ 6] + cx, ::Default::CircleVertices[ 7] + cy );
-        glEnd();
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        kvs::OpenGL::Color( m_lower_edge_color );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[12] + cx, ::Default::CircleVertices[13] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 0] + cx, ::Default::CircleVertices[ 1] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 2] + cx, ::Default::CircleVertices[ 3] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 4] + cx, ::Default::CircleVertices[ 5] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 6] + cx, ::Default::CircleVertices[ 7] + cy );
+        kvs::OpenGL::End();
     }
 
     // Upper edge.
     {
-        const GLubyte r = static_cast<GLubyte>( m_upper_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_upper_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_upper_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
-        glVertex2f( ::Default::CircleVertices[ 6] + cx, ::Default::CircleVertices[ 7] + cy );
-        glVertex2f( ::Default::CircleVertices[ 8] + cx, ::Default::CircleVertices[ 9] + cy );
-        glVertex2f( ::Default::CircleVertices[10] + cx, ::Default::CircleVertices[11] + cy );
-        glVertex2f( ::Default::CircleVertices[12] + cx, ::Default::CircleVertices[13] + cy );
-        glEnd();
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        kvs::OpenGL::Color( m_upper_edge_color );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 6] + cx, ::Default::CircleVertices[ 7] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[ 8] + cx, ::Default::CircleVertices[ 9] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[10] + cx, ::Default::CircleVertices[11] + cy );
+        kvs::OpenGL::Vertex( ::Default::CircleVertices[12] + cx, ::Default::CircleVertices[13] + cy );
+        kvs::OpenGL::End();
     }
 }
 
@@ -197,7 +144,7 @@ void RadioButton::draw_box( void )
  *  @brief  Draw the check mark.
  */
 /*===========================================================================*/
-void RadioButton::draw_mark( void )
+void RadioButton::draw_mark()
 {
     const int dy = BaseClass::characterHeight() - ::Default::CircleHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
@@ -206,29 +153,29 @@ void RadioButton::draw_mark( void )
     const float cx = x0 + ::Default::CircleWidth * 0.5f;
     const float cy = y0 + ::Default::CircleHeight * 0.5f;
 
-    glEnable( GL_LINE_SMOOTH );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    kvs::OpenGL::Enable( GL_LINE_SMOOTH );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    kvs::OpenGL::Hint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
-    glLineWidth( 1 );
-    glColor3ub( 0, 0, 0 );
-    glBegin( GL_LINE_STRIP );
-    glVertex2f( ::Default::MarkVertices[ 0] + cx, ::Default::MarkVertices[ 1] + cy );
-    glVertex2f( ::Default::MarkVertices[ 2] + cx, ::Default::MarkVertices[ 3] + cy );
-    glVertex2f( ::Default::MarkVertices[ 4] + cx, ::Default::MarkVertices[ 5] + cy );
-    glVertex2f( ::Default::MarkVertices[ 6] + cx, ::Default::MarkVertices[ 7] + cy );
-    glVertex2f( ::Default::MarkVertices[ 8] + cx, ::Default::MarkVertices[ 9] + cy );
-    glVertex2f( ::Default::MarkVertices[10] + cx, ::Default::MarkVertices[11] + cy );
-    glVertex2f( ::Default::MarkVertices[12] + cx, ::Default::MarkVertices[13] + cy );
-    glVertex2f( ::Default::MarkVertices[ 0] + cx, ::Default::MarkVertices[ 1] + cy );
-    glEnd();
+    kvs::OpenGL::SetLineWidth( 1 );
+    kvs::OpenGL::Color( kvs::RGBColor::Black() );
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[ 0] + cx, ::Default::MarkVertices[ 1] + cy );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[ 2] + cx, ::Default::MarkVertices[ 3] + cy );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[ 4] + cx, ::Default::MarkVertices[ 5] + cy );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[ 6] + cx, ::Default::MarkVertices[ 7] + cy );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[ 8] + cx, ::Default::MarkVertices[ 9] + cy );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[10] + cx, ::Default::MarkVertices[11] + cy );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[12] + cx, ::Default::MarkVertices[13] + cy );
+    kvs::OpenGL::Vertex( ::Default::MarkVertices[ 0] + cx, ::Default::MarkVertices[ 1] + cy );
+    kvs::OpenGL::End();
 
-    glPointSize( 2 );
-    glColor3ub( 0, 0, 0 );
-    glBegin( GL_POINTS );
-    glVertex2f( cx, cy );
-    glEnd();
+    kvs::OpenGL::SetPointSize( 2 );
+    kvs::OpenGL::Color( kvs::RGBColor::Black() );
+    kvs::OpenGL::Begin( GL_POINTS );
+    kvs::OpenGL::Vertex( cx, cy );
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -237,9 +184,9 @@ void RadioButton::draw_mark( void )
  *  @return fitted width
  */
 /*===========================================================================*/
-int RadioButton::get_fitted_width( void )
+int RadioButton::adjustedWidth()
 {
-    return( m_caption.size() * BaseClass::characterWidth() + ::Default::TextMargin + BaseClass::margin() * 2 );
+    return m_caption.size() * BaseClass::characterWidth() + ::Default::TextMargin + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -248,9 +195,9 @@ int RadioButton::get_fitted_width( void )
  *  @return fitted height
  */
 /*===========================================================================*/
-int RadioButton::get_fitted_height( void )
+int RadioButton::adjustedHeight()
 {
-    return( BaseClass::characterHeight() + BaseClass::margin() * 2 );
+    return BaseClass::characterHeight() + BaseClass::margin() * 2;
 }
 
 /*===========================================================================*/
@@ -269,28 +216,7 @@ bool RadioButton::contains( int x, int y )
     const GLfloat y0 = static_cast<GLfloat>( BaseClass::y0() + BaseClass::margin() + dy );
     const GLfloat y1 = static_cast<GLfloat>( y0 + ::Default::CircleHeight );
 
-    return( ( x0 <= x ) && ( x <= x1 ) && ( y0 <= y ) && ( y <= y1 ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Attaches the radio button group.
- *  @param  group [in] pointer to the radio button group
- */
-/*===========================================================================*/
-void RadioButton::attach_group( kvs::glut::RadioButtonGroup* group )
-{
-    m_group = group;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Detaches the radio button group.
- */
-/*===========================================================================*/
-void RadioButton::detach_group( void )
-{
-    m_group = NULL;
+    return ( x0 <= x ) && ( x <= x1 ) && ( y0 <= y ) && ( y <= y1 );
 }
 
 /*===========================================================================*/
@@ -298,23 +224,24 @@ void RadioButton::detach_group( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void RadioButton::paintEvent( void )
+void RadioButton::paintEvent()
 {
     this->screenUpdated();
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
-    BaseClass::draw_background();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
+    BaseClass::drawBackground();
 
     this->draw_box();
     if ( this->state() ) this->draw_mark();
 
     const int x = BaseClass::x0() + BaseClass::margin() + ::Default::CircleWidth + ::Default::TextMargin;
     const int y = BaseClass::y0() + BaseClass::margin();
-    BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+    BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/

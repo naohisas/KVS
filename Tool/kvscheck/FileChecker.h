@@ -46,7 +46,8 @@ public:
         PGMFormat,         ///< PGM image format
         PPMFormat,         ///< PPM image format
         STLFormat,         ///< STL format
-        TIFFFormat         ///< TIFF image format
+        TIFFFormat,        ///< TIFF image format
+        IPLabFormat        ///< IPLab image format
     };
 
 private:
@@ -58,7 +59,7 @@ public:
     FileChecker( const std::string& filename );
 
     const std::string& filename() const;
-    const FormatType fileFormat() const;
+    FormatType fileFormat() const;
     friend std::ostream& operator << ( std::ostream& os, const FileChecker& checker );
 };
 

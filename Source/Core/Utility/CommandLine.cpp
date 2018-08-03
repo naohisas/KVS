@@ -52,8 +52,8 @@ CommandLine::Option::Option():
 CommandLine::Option::Option(
     const std::string& name,
     const std::string& description,
-    size_t             nvalues,
-    bool               is_required ):
+    size_t nvalues,
+    bool is_required ):
     m_name( name ),
     m_description( description ),
     m_nvalues( nvalues ),
@@ -61,91 +61,6 @@ CommandLine::Option::Option(
     m_is_given( false ),
     m_values()
 {
-}
-
-/*==========================================================================*/
-/**
- *  Set option value.
- */
-/*==========================================================================*/
-void CommandLine::Option::setValue( const std::string& value )
-{
-    m_values.push_back( value );
-    m_is_given = true;
-}
-
-/*==========================================================================*/
-/**
- *  Change option status to 'given'.
- */
-/*==========================================================================*/
-void CommandLine::Option::given()
-{
-    m_is_given = true;
-}
-
-/*==========================================================================*/
-/**
- *  Get option name.
- */
-/*==========================================================================*/
-const std::string& CommandLine::Option::name() const
-{
-    return m_name;
-}
-
-/*==========================================================================*/
-/**
- *  Get option description.
- */
-/*==========================================================================*/
-const std::string& CommandLine::Option::description() const
-{
-    return m_description;
-}
-
-/*==========================================================================*/
-/**
- *  Get number of option values.
- *  @return number of option values
- */
-/*==========================================================================*/
-size_t CommandLine::Option::numberOfValues() const
-{
-    return m_nvalues;
-}
-
-/*==========================================================================*/
-/**
- *  Test whether option is required.
- *  @return true, if option is required
- */
-/*==========================================================================*/
-bool CommandLine::Option::isRequired() const
-{
-    return m_is_required;
-}
-
-/*==========================================================================*/
-/**
- *  Test whether option is already given.
- *  @return true, if option is given
- */
-/*==========================================================================*/
-bool CommandLine::Option::isGiven() const
-{
-    return m_is_given;
-}
-
-/*==========================================================================*/
-/**
- *  Get option value list.
- *  @return option value list
- */
-/*==========================================================================*/
-const std::vector<std::string>& CommandLine::Option::values() const
-{
-    return m_values;
 }
 
 /*==========================================================================*/
@@ -202,51 +117,6 @@ CommandLine::Value::Value( const std::string& description, bool is_required ):
 
 /*==========================================================================*/
 /**
- *  Set value.
- *  @param value [in] pinter to value
- */
-/*==========================================================================*/
-void CommandLine::Value::setValue( const std::string& value )
-{
-    m_value    = value;
-    m_is_given = true;
-}
-
-/*==========================================================================*/
-/**
- *  Get description of value
- *  @return description of value
- */
-/*==========================================================================*/
-const std::string& CommandLine::Value::description() const
-{
-    return m_description;
-}
-
-/*==========================================================================*/
-/**
- *  Test whether value is required.
- *  @return true, if value is required
- */
-/*==========================================================================*/
-bool CommandLine::Value::isRequired() const
-{
-    return m_is_required;
-}
-
-/*==========================================================================*/
-/**
- *  Test whether value is already given.
- *  @return true, if value is given
- */
-/*==========================================================================*/
-bool CommandLine::Value::isGiven() const
-{
-    return m_is_given;
-}
-
-/*==========================================================================*/
-/**
  *  Comparison operator '<'.
  *  @param lhs [in] value (left hand side)
  *  @param rhs [in] value (right hand side)
@@ -267,6 +137,24 @@ bool operator <( const CommandLine::Value& lhs, const CommandLine::Value& rhs )
 bool operator ==( const CommandLine::Value& lhs, const CommandLine::Value& rhs )
 {
     return lhs.m_description == rhs.m_description;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Constructor.
+ */
+/*===========================================================================*/
+CommandLine::CommandLine():
+    m_argc( 0 ),
+    m_argv( 0 ),
+    m_command_name( "" ),
+    m_max_length( 0 ),
+    m_no_help( true ),
+    m_help_option( "h" ),
+    m_arguments(),
+    m_options(),
+    m_values()
+{
 }
 
 /*==========================================================================*/
@@ -321,45 +209,18 @@ CommandLine::~CommandLine()
 
 /*==========================================================================*/
 /**
- *  Get arument count.
- *  @return argument count
- */
-/*==========================================================================*/
-int CommandLine::argc() const
-{
-    return m_argc;
-}
-
-/*==========================================================================*/
-/**
- *  Get argument values.
- *  @return argument values
- */
-/*==========================================================================*/
-char** const CommandLine::argv() const
-{
-    return m_argv;
-}
-
-/*==========================================================================*/
-/**
- *  Get command name.
- *  @return command name
- */
-/*==========================================================================*/
-const std::string& CommandLine::commandName() const
-{
-    return m_command_name;
-}
-
-/*==========================================================================*/
-/**
  *  Parse command line arguments.
  *  @return true, if parse process is done successfully
  */
 /*==========================================================================*/
 bool CommandLine::parse()
 {
+    if ( m_argc == 0 )
+    {
+        kvsMessageError("Nothing arguments.");
+        return false;
+    }
+
     bool allow_no_value = ( m_values.size() == 0 );
     if ( !allow_no_value )
     {
@@ -397,8 +258,8 @@ bool CommandLine::parse()
 
     // Main loops in this method.
     Arguments::iterator argument = m_arguments.begin();
-    Options::iterator   option   = m_options.begin();
-    Values::iterator    value    = m_values.begin();
+    Options::iterator option = m_options.begin();
+    Values::iterator value = m_values.begin();
     while ( argument != m_arguments.end() )
     {
         if ( this->is_option( *argument ) )
@@ -467,6 +328,12 @@ bool CommandLine::parse()
 /*==========================================================================*/
 bool CommandLine::read()
 {
+    if ( m_argc == 0 )
+    {
+        kvsMessageError("Nothing arguments.");
+        return false;
+    }
+
     bool allow_no_value = ( m_values.size() == 0 );
     if ( !allow_no_value )
     {
@@ -637,7 +504,7 @@ size_t CommandLine::numberOfOptions() const
 void CommandLine::addHelpOption( const std::string& help_option )
 {
     m_help_option = help_option;
-    m_no_help     = false;
+    m_no_help = false;
 
     this->addOption( help_option, "Output help message.", 0, false );
 }

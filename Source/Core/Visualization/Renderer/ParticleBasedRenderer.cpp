@@ -182,7 +182,9 @@ void ParticleBasedRenderer::project_particle(
     const kvs::Camera* camera,
     const kvs::Light* light )
 {
-    float t[16]; camera->getCombinedMatrix( &t );
+    kvs::Xform pvm( camera->projectionMatrix() * camera->viewingMatrix() * point->modelingMatrix() );
+    float t[16]; pvm.toArray( t );
+
     const size_t w = camera->windowWidth() / 2;
     const size_t h = camera->windowHeight() / 2;
 

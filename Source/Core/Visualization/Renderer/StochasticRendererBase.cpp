@@ -53,6 +53,22 @@ StochasticRendererBase::~StochasticRendererBase()
 
 /*===========================================================================*/
 /**
+ *  @brief  Releases object resouces from GPU.
+ */
+/*===========================================================================*/
+void StochasticRendererBase::release()
+{
+    KVS_ASSERT( m_engine );
+
+    if ( m_engine->object() )
+    {
+        m_engine->detachObject();
+        m_engine->release();
+    }
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Executes the rendering process.
  *  @param  object [in] pointer to the object
  *  @param  camera [in] pointer to the camra

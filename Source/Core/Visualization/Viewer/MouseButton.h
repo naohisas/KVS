@@ -11,9 +11,7 @@
  *  $Id: MouseButton.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
  */
 /****************************************************************************/
-#ifndef KVS__MOUSE_BUTTON_H_INCLUDE
-#define KVS__MOUSE_BUTTON_H_INCLUDE
-
+#pragma once
 
 namespace kvs
 {
@@ -48,5 +46,3 @@ struct MouseButton
 };
 
 } // end of namespace kvs
-
-#endif // KVS__MOUSE_BUTTON_H_INCLUDE

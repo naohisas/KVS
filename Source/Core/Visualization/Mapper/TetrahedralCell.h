@@ -45,12 +45,12 @@ public:
     void updateInterpolationFunctions( const kvs::Vec3& local ) const;
     void updateDifferentialFunctions( const kvs::Vec3& local ) const;
     bool containsLocalPoint( const kvs::Vec3& local ) const;
-    const kvs::Vec3 randomSampling() const;
-    const kvs::Real32 volume() const;
-    const kvs::Vec3 localCenter() const;
-    const kvs::Vec3 globalPoint() const;
-    const kvs::Vec3 localToGlobal( const kvs::Vec3& global ) const;
-    const kvs::Vec3 globalToLocal( const kvs::Vec3& local ) const;
+    kvs::Vec3 randomSampling() const;
+    kvs::Real32 volume() const;
+    kvs::Vec3 localCenter() const;
+    kvs::Vec3 globalPoint() const;
+    kvs::Vec3 localToGlobal( const kvs::Vec3& global ) const;
+    kvs::Vec3 globalToLocal( const kvs::Vec3& local ) const;
 };
 
 } // end of namespace kvs

@@ -31,16 +31,11 @@ namespace kvsml
 /*===========================================================================*/
 ValueTag::ValueTag():
     kvs::kvsml::TagBase( "Value" ),
-    m_has_label( false ),
-    m_has_unit( false ),
-    m_has_veclen( false ),
-    m_has_min_value( false ),
-    m_has_max_value( false ),
-    m_label( "" ),
-    m_unit( "" ),
-    m_veclen( 0 ),
-    m_min_value( 0.0 ),
-    m_max_value( 0.0 )
+    m_label( "label" ),
+    m_unit( "unit" ),
+    m_veclen( "veclen" ),
+    m_min_value( "min_value" ),
+    m_max_value( "max_value" )
 {
 }
 
@@ -60,43 +55,23 @@ bool ValueTag::read( const kvs::XMLNode::SuperClass* parent )
 
     // label="xxx"
     const std::string label = kvs::XMLElement::AttributeValue( element, "label" );
-    if ( label != "" )
-    {
-        m_has_label = true;
-        m_label = label;
-    }
+    if ( label != "" ) { m_label = label; }
 
     // unit="xxx"
     const std::string unit = kvs::XMLElement::AttributeValue( element, "unit" );
-    if ( unit != "" )
-    {
-        m_has_unit = true;
-        m_unit = unit;
-    }
+    if ( unit != "" ) { m_unit = unit; }
 
     // veclen="xxx"
     const std::string veclen = kvs::XMLElement::AttributeValue( element, "veclen" );
-    if ( veclen != "" )
-    {
-        m_has_veclen = true;
-        m_veclen = static_cast<size_t>( atoi( veclen.c_str() ) );
-    }
+    if ( veclen != "" ) { m_veclen = static_cast<size_t>( atoi( veclen.c_str() ) ); }
 
     // min_value="xxx"
     const std::string min_value = kvs::XMLElement::AttributeValue( element, "min_value" );
-    if ( min_value != "" )
-    {
-        m_has_min_value = true;
-        m_min_value = atof( min_value.c_str() );
-    }
+    if ( min_value != "" ) { m_min_value = atof( min_value.c_str() ); }
 
     // max_value="xxx"
     const std::string max_value = kvs::XMLElement::AttributeValue( element, "max_value" );
-    if ( max_value != "" )
-    {
-        m_has_max_value = true;
-        m_max_value = atof( max_value.c_str() );
-    }
+    if ( max_value != "" ) { m_max_value = atof( max_value.c_str() ); }
 
     return true;
 }
@@ -112,17 +87,17 @@ bool ValueTag::write( kvs::XMLNode::SuperClass* parent )
 {
     kvs::XMLElement element( BaseClass::name() );
 
-    if ( m_has_label )
+    if ( m_label.hasValue() )
     {
         element.setAttribute( "label", m_label );
     }
 
-    if ( m_has_unit )
+    if ( m_unit.hasValue() )
     {
         element.setAttribute( "unit", m_unit );
     }
 
-    if ( m_has_veclen )
+    if ( m_veclen.hasValue() )
     {
         element.setAttribute( "veclen", m_veclen );
     }
@@ -132,12 +107,12 @@ bool ValueTag::write( kvs::XMLNode::SuperClass* parent )
         return false;
     }
 
-    if ( m_has_min_value )
+    if ( m_min_value.hasValue() )
     {
         element.setAttribute( "min_value", m_min_value );
     }
 
-    if ( m_has_max_value )
+    if ( m_max_value.hasValue() )
     {
         element.setAttribute( "max_value", m_max_value );
     }

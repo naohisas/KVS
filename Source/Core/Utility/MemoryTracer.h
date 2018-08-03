@@ -113,7 +113,7 @@ private:
 
     void unlock( void );
 
-    const size_t leaked_memory_size( void ) const;
+    size_t leaked_memory_size( void ) const;
 };
 
 /*===========================================================================*/
@@ -156,13 +156,13 @@ public:
 
 public:
 
-    const size_t size( void ) const;
+    size_t size( void ) const;
 
     const char* name( void ) const;
 
-    const int line( void ) const;
+    int line( void ) const;
 
-    const MemoryTracer::AllocationType type( void ) const;
+    MemoryTracer::AllocationType type( void ) const;
 };
 
 } // end of namespace kvs

@@ -12,8 +12,7 @@
  *  $Id: ObjectManager.h 1802 2014-08-07 09:22:11Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__OBJECT_MANAGER_H_INCLUDE
-#define KVS__OBJECT_MANAGER_H_INCLUDE
+#pragma once
 
 #include <string>
 #include <map>
@@ -111,5 +110,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__OBJECT_MANAGER_H_INCLUDE

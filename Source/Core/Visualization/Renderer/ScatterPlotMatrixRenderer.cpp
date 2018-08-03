@@ -19,6 +19,7 @@
 #include <kvs/ObjectBase>
 #include <kvs/RGBAColor>
 #include <kvs/TableObject>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace

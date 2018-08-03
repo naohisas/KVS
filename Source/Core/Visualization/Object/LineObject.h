@@ -12,9 +12,7 @@
  *  $Id: LineObject.h 1815 2014-10-02 01:17:28Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__LINE_OBJECT_H_INCLUDE
-#define KVS__LINE_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/GeometryObjectBase>
 #include <kvs/ValueArray>
 #include <kvs/Type>
@@ -74,6 +72,8 @@ public:
     void deepCopy( const LineObject& object );
     void clear();
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setLineType( const LineType line_type ) { m_line_type = line_type; }
     void setLineTypeToStrip() { this->setLineType( Strip ); }
@@ -237,5 +237,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__LINE_OBJECT_H_INCLUDE

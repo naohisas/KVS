@@ -1,1 +1,1 @@
-#include <SupportGLUT/Viewer/LegendBar.h>
+#include <SupportGLUT/Widget/LegendBar.h>

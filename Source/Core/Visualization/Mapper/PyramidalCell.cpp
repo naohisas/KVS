@@ -161,7 +161,7 @@ bool PyramidalCell::containsLocalPoint( const kvs::Vec3& local ) const
  *  @return volume of the cell
  */
 /*===========================================================================*/
-const kvs::Real32 PyramidalCell::volume() const
+kvs::Real32 PyramidalCell::volume() const
 {
     return float( m_pyramid.x() * m_pyramid.y() * m_pyramid.z() / 3 );
 }
@@ -172,7 +172,7 @@ const kvs::Real32 PyramidalCell::volume() const
  *  @return center of the cell in the local coordinate
  */
 /*===========================================================================*/
-const kvs::Vec3 PyramidalCell::localCenter() const
+kvs::Vec3 PyramidalCell::localCenter() const
 {
     return kvs::Vec3( 0.0f, 0.0f, 0.2f );
 }
@@ -183,7 +183,7 @@ const kvs::Vec3 PyramidalCell::localCenter() const
  *  @return global point
  */
 /*===========================================================================*/
-const kvs::Vec3 PyramidalCell::randomSampling() const
+kvs::Vec3 PyramidalCell::randomSampling() const
 {
     // Generate a point in the local coordinate.
     const float p = BaseClass::randomNumber();

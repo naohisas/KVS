@@ -13,12 +13,12 @@
  *  $Id: main.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-// KVS
-#include <kvs/OpenGL>
-#include <kvs/PaintEventListener>
 // SupportQt
 #include <kvs/qt/Application>
 #include <kvs/qt/Screen>
+// KVS
+#include <kvs/OpenGL>
+#include <kvs/PaintEventListener>
 // SupportGLUT
 #include <kvs/glut/Label>
 

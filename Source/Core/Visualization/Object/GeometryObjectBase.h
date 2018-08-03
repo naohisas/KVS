@@ -12,9 +12,7 @@
  *  $Id: GeometryObjectBase.h 1759 2014-05-05 06:14:18Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__GEOMETRY_OBJECT_BASE_H_INCLUDE
-#define KVS__GEOMETRY_OBJECT_BASE_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/Module>
 #include <kvs/ObjectBase>
@@ -152,5 +150,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__GEOMETRY_OBJECT_BASE_H_INCLUDE

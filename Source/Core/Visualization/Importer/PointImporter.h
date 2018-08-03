@@ -12,13 +12,11 @@
  *  $Id: PointImporter.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__POINT_IMPORTER_H_INCLUDE
-#define KVS__POINT_IMPORTER_H_INCLUDE
-
+#pragma once
 #include "ImporterBase.h"
 #include <kvs/Module>
 #include <kvs/PointObject>
-#include <kvs/KVSMLObjectPoint>
+#include <kvs/KVSMLPointObject>
 
 
 namespace kvs
@@ -36,20 +34,12 @@ class PointImporter : public kvs::ImporterBase, public kvs::PointObject
     kvsModuleSuperClass( kvs::PointObject );
 
 public:
-
     PointImporter();
     PointImporter( const std::string& filename );
     PointImporter( const kvs::FileFormatBase* file_format );
     virtual ~PointImporter();
 
     SuperClass* exec( const kvs::FileFormatBase* file_format );
-
-private:
-
-    void import( const kvs::KVSMLObjectPoint* kvsml );
-    void set_min_max_coord();
 };
 
 } // end of namespace kvs
-
-#endif // KVS__POINT_IMPORTER_H_INCLUDE

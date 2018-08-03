@@ -34,46 +34,6 @@ const kvs::RGBColor RectEdgeColor = kvs::RGBColor( 230, 230, 230 );
 static int InstanceCounter = 0;
 
 
-namespace
-{
-
-/*===========================================================================*/
-/**
- *  @brief  Draws a rectangle as lines.
- *  @param  rect [in] rectangle
- *  @param  width [in] line width
- *  @param  upper_edge_color [in] upper edge color
- *  @param  lower_edge_color [in] lower edge color
- */
-/*===========================================================================*/
-void DrawRectangle(
-    const kvs::glut::Rectangle rect,
-    const float width,
-    const kvs::RGBColor& upper_edge_color,
-    const kvs::RGBColor& lower_edge_color )
-{
-    GLfloat x0 = static_cast<GLfloat>( rect.x0() );
-    GLfloat y0 = static_cast<GLfloat>( rect.y0() );
-    GLfloat x1 = static_cast<GLfloat>( rect.x1() );
-    GLfloat y1 = static_cast<GLfloat>( rect.y1() );
-
-    glLineWidth( width );
-    glBegin( GL_LINES );
-    {
-        glColor3ub( upper_edge_color.r(), upper_edge_color.g(), upper_edge_color.b() );
-        glVertex2f( x0, y0 ); glVertex2f( x1, y0 ); // top
-        glVertex2f( x0, y0 ); glVertex2f( x0, y1 ); // left
-
-        glColor3ub( lower_edge_color.r(), lower_edge_color.g(), lower_edge_color.b() );
-        glVertex2f( x1, y1 ); glVertex2f( x0, y1 ); // bottom
-        glVertex2f( x1, y0 ); glVertex2f( x1, y1 ); // right
-    }
-    glEnd();
-}
-
-} // end of namespace
-
-
 namespace kvs
 {
 
@@ -88,6 +48,7 @@ namespace glut
 /*===========================================================================*/
 ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
     kvs::glut::WidgetBase( screen ),
+    m_palette( NULL ),
     m_color_palette( NULL )
 {
     BaseClass::setEventType(
@@ -100,9 +61,8 @@ ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
     BaseClass::setMargin( ::Default::Margin );
     this->setCaption( "Color map palette " + kvs::String::ToString( ::InstanceCounter++ ) );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::RectColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );
     m_lower_edge_color = ::Default::RectEdgeColor;
-
     m_drawing_color = kvs::RGBColor( 0, 0, 0 );
 
     m_color_map.create();
@@ -113,28 +73,8 @@ ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
  *  @brief  Destroys the ColorMapPalette class.
  */
 /*===========================================================================*/
-ColorMapPalette::~ColorMapPalette( void )
+ColorMapPalette::~ColorMapPalette()
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns caption string.
- */
-/*===========================================================================*/
-const std::string& ColorMapPalette::caption( void ) const
-{
-    return( m_caption );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the palette.
- */
-/*===========================================================================*/
-const kvs::glut::Rectangle& ColorMapPalette::palette( void ) const
-{
-    return( m_palette );
 }
 
 /*===========================================================================*/
@@ -143,21 +83,10 @@ const kvs::glut::Rectangle& ColorMapPalette::palette( void ) const
  *  @return color map
  */
 /*===========================================================================*/
-const kvs::ColorMap ColorMapPalette::colorMap( void ) const
+const kvs::ColorMap ColorMapPalette::colorMap() const
 {
     kvs::ColorMap::Table color_map_table( m_color_map.table().data(), m_color_map.table().size() );
-    return( kvs::ColorMap( color_map_table ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a caption.
- *  @param  caption [in] caption
- */
-/*===========================================================================*/
-void ColorMapPalette::setCaption( const std::string& caption )
-{
-    m_caption = caption;
+    return kvs::ColorMap( color_map_table );
 }
 
 /*===========================================================================*/
@@ -171,39 +100,6 @@ void ColorMapPalette::setColorMap( const kvs::ColorMap& color_map )
     // Deep copy.
     kvs::ColorMap::Table color_map_table( color_map.table().data(), color_map.table().size() );
     m_color_map = kvs::ColorMap( color_map_table );
-    this->initialize_texture( m_color_map );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a drawing color.
- *  @param  color [in] drawing color
- */
-/*===========================================================================*/
-void ColorMapPalette::setDrawingColor( const kvs::RGBColor& color )
-{
-    m_drawing_color = color;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Attach color palette.
- *  @param  palette [in] color palette
- */
-/*===========================================================================*/
-void ColorMapPalette::attachColorPalette( const kvs::glut::ColorPalette* palette )
-{
-    m_color_palette = palette;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Detach color palette.
- */
-/*===========================================================================*/
-void ColorMapPalette::detachColorPalette( void )
-{
-    m_color_palette = NULL;
 }
 
 /*===========================================================================*/
@@ -211,22 +107,23 @@ void ColorMapPalette::detachColorPalette( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void ColorMapPalette::paintEvent( void )
+void ColorMapPalette::paintEvent()
 {
     this->screenUpdated();
 
     if ( !BaseClass::isShown() ) return;
 
-    if ( !glIsTexture( m_texture.id() ) ) this->initialize_texture( m_color_map );
+    if ( !m_texture.isValid() ) { this->initialize_texture( m_color_map ); }
 
-    BaseClass::begin_draw();
-    BaseClass::draw_background();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
+    BaseClass::drawBackground();
 
     // Draw the caption.
     {
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin();
-        BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+        BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
     }
 
     // Draw palette.
@@ -240,7 +137,7 @@ void ColorMapPalette::paintEvent( void )
 
     this->draw_palette();
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/
@@ -395,15 +292,15 @@ void ColorMapPalette::mouseReleaseEvent( kvs::MouseEvent* event )
     }
 }
 
-int ColorMapPalette::get_fitted_width( void )
+int ColorMapPalette::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
-    return( kvs::Math::Max( width, ::Default::Width ) );
+    return kvs::Math::Max( width, ::Default::Width );
 }
 
-int ColorMapPalette::get_fitted_height( void )
+int ColorMapPalette::adjustedHeight()
 {
-    return( ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2 );
+    return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }
 
 void ColorMapPalette::initialize_texture( const kvs::ColorMap& color_map )
@@ -419,36 +316,46 @@ void ColorMapPalette::initialize_texture( const kvs::ColorMap& color_map )
     m_texture.create( width, data );
 }
 
-void ColorMapPalette::draw_palette( void )
+void ColorMapPalette::draw_palette()
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_BLEND );
+    attrib.enable( GL_TEXTURE_1D );
+    attrib.disable( GL_TEXTURE_2D );
+    attrib.disable( GL_TEXTURE_3D );
 
     const int x0 = m_palette.x0();
     const int x1 = m_palette.x1();
     const int y0 = m_palette.y0();
     const int y1 = m_palette.y1();
 
-    glDisable( GL_BLEND );
-    glEnable( GL_TEXTURE_1D );
-    glDisable( GL_TEXTURE_2D );
-#if defined( GL_TEXTURE_3D )
-    glDisable( GL_TEXTURE_3D );
-#endif
-
     // Draw color map texture.
     m_texture.bind();
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex2i( x0, y0 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex2i( x1, y0 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex2i( x1, y1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex2i( x0, y1 );
-    glEnd();
+    kvs::OpenGL::Begin( GL_QUADS );
+    {
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y1 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y1 ) );
+    }
+    kvs::OpenGL::End();
     m_texture.unbind();
 
-    glPopAttrib();
-
     // Draw border.
-    ::DrawRectangle( m_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    BaseClass::drawRect( m_palette, m_upper_edge_color, m_lower_edge_color );
+/*
+    kvs::OpenGL::SetLineWidth( 1 );
+    kvs::OpenGL::Begin( GL_LINES );
+    {
+        kvs::OpenGL::Color( m_upper_edge_color );
+        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x1, y0 ) ); // top
+        kvs::OpenGL::Vertices( kvs::Vec2( x0, y0 ), kvs::Vec2( x0, y1 ) ); // left
+        kvs::OpenGL::Color( m_lower_edge_color );
+        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 ), kvs::Vec2( x0, y1 ) ); // bottom
+        kvs::OpenGL::Vertices( kvs::Vec2( x1, y0 ), kvs::Vec2( x1, y1 ) ); // right
+    }
+    kvs::OpenGL::End();
+*/
 }
 
 } // end of namespace glut

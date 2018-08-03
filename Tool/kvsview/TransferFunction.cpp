@@ -114,11 +114,9 @@ struct Parameters
 class InitializeEvent : public kvs::InitializeEventListener
 {
 private:
-
     kvsview::TransferFunction::Parameters* m_parameters;
 
 public:
-
     InitializeEvent( kvsview::TransferFunction::Parameters* parameters ):
         m_parameters( parameters ) {}
 
@@ -137,11 +135,9 @@ public:
 class PaintEvent : public kvs::PaintEventListener
 {
 private:
-
     kvsview::TransferFunction::Parameters* m_parameters;
 
 public:
-
     PaintEvent( kvsview::TransferFunction::Parameters* parameters ):
         m_parameters( parameters ) {}
 
@@ -195,12 +191,10 @@ public:
     }
 
 private:
-
     void draw_checkerboard_texture( const GLenum src_factor, const GLenum dst_factor )
     {
         // Since the checkerboard is background, GL_ONE and GL_ZERO are always specified
         // for src_factor and dst_factor, rescpectively.
-
         kvs::OpenGL::Disable( GL_TEXTURE_1D );
         kvs::OpenGL::Enable( GL_TEXTURE_2D );
         kvs::OpenGL::SetBlendFunc( src_factor, dst_factor );
@@ -235,14 +229,24 @@ private:
         const GLfloat width = static_cast<GLfloat>(screen()->width());
         const GLfloat height = static_cast<GLfloat>(screen()->height());
 
-        glBegin( GL_QUADS );
+        const kvs::Vec2 t0( 0.0f, 0.0f );
+        const kvs::Vec2 t1( texture_width, 0.0f );
+        const kvs::Vec2 t2( texture_width, texture_height );
+        const kvs::Vec2 t3( 0.0f, texture_height );
+
+        const kvs::Vec2 v0( x, y );
+        const kvs::Vec2 v1( x + width, y );
+        const kvs::Vec2 v2( x + width, y + height );
+        const kvs::Vec2 v3( x, y + height );
+
+        kvs::OpenGL::Begin( GL_QUADS );
         {
-            glTexCoord2f( 0.0f,          0.0f );           glVertex2f( x,         y );
-            glTexCoord2f( texture_width, 0.0f );           glVertex2f( x + width, y );
-            glTexCoord2f( texture_width, texture_height ); glVertex2f( x + width, y + height );
-            glTexCoord2f( 0.0f,          texture_height ); glVertex2f( x,         y + height );
+            kvs::OpenGL::TexCoordVertex( t0, v0 );
+            kvs::OpenGL::TexCoordVertex( t1, v1 );
+            kvs::OpenGL::TexCoordVertex( t2, v2 );
+            kvs::OpenGL::TexCoordVertex( t3, v3 );
         }
-        glEnd();
+        kvs::OpenGL::End();
     }
 };
 
@@ -284,31 +288,20 @@ const bool Argument::hasOpacityMapOption()
     return this->hasOption("a");
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
-}
-
-/*===========================================================================*/
+ /*===========================================================================*/
 /**
  *  @brief  Executes main process.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-const bool Main::exec()
+int Main::exec( int argc, char** argv )
 {
     // Setup GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Commandline arguments.
-    kvsview::TransferFunction::Argument arg( m_argc, m_argv );
+    kvsview::TransferFunction::Argument arg( argc, argv );
     if ( !arg.parse() ) exit( EXIT_FAILURE );
     m_input_name = arg.value<std::string>();
 

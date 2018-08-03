@@ -57,6 +57,7 @@ public:
     void setName( const std::string& name ) { m_name = name; }
     void setScreen( kvs::ScreenBase* screen ) { m_screen = screen; }
     void setScene( kvs::Scene* scene ) { m_scene = scene; }
+    void addEventType( const int event_type ) { m_event_type |= event_type; }
 
     virtual void onEvent( kvs::EventBase* event );
     virtual void initializeEvent() {}

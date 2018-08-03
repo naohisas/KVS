@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   RayCastingRenderer.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,12 +12,11 @@
  *  $Id: RayCastingRenderer.h 1040 2012-03-06 23:13:06Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__RAY_CASTING_RENDERER_H_INCLUDE
-#define KVSVIEW__RAY_CASTING_RENDERER_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/Type>
 #include <kvs/CommandLine>
+#include <kvs/Program>
 #include <kvs/TransferFunction>
 #include <kvs/VolumeObjectBase>
 #include "Argument.h"
@@ -39,31 +39,19 @@ const std::string Description("Rendering a volume object. (optional)");
 class Argument : public kvsview::Argument::Common
 {
 public:
-
     Argument( int argc, char** argv );
 
 public:
-
-    const int shader( void ) const;
-
-    const bool noShading( void ) const;
-
-    const bool noLOD( void ) const;
-
-    const bool noGPU( void ) const;
-
-    const bool jittering( void ) const;
-
-    const float ambient( void ) const;
-
-    const float diffuse( void ) const;
-
-    const float specular( void ) const;
-
-    const float shininess( void ) const;
-
-    const float step( void ) const;
-
+    const int shader() const;
+    const bool noShading() const;
+    const bool noLOD() const;
+    const bool noGPU() const;
+    const bool jittering() const;
+    const float ambient() const;
+    const float diffuse() const;
+    const float specular() const;
+    const float shininess() const;
+    const float step() const;
     const kvs::TransferFunction transferFunction( const kvs::VolumeObjectBase* volume ) const;
 };
 
@@ -72,26 +60,16 @@ public:
  *  Main class for RayCastingRenderer.
  */
 /*===========================================================================*/
-class Main
+class Main : public kvs::Program
 {
-protected:
-
-    int         m_argc;         ///< argument count
-    char**      m_argv;         ///< argument values
+private:
     std::string m_input_name;   ///< input filename
     std::string m_output_name;  ///< output filename
 
 public:
-
-    Main( int argc, char** argv );
-
-public:
-
-    const bool exec( void );
+    int exec( int argc, char** argv );
 };
 
 } // end of namespace RayCastingRenderer
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__RAY_CASTING_RENDERER_H_INCLUDE

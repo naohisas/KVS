@@ -48,9 +48,9 @@ public:
     void updateDifferentialFunctions( const kvs::Vec3& local ) const;
     void bindCell( const kvs::UInt32 cell );
     bool containsLocalPoint( const kvs::Vec3& local ) const;
-    const kvs::Vec3 randomSampling() const;
-    const kvs::Real32 volume() const;
-    const kvs::Vec3 localCenter() const;
+    kvs::Vec3 randomSampling() const;
+    kvs::Real32 volume() const;
+    kvs::Vec3 localCenter() const;
 };
 
 } // end of namespace kvs

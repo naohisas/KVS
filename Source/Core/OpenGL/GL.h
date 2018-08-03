@@ -48,25 +48,46 @@
 #endif
 #endif
 
+// Includes OpenGL header files
 #if defined( KVS_ENABLE_OPENGL )
 
 // GLEW header file 'glew.h' must be included before the OpenGL header files.
+#if defined( KVS_ENABLE_GLEW )
 #include <GL/glew.h>
+#endif
 
 // OpenGL headers.
 #if defined( KVS_PLATFORM_MACOSX )
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
+  // Mac
+  #if defined( KVS_ENABLE_OSMESA )
+    #include <GL/osmesa.h>
+    #if defined( KVS_ENABLE_GLU )
+      #include <GL/glu.h>
+    #endif
+//    #include <GL/glext.h>
+  #else
+    #include <OpenGL/gl.h>
+    #if defined( KVS_ENABLE_GLU )
+      #include <OpenGL/glu.h>
+    #endif
+  #endif
 #else
-#include <GL/gl.h>
-#include <GL/glu.h>
+  // Windows and Linux
+  #if defined( KVS_ENABLE_OSMESA )
+    #include <GL/osmesa.h>
+  #else
+    #include <GL/gl.h>
+  #endif
+  #if defined( KVS_ENABLE_GLU )
+    #include <GL/glu.h>
+  #endif
+//  #include <GL/glext.h>
 #endif
 
 #else
-
 #include "GLdef.h"
-
 #endif
+
 
 namespace kvs
 {

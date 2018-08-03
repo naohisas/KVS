@@ -17,6 +17,7 @@
 
 #include <kvs/GL>
 #include <kvs/Deprecated>
+#include <cstddef>
 
 
 namespace kvs

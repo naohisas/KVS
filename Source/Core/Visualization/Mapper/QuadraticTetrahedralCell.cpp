@@ -125,7 +125,7 @@ void QuadraticTetrahedralCell::updateDifferentialFunctions( const kvs::Vec3& loc
  *  @return coordinate value of the sampled point
  */
 /*===========================================================================*/
-const kvs::Vec3 QuadraticTetrahedralCell::randomSampling() const
+kvs::Vec3 QuadraticTetrahedralCell::randomSampling() const
 {
     // Generate a point in the local coordinate.
     const float p = BaseClass::randomNumber();
@@ -177,7 +177,7 @@ const kvs::Vec3 QuadraticTetrahedralCell::randomSampling() const
  *  @return volume of the cell
  */
 /*===========================================================================*/
-const kvs::Real32 QuadraticTetrahedralCell::volume() const
+kvs::Real32 QuadraticTetrahedralCell::volume() const
 {
     const kvs::Vec3 v0(   0,  0,  0 );
     const kvs::Vec3 v1(   1,  0,  0 );

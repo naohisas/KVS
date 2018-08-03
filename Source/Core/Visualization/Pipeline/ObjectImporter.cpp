@@ -25,12 +25,13 @@
 #include <kvs/Ply>
 #include <kvs/Tiff>
 #include <kvs/Dicom>
-#include <kvs/KVSMLObjectImage>
-#include <kvs/KVSMLObjectPoint>
-#include <kvs/KVSMLObjectLine>
-#include <kvs/KVSMLObjectPolygon>
-#include <kvs/KVSMLObjectStructuredVolume>
-#include <kvs/KVSMLObjectUnstructuredVolume>
+#include <kvs/IPLab>
+#include <kvs/KVSMLImageObject>
+#include <kvs/KVSMLPointObject>
+#include <kvs/KVSMLLineObject>
+#include <kvs/KVSMLPolygonObject>
+#include <kvs/KVSMLStructuredVolumeObject>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include <kvs/XMLDocument>
 #include <kvs/DicomList>
 #include <kvs/PointImporter>
@@ -180,45 +181,51 @@ bool ObjectImporter::estimate_file_format()
         m_file_format = new kvs::Dicom;
     }
 
+    else if ( kvs::IPLab::CheckExtension( file.filePath() ) )
+    {
+        m_importer_type = ObjectImporter::Image;
+        m_file_format = new kvs::IPLab;
+    }
+
     else if ( file.extension() == "kvsml" ||
               file.extension() == "KVSML" ||
               file.extension() == "xml"   ||
               file.extension() == "XML" )
     {
-        if ( kvs::KVSMLObjectImage::CheckFormat( file.filePath() ) )
+        if ( kvs::KVSMLImageObject::CheckFormat( file.filePath() ) )
         {
             m_importer_type = ObjectImporter::Image;
-            m_file_format = new kvs::KVSMLObjectImage;
+            m_file_format = new kvs::KVSMLImageObject;
         }
 
-        else if ( kvs::KVSMLObjectPoint::CheckFormat( file.filePath() ) )
+        else if ( kvs::KVSMLPointObject::CheckFormat( file.filePath() ) )
         {
             m_importer_type = ObjectImporter::Point;
-            m_file_format = new kvs::KVSMLObjectPoint;
+            m_file_format = new kvs::KVSMLPointObject;
         }
 
-        else if ( kvs::KVSMLObjectLine::CheckFormat( file.filePath() ) )
+        else if ( kvs::KVSMLLineObject::CheckFormat( file.filePath() ) )
         {
             m_importer_type = ObjectImporter::Line;
-            m_file_format = new kvs::KVSMLObjectLine;
+            m_file_format = new kvs::KVSMLLineObject;
         }
 
-        else if ( kvs::KVSMLObjectPolygon::CheckFormat( file.filePath() ) )
+        else if ( kvs::KVSMLPolygonObject::CheckFormat( file.filePath() ) )
         {
             m_importer_type = ObjectImporter::Polygon;
-            m_file_format = new kvs::KVSMLObjectPolygon;
+            m_file_format = new kvs::KVSMLPolygonObject;
         }
 
-        else if ( kvs::KVSMLObjectStructuredVolume::CheckFormat( file.filePath() ) )
+        else if ( kvs::KVSMLStructuredVolumeObject::CheckFormat( file.filePath() ) )
         {
             m_importer_type = ObjectImporter::StructuredVolume;
-            m_file_format = new kvs::KVSMLObjectStructuredVolume;
+            m_file_format = new kvs::KVSMLStructuredVolumeObject;
         }
 
-        else if ( kvs::KVSMLObjectUnstructuredVolume::CheckFormat( file.filePath() ) )
+        else if ( kvs::KVSMLUnstructuredVolumeObject::CheckFormat( file.filePath() ) )
         {
             m_importer_type = ObjectImporter::UnstructuredVolume;
-            m_file_format = new kvs::KVSMLObjectUnstructuredVolume;
+            m_file_format = new kvs::KVSMLUnstructuredVolumeObject;
         }
     }
 

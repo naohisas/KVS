@@ -73,72 +73,6 @@ Slider::Slider( kvs::ScreenBase* screen ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the caption string.
- *  @return caption string
- */
-/*===========================================================================*/
-const std::string& Slider::caption( void ) const
-{
-    return( m_caption );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the specified value by the slider cursor.
- *  @return specified value
- */
-/*===========================================================================*/
-float Slider::value( void ) const
-{
-    return( m_value );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the minimum value.
- *  @return minimum value
- */
-/*===========================================================================*/
-float Slider::minValue( void ) const
-{
-    return( m_min_value );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the maximum value.
- *  @return maximum value
- */
-/*===========================================================================*/
-float Slider::maxValue( void ) const
-{
-    return( m_max_value );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets caption string.
- *  @param  caption [in] caption string
- */
-/*===========================================================================*/
-void Slider::setCaption( const std::string caption )
-{
-    m_caption = caption;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a value.
- *  @param  value [in] value
- */
-/*===========================================================================*/
-void Slider::setValue( const float value )
-{
-    m_value = value;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Sets value range.
  *  @param  min_value [in] minimum value
  *  @param  max_value [in] maximum value
@@ -163,19 +97,9 @@ void Slider::setSliderColor( const kvs::RGBColor& color )
 {
     m_slider_color = color;
 
-    m_clicked_slider_color = BaseClass::get_darkened_color( color, 0.95f );
+    m_clicked_slider_color = BaseClass::darkenedColor( color, 0.95f );
     m_upper_edge_color = ::Default::SliderEdgeColor;
-    m_lower_edge_color = BaseClass::get_darkened_color( color, 0.6f );
-}
-
-void Slider::showRange( void )
-{
-    m_show_range_value = true;
-}
-
-void Slider::hideRange( void )
-{
-    m_show_range_value = false;
+    m_lower_edge_color = BaseClass::darkenedColor( color, 0.6f );
 }
 
 /*===========================================================================*/
@@ -188,25 +112,25 @@ void Slider::hideRange( void )
 /*===========================================================================*/
 void Slider::draw_slider_bar( const int x, const int y, const int width )
 {
-    glLineWidth( 1 );
-    glBegin( GL_LINES );
+    kvs::OpenGL::SetLineWidth( 1 );
+    kvs::OpenGL::Begin( GL_LINES );
     {
         // Upper line (black).
-        glColor3ub( 0, 0, 0 );
-        glVertex2i( x,         y - 1 );
-        glVertex2i( x + width, y - 1 );
+        kvs::OpenGL::Color( kvs::RGBColor::Black() );
+        kvs::OpenGL::Vertex( x,         y - 1 );
+        kvs::OpenGL::Vertex( x + width, y - 1 );
 
         // Middle line (gray).
-        glColor3ub( 100, 100, 100 );
-        glVertex2i( x,         y );
-        glVertex2i( x + width, y );
+        kvs::OpenGL::Color( kvs::RGBColor( 100, 100, 100 ) );
+        kvs::OpenGL::Vertex( x,         y );
+        kvs::OpenGL::Vertex( x + width, y );
 
         // Lower line (light gray).
-        glColor3ub( 230, 230, 230 );
-        glVertex2i( x,         y + 1 );
-        glVertex2i( x + width, y + 1 );
+        kvs::OpenGL::Color( kvs::RGBColor( 230, 230, 230 ) );
+        kvs::OpenGL::Vertex( x,         y + 1 );
+        kvs::OpenGL::Vertex( x + width, y + 1 );
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -227,48 +151,39 @@ void Slider::draw_cursor( const int x, const int y, const int width )
 
     // Body.
     {
-        const GLubyte r = static_cast<GLubyte>( m_slider_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_slider_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_slider_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_POLYGON );
+        kvs::OpenGL::Begin( GL_POLYGON );
         {
-            glVertex2i( x0, y0 );
-            glVertex2i( x1, y0 );
-            glVertex2i( x1, y1 );
-            glVertex2i( x0, y1 );
+            kvs::OpenGL::Color( m_slider_color );
+            kvs::OpenGL::Vertex( x0, y0 );
+            kvs::OpenGL::Vertex( x1, y0 );
+            kvs::OpenGL::Vertex( x1, y1 );
+            kvs::OpenGL::Vertex( x0, y1 );
         }
-        glEnd();
+        kvs::OpenGL::End();
     }
 
     // Lower edge.
     {
-        const GLubyte r = static_cast<GLubyte>( m_lower_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_lower_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_lower_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
         {
-            glVertex2i( x0, y1 );
-            glVertex2i( x1, y1 );
-            glVertex2i( x1, y0 );
+            kvs::OpenGL::Color( m_lower_edge_color );
+            kvs::OpenGL::Vertex( x0, y1 );
+            kvs::OpenGL::Vertex( x1, y1 );
+            kvs::OpenGL::Vertex( x1, y0 );
         }
-        glEnd();
+        kvs::OpenGL::End();
     }
 
     // Upper edge.
     {
-        const GLubyte r = static_cast<GLubyte>( m_upper_edge_color.r() );
-        const GLubyte g = static_cast<GLubyte>( m_upper_edge_color.g() );
-        const GLubyte b = static_cast<GLubyte>( m_upper_edge_color.b() );
-        glColor3ub( r, g, b );
-        glBegin( GL_LINE_STRIP );
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
         {
-            glVertex2i( x1, y0 );
-            glVertex2i( x0, y0 );
-            glVertex2i( x0, y1 );
+            kvs::OpenGL::Color( m_upper_edge_color );
+            kvs::OpenGL::Vertex( x1, y0 );
+            kvs::OpenGL::Vertex( x0, y0 );
+            kvs::OpenGL::Vertex( x0, y1 );
         }
-        glEnd();
+        kvs::OpenGL::End();
     }
 }
 
@@ -345,7 +260,7 @@ float Slider::get_value( const int x )
     const float bar_x = static_cast<float>( BaseClass::x() + BaseClass::margin() );
     const float bar_width = static_cast<float>( BaseClass::width() - BaseClass::margin() * 2 );
 
-    return( m_min_value + ( x - bar_x ) / bar_width * ( m_max_value - m_min_value ) );
+    return m_min_value + ( x - bar_x ) / bar_width * ( m_max_value - m_min_value );
 }
 
 /*===========================================================================*/
@@ -354,10 +269,10 @@ float Slider::get_value( const int x )
  *  @return fitted width
  */
 /*===========================================================================*/
-int Slider::get_fitted_width( void )
+int Slider::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
-    return( kvs::Math::Max( width, ::Default::SliderWidth ) );
+    return kvs::Math::Max( width, ::Default::SliderWidth );
 }
 
 /*===========================================================================*/
@@ -366,9 +281,9 @@ int Slider::get_fitted_width( void )
  *  @return fitted height
  */
 /*===========================================================================*/
-int Slider::get_fitted_height( void )
+int Slider::adjustedHeight()
 {
-    return( ::Default::SliderHeight + ( BaseClass::characterHeight() + BaseClass::margin() ) * 2 );
+    return ::Default::SliderHeight + ( BaseClass::characterHeight() + BaseClass::margin() ) * 2;
 }
 
 /*===========================================================================*/
@@ -376,14 +291,15 @@ int Slider::get_fitted_height( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void Slider::paintEvent( void )
+void Slider::paintEvent()
 {
     this->screenUpdated();
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
-    BaseClass::draw_background();
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
+    BaseClass::drawBackground();
 
     const int character_width  = BaseClass::characterWidth();
     const int character_height = BaseClass::characterHeight();
@@ -392,7 +308,7 @@ void Slider::paintEvent( void )
     {
         const int x = m_x + m_margin;
         const int y = m_y + m_margin;
-        BaseClass::draw_text( x, y + character_height, m_caption );
+        BaseClass::drawText( x, y + character_height, m_caption );
     }
 
     // Draw the slider bar and cursor.
@@ -411,18 +327,18 @@ void Slider::paintEvent( void )
             std::string min_value = kvs::String::ToString( m_min_value );
             const int x = m_x + m_margin;
             const int y = m_y + m_margin + character_height + ::Default::SliderHeight;
-            BaseClass::draw_text( x, y + character_height, min_value );
+            BaseClass::drawText( x, y + character_height, min_value );
         }
 
         {
             std::string max_value = kvs::String::ToString( m_max_value );
             const int x = BaseClass::x1() - m_margin - max_value.size() * character_width;
             const int y = m_y + m_margin + character_height + ::Default::SliderHeight;
-            BaseClass::draw_text( x, y + character_height, max_value );
+            BaseClass::drawText( x, y + character_height, max_value );
         }
     }
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 /*===========================================================================*/
@@ -455,7 +371,7 @@ void Slider::mousePressEvent( kvs::MouseEvent* event )
         BaseClass::screen()->disable();
         BaseClass::activate();
         this->sliderPressed();
-        BaseClass::swap_color( m_slider_color, m_clicked_slider_color );
+        BaseClass::swapColor( m_slider_color, m_clicked_slider_color );
         BaseClass::screen()->redraw();
     }
     else
@@ -519,7 +435,7 @@ void Slider::mouseReleaseEvent( kvs::MouseEvent* event )
     if ( BaseClass::isActive() )
     {
         this->sliderReleased();
-        BaseClass::swap_color( m_slider_color, m_clicked_slider_color );
+        BaseClass::swapColor( m_slider_color, m_clicked_slider_color );
 
         if ( m_change_value )
         {

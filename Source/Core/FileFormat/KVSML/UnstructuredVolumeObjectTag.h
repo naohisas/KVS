@@ -39,23 +39,15 @@ public:
 
 private:
 
-    bool m_has_cell_type; ///< flag to check whether 'cell_type' is specified or not
-    std::string m_cell_type; ///< cell type
+    kvs::kvsml::TagAttribute<std::string> m_cell_type; ///< cell type
 
 public:
 
     UnstructuredVolumeObjectTag();
 
-public:
-
-    bool hasCellType() const;
-    const std::string& cellType() const;
-
-public:
-
-    void setCellType( const std::string& cell_type );
-
-public:
+    bool hasCellType() const { return m_cell_type.hasValue(); }
+    const std::string& cellType() const { return m_cell_type; }
+    void setCellType( const std::string& cell_type ) { m_cell_type = cell_type; }
 
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );

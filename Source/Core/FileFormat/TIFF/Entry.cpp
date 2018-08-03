@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Entry.cpp
+ *  @file   Entry.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -35,7 +36,7 @@ Entry::Entry( std::ifstream& ifs )
     this->read( ifs );
 }
 
-const bool operator == ( const Entry& lhs, const Entry& rhs )
+bool operator == ( const Entry& lhs, const Entry& rhs )
 {
     return lhs.tag() == rhs.tag();
 }
@@ -67,21 +68,6 @@ std::ostream& operator << ( std::ostream& os, const Entry& entry )
     return os;
 }
 
-kvs::UInt16 Entry::tag() const
-{
-    return m_tag;
-}
-
-kvs::UInt16 Entry::type() const
-{
-    return m_type;
-}
-
-kvs::UInt32 Entry::count() const
-{
-    return m_count;
-}
-
 std::string Entry::tagDescription() const
 {
     static const kvs::tiff::TagDictionary TagDatabase;
@@ -91,11 +77,6 @@ std::string Entry::tagDescription() const
 std::string Entry::typeName() const
 {
     return kvs::tiff::ValueTypeName[ m_type ];
-}
-
-const kvs::AnyValueArray& Entry::values() const
-{
-    return m_values;
 }
 
 void Entry::print( std::ostream& os, const kvs::Indent& indent ) const
@@ -167,21 +148,25 @@ bool Entry::read( std::ifstream& ifs )
 
 void* Entry::allocate_values( const size_t nvalues, const size_t value_type )
 {
-    switch( value_type )
+    switch ( value_type )
     {
-    case kvs::tiff::Byte:      m_values.allocate<kvs::UInt8>( nvalues );
-    case kvs::tiff::Ascii:     m_values.allocate<char>( nvalues );
-    case kvs::tiff::Short:     m_values.allocate<kvs::UInt16>( nvalues );
-    case kvs::tiff::Long:      m_values.allocate<kvs::UInt32>( nvalues );
-    case kvs::tiff::Rational:  m_values.allocate<kvs::Real64>( nvalues );
-    case kvs::tiff::SByte:     m_values.allocate<kvs::Int8>( nvalues );
-    case kvs::tiff::Undefined: m_values.allocate<char>( nvalues );
-    case kvs::tiff::SShort:    m_values.allocate<kvs::Int16>( nvalues );
-    case kvs::tiff::SLong:     m_values.allocate<kvs::Int32>( nvalues );
-    case kvs::tiff::SRational: m_values.allocate<kvs::Real64>( nvalues );
-    case kvs::tiff::Float:     m_values.allocate<kvs::Real32>( nvalues );
-    case kvs::tiff::Double:    m_values.allocate<kvs::Real64>( nvalues );
-    default: kvsMessageError("Unknown entry value type.");
+    case kvs::tiff::Byte: m_values.allocate<kvs::UInt8>( nvalues ); break;
+    case kvs::tiff::Ascii: m_values.allocate<char>( nvalues ); break;
+    case kvs::tiff::Short: m_values.allocate<kvs::UInt16>( nvalues ); break;
+    case kvs::tiff::Long: m_values.allocate<kvs::UInt32>( nvalues ); break;
+    case kvs::tiff::Rational: m_values.allocate<kvs::Real64>( nvalues ); break;
+    case kvs::tiff::SByte: m_values.allocate<kvs::Int8>( nvalues ); break;
+    case kvs::tiff::Undefined: m_values.allocate<char>( nvalues ); break;
+    case kvs::tiff::SShort: m_values.allocate<kvs::Int16>( nvalues ); break;
+    case kvs::tiff::SLong: m_values.allocate<kvs::Int32>( nvalues ); break;
+    case kvs::tiff::SRational: m_values.allocate<kvs::Real64>( nvalues ); break;
+    case kvs::tiff::Float: m_values.allocate<kvs::Real32>( nvalues ); break;
+    case kvs::tiff::Double: m_values.allocate<kvs::Real64>( nvalues ); break;
+    default:
+    {
+        kvsMessageError("Unknown entry value type (%d).", int( value_type ) );
+        break;
+    }
     }
     return m_values.data();
 }

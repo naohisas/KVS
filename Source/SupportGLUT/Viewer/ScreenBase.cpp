@@ -30,7 +30,7 @@ namespace
 {
 
 const size_t MaxNumberOfScreens = 256;
-kvs::glut::ScreenBase* Context[ MaxNumberOfScreens ];
+kvs::glut::ScreenBase* Context[ MaxNumberOfScreens ] = {};
 
 /*===========================================================================*/
 /**
@@ -218,7 +218,7 @@ ScreenBase::~ScreenBase()
     delete m_key_event;
     delete m_wheel_event;
 
-    ::Context[ m_id ] = 0;
+    ::Context[ m_id ] = NULL;
     glutDestroyWindow( m_id );
 }
 
@@ -255,12 +255,17 @@ void ScreenBase::create()
     ::Context[ m_id ] = this;
 
     // Initialize GLEW.
+#if defined( KVS_ENABLE_GLEW )
     GLenum result = glewInit();
     if ( result != GLEW_OK )
     {
         const GLubyte* message = glewGetErrorString( result );
         kvsMessageError( "GLEW initialization failed: %s.", message );
     }
+#endif
+
+    // Create paint device.
+    BaseClass::paintDevice()->create();
 
     // Register the exit function.
     static bool flag = true;
@@ -273,9 +278,6 @@ void ScreenBase::create()
     glutSpecialFunc( SpecialKeyPressFunction );
     glutDisplayFunc( DisplayFunction );
     glutReshapeFunc( ResizeFunction );
-
-    // Callback the initialize event.
-    this->initializeEvent();
 }
 
 /*===========================================================================*/

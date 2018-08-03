@@ -17,6 +17,7 @@
 #include <kvs/Camera>
 #include <kvs/Math>
 #include <kvs/OpenGL>
+#include <kvs/IgnoreUnusedVariable>
 
 
 namespace kvs
@@ -135,6 +136,36 @@ void ObjectBase::print( std::ostream& os, const kvs::Indent& indent ) const
 
 /*===========================================================================*/
 /**
+ *  @brief  Read an object data from the specified file.
+ *  @param  filename [in] input filename
+ *  @return false because the function has not implemented
+ */
+/*===========================================================================*/
+bool ObjectBase::read( const std::string& filename )
+{
+    kvs::IgnoreUnusedVariable( filename );
+    return false;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Write the object data to the specified file.
+ *  @param  filename [in] output filename
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return false because the function has not implemented
+ */
+/*===========================================================================*/
+bool ObjectBase::write( const std::string& filename, const bool ascii, const bool external ) const
+{
+    kvs::IgnoreUnusedVariable( filename );
+    kvs::IgnoreUnusedVariable( ascii );
+    kvs::IgnoreUnusedVariable( external );
+    return false;
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Updates the normalize parameters.
  */
 /*===========================================================================*/
@@ -143,8 +174,8 @@ void ObjectBase::updateNormalizeParameters()
     kvs::Vec3 diff_obj = m_max_object_coord - m_min_object_coord;
     kvs::Vec3 diff_ext = m_max_external_coord - m_min_external_coord;
 
-    m_object_center = ( m_max_object_coord + m_min_object_coord ) * 0.5;
-    m_external_center = ( m_max_external_coord + m_min_external_coord ) * 0.5;
+    m_object_center = ( m_max_object_coord + m_min_object_coord ) * 0.5f;
+    m_external_center = ( m_max_external_coord + m_min_external_coord ) * 0.5f;
 
     if ( kvs::Math::Equal( diff_obj.x(), 0.0f ) &&
          kvs::Math::Equal( diff_obj.y(), 0.0f ) &&

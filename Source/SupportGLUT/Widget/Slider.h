@@ -35,11 +35,9 @@ namespace glut
 class Slider : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     float m_value; ///< value
     float m_min_value; ///< min. value
@@ -52,41 +50,40 @@ protected:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-
     Slider( kvs::ScreenBase* screen = 0 );
 
-    virtual void sliderPressed( void ){};
-    virtual void sliderMoved( void ){};
-    virtual void sliderReleased( void ){};
-    virtual void valueChanged( void ){};
-    virtual void screenUpdated( void ){};
-    virtual void screenResized( void ){};
+    virtual void sliderPressed(){};
+    virtual void sliderMoved(){};
+    virtual void sliderReleased(){};
+    virtual void valueChanged(){};
+    virtual void screenUpdated(){};
+    virtual void screenResized(){};
 
-    const std::string& caption( void ) const;
-    float value( void ) const;
-    float minValue( void ) const;
-    float maxValue( void ) const;
+    const std::string& caption() const { return m_caption; }
+    float value() const { return m_value; }
+    float minValue() const { return m_min_value; }
+    float maxValue() const { return m_max_value; }
 
-    void setCaption( const std::string caption );
-    void setValue( const float value );
+    void setCaption( const std::string caption ) { m_caption = caption; }
+    void setValue( const float value ) { m_value = value; }
     void setRange( const float min_value, const float max_value );
     void setSliderColor( const kvs::RGBColor& color );
-    void showRange( void );
-    void hideRange( void );
+    void showRange() { m_show_range_value = true; }
+    void hideRange() { m_show_range_value = false; }
+
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
 private:
-
     void draw_slider_bar( const int x, const int y, const int width );
     void draw_cursor( const int x, const int y, const int width );
     bool is_in_slider( const int x, const int y, const bool proper = false );
     bool is_in_cursor( const int x, const int y, const bool proper = false );
     float get_value( const int x );
-    int get_fitted_width( void );
-    int get_fitted_height( void );
 
 private:
-
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseMoveEvent( kvs::MouseEvent* event );

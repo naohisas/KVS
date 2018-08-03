@@ -412,7 +412,10 @@ void RayCastingRenderer::initialize_shader( const kvs::StructuredVolumeObject* v
             max_value = static_cast<kvs::Real32>( volume->maxValue() );
         }
     }
-    else if ( type == typeid( kvs::UInt32 ) || type == typeid( kvs::Int32  ) || type == typeid( kvs::Real32 ) )
+    else if ( type == typeid( kvs::UInt32 ) ||
+              type == typeid( kvs::Int32  ) ||
+              type == typeid( kvs::Real32 ) ||
+              type == typeid( kvs::Real64 ) )
     {
         min_range = 0.0f;
         max_range = 1.0f;
@@ -678,7 +681,7 @@ void RayCastingRenderer::initialize_framebuffer( const size_t width, const size_
     m_color_texture.setWrapT( GL_CLAMP_TO_BORDER );
     m_color_texture.setMagFilter( GL_LINEAR );
     m_color_texture.setMinFilter( GL_LINEAR );
-    m_color_texture.setPixelFormat( GL_RGBA32F, GL_RGB, GL_FLOAT  );
+    m_color_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGB, GL_FLOAT  );
     m_color_texture.create( width, height );
 
     m_entry_texture.setWrapS( GL_CLAMP_TO_BORDER );

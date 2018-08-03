@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   Histogram.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -40,9 +41,9 @@ namespace
 // Default parameters.
 const kvs::RGBColor DefaultBackgroundColor( 212, 221, 229 );
 const kvs::RGBColor DefaultHistogramColor( 100, 100, 100 );
-const float         DefaultBiasParameter( 0.5f );
-const size_t        DefaultScreenWidth( 512 );
-const size_t        DefaultScreenHeight( 150 );
+const float DefaultBiasParameter( 0.5f );
+const size_t DefaultScreenWidth( 512 );
+const size_t DefaultScreenHeight( 150 );
 }
 
 namespace kvsview
@@ -58,10 +59,10 @@ namespace Histogram
 /*===========================================================================*/
 struct Parameters
 {
-    kvs::Vector2i       mouse;             ///< mouse position for 2D operation
-    kvs::FrequencyTable frequency_table;   ///< frequency table
-    float               bias_parameter;    ///< bias parameter [0,1]
-    kvs::Texture2D      histogram_texture; ///< histogram texture
+    kvs::Vector2i mouse; ///< mouse position for 2D operation
+    kvs::FrequencyTable frequency_table; ///< frequency table
+    float bias_parameter; ///< bias parameter [0,1]
+    kvs::Texture2D histogram_texture; ///< histogram texture
 
     Parameters( Argument& arg )
     {
@@ -76,7 +77,7 @@ struct Parameters
             if ( !object )
             {
                 kvsMessageError("Cannot import a structured volume object.");
-                return( false );
+                return false;
             }
 
             object->updateMinMaxValues();
@@ -89,7 +90,7 @@ struct Parameters
             if ( !object )
             {
                 kvsMessageError("Cannot import a unstructured volume object.");
-                return( false );
+                return false;
             }
 
             object->updateMinMaxValues();
@@ -97,10 +98,10 @@ struct Parameters
             this->frequency_table.create( object );
         }
 
-        return( true );
+        return true;
     }
 
-    void createHistogramTexture( void )
+    void createHistogramTexture()
     {
         const size_t nchannels = 4;
         const size_t width = static_cast<size_t>( this->frequency_table.numberOfBins() );
@@ -111,13 +112,13 @@ struct Parameters
         this->histogram_texture.load( width, height, this->histogramImage().data() );
     }
 
-    void updateHistogramTexture( void )
+    void updateHistogramTexture()
     {
         this->histogram_texture.release();
         this->createHistogramTexture();
     }
 
-    const kvs::ValueArray<kvs::UInt8> histogramImage( void )
+    const kvs::ValueArray<kvs::UInt8> histogramImage()
     {
         const size_t nchannels = 4;
         const size_t width = static_cast<size_t>( frequency_table.numberOfBins() );
@@ -146,7 +147,7 @@ struct Parameters
             }
         }
 
-        return( data );
+        return data;
     }
 };
 
@@ -158,15 +159,13 @@ struct Parameters
 class InitializeEvent : public kvs::InitializeEventListener
 {
 private:
-
     kvsview::Histogram::Parameters* m_parameters;
 
 public:
-
     InitializeEvent( kvsview::Histogram::Parameters* parameters ):
         m_parameters( parameters ) {}
 
-    void update( void )
+    void update()
     {
         m_parameters->createHistogramTexture();
     }
@@ -180,15 +179,13 @@ public:
 class PaintEvent : public kvs::PaintEventListener
 {
 private:
-
     kvsview::Histogram::Parameters* m_parameters;
 
 public:
-
     PaintEvent( kvsview::Histogram::Parameters* parameters ):
         m_parameters( parameters ) {}
 
-    void update( void )
+    void update()
     {
         kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
         glut_screen->scene()->background()->setColor( ::DefaultBackgroundColor );
@@ -223,8 +220,7 @@ public:
     }
 
 private:
-
-    void draw_histogram_texture( void )
+    void draw_histogram_texture()
     {
         const GLfloat x = 0;
         const GLfloat y = 0;
@@ -255,11 +251,9 @@ private:
 class MousePressEvent : public kvs::MousePressEventListener
 {
 private:
-
     kvsview::Histogram::Parameters* m_parameters;
 
 public:
-
     MousePressEvent( kvsview::Histogram::Parameters* parameters ):
         m_parameters( parameters ) {}
 
@@ -280,11 +274,9 @@ public:
 class MouseMoveEvent : public kvs::MouseMoveEventListener
 {
 private:
-
     kvsview::Histogram::Parameters* m_parameters;
 
 public:
-
     MouseMoveEvent( kvsview::Histogram::Parameters* parameters ):
         m_parameters( parameters ) {}
 
@@ -308,11 +300,9 @@ public:
 class KeyPressEvent : public kvs::KeyPressEventListener
 {
 private:
-
     kvsview::Histogram::Parameters* m_parameters;
 
 public:
-
     KeyPressEvent( kvsview::Histogram::Parameters* parameters ):
         m_parameters( parameters ) {}
 
@@ -356,29 +346,16 @@ const float Argument::biasParameter( void )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // Setup GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Commandline arguments.
-    kvsview::Histogram::Argument arg( m_argc, m_argv );
+    kvsview::Histogram::Argument arg( argc, argv );
     if ( !arg.parse() ) exit( EXIT_FAILURE );
     m_input_name = arg.value<std::string>();
 
@@ -389,19 +366,20 @@ const bool Main::exec( void )
     // Verbose information.
     if ( arg.verboseMode() )
     {
+        std::cout << std::endl;
         std::cout << "HISTOGRAM INFORMATION" << std::endl;
-        std::cout << "min range: " << params.frequency_table.minRange() << std::endl;
-        std::cout << "max range: " << params.frequency_table.maxRange() << std::endl;
-        std::cout << "number of bins: " << params.frequency_table.numberOfBins() << std::endl;
-        std::cout << "max count: " << params.frequency_table.maxCount() << std::endl;
+        std::cout << "    min range: " << params.frequency_table.minRange() << std::endl;
+        std::cout << "    max range: " << params.frequency_table.maxRange() << std::endl;
+        std::cout << "    number of bins: " << params.frequency_table.numberOfBins() << std::endl;
+        std::cout << "    max count: " << params.frequency_table.maxCount() << std::endl;
     }
 
     // Viewer events.
     kvsview::Histogram::InitializeEvent initialize_event( &params );
-    kvsview::Histogram::PaintEvent      paint_event( &params );
+    kvsview::Histogram::PaintEvent paint_event( &params );
     kvsview::Histogram::MousePressEvent mouse_press_event( &params );
-    kvsview::Histogram::MouseMoveEvent  mouse_move_event( &params );
-    kvsview::Histogram::KeyPressEvent   key_press_event( &params );
+    kvsview::Histogram::MouseMoveEvent mouse_move_event( &params );
+    kvsview::Histogram::KeyPressEvent key_press_event( &params );
 
     // Rendering screen.
     kvs::glut::Screen screen( &app );
@@ -414,7 +392,7 @@ const bool Main::exec( void )
     screen.setTitle( kvsview::CommandName + " - " + kvsview::Histogram::CommandName );
     screen.show();
 
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace Histogram

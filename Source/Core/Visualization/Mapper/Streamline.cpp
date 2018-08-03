@@ -178,7 +178,7 @@ kvs::Vec3 Streamline::RungeKutta4thIntegrator::next( const kvs::Vec3& point )
  */
 /*===========================================================================*/
 Streamline::Streamline(
-    const kvs::StructuredVolumeObject* volume,
+    const kvs::VolumeObjectBase* volume,
     const kvs::PointObject* seed_points,
     const kvs::TransferFunction& transfer_function ):
     kvs::StreamlineBase()

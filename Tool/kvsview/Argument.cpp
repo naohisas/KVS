@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   Argument.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -50,7 +51,6 @@ Argument::Argument( int argc, char** argv ):
     kvs::CommandLine( argc, argv, kvsview::CommandName )
 {
     addHelpOption();
-
     addOption( "help", "Output help message for each process. (ex. -help Isosurface)", 1 );
     addOption( kvsview::PointRenderer::CommandName, kvsview::PointRenderer::Description, 0 );
     addOption( kvsview::LineRenderer::CommandName, kvsview::LineRenderer::Description, 0 );
@@ -65,7 +65,6 @@ Argument::Argument( int argc, char** argv ):
     addOption( kvsview::RayCastingRenderer::CommandName, kvsview::RayCastingRenderer::Description, 0 );
     addOption( kvsview::ParticleBasedRenderer::CommandName, kvsview::ParticleBasedRenderer::Description, 0 );
     addOption( kvsview::Histogram::CommandName, kvsview::Histogram::Description, 0 );
-
     addValue( "input data file", false );
 }
 
@@ -101,10 +100,9 @@ Argument::Common::Common( int argc, char** argv, const std::string& command ):
  *  @brief  Sets common options.
  */
 /*===========================================================================*/
-void Argument::Common::set_options( void )
+void Argument::Common::set_options()
 {
     addHelpOption("help");
-
     addOption("antialiasing", "Enable anti-aliasing. (optional)", 0, false );
     addOption("axis", "Show axis. (optional)", 0, false );
     addOption("axis_color", "Set axis color. (default: 0 0 0)", 3, false );
@@ -123,7 +121,6 @@ void Argument::Common::set_options( void )
     addOption("screen_size", "Set screen size. (default: 512 512)", 2, false );
     addOption("output", "Output filename. (optional: <filename>)", 1, false );
     addOption("verbose", "Enable additional output message. (optional)", 0, false);
-
     addValue("input data file");
 }
 
@@ -133,9 +130,9 @@ void Argument::Common::set_options( void )
  *  @return true, if the verbose mode option is specified
  */
 /*===========================================================================*/
-bool Argument::Common::verboseMode( void )
+bool Argument::Common::verboseMode()
 {
-    return( this->hasOption("verbose") );
+    return this->hasOption("verbose");
 }
 
 /*===========================================================================*/

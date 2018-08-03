@@ -35,7 +35,7 @@
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeExporter>
 #include <kvs/AVSField>
-#include <kvs/KVSMLObjectStructuredVolume>
+#include <kvs/KVSMLStructuredVolumeObject>
 
 
 /*===========================================================================*/
@@ -111,8 +111,8 @@ int main( int argc, char** argv )
     }
     else if ( extension == "kvsml" )
     {
-        kvs::KVSMLObjectStructuredVolume* kvsml =
-            new kvs::StructuredVolumeExporter<kvs::KVSMLObjectStructuredVolume>( volume );
+        kvs::KVSMLStructuredVolumeObject* kvsml =
+            new kvs::StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>( volume );
         if ( !kvsml )
         {
             kvsMessageError( "Cannot export hydrogen volume." );
@@ -122,12 +122,12 @@ int main( int argc, char** argv )
 
         if ( arg.hasOption("a") )
         {
-            kvsml->setWritingDataType( kvs::KVSMLObjectStructuredVolume::ExternalAscii );
+            kvsml->setWritingDataType( kvs::KVSMLStructuredVolumeObject::ExternalAscii );
         }
 
         if ( arg.hasOption("b") )
         {
-            kvsml->setWritingDataType( kvs::KVSMLObjectStructuredVolume::ExternalBinary );
+            kvsml->setWritingDataType( kvs::KVSMLStructuredVolumeObject::ExternalBinary );
         }
 
         if ( !kvsml->write( filename ) )

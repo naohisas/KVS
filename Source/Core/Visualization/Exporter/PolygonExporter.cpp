@@ -21,11 +21,11 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new PolygonExporter class for KVSMLObjectPolygon format.
+ *  @brief  Constructs a new PolygonExporter class for KVSMLPolygonObject format.
  *  @param  object [in] pointer to the input polygon object
  */
 /*===========================================================================*/
-PolygonExporter<kvs::KVSMLObjectPolygon>::PolygonExporter( const kvs::PolygonObject* object )
+PolygonExporter<kvs::KVSMLPolygonObject>::PolygonExporter( const kvs::PolygonObject* object )
 {
     this->exec( object );
 }
@@ -34,10 +34,10 @@ PolygonExporter<kvs::KVSMLObjectPolygon>::PolygonExporter( const kvs::PolygonObj
 /**
  *  @brief  Executes the export process.
  *  @param  object [in] pointer to the input object
- *  @return pointer to the KVSMLObjectPolygon format
+ *  @return pointer to the KVSMLPolygonObject format
  */
 /*===========================================================================*/
-kvs::KVSMLObjectPolygon* PolygonExporter<kvs::KVSMLObjectPolygon>::exec( const kvs::ObjectBase* object )
+kvs::KVSMLPolygonObject* PolygonExporter<kvs::KVSMLPolygonObject>::exec( const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );
 

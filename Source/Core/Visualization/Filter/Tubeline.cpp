@@ -334,7 +334,7 @@ const kvs::ValueArray<kvs::Real32> GetSizeArray(
  *  @return color array
  */
 /*===========================================================================*/
-const kvs::PolygonObject::ColorType GetColorType( const kvs::LineObject* line )
+kvs::PolygonObject::ColorType GetColorType( const kvs::LineObject* line )
 {
     kvs::PolygonObject::ColorType type = kvs::PolygonObject::VertexColor;
     switch ( line->colorType() )
@@ -359,7 +359,7 @@ const kvs::PolygonObject::ColorType GetColorType( const kvs::LineObject* line )
  *  @return number of the vertices
  */
 /*===========================================================================*/
-const size_t GetNumberOfVertices( const kvs::LineObject* line )
+size_t GetNumberOfVertices( const kvs::LineObject* line )
 {
     size_t nvertices = 0;
     switch ( line->lineType() )

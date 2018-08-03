@@ -14,12 +14,67 @@
 /****************************************************************************/
 #include "PolygonObject.h"
 #include <string>
+#include <kvs/KVSMLPolygonObject>
 #include <kvs/Assert>
 #include <kvs/Type>
 
 
 namespace
 {
+
+/*==========================================================================*/
+/**
+ *  @breif  Returns the polygon type from the given string.
+ *  @param  polygon_type [in] polygon type string
+ *  @return polygon type
+ */
+/*==========================================================================*/
+const kvs::PolygonObject::PolygonType GetPolygonType( const std::string& polygon_type )
+{
+    if (      polygon_type == "triangle"   ) { return kvs::PolygonObject::Triangle; }
+    else if ( polygon_type == "quadrangle" ) { return kvs::PolygonObject::Quadrangle; }
+    else
+    {
+        kvsMessageError( "Unknown polygon type '%s'.", polygon_type.c_str() );
+        return kvs::PolygonObject::UnknownPolygonType;
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Returns the polygon color type from the given string.
+ *  @param  color_type [in] polygon color type string
+ *  @return polygon color type
+ */
+/*==========================================================================*/
+const kvs::PolygonObject::ColorType GetColorType( const std::string& color_type )
+{
+    if (      color_type == "vertex"  ) { return kvs::PolygonObject::VertexColor; }
+    else if ( color_type == "polygon" ) { return kvs::PolygonObject::PolygonColor; }
+    else
+    {
+        kvsMessageError( "Unknown polygon color type '%s'.", color_type.c_str() );
+        return kvs::PolygonObject::UnknownColorType;
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Returns the polygon normal type from the given string.
+ *  @param  normal_type [in] polygon normal type string
+ *  @return polygon normal type
+ */
+/*==========================================================================*/
+const kvs::PolygonObject::NormalType GetNormalType( const std::string& normal_type )
+{
+    if (      normal_type == "vertex"  ) { return kvs::PolygonObject::VertexNormal; }
+    else if ( normal_type == "polygon" ) { return kvs::PolygonObject::PolygonNormal; }
+    else
+    {
+        kvsMessageError( "Unknown polygon normal type '%s'.", normal_type.c_str() );
+        return kvs::PolygonObject::UnknownNormalType;
+    }
+}
 
 /*===========================================================================*/
 /**
@@ -34,7 +89,7 @@ const std::string GetPolygonTypeName( const kvs::PolygonObject::PolygonType type
     {
     case kvs::PolygonObject::Triangle: return "triangle";
     case kvs::PolygonObject::Quadrangle: return "quadrangle";
-    default: return "unknown polygon type";
+    default: return "unknown";
     }
 }
 
@@ -49,9 +104,9 @@ const std::string GetColorTypeName( const kvs::PolygonObject::ColorType type )
 {
     switch( type )
     {
-    case kvs::PolygonObject::VertexColor: return "vertex color";
-    case kvs::PolygonObject::PolygonColor: return "polygon color";
-    default: return "unknown color type";
+    case kvs::PolygonObject::VertexColor: return "vertex";
+    case kvs::PolygonObject::PolygonColor: return "polygon";
+    default: return "unknown";
     }
 }
 
@@ -66,9 +121,30 @@ const std::string GetNormalTypeName( const kvs::PolygonObject::NormalType type )
 {
     switch( type )
     {
-    case kvs::PolygonObject::VertexNormal: return "vertex normal";
-    case kvs::PolygonObject::PolygonNormal: return "polygon normal";
-    default: return "unknown normal type";
+    case kvs::PolygonObject::VertexNormal: return "vertex";
+    case kvs::PolygonObject::PolygonNormal: return "polygon";
+    default: return "unknown";
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a writing data type.
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return writing data type
+ */
+/*===========================================================================*/
+kvs::KVSMLPolygonObject::WritingDataType GetWritingDataType( const bool ascii, const bool external )
+{
+    if ( ascii )
+    {
+        if ( external ) { return kvs::KVSMLPolygonObject::ExternalAscii; }
+        else { return kvs::KVSMLPolygonObject::Ascii; }
+    }
+    else
+    {
+        return kvs::KVSMLPolygonObject::ExternalBinary;
     }
 }
 
@@ -149,6 +225,89 @@ void PolygonObject::print( std::ostream& os, const kvs::Indent& indent ) const
     os << indent << "Polygon type : " << ::GetPolygonTypeName( this->polygonType() ) << std::endl;
     os << indent << "Color type : " << ::GetColorTypeName( this->colorType() ) << std::endl;
     os << indent << "Normal type : " << ::GetNormalTypeName( this->normalType() ) << std::endl;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Read a polygon object from the specified file in KVSML.
+ *  @param  filename [in] input filename
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool PolygonObject::read( const std::string& filename )
+{
+    if ( !kvs::KVSMLPolygonObject::CheckExtension( filename ) )
+    {
+        kvsMessageError("%s is not a polygon object file in KVSML.", filename.c_str());
+        return false;
+    }
+
+    kvs::KVSMLPolygonObject kvsml;
+    if ( !kvsml.read( filename ) ) { return false; }
+
+    this->setPolygonType( ::GetPolygonType( kvsml.polygonType() ) );
+    this->setColorType( ::GetColorType( kvsml.colorType() ) );
+    this->setNormalType( ::GetNormalType( kvsml.normalType() ) );
+    this->setCoords( kvsml.coords() );
+    this->setColors( kvsml.colors() );
+    this->setNormals( kvsml.normals() );
+    this->setConnections( kvsml.connections() );
+    this->setOpacities( kvsml.opacities() );
+
+    if ( kvsml.hasExternalCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minExternalCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxExternalCoord() );
+        this->setMinMaxExternalCoords( min_coord, max_coord );
+    }
+
+    if ( kvsml.hasObjectCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minObjectCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxObjectCoord() );
+        this->setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    else
+    {
+        this->updateMinMaxCoords();
+    }
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Write the polygon object to the specfied file in KVSML.
+ *  @param  filename [in] output filename
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return true, if the writing process is done successfully
+ */
+/*===========================================================================*/
+bool PolygonObject::write( const std::string& filename, const bool ascii, const bool external ) const
+{
+    kvs::KVSMLPolygonObject kvsml;
+    kvsml.setWritingDataType( ::GetWritingDataType( ascii, external ) );
+    kvsml.setPolygonType( ::GetPolygonTypeName( this->polygonType() ) );
+    kvsml.setColorType( ::GetColorTypeName( this->colorType() ) );
+    kvsml.setNormalType( ::GetNormalTypeName( this->normalType() ) );
+    kvsml.setCoords( this->coords() );
+    kvsml.setColors( this->colors() );
+    kvsml.setConnections( this->connections() );
+    kvsml.setNormals( this->normals() );
+    kvsml.setOpacities( this->opacities() );
+
+    if ( this->hasMinMaxObjectCoords() )
+    {
+        kvsml.setMinMaxObjectCoords( this->minObjectCoord(), this->maxObjectCoord() );
+    }
+
+    if ( this->hasMinMaxExternalCoords() )
+    {
+        kvsml.setMinMaxExternalCoords( this->minExternalCoord(), this->maxExternalCoord() );
+    }
+
+    return kvsml.write( filename );
 }
 
 /*===========================================================================*/

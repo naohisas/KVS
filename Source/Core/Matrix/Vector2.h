@@ -142,13 +142,16 @@ public:
  */
 /*==========================================================================*/
 typedef Vector2<int>          Vector2i;
-typedef Vector2<unsigned int> Vector2ui;
+typedef Vector2<unsigned int> Vector2u;
 typedef Vector2<float>        Vector2f;
 typedef Vector2<double>       Vector2d;
 typedef Vector2<float>        Vec2;
+typedef Vector2<unsigned int> Vec2u;
 typedef Vector2<int>          Vec2i;
-typedef Vector2<unsigned int> Vec2ui;
 typedef Vector2<double>       Vec2d;
+
+typedef Vector2<unsigned int> Vector2ui;
+typedef Vector2<unsigned int> Vec2ui;
 
 
 /*===========================================================================*/

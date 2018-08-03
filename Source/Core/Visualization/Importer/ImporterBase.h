@@ -12,9 +12,7 @@
  *  $Id: ImporterBase.h 1795 2014-08-01 08:38:08Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__IMPORTER_BASE_H_INCLUDE
-#define KVS__IMPORTER_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/FileFormatBase>
 #include <kvs/ObjectBase>
 #include <kvs/Module>
@@ -33,11 +31,9 @@ class ImporterBase
     kvsModuleBase( kvs::ImporterBase );
 
 private:
-
     bool m_is_success; ///< check flag for importing
 
 public:
-
     ImporterBase() {}
     virtual ~ImporterBase() {}
 
@@ -46,10 +42,7 @@ public:
     virtual kvs::ObjectBase* exec( const kvs::FileFormatBase* file_format ) = 0;
 
 protected:
-
     void setSuccess( const bool success ) { m_is_success = success; }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__IMPORTER_BASE_H_INCLUDE

@@ -5,6 +5,19 @@
 OBJECTS := \
 $(OUTDIR)/./FileFormat/AVSField/AVSField.o \
 $(OUTDIR)/./FileFormat/AVSUCD/AVSUcd.o \
+$(OUTDIR)/./FileFormat/BDML/BDMLData.o \
+$(OUTDIR)/./FileFormat/BDML/BDMLTag.o \
+$(OUTDIR)/./FileFormat/BDML/ComponentTag.o \
+$(OUTDIR)/./FileFormat/BDML/DataTag.o \
+$(OUTDIR)/./FileFormat/BDML/FeatureTag.o \
+$(OUTDIR)/./FileFormat/BDML/InfoTag.o \
+$(OUTDIR)/./FileFormat/BDML/LineTag.o \
+$(OUTDIR)/./FileFormat/BDML/MeasurementTag.o \
+$(OUTDIR)/./FileFormat/BDML/PropertyTag.o \
+$(OUTDIR)/./FileFormat/BDML/ScaleUnitTag.o \
+$(OUTDIR)/./FileFormat/BDML/Tag.o \
+$(OUTDIR)/./FileFormat/BDML/XYZSequenceTag.o \
+$(OUTDIR)/./FileFormat/BDML/XYZTag.o \
 $(OUTDIR)/./FileFormat/BMP/Bmp.o \
 $(OUTDIR)/./FileFormat/BMP/FileHeader.o \
 $(OUTDIR)/./FileFormat/BMP/InfoHeader.o \
@@ -18,6 +31,7 @@ $(OUTDIR)/./FileFormat/DICOM/Tag.o \
 $(OUTDIR)/./FileFormat/DICOM/VR.o \
 $(OUTDIR)/./FileFormat/DICOM/Value.o \
 $(OUTDIR)/./FileFormat/DICOM/Window.o \
+$(OUTDIR)/./FileFormat/FieldView/FieldViewData.o \
 $(OUTDIR)/./FileFormat/FrontFlow/BoundaryData.o \
 $(OUTDIR)/./FileFormat/FrontFlow/Data.o \
 $(OUTDIR)/./FileFormat/FrontFlow/DataSet.o \
@@ -45,6 +59,8 @@ $(OUTDIR)/./FileFormat/GrADS/Title.o \
 $(OUTDIR)/./FileFormat/GrADS/Undef.o \
 $(OUTDIR)/./FileFormat/GrADS/Vars.o \
 $(OUTDIR)/./FileFormat/GrADS/XYZDef.o \
+$(OUTDIR)/./FileFormat/IPLab/IPLab.o \
+$(OUTDIR)/./FileFormat/IPLab/IPLabList.o \
 $(OUTDIR)/./FileFormat/KVSML/CellTag.o \
 $(OUTDIR)/./FileFormat/KVSML/ColorMapTag.o \
 $(OUTDIR)/./FileFormat/KVSML/ColorTag.o \
@@ -56,15 +72,15 @@ $(OUTDIR)/./FileFormat/KVSML/DataReader.o \
 $(OUTDIR)/./FileFormat/KVSML/DataValueTag.o \
 $(OUTDIR)/./FileFormat/KVSML/DataWriter.o \
 $(OUTDIR)/./FileFormat/KVSML/ImageObjectTag.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectImage.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectLine.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectPoint.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectPolygon.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectStructuredVolume.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectTable.o \
-$(OUTDIR)/./FileFormat/KVSML/KVSMLObjectUnstructuredVolume.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLImageObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLLineObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLPointObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLPolygonObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLStructuredVolumeObject.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLTableObject.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLTag.o \
 $(OUTDIR)/./FileFormat/KVSML/KVSMLTransferFunction.o \
+$(OUTDIR)/./FileFormat/KVSML/KVSMLUnstructuredVolumeObject.o \
 $(OUTDIR)/./FileFormat/KVSML/LineObjectTag.o \
 $(OUTDIR)/./FileFormat/KVSML/LineTag.o \
 $(OUTDIR)/./FileFormat/KVSML/NodeTag.o \
@@ -106,6 +122,7 @@ $(OUTDIR)/./FileFormat/XML/XMLNode.o \
 $(OUTDIR)/./Image/BitImage.o \
 $(OUTDIR)/./Image/ColorImage.o \
 $(OUTDIR)/./Image/GrayImage.o \
+$(OUTDIR)/./Image/HCLColor.o \
 $(OUTDIR)/./Image/HSVColor.o \
 $(OUTDIR)/./Image/ImageBase.o \
 $(OUTDIR)/./Image/LabColor.o \
@@ -128,6 +145,9 @@ $(OUTDIR)/./Matrix/Vector2.o \
 $(OUTDIR)/./Matrix/Vector3.o \
 $(OUTDIR)/./Matrix/Vector4.o \
 $(OUTDIR)/./Matrix/ViewingMatrix44.o \
+$(OUTDIR)/./NanoVG/FontStash.o \
+$(OUTDIR)/./NanoVG/NanoVG.o \
+$(OUTDIR)/./NanoVG/nvg.o \
 $(OUTDIR)/./Network/Acceptor.o \
 $(OUTDIR)/./Network/Connector.o \
 $(OUTDIR)/./Network/HttpConnector.o \
@@ -181,6 +201,7 @@ $(OUTDIR)/./OpenGL/TextureBinder.o \
 $(OUTDIR)/./OpenGL/TextureRectangle.o \
 $(OUTDIR)/./OpenGL/VertexBufferObject.o \
 $(OUTDIR)/./OpenGL/VertexShader.o \
+$(OUTDIR)/./OpenMP/OpenMP.o \
 $(OUTDIR)/./Thread/Condition.o \
 $(OUTDIR)/./Thread/Mutex.o \
 $(OUTDIR)/./Thread/MutexLocker.o \
@@ -203,6 +224,7 @@ $(OUTDIR)/./Utility/MemoryTracer.o \
 $(OUTDIR)/./Utility/Message.o \
 $(OUTDIR)/./Utility/Program.o \
 $(OUTDIR)/./Utility/Range.o \
+$(OUTDIR)/./Utility/Rectangle.o \
 $(OUTDIR)/./Utility/ReferenceCounter.o \
 $(OUTDIR)/./Utility/String.o \
 $(OUTDIR)/./Utility/SystemInformation.o \
@@ -320,6 +342,9 @@ $(OUTDIR)/./Visualization/Pipeline/ObjectImporter.o \
 $(OUTDIR)/./Visualization/Pipeline/PipelineModule.o \
 $(OUTDIR)/./Visualization/Pipeline/VisualizationPipeline.o \
 $(OUTDIR)/./Visualization/Renderer/ArrowGlyph.o \
+$(OUTDIR)/./Visualization/Renderer/Axis2D.o \
+$(OUTDIR)/./Visualization/Renderer/Axis2DMatrix.o \
+$(OUTDIR)/./Visualization/Renderer/Axis3D.o \
 $(OUTDIR)/./Visualization/Renderer/Bounds.o \
 $(OUTDIR)/./Visualization/Renderer/DiamondGlyph.o \
 $(OUTDIR)/./Visualization/Renderer/EnsembleAverageBuffer.o \
@@ -328,6 +353,7 @@ $(OUTDIR)/./Visualization/Renderer/HAVSVolumeRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ImageRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/LineRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/LineRendererGLSL.o \
+$(OUTDIR)/./Visualization/Renderer/ParallelAxis.o \
 $(OUTDIR)/./Visualization/Renderer/ParallelCoordinatesRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBasedRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBasedRendererGLSL.o \
@@ -361,6 +387,7 @@ $(OUTDIR)/./Visualization/Renderer/StochasticRenderingCompositor.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticRenderingEngine.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticTetrahedraRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticUniformGridRenderer.o \
+$(OUTDIR)/./Visualization/Renderer/StylizedLineRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/VolumeRayIntersector.o \
 $(OUTDIR)/./Visualization/Renderer/VolumeRendererBase.o \
 $(OUTDIR)/./Visualization/Viewer/ApplicationBase.o \
@@ -368,6 +395,7 @@ $(OUTDIR)/./Visualization/Viewer/Background.o \
 $(OUTDIR)/./Visualization/Viewer/Camera.o \
 $(OUTDIR)/./Visualization/Viewer/CameraCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/DisplayFormat.o \
+$(OUTDIR)/./Visualization/Viewer/FontMetrics.o \
 $(OUTDIR)/./Visualization/Viewer/IDManager.o \
 $(OUTDIR)/./Visualization/Viewer/Light.o \
 $(OUTDIR)/./Visualization/Viewer/Material.o \
@@ -375,6 +403,8 @@ $(OUTDIR)/./Visualization/Viewer/Mouse.o \
 $(OUTDIR)/./Visualization/Viewer/NormalizedDeviceCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/ObjectCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/ObjectManager.o \
+$(OUTDIR)/./Visualization/Viewer/PaintDevice.o \
+$(OUTDIR)/./Visualization/Viewer/Painter.o \
 $(OUTDIR)/./Visualization/Viewer/RendererManager.o \
 $(OUTDIR)/./Visualization/Viewer/Scene.o \
 $(OUTDIR)/./Visualization/Viewer/ScreenBase.o \
@@ -383,8 +413,29 @@ $(OUTDIR)/./Visualization/Viewer/WindowCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/WorldCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/Xform.o \
 $(OUTDIR)/./Visualization/Viewer/XformControl.o \
+$(OUTDIR)/./Visualization/Widget/CheckBox.o \
+$(OUTDIR)/./Visualization/Widget/CheckBoxGroup.o \
+$(OUTDIR)/./Visualization/Widget/ColorMapBar.o \
+$(OUTDIR)/./Visualization/Widget/ColorMapPalette.o \
+$(OUTDIR)/./Visualization/Widget/ColorPalette.o \
+$(OUTDIR)/./Visualization/Widget/Font.o \
+$(OUTDIR)/./Visualization/Widget/HistogramBar.o \
+$(OUTDIR)/./Visualization/Widget/Label.o \
+$(OUTDIR)/./Visualization/Widget/OpacityMapBar.o \
+$(OUTDIR)/./Visualization/Widget/OpacityMapPalette.o \
+$(OUTDIR)/./Visualization/Widget/OrientationAxis.o \
+$(OUTDIR)/./Visualization/Widget/PushButton.o \
+$(OUTDIR)/./Visualization/Widget/RadioButton.o \
+$(OUTDIR)/./Visualization/Widget/RadioButtonGroup.o \
+$(OUTDIR)/./Visualization/Widget/Slider.o \
+$(OUTDIR)/./Visualization/Widget/TextEngine.o \
+$(OUTDIR)/./Visualization/Widget/WidgetBase.o \
 
 
+
+$(OUTDIR)/./Visualization/Widget/%.o: ./Visualization/Widget/%.cpp ./Visualization/Widget/%.h
+	$(MKDIR) $(OUTDIR)/./Visualization/Widget
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./Visualization/Viewer/%.o: ./Visualization/Viewer/%.cpp ./Visualization/Viewer/%.h
 	$(MKDIR) $(OUTDIR)/./Visualization/Viewer
@@ -434,6 +485,10 @@ $(OUTDIR)/./Thread/%.o: ./Thread/%.cpp ./Thread/%.h
 	$(MKDIR) $(OUTDIR)/./Thread
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./OpenMP/%.o: ./OpenMP/%.cpp ./OpenMP/%.h
+	$(MKDIR) $(OUTDIR)/./OpenMP
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./OpenGL/%.o: ./OpenGL/%.cpp ./OpenGL/%.h
 	$(MKDIR) $(OUTDIR)/./OpenGL
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -444,6 +499,10 @@ $(OUTDIR)/./Numeric/%.o: ./Numeric/%.cpp ./Numeric/%.h
 
 $(OUTDIR)/./Network/%.o: ./Network/%.cpp ./Network/%.h
 	$(MKDIR) $(OUTDIR)/./Network
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+$(OUTDIR)/./NanoVG/%.o: ./NanoVG/%.cpp ./NanoVG/%.h
+	$(MKDIR) $(OUTDIR)/./NanoVG
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./Matrix/%.o: ./Matrix/%.cpp ./Matrix/%.h
@@ -478,6 +537,10 @@ $(OUTDIR)/./FileFormat/KVSML/%.o: ./FileFormat/KVSML/%.cpp ./FileFormat/KVSML/%.
 	$(MKDIR) $(OUTDIR)/./FileFormat/KVSML
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/IPLab/%.o: ./FileFormat/IPLab/%.cpp ./FileFormat/IPLab/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/IPLab
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/GrADS/%.o: ./FileFormat/GrADS/%.cpp ./FileFormat/GrADS/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/GrADS
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -494,6 +557,10 @@ $(OUTDIR)/./FileFormat/FrontFlow/%.o: ./FileFormat/FrontFlow/%.cpp ./FileFormat/
 	$(MKDIR) $(OUTDIR)/./FileFormat/FrontFlow
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/FieldView/%.o: ./FileFormat/FieldView/%.cpp ./FileFormat/FieldView/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/FieldView
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/DICOM/%.o: ./FileFormat/DICOM/%.cpp ./FileFormat/DICOM/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/DICOM
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -504,6 +571,10 @@ $(OUTDIR)/./FileFormat/CSV/%.o: ./FileFormat/CSV/%.cpp ./FileFormat/CSV/%.h
 
 $(OUTDIR)/./FileFormat/BMP/%.o: ./FileFormat/BMP/%.cpp ./FileFormat/BMP/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/BMP
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+$(OUTDIR)/./FileFormat/BDML/%.o: ./FileFormat/BDML/%.cpp ./FileFormat/BDML/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/BDML
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./FileFormat/AVSUCD/%.o: ./FileFormat/AVSUCD/%.cpp ./FileFormat/AVSUCD/%.h
@@ -522,12 +593,16 @@ install::
 	$(INSTALL) ./FileFormat/AVSField/*.h $(INSTALL_DIR)/include/Core/./FileFormat/AVSField
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/AVSUCD
 	$(INSTALL) ./FileFormat/AVSUCD/*.h $(INSTALL_DIR)/include/Core/./FileFormat/AVSUCD
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/BDML
+	$(INSTALL) ./FileFormat/BDML/*.h $(INSTALL_DIR)/include/Core/./FileFormat/BDML
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/BMP
 	$(INSTALL) ./FileFormat/BMP/*.h $(INSTALL_DIR)/include/Core/./FileFormat/BMP
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/CSV
 	$(INSTALL) ./FileFormat/CSV/*.h $(INSTALL_DIR)/include/Core/./FileFormat/CSV
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/DICOM
 	$(INSTALL) ./FileFormat/DICOM/*.h $(INSTALL_DIR)/include/Core/./FileFormat/DICOM
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/FieldView
+	$(INSTALL) ./FileFormat/FieldView/*.h $(INSTALL_DIR)/include/Core/./FileFormat/FieldView
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/FrontFlow
 	$(INSTALL) ./FileFormat/FrontFlow/*.h $(INSTALL_DIR)/include/Core/./FileFormat/FrontFlow
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/FrontSTR
@@ -536,6 +611,8 @@ install::
 	$(INSTALL) ./FileFormat/GIS/*.h $(INSTALL_DIR)/include/Core/./FileFormat/GIS
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/GrADS
 	$(INSTALL) ./FileFormat/GrADS/*.h $(INSTALL_DIR)/include/Core/./FileFormat/GrADS
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
+	$(INSTALL) ./FileFormat/IPLab/*.h $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(INSTALL) ./FileFormat/KVSML/*.h $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PLY
@@ -552,12 +629,16 @@ install::
 	$(INSTALL) ./Image/*.h $(INSTALL_DIR)/include/Core/./Image
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Matrix
 	$(INSTALL) ./Matrix/*.h $(INSTALL_DIR)/include/Core/./Matrix
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./NanoVG
+	$(INSTALL) ./NanoVG/*.h $(INSTALL_DIR)/include/Core/./NanoVG
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Network
 	$(INSTALL) ./Network/*.h $(INSTALL_DIR)/include/Core/./Network
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Numeric
 	$(INSTALL) ./Numeric/*.h $(INSTALL_DIR)/include/Core/./Numeric
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./OpenGL
 	$(INSTALL) ./OpenGL/*.h $(INSTALL_DIR)/include/Core/./OpenGL
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./OpenMP
+	$(INSTALL) ./OpenMP/*.h $(INSTALL_DIR)/include/Core/./OpenMP
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Thread
 	$(INSTALL) ./Thread/*.h $(INSTALL_DIR)/include/Core/./Thread
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Utility
@@ -586,9 +667,13 @@ install::
 	$(INSTALL) ./Visualization/Shader/*.h $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Viewer
 	$(INSTALL) ./Visualization/Viewer/*.h $(INSTALL_DIR)/include/Core/./Visualization/Viewer
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Widget
+	$(INSTALL) ./Visualization/Widget/*.h $(INSTALL_DIR)/include/Core/./Visualization/Widget
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(INSTALL) ./Visualization/Shader/*.vert $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(INSTALL) ./Visualization/Shader/*.geom $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Shader
 	$(INSTALL) ./Visualization/Shader/*.frag $(INSTALL_DIR)/include/Core/./Visualization/Shader
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Font
+	$(INSTALL) ./Visualization/Font/*.ttf $(INSTALL_DIR)/include/Core/./Visualization/Font

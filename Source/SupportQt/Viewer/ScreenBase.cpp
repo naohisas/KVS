@@ -23,6 +23,7 @@
 #include <kvs/qt/Timer>
 #include <SupportQt/Viewer/KVSMouseButton.h>
 #include <SupportQt/Viewer/KVSKey.h>
+#include <kvs/OpenGL>
 
 
 namespace kvs
@@ -90,14 +91,6 @@ void ScreenBase::create()
     QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
 
     QGLWidget::makeCurrent();
-
-    // Initialize GLEW.
-    GLenum result = glewInit();
-    if ( result != GLEW_OK )
-    {
-        const GLubyte* message = glewGetErrorString( result );
-        kvsMessageError( "GLEW initialization failed: %s.", message );
-    }
 
     // Create window.
     static int counter = 0;
@@ -245,6 +238,19 @@ void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
 /*===========================================================================*/
 void ScreenBase::initializeGL()
 {
+#if defined( KVS_ENABLE_GLEW )
+    // Initialize GLEW.
+    GLenum result = glewInit();
+    if ( result != GLEW_OK )
+    {
+        const GLubyte* message = glewGetErrorString( result );
+        kvsMessageError( "GLEW initialization failed: %s.", message );
+    }
+#endif
+
+    // Create paint device.
+    BaseClass::paintDevice()->create();
+
     this->initializeEvent();
 }
 
@@ -281,6 +287,9 @@ void ScreenBase::resizeGL( int width, int height )
     height = static_cast<size_t>( height / scale + 0.5 );
 #endif
 #endif
+//    const qreal scale = QGLWidget::devicePixelRatio();
+//    width = static_cast<size_t>( width * scale + 0.5 );
+//    height = static_cast<size_t>( height * scale + 0.5 );
 
     this->resizeEvent( width, height );
 }

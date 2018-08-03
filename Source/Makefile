@@ -49,6 +49,10 @@ ifeq "$(KVS_SUPPORT_OPENCABIN)" "1"
 SUBDIRS += SupportOpenCABIN
 endif
 
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+SUBDIRS += SupportPython
+endif
+
 
 #=============================================================================
 #  build.
@@ -102,6 +106,11 @@ ifeq "$(KVS_SUPPORT_SAGE)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/sage
 	$(INSTALL) kvsSupportSAGE $(INSTALL_DIR)/include
 	$(INSTALL) $(shell find kvs/sage -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/sage
+endif
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/python
+	$(INSTALL) kvsSupportPython $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/python -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/python
 endif
 	for i in $(SUBDIRS); do \
 	$(MAKE) -C $$i $(MFLAGS) $(MAKEOVERRIDES) install; done

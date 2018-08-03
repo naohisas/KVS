@@ -102,7 +102,7 @@ bool FrameBufferObject::isCreated() const
 
 bool FrameBufferObject::isValid() const
 {
-    GLboolean result;
+    GLboolean result = GL_FALSE;
     KVS_GL_CALL( result = glIsFramebuffer( m_id ) );
     return result == GL_TRUE;
 }

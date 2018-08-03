@@ -43,16 +43,6 @@ CheckBoxGroup::CheckBoxGroup( kvs::ScreenBase* screen ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the check box list.
- */
-/*===========================================================================*/
-const std::list<kvs::glut::CheckBox*>& CheckBoxGroup::checkBoxes( void ) const
-{
-    return( m_boxes );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Adds a check box.
  *  @param  box [in] pointer to the check box
  */
@@ -80,7 +70,7 @@ void CheckBoxGroup::remove( kvs::glut::CheckBox* box )
  *  @brief  Shows the boxes in the group.
  */
 /*===========================================================================*/
-void CheckBoxGroup::show( void )
+void CheckBoxGroup::show()
 {
     BaseClass::show();
 
@@ -97,7 +87,7 @@ void CheckBoxGroup::show( void )
  *  @brief  Hides the boxes in the group.
  */
 /*===========================================================================*/
-void CheckBoxGroup::hide( void )
+void CheckBoxGroup::hide()
 {
     BaseClass::hide();
 
@@ -114,7 +104,7 @@ void CheckBoxGroup::hide( void )
  *  @brief  Paint event.
  */
 /*===========================================================================*/
-void CheckBoxGroup::paintEvent( void )
+void CheckBoxGroup::paintEvent()
 {
     this->screenUpdated();
 }

@@ -21,10 +21,9 @@ INSTALL_DIR  :=
 #=============================================================================
 #  Sub directory.
 #=============================================================================
-ifeq "$(KVS_ENABLE_OPENGL)" "1"
-SUBDIRS := kvscheck kvsconv kvsmake kvsview
-else
 SUBDIRS := kvscheck kvsconv kvsmake
+ifeq "$(KVS_SUPPORT_GLUT)" "1"
+SUBDIRS += kvsview
 endif
 
 

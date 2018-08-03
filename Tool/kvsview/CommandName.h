@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   CommandName.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,9 +12,7 @@
  *  $Id: CommandName.h 602 2010-08-19 02:43:34Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__COMMAND_NAME_H_INCLUDE
-#define KVSVIEW__COMMAND_NAME_H_INCLUDE
-
+#pragma once
 #include <string>
 
 
@@ -23,5 +22,3 @@ namespace kvsview
 const std::string CommandName("kvsview");
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__COMMAND_NAME_H_INCLUDE

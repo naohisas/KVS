@@ -520,7 +520,7 @@ bool EigenDecomposer<T>::calculate_by_qr()
     // Tridiagonalize the matrix.
     kvs::Vector<T> e( dim );
     ::Tridiagonalize<T>( m_eigen_vectors, &m_eigen_values, &e );
-    for ( int i = static_cast<int>(dim) - 1; i > 0; i-- ) e[i] = e[i-1]; e[0] = T(0);
+    for ( int i = static_cast<int>(dim) - 1; i > 0; i-- ) { e[i] = e[i-1]; } e[0] = T(0);
 
     for ( int h = static_cast<int>(dim) - 1; h > 0; h-- )
     {

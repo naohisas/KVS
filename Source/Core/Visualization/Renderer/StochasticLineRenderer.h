@@ -45,6 +45,7 @@ public:
 public:
 
     StochasticLineRenderer();
+    void setLineOffset( const float offset );
     /*KVS_DEPRECATED*/ void setOpacity( const kvs::UInt8 opacity );
 };
 
@@ -62,6 +63,7 @@ private:
     kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
     bool m_has_connection; ///< check flag for the connection array
     size_t m_random_index; ///< index used for refering the random texture
+    float m_line_offset; ///< line offset
     kvs::ProgramObject m_shader_program; ///< shader program
     kvs::VertexBufferObject m_vbo; ///< vertex buffer object
     kvs::IndexBufferObject m_ibo; ///< index buffer object
@@ -74,6 +76,8 @@ public:
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+
+    void setLineOffset( const float offset ) { m_line_offset = offset; }
 
 public:
     // Deprecated methods.

@@ -43,37 +43,29 @@ class VideoRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 public:
-
     enum Type
     {
         Stretching = 0,
         Centering  = 1
     };
 
-protected:
-
-    double         m_initial_aspect_ratio; ///< initial aspect ratio
-    double         m_left;                 ///< screen left position
-    double         m_right;                ///< screen right position
-    double         m_bottom;               ///< screen bottom position
-    double         m_top;                  ///< screen top position
-    Type           m_type;                 ///< rendering type
-    kvs::Texture2D m_texture;              ///< texture image
+private:
+    double m_initial_aspect_ratio; ///< initial aspect ratio
+    double m_left; ///< screen left position
+    double m_right; ///< screen right position
+    double m_bottom; ///< screen bottom position
+    double m_top; ///< screen top position
+    Type m_type; ///< rendering type
+    kvs::Texture2D m_texture; ///< texture image
 
 public:
-
     VideoRenderer( const Type type = VideoRenderer::Centering );
-
-    virtual ~VideoRenderer( void );
-
-public:
+    virtual ~VideoRenderer();
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-protected:
-
+private:
     void create_texture( const kvs::opencv::VideoObject* video );
-
     void centering( const double width, const double height );
 };
 

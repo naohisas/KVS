@@ -17,6 +17,7 @@
 
 #include <kvs/Texture2D>
 #include <kvs/FrameBufferObject>
+#include <kvs/ProgramObject>
 
 
 namespace kvs
@@ -30,13 +31,14 @@ namespace kvs
 class EnsembleAverageBuffer
 {
 private:
-
     size_t m_count; ///< number of ensembles (repetitions)
     kvs::Texture2D m_current_color_texture; ///< current color buffer
     kvs::Texture2D m_current_depth_texture; ///< current depth buffer
     kvs::FrameBufferObject m_current_framebuffer; ///< current framebuffer
     kvs::Texture2D m_accum_texture; ///< accumulated color buffer
     kvs::FrameBufferObject m_accum_framebuffer; ///< accumulated framebuffer
+    kvs::ProgramObject m_average_shader;
+    kvs::ProgramObject m_drawing_shader;
 
 public:
 

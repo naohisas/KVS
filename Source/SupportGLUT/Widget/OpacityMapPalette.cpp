@@ -34,46 +34,6 @@ const kvs::RGBColor RectEdgeColor = kvs::RGBColor( 230, 230, 230 );
 static int InstanceCounter = 0;
 
 
-namespace
-{
-
-/*===========================================================================*/
-/**
- *  @brief  Draws a rectangle as lines.
- *  @param  rect [in] rectangle
- *  @param  width [in] line width
- *  @param  upper_edge_color [in] upper edge color
- *  @param  lower_edge_color [in] lower edge color
- */
-/*===========================================================================*/
-void DrawRectangle(
-    const kvs::glut::Rectangle rect,
-    const float width,
-    const kvs::RGBColor& upper_edge_color,
-    const kvs::RGBColor& lower_edge_color )
-{
-    GLfloat x0 = static_cast<GLfloat>( rect.x0() );
-    GLfloat y0 = static_cast<GLfloat>( rect.y0() );
-    GLfloat x1 = static_cast<GLfloat>( rect.x1() );
-    GLfloat y1 = static_cast<GLfloat>( rect.y1() );
-
-    glLineWidth( width );
-    glBegin( GL_LINES );
-    {
-        glColor3ub( upper_edge_color.r(), upper_edge_color.g(), upper_edge_color.b() );
-        glVertex2f( x0, y0 ); glVertex2f( x1, y0 ); // top
-        glVertex2f( x0, y0 ); glVertex2f( x0, y1 ); // left
-
-        glColor3ub( lower_edge_color.r(), lower_edge_color.g(), lower_edge_color.b() );
-        glVertex2f( x1, y1 ); glVertex2f( x0, y1 ); // bottom
-        glVertex2f( x1, y0 ); glVertex2f( x1, y1 ); // right
-    }
-    glEnd();
-}
-
-} // end of namespace
-
-
 namespace kvs
 {
 
@@ -81,7 +41,8 @@ namespace glut
 {
 
 OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
-    kvs::glut::WidgetBase( screen )
+    kvs::glut::WidgetBase( screen ),
+    m_palette( NULL )
 {
     BaseClass::setEventType(
         kvs::EventBase::PaintEvent |
@@ -93,35 +54,21 @@ OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
     BaseClass::setMargin( ::Default::Margin );
     this->setCaption( "Opacity map palette " + kvs::String::ToString( ::InstanceCounter++ ) );
 
-    m_upper_edge_color = BaseClass::get_darkened_color( ::Default::RectColor, 0.6f );
+    m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );
     m_lower_edge_color = ::Default::RectEdgeColor;
 
     m_opacity_map.create();
 }
 
-OpacityMapPalette::~OpacityMapPalette( void )
+OpacityMapPalette::~OpacityMapPalette()
 {
 }
 
-const std::string& OpacityMapPalette::caption( void ) const
+const kvs::OpacityMap OpacityMapPalette::opacityMap() const
 {
-    return( m_caption );
-}
-
-const kvs::glut::Rectangle& OpacityMapPalette::palette( void ) const
-{
-    return( m_palette );
-}
-
-const kvs::OpacityMap OpacityMapPalette::opacityMap( void ) const
-{
+    // Deep copy.
     kvs::OpacityMap::Table opacity_map_table( m_opacity_map.table().data(), m_opacity_map.table().size() );
-    return( kvs::OpacityMap( opacity_map_table ) );
-}
-
-void OpacityMapPalette::setCaption( const std::string& caption )
-{
-    m_caption = caption;
+    return kvs::OpacityMap( opacity_map_table );
 }
 
 void OpacityMapPalette::setOpacityMap( const kvs::OpacityMap& opacity_map )
@@ -129,26 +76,26 @@ void OpacityMapPalette::setOpacityMap( const kvs::OpacityMap& opacity_map )
     // Deep copy.
     kvs::OpacityMap::Table opacity_map_table( opacity_map.table().data(), opacity_map.table().size() );
     m_opacity_map = kvs::OpacityMap( opacity_map_table );
-    this->initialize_texture( m_opacity_map );
 }
 
-void OpacityMapPalette::paintEvent( void )
+void OpacityMapPalette::paintEvent()
 {
     this->screenUpdated();
 
     if ( !BaseClass::isShown() ) return;
 
-    BaseClass::begin_draw();
-    BaseClass::draw_background();
-
     if ( !m_texture.isValid() ) this->initialize_texture( m_opacity_map );
     if ( !m_checkerboard.isValid() ) this->initialize_checkerboard();
+
+    BaseClass::render2D().setViewport( kvs::OpenGL::Viewport() );
+    BaseClass::render2D().begin();
+    BaseClass::drawBackground();
 
     // Draw the caption.
     {
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin();
-        BaseClass::draw_text( x, y + BaseClass::characterHeight(), m_caption );
+        BaseClass::drawText( x, y + BaseClass::characterHeight(), m_caption );
     }
 
     // Draw palette.
@@ -162,7 +109,7 @@ void OpacityMapPalette::paintEvent( void )
 
     this->draw_palette();
 
-    BaseClass::end_draw();
+    BaseClass::render2D().end();
 }
 
 void OpacityMapPalette::resizeEvent( int width, int height )
@@ -257,15 +204,15 @@ void OpacityMapPalette::mouseReleaseEvent( kvs::MouseEvent* event )
     }
 }
 
-int OpacityMapPalette::get_fitted_width( void )
+int OpacityMapPalette::adjustedWidth()
 {
     const size_t width = m_caption.size() * BaseClass::characterWidth() + BaseClass::margin() * 2;
-    return( kvs::Math::Max( width, ::Default::Width ) );
+    return kvs::Math::Max( width, ::Default::Width );
 }
 
-int OpacityMapPalette::get_fitted_height( void )
+int OpacityMapPalette::adjustedHeight()
 {
-    return( ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2 );
+    return ::Default::Height + BaseClass::characterHeight() + BaseClass::margin() * 2;
 }
 
 void OpacityMapPalette::initialize_texture( const kvs::OpacityMap& opacity_map )
@@ -280,7 +227,7 @@ void OpacityMapPalette::initialize_texture( const kvs::OpacityMap& opacity_map )
     m_texture.create( width, data );
 }
 
-void OpacityMapPalette::initialize_checkerboard( void )
+void OpacityMapPalette::initialize_checkerboard()
 {
     const size_t nchannels = 3;
     const int width = 32;
@@ -319,46 +266,50 @@ void OpacityMapPalette::initialize_checkerboard( void )
     delete [] data;
 }
 
-void OpacityMapPalette::draw_palette( void )
+void OpacityMapPalette::draw_palette()
 {
-    glPushAttrib( GL_ALL_ATTRIB_BITS );
+    // Draw border
+    BaseClass::drawRect( m_palette, m_upper_edge_color, m_lower_edge_color, 1 );
+
+    // Draw palette
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.disable( GL_TEXTURE_1D );
+    attrib.enable( GL_TEXTURE_2D );
+    attrib.disable( GL_TEXTURE_3D );
 
     const int x0 = m_palette.x0();
     const int x1 = m_palette.x1();
     const int y0 = m_palette.y0();
     const int y1 = m_palette.y1();
-
-    // Draw checkerboard texture.
-    glDisable( GL_TEXTURE_1D );
-    glEnable( GL_TEXTURE_2D );
-#if defined( GL_TEXTURE_3D )
-    glDisable( GL_TEXTURE_3D );
-#endif
-
-    m_checkerboard.bind();
-    glBegin( GL_QUADS );
     const float w = ( m_palette.width() / 32.0f );
     const float h = ( m_palette.height() / 32.0f );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex2i( x0, y0 );
-    glTexCoord2f( w,    0.0f ); glVertex2i( x1, y0 );
-    glTexCoord2f( w,    h    ); glVertex2i( x1, y1 );
-    glTexCoord2f( 0.0f, h    ); glVertex2i( x0, y1 );
-    glEnd();
+
+    m_checkerboard.bind();
+    kvs::OpenGL::Begin( GL_QUADS );
+    {
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    0.0f ), kvs::Vec2( x1, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    h    ), kvs::Vec2( x1, y1 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, h    ), kvs::Vec2( x0, y1 ) );
+    }
+    kvs::OpenGL::End();
     m_checkerboard.unbind();
 
-    glEnable( GL_BLEND );
-    glEnable( GL_TEXTURE_1D );
-    glDisable( GL_TEXTURE_2D );
+    attrib.enable( GL_BLEND );
+    attrib.enable( GL_TEXTURE_1D );
+    attrib.disable( GL_TEXTURE_2D );
+    kvs::OpenGL::SetBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_ALPHA );
 
     // Draw opacity map.
-    glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_ALPHA );
     m_texture.bind();
-    glBegin( GL_QUADS );
-    glTexCoord2f( 0.0f, 0.0f ); glVertex2i( x0, y0 );
-    glTexCoord2f( 1.0f, 0.0f ); glVertex2i( x1, y0 );
-    glTexCoord2f( 1.0f, 1.0f ); glVertex2i( x1, y1 );
-    glTexCoord2f( 0.0f, 1.0f ); glVertex2i( x0, y1 );
-    glEnd();
+    kvs::OpenGL::Begin( GL_QUADS );
+    {
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y1 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y1 ) );
+    }
+    kvs::OpenGL::End();
     m_texture.unbind();
 
     // Draw lines.
@@ -367,27 +318,22 @@ void OpacityMapPalette::draw_palette( void )
     const int resolution = m_opacity_map.resolution();
     const float stride_x = static_cast<float>( width ) / ( resolution - 1 );
     const kvs::Real32* data = m_opacity_map.table().data();
-    const kvs::Vector2f range_min( static_cast<float>(x0), static_cast<float>(y0+1) );
-    const kvs::Vector2f range_max( static_cast<float>(x1-1), static_cast<float>(y1) );
+    const kvs::Vec2 range_min( static_cast<float>(x0), static_cast<float>(y0+1) );
+    const kvs::Vec2 range_max( static_cast<float>(x1-1), static_cast<float>(y1) );
 
-    glEnable( GL_LINE_SMOOTH );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    attrib.enable( GL_LINE_SMOOTH );
+    kvs::OpenGL::Hint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
-    glLineWidth( 1.5 );
-    glColor3ub( 0, 0, 0 );
-    glBegin( GL_LINE_STRIP );
-    for( int i = 0; i < resolution; i++ )
+    kvs::OpenGL::SetLineWidth( 1.5 );
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Color( kvs::RGBColor::Black() );
+    for ( int i = 0; i < resolution; i++ )
     {
         const float x = kvs::Math::Clamp( x0 + i * stride_x,     range_min.x(), range_max.x() );
         const float y = kvs::Math::Clamp( y1 - height * data[i], range_min.y(), range_max.y() );
-        glVertex2f( x, y );
+        kvs::OpenGL::Vertex( x, y );
     }
-    glEnd();
-
-    glPopAttrib();
-
-    // Draw border.
-    ::DrawRectangle( m_palette, 1, m_upper_edge_color, m_lower_edge_color );
+    kvs::OpenGL::End();
 }
 
 void OpacityMapPalette::draw_free_hand_line( kvs::MouseEvent* event )

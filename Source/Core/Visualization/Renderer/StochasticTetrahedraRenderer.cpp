@@ -561,7 +561,7 @@ void StochasticTetrahedraRenderer::Engine::create_preintegration_texture()
     m_transfer_function_texture.setWrapS( GL_CLAMP_TO_EDGE );
     m_transfer_function_texture.setMagFilter( GL_LINEAR );
     m_transfer_function_texture.setMinFilter( GL_LINEAR );
-    m_transfer_function_texture.setPixelFormat( GL_RGBA32F, GL_RGBA, GL_FLOAT );
+    m_transfer_function_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT );
     m_transfer_function_texture.create( m_transfer_function.resolution(), m_transfer_function.table().data() );
 
     m_preintegration_texture.setWrapS( GL_CLAMP_TO_EDGE );

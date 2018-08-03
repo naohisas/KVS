@@ -33,141 +33,32 @@ const kvs::UInt32 LineConnections[6] =
     0, 3
 };
 
-const kvs::Vector3f ConeTranslation = kvs::Vector3f( 0.0f, 0.0f, 0.7f );
-const kvs::Real32 ConeHeight = 0.3f;
-const kvs::Real32 ConeRadius = 0.15f;
-const size_t ConeSlices = 20;
-const size_t ConeStacks = 5;
-
-const kvs::Vector3f CylinderTranslation = kvs::Vector3f( 0.0f, 0.0f, 0.0f );
-const kvs::Real32 CylinderHeight = 0.7f;
-const kvs::Real32 CylinderRadius = 0.07f;
-const size_t CylinderSlices = 20;
-const size_t CylinderStacks = 2;
-
-}; // end of namespace
-
-
-namespace
+const kvs::Vec3 ConeTranslation = kvs::Vec3( 0.0f, 0.0f, 0.7f );
+inline void DrawCone( const kvs::Vec3& t )
 {
+    const GLdouble base = 0.15;
+    const GLdouble top = 0.0;
+    const GLdouble height = 0.3;
+    const GLint slices = 20;
+    const GLint stacks = 5;
+    kvs::OpenGL::Translate( t );
+    kvs::OpenGL::DrawCylinder( base, top, height, slices, stacks );
+}
 
-const int CacheSize = 240;
-const float Pi = 3.14159265358979323846;
-
-void DrawCylinder(
-    GLdouble baseRadius,
-    GLdouble topRadius,
-    GLdouble height,
-    GLint slices,
-    GLint stacks )
+const kvs::Vec3 CylinderTranslation = kvs::Vec3( 0.0f, 0.0f, 0.0f );
+inline void DrawCylinder( const kvs::Vec3& t )
 {
-    GLint i,j;
-    GLfloat sinCache[CacheSize];
-    GLfloat cosCache[CacheSize];
-    GLfloat sinCache2[CacheSize];
-    GLfloat cosCache2[CacheSize];
-    GLfloat sinCache3[CacheSize];
-    GLfloat cosCache3[CacheSize];
-    GLfloat angle;
-    GLfloat zLow, zHigh;
-    GLfloat length;
-    GLfloat deltaRadius;
-    GLfloat zNormal;
-    GLfloat xyNormalRatio;
-    GLfloat radiusLow, radiusHigh;
-    int needCache2, needCache3;
-
-    if (slices >= CacheSize) slices = CacheSize-1;
-
-    if (slices < 2 || stacks < 1 || baseRadius < 0.0 || topRadius < 0.0 || height < 0.0)
-    {
-        kvsMessageError("Invalid value.");
-        return;
-    }
-
-    /* Compute length (needed for normal calculations) */
-    deltaRadius = baseRadius - topRadius;
-    length = std::sqrt(deltaRadius*deltaRadius + height*height);
-    if ( length == 0.0 )
-    {
-        kvsMessageError("Invalid value.");
-        return;
-    }
-
-    /* Cache is the vertex locations cache */
-    /* Cache2 is the various normals at the vertices themselves */
-    /* Cache3 is the various normals for the faces */
-    needCache2 = 1;
-    needCache3 = 0;
-
-    zNormal = deltaRadius / length;
-    xyNormalRatio = height / length;
-
-    for (i = 0; i < slices; i++)
-    {
-        angle = 2 * Pi * i / slices;
-        if (needCache2)
-        {
-            sinCache2[i] = xyNormalRatio * std::sin(angle);
-            cosCache2[i] = xyNormalRatio * std::cos(angle);
-        }
-        sinCache[i] = std::sin(angle);
-        cosCache[i] = std::cos(angle);
-    }
-
-    if (needCache3)
-    {
-        for (i = 0; i < slices; i++)
-        {
-            angle = 2 * Pi * (i-0.5) / slices;
-            sinCache3[i] = xyNormalRatio * std::sin(angle);
-            cosCache3[i] = xyNormalRatio * std::cos(angle);
-        }
-    }
-
-    sinCache[slices] = sinCache[0];
-    cosCache[slices] = cosCache[0];
-    if (needCache2)
-    {
-        sinCache2[slices] = sinCache2[0];
-        cosCache2[slices] = cosCache2[0];
-    }
-    if (needCache3)
-    {
-        sinCache3[slices] = sinCache3[0];
-        cosCache3[slices] = cosCache3[0];
-    }
-
-    /* Note:
-    ** An argument could be made for using a TRIANGLE_FAN for the end
-    ** of the cylinder of either radii is 0.0 (a cone).  However, a
-    ** TRIANGLE_FAN would not work in smooth shading mode (the common
-    ** case) because the normal for the apex is different for every
-    ** triangle (and TRIANGLE_FAN doesn't let me respecify that normal).
-    ** Now, my choice is GL_TRIANGLES, or leave the GL_QUAD_STRIP and
-    ** just let the GL trivially reject one of the two triangles of the
-    ** QUAD.  GL_QUAD_STRIP is probably faster, so I will leave this code
-    ** alone.
-    */
-    for (j = 0; j < stacks; j++)
-    {
-        zLow = j * height / stacks;
-        zHigh = (j + 1) * height / stacks;
-        radiusLow = baseRadius - deltaRadius * ((float) j / stacks);
-        radiusHigh = baseRadius - deltaRadius * ((float) (j + 1) / stacks);
-
-        KVS_GL_CALL_BEG( glBegin(GL_QUAD_STRIP) );
-        for (i = 0; i <= slices; i++)
-        {
-            KVS_GL_CALL_VER( glNormal3f(sinCache2[i], cosCache2[i], zNormal) );
-            KVS_GL_CALL_VER( glVertex3f(radiusLow  * sinCache[i], radiusLow  * cosCache[i], zLow) );
-            KVS_GL_CALL_VER( glVertex3f(radiusHigh * sinCache[i], radiusHigh * cosCache[i], zHigh) );
-        }
-        KVS_GL_CALL_END( glEnd() );
-    }
+    const GLdouble base = 0.07;
+    const GLdouble top = 0.07;
+    const GLdouble height = 0.7;
+    const GLint slices = 20;
+    const GLint stacks = 2;
+    kvs::OpenGL::Translate( t );
+    kvs::OpenGL::DrawCylinder( base, top, height, slices, stacks );
 }
 
 }; // end of namespace
+
 
 namespace kvs
 {
@@ -453,14 +344,13 @@ void ArrowGlyph::draw_tubes()
 /*===========================================================================*/
 void ArrowGlyph::draw_line_element( const kvs::RGBColor& color, const kvs::UInt8 opacity )
 {
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), opacity ) );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
     for ( size_t i = 0; i < 6; i++ )
     {
-        const kvs::Real32* vertex = ::LineVertices + ::LineConnections[i] * 3;
-        KVS_GL_CALL_VER( glVertex3fv( vertex ) );
+        kvs::OpenGL::Vertex3( ::LineVertices + ::LineConnections[i] * 3 );
     }
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -472,23 +362,26 @@ void ArrowGlyph::draw_line_element( const kvs::RGBColor& color, const kvs::UInt8
 /*===========================================================================*/
 void ArrowGlyph::draw_tube_element( const kvs::RGBColor& color, const kvs::UInt8 opacity )
 {
-    KVS_GL_CALL_VER( glColor4ub( color.r(), color.g(), color.b(), opacity ) );
+    const kvs::Real32 R = -90.0f; // rotation angle
+    const kvs::Vec3 V( 1.0f, 0.0f, 0.0f ); // rotation vector
+    const kvs::Vec3 T0( 0.0f, 0.0f, 0.7f ); // translation vector (cone)
+    const kvs::Vec3 T1( 0.0f, 0.0f, 0.0f ); // translation vector (cylinder)
 
     kvs::OpenGL::PushMatrix();
-    kvs::OpenGL::Rotate( -90.0f, 1.0f, 0.0f, 0.0f );
+    kvs::OpenGL::Rotate( R, V );
+    {
+        kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
 
-    // Cone.
-    kvs::OpenGL::PushMatrix();
-    kvs::OpenGL::Translate( ::ConeTranslation.x(), ::ConeTranslation.y(), ::ConeTranslation.z() );
-    ::DrawCylinder( ::ConeRadius, 0.0, ::ConeHeight, ::ConeSlices, ::ConeStacks );
-    kvs::OpenGL::PopMatrix();
+        // Cone.
+        kvs::OpenGL::PushMatrix();
+        ::DrawCone( T0 );
+        kvs::OpenGL::PopMatrix();
 
-    // Cylinder.
-    kvs::OpenGL::PushMatrix();
-    kvs::OpenGL::Translate( ::CylinderTranslation.x(), ::CylinderTranslation.y(), ::CylinderTranslation.z() );
-    ::DrawCylinder( ::CylinderRadius, ::CylinderRadius, ::CylinderHeight, ::CylinderSlices, ::CylinderStacks );
-    kvs::OpenGL::PopMatrix();
-
+        // Cylinder.
+        kvs::OpenGL::PushMatrix();
+        ::DrawCylinder( T1 );
+        kvs::OpenGL::PopMatrix();
+    }
     kvs::OpenGL::PopMatrix();
 }
 
@@ -499,18 +392,15 @@ void ArrowGlyph::draw_tube_element( const kvs::RGBColor& color, const kvs::UInt8
 /*===========================================================================*/
 void ArrowGlyph::initialize()
 {
-    kvs::OpenGL::Disable( GL_LINE_SMOOTH );
-
-    kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
     kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
     kvs::OpenGL::SetShadeModel( GL_SMOOTH );
-
     kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
-    kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
+    kvs::OpenGL::SetLightModel( GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE );
 
+    kvs::OpenGL::Disable( GL_LINE_SMOOTH );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
     if ( m_type == ArrowGlyph::LineArrow )
     {
         kvs::OpenGL::Disable( GL_NORMALIZE );
@@ -529,8 +419,6 @@ void ArrowGlyph::initialize()
             kvs::OpenGL::Enable( GL_LIGHTING );
         }
     }
-
-    KVS_GL_CALL( glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE ) );
 }
 
 } // end of namespace kvs

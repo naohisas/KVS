@@ -80,6 +80,17 @@ StochasticLineRenderer::StochasticLineRenderer():
 
 /*===========================================================================*/
 /**
+ *  @brief  Sets a line offset value.
+ *  @param  offset [in] offset value
+ */
+/*===========================================================================*/
+void StochasticLineRenderer::setLineOffset( const float offset )
+{
+    static_cast<Engine&>( engine() ).setLineOffset( offset );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Sets an opacity value.
  *  @param  opacity [in] opacity value
  */
@@ -97,7 +108,8 @@ void StochasticLineRenderer::setOpacity( const kvs::UInt8 opacity )
 StochasticLineRenderer::Engine::Engine():
     m_line_opacity( 255 ),
     m_has_connection( false ),
-    m_random_index( 0 )
+    m_random_index( 0 ),
+    m_line_offset( 0.0f )
 {
 }
 
@@ -165,6 +177,7 @@ void StochasticLineRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera
     m_shader_program.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
     m_shader_program.setUniform( "random_texture", 0 );
     m_shader_program.setUniform( "opacity", m_line_opacity / 255.0f );
+    m_shader_program.setUniform( "line_offset", m_line_offset );
     m_shader_program.unbind();
 }
 

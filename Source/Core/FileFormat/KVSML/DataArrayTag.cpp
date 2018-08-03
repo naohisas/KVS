@@ -173,7 +173,7 @@ bool DataArrayTag::write(
 
         // Write the data to the external data file.
         const std::string filename = pathname + kvs::File::Separator() + m_file;
-        return kvs::kvsml::DataArray::WriteExternalData( data, m_file, m_format );
+        return kvs::kvsml::DataArray::WriteExternalData( data, filename, m_format );
     }
 }
 

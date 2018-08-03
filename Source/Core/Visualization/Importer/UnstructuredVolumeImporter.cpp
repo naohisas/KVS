@@ -24,35 +24,12 @@ namespace
 
 /*==========================================================================*/
 /**
- *  @brief  Converts to the cell type from the given string.
- *  @param  cell_type [in] grid type string
- *  @return cell type
- */
-/*==========================================================================*/
-const kvs::UnstructuredVolumeObject::CellType StringToCellType( const std::string& cell_type )
-{
-    if (      cell_type == "tetrahedra" ) { return kvs::UnstructuredVolumeObject::Tetrahedra; }
-    else if ( cell_type == "quadratic tetrahedra" ) { return kvs::UnstructuredVolumeObject::QuadraticTetrahedra; }
-    else if ( cell_type == "hexahedra"  ) { return kvs::UnstructuredVolumeObject::Hexahedra;  }
-    else if ( cell_type == "quadratic hexahedra"  ) { return kvs::UnstructuredVolumeObject::QuadraticHexahedra;  }
-    else if ( cell_type == "pyramid"  ) { return kvs::UnstructuredVolumeObject::Pyramid;  }
-    else if ( cell_type == "point"  ) { return kvs::UnstructuredVolumeObject::Point;  }
-    else if ( cell_type == "prism"  ) { return kvs::UnstructuredVolumeObject::Prism;  }
-    else
-    {
-        kvsMessageError( "Unknown cell type '%s'.", cell_type.c_str() );
-        return kvs::UnstructuredVolumeObject::UnknownCellType;
-    }
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Converts to the cell type from the given element type.
  *  @param  element_type [in] element type
  *  @return cell type
  */
 /*==========================================================================*/
-const kvs::UnstructuredVolumeObject::CellType ElementTypeToCellType(
+kvs::UnstructuredVolumeObject::CellType ElementTypeToCellType(
     const kvs::AVSUcd::ElementType element_type )
 {
     if ( element_type == kvs::AVSUcd::Tetrahedra  )
@@ -113,38 +90,21 @@ UnstructuredVolumeImporter::UnstructuredVolumeImporter()
 /*===========================================================================*/
 UnstructuredVolumeImporter::UnstructuredVolumeImporter( const std::string& filename )
 {
-    if ( kvs::KVSMLObjectUnstructuredVolume::CheckExtension( filename ) )
+    if ( kvs::KVSMLUnstructuredVolumeObject::CheckExtension( filename ) )
     {
-        kvs::KVSMLObjectUnstructuredVolume* file_format = new kvs::KVSMLObjectUnstructuredVolume( filename );
-        if( !file_format )
-        {
-            BaseClass::setSuccess( false );
-            kvsMessageError("Cannot read '%s'.",filename.c_str());
-            return;
-        }
-
-        if( file_format->isFailure() )
-        {
-            BaseClass::setSuccess( false );
-            kvsMessageError("Cannot read '%s'.",filename.c_str());
-            delete file_format;
-            return;
-        }
-
-        this->import( file_format );
-        delete file_format;
+        BaseClass::setSuccess( SuperClass::read( filename ) );
     }
     else if ( kvs::AVSUcd::CheckExtension( filename ) )
     {
         kvs::AVSUcd* file_format = new kvs::AVSUcd( filename );
-        if( !file_format )
+        if ( !file_format )
         {
             BaseClass::setSuccess( false );
             kvsMessageError("Cannot read '%s'.",filename.c_str());
             return;
         }
 
-        if( file_format->isFailure() )
+        if ( file_format->isFailure() )
         {
             BaseClass::setSuccess( false );
             kvsMessageError("Cannot read '%s'.",filename.c_str());
@@ -158,14 +118,35 @@ UnstructuredVolumeImporter::UnstructuredVolumeImporter( const std::string& filen
     else if ( kvs::AVSField::CheckExtension( filename ) )
     {
         kvs::AVSField* file_format = new kvs::AVSField( filename );
-        if( !file_format )
+        if ( !file_format )
         {
             BaseClass::setSuccess( false );
             kvsMessageError("Cannot read '%s'.",filename.c_str());
             return;
         }
 
-        if( file_format->isFailure() )
+        if ( file_format->isFailure() )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            delete file_format;
+            return;
+        }
+
+        this->import( file_format );
+        delete file_format;
+    }
+    else if ( kvs::FieldViewData::CheckExtension( filename ) )
+    {
+        kvs::FieldViewData* file_format = new kvs::FieldViewData( filename );
+        if ( !file_format )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            return;
+        }
+
+        if ( file_format->isFailure() )
         {
             BaseClass::setSuccess( false );
             kvsMessageError("Cannot read '%s'.",filename.c_str());
@@ -220,15 +201,19 @@ UnstructuredVolumeImporter::SuperClass* UnstructuredVolumeImporter::exec( const 
         return NULL;
     }
 
-    if ( const kvs::KVSMLObjectUnstructuredVolume* volume = dynamic_cast<const kvs::KVSMLObjectUnstructuredVolume*>( file_format ) )
+    if ( dynamic_cast<const kvs::KVSMLUnstructuredVolumeObject*>( file_format ) )
     {
-        this->import( volume );
+        BaseClass::setSuccess( SuperClass::read( file_format->filename() ) );
     }
     else if ( const kvs::AVSUcd* volume = dynamic_cast<const kvs::AVSUcd*>( file_format ) )
     {
         this->import( volume );
     }
     else if ( const kvs::AVSField* volume = dynamic_cast<const kvs::AVSField*>( file_format ) )
+    {
+        this->import( volume );
+    }
+    else if ( const kvs::FieldViewData* volume = dynamic_cast<const kvs::FieldViewData*>( file_format ) )
     {
         this->import( volume );
     }
@@ -240,55 +225,6 @@ UnstructuredVolumeImporter::SuperClass* UnstructuredVolumeImporter::exec( const 
     }
 
     return this;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Imports a KVSML format data.
- *  @param  kvsml [in] pointer to the KVSML format data
- */
-/*==========================================================================*/
-void UnstructuredVolumeImporter::import( const kvs::KVSMLObjectUnstructuredVolume* kvsml )
-{
-    if ( kvsml->objectTag().hasExternalCoord() )
-    {
-        const kvs::Vector3f min_coord( kvsml->objectTag().minExternalCoord() );
-        const kvs::Vector3f max_coord( kvsml->objectTag().maxExternalCoord() );
-        SuperClass::setMinMaxExternalCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml->objectTag().hasObjectCoord() )
-    {
-        const kvs::Vector3f min_coord( kvsml->objectTag().minObjectCoord() );
-        const kvs::Vector3f max_coord( kvsml->objectTag().maxObjectCoord() );
-        SuperClass::setMinMaxObjectCoords( min_coord, max_coord );
-    }
-
-    if ( kvsml->hasLabel() ) { SuperClass::setLabel( kvsml->label() ); }
-    if ( kvsml->hasUnit() ) { SuperClass::setUnit( kvsml->unit() ); }
-
-    SuperClass::setVeclen( kvsml->veclen() );
-    SuperClass::setNumberOfNodes( kvsml->nnodes() );
-    SuperClass::setNumberOfCells( kvsml->ncells() );
-    SuperClass::setCellType( ::StringToCellType( kvsml->cellType() ) );
-    SuperClass::setCoords( kvsml->coords() );
-    SuperClass::setConnections( kvsml->connections() );
-    SuperClass::setValues( kvsml->values() );
-    SuperClass::updateMinMaxCoords();
-
-    if ( kvsml->hasMinValue() && kvsml->hasMaxValue() )
-    {
-        const double min_value = kvsml->minValue();
-        const double max_value = kvsml->maxValue();
-        SuperClass::setMinMaxValues( min_value, max_value );
-    }
-    else
-    {
-        SuperClass::updateMinMaxValues();
-        const double min_value = kvsml->hasMinValue() ? kvsml->minValue() : SuperClass::minValue();
-        const double max_value = kvsml->hasMaxValue() ? kvsml->maxValue() : SuperClass::maxValue();
-        SuperClass::setMinMaxValues( min_value, max_value );
-    }
 }
 
 /*==========================================================================*/
@@ -377,6 +313,232 @@ void UnstructuredVolumeImporter::import( const kvs::AVSField* field )
     SuperClass::setValues( field->values() );
     SuperClass::updateMinMaxCoords();
     SuperClass::updateMinMaxValues();
+}
+
+void UnstructuredVolumeImporter::import( const kvs::FieldViewData* const data )
+{
+    const size_t NumberOfNodesPerElement[5] = {
+        0, // N/A
+        4, // Tetra (1)
+        8, // Hexa (2)
+        6, // Prism (3)  not supported
+        5, // Pyramid (4)
+    };
+
+    const kvs::UnstructuredVolumeObject::CellType CellType[5] = {
+        kvs::UnstructuredVolumeObject::UnknownCellType, // N/A
+        kvs::UnstructuredVolumeObject::Tetrahedra, // Tetra (1)
+        kvs::UnstructuredVolumeObject::Hexahedra, // Hexa (2)
+        kvs::UnstructuredVolumeObject::Prism, // Prism (3)
+        kvs::UnstructuredVolumeObject::Pyramid // Pyramid (4)
+    };
+
+    if ( data->importingGridIndex() == data->numberOfGrids() )
+    {
+        const int etype = data->importingElementType();
+        const size_t vindex = data->importingVariableIndex();
+
+        KVS_ASSERT( FieldViewData::Tet <= etype && etype <= FieldViewData::Pyr );
+        KVS_ASSERT( vindex < data->numberOfVariables() );
+
+        const size_t veclen = data->grid(0).variables[ vindex ].type;
+        const size_t nnodes_per_cell = NumberOfNodesPerElement[ etype ];
+        const size_t total_nnodes = data->totalNumberOfNodes();
+        const size_t total_ncells = data->totalNumberOfElements( etype );
+
+        kvs::ValueArray<kvs::Real32> coords( total_nnodes * 3 );
+        kvs::ValueArray<kvs::Real32> values( total_nnodes * veclen );
+        kvs::ValueArray<kvs::UInt32> connections( total_ncells * nnodes_per_cell );
+        kvs::Real32* pcoords = coords.data();
+        kvs::Real32* pvalues = values.data();
+        kvs::UInt32* pconnections = connections.data();
+
+        const size_t ngrids = data->numberOfGrids();
+        for ( size_t i = 0; i < ngrids; i++ )
+        {
+            // i-th grid.
+            const FieldViewData::Grid& grid = data->grid(i);
+
+            const size_t nnodes = data->grid(i).nnodes;
+            for ( size_t j = 0; j < nnodes; j++ )
+            {
+                // Coordinate values.
+                *(pcoords++) = grid.nodes[j].x;
+                *(pcoords++) = grid.nodes[j].y;
+                *(pcoords++) = grid.nodes[j].z;
+
+                // Node values.
+                for ( size_t k = 0; k < veclen; k++ )
+                {
+                    *(pvalues++) = grid.variables[ vindex + k ].data[j];
+                }
+            }
+
+            if ( grid.nelements[etype] != 0 )
+            {
+                const size_t offset = nnodes * i;
+                const size_t ncells = grid.nelements[0];
+                for ( size_t j = 0; j < ncells; j++ )
+                {
+                    if ( grid.elements[j].type == etype )
+                    {
+                        if ( etype == 1 ) // tet
+                        {
+                            *(pconnections++) = offset + grid.elements[j].id[0] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[1] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[2] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[3] - 1;
+                        }
+                        else if ( etype == 2 ) // hex
+                        {
+                            *(pconnections++) = offset + grid.elements[j].id[0] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[1] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[3] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[2] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[4] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[5] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[7] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[6] - 1;
+                        }
+                        else if ( etype == 3 ) // prism
+                        {
+                            *(pconnections++) = offset + grid.elements[j].id[0] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[3] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[5] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[1] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[2] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[4] - 1;
+                        }
+                        else if ( etype == 4 ) // pyramid
+                        {
+                            *(pconnections++) = offset + grid.elements[j].id[4] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[0] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[1] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[2] - 1;
+                            *(pconnections++) = offset + grid.elements[j].id[3] - 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        SuperClass::setCellType( CellType[ etype ] );
+        SuperClass::setVeclen( veclen );
+        SuperClass::setNumberOfNodes( total_nnodes );
+        SuperClass::setNumberOfCells( total_ncells );
+        SuperClass::setCoords( coords );
+        SuperClass::setConnections( connections );
+        SuperClass::setValues( values );
+        SuperClass::updateMinMaxValues();
+        SuperClass::updateMinMaxCoords();
+    }
+    else
+    {
+        const int etype = data->importingElementType();
+        const size_t gindex = data->importingGridIndex();
+        const size_t vindex = data->importingVariableIndex();
+
+        KVS_ASSERT( FieldViewData::Tet <= etype && etype <= FieldViewData::Pyr );
+        KVS_ASSERT( gindex < data->numberOfGrids() );
+        KVS_ASSERT( vindex < data->numberOfVariables() );
+
+        const kvs::FieldViewData::Grid& grid = data->grid( gindex );
+        if ( grid.nelements[ etype ] == 0 )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError( "Not found the specified element type." );
+            return;
+        }
+
+        const size_t nnodes = grid.nodes.size();
+        const size_t ncells = grid.nelements[ etype ];
+        const size_t veclen = grid.variables[ vindex ].type;
+        const size_t nnodes_per_cell = NumberOfNodesPerElement[ etype ];
+
+        kvs::ValueArray<kvs::Real32> coords( nnodes * 3 );
+        for ( size_t i = 0; i < nnodes; i++ )
+        {
+            coords[ 3 * i + 0 ] = grid.nodes[i].x;
+            coords[ 3 * i + 1 ] = grid.nodes[i].y;
+            coords[ 3 * i + 2 ] = grid.nodes[i].z;
+        }
+
+        kvs::ValueArray<kvs::UInt32> connections( ncells * nnodes_per_cell );
+        for ( size_t i = 0, j = 0; i < grid.nelements[0]; i++ )
+        {
+            KVS_ASSERT( j < ncells * nnodes_per_cell );
+            if ( grid.elements[i].type == etype )
+            {
+                KVS_ASSERT( grid.elements[i].id.size() == nnodes_per_cell );
+
+                if ( etype == 1 ) // tet
+                {
+                    connections[ nnodes_per_cell * j + 0 ] = grid.elements[i].id[0] - 1;
+                    connections[ nnodes_per_cell * j + 1 ] = grid.elements[i].id[1] - 1;
+                    connections[ nnodes_per_cell * j + 2 ] = grid.elements[i].id[2] - 1;
+                    connections[ nnodes_per_cell * j + 3 ] = grid.elements[i].id[3] - 1;
+                }
+                else if ( etype == 2 ) // hex
+                {
+                    connections[ nnodes_per_cell * j + 0 ] = grid.elements[i].id[0] - 1;
+                    connections[ nnodes_per_cell * j + 1 ] = grid.elements[i].id[1] - 1;
+                    connections[ nnodes_per_cell * j + 2 ] = grid.elements[i].id[3] - 1;
+                    connections[ nnodes_per_cell * j + 3 ] = grid.elements[i].id[2] - 1;
+                    connections[ nnodes_per_cell * j + 4 ] = grid.elements[i].id[4] - 1;
+                    connections[ nnodes_per_cell * j + 5 ] = grid.elements[i].id[5] - 1;
+                    connections[ nnodes_per_cell * j + 6 ] = grid.elements[i].id[7] - 1;
+                    connections[ nnodes_per_cell * j + 7 ] = grid.elements[i].id[6] - 1;
+                }
+                else if ( etype == 3 ) // prism
+                {
+                    connections[ nnodes_per_cell * j + 0 ] = grid.elements[i].id[0] - 1;
+                    connections[ nnodes_per_cell * j + 1 ] = grid.elements[i].id[3] - 1;
+                    connections[ nnodes_per_cell * j + 2 ] = grid.elements[i].id[5] - 1;
+                    connections[ nnodes_per_cell * j + 3 ] = grid.elements[i].id[1] - 1;
+                    connections[ nnodes_per_cell * j + 4 ] = grid.elements[i].id[2] - 1;
+                    connections[ nnodes_per_cell * j + 5 ] = grid.elements[i].id[4] - 1;
+                }
+                else if ( etype == 4 ) // pyramid
+                {
+                    connections[ nnodes_per_cell * j + 0 ] = grid.elements[i].id[4] - 1;
+                    connections[ nnodes_per_cell * j + 1 ] = grid.elements[i].id[0] - 1;
+                    connections[ nnodes_per_cell * j + 2 ] = grid.elements[i].id[1] - 1;
+                    connections[ nnodes_per_cell * j + 3 ] = grid.elements[i].id[2] - 1;
+                    connections[ nnodes_per_cell * j + 4 ] = grid.elements[i].id[3] - 1;
+                }
+                j++;
+            }
+        }
+
+        kvs::ValueArray<kvs::Real32> values( nnodes * veclen );
+        if ( veclen == 1 )
+        {
+            KVS_ASSERT( nnodes * veclen == grid.variables[ vindex ].data.size() );
+            values = grid.variables[ vindex ].data;
+        }
+        else if ( veclen == 3 )
+        {
+            KVS_ASSERT( vindex + 2 < data->numberOfVariables() );
+            KVS_ASSERT( grid.variables[ vindex + 0 ].type == grid.variables[ vindex + 1 ].type );
+            KVS_ASSERT( grid.variables[ vindex + 1 ].type == grid.variables[ vindex + 2 ].type );
+            for ( size_t i = 0; i < nnodes; i++ )
+            {
+                values[ 3 * i + 0 ] = grid.variables[ vindex + 0 ].data[ i ];
+                values[ 3 * i + 1 ] = grid.variables[ vindex + 1 ].data[ i ];
+                values[ 3 * i + 2 ] = grid.variables[ vindex + 2 ].data[ i ];
+            }
+        }
+
+        SuperClass::setCellType( CellType[ etype ] );
+        SuperClass::setVeclen( veclen );
+        SuperClass::setNumberOfNodes( nnodes );
+        SuperClass::setNumberOfCells( ncells );
+        SuperClass::setCoords( coords );
+        SuperClass::setConnections( connections );
+        SuperClass::setValues( values );
+        SuperClass::updateMinMaxValues();
+        SuperClass::updateMinMaxCoords();
+    }
 }
 
 } // end of namespace kvs

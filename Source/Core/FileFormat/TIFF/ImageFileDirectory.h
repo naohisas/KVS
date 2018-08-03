@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ImageFileDirectory.h
+ *  @file   ImageFileDirectory.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,7 @@
  *  $Id: ImageFileDirectory.h 1312 2012-09-18 15:33:43Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__TIFF__IMAGE_FILE_DIRECTORY_H_INCLUDE
-#define KVS__TIFF__IMAGE_FILE_DIRECTORY_H_INCLUDE
+#pragma once
 
 #include "Entry.h"
 #include <kvs/Type>
@@ -28,6 +28,11 @@ namespace kvs
 namespace tiff
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Image file directory class.
+ */
+/*===========================================================================*/
 class ImageFileDirectory
 {
 public:
@@ -54,5 +59,3 @@ public:
 } // end of namespace tiff
 
 } // end of namespace kvs
-
-#endif // KVS__TIFF__IMAGE_FILE_DIRECTORY_H_INCLUDE

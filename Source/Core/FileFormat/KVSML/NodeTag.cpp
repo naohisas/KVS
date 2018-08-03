@@ -32,8 +32,7 @@ namespace kvsml
 /*===========================================================================*/
 NodeTag::NodeTag():
     kvs::kvsml::TagBase( "Node" ),
-    m_has_nnodes( false ),
-    m_nnodes( 0 )
+    m_nnodes( "nnodes" )
 {
 }
 
@@ -53,11 +52,7 @@ bool NodeTag::read( const kvs::XMLNode::SuperClass* parent )
 
     // nnodes="xxx"
     const std::string nnodes = kvs::XMLElement::AttributeValue( element, "nnodes" );
-    if ( nnodes != "" )
-    {
-        m_has_nnodes = true;
-        m_nnodes = static_cast<size_t>( atoi( nnodes.c_str() ) );
-    }
+    if ( nnodes != "" ) { m_nnodes = static_cast<size_t>( atoi( nnodes.c_str() ) ); }
 
     return true;
 }
@@ -73,10 +68,7 @@ bool NodeTag::write( kvs::XMLNode::SuperClass* parent )
 {
     kvs::XMLElement element( BaseClass::name() );
 
-    if ( m_has_nnodes )
-    {
-        element.setAttribute( "nnodes", m_nnodes );
-    }
+    if ( m_nnodes.hasValue() ) { element.setAttribute( "nnodes", m_nnodes ); }
 
     return BaseClass::write_with_element( parent, element );
 }

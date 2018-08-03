@@ -71,18 +71,15 @@ size_t SystemInformation::NumberOfProcessors()
     int nprocessors = sysconf( _SC_NPROCESSORS_ONLN );
     kvsMessageWarning( nprocessors != -1,
                        ::GetWarningMessage( errno, "_SC_NPROCESSORS_ONLN is not supported." ) );
-
     return nprocessors;
 
 #elif defined ( KVS_PLATFORM_MACOSX )
     int nprocessors = 0;
-
-    int    mib[2] = { CTL_HW, HW_NCPU };
+    int mib[2] = { CTL_HW, HW_NCPU };
     size_t length = sizeof( nprocessors );
-    int    ret    = 0;
+    int ret = 0;
     ret = sysctl( mib, 2, &nprocessors, &length, NULL, 0 );
     kvsMessageWarning( ret != -1, ::GetWarningMessage( errno, strerror( errno ) ) );
-
     return nprocessors;
 #endif
 }
@@ -123,15 +120,15 @@ size_t SystemInformation::TotalMemorySize()
 #elif defined ( KVS_PLATFORM_MACOSX )
 #if defined ( KVS_PLATFORM_CPU_64 )
     uint64_t memory_size = 0;
-    size_t   length      = sizeof( memory_size );
-    int      ret         = 0;
+    size_t length = sizeof( memory_size );
+    int ret = 0;
     ret = sysctlbyname( "hw.memsize", &memory_size, &length, NULL, 0 );
     kvsMessageWarning( ret != -1, strerror( errno ) );
     return memory_size;
 #else
     uint32_t memory_size = 0;
-    size_t   length      = sizeof( memory_size );
-    int      ret         = 0;
+    size_t length = sizeof( memory_size );
+    int ret = 0;
     ret = sysctlbyname( "hw.physmem", &memory_size, &length, NULL, 0 );
     kvsMessageWarning( ret != -1, strerror( errno ) );
     return memory_size;
@@ -179,7 +176,7 @@ size_t SystemInformation::FreeMemorySize()
     kr = host_page_size( mach_host_self(), &page_size );
     kvsMessageWarning( kr != KERN_SUCCESS, "Failure to get page size." );
 
-    vm_statistics_data_t   page_info;
+    vm_statistics_data_t page_info;
     mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
     kr = host_statistics( mach_host_self(), HOST_VM_INFO, (host_info_t)&page_info, &count );
     kvsMessageWarning( kr != KERN_SUCCESS, "Failure to get page info." );

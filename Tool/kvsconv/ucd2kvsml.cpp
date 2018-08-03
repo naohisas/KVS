@@ -16,10 +16,8 @@
 #include <string>
 #include <kvs/File>
 #include <kvs/AVSUcd>
-#include <kvs/KVSMLObjectUnstructuredVolume>
 #include <kvs/UnstructuredVolumeObject>
 #include <kvs/UnstructuredVolumeImporter>
-#include <kvs/UnstructuredVolumeExporter>
 
 
 namespace kvsconv
@@ -51,7 +49,7 @@ Argument::Argument( int argc, char** argv ):
 /*===========================================================================*/
 const std::string Argument::inputFilename( void )
 {
-    return( this->value<std::string>() );
+    return this->value<std::string>();
 }
 
 /*===========================================================================*/
@@ -65,14 +63,14 @@ const std::string Argument::outputFilename( const std::string& filename )
 {
     if ( this->hasOption("output") )
     {
-        return( this->optionValue<std::string>("output") );
+        return this->optionValue<std::string>("output");
     }
     else
     {
         // Replace the extension as follows: xxxx.inp -> xxx.kvsml.
         const std::string basename = kvs::File( filename ).baseName();
         const std::string extension = "kvsml";
-        return( basename + "." + extension );
+        return basename + "." + extension;
     }
 }
 
@@ -82,34 +80,21 @@ const std::string Argument::outputFilename( const std::string& filename )
  *  @return writing data type
  */
 /*===========================================================================*/
-const kvs::KVSMLObjectUnstructuredVolume::WritingDataType Argument::writingDataType( void )
+kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType()
 {
     if ( this->hasOption("b") )
     {
-        return( kvs::KVSMLObjectUnstructuredVolume::ExternalBinary );
+        return kvs::KVSMLUnstructuredVolumeObject::ExternalBinary;
     }
     else
     {
         if ( this->hasOption("e") )
         {
-            return( kvs::KVSMLObjectUnstructuredVolume::ExternalAscii );
+            return kvs::KVSMLUnstructuredVolumeObject::ExternalAscii;
         }
     }
 
-    return( kvs::KVSMLObjectUnstructuredVolume::Ascii );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class for a ucd2kvsml.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
+    return kvs::KVSMLUnstructuredVolumeObject::Ascii;
 }
 
 /*===========================================================================*/
@@ -117,11 +102,11 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+bool Main::exec()
 {
     // Parse specified arguments.
     ucd2kvsml::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    if( !arg.parse() ) { return false; }
 
     // Set a input filename and a output filename.
     m_input_name = arg.inputFilename();
@@ -131,61 +116,28 @@ const bool Main::exec( void )
     if ( !file.isExisted() )
     {
         kvsMessageError("Input data file '%s' is not existed.",m_input_name.c_str());
-        return( false );
+        return false;
     }
 
     // Read AVS UCD data file.
     kvs::AVSUcd* input = new kvs::AVSUcd( m_input_name );
-    if ( !input )
-    {
-        kvsMessageError("Cannot allocate for the AVS UCD class.");
-        return( false );
-    }
-
     if ( input->isFailure() )
     {
         kvsMessageError("Cannot read a file %s.", m_input_name.c_str() );
         delete input;
-        return( false );
+        return false;
     }
 
     // Import AVS UCD data as unstructured volume object.
     kvs::UnstructuredVolumeObject* object = new kvs::UnstructuredVolumeImporter( input );
-    if ( !object )
-    {
-        kvsMessageError("Cannot import AVS UCD data.");
-        delete input;
-        return( false );
-    }
-
     delete input;
 
-    // Export the unstructured volume object to KVSML data (unstructured volume).
-    kvs::KVSMLObjectUnstructuredVolume* output =
-        new kvs::UnstructuredVolumeExporter<kvs::KVSMLObjectUnstructuredVolume>( object );
-    if ( !output )
-    {
-        kvsMessageError("Cannot export unstructured volume object.");
-        delete object;
-        return( false );
-    }
-
+    const bool ascii = !arg.hasOption("b");
+    const bool external = arg.hasOption("e");
+    object->write( m_output_name, ascii, external );
     delete object;
 
-    // Set the writing data type.
-    output->setWritingDataType( arg.writingDataType() );
-
-    // Write to KVSML data file.
-    if ( !output->write( m_output_name ) )
-    {
-        kvsMessageError("Cannot write to KVSML data file %s.", m_output_name.c_str() );
-        delete output;
-        return( false );
-    }
-
-    delete output;
-
-    return( true );
+    return true;
 }
 
 } // end of namespace ucd2kvsml

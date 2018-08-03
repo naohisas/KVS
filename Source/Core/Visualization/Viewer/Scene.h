@@ -12,10 +12,10 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__SCENE_H_INCLUDE
-#define KVS__SCENE_H_INCLUDE
+#pragma once
 
 #include <kvs/Mouse>
+#include <kvs/ScreenBase>
 
 
 namespace kvs
@@ -50,6 +50,7 @@ public:
 
 private:
 
+    kvs::ScreenBase* m_screen; ///< screen
     kvs::Camera* m_camera; ///< camera
     kvs::Light* m_light; ///< light
     kvs::Mouse* m_mouse; ///< mouse
@@ -63,7 +64,7 @@ private:
 
 public:
 
-    Scene();
+    Scene( kvs::ScreenBase* screen );
     virtual ~Scene();
 
     const std::pair<int,int> registerObject( kvs::ObjectBase* object, kvs::RendererBase* renderer = 0 );
@@ -108,6 +109,7 @@ public:
     void disableObjectOperation() { this->setEnabledObjectOperation( false ); }
     bool isEnabledObjectOperation() const { return m_enable_object_operation; }
 
+    kvs::ScreenBase* screen() { return m_screen; }
     kvs::Camera* camera() { return m_camera; }
     kvs::Light* light() { return m_light; }
     kvs::Mouse* mouse() { return m_mouse; }
@@ -116,6 +118,15 @@ public:
     kvs::RendererManager* rendererManager() { return m_renderer_manager; }
     kvs::IDManager* IDManager() { return m_id_manager; }
     ControlTarget& controlTarget() { return m_target; }
+
+    const kvs::Camera* camera() const { return m_camera; }
+    const kvs::Light* light() const { return m_light; }
+    const kvs::Mouse* mouse() const { return m_mouse; }
+    const kvs::Background* background() const { return m_background; }
+    const kvs::ObjectManager* objectManager() const { return m_object_manager; }
+    const kvs::RendererManager* rendererManager() const { return m_renderer_manager; }
+    const kvs::IDManager* IDManager() const { return m_id_manager; }
+    const ControlTarget& controlTarget() const { return m_target; }
 
     void initializeFunction();
     void paintFunction();
@@ -134,5 +145,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SCENE_H_INCLUDE

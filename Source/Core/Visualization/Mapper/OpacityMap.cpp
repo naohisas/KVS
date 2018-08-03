@@ -281,7 +281,7 @@ kvs::Real32 OpacityMap::at( const float value ) const
     const float r = static_cast<float>( m_resolution - 1 );
     const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;
     const size_t s0 = static_cast<size_t>( v );
-    const size_t s1 = s0 + 1;
+    const size_t s1 = kvs::Math::Min( s0 + 1, m_resolution - 1 );
 
     const kvs::Real32 a0 = m_table[ s0 ];
     const kvs::Real32 a1 = m_table[ s1 ];

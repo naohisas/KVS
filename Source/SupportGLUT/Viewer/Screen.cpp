@@ -89,7 +89,7 @@ Screen::Screen( kvs::glut::Application* application ):
     m_enable_default_wheel_event( true ),
     m_enable_default_key_press_event( true )
 {
-    m_scene = new kvs::Scene();
+    m_scene = new kvs::Scene( this );
     m_idle_mouse_event_listener = new ::IdleMouseEvent( this );
     m_idle_mouse_timer = new kvs::glut::Timer( m_idle_mouse_event_listener );
 }
@@ -299,6 +299,17 @@ const std::pair<int,int> Screen::registerObject( kvs::VisualizationPipeline* pip
 
 /*===========================================================================*/
 /**
+ *  @brief  Creates a screen.
+ */
+/*===========================================================================*/
+void Screen::create()
+{
+    kvs::glut::ScreenBase::create();
+    m_scene->initializeFunction();
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Enables mosue operation.
  */
 /*===========================================================================*/
@@ -344,8 +355,6 @@ void Screen::initializeEvent()
         (*timer)->start();
         ++timer;
     }
-
-    m_scene->initializeFunction();
 
     kvs::InitializeEvent event;
     BaseClass::eventHandler()->notify( &event );
@@ -488,8 +497,6 @@ void Screen::defaultPaintEvent()
         kvs::PaintEvent event;
         BaseClass::eventHandler()->notify( &event );
     }
-
-    kvs::OpenGL::Flush();
 }
 
 /*===========================================================================*/

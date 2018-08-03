@@ -371,19 +371,22 @@ void Camera::scale( const kvs::Vec3& scaling )
 
 const kvs::Mat4 Camera::modelViewMatrix() const
 {
-    float m[16];
-    this->getModelViewMatrix( &m );
-    return kvs::Xform::FromArray( m ).toMatrix();
+//    float m[16];
+//    this->getModelViewMatrix( &m );
+//    return kvs::Xform::FromArray( m ).toMatrix();
+    return kvs::OpenGL::ModelViewMatrix();
 }
 
 const kvs::Mat4 Camera::projectionModelViewMatrix() const
 {
-    return this->projectionMatrix() * this->modelViewMatrix();
+//    return this->projectionMatrix() * this->modelViewMatrix();
+    return this->projectionMatrix() * kvs::OpenGL::ModelViewMatrix();
 }
 
 void Camera::getProjectionModelViewMatrix( float (*projection_modelview)[16] ) const
 {
-    kvs::Mat4 M = this->modelViewMatrix();
+//    kvs::Mat4 M = this->modelViewMatrix();
+    kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     kvs::Mat4 P = this->projectionMatrix();
     kvs::Xform x( P * M );
     x.toArray( *projection_modelview );
@@ -430,7 +433,11 @@ void Camera::getModelViewMatrix( float (*modelview)[16] ) const
 /*==========================================================================*/
 void Camera::getCombinedMatrix( float (*combined)[16] ) const
 {
-    this->getProjectionModelViewMatrix( combined );
+//    this->getProjectionModelViewMatrix( combined );
+    kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    kvs::Mat4 P = this->projectionMatrix();
+    kvs::Xform x( P * M );
+    x.toArray( *combined );
 }
 
 /*==========================================================================*/
@@ -446,7 +453,11 @@ void Camera::getCombinedMatrix(
     const float modelview[16],
     float (*combined)[16] ) const
 {
-    this->getProjectionModelViewMatrix( projection, modelview, combined );
+//    this->getProjectionModelViewMatrix( projection, modelview, combined );
+    kvs::Xform M = kvs::Xform::FromArray( modelview );
+    kvs::Xform P = kvs::Xform::FromArray( projection );
+    kvs::Xform x = P * M;
+    x.toArray( *combined );
 }
 
 /*==========================================================================*/
@@ -467,7 +478,17 @@ const kvs::Vec2 Camera::projectObjectToWindow(
     float  p_obj_z,
     float* depth ) const
 {
-    return this->projectObjectToWindow( kvs::Vec3( p_obj_x, p_obj_y, p_obj_z ), depth );
+//    return this->projectObjectToWindow( kvs::Vec3( p_obj_x, p_obj_y, p_obj_z ), depth );
+    const kvs::Vec3 p_obj( p_obj_x, p_obj_y, p_obj_z );
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 P = this->projectionMatrix();
+    const kvs::Xform pvm( P * M );
+    const kvs::Vec3 p = pvm.project( p_obj );
+
+    if ( depth ) *depth = ( 1.0f + p[2] ) * 0.5f;
+
+    return kvs::Vec2( ( 1.0f + p[0] ) * m_window_width * 0.5f,
+                      ( 1.0f + p[1] ) * m_window_height * 0.5f );
 }
 
 /*==========================================================================*/
@@ -482,7 +503,9 @@ const kvs::Vec2 Camera::projectObjectToWindow(
 /*==========================================================================*/
 const kvs::Vec2 Camera::projectObjectToWindow( const kvs::Vec3& p_obj, float* depth ) const
 {
-    const kvs::Xform pvm( this->projectionModelViewMatrix() );
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 P = this->projectionMatrix();
+    const kvs::Xform pvm( P * M );
     const kvs::Vec3 p = pvm.project( p_obj );
 
     if ( depth ) *depth = ( 1.0f + p[2] ) * 0.5f;
@@ -501,7 +524,24 @@ const kvs::Vec2 Camera::projectObjectToWindow( const kvs::Vec3& p_obj, float* de
 /*==========================================================================*/
 const kvs::Vec3 Camera::projectWindowToObject( const kvs::Vec2& p_win, float depth ) const
 {
-    return this->projectCameraToObject( this->projectWindowToCamera( p_win, depth ) );
+//    return this->projectCameraToObject( this->projectWindowToCamera( p_win, depth ) );
+    GLdouble m[16] = { 1.0, 0.0, 0.0, 0.0,
+                       0.0, 1.0, 0.0, 0.0,
+                       0.0, 0.0, 1.0, 0.0,
+                       0.0, 0.0, 0.0, 1.0 };
+
+    GLdouble p[16]; KVS_GL_CALL( glGetDoublev(  GL_PROJECTION_MATRIX, p ) );
+    GLint    v[4];  KVS_GL_CALL( glGetIntegerv( GL_VIEWPORT,          v ) );
+
+    double x = 0;
+    double y = 0;
+    double z = 0;
+//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
+
+    const kvs::Vec3 p_cam( (float)x, (float)y, (float)z );
+    const kvs::Xform modelview( kvs::OpenGL::ModelViewMatrix() );
+    return modelview.inverse().transform( p_cam );
 }
 
 /*==========================================================================*/
@@ -525,7 +565,8 @@ const kvs::Vec3 Camera::projectWindowToCamera( const kvs::Vec2& p_win, float dep
     double x = 0;
     double y = 0;
     double z = 0;
-    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
 
     return kvs::Vec3( (float)x, (float)y, (float)z );
 }
@@ -540,7 +581,24 @@ const kvs::Vec3 Camera::projectWindowToCamera( const kvs::Vec2& p_win, float dep
 /*==========================================================================*/
 const kvs::Vec3 Camera::projectWindowToWorld( const kvs::Vec2& p_win, float depth ) const
 {
-    return this->projectCameraToWorld( this->projectWindowToCamera( p_win, depth ) );
+//    return this->projectCameraToWorld( this->projectWindowToCamera( p_win, depth ) );
+    GLdouble m[16] = { 1.0, 0.0, 0.0, 0.0,
+                       0.0, 1.0, 0.0, 0.0,
+                       0.0, 0.0, 1.0, 0.0,
+                       0.0, 0.0, 0.0, 1.0 };
+
+    GLdouble p[16]; KVS_GL_CALL( glGetDoublev(  GL_PROJECTION_MATRIX, p ) );
+    GLint    v[4];  KVS_GL_CALL( glGetIntegerv( GL_VIEWPORT,          v ) );
+
+    double x = 0;
+    double y = 0;
+    double z = 0;
+//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
+    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
+
+    const kvs::Vec3 p_cam( (float)x, (float)y, (float)z );
+    const kvs::Xform inv_viewing( this->xform() );
+    return inv_viewing.transform( p_cam );
 }
 
 /*==========================================================================*/
@@ -552,7 +610,7 @@ const kvs::Vec3 Camera::projectWindowToWorld( const kvs::Vec2& p_win, float dept
 /*==========================================================================*/
 const kvs::Vec3 Camera::projectObjectToCamera( const kvs::Vec3& p_obj ) const
 {
-    const kvs::Xform modelview( this->modelViewMatrix() );
+    const kvs::Xform modelview( kvs::OpenGL::ModelViewMatrix() );
     return modelview.transform( p_obj );
 }
 
@@ -566,7 +624,7 @@ const kvs::Vec3 Camera::projectObjectToCamera( const kvs::Vec3& p_obj ) const
 const kvs::Vec3 Camera::projectCameraToObject(
     const kvs::Vec3& p_cam ) const
 {
-    const kvs::Xform modelview( this->modelViewMatrix() );
+    const kvs::Xform modelview( kvs::OpenGL::ModelViewMatrix() );
     return modelview.inverse().transform( p_cam );
 }
 
@@ -605,7 +663,7 @@ const kvs::Vec3 Camera::projectCameraToWorld( const kvs::Vec3& p_cam ) const
 /*==========================================================================*/
 const kvs::Vec3 Camera::projectWorldToObject( const kvs::Vec3& p_wld ) const
 {
-    const kvs::Xform inv_modeling( this->modelViewMatrix().inverted() * this->viewingMatrix() );
+    const kvs::Xform inv_modeling( kvs::OpenGL::ModelViewMatrix().inverted() * this->viewingMatrix() );
     return inv_modeling.transform( p_wld );
 }
 
@@ -618,7 +676,8 @@ const kvs::Vec3 Camera::projectWorldToObject( const kvs::Vec3& p_wld ) const
 /*==========================================================================*/
 const kvs::Vec3 Camera::projectObjectToWorld( const kvs::Vec3& p_obj ) const
 {
-    const kvs::Xform modeling( this->xform().toMatrix() * this->modelViewMatrix() );
+//    const kvs::Xform modeling( this->xform().toMatrix() * this->modelViewMatrix() );
+    const kvs::Xform modeling( this->xform().toMatrix() * kvs::OpenGL::ModelViewMatrix() );
     return modeling.transform( p_obj );
 }
 

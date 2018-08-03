@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Tag.cpp
+ *  @file   Tag.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -44,18 +45,7 @@ Tag& Tag::operator = ( const Tag& tag )
 {
     m_id   = tag.m_id;
     m_name = tag.m_name;
-
     return *this;
-}
-
-kvs::UInt16 Tag::id() const
-{
-    return m_id;
-}
-
-const std::string& Tag::name() const
-{
-    return m_name;
 }
 
 } // end of namespace tiff

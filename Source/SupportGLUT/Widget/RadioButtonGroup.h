@@ -39,36 +39,30 @@ class RadioButton;
 class RadioButtonGroup : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::list<kvs::glut::RadioButton*> m_buttons; ///< radio button list
 
 public:
-
     RadioButtonGroup( kvs::ScreenBase* screen = 0 );
-
-public:
 
     virtual void pressed( kvs::glut::RadioButton* button ) { kvs::IgnoreUnusedVariable( button ); };
     virtual void pressed( int id ) { kvs::IgnoreUnusedVariable( id ); };
     virtual void released( kvs::glut::RadioButton* button ) { kvs::IgnoreUnusedVariable( button ); };
     virtual void released( int id ) { kvs::IgnoreUnusedVariable( id ); };
-    virtual void screenUpdated( void ) {};
-    virtual void screenResized( void ) {};
+    virtual void screenUpdated() {};
+    virtual void screenResized() {};
 
-    const std::list<kvs::glut::RadioButton*>& radioButtons( void ) const;
+    const std::list<kvs::glut::RadioButton*>& radioButtons() const { return m_buttons; }
 
     void add( kvs::glut::RadioButton* button );
     void remove( kvs::glut::RadioButton* button );
-    void show( void );
-    void hide( void );
+    void show();
+    void hide();
 
 private:
-
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseReleaseEvent( kvs::MouseEvent* event );

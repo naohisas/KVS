@@ -13,10 +13,30 @@
  */
 /****************************************************************************/
 #include "StructuredVolumeObject.h"
+#include <kvs/KVSMLStructuredVolumeObject>
 
 
 namespace
 {
+
+/*==========================================================================*/
+/**
+ *  @brief  Converts to the grid type from the given string.
+ *  @param  grid_type [in] grid type string
+ *  @return grid type
+ */
+/*==========================================================================*/
+const kvs::StructuredVolumeObject::GridType GetGridType( const std::string& grid_type )
+{
+    if (      grid_type == "uniform"     ) { return kvs::StructuredVolumeObject::Uniform;     }
+    else if ( grid_type == "rectilinear" ) { return kvs::StructuredVolumeObject::Rectilinear; }
+    else if ( grid_type == "curvilinear" ) { return kvs::StructuredVolumeObject::Curvilinear; }
+    else
+    {
+        kvsMessageError( "Unknown grid type '%s'.", grid_type.c_str() );
+        return kvs::StructuredVolumeObject::UnknownGridType;
+    }
+}
 
 const std::string GetGridTypeName( const kvs::StructuredVolumeObject::GridType type )
 {
@@ -25,7 +45,28 @@ const std::string GetGridTypeName( const kvs::StructuredVolumeObject::GridType t
     case kvs::StructuredVolumeObject::Uniform: return "uniform";
     case kvs::StructuredVolumeObject::Rectilinear: return "rectiliear";
     case kvs::StructuredVolumeObject::Curvilinear: return "curvilinear";
-    default: return "unknown grid type";
+    default: return "unknown";
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns a writing data type.
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return writing data type
+ */
+/*===========================================================================*/
+kvs::KVSMLStructuredVolumeObject::WritingDataType GetWritingDataType( const bool ascii, const bool external )
+{
+    if ( ascii )
+    {
+        if ( external ) { return kvs::KVSMLStructuredVolumeObject::ExternalAscii; }
+        else { return kvs::KVSMLStructuredVolumeObject::Ascii; }
+    }
+    else
+    {
+        return kvs::KVSMLStructuredVolumeObject::ExternalBinary;
     }
 }
 
@@ -93,6 +134,140 @@ void StructuredVolumeObject::print( std::ostream& os, const kvs::Indent& indent 
     os << indent << "Max. value : " << this->maxValue() << std::endl;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Read a structured volume object from the specified file in KVSML.
+ *  @param  filename [in] input filename
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool StructuredVolumeObject::read( const std::string& filename )
+{
+    if ( !kvs::KVSMLStructuredVolumeObject::CheckExtension( filename ) )
+    {
+        kvsMessageError("%s is not a structured volume object file in KVSML.", filename.c_str());
+        return false;
+    }
+
+    kvs::KVSMLStructuredVolumeObject kvsml;
+    if ( !kvsml.read( filename ) ) { return false; }
+
+    this->setGridType( ::GetGridType( kvsml.gridType() ) );
+    this->setResolution( kvsml.resolution() );
+    this->setVeclen( kvsml.veclen() );
+    this->setValues( kvsml.values() );
+
+    if ( this->gridType() == kvs::StructuredVolumeObject::Rectilinear ||
+         this->gridType() == kvs::StructuredVolumeObject::Curvilinear )
+    {
+        this->setCoords( kvsml.coords() );
+    }
+
+    if ( kvsml.hasExternalCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minExternalCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxExternalCoord() );
+        this->setMinMaxExternalCoords( min_coord, max_coord );
+    }
+
+    if ( kvsml.hasObjectCoord() )
+    {
+        const kvs::Vec3 min_coord( kvsml.minObjectCoord() );
+        const kvs::Vec3 max_coord( kvsml.maxObjectCoord() );
+        this->setMinMaxObjectCoords( min_coord, max_coord );
+    }
+    else
+    {
+        this->updateMinMaxCoords();
+    }
+
+    if ( kvsml.hasLabel() ) { this->setLabel( kvsml.label() ); }
+    if ( kvsml.hasUnit() ) { this->setUnit( kvsml.unit() ); }
+
+    if ( kvsml.hasMinValue() && kvsml.hasMaxValue() )
+    {
+        const double min_value = kvsml.minValue();
+        const double max_value = kvsml.maxValue();
+        this->setMinMaxValues( min_value, max_value );
+    }
+    else
+    {
+        this->updateMinMaxValues();
+        const double min_value = kvsml.hasMinValue() ? kvsml.minValue() : this->minValue();
+        const double max_value = kvsml.hasMaxValue() ? kvsml.maxValue() : this->maxValue();
+        this->setMinMaxValues( min_value, max_value );
+    }
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Write the structured volume object to the specfied file in KVSML.
+ *  @param  filename [in] output filename
+ *  @param  ascii [in] ascii (true = default) or binary (true)
+ *  @param  external [in] external (true) or internal (false = default)
+ *  @return true, if the writing process is done successfully
+ */
+/*===========================================================================*/
+bool StructuredVolumeObject::write( const std::string& filename, const bool ascii, const bool external ) const
+{
+    kvs::KVSMLStructuredVolumeObject kvsml;
+    kvsml.setWritingDataType( ::GetWritingDataType( ascii, external ) );
+
+    if ( this->label() != "" ) { kvsml.setLabel( this->label() ); }
+    if ( this->unit() != "" ) { kvsml.setUnit( this->unit() ); }
+
+    switch ( this->gridType() )
+    {
+    case kvs::StructuredVolumeObject::UnknownGridType:
+    {
+        kvsMessageError("Unknown grid type.");
+        break;
+    }
+    case kvs::StructuredVolumeObject::Uniform:
+    {
+        kvsml.setGridType("uniform");
+        break;
+    }
+/*
+    case kvs::StructuredVolumeObject::Rectilinear:
+        kvsml.setGridType("rectilinear");
+        break;
+    case kvs::StructuredVolumeObject::Curvilinear:
+        kvsml.setGridType("curvilinear");
+        break;
+*/
+    default:
+    {
+        kvsMessageError("'uniform' grid type is only supported.");
+        break;
+    }
+    }
+
+    kvsml.setVeclen( this->veclen() );
+    kvsml.setResolution( this->resolution() );
+    kvsml.setValues( this->values() );
+
+    if ( this->hasMinMaxValues() )
+    {
+        kvsml.setMinValue( this->minValue() );
+        kvsml.setMaxValue( this->maxValue() );
+    }
+
+    if ( this->hasMinMaxObjectCoords() )
+    {
+        kvsml.setMinMaxObjectCoords( this->minObjectCoord(), this->maxObjectCoord() );
+    }
+
+    if ( this->hasMinMaxExternalCoords() )
+    {
+        kvsml.setMinMaxExternalCoords( this->minExternalCoord(), this->maxExternalCoord() );
+    }
+
+    return kvsml.write( filename );
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Returns the number of nodes per line.
@@ -140,16 +315,6 @@ size_t StructuredVolumeObject::numberOfCells() const
  */
 /*==========================================================================*/
 void StructuredVolumeObject::updateMinMaxCoords()
-{
-    this->calculate_min_max_coords();
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Calculate the min/max coordinate values.
- */
-/*==========================================================================*/
-void StructuredVolumeObject::calculate_min_max_coords()
 {
     kvs::Vec3 min_coord( 0.0f, 0.0f, 0.0f );
     kvs::Vec3 max_coord( 0.0f, 0.0f, 0.0f );

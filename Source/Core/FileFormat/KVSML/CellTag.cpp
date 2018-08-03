@@ -31,8 +31,7 @@ namespace kvsml
 /*===========================================================================*/
 CellTag::CellTag():
     kvs::kvsml::TagBase( "Cell" ),
-    m_has_ncells( false ),
-    m_ncells( 0 )
+    m_ncells( "ncells" )
 {
 }
 
@@ -52,11 +51,7 @@ bool CellTag::read( const kvs::XMLNode::SuperClass* parent )
 
     // ncells="xxx"
     const std::string ncells = kvs::XMLElement::AttributeValue( element, "ncells" );
-    if ( ncells != "" )
-    {
-        m_has_ncells = true;
-        m_ncells = static_cast<size_t>( atoi( ncells.c_str() ) );
-    }
+    if ( ncells != "" ) { m_ncells = static_cast<size_t>( atoi( ncells.c_str() ) ); }
 
     return true;
 }
@@ -72,7 +67,7 @@ bool CellTag::write( kvs::XMLNode::SuperClass* parent )
 {
     kvs::XMLElement element( BaseClass::name() );
 
-    if ( m_has_ncells )
+    if ( m_ncells.hasValue() )
     {
         element.setAttribute( "ncells", m_ncells );
     }

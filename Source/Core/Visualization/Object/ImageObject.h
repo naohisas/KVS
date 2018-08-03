@@ -12,9 +12,7 @@
  *  $Id: ImageObject.h 1775 2014-05-16 13:49:42Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__IMAGE_OBJECT_H_INCLUDE
-#define KVS__IMAGE_OBJECT_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/ObjectBase>
 #include <kvs/ClassName>
@@ -45,7 +43,8 @@ public:
         Gray8   =  8, ///< 8 bit gray pixel
         Gray16  = 16, ///< 16 bit gray pixel
         Color24 = 24, ///< 24 bit RGB color pixel (8x8x8 bits)
-        Color32 = 32  ///< 32 bit RGBA color pixel (8x8x8x8 bits)
+        Color32 = 32, ///< 32 bit RGBA color pixel (8x8x8x8 bits)
+        UnknownPixelType
     };
 
 private:
@@ -67,6 +66,8 @@ public:
     void shallowCopy( const ImageObject& object );
     void deepCopy( const ImageObject& object );
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     PixelType pixelType() const { return m_type; }
     size_t width() const { return m_width; }
@@ -87,5 +88,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__IMAGE_OBJECT_H_INCLUDE

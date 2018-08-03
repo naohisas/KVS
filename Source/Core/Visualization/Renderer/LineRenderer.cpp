@@ -60,7 +60,7 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
     kvs::IgnoreUnusedVariable( light );
     kvs::IgnoreUnusedVariable( camera );
 
-    kvs::LineObject* line = reinterpret_cast<kvs::LineObject*>( object );
+    kvs::LineObject* line = kvs::LineObject::DownCast( object );
 
     BaseClass::startTimer();
 
@@ -70,7 +70,6 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     ::LineRenderingFunction( line );
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
 
     BaseClass::stopTimer();
 }

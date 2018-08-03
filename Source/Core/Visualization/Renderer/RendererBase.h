@@ -19,6 +19,7 @@
 #include <kvs/Timer>
 #include <kvs/Module>
 #include <kvs/Deprecated>
+#include <kvs/ScreenBase>
 
 
 namespace kvs
@@ -38,16 +39,19 @@ class RendererBase
     kvsModuleBase( kvs::RendererBase );
 
 private:
-
+    kvs::ScreenBase* m_screen; ///< pointer to the screen
     std::string m_name; ///< renderer name
     kvs::Timer m_timer; ///< timer
     mutable bool m_enable_shading; ///< shading flag
 
 public:
-
-    RendererBase(): m_name( "unknown" ), m_enable_shading( true ) {}
+    RendererBase():
+        m_screen( NULL ),
+        m_name( "unknown" ),
+        m_enable_shading( true ) {}
     virtual ~RendererBase() {}
 
+    void setScreen( kvs::ScreenBase* screen ) { m_screen = screen; }
     void setName( const std::string& name ) { m_name = name; }
     void setEnabledShading( const bool enable ) { m_enable_shading = enable; }
     const std::string& name() const { return m_name; }
@@ -58,7 +62,7 @@ public:
     virtual void exec( kvs::ObjectBase* object, kvs::Camera* camera = NULL, kvs::Light* light  = NULL ) = 0;
 
 protected:
-
+    kvs::ScreenBase* screen() { return m_screen; }
     void startTimer() { m_timer.start(); }
     void stopTimer() { m_timer.stop(); }
 

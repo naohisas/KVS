@@ -12,12 +12,13 @@
  *  $Id: ScreenBase.h 1570 2013-05-09 08:32:56Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__SCREEN_BASE_H_INCLUDE
-#define KVS__SCREEN_BASE_H_INCLUDE
+#pragma once
 
 #include <string>
 #include <kvs/DisplayFormat>
 #include <kvs/Deprecated>
+#include <kvs/EventHandler>
+#include <kvs/PaintDevice>
 
 /*KVS_DEPRECATED*/
 #include <kvs/InitializeEventListener>
@@ -34,8 +35,6 @@
 namespace kvs
 {
 
-class EventHandler;
-
 /*===========================================================================*/
 /**
  *  @brief  Screen base class.
@@ -44,7 +43,6 @@ class EventHandler;
 class ScreenBase
 {
 private:
-
     int m_x; ///< window position (y position)
     int m_y; ///< window position (x position)
     int m_width; ///< window size (width)
@@ -52,9 +50,9 @@ private:
     std::string m_title; ///< window title
     kvs::DisplayFormat m_display_format; ///< display format
     kvs::EventHandler* m_event_handler; ///< event handler
+    kvs::PaintDevice* m_paint_device; ///< paint device
 
 public:
-
     ScreenBase();
     virtual ~ScreenBase();
 
@@ -65,6 +63,7 @@ public:
     const std::string& title() const { return m_title; }
     const kvs::DisplayFormat& displayFormat() const { return m_display_format; }
     kvs::EventHandler* eventHandler() { return m_event_handler; }
+    kvs::PaintDevice* paintDevice() { return m_paint_device; }
 
     void setPosition( const int x, const int y ) { m_x = x; m_y = y; }
     void setSize( const int width, const int height ) { m_width = width; m_height = height; }
@@ -102,5 +101,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SCREEN_BASE_H_INCLUDE

@@ -8,25 +8,24 @@ $(OUTDIR)\.\Renderer\Axis2DMatrix.obj \
 $(OUTDIR)\.\Renderer\Axis3D.obj \
 $(OUTDIR)\.\Renderer\ParallelAxis.obj \
 $(OUTDIR)\.\Viewer\Application.obj \
-$(OUTDIR)\.\Viewer\Histogram.obj \
-$(OUTDIR)\.\Viewer\LegendBar.obj \
-$(OUTDIR)\.\Viewer\OrientationAxis.obj \
 $(OUTDIR)\.\Viewer\Screen.obj \
 $(OUTDIR)\.\Viewer\ScreenBase.obj \
 $(OUTDIR)\.\Viewer\Text.obj \
 $(OUTDIR)\.\Viewer\Timer.obj \
-$(OUTDIR)\.\Viewer\TransferFunctionEditor.obj \
 $(OUTDIR)\.\Widget\CheckBox.obj \
 $(OUTDIR)\.\Widget\CheckBoxGroup.obj \
 $(OUTDIR)\.\Widget\ColorMapPalette.obj \
 $(OUTDIR)\.\Widget\ColorPalette.obj \
+$(OUTDIR)\.\Widget\Histogram.obj \
 $(OUTDIR)\.\Widget\Label.obj \
+$(OUTDIR)\.\Widget\LegendBar.obj \
 $(OUTDIR)\.\Widget\OpacityMapPalette.obj \
+$(OUTDIR)\.\Widget\OrientationAxis.obj \
 $(OUTDIR)\.\Widget\PushButton.obj \
 $(OUTDIR)\.\Widget\RadioButton.obj \
 $(OUTDIR)\.\Widget\RadioButtonGroup.obj \
-$(OUTDIR)\.\Widget\Rectangle.obj \
 $(OUTDIR)\.\Widget\Slider.obj \
+$(OUTDIR)\.\Widget\TransferFunctionEditor.obj \
 $(OUTDIR)\.\Widget\WidgetBase.obj \
 
 

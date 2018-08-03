@@ -194,6 +194,15 @@ bool VisualizationPipeline::exec()
         }
 
         ++module;
+
+        // Don't delete the last module of the pipeline since the object will be registered
+        // and managed in the screen class.
+        if ( module == last )
+        {
+            module--;
+            module->disable_auto_delete();
+            module++;
+        }
     }
 
     // Attache the pointer to the object that is registered in the object manager.
@@ -303,11 +312,13 @@ const kvs::RendererBase* VisualizationPipeline::renderer() const
 /*===========================================================================*/
 /**
  *  @brief  Prints the visualization pipeline as string.
+ *  @param  os [in] output stream
+ *  @param  indent [in] indent
  */
 /*===========================================================================*/
-void VisualizationPipeline::print() const
+void VisualizationPipeline::print( std::ostream& os, const kvs::Indent& indent ) const
 {
-    std::cout << *this << std::endl;
+    os << indent << *this << std::endl;
 }
 
 /*===========================================================================*/

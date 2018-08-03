@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Tiff.cpp
+ *  @file   Tiff.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -49,41 +50,6 @@ Tiff::Tiff( const std::string& filename ):
 Tiff::~Tiff()
 {
     m_raw_data.release();
-}
-
-const Tiff::Header& Tiff::header() const
-{
-    return m_header;
-}
-
-const Tiff::IFD& Tiff::ifd() const
-{
-    return m_ifd;
-}
-
-size_t Tiff::width() const
-{
-    return m_width;
-}
-
-size_t Tiff::height() const
-{
-    return m_height;
-}
-
-size_t Tiff::bitsPerSample() const
-{
-    return m_bits_per_sample;
-}
-
-Tiff::ColorMode Tiff::colorMode() const
-{
-    return m_color_mode;
-}
-
-const kvs::AnyValueArray& Tiff::rawData() const
-{
-    return m_raw_data;
 }
 
 bool Tiff::isSupported() const
@@ -151,11 +117,11 @@ bool Tiff::read( const std::string& filename )
     }
 
     // Get the image information.
-    m_width           = this->get_width();
-    m_height          = this->get_height();
+    m_width = this->get_width();
+    m_height = this->get_height();
     m_bits_per_sample = this->get_bits_per_sample();
-    m_color_mode      = this->get_color_mode();
-    m_raw_data        = this->get_raw_data( ifs );
+    m_color_mode = this->get_color_mode();
+    m_raw_data = this->get_raw_data( ifs );
 
     ifs.close();
 

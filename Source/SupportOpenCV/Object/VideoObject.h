@@ -38,48 +38,34 @@ class VideoObject : public kvs::ObjectBase
     kvsModuleBaseClass( kvs::ObjectBase );
 
 public:
-
     enum PixelType
     {
         Gray8   =  8, ///< 8 bit gray pixel
         Color24 = 24  ///< 24 bit RGB color pixel (8x8x8 bits)
     };
 
+private:
+    int m_device_id; ///< capture device ID
+    kvs::opencv::CaptureDevice m_device; ///< video capture device
+    PixelType m_type; ///< pixel type
+    size_t m_width; ///< capture widht
+    size_t m_height; ///< capture height
+    size_t m_nchannels; ///< number of channels
+
 public:
-
-    int                        m_device_id; ///< capture device ID
-    kvs::opencv::CaptureDevice m_device;    ///< video capture device
-    PixelType                  m_type;      ///< pixel type
-    size_t                     m_width;     ///< capture widht
-    size_t                     m_height;    ///< capture height
-    size_t                     m_nchannels; ///< number of channels
-
-public:
-
-    VideoObject( void );
-
+    VideoObject();
     VideoObject( const int device_id );
+    virtual ~VideoObject() {}
 
-    virtual ~VideoObject( void );
-
-public:
-
-    ObjectType objectType( void ) const;
-
-    const int deviceID( void ) const;
-
-    const kvs::opencv::CaptureDevice& device( void ) const;
-
-    const PixelType type( void ) const;
-
-    const size_t width( void ) const;
-
-    const size_t height( void ) const;
-
-    const size_t nchannels( void ) const;
+    ObjectType objectType() const;
+    int deviceID() const { return m_device_id; }
+    const kvs::opencv::CaptureDevice& device() const { return m_device; }
+    PixelType type() const { return m_type; }
+    size_t width() const { return m_width; }
+    size_t height() const { return m_height; }
+    size_t nchannels() const { return m_nchannels; }
 
 public:
-
     const bool initialize( const size_t device_id );
 };
 

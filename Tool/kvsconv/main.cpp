@@ -28,48 +28,35 @@ namespace kvsconv
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Execute main process.
  */
 /*===========================================================================*/
-bool Main::exec( void )
+bool Main::exec()
 {
     // Read the argument.
     Argument arg( m_argc, m_argv );
-    if ( !arg.read() ) return( false );
+    if ( !arg.read() ) return false;
 
     // Output help message for each converter.
     if ( arg.hasOption("help") )
     {
         const std::string c = arg.optionValue<std::string>("help");
-        if ( c == "fld2kvsml" ) return( fld2kvsml::Argument( m_argc, m_argv ).parse() );
-        if ( c == "ucd2kvsml" ) return( ucd2kvsml::Argument( m_argc, m_argv ).parse() );
-        if ( c == "img2img" ) return( img2img::Argument( m_argc, m_argv ).parse() );
-        if ( c == "tet2tet" ) return( tet2tet::Argument( m_argc, m_argv ).parse() );
+        if ( c == "fld2kvsml" ) return fld2kvsml::Argument( m_argc, m_argv ).parse();
+        if ( c == "ucd2kvsml" ) return ucd2kvsml::Argument( m_argc, m_argv ).parse();
+        if ( c == "img2img" ) return img2img::Argument( m_argc, m_argv ).parse();
+        if ( c == "tet2tet" ) return tet2tet::Argument( m_argc, m_argv ).parse();
 
         kvsMessageError( "Unknown converter %s.", c.c_str() );
-        return( false );
+        return false;
     }
 
     // Convert.
-    if ( arg.hasOption("fld2kvsml") ) return( fld2kvsml::Main( m_argc, m_argv ).exec() );
-    if ( arg.hasOption("ucd2kvsml") ) return( ucd2kvsml::Main( m_argc, m_argv ).exec() );
-    if ( arg.hasOption("img2img") ) return( img2img::Main( m_argc, m_argv ).exec() );
-    if ( arg.hasOption("tet2tet") ) return( tet2tet::Main( m_argc, m_argv ).exec() );
+    if ( arg.hasOption("fld2kvsml") ) return fld2kvsml::Main( m_argc, m_argv ).exec();
+    if ( arg.hasOption("ucd2kvsml") ) return ucd2kvsml::Main( m_argc, m_argv ).exec();
+    if ( arg.hasOption("img2img") ) return img2img::Main( m_argc, m_argv ).exec();
+    if ( arg.hasOption("tet2tet") ) return tet2tet::Main( m_argc, m_argv ).exec();
 
-    return( false );
+    return false;
 }
 
 } // end of namespace kvsconv
@@ -87,5 +74,5 @@ int main( int argc, char** argv )
     KVS_MEMORY_DEBUGGER__SET_ARGUMENT( argc, argv );
 
     kvsconv::Main m( argc, argv );
-    return( m.exec() );
+    return m.exec();
 }

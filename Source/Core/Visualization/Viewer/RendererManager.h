@@ -12,8 +12,7 @@
  *  $Id: RendererManager.h 1703 2014-01-23 10:52:11Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__RENDERER_MANAGER_H_INCLUDE
-#define KVS__RENDERER_MANAGER_H_INCLUDE
+#pragma once
 
 #include <string>
 #include <utility>
@@ -84,5 +83,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__RENDERER_MANAGER_H_INCLUDE

@@ -158,6 +158,9 @@ void PointRenderer::initialize()
             KVS_GL_CALL( glHint( GL_POINT_SMOOTH_HINT, GL_NICEST ) );
         }
     }
+
+    // Rounded shape.
+    kvs::OpenGL::Enable( GL_POINT_SMOOTH );
 }
 
 } // end of namespace kvs

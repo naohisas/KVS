@@ -59,6 +59,10 @@ public:
     virtual ~ScreenBase();
 
     int id() const { return m_id; }
+    int x() const { return BaseClass::x(); }
+    int y() const { return BaseClass::y(); }
+    int width() const { return BaseClass::width(); }
+    int height() const { return BaseClass::height(); }
 
     virtual void create();
     virtual void show();

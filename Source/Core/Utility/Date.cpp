@@ -16,6 +16,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <kvs/Tokenizer>
+#include <kvs/Math>
+
 
 namespace
 {
@@ -74,6 +76,76 @@ const size_t DaysInMonth[] = {
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
+inline void DateToJulian( const int year, const int month, const int day, long* julian )
+{
+    int jy = year;
+    if ( year < 0 ) { jy++; }
+
+    int jm = month;
+    if ( month > 2 ) { jm++; }
+    else
+    {
+        jy--;
+        jm += 13;
+    }
+
+    // Gregorian Calendar adopted Oct. 15, 1582.
+    const int IGREG = 15 + 31 * ( 10 + 12 * 1582 );
+
+    // Test whether to change to Gregorian Calendar.
+    long jul = (long)( int( 365.25 * jy ) + int( 30.6001 * jm ) + day + 1720995.0 );
+    if ( day + 31 * ( month + 12 * year ) >= IGREG )
+    {
+        const int ja = (int)( 0.01 * jy );
+        jul += 2 - ja + (int)( 0.25 * ja );
+    }
+
+    if ( julian ) *julian = jul;
+}
+
+inline void JulianToDate( const long julian, int* year, int* month, int* day )
+{
+    const int JGREG = 2299161;
+
+    int ja = julian;
+    // Cross-over to Gregorian Calendar produces this correction.
+    if ( julian >= JGREG )
+    {
+        const int jalpha = (int)( ( (float)( julian - 1867216 ) - 0.25 ) / 36524.25 );
+        ja += 1 + jalpha - (int)( 0.25 * jalpha );
+    }
+    // Make day number positive by adding integer number of Julian centuries,
+    // then subtract them off at the end.
+    else if ( julian < 0 )
+    {
+        ja += 36525 * ( 1 - julian / 36525 );
+    }
+
+    int jb = ja + 1524;
+    int jc = (int)( 6680.0 + ( (float)( jb - 2439870 ) - 122.1 ) / 365.25 );
+    int jd = (int)( 365 * jc + ( 0.25 * jc ) );
+    int je = (int)( ( jb - jd ) / 30.6001 );
+
+    int d = jb - jd - (int)( 30.6001 * je );
+
+    int m = je - 1;
+    if ( m > 12 ) m -= 12;
+
+    int y = jc - 4715;
+    if ( m > 2 ) --y;
+    if ( y <= 0 ) --y;
+
+    if ( year ) *year = y;
+    if ( month ) *month = m;
+    if ( day ) *day = d;
+}
+
+inline kvs::Date FixedDate( const int year, const int month, const int day )
+{
+    kvs::Date temp( year, month, 1 );
+    return kvs::Date( year, month, kvs::Math::Min( day, temp.daysInMonth() ) );
+}
+
 } // end of namespace
 
 
@@ -88,7 +160,7 @@ Date::Date()
 Date::Date( const long julian_day ):
     m_julian_day( julian_day )
 {
-    *this = this->convert_from_julian_date( m_julian_day );
+    ::JulianToDate( m_julian_day, &m_year, &m_month, &m_day );
 }
 
 Date::Date( const int year, const int month, const int day ):
@@ -96,15 +168,15 @@ Date::Date( const int year, const int month, const int day ):
     m_month( month ),
     m_day( day )
 {
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
+    ::DateToJulian( m_year, m_month, m_day, &m_julian_day );
 }
 
 Date::Date( const Date& date ):
     m_year( date.m_year ),
     m_month( date.m_month ),
-    m_day( date.m_day )
+    m_day( date.m_day ),
+    m_julian_day( date.m_julian_day )
 {
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
 }
 
 Date::~Date()
@@ -117,14 +189,12 @@ Date& Date::operator = ( const Date& date )
     m_month = date.m_month;
     m_day = date.m_day;
     m_julian_day = date.m_julian_day;
-
     return *this;
 }
 
 Date& Date::operator += ( const int days )
 {
     this->addDays( days );
-
     return *this;
 }
 
@@ -187,7 +257,6 @@ std::ostream& operator << ( std::ostream& os, const Date& date )
        << date.monthString()     << " "
        << date.day()             << " "
        << date.year();
-
     return os;
 }
 
@@ -202,12 +271,10 @@ const Date& Date::today()
 {
     time_t t = time( NULL );
     tm* time = localtime( &t );
-
     m_year = time->tm_year + 1900;
     m_month = time->tm_mon + 1;
     m_day = time->tm_mday;
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
-
+    ::DateToJulian( m_year, m_month, m_day, &m_julian_day );
     return *this;
 }
 
@@ -218,7 +285,6 @@ int Date::yearsOld() const
 
     const long t = today.julianDay();
     const long b = this->julianDay();
-
     return static_cast<int>( ( t - b ) / 365.2425 );
 }
 
@@ -234,7 +300,6 @@ Date::DayOfWeek Date::dayOfWeek() const
     t.tm_isdst = -1;
 
     if ( mktime( &t ) == -1 ) { return Date::UnknownDay; }
-
     return ( Date::DayOfWeek )( t.tm_wday );
 }
 
@@ -252,8 +317,12 @@ int Date::daysInMonth() const
 {
     if ( ( m_month < Date::Jan ) || ( Date::Dec < m_month ) ) { return 0; }
     if ( ( Date::Feb == m_month ) && this->isLeepYear() ) { return 29; }
-
     return ::DaysInMonth[ m_month - 1 ];
+}
+
+int Date::daysInYear() const
+{
+    return this->isLeepYear() ? 366 : 365;
 }
 
 std::string Date::toString( const std::string sep ) const
@@ -261,7 +330,6 @@ std::string Date::toString( const std::string sep ) const
     char y[5]; sprintf( y, "%04d", m_year );
     char m[3]; sprintf( m, "%02d", m_month );
     char d[3]; sprintf( d, "%02d", m_day );
-
     return std::string( y ) + sep + std::string( m ) + sep + std::string( d );
 }
 
@@ -294,7 +362,8 @@ void Date::fromString( const std::string date, const std::string sep )
         m_day = atoi( d.c_str() );
     }
 
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
+    ::DateToJulian( m_year, m_month, m_day, &m_julian_day );
+//    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
 }
 
 bool Date::isLeepYear() const
@@ -311,73 +380,101 @@ bool Date::isValid() const
 
 void Date::addYears( const int years )
 {
-    m_year += years;
-    this->adjust_days();
+    if ( years == 0 ) return;
 
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
-}
+    int y = m_year;
+    y += years;
 
-void Date::subYears( const int years )
-{
-    m_year -= years;
-    this->adjust_days();
+    const int old_year = m_year;
+    if ( ( old_year > 0 && y <= 0 ) || ( old_year < 0 && y >= 0 ) )
+    {
+        y += years > 0 ? +1 : -1;
+    }
 
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
+    *this = ::FixedDate( y, m_month, m_day );
 }
 
 void Date::addMonths( const int months )
 {
-    m_month += months;
-    if ( m_month > Date::Dec )
+    if ( months == 0 ) return;
+
+    const int old_year = m_year;
+    const bool increasing = ( months > 0 );
+
+    int y = m_year;
+    int m = m_month;
+    int d = m_day;
+
+    int nm = months;
+    while ( nm != 0 )
     {
-        while ( m_month > Date::Dec )
+        if ( nm < 0 && nm + 12 <= 0 )
         {
-            m_month -= 12;
-            m_year += 1;
+            y--;
+            nm += 12;
+        }
+        else if ( nm < 0 )
+        {
+            m += nm;
+            nm = 0;
+            if ( m <= 0 )
+            {
+                --y;
+                m += 12;
+            }
+        }
+        else if ( nm - 12 >= 0 )
+        {
+            y++;
+            nm -= 12;
+        }
+        else if ( m == 12 )
+        {
+            y++;
+            m = 0;
+        }
+        else
+        {
+            m += nm;
+            nm = 0;
+            if ( m > 12 )
+            {
+                ++y;
+                m -= 12;
+            }
         }
     }
 
-    this->adjust_days();
-
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
-}
-
-void Date::subMonths( const int months )
-{
-    m_month -= months;
-
-    if ( months > Date::Dec )
+    if ( ( old_year > 0 && y <= 0 ) || ( old_year < 0 && y >= 0 ) )
     {
-        const int t = months / 12;
-        m_year -= t;
-        m_month += t * 12;
+        y += increasing ? +1 : -1;
     }
 
-    if ( m_month < Date::Jan )
+    if ( y == 1528 && m == 10 && d > 4 && d < 15 )
     {
-        m_year -=  1;
-        m_month += 12;
+        d = increasing ? 15 : 4;
     }
 
-    this->adjust_days();
-
-    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
+    *this = ::FixedDate( y, m, d );
 }
 
 void Date::addDays( const int days )
 {
-    m_julian_day += days;
+    if ( days == 0 ) return;
 
-    *this = this->convert_from_julian_date( m_julian_day );
+    const long jd = m_julian_day;
+    if ( days >= 0 )
+    {
+        m_julian_day = ( jd + days >= jd ) ? jd + days : 0;
+    }
+    else
+    {
+        m_julian_day = ( jd - days < jd ) ? jd - days : 0;
+    }
+    ::JulianToDate( m_julian_day, &m_year, &m_month, &m_day );
 }
 
-void Date::subDays( const int days )
-{
-    m_julian_day -= days;
-
-    *this = this->convert_from_julian_date( m_julian_day );
-}
-
+/*
 void Date::adjust_days()
 {
     const Date this_month( m_year, m_month,     1 );
@@ -411,5 +508,5 @@ Date Date::convert_from_julian_date( const long julian_day ) const
 
     return Date( year, month, day );
 }
-
+*/
 } // end of namespace kvs

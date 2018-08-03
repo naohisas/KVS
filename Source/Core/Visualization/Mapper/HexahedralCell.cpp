@@ -119,7 +119,7 @@ void HexahedralCell::updateDifferentialFunctions( const kvs::Vec3& local ) const
  *  @return volume of the cell
  */
 /*===========================================================================*/
-const kvs::Real32 HexahedralCell::volume() const
+kvs::Real32 HexahedralCell::volume() const
 {
     const size_t resolution = 3;
     const float sampling_length = 1.0f / (float)resolution;

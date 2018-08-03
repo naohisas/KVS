@@ -42,7 +42,7 @@ public:
 
     void updateInterpolationFunctions( const kvs::Vec3& local ) const;
     void updateDifferentialFunctions( const kvs::Vec3& local ) const;
-    const kvs::Real32 volume() const;
+    kvs::Real32 volume() const;
 };
 
 } // end of namespace kvs

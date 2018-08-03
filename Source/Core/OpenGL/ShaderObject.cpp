@@ -97,7 +97,7 @@ bool ShaderObject::isCreated() const
 
 bool ShaderObject::isValid() const
 {
-    GLboolean result;
+    GLboolean result = GL_FALSE;
     KVS_GL_CALL( result = glIsShader( m_id ) );
     return result == GL_TRUE;
 }

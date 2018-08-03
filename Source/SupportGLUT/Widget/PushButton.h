@@ -33,11 +33,9 @@ namespace glut
 class PushButton : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     int m_text_margin; ///< text margin
     kvs::RGBColor m_button_color; ///< button color
@@ -46,31 +44,30 @@ protected:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-
     PushButton( kvs::ScreenBase* screen = 0 );
 
-    virtual void pressed( void ){};
-    virtual void released( void ){};
-    virtual void screenUpdated( void ){};
-    virtual void screenResized( void ){};
+    virtual void pressed(){};
+    virtual void released(){};
+    virtual void screenUpdated(){};
+    virtual void screenResized(){};
 
-    const std::string& caption( void ) const;
+    const std::string& caption() const { return m_caption; }
 
-    void setCaption( const std::string caption );
-    void setTextMargin( const int margin );
+    void setCaption( const std::string caption ) { m_caption = caption; }
+    void setTextMargin( const int margin ) { m_text_margin = margin; }
     void setButtonColor( const kvs::RGBColor& color );
 
-private:
-
-    void draw_button( void );
-    int get_fitted_width( void );
-    int get_fitted_height( void );
-    int get_aligned_x( void );
-    int get_aligned_y( void );
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
 private:
+    void draw_button();
+    int get_aligned_x();
+    int get_aligned_y();
 
-    void paintEvent( void );
+private:
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseReleaseEvent( kvs::MouseEvent* event );

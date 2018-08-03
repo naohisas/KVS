@@ -149,14 +149,16 @@ public:
  */
 /*==========================================================================*/
 typedef Vector3<int>          Vector3i;
-typedef Vector3<unsigned int> Vector3ui;
+typedef Vector3<unsigned int> Vector3u;
 typedef Vector3<float>        Vector3f;
 typedef Vector3<double>       Vector3d;
 typedef Vector3<float>        Vec3;
 typedef Vector3<int>          Vec3i;
-typedef Vector3<unsigned int> Vec3ui;
+typedef Vector3<unsigned int> Vec3u;
 typedef Vector3<double>       Vec3d;
 
+typedef Vector3<unsigned int> Vector3ui;
+typedef Vector3<unsigned int> Vec3ui;
 
 /*===========================================================================*/
 /**

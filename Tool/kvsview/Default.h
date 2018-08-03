@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   Default.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,11 +12,10 @@
  *  $Id: Default.h 602 2010-08-19 02:43:34Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__DEFAULT_H_INCLUDE
-#define KVSVIEW__DEFAULT_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/CommandLine>
+#include <kvs/Program>
 #include "Argument.h"
 
 
@@ -33,7 +33,6 @@ namespace Default
 class Argument : public kvsview::Argument::Common
 {
 public:
-
     Argument( int argc, char** argv );
 };
 
@@ -42,26 +41,16 @@ public:
  *  Main class.
  */
 /*===========================================================================*/
-class Main
+class Main : public kvs::Program
 {
-protected:
-
-    int         m_argc;         ///< argument count
-    char**      m_argv;         ///< argument values
-    std::string m_input_name;   ///< input filename
-    std::string m_output_name;  ///< output filename
+private:
+    std::string m_input_name; ///< input filename
+    std::string m_output_name; ///< output filename
 
 public:
-
-    Main( int argc, char** argv );
-
-public:
-
-    const bool exec( void );
+    int exec( int argc, char** argv );
 };
 
 } // end of namespace Default
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__DEFAULT_H_INCLUDE

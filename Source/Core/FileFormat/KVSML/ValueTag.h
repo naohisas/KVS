@@ -38,37 +38,32 @@ public:
 
 private:
 
-    bool m_has_label; ///< flag to check whether 'label' is specified or not
-    bool m_has_unit; ///< flag to check whether 'unit' is specified or not
-    bool m_has_veclen; ///< flag to check whether 'veclen' is specified or not
-    bool m_has_min_value; ///< flag to check whether 'min_value' is specified or not
-    bool m_has_max_value; ///< flag to check whether 'max_value' is specified or not
-    std::string m_label; ///< data label
-    std::string m_unit; ///< data unit
-    size_t m_veclen; ///< vector length
-    double m_min_value; ///< minimum value
-    double m_max_value; ///< maximum value
+    kvs::kvsml::TagAttribute<std::string> m_label; ///< data label
+    kvs::kvsml::TagAttribute<std::string> m_unit; ///< data unit
+    kvs::kvsml::TagAttribute<size_t> m_veclen; ///< vector length
+    kvs::kvsml::TagAttribute<double> m_min_value; ///< minimum value
+    kvs::kvsml::TagAttribute<double> m_max_value; ///< maximum value
 
 public:
 
     ValueTag();
 
-    bool hasLabel() const { return m_has_label; }
-    bool hasUnit() const { return m_has_unit; }
-    bool hasVeclen() const { return m_has_veclen; }
-    bool hasMinValue() const { return m_has_min_value; }
-    bool hasMaxValue() const { return m_has_max_value; }
+    bool hasLabel() const { return m_label.hasValue(); }
+    bool hasUnit() const { return m_unit.hasValue(); }
+    bool hasVeclen() const { return m_veclen.hasValue(); }
+    bool hasMinValue() const { return m_min_value.hasValue(); }
+    bool hasMaxValue() const { return m_max_value.hasValue(); }
     const std::string& label() const { return m_label; }
     const std::string& unit() const { return m_unit; }
     size_t veclen() const { return m_veclen; }
     double minValue() const { return m_min_value; }
     double maxValue() const { return m_max_value; }
 
-    void setLabel( const std::string& label ) { m_has_label = true; m_label = label; }
-    void setUnit( const std::string& unit ) { m_has_unit = true; m_unit = unit; }
-    void setVeclen( const size_t veclen ) { m_has_veclen = true; m_veclen = veclen; }
-    void setMinValue( const double value ) { m_has_min_value = true; m_min_value = value; }
-    void setMaxValue( const double value ) { m_has_max_value = true; m_max_value = value; }
+    void setLabel( const std::string& label ) { m_label = label; }
+    void setUnit( const std::string& unit ) { m_unit = unit; }
+    void setVeclen( const size_t veclen ) { m_veclen = veclen; }
+    void setMinValue( const double value ) { m_min_value = value; }
+    void setMaxValue( const double value ) { m_max_value = value; }
 
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );

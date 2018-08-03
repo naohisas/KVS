@@ -58,7 +58,7 @@ void ReferenceCounter::setValue( size_t value )
  *  @return counter value
  */
 /*==========================================================================*/
-const size_t ReferenceCounter::value( void ) const
+size_t ReferenceCounter::value( void ) const
 {
     return( m_value );
 }

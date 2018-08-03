@@ -25,7 +25,7 @@ namespace kvs
  *  @param  object [in] pointer to the input point object
  */
 /*===========================================================================*/
-PointExporter<kvs::KVSMLObjectPoint>::PointExporter( const kvs::PointObject* object )
+PointExporter<kvs::KVSMLPointObject>::PointExporter( const kvs::PointObject* object )
 {
     this->exec( object );
 }
@@ -34,10 +34,10 @@ PointExporter<kvs::KVSMLObjectPoint>::PointExporter( const kvs::PointObject* obj
 /**
  *  @brief  Executes the export process.
  *  @param  object [in] pointer to the input object
- *  @return pointer to the KVSMLObjectPoint format
+ *  @return pointer to the KVSMLPointObject format
  */
 /*===========================================================================*/
-kvs::KVSMLObjectPoint* PointExporter<kvs::KVSMLObjectPoint>::exec( const kvs::ObjectBase* object )
+kvs::KVSMLPointObject* PointExporter<kvs::KVSMLPointObject>::exec( const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );
 

@@ -12,8 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__CAMERA_COORDINATE_H_INCLUDE
-#define KVS__CAMERA_COORDINATE_H_INCLUDE
+#pragma once
 
 #include <kvs/Vector3>
 
@@ -47,5 +46,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__CAMERA_COORDINATE_H_INCLUDE

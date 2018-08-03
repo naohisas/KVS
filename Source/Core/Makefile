@@ -17,6 +17,9 @@ LIBRARY_PATH :=
 LINK_LIBRARY :=
 INSTALL_DIR  := $(KVS_DIR)
 
+INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
+INCLUDE_PATH += $(GL_INCLUDE_PATH)
+
 
 #=============================================================================
 #  Include build rule.

@@ -55,7 +55,7 @@ public:
     void setColorMap( const kvs::ColorMap& color_map );
     void setOpacityMap( const kvs::OpacityMap& opacity_map );
 
-    const kvs::VolumeObjectBase* const volume() const;
+    const kvs::VolumeObjectBase* volume() const;
     const kvs::TransferFunction& transferFunction() const;
     const kvs::ColorMap& colorMap() const;
     const kvs::OpacityMap& opacityMap() const;

@@ -92,7 +92,7 @@ void MapperBase::setOpacityMap( const kvs::OpacityMap& opacity_map )
  *  @return pointer to the volume object
  */
 /*===========================================================================*/
-const kvs::VolumeObjectBase* const MapperBase::volume() const
+const kvs::VolumeObjectBase* MapperBase::volume() const
 {
     return m_volume;
 }

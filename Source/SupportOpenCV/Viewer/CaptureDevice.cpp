@@ -26,9 +26,20 @@ namespace opencv
  *  @brief  Constructs a new CaptureDevice class.
  */
 /*===========================================================================*/
-CaptureDevice::CaptureDevice( void ):
+CaptureDevice::CaptureDevice():
     m_handler( 0 )
 {
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the capture device handler.
+ *  @return capture device handler
+ */
+/*===========================================================================*/
+const CvCapture* CaptureDevice::handler()
+{
+    return m_handler;
 }
 
 /*===========================================================================*/
@@ -36,9 +47,102 @@ CaptureDevice::CaptureDevice( void ):
  *  @brief  Destructs the CaptureDevice class.
  */
 /*===========================================================================*/
-CaptureDevice::~CaptureDevice( void )
+CaptureDevice::~CaptureDevice()
 {
     this->release();
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the specified capture property.
+ *  @param  property_id [i] property ID
+ *  @return specified capture property
+ */
+/*===========================================================================*/
+double CaptureDevice::property( const int property_id ) const
+{
+    return cvGetCaptureProperty( m_handler, property_id );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Set a capture property.
+ *  @param  property_id [i] property ID
+ *  @param  value [i] value of the property
+ *  @return 1 (true) if success, 0 otherwise
+ */
+/*===========================================================================*/
+int CaptureDevice::setProperty( const int property_id, const double value ) const
+{
+    return cvSetCaptureProperty( m_handler, property_id, value );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the frame width.
+ *  @return frame width
+ */
+/*===========================================================================*/
+double CaptureDevice::frameWidth() const
+{
+    return this->property( CV_CAP_PROP_FRAME_WIDTH );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the frame height.
+ *  @return frame height
+ */
+/*===========================================================================*/
+double CaptureDevice::frameHeight() const
+{
+    return this->property( CV_CAP_PROP_FRAME_HEIGHT );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the frame rate.
+ *  @return frame rate
+ */
+/*===========================================================================*/
+double CaptureDevice::frameRate() const
+{
+    return this->property( CV_CAP_PROP_FPS );
+}
+
+double CaptureDevice::numberOfFrames() const
+{
+    return this->property( CV_CAP_PROP_FRAME_COUNT );
+}
+
+double CaptureDevice::currentPosition() const
+{
+    return this->property( CV_CAP_PROP_POS_MSEC );
+}
+
+double CaptureDevice::relativePosition() const
+{
+    return this->property( CV_CAP_PROP_POS_AVI_RATIO );
+}
+
+double CaptureDevice::nextFrameIndex() const
+{
+    return this->property( CV_CAP_PROP_POS_FRAMES );
+}
+
+int CaptureDevice::setCurrentPosition( const double msec ) const
+{
+    return this->setProperty( CV_CAP_PROP_POS_MSEC, msec );
+}
+
+int CaptureDevice::setRelativePosition( const double pos ) const
+{
+    return this->setProperty( CV_CAP_PROP_POS_AVI_RATIO, pos );
+}
+
+int CaptureDevice::setNextFrameIndex( const double index ) const
+{
+    return this->setProperty( CV_CAP_PROP_POS_FRAMES, index );
 }
 
 /*===========================================================================*/
@@ -51,7 +155,7 @@ CaptureDevice::~CaptureDevice( void )
 bool CaptureDevice::create( const int index )
 {
     m_handler = cvCreateCameraCapture( index );
-    return( m_handler != NULL );
+    return m_handler != NULL;
 }
 
 /*===========================================================================*/
@@ -64,7 +168,7 @@ bool CaptureDevice::create( const int index )
 bool CaptureDevice::create( const std::string filename )
 {
     m_handler = cvCreateFileCapture( filename.c_str() );
-    return( m_handler != NULL );
+    return m_handler != NULL;
 }
 
 /*===========================================================================*/
@@ -72,53 +176,9 @@ bool CaptureDevice::create( const std::string filename )
  *  @brief  Releases the capture device.
  */
 /*===========================================================================*/
-void CaptureDevice::release( void )
+void CaptureDevice::release()
 {
     if ( m_handler ) cvReleaseCapture( &m_handler );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the capture device handler.
- *  @return capture device handler
- */
-/*===========================================================================*/
-const CvCapture* CaptureDevice::handler( void )
-{
-    return( m_handler );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the frame width.
- *  @return frame width
- */
-/*===========================================================================*/
-const double CaptureDevice::frameWidth( void )
-{
-    return( cvGetCaptureProperty( m_handler, CV_CAP_PROP_FRAME_WIDTH ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the frame height.
- *  @return frame height
- */
-/*===========================================================================*/
-const double CaptureDevice::frameHeight( void )
-{
-    return( cvGetCaptureProperty( m_handler, CV_CAP_PROP_FRAME_HEIGHT ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the frame rate.
- *  @return frame rate
- */
-/*===========================================================================*/
-const double CaptureDevice::frameRate( void )
-{
-    return( cvGetCaptureProperty( m_handler, CV_CAP_PROP_FPS ) );
 }
 
 /*===========================================================================*/
@@ -126,9 +186,9 @@ const double CaptureDevice::frameRate( void )
  *  @brief  Grabs frame and the grabbed frame is stored internally.
  */
 /*===========================================================================*/
-const int CaptureDevice::grabFrame( void ) const
+int CaptureDevice::grabFrame() const
 {
-    return( cvGrabFrame( m_handler ) );
+    return cvGrabFrame( m_handler );
 }
 
 /*===========================================================================*/
@@ -137,9 +197,9 @@ const int CaptureDevice::grabFrame( void ) const
  *  @return pointer to the grabbed image
  */
 /*===========================================================================*/
-const IplImage* CaptureDevice::retrieveFrame( void ) const
+const IplImage* CaptureDevice::retrieveFrame() const
 {
-    return( cvRetrieveFrame( m_handler ) );
+    return cvRetrieveFrame( m_handler );
 }
 
 /*===========================================================================*/
@@ -148,9 +208,9 @@ const IplImage* CaptureDevice::retrieveFrame( void ) const
  *  @return pointer to the grabbed image
  */
 /*===========================================================================*/
-const IplImage* CaptureDevice::queryFrame( void ) const
+const IplImage* CaptureDevice::queryFrame() const
 {
-    return( cvQueryFrame( m_handler ) );
+    return cvQueryFrame( m_handler );
 }
 
 } // end of namespace opencv

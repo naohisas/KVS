@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   ParticleBasedRenderer.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -36,7 +37,6 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/TransferFunctionEditor>
 #include "CommandName.h"
-#include "ObjectInformation.h"
 #include "FileChecker.h"
 #include "Widget.h"
 
@@ -135,12 +135,11 @@ const void SetupMapper(
     Mapper* mapper )
 {
     const size_t repetition_level = arg.repetitionLevel();
-    const size_t subpixel_level = ::GetSubpixelLevel( repetition_level );
     const float step = 0.5f;
     const float depth = 0.0f;
     mapper->attachCamera( screen.scene()->camera() );
     mapper->setTransferFunction( tfunc );
-    mapper->setSubpixelLevel( subpixel_level );
+    mapper->setRepetitionLevel( repetition_level );
     mapper->setSamplingStep( step );
     mapper->setObjectDepth( depth );
 }
@@ -153,7 +152,7 @@ const void SetupMapper(
 class TransferFunctionEditor : public kvs::glut::TransferFunctionEditor
 {
     kvsview::ParticleBasedRenderer::Argument* m_arg; ///< pointer to the argument
-    kvs::glut::LegendBar* m_legend_bar; ///< pointer to the legend bar
+    kvs::ColorMapBar* m_colormap_bar; ///< pointer to the colormap bar
     const kvs::VolumeObjectBase* m_volume; ///< pointer to the volume object
 
 public:
@@ -161,20 +160,12 @@ public:
     TransferFunctionEditor( kvs::glut::Screen* screen, kvsview::ParticleBasedRenderer::Argument* arg ):
         kvs::glut::TransferFunctionEditor( screen ),
         m_arg( arg ),
-        m_legend_bar( NULL ),
+        m_colormap_bar( NULL ),
         m_volume( NULL ) {}
 
-    void apply( void )
+    void apply()
     {
         kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-
-        // Erase the object and renderer.
-        const kvs::ObjectBase* obj = glut_screen->scene()->objectManager()->object( ::ObjectName );
-        const kvs::Xform xform = obj->xform();
-        const int obj_id = glut_screen->scene()->objectManager()->objectID( obj );
-        glut_screen->scene()->IDManager()->eraseByObjectID( obj_id );
-        glut_screen->scene()->objectManager()->erase( ::ObjectName );
-        glut_screen->scene()->rendererManager()->erase( ::RendererName );
 
         // Current transfer function.
         kvs::TransferFunction tfunc( transferFunction() );
@@ -188,8 +179,6 @@ public:
             kvs::CellByCellMetropolisSampling* mapper = new kvs::CellByCellMetropolisSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
             break;
         }
         case 2: // Rejection sampling
@@ -197,8 +186,6 @@ public:
             kvs::CellByCellRejectionSampling* mapper = new kvs::CellByCellRejectionSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
             break;
         }
         case 3: // Layered sampling
@@ -206,8 +193,6 @@ public:
             kvs::CellByCellLayeredSampling* mapper = new kvs::CellByCellLayeredSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
             break;
         }
         default: // Uniform sampling
@@ -215,11 +200,13 @@ public:
             kvs::CellByCellUniformSampling* mapper = new kvs::CellByCellUniformSampling();
             kvsview::ParticleBasedRenderer::SetupMapper( *m_arg, tfunc, *glut_screen, mapper );
             object = mapper->exec( m_volume );
-            object->setName( ::ObjectName );
-            object->setXform( xform );
+
             break;
         }
         }
+
+        object->setName( ::ObjectName );
+        glut_screen->scene()->replaceObject( ::ObjectName, object );
 
         // Create new particle volume renderer.
         if ( m_arg->noGPU() )
@@ -232,7 +219,7 @@ public:
             const size_t subpixel_level = ::GetSubpixelLevel( repetition_level );
             renderer->setSubpixelLevel( subpixel_level );
 
-            glut_screen->registerObject( object, renderer );
+            glut_screen->scene()->replaceRenderer( ::RendererName, renderer );
         }
         else
         {
@@ -245,10 +232,10 @@ public:
 
             if ( !m_arg->noLOD() ) renderer->enableLODControl();
 
-            glut_screen->registerObject( object, renderer );
+            glut_screen->scene()->replaceRenderer( ::RendererName, renderer );
         }
 
-        m_legend_bar->setColorMap( transferFunction().colorMap() );
+        m_colormap_bar->setColorMap( transferFunction().colorMap() );
 
         glut_screen->redraw();
     }
@@ -258,9 +245,9 @@ public:
         m_volume = volume;
     }
 
-    void attachLegendBar( kvs::glut::LegendBar* legend_bar )
+    void attachColorMapBar( kvs::ColorMapBar* colormap_bar )
     {
-        m_legend_bar = legend_bar;
+        m_colormap_bar = colormap_bar;
     }
 };
 
@@ -274,7 +261,6 @@ class KeyPressEvent : public kvs::KeyPressEventListener
     TransferFunctionEditor* m_editor; ///!< pointer to the transfer function
 
 public:
-
     void update( kvs::KeyEvent* event )
     {
         kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
@@ -311,7 +297,6 @@ class MouseDoubleClickEvent : public kvs::MouseDoubleClickEventListener
     TransferFunctionEditor* m_editor; ///!< pointer to the transfer function
 
 public:
-
     void update( kvs::MouseEvent* event )
     {
         if ( ::Shown ) m_editor->hide();
@@ -366,12 +351,11 @@ Argument::Argument( int argc, char** argv ):
  *  @return sampling method number
  */
 /*===========================================================================*/
-const int Argument::sampling( void ) const
+const int Argument::sampling() const
 {
     const int default_value = 0;
-
-    if ( this->hasOption("sampling") ) return( this->optionValue<int>("sampling") );
-    else return( default_value );
+    if ( this->hasOption("sampling") ) return this->optionValue<int>("sampling");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -380,12 +364,11 @@ const int Argument::sampling( void ) const
  *  @return shader number
  */
 /*===========================================================================*/
-const int Argument::shader( void ) const
+const int Argument::shader() const
 {
     const int default_value = 0;
-
-    if ( this->hasOption("shader") ) return( this->optionValue<int>("shader") );
-    else return( default_value );
+    if ( this->hasOption("shader") ) return this->optionValue<int>("shader");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -394,9 +377,9 @@ const int Argument::shader( void ) const
  *  @return true, if the "noshading" option is specified
  */
 /*===========================================================================*/
-const bool Argument::noShading( void ) const
+const bool Argument::noShading() const
 {
-    return( this->hasOption("noshading") );
+    return this->hasOption("noshading");
 }
 
 /*===========================================================================*/
@@ -405,9 +388,9 @@ const bool Argument::noShading( void ) const
  *  @return true, if the "nolod" option is specified
  */
 /*===========================================================================*/
-const bool Argument::noLOD( void ) const
+const bool Argument::noLOD() const
 {
-    return( this->hasOption("nolod") );
+    return this->hasOption("nolod");
 }
 
 /*===========================================================================*/
@@ -416,14 +399,14 @@ const bool Argument::noLOD( void ) const
  *  @return true, if the "nogpu" option is specified
  */
 /*===========================================================================*/
-const bool Argument::noGPU( void ) const
+const bool Argument::noGPU() const
 {
-    return( this->hasOption("nogpu") );
+    return this->hasOption("nogpu");
 }
 
-//const bool Argument::noZooming( void ) const
+//const bool Argument::noZooming() const
 //{
-//    return( this->hasOption("nozooming") );
+//    return this->hasOption("nozooming");
 //}
 
 /*===========================================================================*/
@@ -432,12 +415,11 @@ const bool Argument::noGPU( void ) const
  *  @return coefficient for ambient color
  */
 /*===========================================================================*/
-const float Argument::ambient( void ) const
+const float Argument::ambient() const
 {
     const float default_value = this->shader() == 0 ? 0.4f : 0.3f;
-
-    if ( this->hasOption("ka") ) return( this->optionValue<float>("ka") );
-    else return( default_value );
+    if ( this->hasOption("ka") ) return this->optionValue<float>("ka");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -446,12 +428,11 @@ const float Argument::ambient( void ) const
  *  @return coefficient for diffuse color
  */
 /*===========================================================================*/
-const float Argument::diffuse( void ) const
+const float Argument::diffuse() const
 {
     const float default_value = this->shader() == 0 ? 0.6f : 0.5f;
-
-    if ( this->hasOption("kd") ) return( this->optionValue<float>("kd") );
-    else return( default_value );
+    if ( this->hasOption("kd") ) return this->optionValue<float>("kd");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -460,12 +441,11 @@ const float Argument::diffuse( void ) const
  *  @return coefficient for specular color
  */
 /*===========================================================================*/
-const float Argument::specular( void ) const
+const float Argument::specular() const
 {
     const float default_value = 0.8f;
-
-    if ( this->hasOption("ks") ) return( this->optionValue<float>("ks") );
-    else return( default_value );
+    if ( this->hasOption("ks") ) return this->optionValue<float>("ks");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -474,12 +454,11 @@ const float Argument::specular( void ) const
  *  @return coefficient for shininess
  */
 /*===========================================================================*/
-const float Argument::shininess( void ) const
+const float Argument::shininess() const
 {
     const float default_value = 100.0f;
-
-    if ( this->hasOption("n") ) return( this->optionValue<float>("n") );
-    else return( default_value );
+    if ( this->hasOption("n") ) return this->optionValue<float>("n");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -488,12 +467,11 @@ const float Argument::shininess( void ) const
  *  @return repetition level
  */
 /*===========================================================================*/
-const size_t Argument::repetitionLevel( void ) const
+const size_t Argument::repetitionLevel() const
 {
     const size_t default_value = 1;
-
-    if ( this->hasOption("r") ) return( this->optionValue<size_t>("r") );
-    else return( default_value );
+    if ( this->hasOption("r") ) return this->optionValue<size_t>("r");
+    else return default_value;
 }
 
 /*===========================================================================*/
@@ -508,33 +486,20 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
     if ( this->hasOption("t") )
     {
         const std::string filename = this->optionValue<std::string>("t");
-        return( kvs::TransferFunction( filename ) );
+        return kvs::TransferFunction( filename );
     }
     else if ( this->hasOption("T") )
     {
         const std::string filename = this->optionValue<std::string>("T");
         kvs::TransferFunction tfunc( filename );
         tfunc.adjustRange( volume );
-        return( tfunc );
+        return tfunc;
     }
     else
     {
         const size_t resolution = 256;
-        return( kvs::TransferFunction( resolution ) );
+        return kvs::TransferFunction( resolution );
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Main class.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Main::Main( int argc, char** argv )
-{
-    m_argc = argc;
-    m_argv = argv;
 }
 
 /*===========================================================================*/
@@ -542,14 +507,14 @@ Main::Main( int argc, char** argv )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-const bool Main::exec( void )
+int Main::exec( int argc, char** argv )
 {
     // GLUT viewer application.
-    kvs::glut::Application app( m_argc, m_argv );
+    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
-    kvsview::ParticleBasedRenderer::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) return( false );
+    kvsview::ParticleBasedRenderer::Argument arg( argc, argv );
+    if ( !arg.parse() ) return false;
 
     // Events.
     kvsview::ParticleBasedRenderer::KeyPressEvent key_press_event;
@@ -561,6 +526,7 @@ const bool Main::exec( void )
     screen.addEvent( &key_press_event );
     screen.addEvent( &mouse_double_click_event );
     screen.setTitle( kvsview::CommandName + " - " + kvsview::ParticleBasedRenderer::CommandName );
+    screen.show();
 
     // Check the input point or volume data.
     m_input_name = arg.value<std::string>();
@@ -570,7 +536,7 @@ const bool Main::exec( void )
                 kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
         {
             kvsMessageError("%s is not volume data.", m_input_name.c_str());
-            return( false );
+            return false;
         }
     }
 
@@ -581,9 +547,7 @@ const bool Main::exec( void )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "IMPORTED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
     }
 
     // Pointer to the volume object data.
@@ -596,16 +560,16 @@ const bool Main::exec( void )
     kvsview::Widget::FPSLabel label( &screen, ::RendererName );
     label.show();
 
-    // Legend bar.
-    kvsview::Widget::LegendBar legend_bar( &screen );
-    legend_bar.setColorMap( tfunc.colorMap() );
+    // Colormap bar.
+    kvsview::Widget::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setColorMap( tfunc.colorMap() );
     if ( !tfunc.hasRange() )
     {
         const kvs::Real32 min_value = static_cast<kvs::Real32>( volume->minValue() );
         const kvs::Real32 max_value = static_cast<kvs::Real32>( volume->maxValue() );
-        legend_bar.setRange( min_value, max_value );
+        colormap_bar.setRange( min_value, max_value );
     }
-    legend_bar.show();
+    colormap_bar.show();
 
     // Orientation axis.
     kvsview::Widget::OrientationAxis orientation_axis( &screen );
@@ -708,7 +672,7 @@ const bool Main::exec( void )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return false;
     }
 
     // Register object.
@@ -718,26 +682,20 @@ const bool Main::exec( void )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        std::cout << "RENDERERED OBJECT" << std::endl;
-        std::cout << kvsview::ObjectInformation( pipe.object() ) << std::endl;
-        std::cout << std::endl;
-        std::cout << "VISUALIZATION PIPELINE" << std::endl;
-        std::cout << pipe << std::endl;
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
-    // Show the screen.
-    screen.show();
-
     // Create transfer function editor.
     kvsview::ParticleBasedRenderer::TransferFunctionEditor editor( &screen, &arg );
     editor.setVolumeObject( volume );
     editor.setTransferFunction( arg.transferFunction( volume ) );
     editor.attachVolume( volume );
-    editor.attachLegendBar( &legend_bar );
+    editor.attachColorMapBar( &colormap_bar );
     editor.show();
     editor.hide();
     ::Shown = false;
@@ -746,7 +704,7 @@ const bool Main::exec( void )
     mouse_double_click_event.attachTransferFunctionEditor( &editor );
     key_press_event.attachTransferFunctionEditor( &editor );
 
-    return( arg.clear(), app.run() );
+    return ( arg.clear(), app.run() );
 }
 
 } // end of namespace ParticleBasedRenderer

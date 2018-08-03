@@ -12,9 +12,7 @@
  *  $Id: StructuredVolumeObject.h 1787 2014-07-17 11:10:26Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__STRUCTURED_VOLUME_OBJECT_H_INCLUDE
-#define KVS__STRUCTURED_VOLUME_OBJECT_H_INCLUDE
-
+#pragma once
 #include <ostream>
 #include <kvs/Module>
 #include <kvs/VolumeObjectBase>
@@ -57,6 +55,8 @@ public:
     void shallowCopy( const StructuredVolumeObject& object );
     void deepCopy( const StructuredVolumeObject& object );
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void setGridType( GridType grid_type ) { m_grid_type = grid_type; }
     void setGridTypeToUniform() { this->setGridType( Uniform ); }
@@ -72,10 +72,6 @@ public:
     size_t numberOfCells() const;
 
     void updateMinMaxCoords();
-
-private:
-
-    void calculate_min_max_coords();
 
 public:
     KVS_DEPRECATED( StructuredVolumeObject(
@@ -112,5 +108,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STRUCTURED_VOLUME_OBJECT_H_INCLUDE

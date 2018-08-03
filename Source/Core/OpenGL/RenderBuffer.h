@@ -16,6 +16,7 @@
 #define KVS__RENDER_BUFFER_H_INCLUDE
 
 #include <kvs/GL>
+#include <cstddef>
 
 
 namespace kvs

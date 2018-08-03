@@ -12,13 +12,12 @@
  *  $Id: Widget.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__WIDGET_H_INCLUDE
-#define KVSVIEW__WIDGET_H_INCLUDE
-
+#pragma once
 #include <string>
-#include <kvs/glut/Label>
-#include <kvs/glut/LegendBar>
-#include <kvs/glut/OrientationAxis>
+#include <kvs/Label>
+#include <kvs/ColorMapBar>
+#include <kvs/OrientationAxis>
+#include <kvs/glut/Screen>
 
 
 namespace kvsview
@@ -32,29 +31,25 @@ namespace Widget
  *  @brief  Label class to show the frame rate.
  */
 /*===========================================================================*/
-class FPSLabel : public kvs::glut::Label
+class FPSLabel : public kvs::Label
 {
     std::string m_renderer_name; ///< renderer name
 
 public:
-
     FPSLabel( kvs::ScreenBase* screen, const std::string renderer_name );
-
-    void screenUpdated( void );
+    void screenUpdated();
 };
 
 /*===========================================================================*/
 /**
- *  @brief  Legend bar class.
+ *  @brief  Color map bar class.
  */
 /*===========================================================================*/
-class LegendBar : public kvs::glut::LegendBar
+class ColorMapBar : public kvs::ColorMapBar
 {
 public:
-
-    LegendBar( kvs::ScreenBase* screen );
-
-    void screenResized( void );
+    ColorMapBar( kvs::ScreenBase* screen );
+    void screenResized();
 };
 
 /*===========================================================================*/
@@ -62,17 +57,13 @@ public:
  *  @brief  Orientation axis class.
  */
 /*===========================================================================*/
-class OrientationAxis : public kvs::glut::OrientationAxis
+class OrientationAxis : public kvs::OrientationAxis
 {
 public:
-
     OrientationAxis( kvs::glut::Screen* screen );
-
-    void screenResized( void );
+    void screenResized();
 };
 
 } // end of namespace Widget
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__WIDGET_H_INCLUDE

@@ -18,7 +18,7 @@
 #include <kvs/Math>
 #include <kvs/Binary>
 #include <kvs/File>
-#include <kvs/KVSMLObjectImage>
+#include <kvs/KVSMLImageObject>
 #include <kvs/Bmp>
 #include <kvs/Ppm>
 #include <kvs/Pgm>
@@ -619,7 +619,7 @@ void BitImage::invert()
 bool BitImage::read( const std::string& filename )
 {
     // Color or Gray image.
-    if ( kvs::KVSMLObjectImage::CheckExtension( filename ) ||
+    if ( kvs::KVSMLImageObject::CheckExtension( filename ) ||
          kvs::Bmp::CheckExtension( filename ) ||
          kvs::Ppm::CheckExtension( filename ) ||
          kvs::Pgm::CheckExtension( filename ) ||
@@ -665,7 +665,7 @@ bool BitImage::write( const std::string& filename )
     const std::string extension = file.extension();
 
     // Color image.
-    if ( kvs::KVSMLObjectImage::CheckExtension( filename ) ||
+    if ( kvs::KVSMLImageObject::CheckExtension( filename ) ||
          kvs::Bmp::CheckExtension( filename ) ||
          kvs::Ppm::CheckExtension( filename ) )
     {

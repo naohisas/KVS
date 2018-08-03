@@ -37,13 +37,10 @@ class CheckBoxGroup;
 class CheckBox : public kvs::glut::WidgetBase
 {
 public:
-
     typedef kvs::glut::WidgetBase BaseClass;
-
     friend class kvs::glut::CheckBoxGroup;
 
-protected:
-
+private:
     std::string m_caption; ///< caption
     kvs::RGBColor m_upper_edge_color; ///< upper edge color
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
@@ -51,33 +48,32 @@ protected:
     kvs::glut::CheckBoxGroup* m_group; ///< pointer to the check box group
 
 public:
-
     CheckBox( kvs::ScreenBase* screen = 0 );
 
-    virtual void pressed( void ) {};
-    virtual void released( void ) {};
-    virtual void screenUpdated( void ) {};
-    virtual void screenResized( void ) {};
-    virtual void stateChanged( void ) {};
+    virtual void pressed() {};
+    virtual void released() {};
+    virtual void screenUpdated() {};
+    virtual void screenResized() {};
+    virtual void stateChanged() {};
 
-    const std::string& caption( void ) const;
-    bool state( void ) const;
-    void setCaption( const std::string caption );
-    void setState( const bool state );
+    const std::string& caption() const { return m_caption; }
+    bool state() const { return m_state; }
+    void setCaption( const std::string caption ) { m_caption = caption; }
+    void setState( const bool state ) { m_state = state; }
+
+protected:
+    int adjustedWidth();
+    int adjustedHeight();
 
 private:
-
-    void draw_box( void );
-    void draw_mark( void );
-    int get_fitted_width( void );
-    int get_fitted_height( void );
+    void draw_box();
+    void draw_mark();
     bool contains( int x, int y );
-    void attach_group( kvs::glut::CheckBoxGroup* group );
-    void detach_group( void );
+    void attach_group( kvs::glut::CheckBoxGroup* group ) { m_group = group; }
+    void detach_group() { m_group = NULL; }
 
 private:
-
-    void paintEvent( void );
+    void paintEvent();
     void resizeEvent( int width, int height );
     void mousePressEvent( kvs::MouseEvent* event );
     void mouseReleaseEvent( kvs::MouseEvent* event );

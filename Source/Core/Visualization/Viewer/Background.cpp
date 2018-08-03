@@ -19,11 +19,11 @@
 namespace kvs
 {
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Constructor.
+ *  @brief  Constructs a new Background class.
  */
-/*==========================================================================*/
+/*===========================================================================*/
 Background::Background()
 {
     m_type = Background::MonoColor;
@@ -31,58 +31,58 @@ Background::Background()
 
 /*==========================================================================*/
 /**
- *  Constructor for mono-color background.
- *  @param color [in] background color
+ *  @brief  Constructs a new Background class.
+ *  @param  c [in] background color
  */
 /*==========================================================================*/
-Background::Background( const kvs::RGBAColor& color )
+Background::Background( const kvs::RGBAColor& c )
 {
-    this->setColor( color );
+    this->setColor( c );
 }
 
 /*==========================================================================*/
 /**
- *  Constructor for gradation background.
- *  @param color0 [in] color on the corner #0 (bottom side color)
- *  @param color1 [in] color on the corner #1 (top side color)
+ *  @brief  Constructs a new Background class.
+ *  @param  c0 [in] color on the corner #0 (bottom side color)
+ *  @param  c1 [in] color on the corner #1 (top side color)
  */
 /*==========================================================================*/
-Background::Background( const kvs::RGBAColor& color1, const kvs::RGBAColor& color2 )
+Background::Background( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1 )
 {
-    this->setColor( color1, color2 );
+    this->setColor( c0, c1 );
 }
 
 /*==========================================================================*/
 /**
- *  Constructor for gradation background.
- *  @param color0 [in] color on the corner #0 (bottom-left color)
- *  @param color1 [in] color on the corner #1 (bottom-right color)
- *  @param color2 [in] color on the corner #2 (top-right color)
- *  @param color3 [in] color on the corner #3 (top-left color)
+ *  @brief  Constructs a new Background class.
+ *  @param  c0 [in] color on the corner #0 (bottom-left color)
+ *  @param  c1 [in] color on the corner #1 (bottom-right color)
+ *  @param  c2 [in] color on the corner #2 (top-right color)
+ *  @param  c3 [in] color on the corner #3 (top-left color)
  */
 /*==========================================================================*/
 Background::Background(
-    const kvs::RGBAColor& color0,
-    const kvs::RGBAColor& color1,
-    const kvs::RGBAColor& color2,
-    const kvs::RGBAColor& color3 )
+    const kvs::RGBAColor& c0,
+    const kvs::RGBAColor& c1,
+    const kvs::RGBAColor& c2,
+    const kvs::RGBAColor& c3 )
 {
-    this->setColor( color0, color1, color2, color3 );
+    this->setColor( c0, c1, c2, c3 );
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Destructor.
+ *  @brief  Destructs the Background class.
  */
-/*==========================================================================*/
+/*===========================================================================*/
 Background::~Background()
 {
 }
 
 /*==========================================================================*/
 /**
- *  Copy operator.
- *  @param bg [in] background object
+ *  @brief  Copies a backbround to this backbround.
+ *  @param  bg [in] background object
  */
 /*==========================================================================*/
 Background& Background::operator = ( const Background& bg )
@@ -92,58 +92,57 @@ Background& Background::operator = ( const Background& bg )
     m_color[1] = bg.m_color[1];
     m_color[2] = bg.m_color[2];
     m_color[3] = bg.m_color[3];
-
     return *this;
 }
 
 /*==========================================================================*/
 /**
- *  Set the color.
- *  @param color [in] color
+ *  @brief  Sets the color.
+ *  @param  c [in] color
  */
 /*==========================================================================*/
-void Background::setColor( const kvs::RGBAColor& color )
+void Background::setColor( const kvs::RGBAColor& c )
 {
     m_type = Background::MonoColor;
-    m_color[0] = color;
+    m_color[0] = c;
 }
 
 /*==========================================================================*/
 /**
- *  Set the colors.
- *  @param color0 [in] color on the corner #0 (bottom side color)
- *  @param color1 [in] color on the corner #1 (top side color)
+ *  @brief  Sets the colors.
+ *  @param  c0 [in] color on the corner #0 (bottom side color)
+ *  @param  c1 [in] color on the corner #1 (top side color)
  */
 /*==========================================================================*/
-void Background::setColor( const RGBAColor& color0, const RGBAColor& color1 )
+void Background::setColor( const RGBAColor& c0, const RGBAColor& c1 )
 {
     m_type = Background::TwoSideColor;
-    m_color[0] = color0;
-    m_color[1] = color0;
-    m_color[2] = color1;
-    m_color[3] = color1;
+    m_color[0] = c0;
+    m_color[1] = c0;
+    m_color[2] = c1;
+    m_color[3] = c1;
 }
 
 /*==========================================================================*/
 /**
- *  Set the colors.
- *  @param color0 [in] color on the corner #0 (bottom-left color)
- *  @param color1 [in] color on the corner #1 (bottom-right color)
- *  @param color2 [in] color on the corner #2 (top-right color)
- *  @param color3 [in] color on the corner #3 (top-left color)
+ *  @brief  Set the colors.
+ *  @param  c0 [in] color on the corner #0 (bottom-left color)
+ *  @param  c1 [in] color on the corner #1 (bottom-right color)
+ *  @param  c2 [in] color on the corner #2 (top-right color)
+ *  @param  c3 [in] color on the corner #3 (top-left color)
  */
 /*==========================================================================*/
 void Background::setColor(
-    const kvs::RGBAColor& color0,
-    const kvs::RGBAColor& color1,
-    const kvs::RGBAColor& color2,
-    const kvs::RGBAColor& color3 )
+    const kvs::RGBAColor& c0,
+    const kvs::RGBAColor& c1,
+    const kvs::RGBAColor& c2,
+    const kvs::RGBAColor& c3 )
 {
     m_type = Background::FourCornersColor;
-    m_color[0] = color0;
-    m_color[1] = color1;
-    m_color[2] = color2;
-    m_color[3] = color3;
+    m_color[0] = c0;
+    m_color[1] = c1;
+    m_color[2] = c2;
+    m_color[3] = c3;
 }
 
 /*===========================================================================*/
@@ -161,8 +160,8 @@ void Background::setImage( const kvs::ColorImage& image )
 
 /*==========================================================================*/
 /**
- *  Get the background color.
- *  @param index [in] color index (0-3)
+ *  @brief  Returns the background color.
+ *  @param  index [in] color index (0-3)
  */
 /*==========================================================================*/
 const kvs::RGBColor& Background::color( size_t index ) const
@@ -172,7 +171,7 @@ const kvs::RGBColor& Background::color( size_t index ) const
 
 /*==========================================================================*/
 /**
- *  Apply gradation color or image to the background.
+ *  @brief  Applies gradation color or image to the background.
  */
 /*==========================================================================*/
 void Background::apply()
@@ -190,27 +189,24 @@ void Background::apply()
 
 /*==========================================================================*/
 /**
- *  Apply mono color to the background.
+ *  @brief  Applies the mono color to the background.
  */
 /*==========================================================================*/
 void Background::apply_mono_color()
 {
-    float r = static_cast<float>( m_color[0].r() ) / 255.0f;
-    float g = static_cast<float>( m_color[0].g() ) / 255.0f;
-    float b = static_cast<float>( m_color[0].b() ) / 255.0f;
-    KVS_GL_CALL( glClearDepth( 1.0 ) );
-    KVS_GL_CALL( glClearColor( r, g, b, 1.0f ) );
+    kvs::OpenGL::SetClearDepth( 1.0 );
+    kvs::OpenGL::SetClearColor( m_color[0] );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
 
 /*==========================================================================*/
 /**
- *  Apply gradation color to the background.
+ *  @brief  Applies the gradation colors to the background.
  */
 /*==========================================================================*/
 void Background::apply_gradation_color()
 {
-    KVS_GL_CALL( glClearDepth( 1.0 ) );
+    kvs::OpenGL::SetClearDepth( 1.0f );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     kvs::OpenGL::WithPushedAttrib a( GL_ALL_ATTRIB_BITS );
@@ -228,13 +224,13 @@ void Background::apply_gradation_color()
             kvs::OpenGL::WithPushedMatrix p( GL_PROJECTION );
             p.loadIdentity();
             {
-                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[0].r(), m_color[0].g(), m_color[0].b() ) ); KVS_GL_CALL_VER( glVertex2d( 0.0, 0.0 ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[1].r(), m_color[1].g(), m_color[1].b() ) ); KVS_GL_CALL_VER( glVertex2d( 1.0, 0.0 ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[2].r(), m_color[2].g(), m_color[2].b() ) ); KVS_GL_CALL_VER( glVertex2d( 1.0, 1.0 ) );
-                KVS_GL_CALL_VER( glColor3ub( m_color[3].r(), m_color[3].g(), m_color[3].b() ) ); KVS_GL_CALL_VER( glVertex2d( 0.0, 1.0 ) );
-                KVS_GL_CALL_END( glEnd() );
+                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, 0, 1 );
+                kvs::OpenGL::Begin( GL_QUADS );
+                kvs::OpenGL::Color( m_color[0] ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 0 ) );
+                kvs::OpenGL::Color( m_color[1] ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 0 ) );
+                kvs::OpenGL::Color( m_color[2] ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 1 ) );
+                kvs::OpenGL::Color( m_color[3] ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 1 ) );
+                kvs::OpenGL::End();
             }
         }
     }
@@ -242,12 +238,12 @@ void Background::apply_gradation_color()
 
 /*==========================================================================*/
 /**
- *  Apply image to the background.
+ *  @brief  Applies the image to the background.
  */
 /*==========================================================================*/
 void Background::apply_image()
 {
-    KVS_GL_CALL( glClearDepth( 1.0 ) );
+    kvs::OpenGL::SetClearDepth( 1.0 );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     kvs::OpenGL::WithPushedAttrib a( GL_ALL_ATTRIB_BITS );
@@ -278,13 +274,13 @@ void Background::apply_image()
             kvs::OpenGL::WithPushedMatrix p( GL_PROJECTION );
             p.loadIdentity();
             {
-                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  1.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  0.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  0.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  1.0 ) );
-                KVS_GL_CALL_END( glEnd() );
+                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, 0, 1 );
+                kvs::OpenGL::Begin( GL_QUADS );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 0 ), kvs::Vec2( 1, 1 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 1 ), kvs::Vec2( 1, 0 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 1 ), kvs::Vec2( 0, 0 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 0 ), kvs::Vec2( 0, 1 ) );
+                kvs::OpenGL::End();
             }
         }
     }

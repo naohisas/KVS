@@ -68,8 +68,11 @@ Screen::Screen( kvs::qt::Application* application, QWidget* parent ):
     m_enable_default_wheel_event( true ),
     m_enable_default_key_press_event( true )
 {
-    m_scene = new kvs::Scene();
+    m_scene = new kvs::Scene( this );
     m_idle_mouse_timer = new QTimer( this );
+
+    // Change default focus policy to Qt::StrongFocus from Qt::NoFocus.
+    QWidget::setFocusPolicy( Qt::StrongFocus );
 }
 
 /*===========================================================================*/
@@ -462,12 +465,8 @@ void Screen::defaultPaintEvent()
         kvs::PaintEvent event;
         BaseClass::eventHandler()->notify( &event );
     }
-
-    kvs::OpenGL::Flush();
-    /* There is no need to explicitly call 'QGLWidget::swapBuffers()', because
-     * it is done automatically after paintGL() has been executed.
-     */
 }
+
 /*===========================================================================*/
 /**
  *  @brief  Default resize event.

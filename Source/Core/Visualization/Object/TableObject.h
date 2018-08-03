@@ -12,9 +12,7 @@
  *  $Id: TableObject.h 1759 2014-05-05 06:14:18Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__TABLE_OBJECT_H_INCLUDE
-#define KVS__TABLE_OBJECT_H_INCLUDE
-
+#pragma once
 #include <vector>
 #include <ostream>
 #include <kvs/Module>
@@ -65,6 +63,9 @@ public:
     void shallowCopy( const TableObject& other );
     void deepCopy( const TableObject& other );
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+    bool read( const std::string& filename );
+    bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
+
     void addColumn( const kvs::AnyValueArray& array, const std::string& label = "" );
     void setTable( const kvs::AnyValueTable& table, const Labels& lanels = Labels() );
     void setMinValue( const size_t column_index, const kvs::Real64 value );
@@ -166,5 +167,3 @@ inline void TableObject::addColumn( const std::vector<T>& array, const std::stri
 }
 
 } // end of namespace kvs
-
-#endif // KVS__TABLE_OBJECT_H_INCLUDE

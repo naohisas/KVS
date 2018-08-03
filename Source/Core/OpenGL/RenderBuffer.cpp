@@ -135,7 +135,7 @@ bool RenderBuffer::isCreated() const
 
 bool RenderBuffer::isValid() const
 {
-    GLboolean result;
+    GLboolean result = GL_FALSE;
     KVS_GL_CALL( result = glIsRenderbuffer( m_id ) );
     return result == GL_TRUE;
 }

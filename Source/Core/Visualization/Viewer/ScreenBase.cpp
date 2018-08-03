@@ -30,9 +30,10 @@ ScreenBase::ScreenBase():
     m_y( 0 ),
     m_width( 512 ),
     m_height( 512 ),
-    m_title("")
+    m_title(""),
+    m_event_handler( new kvs::EventHandler() ),
+    m_paint_device( new kvs::PaintDevice() )
 {
-    m_event_handler = new kvs::EventHandler();
 }
 
 /*===========================================================================*/
@@ -42,7 +43,8 @@ ScreenBase::ScreenBase():
 /*===========================================================================*/
 ScreenBase::~ScreenBase()
 {
-    delete m_event_handler;
+    if ( m_event_handler ) delete m_event_handler;
+    if ( m_paint_device ) delete m_paint_device;
 }
 
 /*===========================================================================*/

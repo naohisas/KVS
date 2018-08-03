@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   Argument.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,9 +12,7 @@
  *  $Id: Argument.h 602 2010-08-19 02:43:34Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-#ifndef KVSVIEW__ARGUMENT_H_INCLUDE
-#define KVSVIEW__ARGUMENT_H_INCLUDE
-
+#pragma once
 #include <kvs/CommandLine>
 #include <kvs/VisualizationPipeline>
 #include <kvs/glut/Screen>
@@ -31,11 +30,9 @@ namespace kvsview
 class Argument : public kvs::CommandLine
 {
 public:
-
     class Common;
 
 public:
-
     Argument( int argc, char** argv );
 };
 
@@ -47,22 +44,15 @@ public:
 class Argument::Common : public kvs::CommandLine
 {
 public:
-
     Common( int argc, char** argv );
-
     Common( int argc, char** argv, const std::string& command );
 
-    bool verboseMode( void );
-
+    bool verboseMode();
     void applyTo( kvs::glut::Screen& screen );
-
     void applyTo( kvs::glut::Screen& screen, kvs::VisualizationPipeline& pipe );
 
 private:
-
-    void set_options( void );
+    void set_options();
 };
 
 } // end of namespace kvsview
-
-#endif // KVSVIEW__ARGUMENT_H_INCLUDE

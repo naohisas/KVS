@@ -18,6 +18,7 @@
 #include <kvs/StructuredVolumeObject>
 #include <kvs/Vector3>
 #include <kvs/Assert>
+#include <cstring>
 
 
 namespace kvs
@@ -45,9 +46,9 @@ public:
     void attachPoint( const kvs::Vector3f& point );
     const kvs::UInt32* indices( void ) const;
     template <typename T>
-    const kvs::Real32 scalar( void ) const;
+    kvs::Real32 scalar( void ) const;
     template <typename T>
-    const kvs::Vector3f gradient( void ) const;
+    kvs::Vec3 gradient( void ) const;
 };
 
 /*===========================================================================*/
@@ -60,6 +61,8 @@ inline TrilinearInterpolator::TrilinearInterpolator( const kvs::StructuredVolume
     m_grid_index( 0, 0, 0 ),
     m_reference_volume( volume )
 {
+    std::memset( m_index, 0x00, sizeof( kvs::UInt32 ) * 8 );
+    std::memset( m_weight, 0x00, sizeof( kvs::Real32 ) * 8 );
 }
 
 /*===========================================================================*/
@@ -139,7 +142,7 @@ inline const kvs::UInt32* TrilinearInterpolator::indices( void ) const
  */
 /*===========================================================================*/
 template <typename T>
-inline const float TrilinearInterpolator::scalar( void ) const
+inline float TrilinearInterpolator::scalar( void ) const
 {
     const T* const data = reinterpret_cast<const T*>( m_reference_volume->values().data() );
 
@@ -162,7 +165,7 @@ inline const float TrilinearInterpolator::scalar( void ) const
  */
 /*===========================================================================*/
 template <typename T>
-inline const kvs::Vector3f TrilinearInterpolator::gradient( void ) const
+inline kvs::Vec3 TrilinearInterpolator::gradient( void ) const
 {
     // Calculate the point's gradient.
     float dx[8], dy[8], dz[8];

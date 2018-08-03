@@ -5,6 +5,19 @@
 OBJECTS = \
 $(OUTDIR)\.\FileFormat\AVSField\AVSField.obj \
 $(OUTDIR)\.\FileFormat\AVSUCD\AVSUcd.obj \
+$(OUTDIR)\.\FileFormat\BDML\BDMLData.obj \
+$(OUTDIR)\.\FileFormat\BDML\BDMLTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\ComponentTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\DataTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\FeatureTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\InfoTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\LineTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\MeasurementTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\PropertyTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\ScaleUnitTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\Tag.obj \
+$(OUTDIR)\.\FileFormat\BDML\XYZSequenceTag.obj \
+$(OUTDIR)\.\FileFormat\BDML\XYZTag.obj \
 $(OUTDIR)\.\FileFormat\BMP\Bmp.obj \
 $(OUTDIR)\.\FileFormat\BMP\FileHeader.obj \
 $(OUTDIR)\.\FileFormat\BMP\InfoHeader.obj \
@@ -18,6 +31,7 @@ $(OUTDIR)\.\FileFormat\DICOM\Tag.obj \
 $(OUTDIR)\.\FileFormat\DICOM\VR.obj \
 $(OUTDIR)\.\FileFormat\DICOM\Value.obj \
 $(OUTDIR)\.\FileFormat\DICOM\Window.obj \
+$(OUTDIR)\.\FileFormat\FieldView\FieldViewData.obj \
 $(OUTDIR)\.\FileFormat\FrontFlow\BoundaryData.obj \
 $(OUTDIR)\.\FileFormat\FrontFlow\Data.obj \
 $(OUTDIR)\.\FileFormat\FrontFlow\DataSet.obj \
@@ -45,6 +59,8 @@ $(OUTDIR)\.\FileFormat\GrADS\Title.obj \
 $(OUTDIR)\.\FileFormat\GrADS\Undef.obj \
 $(OUTDIR)\.\FileFormat\GrADS\Vars.obj \
 $(OUTDIR)\.\FileFormat\GrADS\XYZDef.obj \
+$(OUTDIR)\.\FileFormat\IPLab\IPLab.obj \
+$(OUTDIR)\.\FileFormat\IPLab\IPLabList.obj \
 $(OUTDIR)\.\FileFormat\KVSML\CellTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\ColorMapTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\ColorTag.obj \
@@ -56,15 +72,15 @@ $(OUTDIR)\.\FileFormat\KVSML\DataReader.obj \
 $(OUTDIR)\.\FileFormat\KVSML\DataValueTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\DataWriter.obj \
 $(OUTDIR)\.\FileFormat\KVSML\ImageObjectTag.obj \
-$(OUTDIR)\.\FileFormat\KVSML\KVSMLObjectImage.obj \
-$(OUTDIR)\.\FileFormat\KVSML\KVSMLObjectLine.obj \
-$(OUTDIR)\.\FileFormat\KVSML\KVSMLObjectPoint.obj \
-$(OUTDIR)\.\FileFormat\KVSML\KVSMLObjectPolygon.obj \
-$(OUTDIR)\.\FileFormat\KVSML\KVSMLObjectStructuredVolume.obj \
-$(OUTDIR)\.\FileFormat\KVSML\KVSMLObjectTable.obj \
-$(OUTDIR)\.\FileFormat\KVSML\KVSMLObjectUnstructuredVolume.obj \
+$(OUTDIR)\.\FileFormat\KVSML\KVSMLImageObject.obj \
+$(OUTDIR)\.\FileFormat\KVSML\KVSMLLineObject.obj \
+$(OUTDIR)\.\FileFormat\KVSML\KVSMLPointObject.obj \
+$(OUTDIR)\.\FileFormat\KVSML\KVSMLPolygonObject.obj \
+$(OUTDIR)\.\FileFormat\KVSML\KVSMLStructuredVolumeObject.obj \
+$(OUTDIR)\.\FileFormat\KVSML\KVSMLTableObject.obj \
 $(OUTDIR)\.\FileFormat\KVSML\KVSMLTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\KVSMLTransferFunction.obj \
+$(OUTDIR)\.\FileFormat\KVSML\KVSMLUnstructuredVolumeObject.obj \
 $(OUTDIR)\.\FileFormat\KVSML\LineObjectTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\LineTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\NodeTag.obj \
@@ -106,6 +122,7 @@ $(OUTDIR)\.\FileFormat\XML\XMLNode.obj \
 $(OUTDIR)\.\Image\BitImage.obj \
 $(OUTDIR)\.\Image\ColorImage.obj \
 $(OUTDIR)\.\Image\GrayImage.obj \
+$(OUTDIR)\.\Image\HCLColor.obj \
 $(OUTDIR)\.\Image\HSVColor.obj \
 $(OUTDIR)\.\Image\ImageBase.obj \
 $(OUTDIR)\.\Image\LabColor.obj \
@@ -128,6 +145,9 @@ $(OUTDIR)\.\Matrix\Vector2.obj \
 $(OUTDIR)\.\Matrix\Vector3.obj \
 $(OUTDIR)\.\Matrix\Vector4.obj \
 $(OUTDIR)\.\Matrix\ViewingMatrix44.obj \
+$(OUTDIR)\.\NanoVG\FontStash.obj \
+$(OUTDIR)\.\NanoVG\NanoVG.obj \
+$(OUTDIR)\.\NanoVG\nvg.obj \
 $(OUTDIR)\.\Network\Acceptor.obj \
 $(OUTDIR)\.\Network\Connector.obj \
 $(OUTDIR)\.\Network\HttpConnector.obj \
@@ -181,6 +201,7 @@ $(OUTDIR)\.\OpenGL\TextureBinder.obj \
 $(OUTDIR)\.\OpenGL\TextureRectangle.obj \
 $(OUTDIR)\.\OpenGL\VertexBufferObject.obj \
 $(OUTDIR)\.\OpenGL\VertexShader.obj \
+$(OUTDIR)\.\OpenMP\OpenMP.obj \
 $(OUTDIR)\.\Thread\Condition.obj \
 $(OUTDIR)\.\Thread\Mutex.obj \
 $(OUTDIR)\.\Thread\MutexLocker.obj \
@@ -203,6 +224,7 @@ $(OUTDIR)\.\Utility\MemoryTracer.obj \
 $(OUTDIR)\.\Utility\Message.obj \
 $(OUTDIR)\.\Utility\Program.obj \
 $(OUTDIR)\.\Utility\Range.obj \
+$(OUTDIR)\.\Utility\Rectangle.obj \
 $(OUTDIR)\.\Utility\ReferenceCounter.obj \
 $(OUTDIR)\.\Utility\String.obj \
 $(OUTDIR)\.\Utility\SystemInformation.obj \
@@ -320,6 +342,9 @@ $(OUTDIR)\.\Visualization\Pipeline\ObjectImporter.obj \
 $(OUTDIR)\.\Visualization\Pipeline\PipelineModule.obj \
 $(OUTDIR)\.\Visualization\Pipeline\VisualizationPipeline.obj \
 $(OUTDIR)\.\Visualization\Renderer\ArrowGlyph.obj \
+$(OUTDIR)\.\Visualization\Renderer\Axis2D.obj \
+$(OUTDIR)\.\Visualization\Renderer\Axis2DMatrix.obj \
+$(OUTDIR)\.\Visualization\Renderer\Axis3D.obj \
 $(OUTDIR)\.\Visualization\Renderer\Bounds.obj \
 $(OUTDIR)\.\Visualization\Renderer\DiamondGlyph.obj \
 $(OUTDIR)\.\Visualization\Renderer\EnsembleAverageBuffer.obj \
@@ -328,6 +353,7 @@ $(OUTDIR)\.\Visualization\Renderer\HAVSVolumeRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ImageRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\LineRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\LineRendererGLSL.obj \
+$(OUTDIR)\.\Visualization\Renderer\ParallelAxis.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParallelCoordinatesRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBasedRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBasedRendererGLSL.obj \
@@ -361,6 +387,7 @@ $(OUTDIR)\.\Visualization\Renderer\StochasticRenderingCompositor.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticRenderingEngine.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticTetrahedraRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticUniformGridRenderer.obj \
+$(OUTDIR)\.\Visualization\Renderer\StylizedLineRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRayIntersector.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRendererBase.obj \
 $(OUTDIR)\.\Visualization\Viewer\ApplicationBase.obj \
@@ -368,6 +395,7 @@ $(OUTDIR)\.\Visualization\Viewer\Background.obj \
 $(OUTDIR)\.\Visualization\Viewer\Camera.obj \
 $(OUTDIR)\.\Visualization\Viewer\CameraCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\DisplayFormat.obj \
+$(OUTDIR)\.\Visualization\Viewer\FontMetrics.obj \
 $(OUTDIR)\.\Visualization\Viewer\IDManager.obj \
 $(OUTDIR)\.\Visualization\Viewer\Light.obj \
 $(OUTDIR)\.\Visualization\Viewer\Material.obj \
@@ -375,6 +403,8 @@ $(OUTDIR)\.\Visualization\Viewer\Mouse.obj \
 $(OUTDIR)\.\Visualization\Viewer\NormalizedDeviceCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\ObjectCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\ObjectManager.obj \
+$(OUTDIR)\.\Visualization\Viewer\PaintDevice.obj \
+$(OUTDIR)\.\Visualization\Viewer\Painter.obj \
 $(OUTDIR)\.\Visualization\Viewer\RendererManager.obj \
 $(OUTDIR)\.\Visualization\Viewer\Scene.obj \
 $(OUTDIR)\.\Visualization\Viewer\ScreenBase.obj \
@@ -383,8 +413,31 @@ $(OUTDIR)\.\Visualization\Viewer\WindowCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\WorldCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\Xform.obj \
 $(OUTDIR)\.\Visualization\Viewer\XformControl.obj \
+$(OUTDIR)\.\Visualization\Widget\CheckBox.obj \
+$(OUTDIR)\.\Visualization\Widget\CheckBoxGroup.obj \
+$(OUTDIR)\.\Visualization\Widget\ColorMapBar.obj \
+$(OUTDIR)\.\Visualization\Widget\ColorMapPalette.obj \
+$(OUTDIR)\.\Visualization\Widget\ColorPalette.obj \
+$(OUTDIR)\.\Visualization\Widget\Font.obj \
+$(OUTDIR)\.\Visualization\Widget\HistogramBar.obj \
+$(OUTDIR)\.\Visualization\Widget\Label.obj \
+$(OUTDIR)\.\Visualization\Widget\OpacityMapBar.obj \
+$(OUTDIR)\.\Visualization\Widget\OpacityMapPalette.obj \
+$(OUTDIR)\.\Visualization\Widget\OrientationAxis.obj \
+$(OUTDIR)\.\Visualization\Widget\PushButton.obj \
+$(OUTDIR)\.\Visualization\Widget\RadioButton.obj \
+$(OUTDIR)\.\Visualization\Widget\RadioButtonGroup.obj \
+$(OUTDIR)\.\Visualization\Widget\Slider.obj \
+$(OUTDIR)\.\Visualization\Widget\TextEngine.obj \
+$(OUTDIR)\.\Visualization\Widget\WidgetBase.obj \
 
 
+
+{.\Visualization\Widget\}.cpp{$(OUTDIR)\.\Visualization\Widget\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\Visualization\Widget $(MKDIR) $(OUTDIR)\.\Visualization\Widget
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\Visualization\Widget\ @<<
+$<
+<<
 
 {.\Visualization\Viewer\}.cpp{$(OUTDIR)\.\Visualization\Viewer\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\Visualization\Viewer $(MKDIR) $(OUTDIR)\.\Visualization\Viewer
@@ -458,6 +511,12 @@ $<
 $<
 <<
 
+{.\OpenMP\}.cpp{$(OUTDIR)\.\OpenMP\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\OpenMP $(MKDIR) $(OUTDIR)\.\OpenMP
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\OpenMP\ @<<
+$<
+<<
+
 {.\OpenGL\}.cpp{$(OUTDIR)\.\OpenGL\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\OpenGL $(MKDIR) $(OUTDIR)\.\OpenGL
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\OpenGL\ @<<
@@ -473,6 +532,12 @@ $<
 {.\Network\}.cpp{$(OUTDIR)\.\Network\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\Network $(MKDIR) $(OUTDIR)\.\Network
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\Network\ @<<
+$<
+<<
+
+{.\NanoVG\}.cpp{$(OUTDIR)\.\NanoVG\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\NanoVG $(MKDIR) $(OUTDIR)\.\NanoVG
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\NanoVG\ @<<
 $<
 <<
 
@@ -524,6 +589,12 @@ $<
 $<
 <<
 
+{.\FileFormat\IPLab\}.cpp{$(OUTDIR)\.\FileFormat\IPLab\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\IPLab $(MKDIR) $(OUTDIR)\.\FileFormat\IPLab
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\IPLab\ @<<
+$<
+<<
+
 {.\FileFormat\GrADS\}.cpp{$(OUTDIR)\.\FileFormat\GrADS\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\GrADS $(MKDIR) $(OUTDIR)\.\FileFormat\GrADS
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\GrADS\ @<<
@@ -548,6 +619,12 @@ $<
 $<
 <<
 
+{.\FileFormat\FieldView\}.cpp{$(OUTDIR)\.\FileFormat\FieldView\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\FieldView $(MKDIR) $(OUTDIR)\.\FileFormat\FieldView
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\FieldView\ @<<
+$<
+<<
+
 {.\FileFormat\DICOM\}.cpp{$(OUTDIR)\.\FileFormat\DICOM\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\DICOM $(MKDIR) $(OUTDIR)\.\FileFormat\DICOM
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\DICOM\ @<<
@@ -563,6 +640,12 @@ $<
 {.\FileFormat\BMP\}.cpp{$(OUTDIR)\.\FileFormat\BMP\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\BMP $(MKDIR) $(OUTDIR)\.\FileFormat\BMP
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\BMP\ @<<
+$<
+<<
+
+{.\FileFormat\BDML\}.cpp{$(OUTDIR)\.\FileFormat\BDML\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\BDML $(MKDIR) $(OUTDIR)\.\FileFormat\BDML
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\BDML\ @<<
 $<
 <<
 
@@ -586,12 +669,16 @@ install::
 	$(INSTALL) .\FileFormat\AVSField\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\AVSField
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\AVSUCD $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\AVSUCD
 	$(INSTALL) .\FileFormat\AVSUCD\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\AVSUCD
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\BDML $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\BDML
+	$(INSTALL) .\FileFormat\BDML\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\BDML
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\BMP $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\BMP
 	$(INSTALL) .\FileFormat\BMP\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\BMP
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\CSV $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\CSV
 	$(INSTALL) .\FileFormat\CSV\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\CSV
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\DICOM $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\DICOM
 	$(INSTALL) .\FileFormat\DICOM\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\DICOM
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\FieldView $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\FieldView
+	$(INSTALL) .\FileFormat\FieldView\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\FieldView
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\FrontFlow $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\FrontFlow
 	$(INSTALL) .\FileFormat\FrontFlow\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\FrontFlow
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\FrontSTR $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\FrontSTR
@@ -600,6 +687,8 @@ install::
 	$(INSTALL) .\FileFormat\GIS\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\GIS
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS
 	$(INSTALL) .\FileFormat\GrADS\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
+	$(INSTALL) .\FileFormat\IPLab\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML
 	$(INSTALL) .\FileFormat\KVSML\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\PLY $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\PLY
@@ -616,12 +705,16 @@ install::
 	$(INSTALL) .\Image\*.h $(INSTALL_DIR)\include\Core\.\Image
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Matrix $(MKDIR) $(INSTALL_DIR)\include\Core\.\Matrix
 	$(INSTALL) .\Matrix\*.h $(INSTALL_DIR)\include\Core\.\Matrix
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\NanoVG $(MKDIR) $(INSTALL_DIR)\include\Core\.\NanoVG
+	$(INSTALL) .\NanoVG\*.h $(INSTALL_DIR)\include\Core\.\NanoVG
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Network $(MKDIR) $(INSTALL_DIR)\include\Core\.\Network
 	$(INSTALL) .\Network\*.h $(INSTALL_DIR)\include\Core\.\Network
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Numeric $(MKDIR) $(INSTALL_DIR)\include\Core\.\Numeric
 	$(INSTALL) .\Numeric\*.h $(INSTALL_DIR)\include\Core\.\Numeric
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\OpenGL $(MKDIR) $(INSTALL_DIR)\include\Core\.\OpenGL
 	$(INSTALL) .\OpenGL\*.h $(INSTALL_DIR)\include\Core\.\OpenGL
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\OpenMP $(MKDIR) $(INSTALL_DIR)\include\Core\.\OpenMP
+	$(INSTALL) .\OpenMP\*.h $(INSTALL_DIR)\include\Core\.\OpenMP
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Thread $(MKDIR) $(INSTALL_DIR)\include\Core\.\Thread
 	$(INSTALL) .\Thread\*.h $(INSTALL_DIR)\include\Core\.\Thread
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Utility $(MKDIR) $(INSTALL_DIR)\include\Core\.\Utility
@@ -650,9 +743,13 @@ install::
 	$(INSTALL) .\Visualization\Shader\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Viewer $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Viewer
 	$(INSTALL) .\Visualization\Viewer\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Viewer
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Widget $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Widget
+	$(INSTALL) .\Visualization\Widget\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Widget
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Shader $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	$(INSTALL) .\Visualization\Shader\*.vert $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Shader $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	$(INSTALL) .\Visualization\Shader\*.geom $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Shader $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Shader
 	$(INSTALL) .\Visualization\Shader\*.frag $(INSTALL_DIR)\include\Core\.\Visualization\Shader
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Font $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Font
+	$(INSTALL) .\Visualization\Font\*.ttf $(INSTALL_DIR)\include\Core\.\Visualization\Font

@@ -12,8 +12,7 @@
  *  $Id: Light.h 1799 2014-08-04 05:36:04Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__LIGHT_H_INCLUDE
-#define KVS__LIGHT_H_INCLUDE
+#pragma once
 
 #include <kvs/XformControl>
 #include <kvs/Vector3>
@@ -88,5 +87,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__LIGHT_H_INCLUDE
