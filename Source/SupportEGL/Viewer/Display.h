@@ -1,5 +1,5 @@
 #pragma once
-#include "EGL.h"
+#include "../EGL.h"
 
 namespace kvs
 {

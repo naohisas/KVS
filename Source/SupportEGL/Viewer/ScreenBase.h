@@ -1,6 +1,5 @@
 #pragma once
-
-#include "EGL.h"
+#include "../EGL.h"
 #include "Display.h"
 #include "Context.h"
 #include "Config.h"

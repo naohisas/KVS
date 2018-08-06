@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ScreenBase.h"
 #include <string>
 #include <kvs/Scene>
