@@ -62,6 +62,7 @@ LIB_KVS_SUPPORT_GLUT   = kvsSupportGLUT.lib
 LIB_KVS_SUPPORT_QT     = kvsSupportQt.lib
 LIB_KVS_SUPPORT_OPENCV = kvsSupportOpenCV.lib
 LIB_KVS_SUPPORT_PYTHON = kvsSupportPython.lib
+LIB_KVS_SUPPORT_EGL = kvsSupportEGL.lib
 
 
 #=============================================================================
@@ -123,6 +124,7 @@ GLUT_INCLUDE_PATH = $(GLUT_INCLUDE_PATH) /I"$(KVS_GLUT_DIR)\include"
 GLUT_LIBRARY_PATH = $(GLUT_LIBRARY_PATH) /LIBPATH:"$(KVS_GLUT_DIR)\lib"
 !ENDIF
 !ENDIF
+
 
 #=============================================================================
 #  CUDA_INCLUDE_PATH, CUDA_LIBRARY_PATH, CUDA_LINK_LIBRARY
@@ -190,6 +192,20 @@ NUMPY_LIBRARY_PATH = $(NUMPY_LIBRARY_PATH) /LIBPATH:"$(KVS_NUMPY_DIR)\lib"
 !ENDIF
 !IFDEF KVS_NUMPY_LINK_LIBRARY
 NUMPY_LINK_LIBRARY = $(KVS_NUMPY_LINK_LIBRARY)
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
+#  EGL_INCLUDE_PATH, EGL_LIBRARY_PATH, EGL_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_EGL)" == "1"
+EGL_INCLUDE_PATH =
+EGL_LIBRARY_PATH =
+EGL_LINK_LIBRARY = glut32.lib
+!IFDEF KVS_EGL_DIR
+EGL_INCLUDE_PATH = $(EGL_INCLUDE_PATH) /I"$(KVS_EGL_DIR)\include"
+EGL_LIBRARY_PATH = $(EGL_LIBRARY_PATH) /LIBPATH:"$(KVS_EGL_DIR)\lib"
 !ENDIF
 !ENDIF
 
@@ -270,6 +286,10 @@ DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_CUDA
 
 !IF "$(KVS_SUPPORT_PYTHON)" == "1"
 DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_PYTHON
+!ENDIF
+
+!IF "$(KVS_SUPPORT_EGL)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_EGL
 !ENDIF
 
 

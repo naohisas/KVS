@@ -69,6 +69,7 @@ equals( KVS_SUPPORT_QT, "1" ) { DEFINES += KVS_SUPPORT_QT }
 equals( KVS_SUPPORT_OPENCV, "1" ) { DEFINES += KVS_SUPPORT_OPENCV }
 equals( KVS_SUPPORT_CUDA, "1" ) { DEFINES += KVS_SUPPORT_CUDA }
 equals( KVS_SUPPORT_PYTHON, "1" ) { DEFINES += KVS_SUPPORT_PYTHON }
+equals( KVS_SUPPORT_EGL, "1" ) { DEFINES += KVS_SUPPORT_EGL }
 
 
 #=============================================================================

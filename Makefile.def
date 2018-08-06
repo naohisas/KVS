@@ -295,6 +295,20 @@ endif
 
 
 #=============================================================================
+#  EGL_INCLUDE_PATH, EGL_LIBRARY_PATH, EGL_LINK_LIBRARY
+#=============================================================================
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+  EGL_INCLUDE_PATH :=
+  EGL_LIBRARY_PATH :=
+  ifdef KVS_EGL_DIR
+    EGL_INCLUDE_PATH += -I$(KVS_EGL_DIR)/include
+    EGL_LIBRARY_PATH += -L$(KVS_EGL_DIR)/lib
+  endif
+  EGL_LINK_LIBRARY := -lEGL
+endif
+
+
+#=============================================================================
 #  Compiler option.
 #=============================================================================
 CPPFLAGS :=
@@ -398,6 +412,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
   DEFINITIONS += -DKVS_SUPPORT_PYTHON
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+  DEFINITIONS += -DKVS_SUPPORT_EGL
 endif
 
 
