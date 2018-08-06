@@ -91,6 +91,7 @@ LIB_KVS_SUPPORT_OPENCV    := libkvsSupportOpenCV.a
 LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
 LIB_KVS_SUPPORT_PYTHON    := libkvsSupportPython.a
 LIB_KVS_SUPPORT_EGL       := libkvsSupportEGL.a
+LIB_KVS_SUPPORT_OSMESA    := libkvsSupportOSMesa.a
 
 
 #=============================================================================
@@ -117,7 +118,7 @@ GL_LIBRARY_PATH :=
 GL_LINK_LIBRARY :=
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
   ifeq "$(shell uname -s)" "Darwin"
-    ifeq "$(KVS_ENABLE_OSMESA)" "1"
+    ifeq "$(KVS_SUPPORT_OSMESA)" "1"
       ifdef KVS_OSMESA_DIR
         GL_INCLUDE_PATH += -I$(KVS_OSMESA_DIR)/include
         GL_LIBRARY_PATH += -L$(KVS_OSMESA_DIR)/lib
@@ -134,7 +135,7 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
       GL_LINK_LIBRARY += -lGL -lm
     else
       ifeq "$(shell uname -s)" "Linux"
-        ifeq "$(KVS_ENABLE_OSMESA)" "1"
+        ifeq "$(KVS_SUPPORT_OSMESA)" "1"
           ifdef KVS_OSMESA_DIR
             GL_INCLUDE_PATH += -I$(KVS_OSMESA_DIR)/include
             GL_LIBRARY_PATH += -L$(KVS_OSMESA_DIR)/lib
@@ -377,9 +378,9 @@ ifeq "$(KVS_ENABLE_GLEW)" "1"
   DEFINITIONS += -DKVS_ENABLE_GLEW
 endif
 
-ifeq "$(KVS_ENABLE_OSMESA)" "1"
-  DEFINITIONS += -DKVS_ENABLE_OSMESA
-endif
+#ifeq "$(KVS_ENABLE_OSMESA)" "1"
+#  DEFINITIONS += -DKVS_ENABLE_OSMESA
+#endif
 
 ifeq "$(KVS_ENABLE_OPENMP)" "1"
   DEFINITIONS += -DKVS_ENABLE_OPENMP
@@ -417,6 +418,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"
   DEFINITIONS += -DKVS_SUPPORT_EGL
+endif
+
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+  DEFINITIONS += -DKVS_SUPPORT_OSMESA
 endif
 
 

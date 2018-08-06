@@ -59,7 +59,7 @@
 // OpenGL headers.
 #if defined( KVS_PLATFORM_MACOSX )
   // Mac
-  #if defined( KVS_ENABLE_OSMESA )
+  #if defined( KVS_SUPPORT_OSMESA )
     #include <GL/osmesa.h>
     #if defined( KVS_ENABLE_GLU )
       #include <GL/glu.h>
@@ -73,7 +73,7 @@
   #endif
 #else
   // Windows and Linux
-  #if defined( KVS_ENABLE_OSMESA )
+  #if defined( KVS_SUPPORT_OSMESA )
     #include <GL/osmesa.h>
   #else
     #include <GL/gl.h>

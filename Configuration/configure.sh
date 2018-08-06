@@ -11,6 +11,7 @@ printf 'configure BuildRule... '
 ./configure_BuildRule.py SupportCUDA
 ./configure_BuildRule.py SupportPython
 ./configure_BuildRule.py SupportEGL
+./configure_BuildRule.py SupportOSMesa
 
 printf 'success\n'
 
@@ -42,6 +43,7 @@ rm -f $( find ../Source/kvs -type f -not -path '*/.git/*' )
 ./configure_header_list.py SupportCUDA      kvs/cuda
 ./configure_header_list.py SupportPython    kvs/python
 ./configure_header_list.py SupportEGL       kvs/egl
+./configure_header_list.py SupportOSMesa    kvs/osmesa
 
 printf 'success\n'
 

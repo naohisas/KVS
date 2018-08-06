@@ -53,6 +53,14 @@ ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 SUBDIRS += SupportPython
 endif
 
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+SUBDIRS += SupportEGL
+endif
+
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+SUBDIRS += SupportOSMesa
+endif
+
 
 #=============================================================================
 #  build.
@@ -111,6 +119,16 @@ ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/python
 	$(INSTALL) kvsSupportPython $(INSTALL_DIR)/include
 	$(INSTALL) $(shell find kvs/python -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/python
+endif
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/egl
+	$(INSTALL) kvsSupportEGL $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/egl -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/egl
+endif
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/osmesa
+	$(INSTALL) kvsSupportOSMesa $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/osmesa -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/osmesa
 endif
 	for i in $(SUBDIRS); do \
 	$(MAKE) -C $$i $(MFLAGS) $(MAKEOVERRIDES) install; done

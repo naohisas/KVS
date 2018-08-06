@@ -49,6 +49,14 @@ SUBDIRS = $(SUBDIRS) SupportCUDA
 SUBDIRS = $(SUBDIRS) SupportPython
 !ENDIF
 
+!IF "$(KVS_SUPPORT_EGL)" == "1"
+SUBDIRS = $(SUBDIRS) SupportEGL
+!ENDIF
+
+!IF "$(KVS_SUPPORT_OSMESA)" == "1"
+SUBDIRS = $(SUBDIRS) SupportOSMesa
+!ENDIF
+
 
 #=============================================================================
 #  build.
@@ -102,6 +110,16 @@ install:
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\python" $(MKDIR) "$(INSTALL_DIR)\include\kvs\python"
 	$(INSTALL) kvsSupportPython "$(INSTALL_DIR)\include"
 	$(INSTALL) kvs\python\* "$(INSTALL_DIR)\include\kvs\python"
+!ENDIF
+!IF "$(KVS_SUPPORT_EGL)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\egl" $(MKDIR) "$(INSTALL_DIR)\include\kvs\egl"
+	$(INSTALL) kvsSupportEGL "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\egl\* "$(INSTALL_DIR)\include\kvs\egl"
+!ENDIF
+!IF "$(KVS_SUPPORT_OSMESA)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\osmesa" $(MKDIR) "$(INSTALL_DIR)\include\kvs\osmesa"
+	$(INSTALL) kvsSupportOSMesa "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\osmesa\* "$(INSTALL_DIR)\include\kvs\osmesa"
 !ENDIF
 	FOR %%i IN ( $(SUBDIRS) ) DO \
 	CD %%i && $(MAKE) /f $(MAKEFILE) /$(MAKEFLAGS) install && CD ..

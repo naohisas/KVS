@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <cerrno>
 #include <cstring>
+#include <kvs/IgnoreUnusedVariable>
 #include <kvs/Platform>
 #if   defined ( KVS_PLATFORM_WINDOWS )
 #include <windows.h>
@@ -77,9 +78,9 @@ size_t SystemInformation::NumberOfProcessors()
     int nprocessors = 0;
     int mib[2] = { CTL_HW, HW_NCPU };
     size_t length = sizeof( nprocessors );
-    int ret = 0;
-    ret = sysctl( mib, 2, &nprocessors, &length, NULL, 0 );
+    int ret = sysctl( mib, 2, &nprocessors, &length, NULL, 0 );
     kvsMessageWarning( ret != -1, ::GetWarningMessage( errno, strerror( errno ) ) );
+    kvs::IgnoreUnusedVariable( ret );
     return nprocessors;
 #endif
 }
@@ -121,16 +122,16 @@ size_t SystemInformation::TotalMemorySize()
 #if defined ( KVS_PLATFORM_CPU_64 )
     uint64_t memory_size = 0;
     size_t length = sizeof( memory_size );
-    int ret = 0;
-    ret = sysctlbyname( "hw.memsize", &memory_size, &length, NULL, 0 );
+    int ret = sysctlbyname( "hw.memsize", &memory_size, &length, NULL, 0 );
     kvsMessageWarning( ret != -1, strerror( errno ) );
+    kvs::IgnoreUnusedVariable( ret );
     return memory_size;
 #else
     uint32_t memory_size = 0;
     size_t length = sizeof( memory_size );
-    int ret = 0;
-    ret = sysctlbyname( "hw.physmem", &memory_size, &length, NULL, 0 );
+    int ret = sysctlbyname( "hw.physmem", &memory_size, &length, NULL, 0 );
     kvsMessageWarning( ret != -1, strerror( errno ) );
+    kvs::IgnoreUnusedVariable( ret );
     return memory_size;
 #endif
 #endif
@@ -170,16 +171,20 @@ size_t SystemInformation::FreeMemorySize()
 
 // Mac OS X
 #elif defined ( KVS_PLATFORM_MACOSX )
-    kern_return_t kr;
-
     vm_size_t page_size = 0;
-    kr = host_page_size( mach_host_self(), &page_size );
-    kvsMessageWarning( kr != KERN_SUCCESS, "Failure to get page size." );
+    {
+        kern_return_t kr = host_page_size( mach_host_self(), &page_size );
+        kvsMessageWarning( kr != KERN_SUCCESS, "Failure to get page size." );
+        kvs::IgnoreUnusedVariable( kr );
+    }
 
     vm_statistics_data_t page_info;
     mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
-    kr = host_statistics( mach_host_self(), HOST_VM_INFO, (host_info_t)&page_info, &count );
-    kvsMessageWarning( kr != KERN_SUCCESS, "Failure to get page info." );
+    {
+        kern_return_t kr = host_statistics( mach_host_self(), HOST_VM_INFO, (host_info_t)&page_info, &count );
+        kvsMessageWarning( kr != KERN_SUCCESS, "Failure to get page info." );
+        kvs::IgnoreUnusedVariable( kr );
+    }
 
     return page_info.free_count * page_size;
 #endif
