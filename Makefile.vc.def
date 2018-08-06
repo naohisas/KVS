@@ -62,7 +62,7 @@ LIB_KVS_SUPPORT_GLUT   = kvsSupportGLUT.lib
 LIB_KVS_SUPPORT_QT     = kvsSupportQt.lib
 LIB_KVS_SUPPORT_OPENCV = kvsSupportOpenCV.lib
 LIB_KVS_SUPPORT_PYTHON = kvsSupportPython.lib
-LIB_KVS_SUPPORT_EGL = kvsSupportEGL.lib
+LIB_KVS_SUPPORT_EGL    = kvsSupportEGL.lib
 
 
 #=============================================================================

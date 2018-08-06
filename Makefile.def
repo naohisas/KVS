@@ -90,6 +90,7 @@ LIB_KVS_SUPPORT_GLUT      := libkvsSupportGLUT.a
 LIB_KVS_SUPPORT_OPENCV    := libkvsSupportOpenCV.a
 LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
 LIB_KVS_SUPPORT_PYTHON    := libkvsSupportPython.a
+LIB_KVS_SUPPORT_EGL       := libkvsSupportEGL.a
 
 
 #=============================================================================
