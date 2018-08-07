@@ -117,38 +117,101 @@ GL_INCLUDE_PATH :=
 GL_LIBRARY_PATH :=
 GL_LINK_LIBRARY :=
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
+  #
+  # Mac OS X
+  #
   ifeq "$(shell uname -s)" "Darwin"
     ifeq "$(KVS_SUPPORT_OSMESA)" "1"
       ifdef KVS_OSMESA_DIR
         GL_INCLUDE_PATH += -I$(KVS_OSMESA_DIR)/include
         GL_LIBRARY_PATH += -L$(KVS_OSMESA_DIR)/lib
-      endif
-      GL_LINK_LIBRARY += -lOSMesa
-    else
-      GL_LINK_LIBRARY += -framework OpenGL -framework Foundation
-    endif
-  else
-    ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
-      ifeq "$(KVS_ENABLE_GLU)" "1"
-        GL_LINK_LIBRARY += -lGLU
-      endif
-      GL_LINK_LIBRARY += -lGL -lm
-    else
-      ifeq "$(shell uname -s)" "Linux"
-        ifeq "$(KVS_SUPPORT_OSMESA)" "1"
-          ifdef KVS_OSMESA_DIR
-            GL_INCLUDE_PATH += -I$(KVS_OSMESA_DIR)/include
-            GL_LIBRARY_PATH += -L$(KVS_OSMESA_DIR)/lib
-          endif
-          GL_LINK_LIBRARY += -lOSMesa
-        else
-          ifeq "$(KVS_ENABLE_GLU)" "1"
-            GL_LINK_LIBRARY += -lGLU
-          endif
-          GL_LINK_LIBRARY += -lGL -lm -lpthread
+      else
+        ifdef KVS_OSMESA_INCLUDE_PATH
+          GL_INCLUDE_PATH += -I$(KVS_OSMESA_INCLUDE_PATH)
+        endif
+        ifdef KVS_OSMESA_LIBRARY_PATH
+          GL_LIBRARY_PATH += -I$(KVS_OSMESA_LIBRARY_PATH)
         endif
       endif
+      ifdef KVS_OSMESA_LINK_LIBRARY
+        GL_LINK_LIBRARY += $(KVS_OSMESA_LINK_LIBRARY)
+      else
+        GL_LINK_LIBRARY += -lOSMesa
+      endif
+    else
+      ifdef KVS_GL_DIR
+        GL_INCLUDE_PATH += -I$(KVS_GL_DIR)/include
+        GL_LIBRARY_PATH += -L$(KVS_GL_DIR)/lib
+      else
+        ifdef KVS_GL_INCLUDE_PATH
+          GL_INCLUDE_PATH += -I$(KVS_GL_INCLUDE_PATH)
+        endif
+        ifdef KVS_GL_LIBRARY_PATH
+          GL_LIBRARY_PATH += -I$(KVS_GL_LIBRARY_PATH)
+        endif
+      endif
+      ifdef KVS_GL_LINK_LIBRARY
+        GL_LINK_LIBRARY += $(KVS_GL_LINK_LIBRARY) -framework Foundation
+      else
+        GL_LINK_LIBRARY += -framework OpenGL -framework Foundation
+      endif
     endif
+  endif
+  #
+  # Linux
+  #
+  ifeq "$(shell uname -s)" "Linux"
+    ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+      ifdef KVS_OSMESA_DIR
+        GL_INCLUDE_PATH += -I$(KVS_OSMESA_DIR)/include
+        GL_LIBRARY_PATH += -L$(KVS_OSMESA_DIR)/lib
+      else
+        ifdef KVS_OSMESA_INCLUDE_PATH
+          GL_INCLUDE_PATH += -I$(KVS_OSMESA_INCLUDE_PATH)
+        endif
+        ifdef KVS_OSMESA_LIBRARY_PATH
+          GL_LIBRARY_PATH += -I$(KVS_OSMESA_LIBRARY_PATH)
+        endif
+      endif
+      ifdef KVS_OSMESA_LINK_LIBRARY
+        GL_LINK_LIBRARY += $(KVS_OSMESA_LINK_LIBRARY)
+      else
+        GL_LINK_LIBRARY += -lOSMesa
+      endif
+    else
+      ifdef KVS_GL_DIR
+        GL_INCLUDE_PATH += -I$(KVS_GL_DIR)/include
+        GL_LIBRARY_PATH += -L$(KVS_GL_DIR)/lib
+      else
+        ifdef KVS_GL_INCLUDE_PATH
+          GL_INCLUDE_PATH += -I$(KVS_GL_INCLUDE_PATH)
+        endif
+        ifdef KVS_GL_LIBRARY_PATH
+          GL_LIBRARY_PATH += -I$(KVS_GL_LIBRARY_PATH)
+        endif
+      endif
+      ifeq "$(KVS_ENABLE_GLU)" "1"
+        ifdef KVS_GLU_LINK_LIBRARY
+          GL_LINK_LIBRARY += $(KVS_GLU_LINK_LIBRARY)
+        else
+          GL_LINK_LIBRARY += -lGLU
+        endif
+      endif
+      ifdef KVS_GL_LINK_LIBRARY
+        GL_LINK_LIBRARY += $(KVS_GL_LINK_LIBRARY) -lm -lpthread
+      else
+        GL_LINK_LIBRARY += -lGL -lm -lpthread
+      endif
+    endif
+  endif
+  #
+  # Cygwin
+  #
+  ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
+    ifeq "$(KVS_ENABLE_GLU)" "1"
+      GL_LINK_LIBRARY += -lGLU
+    endif
+    GL_LINK_LIBRARY += -lGL -lm
   endif
 endif
 
@@ -161,10 +224,21 @@ GLEW_LIBRARY_PATH :=
 GLEW_LINK_LIBRARY :=
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
   ifeq  "$(KVS_ENABLE_GLEW)" "1"
-    GLEW_LINK_LIBRARY += -lGLEW
     ifdef KVS_GLEW_DIR
       GLEW_INCLUDE_PATH += -I$(KVS_GLEW_DIR)/include
       GLEW_LIBRARY_PATH += -L$(KVS_GLEW_DIR)/lib
+    else
+      ifdef KVS_GLEW_INCLUDE_PATH
+        GLEW_INCLUDE_PATH += -I$(KVS_GLEW_INCLUDE_PATH)
+      endif
+      ifdef KVS_GLEW_LIBRARY_PATH
+        GLEW_LIBRARY_PATH += -I$(KVS_GLEW_LIBRARY_PATH)
+      endif
+    endif
+    ifdef KVS_GLEW_LINK_LIBRARY
+      GLEW_LINK_LIBRARY += $(KVS_GLEW_LINK_LIBRARY)
+    else
+      GLEW_LINK_LIBRARY += -lGLEW
     endif
   endif
 endif
@@ -177,19 +251,30 @@ OPENMP_INCLUDE_PATH :=
 OPENMP_LIBRARY_PATH :=
 OPENMP_LINK_LIBRARY :=
 ifeq "$(KVS_ENABLE_OPENMP)" "1"
-  # For FCCpx/mpiFCCpx
-  ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
-    OPENMP_LINK_LIBRARY +=
-  # For Intel compiler
-  else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
-    OPENMP_LINK_LIBRARY += -liomp
-  # For g++
-  else
-    OPENMP_LINK_LIBRARY += -lgomp
-  endif
   ifdef KVS_OPENMP_DIR
     OPENMP_INCLUDE_PATH += -I$(KVS_OPENMP_DIR)/include
     OPENMP_LIBRARY_PATH += -L$(KVS_OPENMP_DIR)/lib
+  else
+    ifdef KVS_OPENMP_INCLUDE_PATH
+      OPENMP_INCLUDE_PATH += -I$(KVS_OPENMP_INCLUDE_PATH)
+    endif
+    ifdef KVS_OPENMP_LIBRARY_PATH
+      OPENMP_LIBRARY_PATH += -I$(KVS_OPENMP_LIBRARY_PATH)
+    endif
+  endif
+  ifdef KVS_OPENMP_LINK_LIBRARY
+    OPENMP_LINK_LIBRARY += $(KVS_OPENMP_LINK_LIBRARY)
+  else
+    # For FCCpx/mpiFCCpx
+    ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+      OPENMP_LINK_LIBRARY +=
+    # For Intel compiler
+    else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
+      OPENMP_LINK_LIBRARY += -liomp
+    # For g++
+    else
+      OPENMP_LINK_LIBRARY += -lgomp
+    endif
   endif
 endif
 
@@ -200,19 +285,40 @@ endif
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
   GLUT_INCLUDE_PATH :=
   GLUT_LIBRARY_PATH :=
+  GLUT_LINK_LIBRARY :=
   ifdef KVS_GLUT_DIR
     GLUT_INCLUDE_PATH += -I$(KVS_GLUT_DIR)/include
     GLUT_LIBRARY_PATH += -L$(KVS_GLUT_DIR)/lib
-  endif
-  ifeq "$(shell uname -s)" "Darwin"
-    GLUT_LINK_LIBRARY := -framework GLUT
   else
-    ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
-      GLUT_LINK_LIBRARY := -lglut
+    ifdef KVS_GLUT_INCLUDE_PATH
+      GLUT_INCLUDE_PATH += -I$(KVS_GLUT_INCLUDE_PATH)
+    endif
+    ifdef KVS_GLUT_LIBRARY_PATH
+      GLUT_LIBRARY_PATH += -I$(KVS_GLUT_LIBRARY_PATH)
+    endif
+  endif
+  # Mac OS X
+  ifeq "$(shell uname -s)" "Darwin"
+    ifdef KVS_GLUT_LINK_LIBRARY
+      GLUT_LINK_LIBRARY += $(KVS_GLUT_LINK_LIBRARY)
     else
-      ifeq "$(shell uname -s)" "Linux"
-        GLUT_LINK_LIBRARY := -lglut
-      endif
+      GLUT_LINK_LIBRARY += -framework GLUT
+    endif
+  endif
+  # Linux
+  ifeq "$(shell uname -s)" "Linux"
+    ifdef KVS_GLUT_LINK_LIBRARY
+      GLUT_LINK_LIBRARY += $(KVS_GLUT_LINK_LIBRARY)
+    else
+      GLUT_LINK_LIBRARY += -lglut
+    endif
+  endif
+  # Cygwin
+  ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
+    ifdef KVS_GLUT_LINK_LIBRARY
+      GLUT_LINK_LIBRARY += $(KVS_GLUT_LINK_LIBRARY)
+    else
+      GLUT_LINK_LIBRARY += -lglut
     endif
   endif
 endif
@@ -302,11 +408,23 @@ endif
 ifeq "$(KVS_SUPPORT_EGL)" "1"
   EGL_INCLUDE_PATH :=
   EGL_LIBRARY_PATH :=
+  EGL_LINK_LIBRARY :=
   ifdef KVS_EGL_DIR
     EGL_INCLUDE_PATH += -I$(KVS_EGL_DIR)/include
     EGL_LIBRARY_PATH += -L$(KVS_EGL_DIR)/lib
+  else
+    ifdef KVS_EGL_INCLUDE_PATH
+      EGL_INCLUDE_PATH += -I$(KVS_EGL_INCLUDE_PATH)
+    endif
+    ifdef KVS_EGL_LIBRARY_PATH
+      EGL_LIBRARY_PATH += -I$(KVS_EGL_LIBRARY_PATH)
+    endif
   endif
-  EGL_LINK_LIBRARY := -lEGL
+  ifdef KVS_EGL_LINK_LIBRARY
+    EGL_LINK_LIBRARY += $(KVS_EGL_LINK_LIBRARY)
+  else
+    EGL_LINK_LIBRARY := -lEGL
+  endif
 endif
 
 
