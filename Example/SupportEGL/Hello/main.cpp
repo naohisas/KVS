@@ -11,6 +11,8 @@
 
 int main( int argc, char** argv )
 {
+    std::cout << "EGL version: " << kvs::egl::Version() << std::endl;
+
     kvs::StructuredVolumeObject* volume = NULL;
     if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
     else            volume = new kvs::HydrogenVolumeData( kvs::Vec3u( 64, 64, 64 ) );
@@ -25,7 +27,7 @@ int main( int argc, char** argv )
 
     screen.displayInfo();
     kvs::Timer timer( kvs::Timer::Start );
-    for ( size_t i = 0; i < 4; i++ )
+    for ( size_t i = 0; i < 12; i++ )
     {
         std::stringstream num; num << std::setw(3) << std::setfill('0') << i;
         std::string filename = "output_" + num.str() + ".bmp";
