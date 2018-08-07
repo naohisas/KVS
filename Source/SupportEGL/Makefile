@@ -12,9 +12,9 @@ include ../../Makefile.def
 #=============================================================================
 #  INCLUDE_PATH, LIBRARY_PATH, LINK_LIBRARY, INSTALL_DIR.
 #=============================================================================
-INCLUDE_PATH := -I.. $(EGL_INCLUDE_PATH)
-LIBRARY_PATH := $(EGL_LIBRARY_PATH)
-LINK_LIBRARY := $(EGL_LINK_LIBRARY)
+INCLUDE_PATH := -I.. $(GL_INCLUDE_PATH) $(EGL_INCLUDE_PATH)
+LIBRARY_PATH := $(GL_LIBRARY_PATH) $(EGL_LIBRARY_PATH)
+LINK_LIBRARY := $(GL_LINK_LIBRARY) $(EGL_LINK_LIBRARY)
 INSTALL_DIR  := $(KVS_DIR)
 
 

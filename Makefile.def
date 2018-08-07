@@ -130,7 +130,7 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
           GL_INCLUDE_PATH += -I$(KVS_OSMESA_INCLUDE_PATH)
         endif
         ifdef KVS_OSMESA_LIBRARY_PATH
-          GL_LIBRARY_PATH += -I$(KVS_OSMESA_LIBRARY_PATH)
+          GL_LIBRARY_PATH += -L$(KVS_OSMESA_LIBRARY_PATH)
         endif
       endif
       ifdef KVS_OSMESA_LINK_LIBRARY
@@ -147,7 +147,7 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
           GL_INCLUDE_PATH += -I$(KVS_GL_INCLUDE_PATH)
         endif
         ifdef KVS_GL_LIBRARY_PATH
-          GL_LIBRARY_PATH += -I$(KVS_GL_LIBRARY_PATH)
+          GL_LIBRARY_PATH += -L$(KVS_GL_LIBRARY_PATH)
         endif
       endif
       ifdef KVS_GL_LINK_LIBRARY
@@ -170,7 +170,7 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
           GL_INCLUDE_PATH += -I$(KVS_OSMESA_INCLUDE_PATH)
         endif
         ifdef KVS_OSMESA_LIBRARY_PATH
-          GL_LIBRARY_PATH += -I$(KVS_OSMESA_LIBRARY_PATH)
+          GL_LIBRARY_PATH += -L$(KVS_OSMESA_LIBRARY_PATH)
         endif
       endif
       ifdef KVS_OSMESA_LINK_LIBRARY
@@ -187,7 +187,7 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
           GL_INCLUDE_PATH += -I$(KVS_GL_INCLUDE_PATH)
         endif
         ifdef KVS_GL_LIBRARY_PATH
-          GL_LIBRARY_PATH += -I$(KVS_GL_LIBRARY_PATH)
+          GL_LIBRARY_PATH += -L$(KVS_GL_LIBRARY_PATH)
         endif
       endif
       ifeq "$(KVS_ENABLE_GLU)" "1"
@@ -232,7 +232,7 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
         GLEW_INCLUDE_PATH += -I$(KVS_GLEW_INCLUDE_PATH)
       endif
       ifdef KVS_GLEW_LIBRARY_PATH
-        GLEW_LIBRARY_PATH += -I$(KVS_GLEW_LIBRARY_PATH)
+        GLEW_LIBRARY_PATH += -L$(KVS_GLEW_LIBRARY_PATH)
       endif
     endif
     ifdef KVS_GLEW_LINK_LIBRARY
@@ -259,7 +259,7 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
       OPENMP_INCLUDE_PATH += -I$(KVS_OPENMP_INCLUDE_PATH)
     endif
     ifdef KVS_OPENMP_LIBRARY_PATH
-      OPENMP_LIBRARY_PATH += -I$(KVS_OPENMP_LIBRARY_PATH)
+      OPENMP_LIBRARY_PATH += -L$(KVS_OPENMP_LIBRARY_PATH)
     endif
   endif
   ifdef KVS_OPENMP_LINK_LIBRARY
@@ -294,7 +294,7 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
       GLUT_INCLUDE_PATH += -I$(KVS_GLUT_INCLUDE_PATH)
     endif
     ifdef KVS_GLUT_LIBRARY_PATH
-      GLUT_LIBRARY_PATH += -I$(KVS_GLUT_LIBRARY_PATH)
+      GLUT_LIBRARY_PATH += -L$(KVS_GLUT_LIBRARY_PATH)
     endif
   endif
   # Mac OS X
@@ -417,7 +417,7 @@ ifeq "$(KVS_SUPPORT_EGL)" "1"
       EGL_INCLUDE_PATH += -I$(KVS_EGL_INCLUDE_PATH)
     endif
     ifdef KVS_EGL_LIBRARY_PATH
-      EGL_LIBRARY_PATH += -I$(KVS_EGL_LIBRARY_PATH)
+      EGL_LIBRARY_PATH += -L$(KVS_EGL_LIBRARY_PATH)
     endif
   endif
   ifdef KVS_EGL_LINK_LIBRARY
