@@ -488,7 +488,7 @@ void ProgramObject::setParameter( GLenum pname, GLint value )
 {
     KVS_ASSERT( this->isCreated() );
 
-#if defined( KVS_PLATFORM_MACOSX )
+#if defined( KVS_PLATFORM_MACOSX ) && !defined( KVS_SUPPORT_OSMESA )
 #if defined( GL_EXT_geometry_shader4 )
     KVS_GL_CALL( glProgramParameteriEXT( this->id(), pname, value ) );
 #elif defined( GL_ARB_geometry_shader4 )

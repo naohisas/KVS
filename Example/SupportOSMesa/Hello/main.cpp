@@ -18,7 +18,8 @@ int main( int argc, char** argv )
     else            volume = new kvs::HydrogenVolumeData( kvs::Vec3u( 64, 64, 64 ) );
 
     kvs::StructuredVolumeObject* object = volume;
-    kvs::RayCastingRenderer* renderer = new kvs::RayCastingRenderer();
+    // kvs::RayCastingRenderer* renderer = new kvs::RayCastingRenderer();
+    kvs::glsl::RayCastingRenderer* renderer = new kvs::glsl::RayCastingRenderer();
 
     kvs::osmesa::Screen screen;
     screen.setGeometry( 0, 0, 512, 512 );
