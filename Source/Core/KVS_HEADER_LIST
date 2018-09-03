@@ -139,6 +139,7 @@ Utility/Binary
 Utility/BitArray
 Utility/Breakpoint
 Utility/ClassName
+Utility/ColorStream
 Utility/CommandLine
 Utility/Compiler
 Utility/Date
@@ -158,6 +159,7 @@ Utility/MemoryDebugger
 Utility/MemoryTracer
 Utility/Message
 Utility/Noncopyable
+Utility/NullStream
 Utility/Platform
 Utility/Program
 Utility/Range

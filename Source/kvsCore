@@ -139,6 +139,7 @@
 #include <Core/Utility/BitArray.h>
 #include <Core/Utility/Breakpoint.h>
 #include <Core/Utility/ClassName.h>
+#include <Core/Utility/ColorStream.h>
 #include <Core/Utility/CommandLine.h>
 #include <Core/Utility/Compiler.h>
 #include <Core/Utility/Date.h>
@@ -158,6 +159,7 @@
 #include <Core/Utility/MemoryTracer.h>
 #include <Core/Utility/Message.h>
 #include <Core/Utility/Noncopyable.h>
+#include <Core/Utility/NullStream.h>
 #include <Core/Utility/Platform.h>
 #include <Core/Utility/Program.h>
 #include <Core/Utility/Range.h>
