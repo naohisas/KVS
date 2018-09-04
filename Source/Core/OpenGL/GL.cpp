@@ -14,8 +14,38 @@
 /*****************************************************************************/
 #include "GL.h"
 #include <string>
-#include <kvs/Message>
+#include <iostream>
+#include <kvs/ColorStream>
 #include <kvs/IgnoreUnusedVariable>
+
+
+namespace
+{
+
+inline std::string GetErrorString( const GLenum error )
+{
+    switch ( error )
+    {
+    case GL_NO_ERROR: return "No error.";
+    case GL_INVALID_ENUM: return "Invalid enumerant.";
+    case GL_INVALID_VALUE: return "Invalid value.";
+    case GL_INVALID_OPERATION: return "Invalid operation.";
+#ifndef GL_VERSION_3_0
+    case GL_STACK_OVERFLOW: return "Stack overflow.";
+    case GL_STACK_UNDERFLOW: return "Stack underflow.";
+    case GL_TABLE_TOO_LARGE: return "Table too large";
+#endif
+    case GL_OUT_OF_MEMORY: return "Out of memory.";
+#ifdef GL_EXT_framebuffer_object
+    case GL_INVALID_FRAMEBUFFER_OPERATION_EXT: return "Invalid framebuffer operation.";
+#endif
+    default: break;
+    }
+
+    return "Unknown error code.";
+}
+
+} // end of namespace
 
 
 namespace kvs
@@ -31,26 +61,21 @@ bool HasError( const char* file, const int line, const char* func, const char* c
 {
 #if defined( KVS_ENABLE_OPENGL )
     GLenum error = glGetError();
-    if ( error == GL_NO_ERROR ) return false;
+    if ( error == GL_NO_ERROR ) { return false; }
 
     // Output message tag.
-    std::string message_tag( "KVS GL ERROR" );
-    std::cerr << KVS_MESSAGE_SET_COLOR( KVS_MESSAGE_RED );
-    std::cerr << message_tag;
-    std::cerr << KVS_MESSAGE_RESET_COLOR;
+    std::cerr << kvs::ColorStream::Bold
+              << kvs::ColorStream::Red
+              << "KVS GL ERROR"
+              << kvs::ColorStream::Reset
+              << ": ";
 
     // Output message with an error string.
-    std::string error_string;
-#if defined( KVS_ENABLE_GLU )
-    const GLubyte* c = gluErrorString( error );
-    while ( *c ) { error_string += *c++; }
-#else
-    error_string = "Unknown error. (GLU is not enabled)";
-#endif
-    std::cerr << ": " << error_string << std::endl;
-    std::cerr << "\t" << "FILE: " << file << " (" << line << ")" << std::endl;
-    std::cerr << "\t" << "FUNC: " << func << std::endl;
-    std::cerr << "\t" << "GL COMMAND: " << command << std::endl;
+    const std::string message = ::GetErrorString( error );
+    std::cerr << kvs::ColorStream::Underline( kvs::ColorStream::Bold( message ) ) << std::endl;
+    std::cerr << "    " << "Func: " << func << std::endl;
+    std::cerr << "    " << "File: " << file << ":" << line << std::endl;
+    std::cerr << "    " << "GL Command: " << command << std::endl;
 
     return true;
 #else
