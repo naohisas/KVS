@@ -1,6 +1,8 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file SystemInformation.cpp
+ *  @file   SystemInformation.cpp
+ *  @author Naohisa Sakamoto
+ *  @brief  
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,14 +10,13 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: SystemInformation.cpp 1698 2014-01-16 10:49:03Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
+/*****************************************************************************/
 #include "SystemInformation.h"
 #include <cstdio>
 #include <cerrno>
 #include <cstring>
-#include <kvs/IgnoreUnusedVariable>
 #include <kvs/Platform>
 #if   defined ( KVS_PLATFORM_WINDOWS )
 #include <windows.h>
@@ -35,66 +36,70 @@
 namespace
 {
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Get warning message.
- *  @param number [in] error number (errno)
- *  @param message [in] pointer to the message
+ *  @brief  Returns warning message.
+ *  @param  number [in] error number (errno)
+ *  @param  message [in] pointer to message
  *  @return warning message
  */
-/*==========================================================================*/
+/*===========================================================================*/
 const char* GetWarningMessage( int number, const char* message )
 {
     return number == EINVAL ? strerror( number ) : message;
 }
+
 }
 
 
 namespace kvs
 {
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Get number of processors.
+ *  @brief  Returns number of processors.
  *  @return number of processors
  */
-/*==========================================================================*/
+/*===========================================================================*/
 size_t SystemInformation::NumberOfProcessors()
 {
+// Windows
 #if defined ( KVS_PLATFORM_WINDOWS )
     SYSTEM_INFO sysinfo;
     GetSystemInfo( &sysinfo );
     return sysinfo.dwNumberOfProcessors;
 
+// Linux
 #elif defined ( KVS_PLATFORM_LINUX ) || defined ( KVS_PLATFORM_CYGWIN )
     int nprocessors = sysconf( _SC_NPROCESSORS_ONLN );
-    if ( nprocessors != -1 )
+    if ( nprocessors == -1 )
     {
         const char* message = "_SC_NPROCESSORS_ONLN is not supported.";
         kvsMessageWarning( ::GetWarningMessage( errno, message ) );
     }
     return nprocessors;
+
+// Mac OS X
 #elif defined ( KVS_PLATFORM_MACOSX )
     int nprocessors = 0;
     int mib[2] = { CTL_HW, HW_NCPU };
     size_t length = sizeof( nprocessors );
     int ret = sysctl( mib, 2, &nprocessors, &length, NULL, 0 );
-    if ( ret != -1 )
+    if ( ret == -1 )
     {
         const char* message = strerror( errno );
         kvsMessageWarning( ::GetWarningMessage( errno, message ) );
     }
-    kvs::IgnoreUnusedVariable( ret );
     return nprocessors;
 #endif
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Get total memory size in bytes.
+ *  @brief  Returns total memory size in bytes.
  *  @return total memory size
  */
-/*==========================================================================*/
+/*===========================================================================*/
 size_t SystemInformation::TotalMemorySize()
 {
 // Windows
@@ -112,14 +117,14 @@ size_t SystemInformation::TotalMemorySize()
 // Linux
 #elif defined ( KVS_PLATFORM_LINUX ) || defined ( KVS_PLATFORM_CYGWIN )
     long phys_page_size = sysconf( _SC_PHYS_PAGES );
-    if ( phys_page_size != -1 )
+    if ( phys_page_size == -1 )
     {
         const char* message = "_SC_PHYS_PAGES is not supported.";
         kvsMessageWarning( ::GetWarningMessage( errno, message ) );
     }
 
     long page_size = sysconf( _SC_PAGESIZE );
-    if ( page_size != -1 )
+    if ( page_size == -1 )
     {
         const char* message = "_SC_PAGESIZE is not supported.";
         kvsMessageWarning( ::GetWarningMessage( errno, message ) );
@@ -133,7 +138,7 @@ size_t SystemInformation::TotalMemorySize()
     uint64_t memory_size = 0;
     size_t length = sizeof( memory_size );
     int ret = sysctlbyname( "hw.memsize", &memory_size, &length, NULL, 0 );
-    if ( ret != -1 )
+    if ( ret == -1 )
     {
         const char* message = strerror( errno );
         kvsMessageWarning( message );
@@ -143,7 +148,7 @@ size_t SystemInformation::TotalMemorySize()
     uint32_t memory_size = 0;
     size_t length = sizeof( memory_size );
     int ret = sysctlbyname( "hw.physmem", &memory_size, &length, NULL, 0 );
-    if ( ret != -1 )
+    if ( ret == -1 )
     {
         const char* message = strerror( errno );
         kvsMessageWarning( message );
@@ -153,12 +158,12 @@ size_t SystemInformation::TotalMemorySize()
 #endif
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Get free memory size in bytes.
+ *  @brief  Returns free memory size in bytes.
  *  @return free memory size
  */
-/*==========================================================================*/
+/*===========================================================================*/
 size_t SystemInformation::FreeMemorySize()
 {
 // Windows
@@ -176,14 +181,14 @@ size_t SystemInformation::FreeMemorySize()
 // Linux
 #elif defined ( KVS_PLATFORM_LINUX ) || defined ( KVS_PLATFORM_CYGWIN )
     long avphys_page_size = sysconf( _SC_AVPHYS_PAGES );
-    if ( avphys_page_size != -1 )
+    if ( avphys_page_size == -1 )
     {
         const char* message = "_SC_AVPHYS_PAGES is not supported.";
         kvsMessageWarning( ::GetWarningMessage( errno, message ) );
     }
 
     long page_size = sysconf( _SC_PAGESIZE );
-    if ( page_size != -1 )
+    if ( page_size == -1 )
     {
         const char* message = "_SC_PAGESIZE is not supported.";
         kvsMessageWarning( ::GetWarningMessage( errno, message ) );

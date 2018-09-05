@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file SystemInformation.h
+ *  @file   SystemInformation.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,23 +9,21 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: SystemInformation.h 1334 2012-10-18 13:47:59Z s.yamada0808@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
-#ifndef KVS__SYSTEM_INFORMATION_H_INCLUDE
-#define KVS__SYSTEM_INFORMATION_H_INCLUDE
-
+/*****************************************************************************/
+#pragma once
 #include <cstdio>
 
 
 namespace kvs
 {
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  System information class.
+ *  @brief  System information class.
  */
-/*==========================================================================*/
+/*===========================================================================*/
 class SystemInformation
 {
 public:
@@ -37,5 +36,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SYSTEM_INFORMATION_H_INCLUDE
