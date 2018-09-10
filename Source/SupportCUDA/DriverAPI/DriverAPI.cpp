@@ -60,19 +60,20 @@ bool IsError( const CUresult error, const char* file, const int line, const char
     if ( error == CUDA_SUCCESS ) return false;
 
     // Output message tag.
-    std::string message_tag( "KVS CUDA ERROR" );
-    std::cerr << KVS_MESSAGE_SET_COLOR( KVS_MESSAGE_RED );
-    std::cerr << message_tag;
-    std::cerr << KVS_MESSAGE_RESET_COLOR;
+    std::cerr << kvs::ColorStream::Bold
+              << kvs::ColorStream::Red
+              << "KVS CUDA ERROR"
+              << kvs::ColorStream::Reset
+              << ": ";
 
     // Output message with an error string.
-    std::string error_string;
+    std::string message;
     const char* c = kvs::cuda::DriverAPI::ErrorString( error );
-    while ( *c ) error_string += *c++;
-    std::cerr << ": " << error_string << std::endl;
-    std::cerr << "\t" << "FILE: " << file << " (" << line << ")" << std::endl;
-    std::cerr << "\t" << "FUNC: " << func << std::endl;
-    std::cerr << "\t" << "CUDA COMMAND: " << command << std::endl;
+    while ( *c ) message += *c++;
+    std::cerr << kvs::ColorStream::Underline( kvs::ColorStream::Bold( message ) ) << std::endl;
+    std::cerr << "    " << "Func: " << func << std::endl;
+    std::cerr << "    " << "File: " << file << ":" << line << std::endl;
+    std::cerr << "    " << "CUDA Command: " << command << std::endl;
 
     return true;
 }

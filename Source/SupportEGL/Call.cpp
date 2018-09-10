@@ -7,7 +7,7 @@
 namespace
 {
 
-std::string ErrorString( const EGLint code )
+inline std::string GetErrorString( const EGLint code )
 {
     std::string err_msg;
     switch ( code )
@@ -50,17 +50,18 @@ bool HasError( const char* file, const int line, const char* func, const char* c
     if ( error == EGL_SUCCESS ) return false;
 
     // Output message tag.
-    std::string message_tag( "KVS EGL ERROR" );
-    std::cerr << KVS_MESSAGE_SET_COLOR( KVS_MESSAGE_RED );
-    std::cerr << message_tag;
-    std::cerr << KVS_MESSAGE_RESET_COLOR;
+    std::cerr << kvs::ColorStream::Bold
+              << kvs::ColorStream::Red
+              << "KVS EGL ERROR"
+              << kvs::ColorStream::Reset
+              << ": ";
 
     // Output message with an error string.
-    std::string error_string = ::ErrorString( error );
-    std::cerr << ": " << error_string << std::endl;
-    std::cerr << "\t" << "FILE: " << file << " (" << line << ")" << std::endl;
-    std::cerr << "\t" << "FUNC: " << func << std::endl;
-    std::cerr << "\t" << "GL COMMAND: " << command << std::endl;
+    std::string message = ::GetErrorString( error );
+    std::cerr << kvs::ColorStream::Underline( kvs::ColorStream::Bold( message ) ) << std::endl;
+    std::cerr << "    " << "Func: " << func << std::endl;
+    std::cerr << "    " << "File: " << file << ":" << line << std::endl;
+    std::cerr << "    " << "EGL Command: " << command << std::endl;
 
     return true;
 #else
