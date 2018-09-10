@@ -234,3 +234,23 @@ private:
 };
 
 } // end of namespace kvs
+
+
+// Deprecated macros
+#define KVS_MESSAGE_RED    "31"
+#define KVS_MESSAGE_GREEN  "32"
+#define KVS_MESSAGE_BROWN  "33"
+#define KVS_MESSAGE_BLUE   "34"
+#define KVS_MESSAGE_PURPLE "35"
+#define KVS_MESSAGE_SKY    "36"
+#define KVS_MESSAGE_WHITE  "37"
+#define KVS_MESSAGE_NORMAL "0"
+
+#if defined ( KVS_PLATFORM_WINDOWS )
+#define KVS_MESSAGE_SET_COLOR( color ) ""
+#define KVS_MESSAGE_RESET_COLOR        ""
+#else
+#define KVS_MESSAGE_CHANGE_COLOR_BEGIN
+#define KVS_MESSAGE_SET_COLOR( color ) "\x1b[" << color << "m"
+#define KVS_MESSAGE_RESET_COLOR        "\x1b[0m"
+#endif

@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Platform.h
+ *  @file   Platform.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,8 +12,8 @@
  *  $Id: Platform.h 1109 2012-04-21 11:55:54Z s.yamada0808@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__PLATFORM_H_INCLUDE
-#define KVS__PLATFORM_H_INCLUDE
+#pragma once
+
 
 /*----------------------------------------------------------------------------
  * Platform name.
@@ -131,8 +132,13 @@
 #if defined ( __sparc__ ) || defined ( __sparc )
 #undef  KVS_PLATFORM_CPU_UNKNOWN
 #undef  KVS_PLATFORM_CPU_NAME
+#if defined ( __arch64__ ) || defined ( __sparc_v9 ) || defined ( __sparcv9 )
+#define KVS_PLATFORM_CPU_SPARC64
+#define KVS_PLATFORM_CPU_NAME "Sun SPARC 64"
+#else
 #define KVS_PLATFORM_CPU_SPARC
 #define KVS_PLATFORM_CPU_NAME "Sun SPARC"
+#endif
 #endif
 
 // MIPS
@@ -151,11 +157,12 @@
  * Number of bits of CPU architechture.
  *----------------------------------------------------------------------------*/
 
-#if defined ( __x86_64__ ) ||                                              \
-    defined ( _WIN64 ) || defined ( _M_X64 ) ||                            \
-    defined ( __amd64__ ) || defined( _M_AMD64 ) ||                        \
-    defined ( __ia64__ ) || defined ( __ia64 ) || defined ( _M_IA64 ) ||   \
-    defined ( __powerpc64__ )
+#if defined ( __x86_64__ ) ||                                           \
+    defined ( _WIN64 ) || defined ( _M_X64 ) ||                         \
+    defined ( __amd64__ ) || defined( _M_AMD64 ) ||                     \
+    defined ( __ia64__ ) || defined ( __ia64 ) || defined ( _M_IA64 ) || \
+    defined ( __powerpc64__ ) ||                                        \
+    defined ( __arch64__ )
 #define KVS_PLATFORM_CPU_64
 #else
 #define KVS_PLATFORM_CPU_32
@@ -186,9 +193,11 @@
 
 #elif defined ( KVS_PLATFORM_CPU_IA64 )
 #define KVS_PLATFORM_LITTLE_ENDIAN
-//#define KVS_PLATFORM_BIG_ENDIAN
 
 #elif defined ( KVS_PLATFORM_CPU_POWERPC )
+#define KVS_PLATFORM_BIG_ENDIAN
+
+#elif defined ( KVS_PLATFORM_CPU_SPARC64 )
 #define KVS_PLATFORM_BIG_ENDIAN
 
 #elif defined ( KVS_PLATFORM_CPU_SPARC )
@@ -211,32 +220,11 @@ namespace kvs
 class Platform
 {
 public:
-/*==========================================================================*/
-/**
- *  Get platform name.
- *  @return platform name
- */
-/*==========================================================================*/
-    static const char* Name()
-    {
-        return KVS_PLATFORM_NAME;
-    }
-
-/*==========================================================================*/
-/**
- *  Get CPU name.
- *  @return CPU name
- */
-/*==========================================================================*/
-    static const char* CPUName()
-    {
-        return KVS_PLATFORM_CPU_NAME;
-    }
+    static const char* Name() { return KVS_PLATFORM_NAME; }
+    static const char* CPUName() { return KVS_PLATFORM_CPU_NAME; }
 
 private:
     Platform();
 };
 
 } // end of namespace kvs
-
-#endif // KVS__PLATFORM_H_INCLUDE

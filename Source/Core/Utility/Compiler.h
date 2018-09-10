@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Compiler.h
+ *  @file   Compiler.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,9 +12,7 @@
  *  $Id: Compiler.h 1582 2013-06-03 01:31:06Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__COMPILER_H_INCLUDE
-#define KVS__COMPILER_H_INCLUDE
-
+#pragma once
 #define KVS_COMPILER_NUMBER( x )           # x
 #define KVS_COMPILER_NUMBER_TO_STRING( x ) KVS_COMPILER_NUMBER( x )
 
@@ -243,5 +242,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__COMPILER_H_INCLUDE
