@@ -12,9 +12,7 @@
  *  $Id: EnsembleAverageBuffer.h 1457 2013-03-24 06:32:17Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__ENSEMBLE_AVERAGE_BUFFER_H_INCLUDE
-#define KVS__ENSEMBLE_AVERAGE_BUFFER_H_INCLUDE
-
+#pragma once
 #include <kvs/Texture2D>
 #include <kvs/FrameBufferObject>
 #include <kvs/ProgramObject>
@@ -41,7 +39,6 @@ private:
     kvs::ProgramObject m_drawing_shader;
 
 public:
-
     const kvs::Texture2D& currentColorTexture() const { return m_current_color_texture; }
     const kvs::Texture2D& currentDepthTexture() const { return m_current_depth_texture; }
     const kvs::FrameBufferObject& currentFrameBufferObject() const { return m_current_framebuffer; }
@@ -56,5 +53,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__ENSEMBLE_AVERAGE_BUFFER_H_INCLUDE
