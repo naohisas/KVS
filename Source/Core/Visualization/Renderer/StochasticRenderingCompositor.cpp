@@ -124,9 +124,6 @@ void StochasticRenderingCompositor::draw()
         m_ensemble_buffer.add();
     }
 
-//    KVS_GL_CALL( glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 ) );
-//    kvs::OpenGL::SetDrawBuffer( GL_BACK );
-
     m_ensemble_buffer.draw();
 
     kvs::OpenGL::Finish();
