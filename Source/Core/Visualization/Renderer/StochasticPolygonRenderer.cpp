@@ -484,6 +484,8 @@ void StochasticPolygonRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Came
     kvs::ProgramObject::Binder bind2( m_shader_program );
     kvs::Texture::Binder bind3( randomTexture() );
     {
+        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
+
         const size_t size = randomTextureSize();
         const int count = repetitionCount() * ::RandomNumber();
         const float offset_x = static_cast<float>( ( count ) % size );
