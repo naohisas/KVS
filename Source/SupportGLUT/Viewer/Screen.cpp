@@ -374,6 +374,10 @@ void Screen::paintEvent()
         BaseClass::eventHandler()->notify( &event );
     }
     glutSwapBuffers();
+
+#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+    glutPostRedisplay();
+#endif
 }
 
 /*===========================================================================*/

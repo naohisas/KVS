@@ -74,6 +74,14 @@ void DisplayFunction()
 /*===========================================================================*/
 void ResizeFunction( int width, int height )
 {
+#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+    static bool flag = true;
+    if ( flag )
+    {
+        glutReshapeWindow( width + 1, height + 1 );
+        flag = false;
+    }
+#endif
     const int id = glutGetWindow();
     ::Context[id]->resizeEvent( width, height );
 }
@@ -245,7 +253,11 @@ void ScreenBase::create()
 
     // Set screen geometry.
     glutInitWindowPosition( BaseClass::x(), BaseClass::y() );
+#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+    glutInitWindowSize( BaseClass::width() - 1, BaseClass::height() - 1 );
+#else
     glutInitWindowSize( BaseClass::width(), BaseClass::height() );
+#endif
 
     // Create window.
     glutCreateWindow( BaseClass::title().c_str() );
