@@ -375,9 +375,9 @@ void Screen::paintEvent()
     }
     glutSwapBuffers();
 
-#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
-    glutPostRedisplay();
-#endif
+//#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+//    glutPostRedisplay();
+//#endif
 }
 
 /*===========================================================================*/
