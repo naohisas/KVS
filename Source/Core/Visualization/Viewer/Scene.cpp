@@ -430,7 +430,7 @@ void Scene::updateCenterOfRotation()
         break;
     }
 
-    m_mouse->setRotationCenter( center );
+    m_mouse->trackball().setRotationCenter( center );
 }
 
 /*==========================================================================*/
@@ -467,13 +467,13 @@ void Scene::updateXform( kvs::ObjectManager* manager )
     switch ( m_mouse->operationMode() )
     {
     case kvs::Mouse::Rotation:
-        manager->rotate( m_mouse->rotation().toMatrix() );
+        manager->rotate( m_mouse->trackball().rotation().toMatrix() );
         break;
     case kvs::Mouse::Translation:
-        manager->translate( m_mouse->translation() );
+        manager->translate( m_mouse->trackball().translation() );
         break;
     case kvs::Mouse::Scaling:
-        manager->scale( m_mouse->scaling() );
+        manager->scale( m_mouse->trackball().scaling() );
         break;
     default:
         break;
@@ -491,14 +491,14 @@ void Scene::updateXform( kvs::Camera* camera )
     switch ( m_mouse->operationMode() )
     {
     case kvs::Mouse::Rotation:
-        camera->rotate( m_mouse->rotation().toMatrix().transposed() );
+        camera->rotate( m_mouse->trackball().rotation().toMatrix().transposed() );
         break;
     case kvs::Mouse::Translation:
-        camera->translate( -m_mouse->translation() );
+        camera->translate( -m_mouse->trackball().translation() );
         break;
     case kvs::Mouse::Scaling:
     {
-        const kvs::Vec3 s = m_mouse->scaling();
+        const kvs::Vec3 s = m_mouse->trackball().scaling();
         camera->scale( kvs::Vec3( 1 / s.x(), 1 / s.y(), 1 / s.z() ) );
         break;
     }
@@ -518,13 +518,13 @@ void Scene::updateXform( kvs::Light* light )
     switch ( m_mouse->operationMode() )
     {
     case kvs::Mouse::Rotation:
-        light->rotate( m_mouse->rotation().toMatrix() );
+        light->rotate( m_mouse->trackball().rotation().toMatrix() );
         break;
     case kvs::Mouse::Translation:
-        light->translate( m_mouse->translation() );
+        light->translate( m_mouse->trackball().translation() );
         break;
     case kvs::Mouse::Scaling:
-        light->scale( m_mouse->scaling() );
+        light->scale( m_mouse->trackball().scaling() );
         break;
     default:
         break;
@@ -630,7 +630,7 @@ void Scene::initializeFunction()
     m_light->on();
 
     // Attach the Camera to the Mouse
-    m_mouse->attachCamera( m_camera );
+    m_mouse->trackball().attachCamera( m_camera );
 }
 
 /*==========================================================================*/

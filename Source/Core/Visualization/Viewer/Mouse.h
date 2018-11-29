@@ -17,6 +17,7 @@
 #include <kvs/Trackball>
 #include <kvs/Timer>
 #include <kvs/Vector2>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -30,7 +31,6 @@ namespace kvs
 class Mouse
 {
 public:
-
     enum OperationMode
     {
         Rotation = 0, ///< rotation mode
@@ -39,7 +39,6 @@ public:
     };
 
 private:
-
     kvs::Trackball m_trackball; ///< trackball
     OperationMode m_operation_mode; ///< operation mode
     kvs::Vec2i m_old; ///< old mouse position on the window coordinate (org: upper-left)
@@ -52,7 +51,6 @@ private:
     bool m_is_damping; ///< slow flag (true: if slow mode)
 
 public:
-
     Mouse();
     virtual ~Mouse();
 
@@ -66,17 +64,19 @@ public:
     void setOperationMode( const OperationMode mode ) { m_operation_mode = mode; }
     OperationMode operationMode() const { return m_operation_mode; }
 
-    void attachCamera( kvs::Camera* camera ) { m_trackball.attachCamera( camera ); }
-    void setRotationCenter( const kvs::Vec2& center ) { m_trackball.setRotationCenter( center ); }
-    const kvs::Vec3& scaling() const { return m_trackball.scaling(); }
-    const kvs::Vec3& translation() const { return m_trackball.translation(); }
-    const kvs::Quaternion& rotation() const { return m_trackball.rotation(); }
+    kvs::Trackball& trackball() { return m_trackball; }
 
     void setEnabledAutoUpdating( const bool enable ) { m_enable_auto_updating = enable; }
     void enableAutoUpdating() { this->setEnabledAutoUpdating( true ); }
     void disableAutoUpdating() { this->setEnabledAutoUpdating( false ); }
     bool isEnabledAutoUpdating() const { return m_enable_auto_updating; }
     bool isUpdating() { return m_is_updating; }
+
+    KVS_DEPRECATED( void attachCamera( kvs::Camera* camera ) ) { m_trackball.attachCamera( camera ); }
+    KVS_DEPRECATED( void setRotationCenter( const kvs::Vec2& center ) ) { m_trackball.setRotationCenter( center ); }
+    KVS_DEPRECATED( const kvs::Vec3& scaling() const ) { return m_trackball.scaling(); }
+    KVS_DEPRECATED( const kvs::Vec3& translation() const ) { return m_trackball.translation(); }
+    KVS_DEPRECATED( const kvs::Quaternion& rotation() const ) { return m_trackball.rotation(); }
 };
 
 } // end of namespace kvs
