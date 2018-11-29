@@ -266,8 +266,7 @@ void CellByCellMetropolisSampling::generate_particles( const kvs::StructuredVolu
                         {
                             // Trial point.
                             const kvs::Real32 density_trial = sampler.trySample();
-                            const kvs::Real32 ratio = density_trial / density;
-                            if ( ratio >= 1.0f )
+                            if ( density_trial >= density )
                             {
                                 const CellByCellSampling::Particle& p = sampler.acceptTrial();
                                 const size_t particle_index = particle_index_counter++;
@@ -278,7 +277,7 @@ void CellByCellMetropolisSampling::generate_particles( const kvs::StructuredVolu
                             }
                             else
                             {
-                                if ( ratio >= CellByCellSampling::RandomNumber() )
+                                if ( density_trial >= density * CellByCellSampling::RandomNumber() )
                                 {
                                     const CellByCellSampling::Particle& p = sampler.acceptTrial();
                                     const size_t particle_index = particle_index_counter++;
@@ -378,8 +377,7 @@ void CellByCellMetropolisSampling::generate_particles( const kvs::UnstructuredVo
                 while ( counter < n )
                 {
                     const kvs::Real32 density_trial = sampler.trySample();
-                    const kvs::Real32 ratio = density_trial / density;
-                    if ( ratio >= 1.0f )
+                    if ( density_trial >= density )
                     {
                         const CellByCellSampling::Particle& p = sampler.acceptTrial();
                         const size_t particle_index = particle_index_counter++;
@@ -390,7 +388,7 @@ void CellByCellMetropolisSampling::generate_particles( const kvs::UnstructuredVo
                     }
                     else
                     {
-                        if ( ratio >= CellByCellSampling::RandomNumber() )
+                        if ( density_trial >= density * CellByCellSampling::RandomNumber() )
                         {
                             const CellByCellSampling::Particle& p = sampler.acceptTrial();
                             const size_t particle_index = particle_index_counter++;
