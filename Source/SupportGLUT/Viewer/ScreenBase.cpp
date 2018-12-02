@@ -13,6 +13,7 @@
  */
 /*****************************************************************************/
 #include "ScreenBase.h"
+#include <kvs/Message>
 #include <kvs/Assert>
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
