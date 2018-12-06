@@ -13,7 +13,6 @@
  */
 /*****************************************************************************/
 #pragma once
-
 #include <kvs/DebugNew>
 #include <kvs/Module>
 #include <kvs/LineObject>
@@ -21,7 +20,6 @@
 #include <kvs/Shader>
 #include <kvs/ProgramObject>
 #include <kvs/VertexBufferObject>
-#include <kvs/IndexBufferObject>
 #include <kvs/Texture2D>
 
 
@@ -33,8 +31,7 @@ class StylizedLineRenderer : public kvs::LineRenderer
     kvsModule( kvs::StylizedLineRenderer, Renderer );
     kvsModuleBaseClass( kvs::LineRenderer );
 
-protected:
-
+private:
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
@@ -48,14 +45,11 @@ protected:
     kvs::Real32 m_halo_size;
     kvs::Texture2D m_shape_texture;
     kvs::Texture2D m_diffuse_texture;
-    GLuint m_display_list_id;
+    kvs::VertexBufferObject m_vbo; ///< vertex buffer object
 
 public:
-
     StylizedLineRenderer();
     virtual ~StylizedLineRenderer();
-
-public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
@@ -65,7 +59,6 @@ public:
     void setShader( const ShadingType shader );
 
 private:
-
     void create_shader_program();
     void create_buffer_object( const kvs::LineObject* line );
     void create_shape_texture();

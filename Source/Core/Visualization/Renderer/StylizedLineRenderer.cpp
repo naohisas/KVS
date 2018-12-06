@@ -23,180 +23,219 @@
 namespace
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Returns vertex-color array.
- *  @param  line [in] pointer to the line object
- */
-/*===========================================================================*/
-kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::LineObject* line )
+kvs::ValueArray<kvs::Real32> QuadVertexCoords( const kvs::LineObject* line )
 {
-    if ( line->colorType() == kvs::LineObject::VertexColor ) { return line->colors(); }
-
     const size_t nvertices = line->numberOfVertices();
-    const kvs::RGBColor color = line->color();
-
-    kvs::ValueArray<kvs::UInt8> colors( nvertices * 3 );
+    kvs::ValueArray<kvs::Real32> coords( nvertices * 6 );
     for ( size_t i = 0; i < nvertices; i++ )
     {
-        colors[ 3 * i + 0 ] = color.r();
-        colors[ 3 * i + 1 ] = color.g();
-        colors[ 3 * i + 2 ] = color.b();
+        coords[ 6 * i + 0 ] = line->coords()[ 3 * i + 0 ];
+        coords[ 6 * i + 1 ] = line->coords()[ 3 * i + 1 ];
+        coords[ 6 * i + 2 ] = line->coords()[ 3 * i + 2 ];
+        coords[ 6 * i + 3 ] = line->coords()[ 3 * i + 0 ];
+        coords[ 6 * i + 4 ] = line->coords()[ 3 * i + 1 ];
+        coords[ 6 * i + 5 ] = line->coords()[ 3 * i + 2 ];
     }
+    return coords;
+}
 
+kvs::ValueArray<kvs::UInt8> QuadVertexColors( const kvs::LineObject* line )
+{
+    const size_t nvertices = line->numberOfVertices();
+    kvs::ValueArray<kvs::UInt8> colors( nvertices * 6 );
+    if ( line->colorType() == kvs::LineObject::VertexColor )
+    {
+        for ( size_t i = 0; i < nvertices; i++ )
+        {
+            colors[ 6 * i + 0 ] = line->colors()[ 3 * i + 0 ];
+            colors[ 6 * i + 1 ] = line->colors()[ 3 * i + 1 ];
+            colors[ 6 * i + 2 ] = line->colors()[ 3 * i + 2 ];
+            colors[ 6 * i + 3 ] = line->colors()[ 3 * i + 0 ];
+            colors[ 6 * i + 4 ] = line->colors()[ 3 * i + 1 ];
+            colors[ 6 * i + 5 ] = line->colors()[ 3 * i + 2 ];
+        }
+    }
+    else
+    {
+        const kvs::RGBColor color = line->color();
+        for ( size_t i = 0; i < nvertices; i++ )
+        {
+            colors[ 6 * i + 0 ] = color.r();
+            colors[ 6 * i + 1 ] = color.g();
+            colors[ 6 * i + 2 ] = color.b();
+            colors[ 6 * i + 3 ] = color.r();
+            colors[ 6 * i + 4 ] = color.g();
+            colors[ 6 * i + 5 ] = color.b();
+        }
+    }
     return colors;
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Returns vertex normal array.
- *  @param  line [in] pointer to the line object
- */
-/*===========================================================================*/
-kvs::ValueArray<kvs::Real32> VertexNormals( const kvs::LineObject* line )
+kvs::ValueArray<kvs::Real32> QuadVertexNormals( const kvs::LineObject* line )
 {
-    if ( line->coords().size() == line->normals().size() ) { return line->normals(); }
+    const size_t nvertices = line->numberOfVertices();
+    kvs::ValueArray<kvs::Real32> normals( nvertices * 6 );
 
-    kvs::ValueArray<kvs::Real32> normals( line->coords().size() );
-    switch ( line->lineType() )
+    if ( line->coords().size() == line->normals().size() )
     {
-    case kvs::LineObject::Uniline:
-    {
-        const size_t nconnections = line->numberOfConnections();
-        for ( size_t i = 0; i < nconnections - 1; i++ )
+        for ( size_t i = 0; i < nvertices; i++ )
         {
-            const size_t id0 = line->connections().at( i );
-            const size_t id1 = line->connections().at( i + 1 );
-            const kvs::Vec3 p0 = line->coord( id0 );
-            const kvs::Vec3 p1 = line->coord( id1 );
-            const kvs::Vec3 n = ( p1 - p0 ).normalized();
-            normals[ 3 * id0 + 0 ] = n.x();
-            normals[ 3 * id0 + 1 ] = n.y();
-            normals[ 3 * id0 + 2 ] = n.z();
-            if ( i == nconnections - 2 )
-            {
-                normals[ 3 * id1 + 0 ] = n.x();
-                normals[ 3 * id1 + 1 ] = n.y();
-                normals[ 3 * id1 + 2 ] = n.z();
-            }
+            normals[ 6 * i + 0 ] = line->normals()[ 3 * i + 0 ];
+            normals[ 6 * i + 1 ] = line->normals()[ 3 * i + 1 ];
+            normals[ 6 * i + 2 ] = line->normals()[ 3 * i + 2 ];
+            normals[ 6 * i + 3 ] = line->normals()[ 3 * i + 0 ];
+            normals[ 6 * i + 4 ] = line->normals()[ 3 * i + 1 ];
+            normals[ 6 * i + 5 ] = line->normals()[ 3 * i + 2 ];
         }
-        break;
     }
-    case kvs::LineObject::Segment:
+    else
     {
-        const size_t nconnections = line->numberOfConnections();
-        for ( size_t i = 0; i < nconnections; i++ )
+        switch ( line->lineType() )
         {
-            const size_t id0 = line->connections().at( 2 * i );
-            const size_t id1 = line->connections().at( 2 * i + 1 );
-            const kvs::Vec3 p0 = line->coord( id0 );
-            const kvs::Vec3 p1 = line->coord( id1 );
-            const kvs::Vec3 n = ( p1 - p0 ).normalized();
-            normals[ 3 * id0 + 0 ] = n.x();
-            normals[ 3 * id0 + 1 ] = n.y();
-            normals[ 3 * id0 + 2 ] = n.z();
-            normals[ 3 * id1 + 0 ] = n.x();
-            normals[ 3 * id1 + 1 ] = n.y();
-            normals[ 3 * id1 + 2 ] = n.z();
-        }
-        break;
-    }
-    case kvs::LineObject::Polyline:
-    {
-        const size_t nconnections = line->numberOfConnections();
-        for ( size_t i = 0; i < nconnections; i++ )
+        case kvs::LineObject::Uniline:
         {
-            const size_t id0 = line->connections().at( 2 * i );
-            const size_t id1 = line->connections().at( 2 * i + 1 );
-            for ( size_t j = id0; j < id1; j++ )
+            const size_t nconnections = line->numberOfConnections();
+            for ( size_t i = 0; i < nconnections - 1; i++ )
             {
-                const kvs::Vec3 p0 = line->coord( j );
-                const kvs::Vec3 p1 = line->coord( j + 1 );
+                const size_t id0 = line->connections().at( i );
+                const size_t id1 = line->connections().at( i + 1 );
+                const kvs::Vec3 p0 = line->coord( id0 );
+                const kvs::Vec3 p1 = line->coord( id1 );
                 const kvs::Vec3 n = ( p1 - p0 ).normalized();
-                normals[ 3 * j + 0 ] = n.x();
-                normals[ 3 * j + 1 ] = n.y();
-                normals[ 3 * j + 2 ] = n.z();
-                if ( j == id1 - 1 )
+                normals[ 6 * id0 + 0 ] = n.x();
+                normals[ 6 * id0 + 1 ] = n.y();
+                normals[ 6 * id0 + 2 ] = n.z();
+                normals[ 6 * id0 + 3 ] = n.x();
+                normals[ 6 * id0 + 4 ] = n.y();
+                normals[ 6 * id0 + 5 ] = n.z();
+                if ( i == nconnections - 2 )
                 {
-                    normals[ 3 * ( j + 1 ) + 0 ] = n.x();
-                    normals[ 3 * ( j + 1 ) + 1 ] = n.y();
-                    normals[ 3 * ( j + 1 ) + 2 ] = n.z();
+                    normals[ 6 * id1 + 0 ] = n.x();
+                    normals[ 6 * id1 + 1 ] = n.y();
+                    normals[ 6 * id1 + 2 ] = n.z();
+                    normals[ 6 * id1 + 3 ] = n.x();
+                    normals[ 6 * id1 + 4 ] = n.y();
+                    normals[ 6 * id1 + 5 ] = n.z();
                 }
             }
+            break;
         }
-        break;
-    }
-    case kvs::LineObject::Strip:
-    {
-        const size_t nvertices = line->numberOfVertices();
-        for ( size_t i = 0; i < nvertices - 1; i++ )
+        case kvs::LineObject::Segment:
         {
-            const kvs::Vec3 p0 = line->coord( i );
-            const kvs::Vec3 p1 = line->coord( i + 1 );
-            const kvs::Vec3 n = ( p1 - p0 ).normalized();
-            normals[ 3 * i + 0 ] = n.x();
-            normals[ 3 * i + 1 ] = n.y();
-            normals[ 3 * i + 2 ] = n.z();
-            if ( i == nvertices - 2 )
+            const size_t nconnections = line->numberOfConnections();
+            for ( size_t i = 0; i < nconnections; i++ )
             {
-                normals[ 3 * ( i + 1 ) + 0 ] = n.x();
-                normals[ 3 * ( i + 1 ) + 1 ] = n.y();
-                normals[ 3 * ( i + 1 ) + 2 ] = n.z();
+                const size_t id0 = line->connections().at( 2 * i );
+                const size_t id1 = line->connections().at( 2 * i + 1 );
+                const kvs::Vec3 p0 = line->coord( id0 );
+                const kvs::Vec3 p1 = line->coord( id1 );
+                const kvs::Vec3 n = ( p1 - p0 ).normalized();
+                normals[ 6 * id0 + 0 ] = n.x();
+                normals[ 6 * id0 + 1 ] = n.y();
+                normals[ 6 * id0 + 2 ] = n.z();
+                normals[ 6 * id0 + 3 ] = n.x();
+                normals[ 6 * id0 + 4 ] = n.y();
+                normals[ 6 * id0 + 5 ] = n.z();
+                normals[ 6 * id1 + 0 ] = n.x();
+                normals[ 6 * id1 + 1 ] = n.y();
+                normals[ 6 * id1 + 2 ] = n.z();
+                normals[ 6 * id1 + 3 ] = n.x();
+                normals[ 6 * id1 + 4 ] = n.y();
+                normals[ 6 * id1 + 5 ] = n.z();
             }
+            break;
         }
-        break;
-    }
-    default: break;
+        case kvs::LineObject::Polyline:
+        {
+            const size_t nconnections = line->numberOfConnections();
+            for ( size_t i = 0; i < nconnections; i++ )
+            {
+                const size_t id0 = line->connections().at( 2 * i );
+                const size_t id1 = line->connections().at( 2 * i + 1 );
+                for ( size_t j = id0; j < id1; j++ )
+                {
+                    const kvs::Vec3 p0 = line->coord( j );
+                    const kvs::Vec3 p1 = line->coord( j + 1 );
+                    const kvs::Vec3 n = ( p1 - p0 ).normalized();
+                    normals[ 6 * j + 0 ] = n.x();
+                    normals[ 6 * j + 1 ] = n.y();
+                    normals[ 6 * j + 2 ] = n.z();
+                    normals[ 6 * j + 3 ] = n.x();
+                    normals[ 6 * j + 4 ] = n.y();
+                    normals[ 6 * j + 5 ] = n.z();
+                    if ( j == id1 - 1 )
+                    {
+                        normals[ 6 * ( j + 1 ) + 0 ] = n.x();
+                        normals[ 6 * ( j + 1 ) + 1 ] = n.y();
+                        normals[ 6 * ( j + 1 ) + 2 ] = n.z();
+                        normals[ 6 * ( j + 1 ) + 3 ] = n.x();
+                        normals[ 6 * ( j + 1 ) + 4 ] = n.y();
+                        normals[ 6 * ( j + 1 ) + 5 ] = n.z();
+                    }
+                }
+            }
+            break;
+        }
+        case kvs::LineObject::Strip:
+        {
+            const size_t nvertices = line->numberOfVertices();
+            for ( size_t i = 0; i < nvertices - 1; i++ )
+            {
+                const kvs::Vec3 p0 = line->coord( i );
+                const kvs::Vec3 p1 = line->coord( i + 1 );
+                const kvs::Vec3 n = ( p1 - p0 ).normalized();
+                normals[ 6 * i + 0 ] = n.x();
+                normals[ 6 * i + 1 ] = n.y();
+                normals[ 6 * i + 2 ] = n.z();
+                normals[ 6 * i + 3 ] = n.x();
+                normals[ 6 * i + 4 ] = n.y();
+                normals[ 6 * i + 5 ] = n.z();
+                if ( i == nvertices - 2 )
+                {
+                    normals[ 6 * ( i + 1 ) + 0 ] = n.x();
+                    normals[ 6 * ( i + 1 ) + 1 ] = n.y();
+                    normals[ 6 * ( i + 1 ) + 2 ] = n.z();
+                    normals[ 6 * ( i + 1 ) + 3 ] = n.x();
+                    normals[ 6 * ( i + 1 ) + 4 ] = n.y();
+                    normals[ 6 * ( i + 1 ) + 5 ] = n.z();
+                }
+            }
+            break;
+        }
+        default: break;
+        }
     }
 
     return normals;
 }
 
-namespace DisplayList
+kvs::ValueArray<kvs::Real32> QuadVertexTexCoords(
+    const kvs::LineObject* line,
+    const float halo_size,
+    const float radius_size )
 {
+    const size_t nvertices = line->numberOfVertices();
+    kvs::ValueArray<kvs::Real32> texcoords( nvertices * 4 * 2 );
 
-GLuint Gen( GLsizei range )
-{
-    GLuint ret = 0;
-    KVS_GL_CALL( ret = glGenLists( range ) );
-    return ret;
+    const float halo_factor = 1.0f + 2.0f * halo_size;
+    const float rot = 0.0f;
+    const float zdiff = 0.0f;
+    for ( size_t i = 0; i < nvertices; i++ )
+    {
+        texcoords[ 8 * i + 0 ] = -radius_size * halo_factor;
+        texcoords[ 8 * i + 1 ] =  radius_size;
+        texcoords[ 8 * i + 2 ] =  rot;
+        texcoords[ 8 * i + 3 ] =  zdiff;
+        texcoords[ 8 * i + 4 ] =  radius_size * halo_factor;
+        texcoords[ 8 * i + 5 ] =  radius_size;
+        texcoords[ 8 * i + 6 ] =  rot;
+        texcoords[ 8 * i + 7 ] =  zdiff;
+    }
+    return texcoords;
 }
 
-void Del( GLuint list, GLsizei range )
-{
-    KVS_GL_CALL( glDeleteLists( list, range ) );
 }
 
-void Call( GLuint list )
-{
-    KVS_GL_CALL( glCallList( list ) );
-}
-
-void New( GLuint list, GLenum mode )
-{
-    KVS_GL_CALL( glNewList( list, mode ) );
-}
-
-void End()
-{
-    KVS_GL_CALL( glEndList() );
-}
-
-GLboolean IsList( GLuint list )
-{
-    GLboolean ret = GL_FALSE;
-    KVS_GL_CALL( ret = glIsList( list ) );
-    return ret;
-}
-
-bool IsValid( GLuint list )
-{
-    return IsList( list ) == GL_TRUE;
-}
-
-} // end of namespace DisplayList
-
-}
 
 namespace kvs
 {
@@ -279,7 +318,9 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         this->create_buffer_object( line );
     }
 
-    kvs::ProgramObject::Binder bind0( m_shader_program );
+    kvs::VertexBufferObject::Binder bind0( m_vbo );
+    kvs::ProgramObject::Binder bind1( m_shader_program );
+
     kvs::Texture::Binder unit0( m_shape_texture, 0 );
     kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
     kvs::Texture::Binder unit1( m_diffuse_texture, 1 );
@@ -294,7 +335,62 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         m_shader_program.setUniform( "shape_texture", 0 );
         m_shader_program.setUniform( "diffuse_texture", 1 );
 
-        ::DisplayList::Call( m_display_list_id );
+        const size_t nvertices = line->numberOfVertices() * 2;
+        const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
+        const size_t color_size = nvertices * 3 * sizeof( kvs::UInt8 );
+        const size_t normal_size = nvertices * 3 * sizeof( kvs::Real32 );
+
+        // Enable coords.
+        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
+        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + 0 ) );
+
+        // Enable colors.
+        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
+        KVS_GL_CALL( glColorPointer( 3, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
+
+        // Enable normals.
+        KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
+        KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size ) );
+
+        // Enable texcoords.
+        KVS_GL_CALL( glEnableClientState( GL_TEXTURE_COORD_ARRAY ) );
+        KVS_GL_CALL( glTexCoordPointer( 4, GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size + normal_size ) );
+
+        // Draw lines.
+        {
+            if ( line->lineType() == kvs::LineObject::Polyline )
+            {
+                // if OpenGL version is 1.4 or later
+                GLint* first = m_first_array.data();
+                GLsizei* count = m_count_array.data();
+                GLsizei primecount = m_first_array.size();
+                KVS_GL_CALL( glMultiDrawArrays( GL_QUAD_STRIP, first, count, primecount ) );
+                // else
+                //for ( size_t i = 0; i < nlines; i++ )
+                //{
+                //    const GLint first = m_first_array[i];
+                //    const GLsizei count = m_count_array[i];
+                //    KVS_GL_CALL( glDrawArrays( GL_LINE_STRIP, first, count ) );
+                //}
+            }
+            else if ( line->lineType() == kvs::LineObject::Strip )
+            {
+                const size_t nvertices = line->numberOfVertices() * 2;
+                KVS_GL_CALL( glDrawArrays( GL_QUAD_STRIP, 0, nvertices ) );
+            }
+        }
+
+        // Disable coords.
+        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
+
+        // Disable colors.
+        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
+
+        // Disable normals.
+        KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
+
+        // Disable texcoords.
+        KVS_GL_CALL( glDisableClientState( GL_TEXTURE_COORD_ARRAY ) );
     }
 
     BaseClass::stopTimer();
@@ -348,69 +444,34 @@ void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
         return;
     }
 
-    if ( ::DisplayList::IsValid( m_display_list_id ) ) { ::DisplayList::Del( m_display_list_id, 1 ); }
+    kvs::ValueArray<kvs::Real32> coords = ::QuadVertexCoords( line );
+    kvs::ValueArray<kvs::UInt8> colors = ::QuadVertexColors( line );
+    kvs::ValueArray<kvs::Real32> normals = ::QuadVertexNormals( line );
+    kvs::ValueArray<kvs::Real32> texcoords = ::QuadVertexTexCoords( line, m_halo_size, m_radius_size );
 
-    kvs::ValueArray<kvs::Real32> coords = line->coords();
-    kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( line );
-    kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( line );
+    const size_t coord_size = coords.byteSize();
+    const size_t color_size = colors.byteSize();
+    const size_t normal_size = normals.byteSize();
+    const size_t texcoord_size = texcoords.byteSize();
+    const size_t byte_size = coord_size + color_size + normal_size +texcoord_size;
 
-    if ( ( m_display_list_id = ::DisplayList::Gen( 1 ) ) )
+    m_vbo.create( byte_size );
+    m_vbo.bind();
+    m_vbo.load( coord_size, coords.data(), 0 );
+    m_vbo.load( color_size, colors.data(), coord_size );
+    m_vbo.load( normal_size, normals.data(), coord_size + color_size );
+    m_vbo.load( texcoord_size, texcoords.data(), coord_size + color_size + normal_size );
+    m_vbo.unbind();
+
+    if ( line->lineType() == kvs::LineObject::Polyline )
     {
-        switch ( line->lineType() )
+        const kvs::UInt32* pconnections = line->connections().data();
+        m_first_array.allocate( line->numberOfConnections() );
+        m_count_array.allocate( m_first_array.size() );
+        for ( size_t i = 0; i < m_first_array.size(); ++i )
         {
-        case kvs::LineObject::Polyline:
-        {
-            ::DisplayList::New( m_display_list_id, GL_COMPILE );
-            const size_t nlines = line->numberOfConnections();
-            const kvs::UInt32* pconnections = line->connections().data();
-            for ( size_t i = 0; i < nlines; i++ )
-            {
-                KVS_GL_CALL_BEG( glBegin( GL_QUAD_STRIP ) );
-                const size_t index0 = *(pconnections++);
-                const size_t index1 = *(pconnections++);
-                for ( size_t j = index0; j <= index1; j++ )
-                {
-                    const float halo_size = m_halo_size;
-                    const float halo_factor = 1.0f + 2.0f * halo_size;
-                    const float radius = m_radius_size;
-                    const float rot = 0.0f;
-                    const float zdiff = 0.0f;
-                    KVS_GL_CALL_VER( glColor3ubv( colors.data() + 3 * j ) );
-                    KVS_GL_CALL_VER( glNormal3fv( normals.data() + 3 * j ) );
-                    KVS_GL_CALL_VER( glTexCoord4f( -radius * halo_factor, radius, rot, zdiff ) );
-                    KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * j ) );
-                    KVS_GL_CALL_VER( glTexCoord4f(  radius * halo_factor, radius, rot, zdiff ) );
-                    KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * j ) );
-                }
-                KVS_GL_CALL_END( glEnd() );
-            }
-            ::DisplayList::End();
-            break;
-        }
-        case kvs::LineObject::Strip:
-        {
-            ::DisplayList::New( m_display_list_id, GL_COMPILE );
-            KVS_GL_CALL_BEG( glBegin( GL_QUAD_STRIP ) );
-            const size_t nvertices = line->numberOfVertices();
-            for ( size_t i = 0; i < nvertices; i++ )
-            {
-                const float halo_size = m_halo_size;
-                const float halo_factor = 1.0f + 2.0f * halo_size;
-                const float radius = m_radius_size;
-                const float rot = 0.0f;
-                const float zdiff = 0.0f;
-                KVS_GL_CALL_VER( glColor3ubv( colors.data() + 3 * i ) );
-                KVS_GL_CALL_VER( glNormal3fv( normals.data() + 3 * i ) );
-                KVS_GL_CALL_VER( glTexCoord4f( -radius * halo_factor, radius, rot, zdiff ) );
-                KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * i ) );
-                KVS_GL_CALL_VER( glTexCoord4f(  radius * halo_factor, radius, rot, zdiff ) );
-                KVS_GL_CALL_VER( glVertex3fv( coords.data() + 3 * i ) );
-            }
-            KVS_GL_CALL_END( glEnd() );
-            ::DisplayList::End();
-            break;
-        }
-        default: break;
+            m_first_array[i] = 2 * ( pconnections[ 2 * i ] );
+            m_count_array[i] = 2 * ( pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1 );
         }
     }
 }
