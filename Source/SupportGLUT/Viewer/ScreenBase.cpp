@@ -33,6 +33,10 @@ namespace
 const size_t MaxNumberOfScreens = 256;
 kvs::glut::ScreenBase* Context[ MaxNumberOfScreens ] = {};
 
+#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+int ResizeOnce[ MaxNumberOfScreens ] = {};
+#endif
+
 /*===========================================================================*/
 /**
  *  @brief  Function that is called when the application is terminated.
@@ -75,15 +79,14 @@ void DisplayFunction()
 /*===========================================================================*/
 void ResizeFunction( int width, int height )
 {
+    const int id = glutGetWindow();
 #if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
-    static bool flag = true;
-    if ( flag )
+    if ( ::ResizeOnce[id] == 0 )
     {
         glutReshapeWindow( width + 1, height + 1 );
-        flag = false;
+        ::ResizeOnce[id] = 1;
     }
 #endif
-    const int id = glutGetWindow();
     ::Context[id]->resizeEvent( width, height );
 }
 

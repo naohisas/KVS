@@ -11,9 +11,7 @@
  *  $Id: KVSMouseButton.h 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__GLUT__KVS_MOUSE_BUTTON_H_INCLUDE
-#define KVS__GLUT__KVS_MOUSE_BUTTON_H_INCLUDE
-
+#pragma once
 #include <kvs/MouseButton>
 #include "../GLUT.h"
 
@@ -69,5 +67,3 @@ inline int KVSMouseButton::State( int state )
 } // end of namespace glut
 
 } // end of namespace kvs
-
-#endif // KVS__GLUT__KVS_MOUSE_BUTTON_H_INCLUDE
