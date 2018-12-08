@@ -26,6 +26,7 @@
 #include <kvs/Xform>
 #include <kvs/RGBColor>
 #include <kvs/RGBAColor>
+#include <kvs/ValueArray>
 
 
 namespace kvs
@@ -305,6 +306,19 @@ void PushAttrib( GLbitfield mask );
 void PopAttrib();
 void PushClientAttrib( GLbitfield mask );
 void PopClientAttrib();
+
+void EnableClientState( GLenum array );
+void DisableClientState( GLenum array );
+
+void VertexPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
+void ColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
+void NormalPointer( GLenum type, GLsizei stride, const GLvoid* pointer );
+void TexCoordPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
+
+void MultiDrawArrays( GLenum mode, const GLint* first, const GLsizei* count, GLsizei drawcount );
+void MultiDrawArrays( GLenum mode, const kvs::ValueArray<GLint>& first, const kvs::ValueArray<GLsizei>& count );
+void DrawArrays( GLenum mode, GLint first, GLsizei count );
+void DrawElements( GLenum mode, GLsizei count, GLenum type, const GLvoid* indices );
 
 GLint Project(
     GLdouble objx, GLdouble objy, GLdouble objz,

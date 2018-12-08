@@ -1698,6 +1698,62 @@ void PopClientAttrib()
     KVS_GL_CALL( glPopClientAttrib() );
 }
 
+void EnableClientState( GLenum array )
+{
+    KVS_GL_CALL( glEnableClientState( array ) );
+}
+
+void DisableClientState( GLenum array )
+{
+    KVS_GL_CALL( glDisableClientState( array ) );
+}
+
+void VertexPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer )
+{
+    KVS_GL_CALL( glVertexPointer( size, type, stride, pointer ) );
+}
+
+void ColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer )
+{
+    KVS_GL_CALL( glColorPointer( size, type, stride, pointer ) );
+}
+
+void NormalPointer( GLenum type, GLsizei stride, const GLvoid* pointer )
+{
+    KVS_GL_CALL( glNormalPointer( type, stride, pointer ) );
+}
+
+void TexCoordPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer )
+{
+    KVS_GL_CALL( glTexCoordPointer( size, type, stride, pointer ) );
+}
+
+void MultiDrawArrays( GLenum mode, const GLint* first, const GLsizei* count, GLsizei drawcount )
+{
+// if OpenGL version is 1.4 or later
+    KVS_GL_CALL( glMultiDrawArrays( mode, first, count, drawcount ) );
+// else
+//    for ( GLsizei i = 0; i < primcount; ++i )
+//    {
+//        if ( count[i] > 0 ) { kvs::OpenGL::DrawArrays( mode, first[i], count[i] ); }
+//    }
+}
+
+void MultiDrawArrays( GLenum mode, const kvs::ValueArray<GLint>& first, const kvs::ValueArray<GLsizei>& count )
+{
+    KVS_GL_CALL( glMultiDrawArrays( mode, first.data(), count.data(), first.size() ) );
+}
+
+void DrawArrays( GLenum mode, GLint first, GLsizei count )
+{
+    KVS_GL_CALL( glDrawArrays( mode, first, count ) );
+}
+
+void DrawElements( GLenum mode, GLsizei count, GLenum type, const GLvoid* indices )
+{
+    KVS_GL_CALL( glDrawElements( mode, count, type, indices ) );
+}
+
 GLint Project(
     GLdouble objx,
     GLdouble objy,
