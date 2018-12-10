@@ -335,6 +335,7 @@
 #include <Core/Visualization/Renderer/StochasticTetrahedraRenderer.h>
 #include <Core/Visualization/Renderer/StochasticUniformGridRenderer.h>
 #include <Core/Visualization/Renderer/StylizedLineRenderer.h>
+#include <Core/Visualization/Renderer/VertexBufferObjectManager.h>
 #include <Core/Visualization/Renderer/VolumeRayIntersector.h>
 #include <Core/Visualization/Renderer/VolumeRendererBase.h>
 #include <Core/Visualization/Viewer/ApplicationBase.h>
