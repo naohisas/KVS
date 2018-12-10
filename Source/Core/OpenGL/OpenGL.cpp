@@ -1708,6 +1708,16 @@ void DisableClientState( GLenum array )
     KVS_GL_CALL( glDisableClientState( array ) );
 }
 
+void EnableVertexAttribArray( GLuint index )
+{
+    KVS_GL_CALL( glEnableVertexAttribArray( index ) );
+}
+
+void DisableVertexAttribArray( GLuint index )
+{
+    KVS_GL_CALL( glDisableVertexAttribArray( index ) );
+}
+
 void VertexPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer )
 {
     KVS_GL_CALL( glVertexPointer( size, type, stride, pointer ) );
@@ -1726,6 +1736,11 @@ void NormalPointer( GLenum type, GLsizei stride, const GLvoid* pointer )
 void TexCoordPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer )
 {
     KVS_GL_CALL( glTexCoordPointer( size, type, stride, pointer ) );
+}
+
+void VertexAttribPointer( GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer )
+{
+    KVS_GL_CALL( glVertexAttribPointer( index, size, type, normalized, stride, pointer ) );
 }
 
 void DrawArrays( GLenum mode, GLint first, GLsizei count )

@@ -310,10 +310,14 @@ void PopClientAttrib();
 void EnableClientState( GLenum array );
 void DisableClientState( GLenum array );
 
+void EnableVertexAttribArray( GLuint index );
+void DisableVertexAttribArray( GLuint index );
+
 void VertexPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
 void ColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
 void NormalPointer( GLenum type, GLsizei stride, const GLvoid* pointer );
 void TexCoordPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
+void VertexAttribPointer( GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer );
 
 void DrawArrays( GLenum mode, GLint first, GLsizei count );
 void MultiDrawArrays( GLenum mode, const GLint* first, const GLsizei* count, GLsizei drawcount );
