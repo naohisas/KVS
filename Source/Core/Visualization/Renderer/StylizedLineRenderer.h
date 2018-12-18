@@ -19,7 +19,7 @@
 #include <kvs/LineRenderer>
 #include <kvs/Shader>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 #include <kvs/Texture2D>
 
 
@@ -45,7 +45,7 @@ private:
     kvs::Real32 m_halo_size;
     kvs::Texture2D m_shape_texture;
     kvs::Texture2D m_diffuse_texture;
-    kvs::VertexBufferObject m_vbo; ///< vertex buffer object
+    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
 
 public:
     StylizedLineRenderer();

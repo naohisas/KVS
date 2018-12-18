@@ -314,18 +314,18 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
     {
         m_object = object;
         m_shader_program.release();
+        m_vbo_manager.release();
         this->create_shader_program();
         this->create_buffer_object( line );
     }
 
-    kvs::VertexBufferObject::Binder bind0( m_vbo );
+    kvs::VertexBufferObjectManager::Binder bind0( m_vbo_manager );
     kvs::ProgramObject::Binder bind1( m_shader_program );
-
     kvs::Texture::Binder unit0( m_shape_texture, 0 );
-    kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
     kvs::Texture::Binder unit1( m_diffuse_texture, 1 );
-    kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
     {
+        kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
+
         const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
         const kvs::Mat4 P = kvs::OpenGL::ProjectionMatrix();
         const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
@@ -335,62 +335,17 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         m_shader_program.setUniform( "shape_texture", 0 );
         m_shader_program.setUniform( "diffuse_texture", 1 );
 
-        const size_t nvertices = line->numberOfVertices() * 2;
-        const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-        const size_t color_size = nvertices * 3 * sizeof( kvs::UInt8 );
-        const size_t normal_size = nvertices * 3 * sizeof( kvs::Real32 );
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + 0 ) );
-
-        // Enable colors.
-        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
-        KVS_GL_CALL( glColorPointer( 3, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
-
-        // Enable normals.
-        KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-        KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size ) );
-
-        // Enable texcoords.
-        KVS_GL_CALL( glEnableClientState( GL_TEXTURE_COORD_ARRAY ) );
-        KVS_GL_CALL( glTexCoordPointer( 4, GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size + normal_size ) );
-
         // Draw lines.
+        switch ( line->lineType() )
         {
-            if ( line->lineType() == kvs::LineObject::Polyline )
-            {
-                // if OpenGL version is 1.4 or later
-                GLint* first = m_first_array.data();
-                GLsizei* count = m_count_array.data();
-                GLsizei primecount = m_first_array.size();
-                KVS_GL_CALL( glMultiDrawArrays( GL_QUAD_STRIP, first, count, primecount ) );
-                // else
-                //for ( size_t i = 0; i < nlines; i++ )
-                //{
-                //    const GLint first = m_first_array[i];
-                //    const GLsizei count = m_count_array[i];
-                //    KVS_GL_CALL( glDrawArrays( GL_LINE_STRIP, first, count ) );
-                //}
-            }
-            else if ( line->lineType() == kvs::LineObject::Strip )
-            {
-                const size_t nvertices = line->numberOfVertices() * 2;
-                KVS_GL_CALL( glDrawArrays( GL_QUAD_STRIP, 0, nvertices ) );
-            }
+        case kvs::LineObject::Polyline:
+            m_vbo_manager.drawArrays( GL_QUAD_STRIP, m_first_array, m_count_array );
+            break;
+        case kvs::LineObject::Strip:
+            m_vbo_manager.drawArrays( GL_QUAD_STRIP, 0, line->numberOfVertices() * 2 );
+            break;
+        default: break;
         }
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable colors.
-        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
-
-        // Disable normals.
-        KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
-
-        // Disable texcoords.
-        KVS_GL_CALL( glDisableClientState( GL_TEXTURE_COORD_ARRAY ) );
     }
 
     BaseClass::stopTimer();
@@ -449,19 +404,11 @@ void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
     kvs::ValueArray<kvs::Real32> normals = ::QuadVertexNormals( line );
     kvs::ValueArray<kvs::Real32> texcoords = ::QuadVertexTexCoords( line, m_halo_size, m_radius_size );
 
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
-    const size_t normal_size = normals.byteSize();
-    const size_t texcoord_size = texcoords.byteSize();
-    const size_t byte_size = coord_size + color_size + normal_size +texcoord_size;
-
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( coord_size, coords.data(), 0 );
-    m_vbo.load( color_size, colors.data(), coord_size );
-    m_vbo.load( normal_size, normals.data(), coord_size + color_size );
-    m_vbo.load( texcoord_size, texcoords.data(), coord_size + color_size + normal_size );
-    m_vbo.unbind();
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setColorArray( colors, 3 );
+    m_vbo_manager.setNormalArray( normals );
+    m_vbo_manager.setTexCoordArray( texcoords, 4 );
+    m_vbo_manager.create();
 
     if ( line->lineType() == kvs::LineObject::Polyline )
     {

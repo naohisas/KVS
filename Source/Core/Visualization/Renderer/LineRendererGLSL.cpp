@@ -19,6 +19,7 @@
 #include <kvs/VertexShader>
 #include <kvs/FragmentShader>
 
+
 namespace
 {
 
@@ -142,13 +143,12 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
     {
         m_object = object;
         m_shader_program.release();
-        m_vbo.release();
-        m_ibo.release();
+        m_vbo_manager.release();
         this->create_shader_program();
         this->create_buffer_object( line );
     }
 
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
+    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
     kvs::ProgramObject::Binder bind2( m_shader_program );
     {
         const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
@@ -167,62 +167,33 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
         m_shader_program.setUniform( "outline_width", outline_width );
         m_shader_program.setUniform( "outline_color", outline_color );
 
-        const size_t nlines = line->numberOfConnections();
-        const size_t nvertices = line->numberOfVertices();
-        const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-
-        KVS_GL_CALL( glLineWidth( line_width ) );
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + 0 ) );
-
-        // Enable colors.
-        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
-        KVS_GL_CALL( glColorPointer( 3, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
+        kvs::OpenGL::SetLineWidth( line_width );
 
         // Draw lines.
         if ( m_has_connection )
         {
-            kvs::IndexBufferObject::Binder bind4( m_ibo );
+            const size_t nlines = line->numberOfConnections();
             if ( line->lineType() == kvs::LineObject::Uniline )
             {
-                KVS_GL_CALL( glDrawElements( GL_LINE_STRIP, nlines, GL_UNSIGNED_INT, 0 ) );
+                m_vbo_manager.drawElements( GL_LINE_STRIP, nlines );
             }
             else if ( line->lineType() ==  kvs::LineObject::Segment )
             {
-                KVS_GL_CALL( glDrawElements( GL_LINES, 2 * nlines, GL_UNSIGNED_INT, 0 ) );
+                m_vbo_manager.drawElements( GL_LINES, 2 * nlines );
             }
         }
         else
         {
             if ( line->lineType() == kvs::LineObject::Polyline )
             {
-                // if OpenGL version is 1.4 or later
-                GLint* first = m_first_array.data();
-                GLsizei* count = m_count_array.data();
-                GLsizei primecount = m_first_array.size();
-                KVS_GL_CALL( glMultiDrawArrays( GL_LINE_STRIP, first, count, primecount ) );
-                // else
-                //for ( size_t i = 0; i < nlines; i++ )
-                //{
-                //    const GLint first = m_first_array[i];
-                //    const GLsizei count = m_count_array[i];
-                //    KVS_GL_CALL( glDrawArrays( GL_LINE_STRIP, first, count ) );
-                //}
+                m_vbo_manager.drawArrays( GL_LINE_STRIP, m_first_array, m_count_array );
             }
             else if ( line->lineType() == kvs::LineObject::Strip )
             {
                 const size_t nvertices = line->numberOfVertices();
-                KVS_GL_CALL( glDrawArrays( GL_LINE_STRIP, 0, nvertices ) );
+                m_vbo_manager.drawArrays( GL_LINE_STRIP, 0, nvertices );
             }
         }
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable colors.
-        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
     }
 
     BaseClass::stopTimer();
@@ -282,37 +253,20 @@ void LineRenderer::create_buffer_object( const kvs::LineObject* line )
     kvs::ValueArray<kvs::Real32> coords = line->coords();
     kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( line );
 
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
-    const size_t byte_size = coord_size + color_size;
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setColorArray( colors, 3 );
+    if ( m_has_connection ) { m_vbo_manager.setIndexArray( line->connections() ); }
+    m_vbo_manager.create();
 
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( coord_size, coords.data(), 0 );
-    m_vbo.load( color_size, colors.data(), coord_size );
-    m_vbo.unbind();
-
-    if ( m_has_connection )
+    if ( ( !m_has_connection ) && ( line->lineType() == kvs::LineObject::Polyline ) )
     {
-        const size_t nlines = line->numberOfConnections();
-        const size_t connection_size = sizeof( kvs::UInt32 ) * 2 * nlines;
-        m_ibo.create( connection_size );
-        m_ibo.bind();
-        m_ibo.load( connection_size, line->connections().data(), 0 );
-        m_ibo.unbind();
-    }
-    else
-    {
-        if ( line->lineType() == kvs::LineObject::Polyline )
+        const kvs::UInt32* pconnections = line->connections().data();
+        m_first_array.allocate( line->numberOfConnections() );
+        m_count_array.allocate( m_first_array.size() );
+        for ( size_t i = 0; i < m_first_array.size(); ++i )
         {
-            const kvs::UInt32* pconnections = line->connections().data();
-            m_first_array.allocate( line->numberOfConnections() );
-            m_count_array.allocate( m_first_array.size() );
-            for ( size_t i = 0; i < m_first_array.size(); ++i )
-            {
-                m_first_array[i] = pconnections[ 2 * i ];
-                m_count_array[i] = pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1;
-            }
+            m_first_array[i] = pconnections[ 2 * i ];
+            m_count_array[i] = pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1;
         }
     }
 }
