@@ -77,6 +77,13 @@ public:
 
     const kvs::VertexBufferObject& vertexBufferObject() const { return m_vbo; }
     const kvs::IndexBufferObject& indexBufferObject() const { return m_ibo; }
+    void setVertexArray( const VertexBuffer& buffer ) { m_vertex_array = buffer; }
+    void setColorArray( const VertexBuffer& buffer ) { m_color_array = buffer; }
+    void setNormalArray( const VertexBuffer& buffer ) { m_normal_array = buffer; }
+    void setTexCoordArray( const VertexBuffer& buffer ) { m_tex_coord_array = buffer; }
+    void setIndexArray( const IndexBuffer& buffer ) { m_index_array = buffer; }
+    void setVertexAttribArray( const VertexAttribBuffer& buffer );
+
     void setVertexArray( const kvs::AnyValueArray& array, const size_t dim, const size_t stride = 0 );
     void setColorArray( const kvs::AnyValueArray& array, const size_t dim, const size_t stride = 0 );
     void setNormalArray( const kvs::AnyValueArray& array, const size_t stride = 0 );

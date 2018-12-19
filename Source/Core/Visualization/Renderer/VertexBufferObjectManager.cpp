@@ -33,6 +33,19 @@ VertexBufferObjectManager::VertexBufferObjectManager():
 {
 }
 
+void VertexBufferObjectManager::setVertexAttribArray( const VertexAttribBuffer& buffer )
+{
+    VertexAttribBuffers::iterator result = std::find( m_vertex_attrib_arrays.begin(), m_vertex_attrib_arrays.end(), buffer );
+    if ( result == m_vertex_attrib_arrays.end() )
+    {
+        m_vertex_attrib_arrays.push_back( buffer );
+    }
+    else
+    {
+        *result = buffer;
+    }
+}
+
 void VertexBufferObjectManager::setVertexArray( const kvs::AnyValueArray& array, const size_t dim, const size_t stride )
 {
     m_vertex_array.type = ::GLType( array );
