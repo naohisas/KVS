@@ -237,6 +237,18 @@
 #define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
     ( 15 > ( major ) || ( 15 == ( major ) && 8 >= ( minor ) ) )
 
+#elif ( _MSC_VER == 1916 )
+#define KVS_COMPILER_VERSION "15.9"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 9 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 9 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 9 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 9 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 9 >= ( minor ) ) )
+
 #else
 #define KVS_COMPILER_VERSION "unknown"
 #define KVS_COMPILER_VERSION_IS( major, minor )
