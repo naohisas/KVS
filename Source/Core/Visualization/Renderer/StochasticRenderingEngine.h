@@ -71,6 +71,8 @@ public:
     virtual void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
     virtual void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
     virtual void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
+    virtual void preDraw( kvs::ObjectBase* /*object*/, kvs::Camera* /*camera*/, kvs::Light* /*light*/ ) {}
+    virtual void postDraw( kvs::ObjectBase* /*object*/, kvs::Camera* /*camera*/, kvs::Light* /*light*/ ) {}
 
 protected:
 
