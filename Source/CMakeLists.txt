@@ -110,11 +110,6 @@ if(TRUE)
 			Devel
 	)
 
-	# Copy kvs.conf to the INSTALL DIR	
-	file (	COPY ${PROJECT_SOURCE_DIR}/../kvs.conf
-        	DESTINATION ${CMAKE_INSTALL_PREFIX}
-	)
-
 endif()
 
 #
