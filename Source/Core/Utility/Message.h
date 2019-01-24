@@ -219,7 +219,7 @@ private:
     std::string format_arguments( const char* fmt, std::va_list args )
     {
         std::string buffer;
-        buffer.resize( 32 );
+        buffer.resize( 64 );
 
         size_t n = std::vsnprintf( &buffer[0], buffer.size(), fmt, args );
         if ( n > buffer.size() )

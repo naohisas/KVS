@@ -388,6 +388,7 @@ $(OUTDIR)\.\Visualization\Renderer\StochasticRenderingEngine.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticTetrahedraRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticUniformGridRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StylizedLineRenderer.obj \
+$(OUTDIR)\.\Visualization\Renderer\VertexBufferObjectManager.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRayIntersector.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRendererBase.obj \
 $(OUTDIR)\.\Visualization\Viewer\ApplicationBase.obj \

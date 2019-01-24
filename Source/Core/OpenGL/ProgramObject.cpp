@@ -65,24 +65,10 @@ GLuint ProgramObject::id() const
 /*===========================================================================*/
 std::string ProgramObject::log() const
 {
-    GLint length = 0;
-    KVS_GL_CALL( glGetProgramiv( m_id, GL_INFO_LOG_LENGTH, &length ) );
-    if ( length == 0 ) return "";
-
-    char* buffer = new char [ length ];
-    if ( !buffer )
-    {
-        kvsMessageError("Cannot allocate memory for the log.");
-        return "";
-    }
-
-    GLsizei buffer_size = 0;
-    KVS_GL_CALL( glGetProgramInfoLog( m_id, length, &buffer_size, buffer ) );
-
-    std::string log( buffer );
-    delete [] buffer;
-
-    return log;
+    GLint length = 512;
+    std::vector<char> buffer( length );
+    KVS_GL_CALL( glGetProgramInfoLog( m_id, length, NULL, &buffer[0] ) );
+    return std::string( buffer.begin(), buffer.end() );
 }
 
 /*===========================================================================*/
@@ -144,21 +130,15 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     kvs::VertexShader vert( vert_src );
     if ( !vert.compile() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "VertexShader compile failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << vert.log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "VertexShader compile failed" );
+        kvsMessageError() << "Vertex shader compile failed.\n" << vert.log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Vertex shader compile failed" );
     }
 
     kvs::FragmentShader frag( frag_src );
     if ( !frag.compile() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "FragmentShader compile failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << frag.log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "FragmentShader compile failed" );
+        kvsMessageError() << "Fragment shader compile failed.\n" << frag.log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Fragment shader compile failed" );
     }
 
     this->create();
@@ -166,11 +146,8 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     this->attach( frag );
     if ( !this->link() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "ProgramObject link failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << this->log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "ProgramObject link failed" );
+        kvsMessageError() << "Program object link failed.\n" << this->log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Program object link failed" );
     }
 }
 
@@ -179,31 +156,22 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     kvs::VertexShader vert( vert_src );
     if ( !vert.compile() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "VertexShader compile failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << vert.log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "VertexShader compile failed" );
+        kvsMessageError() << "Vertex shader compile failed.\n" << vert.log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Vertex shader compile failed" );
     }
 
     kvs::GeometryShader geom( geom_src );
     if ( !geom.compile() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "GeometryShader compile failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << geom.log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "GeometryShader compile failed" );
+        kvsMessageError() << "Geometry shader compile failed.\n" << geom.log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Geometry shader compile failed" );
     }
 
     kvs::FragmentShader frag( frag_src );
     if ( !frag.compile() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "FragmentShader compile failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << frag.log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "FragmentShader compile failed" );
+        kvsMessageError() << "Fragment shader compile failed.\n" << frag.log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Fragment shader compile failed" );
     }
 
     this->create();
@@ -217,18 +185,16 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     const GLint max_output_vertices = kvs::OpenGL::Integer( GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT );
     if ( max_output_vertices < m_geom_output_vertices )
     {
-        kvsMessageError( "GeometryShader GL_GEOMETRY_VERTICES_OUT require = %d > max = %d", m_geom_output_vertices, max_output_vertices );
-        KVS_THROW( kvs::OpenGLException, "GeometryShader cannot be attached" );
+        kvsMessageError() << "Geometry shader GL_GEOMETRY_VERTICES_OUT require = "
+                          << m_geom_output_vertices << " > max = " << max_output_vertices << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Geometry shader cannot be attached" );
     }
     this->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, m_geom_output_vertices );
 
     if ( !this->link() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "ProgramObject link failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << this->log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "ProgramObject link failed" );
+        kvsMessageError() << "Program object link failed.\n" << this->log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Program object link failed" );
     }
 }
 
@@ -547,32 +513,23 @@ void ProgramObject::create(
     kvs::VertexShader vertex_shader( vertex_source );
     if ( !vertex_shader.compile() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "VertexShader compile failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << vertex_shader.log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "VertexShader compile failed" );
+        kvsMessageError() << "Vertex shader compile failed.\n" << vertex_shader.log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Vertex shader compile failed" );
     }
 
     // Fragment shader.
     kvs::FragmentShader fragment_shader( fragment_source );
     if ( !fragment_shader.compile() )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "FragmentShader compile failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << fragment_shader.log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "FragmentShader compile failed" );
+        kvsMessageError() << "Fragment shader compile failed.\n" << fragment_shader.log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Fragment shader compile failed" );
     }
 
     // Link the shaders.
     if ( !this->link( vertex_shader, fragment_shader ) )
     {
-        const std::string error = kvs::OpenGL::ErrorString( kvs::OpenGL::ErrorCode() );
-        kvsMessageError( "ShaderProgram link failed: %s\n", error.c_str() );
-        std::cout << "error log:" << std::endl;
-        std::cout << this->log() << std::endl;
-        KVS_THROW( kvs::OpenGLException, "ShaderProgram link failed" );
+        kvsMessageError() << "Program object link failed.\n" << this->log() << std::endl;
+        KVS_THROW( kvs::OpenGLException, "Program object link failed" );
     }
 }
 

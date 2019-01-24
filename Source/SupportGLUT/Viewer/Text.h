@@ -11,9 +11,7 @@
  *  $Id: Text.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__GLUT__TEXT_H_INCLUDE
-#define KVS__GLUT__TEXT_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <vector>
 #include <kvs/RGBColor>
@@ -33,14 +31,12 @@ namespace glut
 class Text
 {
 protected:
-
     size_t m_x; ///< position x
     size_t m_y; ///< position y
     kvs::RGBColor m_color; ///< text color
     std::vector<std::string> m_text;  ///< text string
 
 public:
-
     Text();
 
     void setPosition( const size_t x, const size_t y );
@@ -56,5 +52,3 @@ public:
 } // end of namespace glut
 
 } // end of namespace kvs
-
-#endif // KVS__GLUT__TEXT_H_INCLUDE

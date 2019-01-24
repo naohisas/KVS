@@ -80,13 +80,18 @@ HydrogenVolumeData::SuperClass* HydrogenVolumeData::exec()
             {
                 const kvs::Real64 dx = kr1 * ( x - ( dim1 / 2.0 ));
                 const kvs::Real64 r = std::sqrt( dx * dx + dy * dy + dz * dz );
-                const kvs::Real64 cos_theta = dz / r;
-                const kvs::Real64 phi = kd * ( r*r ) * std::exp( -r/2 ) * ( 3*cos_theta*cos_theta-1 );
-
-                kvs::Real64 c = phi * phi;
-                if ( c > 255.0 ) { c = 255.0; }
-
-                pvalues[ index++ ] = static_cast<kvs::UInt8>( c );
+                if ( kvs::Math::IsZero( r ) )
+                {
+                    pvalues[ index++ ] = 0;
+                }
+                else
+                {
+                    const kvs::Real64 cos_theta = dz / r;
+                    const kvs::Real64 phi = kd * ( r*r ) * std::exp( -r/2 ) * ( 3*cos_theta*cos_theta-1 );
+                    kvs::Real64 c = phi * phi;
+                    if ( c > 255.0 ) { c = 255.0; }
+                    pvalues[ index++ ] = static_cast<kvs::UInt8>( c );
+                }
             }
         }
     }

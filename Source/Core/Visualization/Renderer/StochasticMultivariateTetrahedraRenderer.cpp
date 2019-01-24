@@ -348,6 +348,7 @@ void StochasticMultivariateTetrahedraRenderer::Engine::draw( kvs::ObjectBase* ob
 
     // Set shader parameters.
     {
+        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
         const size_t size = randomTextureSize();
         const int count = repetitionCount() * 12347;
         const float offset_x = static_cast<float>( ( count ) % size );

@@ -335,6 +335,7 @@ Visualization/Renderer/StochasticRenderingEngine
 Visualization/Renderer/StochasticTetrahedraRenderer
 Visualization/Renderer/StochasticUniformGridRenderer
 Visualization/Renderer/StylizedLineRenderer
+Visualization/Renderer/VertexBufferObjectManager
 Visualization/Renderer/VolumeRayIntersector
 Visualization/Renderer/VolumeRendererBase
 Visualization/Viewer/ApplicationBase

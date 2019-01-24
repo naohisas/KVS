@@ -28,7 +28,6 @@ inline void Draw()
         p2.loadIdentity();
         {
             kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-            kvs::OpenGL::WithDisabled d1( GL_DEPTH_TEST );
             kvs::OpenGL::WithEnabled e1( GL_TEXTURE_2D );
             {
                 kvs::OpenGL::Begin( GL_QUADS );
@@ -208,6 +207,7 @@ void EnsembleAverageBuffer::draw()
 {
     kvs::Texture::Binder tex( m_accum_texture, 0 );
     {
+        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
         m_drawing_shader.bind();
         m_drawing_shader.setUniform( "accum_texture", 0 );
         ::Draw();

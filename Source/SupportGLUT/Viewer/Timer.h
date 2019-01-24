@@ -12,9 +12,7 @@
  *  $Id: Timer.h 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__GLUT__TIMER_H_INCLUDE
-#define KVS__GLUT__TIMER_H_INCLUDE
-
+#pragma once
 #include <kvs/EventListener>
 #include <kvs/EventHandler>
 #include <kvs/TimeEvent>
@@ -34,7 +32,6 @@ namespace glut
 class Timer
 {
 protected:
-
     int m_id; ///< timer ID
     int m_interval; ///< interval time in millisecond
     bool m_is_stopped; ///< checl flag whether the time is stopped
@@ -43,7 +40,6 @@ protected:
     kvs::EventHandler* m_event_handler; ///< event handler
 
 public:
-
     Timer( int msec = 0 );
     Timer( kvs::EventListener* listener, int msec = 0 );
     Timer( kvs::EventHandler* handler, int msec = 0 );
@@ -60,7 +56,6 @@ public:
     int interval() const;
 
 protected:
-
     void timerEvent();
     friend void TimerEventFunction( int id );
 };
@@ -68,5 +63,3 @@ protected:
 } // end of namespace glut
 
 } // end of namespace kvs
-
-#endif // KVS__GLUT__TIMER_H_INCLUDE

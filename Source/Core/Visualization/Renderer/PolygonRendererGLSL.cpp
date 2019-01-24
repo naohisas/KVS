@@ -173,15 +173,16 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     {
         m_object = object;
         m_shader_program.release();
-        m_vbo.release();
-        m_ibo.release();
+        m_vbo_manager.release();
         this->create_shader_program();
         this->create_buffer_object( polygon );
     }
 
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
+    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
     kvs::ProgramObject::Binder bind2( m_shader_program );
     {
+        kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
         const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
         const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
         const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
@@ -192,47 +193,15 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
         const size_t nconnections = polygon->numberOfConnections();
         const size_t nvertices = polygon->numberOfVertices();
         const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
-        const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-        const size_t color_size = nvertices * 4 * sizeof( kvs::UInt8 );
-
-        KVS_GL_CALL( glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + 0 ) );
-
-        // Enable colors.
-        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
-        KVS_GL_CALL( glColorPointer( 4, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
-
-        // Enable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-            KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size ) );
-        }
 
         // Draw triangles.
         if ( m_has_connection )
         {
-            kvs::IndexBufferObject::Binder bind3( m_ibo );
-            KVS_GL_CALL( glDrawElements( GL_TRIANGLES, 3 * npolygons, GL_UNSIGNED_INT, 0 ) );
+            m_vbo_manager.drawElements( GL_TRIANGLES, 3 * npolygons );
         }
         else
         {
-            KVS_GL_CALL( glDrawArrays( GL_TRIANGLES, 0, 3 * npolygons ) );
-        }
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable colors.
-        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
-
-        // Disable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
+            m_vbo_manager.drawArrays( GL_TRIANGLES, 0, 3 * npolygons );
         }
     }
 
@@ -297,29 +266,11 @@ void PolygonRenderer::create_buffer_object( const kvs::PolygonObject* polygon )
     kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( polygon );
     kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( polygon );
 
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
-    const size_t normal_size = normals.byteSize();
-    const size_t byte_size = coord_size + color_size + normal_size;
-
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( coord_size, coords.data(), 0 );
-    m_vbo.load( color_size, colors.data(), coord_size );
-    if ( normal_size > 0 )
-    {
-        m_vbo.load( normal_size, normals.data(), coord_size + color_size );
-    }
-    m_vbo.unbind();
-
-    if ( m_has_connection )
-    {
-        const size_t connection_size = polygon->connections().byteSize();
-        m_ibo.create( connection_size );
-        m_ibo.bind();
-        m_ibo.load( connection_size, polygon->connections().data(), 0 );
-        m_ibo.unbind();
-    }
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setColorArray( colors, 3 );
+    if ( normals.size() > 0 ) { m_vbo_manager.setNormalArray( normals ); }
+    if ( m_has_connection ) { m_vbo_manager.setIndexArray( polygon->connections() ); }
+    m_vbo_manager.create();
 }
 
 } // end of namespace glsl

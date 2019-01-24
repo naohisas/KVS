@@ -356,6 +356,8 @@ void StochasticTetrahedraRenderer::Engine::draw( kvs::ObjectBase* object, kvs::C
     kvs::Texture::Binder bind8( m_T_texture, 4 );
     kvs::Texture::Binder bind9( m_inv_T_texture, 5 );
     {
+        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
+
         const size_t size = randomTextureSize();
         const int count = repetitionCount() * ::RandomNumber();
         const float offset_x = static_cast<float>( ( count ) % size );

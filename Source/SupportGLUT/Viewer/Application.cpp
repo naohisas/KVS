@@ -68,7 +68,8 @@ int Application::run()
         std::list<kvs::ScreenBase*>::iterator end = screens().end();
         while ( screen != end )
         {
-            static_cast<kvs::glut::ScreenBase*>(*screen)->initializeEvent();
+            kvs::glut::ScreenBase* this_screen = static_cast<kvs::glut::ScreenBase*>(*screen);
+            this_screen->initializeEvent();
             screen++;
         }
 

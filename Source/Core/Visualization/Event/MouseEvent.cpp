@@ -23,7 +23,13 @@ namespace kvs
  *  @brief  Constructs a new MouseEvent class.
  */
 /*===========================================================================*/
-MouseEvent::MouseEvent()
+MouseEvent::MouseEvent():
+    m_button( kvs::MouseButton::Left ),
+    m_state( kvs::MouseButton::Up ),
+    m_x( 0 ),
+    m_y( 0 ),
+    m_modifiers( 0 ),
+    m_action( kvs::MouseButton::NoAction )
 {
 }
 

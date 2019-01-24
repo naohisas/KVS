@@ -46,7 +46,7 @@ cygwin* {
     DEFINES += NOMINMAX
 }
 
-DEFINES += KVS_SUPPORT_GLUT KVS_SUPPORT_QT
+DEFINES += KVS_SUPPORT_QT
 
 
 #=============================================================================

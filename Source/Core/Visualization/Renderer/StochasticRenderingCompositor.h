@@ -12,9 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__STOCHASTIC_RENDERING_COMPOSITOR_H_INCLUDE
-#define KVS__STOCHASTIC_RENDERING_COMPOSITOR_H_INCLUDE
-
+#pragma once
 #include <kvs/Timer>
 #include <kvs/PaintEventListener>
 #include <kvs/Matrix44>
@@ -36,7 +34,6 @@ class Scene;
 class StochasticRenderingCompositor : public kvs::PaintEventListener
 {
 private:
-
     kvs::Timer m_timer;
     kvs::Scene* m_scene; ///< pointer to the scene
     size_t m_width; ///< window width
@@ -51,9 +48,7 @@ private:
     kvs::EnsembleAverageBuffer m_ensemble_buffer; ///< ensemble averaging buffer
 
 public:
-
     StochasticRenderingCompositor( kvs::Scene* scene );
-
     const kvs::Timer& timer() const { return m_timer; }
     size_t repetitionLevel() const { return m_repetition_level; }
     bool isEnabledLODControl() const { return m_enable_lod; }
@@ -65,11 +60,10 @@ public:
     void enableRefinement() { this->setEnabledRefinement( true ); }
     void disableLODControl() { this->setEnabledLODControl( false ); }
     void disableRefinement() { this->setEnabledRefinement( false ); }
+    void update();
 
 private:
-
     StochasticRenderingCompositor();
-    void update();
     void draw();
     void check_window_created();
     void check_window_resized();
@@ -88,5 +82,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STOCHASTIC_RENDERING_COMPOSITOR_H_INCLUDE

@@ -15,9 +15,6 @@
 #include "Application.h"
 #include <QApplication>
 #include <kvs/DebugNew>
-#if defined( KVS_SUPPORT_GLUT )
-#include <kvs/glut/GLUT>
-#endif
 
 
 namespace kvs
@@ -36,15 +33,6 @@ namespace qt
 Application::Application( int& argc, char** argv ):
     kvs::ApplicationBase( argc, argv )
 {
-#if defined( KVS_SUPPORT_GLUT )
-    static bool flag = true;
-    if ( flag )
-    {
-        glutInit( &argc, argv );
-        flag = false;
-    }
-#endif
-
     m_app = new QApplication( argc, argv );
 }
 
@@ -53,7 +41,7 @@ Application::Application( int& argc, char** argv ):
  *  @brief  Destructs the Application class.
  */
 /*===========================================================================*/
-Application::~Application( void )
+Application::~Application()
 {
     if ( m_app ) delete m_app;
 }
@@ -64,16 +52,16 @@ Application::~Application( void )
  *  @return true, if the process is done successfully
  */
 /*===========================================================================*/
-int Application::run( void )
+int Application::run()
 {
     static bool flag = true;
     if ( flag )
     {
         flag = false;
-        return( m_app->exec() );
+        return m_app->exec();
     }
 
-    return( -1 );
+    return -1;
 }
 
 /*===========================================================================*/
@@ -81,7 +69,7 @@ int Application::run( void )
  *  @brief  Quits the application.
  */
 /*===========================================================================*/
-void Application::quit( void )
+void Application::quit()
 {
     m_app->exit();
 }

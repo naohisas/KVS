@@ -273,6 +273,8 @@ void StochasticUniformGridRenderer::Engine::draw( kvs::ObjectBase* object, kvs::
     if ( isEnabledShading() ) kvs::OpenGL::Enable( GL_LIGHTING );
     else kvs::OpenGL::Disable( GL_LIGHTING );
 
+    kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
+
     const float f = camera->back();
     const float n = camera->front();
     const float to_zw1 = ( f * n ) / ( f - n );

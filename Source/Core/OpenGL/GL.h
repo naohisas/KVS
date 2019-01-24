@@ -32,9 +32,9 @@
 #define GLUT_DISABLE_ATEXIT_HACK
 #endif
 
-// Silence deprecated OpenGL warnings.
 #if defined( KVS_PLATFORM_MACOSX )
 #include <AvailabilityMacros.h>
+// Silence deprecated OpenGL warnings.
 #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1090
 #include <OpenGL/OpenGLAvailability.h>
 #undef OPENGL_DEPRECATED
@@ -45,6 +45,10 @@
 #define OPENGL_DEPRECATED_MSG(from, to, msg)
 #define OPENGL_ENUM_DEPRECATED(from, to)
 #define OPENGL_ENUM_DEPRECATED_MSG(from, to, msg)
+#endif
+// On MacOS 10.14 (Mojave), GLUT needs to support Layer-back view.
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= 101400
+#define KVS_GL_HAS_LAYER_BACKED_VIEW
 #endif
 #endif
 

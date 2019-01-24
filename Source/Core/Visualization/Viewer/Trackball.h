@@ -32,7 +32,6 @@ class Camera;
 class Trackball
 {
 private:
-
     float m_size; ///< trackball size
     float m_depth; ///< how near from center
     float m_scaling_factor; ///< scaling factor
@@ -43,7 +42,6 @@ private:
     kvs::Camera* m_ref_camera; ///< pointer to camera (reference only)
 
 public:
-
     Trackball();
     virtual ~Trackball();
 
@@ -72,7 +70,6 @@ public:
     void reset();
 
 private:
-
     float depth_on_sphere( const kvs::Vec2& pos ) const;
     kvs::Vec2 get_norm_position( const kvs::Vec2i& pos ) const;
 };
