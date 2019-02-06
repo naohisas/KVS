@@ -25,6 +25,7 @@
 #include <kvs/Matrix22>
 #include <kvs/Matrix33>
 #include <kvs/Matrix44>
+#include <kvs/ValueArray>
 #include <kvs/Deprecated>
 
 
@@ -39,7 +40,6 @@ namespace kvs
 class ProgramObject
 {
 private:
-
     GLuint m_id; ///< shader ID
     GLenum m_geom_input_type; ///< input type for geometry shader
     GLenum m_geom_output_type; ///< output type for geometry shader
@@ -47,11 +47,9 @@ private:
     mutable bool m_is_bound; ///< binding flag
 
 public:
-
     class Binder;
 
 public:
-
     ProgramObject();
     virtual ~ProgramObject();
 
@@ -87,13 +85,14 @@ public:
     void setUniform( const GLchar* name, const kvs::Matrix22f& value );
     void setUniform( const GLchar* name, const kvs::Matrix33f& value );
     void setUniform( const GLchar* name, const kvs::Matrix44f& value );
+    void setUniform( const GLchar* name, const kvs::ValueArray<GLint>& values, const int dim = 1 );
+    void setUniform( const GLchar* name, const kvs::ValueArray<GLfloat>& values, const int dim = 1 );
 
     void setGeometryInputType( const GLint type );
     void setGeometryOutputType( const GLint type );
     void setGeometryOutputVertices( const GLint value );
 
 protected:
-
     void createID();
     void deleteID();
     void setParameter( GLenum pname, GLint value );

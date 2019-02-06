@@ -418,6 +418,34 @@ void ProgramObject::setUniform( const GLchar* name, const kvs::Matrix44f& value 
     KVS_GL_CALL( glUniformMatrix4fv( location, 1, GL_TRUE, &value[0][0] ) );
 }
 
+void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLint>& values, const int dim )
+{
+    GLint location = this->uniformLocation( name );
+    GLsizei count = values.size() / dim;
+    switch ( dim )
+    {
+    case 1: { KVS_GL_CALL( glUniform1iv( location, count, values.data() ) ); break; }
+    case 2: { KVS_GL_CALL( glUniform2iv( location, count, values.data() ) ); break; }
+    case 3: { KVS_GL_CALL( glUniform3iv( location, count, values.data() ) ); break; }
+    case 4: { KVS_GL_CALL( glUniform4iv( location, count, values.data() ) ); break; }
+    default: break;
+    }
+}
+
+void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLfloat>& values, const int dim )
+{
+    GLint location = this->uniformLocation( name );
+    GLsizei count = values.size() / dim;
+    switch ( dim )
+    {
+    case 1: { KVS_GL_CALL( glUniform1fv( location, count, values.data() ) ); break; }
+    case 2: { KVS_GL_CALL( glUniform2fv( location, count, values.data() ) ); break; }
+    case 3: { KVS_GL_CALL( glUniform3fv( location, count, values.data() ) ); break; }
+    case 4: { KVS_GL_CALL( glUniform4fv( location, count, values.data() ) ); break; }
+    default: break;
+    }
+}
+
 void ProgramObject::setGeometryInputType( const GLint type )
 {
     m_geom_input_type = type;
