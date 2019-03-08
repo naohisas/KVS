@@ -12,16 +12,14 @@
  *  $Id: RayCastingRenderer.h 1472 2013-04-01 09:59:41Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__GLSL__RAY_CASTING_RENDERER_H_INCLUDE
-#define KVS__GLSL__RAY_CASTING_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/Module>
 #include <kvs/VolumeRendererBase>
 #include <kvs/Texture1D>
 #include <kvs/Texture2D>
 #include <kvs/Texture3D>
 #include <kvs/FrameBufferObject>
-#include <kvs/VertexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 #include <kvs/ObjectBase>
 #include <kvs/Camera>
 #include <kvs/Light>
@@ -47,7 +45,6 @@ class RayCastingRenderer : public kvs::VolumeRendererBase
     kvsModuleBaseClass( kvs::VolumeRendererBase );
 
 public:
-
     enum DrawingBuffer
     {
         FrontFace,
@@ -56,7 +53,6 @@ public:
     };
 
 private:
-
     bool m_draw_front_face; ///< frag for drawing front face
     bool m_draw_back_face; ///< frag for drawing back face
     bool m_draw_volume; ///< frag for drawing volume
@@ -71,12 +67,11 @@ private:
     kvs::Texture2D m_depth_texture; ///< texture for depth buffer
     kvs::Texture3D m_volume_texture; ///< volume data (3D texture)
     kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
-    kvs::VertexBufferObject m_bounding_cube_buffer; ///< bounding cube (VBO)
+    kvs::VertexBufferObjectManager m_bounding_cube_buffer; ///< bounding cube (VBO)
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
     kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
 
 public:
-
     RayCastingRenderer();
     RayCastingRenderer( const kvs::TransferFunction& tfunc );
     template <typename ShadingType>
@@ -91,7 +86,6 @@ public:
     void disableJittering() { m_enable_jittering = false; }
 
 private:
-
     void initialize_shader( const kvs::StructuredVolumeObject* volume );
     void initialize_jittering_texture();
     void initialize_bounding_cube_buffer( const kvs::StructuredVolumeObject* volume );
@@ -106,5 +100,3 @@ private:
 } // end of namespace glsl
 
 } // end of namespace kvs
-
-#endif // KVS__GLSL__RAY_CASTING_RENDERER_H_INCLUDE
