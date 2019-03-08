@@ -97,8 +97,7 @@ void StochasticPointRenderer::setOpacity( const kvs::UInt8 opacity )
 /*===========================================================================*/
 StochasticPointRenderer::Engine::Engine():
     m_point_opacity( 255 ),
-    m_has_normal( false ),
-    m_random_index( 0 )
+    m_has_normal( false )
 {
 }
 
@@ -110,8 +109,7 @@ StochasticPointRenderer::Engine::Engine():
 void StochasticPointRenderer::Engine::release()
 {
     m_shader_program.release();
-    m_vbo.release();
-    m_ibo.release();
+    m_vbo_manager.release();
 }
 
 /*===========================================================================*/
@@ -156,8 +154,6 @@ void StochasticPointRenderer::Engine::update( kvs::ObjectBase* object, kvs::Came
 /*===========================================================================*/
 void StochasticPointRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    m_random_index = m_shader_program.attributeLocation("random_index");
-
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
     const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
@@ -183,7 +179,7 @@ void StochasticPointRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera
 {
     kvs::PointObject* point = kvs::PointObject::DownCast( object );
 
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
+    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
     kvs::ProgramObject::Binder bind2( m_shader_program );
     kvs::Texture::Binder bind3( randomTexture() );
     {
@@ -196,49 +192,8 @@ void StochasticPointRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera
         const kvs::Vec2 random_offset( offset_x, offset_y );
         m_shader_program.setUniform( "random_offset", random_offset );
 
-        const size_t nvertices = point->numberOfVertices();
-        const size_t index_size = nvertices * 2 * sizeof( kvs::UInt16 );
-        const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-        const size_t color_size = nvertices * 3 * sizeof( kvs::UInt8 );
-
-        KVS_GL_CALL( glPointSize( point->size() ) );
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + index_size ) );
-
-        // Enable colors.
-        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
-        KVS_GL_CALL( glColorPointer( 3, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + index_size + coord_size ) );
-
-        // Enable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-            KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + index_size + coord_size + color_size ) );
-        }
-
-        // Enable random index.
-        KVS_GL_CALL( glEnableVertexAttribArray( m_random_index ) );
-        KVS_GL_CALL( glVertexAttribPointer( m_random_index, 2, GL_UNSIGNED_SHORT, GL_FALSE, 0, (GLubyte*)NULL + 0 ) );
-
-        // Draw points.
-        KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, nvertices ) );
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable colors.
-        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
-
-        // Disable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
-        }
-
-        // Disable random index.
-        KVS_GL_CALL( glDisableVertexAttribArray( m_random_index ) );
+        kvs::OpenGL::SetPointSize( point->size() );
+        m_vbo_manager.drawArrays( GL_POINTS, 0, point->numberOfVertices() );
     }
 }
 
@@ -295,22 +250,11 @@ void StochasticPointRenderer::Engine::create_buffer_object( const kvs::PointObje
     kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( point );
     kvs::ValueArray<kvs::Real32> normals = point->normals();
 
-    const size_t index_size = indices.byteSize();
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
-    const size_t normal_size = normals.byteSize();
-    const size_t byte_size = index_size + coord_size + color_size + normal_size;
-
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( index_size, indices.data(), 0 );
-    m_vbo.load( coord_size, coords.data(), index_size );
-    m_vbo.load( color_size, colors.data(), index_size + coord_size );
-    if ( normal_size > 0 )
-    {
-        m_vbo.load( normal_size, normals.data(), index_size + coord_size + color_size );
-    }
-    m_vbo.unbind();
+    m_vbo_manager.setVertexAttribArray( indices, m_shader_program.attributeLocation( "random_index" ), 2 );
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setColorArray( colors, 3 );
+    if ( normals.size() > 0 ) { m_vbo_manager.setNormalArray( normals ); }
+    m_vbo_manager.create();
 }
 
 } // end of namespace kvs

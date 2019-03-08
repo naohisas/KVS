@@ -12,13 +12,10 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__STOCHASTIC_LINE_RENDERER_H_INCLUDE
-#define KVS__STOCHASTIC_LINE_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/Module>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObject>
-#include <kvs/IndexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 #include "StochasticRenderingEngine.h"
 #include "StochasticRendererBase.h"
 
@@ -39,11 +36,9 @@ class StochasticLineRenderer : public kvs::StochasticRendererBase
     kvsModuleBaseClass( kvs::StochasticRendererBase );
 
 public:
-
     class Engine;
 
 public:
-
     StochasticLineRenderer();
     void setLineOffset( const float offset );
     /*KVS_DEPRECATED*/ void setOpacity( const kvs::UInt8 opacity );
@@ -57,19 +52,15 @@ public:
 class StochasticLineRenderer::Engine : public kvs::StochasticRenderingEngine
 {
 private:
-
     kvs::UInt8 m_line_opacity; ///< line opacity
     kvs::ValueArray<GLint> m_first_array; ///< array of starting indices for the polyline
     kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
     bool m_has_connection; ///< check flag for the connection array
-    size_t m_random_index; ///< index used for refering the random texture
     float m_line_offset; ///< line offset
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObject m_vbo; ///< vertex buffer object
-    kvs::IndexBufferObject m_ibo; ///< index buffer object
+    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
 
 public:
-
     Engine();
     void release();
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
@@ -80,15 +71,11 @@ public:
     void setLineOffset( const float offset ) { m_line_offset = offset; }
 
 public:
-    // Deprecated methods.
-    void setOpacity( const kvs::UInt8 opacity ){ m_line_opacity = opacity; }
+    /* KVS_DEPRECATED */ void setOpacity( const kvs::UInt8 opacity ){ m_line_opacity = opacity; }
 
 private:
-
     void create_shader_program();
     void create_buffer_object( const kvs::LineObject* line );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STOCHASTIC_LINE_RENDERER_H_INCLUDE
