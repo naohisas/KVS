@@ -11,7 +11,7 @@ namespace kvs
 
 class VertexBufferObjectManager
 {
-private:
+public:
     struct VertexBuffer
     {
         GLenum type; ///< GL_UNSIGNED_BYTE, GL_FLOAT, etc

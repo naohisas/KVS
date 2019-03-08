@@ -238,8 +238,6 @@ void StochasticTetrahedraRenderer::setSamplingStep( const float sampling_step )
  */
 /*===========================================================================*/
 StochasticTetrahedraRenderer::Engine::Engine():
-    m_random_index( 0 ),
-    m_value( 0 ),
     m_transfer_function_changed( true ),
     m_sampling_step( 1.0f ),
     m_maxT( 0.0f )
@@ -254,8 +252,7 @@ StochasticTetrahedraRenderer::Engine::Engine():
 void StochasticTetrahedraRenderer::Engine::release()
 {
     m_shader_program.release();
-    m_vbo.release();
-    m_ibo.release();
+    m_vbo_manager.release();
     m_preintegration_texture.release();
     m_decomposition_texture.release();
     m_transfer_function_texture.release();
@@ -306,9 +303,6 @@ void StochasticTetrahedraRenderer::Engine::update( kvs::ObjectBase* object, kvs:
 /*===========================================================================*/
 void StochasticTetrahedraRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    m_random_index = m_shader_program.attributeLocation("random_index");
-    m_value = m_shader_program.attributeLocation("value");
-
     if ( m_transfer_function_changed )
     {
         // Re-create pre-integration table.
@@ -346,15 +340,14 @@ void StochasticTetrahedraRenderer::Engine::draw( kvs::ObjectBase* object, kvs::C
 {
     kvs::UnstructuredVolumeObject* volume = kvs::UnstructuredVolumeObject::DownCast( object );
 
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
-    kvs::IndexBufferObject::Binder bind2( m_ibo );
-    kvs::ProgramObject::Binder bind3( m_shader_program );
-    kvs::Texture::Binder bind4( randomTexture(), 0 );
-    kvs::Texture::Binder bind5( m_preintegration_texture, 1 );
-    kvs::Texture::Binder bind6( m_decomposition_texture, 2 );
-    kvs::Texture::Binder bind7( m_transfer_function_texture, 3 );
-    kvs::Texture::Binder bind8( m_T_texture, 4 );
-    kvs::Texture::Binder bind9( m_inv_T_texture, 5 );
+    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
+    kvs::ProgramObject::Binder bind2( m_shader_program );
+    kvs::Texture::Binder bind3( randomTexture(), 0 );
+    kvs::Texture::Binder bind4( m_preintegration_texture, 1 );
+    kvs::Texture::Binder bind5( m_decomposition_texture, 2 );
+    kvs::Texture::Binder bind6( m_transfer_function_texture, 3 );
+    kvs::Texture::Binder bind7( m_T_texture, 4 );
+    kvs::Texture::Binder bind8( m_inv_T_texture, 5 );
     {
         kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
 
@@ -365,50 +358,9 @@ void StochasticTetrahedraRenderer::Engine::draw( kvs::ObjectBase* object, kvs::C
         const kvs::Vec2 random_offset( offset_x, offset_y );
         m_shader_program.setUniform( "random_offset", random_offset );
 
-        const size_t nnodes = volume->numberOfNodes();
         const size_t ncells = volume->numberOfCells();
-        const size_t index_size = nnodes * 2 * sizeof( kvs::UInt16 );
-        const size_t value_size = nnodes * 1 * sizeof( kvs::Real32 );
-        const size_t coord_size = nnodes * 3 * sizeof( kvs::Real32 );
-
-        const size_t index_offset = 0;
-        const size_t value_offset = index_offset + index_size;
-        const size_t coord_offset = value_offset + value_size;
-        const size_t normal_offset = coord_offset + coord_size;
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + coord_offset ) );
-
-        // Enable normals.
-        KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-        KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + normal_offset ) );
-
-        // Enable value index.
-        KVS_GL_CALL( glEnableVertexAttribArray( m_value ) );
-        KVS_GL_CALL( glVertexAttribPointer( m_value, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte*)NULL + value_offset ) );
-
-        // Enable random index.
-        KVS_GL_CALL( glEnableVertexAttribArray( m_random_index ) );
-        KVS_GL_CALL( glVertexAttribPointer( m_random_index, 2, GL_UNSIGNED_SHORT, GL_FALSE, 0, (GLubyte*)NULL + index_offset ) );
-
-        // Draw
-        KVS_GL_CALL( glDrawElements( GL_LINES_ADJACENCY_EXT, 4 * ncells, GL_UNSIGNED_INT, 0 ) );
-
-        // Disable normals.
-        KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable value index.
-        KVS_GL_CALL( glDisableVertexAttribArray( m_value ) );
-
-        // Disable random index.
-        KVS_GL_CALL( glDisableVertexAttribArray( m_random_index ) );
+        m_vbo_manager.drawElements( GL_LINES_ADJACENCY_EXT, 4 * ncells );
     }
-
-//    countRepetitions();
 }
 
 /*===========================================================================*/
@@ -496,34 +448,12 @@ void StochasticTetrahedraRenderer::Engine::create_buffer_object( const kvs::Unst
     const kvs::ValueArray<kvs::Real32> values = ::NormalizedValues( volume );
     const kvs::ValueArray<kvs::Real32> coords = volume->coords();
     const kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( volume );
-
-    const size_t index_size = indices.byteSize();
-    const size_t value_size = values.byteSize();
-    const size_t coord_size = coords.byteSize();
-    const size_t normal_size = normals.byteSize();
-    const size_t byte_size = index_size + value_size + coord_size + normal_size;
-
-    const size_t index_offset = 0;
-    const size_t value_offset = index_offset + index_size;
-    const size_t coord_offset = value_offset + value_size;
-    const size_t normal_offset = coord_offset + coord_size;
-
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( index_size, indices.data(), index_offset );
-    m_vbo.load( value_size, values.data(), value_offset );
-    m_vbo.load( coord_size, coords.data(), coord_offset );
-    m_vbo.load( normal_size, normals.data(), normal_offset );
-    m_vbo.unbind();
-
-    const kvs::ValueArray<kvs::UInt32> connections = volume->connections();
-    const size_t connection_size = connections.byteSize();
-    const size_t connection_offset = 0;
-
-    m_ibo.create( connection_size );
-    m_ibo.bind();
-    m_ibo.load( connection_size, connections.data(), connection_offset );
-    m_ibo.unbind();
+    m_vbo_manager.setVertexAttribArray( indices, m_shader_program.attributeLocation("random_index"), 2 );
+    m_vbo_manager.setVertexAttribArray( values, m_shader_program.attributeLocation("value"), 1 );
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setNormalArray( normals );
+    m_vbo_manager.setIndexArray( volume->connections() );
+    m_vbo_manager.create();
 }
 
 /*===========================================================================*/

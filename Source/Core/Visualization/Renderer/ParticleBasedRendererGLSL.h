@@ -12,13 +12,11 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__GLSL__PARTICLE_BASED_RENDERER_H_INCLUDE
-#define KVS__GLSL__PARTICLE_BASED_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/RendererBase>
 #include <kvs/Module>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 #include <kvs/Vector4>
 #include <kvs/Matrix44>
 #include <kvs/Deprecated>
@@ -45,11 +43,9 @@ class ParticleBasedRenderer : public kvs::StochasticRendererBase
     kvsModuleBaseClass( kvs::StochasticRendererBase );
 
 public:
-
     class Engine;
 
 public:
-
     ParticleBasedRenderer();
     ParticleBasedRenderer( const kvs::Mat4& m, const kvs::Mat4& p, const kvs::Vec4& v );
     bool isEnabledShuffle() const;
@@ -95,7 +91,6 @@ private:
 class ParticleBasedRenderer::Engine : public kvs::StochasticRenderingEngine
 {
 private:
-
     bool m_has_normal; ///< check flag for the normal array
     bool m_enable_shuffle; ///< flag for shuffling particles
     bool m_enable_zooming; ///< flag for zooming particles
@@ -105,10 +100,9 @@ private:
     kvs::Vec4 m_initial_viewport; ///< initial viewport
     float m_initial_object_depth; ///< initial object depth
     kvs::ProgramObject m_shader_program; ///< zooming shader program
-    kvs::VertexBufferObject* m_vbo; ///< vertex buffer objects for each repetition
+    kvs::VertexBufferObjectManager* m_vbo_manager; ///< vertex buffer object managers for each repetition
 
 public:
-
     Engine();
     Engine( const kvs::Mat4& m, const kvs::Mat4& p, const kvs::Vec4& v );
     virtual ~Engine();
@@ -131,7 +125,6 @@ public:
     const kvs::Vec4& initialViewport() const { return m_initial_viewport; }
 
 private:
-
     void create_shader_program();
     void create_buffer_object( const kvs::PointObject* point );
 };
@@ -141,5 +134,3 @@ private:
 } // end of namespace kvs
 
 #include "ParticleBasedRendererRITS.h"
-
-#endif // KVS__GLSL__PARTICLE_BASED_RENDERER_H_INCLUDE
