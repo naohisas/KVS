@@ -232,6 +232,16 @@ void StochasticTetrahedraRenderer::setSamplingStep( const float sampling_step )
     static_cast<Engine&>( engine() ).setSamplingStep( sampling_step );
 }
 
+const kvs::TransferFunction& StochasticTetrahedraRenderer::transferFunction() const
+{
+    return static_cast<const Engine&>( engine() ).transferFunction();
+}
+
+float StochasticTetrahedraRenderer::samplingStep() const
+{
+    return static_cast<const Engine&>( engine() ).samplingStep();
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Engine class.

@@ -52,6 +52,8 @@ public:
     StochasticTetrahedraRenderer();
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
     void setSamplingStep( const float sampling_step );
+    const kvs::TransferFunction& transferFunction() const;
+    float samplingStep() const;
 };
 
 /*===========================================================================*/
@@ -82,16 +84,15 @@ public:
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
+    void setSamplingStep( const float sampling_step ) { m_sampling_step = sampling_step; }
     void setTransferFunction( const kvs::TransferFunction& transfer_function )
     {
         m_transfer_function = transfer_function;
         m_transfer_function_changed = true;
     }
 
-    void setSamplingStep( const float sampling_step )
-    {
-        m_sampling_step = sampling_step;
-    }
+    float samplingStep() const { return m_sampling_step; }
+    const kvs::TransferFunction& transferFunction() const { return m_transfer_function; }
 
 private:
     void create_shader_program();

@@ -50,6 +50,8 @@ public:
     StochasticUniformGridRenderer();
     void setSamplingStep( const float step );
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
+    const kvs::TransferFunction& transferFunction() const;
+    float samplingStep() const;
 };
 
 /*===========================================================================*/
@@ -60,7 +62,6 @@ public:
 class StochasticUniformGridRenderer::Engine : public kvs::StochasticRenderingEngine
 {
 private:
-
     size_t m_random_index; ///< index used for refering the random texture
     float m_step; ///< sampling step
     bool m_transfer_function_changed; ///< flag for changin transfer function
@@ -75,7 +76,6 @@ private:
     kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
 
 public:
-
     Engine();
     void release();
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
@@ -90,8 +90,10 @@ public:
         m_transfer_function_changed = true;
     }
 
-private:
+    float samplingStep() const { return m_step; }
+    const kvs::TransferFunction& transferFunction() const { return m_transfer_function; }
 
+private:
     void create_shader_program( const kvs::StructuredVolumeObject* volume );
     void create_volume_texture( const kvs::StructuredVolumeObject* volume );
     void create_transfer_function_texture();

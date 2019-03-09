@@ -136,6 +136,16 @@ void StochasticUniformGridRenderer::setTransferFunction( const kvs::TransferFunc
     static_cast<Engine&>( engine() ).setTransferFunction( transfer_function );
 }
 
+const kvs::TransferFunction& StochasticUniformGridRenderer::transferFunction() const
+{
+    return static_cast<const Engine&>( engine() ).transferFunction();
+}
+
+float StochasticUniformGridRenderer::samplingStep() const
+{
+    return static_cast<const Engine&>( engine() ).samplingStep();
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Engine class.
