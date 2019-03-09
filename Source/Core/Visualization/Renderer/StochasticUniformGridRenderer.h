@@ -12,12 +12,10 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__STOCHASTIC_UNIFORM_GRID_RENDERER_H_INCLUDE
-#define KVS__STOCHASTIC_UNIFORM_GRID_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/Module>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 #include <kvs/FrameBufferObject>
 #include <kvs/Texture2D>
 #include <kvs/Texture3D>
@@ -42,11 +40,9 @@ class StochasticUniformGridRenderer : public kvs::StochasticRendererBase
     kvsModuleBaseClass( kvs::StochasticRendererBase );
 
 public:
-
     class Engine;
 
 public:
-
     StochasticUniformGridRenderer();
     void setSamplingStep( const float step );
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
@@ -71,7 +67,7 @@ private:
     kvs::Texture2D m_exit_texture; ///< exit point texture
     kvs::Texture3D m_volume_texture; ///< volume data (3D texture)
     kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
-    kvs::VertexBufferObject m_bounding_cube_buffer; ///< bounding cube (VBO)
+    kvs::VertexBufferObjectManager m_bounding_cube_buffer; ///< bounding cube (VBO)
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
     kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
 
@@ -105,5 +101,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STOCHASTIC_UNIFORM_GRID_RENDERER_H_INCLUDE
