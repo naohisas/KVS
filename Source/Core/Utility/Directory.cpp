@@ -447,7 +447,9 @@ bool Directory::exists() const
 /*==========================================================================*/
 bool Directory::parse( const std::string& directory_path )
 {
-    m_path = directory_path;
+    std::string path = directory_path;
+    if ( path[0] == '~' ) { path = kvs::Directory::HomePath() + path.substr(1); }
+    m_path = path;
 
     const std::string abs_dir_path = Directory::Absolute( directory_path );
     const size_t last_sep_pos = abs_dir_path.find_last_of( Directory::Separator() );
