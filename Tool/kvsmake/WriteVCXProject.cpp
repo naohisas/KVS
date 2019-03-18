@@ -43,10 +43,10 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 
     // Search cpp files and h files.
     const kvs::Directory current_dir( "." );
-    const kvs::FileList& file_list = current_dir.fileList();
+    const kvs::FileList file_list = current_dir.fileList();
 
     kvs::FileList::const_iterator iter = file_list.begin();
-    const kvs::FileList::const_iterator end  = file_list.end();
+    const kvs::FileList::const_iterator end = file_list.end();
     while ( iter != end )
     {
         if ( ( iter->extension() == "h" ) || ( iter->extension() == "cpp" ) )

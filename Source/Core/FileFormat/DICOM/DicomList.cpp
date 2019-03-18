@@ -4,7 +4,7 @@
  *  @brief  DICOM list class.
  *
  *  @author Naohisa Sakamoto
- *  @date   2013/06/12 11:26:39
+ *  @date   2019/03/18 14:36:57
  */
 /*----------------------------------------------------------------------------
  *
@@ -68,25 +68,26 @@ bool DicomList::CheckDirectory( const std::string& dirname, const bool extension
     kvs::Directory dir( dirname );
     if( !dir.exists() )
     {
-        kvsMessageError( "%s is not existed.", dir.directoryPath().c_str() );
+        kvsMessageError( "%s is not existed.", dir.path().c_str() );
         return false;
     }
 
     if( !dir.isDirectory() )
     {
-        kvsMessageError( "%s is not directory.", dir.directoryPath().c_str() );
+        kvsMessageError( "%s is not directory.", dir.path().c_str() );
         return false;
     }
 
-    if( dir.fileList().size() == 0 )
+    const kvs::FileList files = dir.fileList();
+    if( files.size() == 0 )
     {
-        kvsMessageError( "File not found in %s.", dir.directoryPath().c_str() );
+        kvsMessageError( "File not found in %s.", dir.path().c_str() );
         return false;
     }
 
     size_t counter = 0;
-    kvs::FileList::const_iterator file = dir.fileList().begin();
-    kvs::FileList::const_iterator last = dir.fileList().end();
+    kvs::FileList::const_iterator file = files.begin();
+    kvs::FileList::const_iterator last = files.end();
     while ( file != last )
     {
         if( extension_check )
@@ -102,7 +103,7 @@ bool DicomList::CheckDirectory( const std::string& dirname, const bool extension
     {
         if ( counter == 0 )
         {
-            kvsMessageError( "File not found in %s.", dir.directoryPath().c_str() );
+            kvsMessageError( "File not found in %s.", dir.path().c_str() );
             return false;
         }
     }
@@ -396,21 +397,21 @@ bool DicomList::read( const std::string& dirname )
     kvs::Directory dir( dirname );
     if( !dir.exists() )
     {
-        kvsMessageError( "%s is not existed.", dir.directoryPath().c_str() );
+        kvsMessageError( "%s is not existed.", dir.path().c_str() );
         BaseClass::setSuccess( false );
         return false;
     }
 
     if( !dir.isDirectory() )
     {
-        kvsMessageError( "%s is not directory.", dir.directoryPath().c_str() );
+        kvsMessageError( "%s is not directory.", dir.path().c_str() );
         BaseClass::setSuccess( false );
         return false;
     }
 
     if( dir.fileList().size() == 0 )
     {
-        kvsMessageError( "File not found in %s.", dir.directoryPath().c_str() );
+        kvsMessageError( "File not found in %s.", dir.path().c_str() );
         BaseClass::setSuccess( false );
         return false;
     }

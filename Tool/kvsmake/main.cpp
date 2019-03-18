@@ -68,7 +68,7 @@ int main( int argc, char** argv )
     if ( argument.hasOption( "G" ) )
     {
         const kvs::Directory dir( "." );
-        const std::string project_name( dir.directoryName() );
+        const std::string project_name( dir.name() );
         return kvsmake::WriteMakefile( project_name );
     }
 
@@ -81,7 +81,7 @@ int main( int argc, char** argv )
     if ( argument.hasOption( "Q" ) || argument.hasOption( "Qtproj" ) )
     {
         const kvs::Directory dir( "." );
-        const std::string project_name( dir.directoryName() );
+        const std::string project_name( dir.name() );
         return kvsmake::WriteQtProject( project_name );
     }
 
@@ -99,7 +99,7 @@ int main( int argc, char** argv )
     if ( argument.hasOption( "Vcproj" ) )
     {
         const kvs::Directory dir( "." );
-        const std::string project_name( dir.directoryName() );
+        const std::string project_name( dir.name() );
 #if KVS_COMPILER_VERSION_GREATER_OR_EQUAL( 10, 0 )
         return kvsmake::WriteVCXProject( project_name );
 #else
@@ -114,7 +114,7 @@ int main( int argc, char** argv )
     }
 #endif // KVS_COMPILER_VC
 
-    if ( !kvs::File( kvsmake::Makefile ).isExisted() )
+    if ( !kvs::File( kvsmake::Makefile ).exists() )
     {
         kvsMessageError( "Cannot find %s.", kvsmake::Makefile.c_str() );
         exit( EXIT_FAILURE );

@@ -241,7 +241,7 @@ FileChecker::FormatType FileChecker::fileFormat() const
 /*==========================================================================*/
 std::ostream& operator << ( std::ostream& os, const FileChecker& checker )
 {
-    if ( !kvs::File( checker.filename() ).isExisted() )
+    if ( !kvs::File::Exists( checker.filename() ) )
     {
         kvsMessageError("%s is not existed.", checker.filename().c_str() );
         return os;

@@ -270,6 +270,8 @@ void GrADS::print( std::ostream& os, const kvs::Indent& indent ) const
     }
 
     kvs::Directory directory( data_pathname );
+    const kvs::FileList files = directory.fileList();
+
     kvs::grads::TDef tdef = m_data_descriptor.tdef();
     const size_t tnum = m_data_descriptor.tdef().num;
     for ( size_t i = 0; i < tnum; ++i, ++tdef )
@@ -281,14 +283,14 @@ void GrADS::print( std::ostream& os, const kvs::Indent& indent ) const
         data_filename = ::ReplaceHour( data_filename, tdef.start.hour );
         data_filename = ::ReplaceMinute( data_filename, tdef.start.minute );
 
-        kvs::FileList::const_iterator file = directory.fileList().begin();
-        kvs::FileList::const_iterator last = directory.fileList().end();
+        kvs::FileList::const_iterator file = files.begin();
+        kvs::FileList::const_iterator last = files.end();
         while ( file != last )
         {
             if ( file->fileName() == data_filename )
             {
                 const std::string sep = kvs::File::Separator();
-                const std::string path = directory.directoryPath( true );
+                const std::string path = directory.path( true );
                 GriddedBinaryDataFile::Date date;
                 date.year = tdef.start.year;
                 date.month = tdef.start.month;
