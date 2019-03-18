@@ -55,9 +55,9 @@ int main( int argc, char** argv )
     }
 
     // Output directory information.
-    std::cout << "Directory path: " << directory.directoryPath() << std::endl;
-    std::cout << "Directory path (absolute): " << directory.directoryPath(true) << std::endl;
-    std::cout << "Directory name: " << directory.directoryName() << std::endl;
+    std::cout << "Directory path: " << directory.path() << std::endl;
+    std::cout << "Directory path (absolute): " << directory.path(true) << std::endl;
+    std::cout << "Directory name: " << directory.name() << std::endl;
 
     // Output information of the number of files in the directory.
     kvs::FileList files = directory.fileList();
