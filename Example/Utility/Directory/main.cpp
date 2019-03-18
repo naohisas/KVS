@@ -32,6 +32,11 @@ int main( int argc, char** argv )
         return 1;
     }
 
+    std::cout << "Root directory: " << kvs::Directory::RootPath() << std::endl;
+    std::cout << "Home directory: " << kvs::Directory::HomePath() << std::endl;
+    std::cout << "Temp directory: " << kvs::Directory::TempPath() << std::endl;
+    std::cout << "Current directory: " << kvs::Directory::CurrentPath() << std::endl;
+
     const char* directory_name = argv[1];
     kvs::Directory directory( directory_name );
 
@@ -55,28 +60,15 @@ int main( int argc, char** argv )
     std::cout << "Directory name: " << directory.directoryName() << std::endl;
 
     // Output information of the number of files in the directory.
-    std::cout << "Number of files in the directory: " << directory.fileList().size() << std::endl;
+    kvs::FileList files = directory.fileList();
+    std::cout << "Number of files in the directory: " << files.size() << std::endl;
 
-    kvs::FileList::iterator file = directory.fileList().begin();
-    kvs::FileList::iterator end = directory.fileList().end();
+    kvs::FileList::iterator file = files.begin();
+    kvs::FileList::iterator end = files.end();
     while ( file != end )
     {
         std::cout << "\t" << file->fileName() << " [" << file->byteSize() << " bytes]" << std::endl;
         ++file;
-    }
-
-    // Find "test.cpp" in the directory.
-    kvs::File f( "test.cpp" );
-    file = directory.find( f );
-    if ( file != end )
-    {
-        std::cout << f.filePath() << " is found in ";
-        std::cout << directory.directoryPath(true) << std::endl;
-    }
-    else
-    {
-        std::cout << f.filePath() << " is not found in ";
-        std::cout << directory.directoryPath(true) << std::endl;
     }
 
     return 0;

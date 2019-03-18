@@ -13,6 +13,8 @@
 /****************************************************************************/
 #include "File.h"
 #include <kvs/Platform>
+#include <kvs/Message>
+#include <kvs/Directory>
 #if defined ( KVS_PLATFORM_WINDOWS )
 #include <windows.h>
 #else
@@ -22,16 +24,15 @@
 #include <cstdlib>
 #endif
 #include <fstream>
-#include <kvs/Message>
 
 
 namespace
 {
-#ifdef PATH_MAX
-const size_t MaxPathLength = PATH_MAX;
-#else
-const size_t MaxPathLength = 4096;
-#endif
+//#ifdef PATH_MAX
+//const size_t MaxPathLength = PATH_MAX;
+//#else
+//const size_t MaxPathLength = 4096;
+//#endif
 }
 
 namespace
@@ -44,28 +45,56 @@ namespace
  *  @return absolute path
  */
 /*==========================================================================*/
-std::string GetAbsolutePath( const std::string& path )
-{
-    char absolute_path[ ::MaxPathLength ];
-
-#if defined ( KVS_PLATFORM_WINDOWS )
-    _fullpath( absolute_path, const_cast<char*>( path.c_str() ), ::MaxPathLength );
-#else
-    if ( !realpath( path.c_str(), absolute_path ) )
-    {
-        kvsMessageError( "%s", strerror( errno ) );
-        return "";
-    }
-#endif
-
-    return absolute_path;
-}
+//std::string GetAbsolutePath( const std::string& path )
+//{
+//    char absolute_path[ ::MaxPathLength ];
+//
+//#if defined ( KVS_PLATFORM_WINDOWS )
+//    _fullpath( absolute_path, const_cast<char*>( path.c_str() ), ::MaxPathLength );
+//#else
+//    if ( !realpath( path.c_str(), absolute_path ) )
+//    {
+//        kvsMessageError( "%s", strerror( errno ) );
+//        return "";
+//    }
+//#endif
+//
+//    return absolute_path;
+//}
 
 } // end of namespace
 
 
 namespace kvs
 {
+
+/*==========================================================================*/
+/**
+ *  @brief  Returns file separator.
+ *  @return file separator
+ */
+/*==========================================================================*/
+std::string File::Separator()
+{
+#if defined ( KVS_PLATFORM_WINDOWS )
+    return "\\";
+#else
+    return "/";
+#endif
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns true if the specified file exists.
+ *  @param  file_path [in] file path (filename)
+ *  @return true if the file exists
+ */
+/*===========================================================================*/
+bool File::Exists( const std::string& file_path )
+{
+    kvs::File file( file_path );
+    return file.exists();
+}
 
 /*==========================================================================*/
 /**
@@ -118,7 +147,8 @@ bool File::operator ==( const File& file ) const
 /*==========================================================================*/
 std::string File::filePath( bool absolute ) const
 {
-    return absolute ? ::GetAbsolutePath( m_file_path ) : m_file_path;
+//    return absolute ? ::GetAbsolutePath( m_file_path ) : m_file_path;
+    return absolute ? kvs::Directory::Absolute( m_file_path ) : m_file_path;
 }
 
 /*==========================================================================*/
@@ -130,7 +160,7 @@ std::string File::filePath( bool absolute ) const
 /*==========================================================================*/
 std::string File::pathName( bool absolute ) const
 {
-    return absolute ? ::GetAbsolutePath( m_path_name ) : m_path_name;
+    return absolute ? kvs::Directory::Absolute( m_path_name ) : m_path_name;
 }
 
 /*==========================================================================*/
@@ -272,21 +302,6 @@ bool File::parse( const std::string& file_path )
     }
 
     return true;
-}
-
-/*==========================================================================*/
-/**
- *  Get file separator.
- *  @return file separator
- */
-/*==========================================================================*/
-std::string File::Separator()
-{
-#if defined ( KVS_PLATFORM_WINDOWS )
-    return "\\";
-#else
-    return "/";
-#endif
 }
 
 } // end of namespace kvs
