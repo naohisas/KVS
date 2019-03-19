@@ -45,7 +45,8 @@ TARGET = PROJECT_NAME_REPLACED_BY_KVSMAKE
 #=============================================================================
 #  Configuration valiable.
 #=============================================================================
-CONFIG += release warn_off opengl
+#CONFIG += release warn_off opengl
+CONFIG += warn_off opengl
 QT     += opengl
 
 
@@ -56,8 +57,17 @@ win32 {
     DEFINES += WIN32 _MBCS NOMINMAX _SCL_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE
 }
 
-#DEFINES += NDEBUG KVS_SUPPORT_GLUT KVS_SUPPORT_QT
-DEFINES += NDEBUG
+!isEmpty( DEBUG ) {
+    DEFINES += _DEBUG KVS_ENABLE_DEBUG
+} else {
+    DEFINES += NDEBUG
+}
+
+#!isEmpty( MEM_DEBUG )
+#{
+#    DEFINES += KVS_ENABLE_MEM_DEBUG
+#}
+
 equals( KVS_ENABLE_OPENGL, "1" ) { DEFINES += KVS_ENABLE_OPENGL }
 equals( KVS_ENABLE_GLU, "1" ) { DEFINES += KVS_ENABLE_GLU }
 equals( KVS_ENABLE_GLEW, "1" ) { DEFINES += KVS_ENABLE_GLEW }
@@ -76,17 +86,33 @@ equals( KVS_SUPPORT_EGL, "1" ) { DEFINES += KVS_SUPPORT_EGL }
 #=============================================================================
 INCLUDEPATH += $$KVS_DIR/include
 
+# GLEW environment variables
 KVS_GLEW_DIR = $$(KVS_GLEW_DIR)
+KVS_GLEW_INCLUDE_PATH = $$(KVS_GLEW_INCLUDE_PATH)
+KVS_GLEW_LIBRARY_PATH = $$(KVS_GLEW_LIBRARY_PATH)
+
 GLEW_INCLUDE_PATH = .
 GLEW_LIBRARY_PATH = .
 equals( KVS_ENABLE_GLEW, "1" ) {
     !isEmpty( KVS_GLEW_DIR ) {
         GLEW_INCLUDE_PATH = $$KVS_GLEW_DIR/include
         GLEW_LIBRARY_PATH = $$KVS_GLEW_DIR/lib
+    } else {
+        !isEmpty( KVS_GLEW_INCLUDE_PATH ) {
+            GLEW_INCLUDE_PATH = $$KVS_GLEW_INCLUDE_PATH
+        }
+        !isEmpty( KVS_GLEW_LIBRARY_PATH ) {
+            GLEW_LIBRARY_PATH = $$KVS_GLEW_LIBRARY_PATH
+        }
     }
 }
 
 INCLUDEPATH += $$GLEW_INCLUDE_PATH
+
+# OpenMP environment variables
+KVS_OPENMP_DIR = $$(KVS_OPENMP_DIR)
+KVS_OPENMP_INCLUDE_PATH = $$(KVS_OPENMP_INCLUDE_PATH)
+KVS_OPENMP_LIBRARY_PATH = $$(KVS_OPENMP_LIBRARY_PATH)
 
 OPENMP_INCLUDE_PATH = .
 OPENMP_LIBRARY_PATH = .
@@ -94,31 +120,42 @@ equals( KVS_ENABLE_OPENMP, "1" ) {
     !isEmpty( KVS_OPENMP_DIR ) {
         OPENMP_INCLUDE_PATH = $$KVS_OPENMP_DIR/include
         OPENMP_LIBRARY_PATH = $$KVS_OPENMP_DIR/lib
+    } else {
+        !isEmpty( KVS_OPENMP_INCLUDE_PATH ) {
+            OPENMP_INCLUDE_PATH = $$KVS_OPENMP_INCLUDE_PATH
+        }
+        !isEmpty( KVS_OPENMP_LIBRARY_PATH ) {
+            OPENMP_LIBRARY_PATH = $$KVS_OPENMP_LIBRARY_PATH
+        }
     }
 }
 
 INCLUDEPATH += $$OPENMP_INCLUDE_PATH
+
+# Python environment variables
+KVS_PYTHON_DIR = $$(KVS_PYTHON_DIR)
+KVS_NUMPY_DIR = $$(KVS_NUMPY_DIR)
 
 PYTHON_INCLUDE_PATH = .
 PYTHON_LIBRARY_PATH = .
 NUMPY_INCLUDE_PATH = .
 NUMPY_LIBRARY_PATH = .
 equals( KVS_SUPPORT_PYTHON, "1" ) {
-    PYTHON_INCLUDE_PATH = $$system( "python-config --includes" )
+    PYTHON_INCLUDE_PATH = $$system( "python-config --includes | sed -e 's/-I//g'" )
     PYTHON_LIBRARY_PATH = $$system( "python-config --ldflags" )
     !isEmpty( KVS_PYTHON_DIR ) {
         PYTHON_INCLUDE_PATH = $$KVS_PYTHON_DIR/include
         PYTHON_LIBRARY_PATH = $$KVS_PYTHON_DIR/lib
     }
-    NUMPY_INCLUDE_PATH = -I$$system( 'python -c "import numpy; print numpy.get_include()"' )
+    NUMPY_INCLUDE_PATH = $$system( "python -c \"import numpy; print numpy.get_include()\"" )
     !isEmpty( KVS_NUMPY_DIR ) {
         NUMPY_INCLUDE_PATH = $$KVS_NUMPY_DIR/include
         NUMPY_LIBRARY_PATH = $$KVS_NUMPY_DIR/lib
     }
 }
 
-INCLUDEPATH += PYTHON_INCLUDE_PATH
-INCLUDEPATH += NUMPY_INCLUDE_PATH
+INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+INCLUDEPATH += $$NUMPY_INCLUDE_PATH
 
 
 #=============================================================================
@@ -141,8 +178,9 @@ macx {
     LIBS += $$KVS_DIR/lib/libkvsSupportQt.a
     LIBS += $$KVS_DIR/lib/libkvsCore.a
     equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
-    equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_INCLUDE_PATH -lgomp -fopenmp }
+    equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp }
     equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -framework GLUT }
+    equals( KVS_SUPPORT_PYTHON, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH }
 }
 
 unix:!macx {
@@ -150,8 +188,9 @@ unix:!macx {
     LIBS += $$KVS_DIR/lib/libkvsCore.a
     equals( KVS_ENABLE_GLU, "1" ) { LIBS += -lGLU }
     equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
-    equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_INCLUDE_PATH -lgomp -fopenmp }
+    equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp }
     equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -lglut }
+    equals( KVS_SUPPORT_PYTHON, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH }
 }
 
 
