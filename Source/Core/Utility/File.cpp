@@ -268,13 +268,15 @@ bool File::exists() const
 /*==========================================================================*/
 bool File::parse( const std::string& file_path )
 {
-    m_file_path = file_path;
+    std::string path = file_path;
+    if ( path[0] == '~' ) { path = kvs::Directory::HomePath() + path.substr(1); }
+    m_file_path = path;
 
     int last_sep_pos = file_path.find_last_of( File::Separator() );
     if ( last_sep_pos < 0 )
     {
         m_path_name = ".";
-        m_file_name = file_path;
+        m_file_name = path;
     }
     else if ( last_sep_pos == 0 )
     {
@@ -283,7 +285,7 @@ bool File::parse( const std::string& file_path )
     }
     else
     {
-        m_path_name = std::string( file_path.begin(), file_path.begin() + last_sep_pos );
+        m_path_name = std::string( path.begin(), path.begin() + last_sep_pos );
         m_file_name = file_path.substr( last_sep_pos + 1 );
     }
 

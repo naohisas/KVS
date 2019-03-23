@@ -341,10 +341,11 @@ std::string Directory::name() const
 /*===========================================================================*/
 /**
  *  @brief  Returns file list contained in the directory.
+ *  @param  sort [in] flag for sorting files
  *  @return file list
  */
 /*===========================================================================*/
-kvs::FileList Directory::fileList() const
+kvs::FileList Directory::fileList( const bool sort ) const
 {
     kvs::FileList file_list;
 
@@ -405,6 +406,7 @@ kvs::FileList Directory::fileList() const
     }
 #endif
 
+    if ( sort ) { std::sort( file_list.begin(), file_list.end() ); }
     return file_list;
 }
 

@@ -57,7 +57,7 @@ public:
 
     std::string path( bool absolute = false ) const;
     std::string name() const;
-    kvs::FileList fileList() const;
+    kvs::FileList fileList( const bool sort = true ) const;
     bool isDirectory() const;
     bool exists() const;
     bool parse( const std::string& direcotry_path );
