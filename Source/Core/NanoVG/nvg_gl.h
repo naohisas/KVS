@@ -485,12 +485,25 @@ static int glnvg__createShader(GLNVGshader* shader, const char* name, const char
 
 static void glnvg__deleteShader(GLNVGshader* shader)
 {
-	if (shader->prog != 0)
-            KVS_GL_CALL( glDeleteProgram(shader->prog) );
-	if (shader->vert != 0)
-            KVS_GL_CALL( glDeleteShader(shader->vert) );
-	if (shader->frag != 0)
-            KVS_GL_CALL( glDeleteShader(shader->frag) );
+    GLboolean result = GL_FALSE;
+
+    KVS_GL_CALL( result = glIsProgram( shader->prog ) );
+    if ( result == GL_TRUE )
+    {
+        KVS_GL_CALL( glDeleteProgram( shader->prog ) );
+    }
+
+    KVS_GL_CALL( result = glIsProgram( shader->vert ) );
+    if ( result == GL_TRUE )
+    {
+        KVS_GL_CALL( glDeleteShader( shader->vert ) );
+    }
+
+    KVS_GL_CALL( result = glIsProgram( shader->frag ) );
+    if ( result == GL_TRUE )
+    {
+        KVS_GL_CALL( glDeleteShader( shader->frag ) );
+    }
 }
 
 static void glnvg__getUniforms(GLNVGshader* shader)
