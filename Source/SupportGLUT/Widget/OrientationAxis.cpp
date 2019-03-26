@@ -202,10 +202,10 @@ void OrientationAxis::paintEvent()
     }
 
     // The origin is set to the top-left on the screen.
-    const int x = m_x + m_margin;
-    const int y = screen()->height() - m_y - m_height + m_margin;
-    const int width = m_width - m_margin;
-    const int height = m_height - m_margin;
+    const int x = BaseClass::x0() + m_margin;
+    const int y = screen()->height() - BaseClass::y0() - BaseClass::height() + m_margin;
+    const int width = BaseClass::width() - m_margin;
+    const int height = BaseClass::height() - m_margin;
     kvs::OpenGL::SetViewport( x, y, width, height);
 
     kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );

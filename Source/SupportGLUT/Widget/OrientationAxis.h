@@ -106,7 +106,7 @@ public:
     bool isEnabledAntiAliasing() const { return m_enable_anti_aliasing; }
 
     void setObject( const kvs::ObjectBase* object ) { m_object = object; }
-    void setSize( const size_t size ) { m_width = size; m_height = size; }
+    void setSize( const size_t size ) { BaseClass::setSize( size, size ); }
     void setXTag( const std::string& tag ) { m_x_tag = tag; }
     void setYTag( const std::string& tag ) { m_y_tag = tag; }
     void setZTag( const std::string& tag ) { m_z_tag = tag; }

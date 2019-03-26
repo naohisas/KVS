@@ -129,10 +129,10 @@ void ColorMapBar::paintEvent()
     {
         const int w = ( m_orientation == ColorMapBar::Vertical ) ? value_width + 5 : 0;
         const int h = ( m_orientation == ColorMapBar::Vertical ) ? 0 : value_height;
-        const int x = m_x + BaseClass::margin();
-        const int y = m_y + BaseClass::margin() + caption_height;
-        const int width = m_width - BaseClass::margin() * 2 - w;
-        const int height = m_height - BaseClass::margin() * 2 - caption_height - h;
+        const int x = BaseClass::x0() + BaseClass::margin();
+        const int y = BaseClass::y0() + BaseClass::margin() + caption_height;
+        const int width = BaseClass::width() - BaseClass::margin() * 2 - w;
+        const int height = BaseClass::height() - BaseClass::margin() * 2 - caption_height - h;
         this->draw_color_bar( x, y, width, height );
         this->draw_border( x, y, width, height );
     }
@@ -140,8 +140,8 @@ void ColorMapBar::paintEvent()
     // Draw the caption.
     if ( m_caption.size() != 0 )
     {
-        const int x = m_x + BaseClass::margin();
-        const int y = m_y + BaseClass::margin();
+        const int x = BaseClass::x0() + BaseClass::margin();
+        const int y = BaseClass::y0() + BaseClass::margin();
         const kvs::Vec2 p( x, y + text_height );
         BaseClass::painter().drawText( p, m_caption );
     }
@@ -154,7 +154,7 @@ void ColorMapBar::paintEvent()
         case ColorMapBar::Horizontal:
         {
             {
-                const int x = m_x + BaseClass::margin();
+                const int x = BaseClass::x0() + BaseClass::margin();
                 const int y = BaseClass::y1() - BaseClass::margin() - text_height;
                 const kvs::Vec2 p( x, y + text_height );
                 BaseClass::painter().drawText( p, min_value );
@@ -171,7 +171,7 @@ void ColorMapBar::paintEvent()
         {
             {
                 const int x = BaseClass::x1() - BaseClass::margin() - value_width;
-                const int y = m_y + BaseClass::margin() + caption_height;
+                const int y = BaseClass::y0() + BaseClass::margin() + caption_height;
                 const kvs::Vec2 p( x, y + text_height );
                 BaseClass::painter().drawText( p, min_value );
             }

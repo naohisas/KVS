@@ -131,10 +131,10 @@ void LegendBar::paintEvent()
     {
         const int w = ( m_orientation == LegendBar::Vertical ) ? value_width + 5 : 0;
         const int h = ( m_orientation == LegendBar::Vertical ) ? 0 : value_height;
-        const int x = m_x + m_margin;
-        const int y = m_y + m_margin + caption_height;
-        const int width = m_width - m_margin * 2 - w;
-        const int height = m_height - m_margin * 2 - caption_height - h;
+        const int x = BaseClass::x0() + m_margin;
+        const int y = BaseClass::y0() + m_margin + caption_height;
+        const int width = BaseClass::width() - m_margin * 2 - w;
+        const int height = BaseClass::height() - m_margin * 2 - caption_height - h;
         this->draw_color_bar( x, y, width, height );
         this->draw_border( x, y, width, height );
     }
@@ -142,8 +142,8 @@ void LegendBar::paintEvent()
     // Draw the caption.
     if ( m_caption.size() != 0 )
     {
-        const int x = m_x + m_margin;
-        const int y = m_y + m_margin;
+        const int x = BaseClass::x0() + m_margin;
+        const int y = BaseClass::y0() + m_margin;
         BaseClass::drawText( x, y + character_height, m_caption );
     }
 
@@ -155,7 +155,7 @@ void LegendBar::paintEvent()
         case LegendBar::Horizontal:
         {
             {
-                const int x = m_x + m_margin;
+                const int x = BaseClass::x0() + m_margin;
                 const int y = BaseClass::y1() - m_margin - character_height;
                 BaseClass::drawText( x, y + character_height, min_value );
             }
@@ -170,7 +170,7 @@ void LegendBar::paintEvent()
         {
             {
                 const int x = BaseClass::x1() - m_margin - value_width;
-                const int y = m_y + m_margin + caption_height;
+                const int y = BaseClass::y0() + m_margin + caption_height;
                 BaseClass::drawText( x, y + character_height, min_value );
             }
             {
