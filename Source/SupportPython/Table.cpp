@@ -35,15 +35,15 @@ PyObject* Convert( const kvs::ValueTable<T>& table )
 template <typename T>
 kvs::ValueTable<T> Convert( const PyArrayObject* array )
 {
-    const int nrows = PyArray_DIMS( array )[0];
-    const int ncols = PyArray_DIMS( array )[1];
+    const int nrows = PyArray_DIMS( (PyArrayObject*)array )[0];
+    const int ncols = PyArray_DIMS( (PyArrayObject*)array )[1];
 
     kvs::ValueTable<T> table( ncols, nrows );
     for ( int i = 0; i < nrows; i++ )
     {
         for ( int j = 0; j < ncols; j++ )
         {
-            table[j][i] = *(T*)PyArray_GETPTR2( array, i, j );
+            table[j][i] = *(T*)PyArray_GETPTR2( (PyArrayObject*)array, i, j );
         }
     }
 
@@ -60,7 +60,9 @@ namespace python
 
 bool Table::Check( const kvs::python::Object& object )
 {
-    return PyArray_Check( object.get() ) && PyArray_NDIM( object.get() ) == 2;
+    return
+        PyArray_Check( (const PyArrayObject*)object.get() ) &&
+        PyArray_NDIM( (const PyArrayObject*)object.get() ) == 2;
 }
 
 Table::Table( const kvs::ValueTable<kvs::Int32>& table ):
@@ -90,10 +92,10 @@ Table::Table( const kvs::python::Object& value ):
 
 Table::operator kvs::ValueTable<kvs::Int32>() const
 {
-    const int type = PyArray_TYPE( get() );
+    const int type = PyArray_TYPE( (const PyArrayObject*)get() );
     if ( type != NPY_INT32 ) { throw ""; }
 
-    const int ndim = PyArray_NDIM( get() );
+    const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
     if ( ndim != 2 ) { throw ""; }
 
     return ::Convert<kvs::Int32>( (PyArrayObject*)( get() ) );
@@ -101,10 +103,10 @@ Table::operator kvs::ValueTable<kvs::Int32>() const
 
 Table::operator kvs::ValueTable<kvs::Int64>() const
 {
-    const int type = PyArray_TYPE( get() );
+    const int type = PyArray_TYPE( (const PyArrayObject*)get() );
     if ( type != NPY_INT64 ) { throw ""; }
 
-    const int ndim = PyArray_NDIM( get() );
+    const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
     if ( ndim != 2 ) { throw ""; }
 
     return ::Convert<kvs::Int64>( (PyArrayObject*)( get() ) );
@@ -112,10 +114,10 @@ Table::operator kvs::ValueTable<kvs::Int64>() const
 
 Table::operator kvs::ValueTable<kvs::Real32>() const
 {
-    const int type = PyArray_TYPE( get() );
+    const int type = PyArray_TYPE( (const PyArrayObject*)get() );
     if ( type != NPY_FLOAT32 ) { throw ""; }
 
-    const int ndim = PyArray_NDIM( get() );
+    const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
     if ( ndim != 2 ) { throw ""; }
 
     return ::Convert<kvs::Real32>( (PyArrayObject*)( get() ) );
@@ -123,10 +125,10 @@ Table::operator kvs::ValueTable<kvs::Real32>() const
 
 Table::operator kvs::ValueTable<kvs::Real64>() const
 {
-    const int type = PyArray_TYPE( get() );
+    const int type = PyArray_TYPE( (const PyArrayObject*)get() );
     if ( type != NPY_FLOAT64 ) { throw ""; }
 
-    const int ndim = PyArray_NDIM( get() );
+    const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
     if ( ndim != 2 ) { throw ""; }
 
     return ::Convert<kvs::Real64>( (PyArrayObject*)( get() ) );
