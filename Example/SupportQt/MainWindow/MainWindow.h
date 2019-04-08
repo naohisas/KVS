@@ -44,7 +44,6 @@ public:
     MainWindow( kvs::qt::Application* app )
     {
         m_screen = new kvs::qt::Screen( app );
-        m_screen->show();
         QMainWindow::setCentralWidget( m_screen );
 
         m_open_action = new QAction( tr("&Open..."), this );
@@ -52,6 +51,8 @@ public:
 
         m_file_menu = menuBar()->addMenu( tr("&File") );
         m_file_menu->addAction( m_open_action );
+
+        m_screen->show();
     }
 
     ~MainWindow()
