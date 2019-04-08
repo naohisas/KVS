@@ -162,7 +162,7 @@ LINK_LIBRARY += -lkvsSupportOpenCV $(OPENCV_LINK_LIBRARY)
 endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
-LINK_LIBRARY += -lkvsSupportPython
+LINK_LIBRARY += -lkvsSupportPython $(PYTHON_LINK_LIBRARY)
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"
