@@ -208,52 +208,52 @@ $(TARGET_OCL): $(OBJECTS)
 	$(CC) -c $(CFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 %.o: %.f
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f90
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f95
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f03
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F90
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F95
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F03
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f90 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f95 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f03 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F90 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F95 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F03 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.mod: %.f %.o
 	@:
