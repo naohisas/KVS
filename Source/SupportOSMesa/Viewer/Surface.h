@@ -21,8 +21,8 @@ public:
     ~Surface();
 
     void* handle() { return m_buffer.data(); }
-    const size_t width() const { return m_width; }
-    const size_t height() const { return m_height; }
+    size_t width() const { return m_width; }
+    size_t height() const { return m_height; }
     const kvs::ValueArray<kvs::UInt8>& buffer() const { return m_buffer; }
 
     bool create( const size_t width, const size_t height, const int format );
