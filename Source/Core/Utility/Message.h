@@ -76,13 +76,13 @@ public:
         const char* func; ///< function name
     };
 
-    typedef void (*Handler)( const kvs::Message::Type, const kvs::Message::Context&, const std::string& );
+    typedef void (*Handler)( std::ostream& stream, const kvs::Message::Type, const kvs::Message::Context&, const std::string& );
 
 private:
     static Handler m_handler; ///< message handler
 
 public:
-    static void DefaultHandler( const kvs::Message::Type type, const kvs::Message::Context& context, const std::string& message );
+    static void DefaultHandler( std::ostream& stream, const kvs::Message::Type type, const kvs::Message::Context& context, const std::string& message );
     static void SetHandler( Handler handler );
 
 private:
@@ -175,13 +175,20 @@ public:
     void dump()
     {
 #if defined ( KVS_ENABLE_DEBUG )
-        m_handler( m_type, m_context, m_message.str() );
+        m_handler( std::cerr, m_type, m_context, m_message.str() );
         if ( m_type == kvs::Message::Error ) { KVS_BREAKPOINT; }
         if ( m_type == kvs::Message::Assert ) { KVS_BREAKPOINT; }
 #else
-        if ( m_type != kvs::Message::Debug )
+        if ( m_type == kvs::Message::Debug )
         {
-            m_handler( m_type, m_context, m_message.str() );
+            // Disable output stream.
+            std::cerr.setstate( std::ios_base::failbit );
+            m_handler( std::cerr, m_type, m_context, m_message.str() );
+            std::cerr.clear();
+        }
+        else
+        {
+            m_handler( std::cerr, m_type, m_context, m_message.str() );
         }
         if ( m_type == kvs::Message::Assert ) { KVS_BREAKPOINT; }
 #endif
