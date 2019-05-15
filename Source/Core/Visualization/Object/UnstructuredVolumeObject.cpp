@@ -48,7 +48,7 @@ size_t NumberOfCellNodes[9] = {
  *  @return cell type
  */
 /*==========================================================================*/
-const kvs::UnstructuredVolumeObject::CellType GetCellType( const std::string& cell_type )
+kvs::UnstructuredVolumeObject::CellType GetCellType( const std::string& cell_type )
 {
     if (      cell_type == "tetrahedra" ) { return kvs::UnstructuredVolumeObject::Tetrahedra; }
     else if ( cell_type == "quadratic tetrahedra" ) { return kvs::UnstructuredVolumeObject::QuadraticTetrahedra; }

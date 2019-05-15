@@ -26,7 +26,7 @@ namespace
  *  @return grid type
  */
 /*==========================================================================*/
-const kvs::StructuredVolumeObject::GridType GetGridType( const std::string& grid_type )
+kvs::StructuredVolumeObject::GridType GetGridType( const std::string& grid_type )
 {
     if (      grid_type == "uniform"     ) { return kvs::StructuredVolumeObject::Uniform;     }
     else if ( grid_type == "rectilinear" ) { return kvs::StructuredVolumeObject::Rectilinear; }

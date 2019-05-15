@@ -99,9 +99,9 @@ public:
         }
     }
 
-    size_t offset() const { return m_offset; }
+    //size_t offset() const { return m_offset; }
     size_t length() const { return m_length; }
-    void skip() { if ( fseek( m_fp, m_length, SEEK_CUR ) != 0 ) Error(); }
+    //void skip() { if ( fseek( m_fp, m_length, SEEK_CUR ) != 0 ) Error(); }
 
     template <typename T>
     T readValue()

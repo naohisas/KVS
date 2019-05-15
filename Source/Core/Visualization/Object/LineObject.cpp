@@ -67,7 +67,7 @@ const std::string GetColorTypeName( const kvs::LineObject::ColorType type )
  *  @return line type
  */
 /*==========================================================================*/
-const kvs::LineObject::LineType GetLineType( const std::string& line_type )
+kvs::LineObject::LineType GetLineType( const std::string& line_type )
 {
     if (      line_type == "strip"    ) { return kvs::LineObject::Strip; }
     else if ( line_type == "uniline"  ) { return kvs::LineObject::Uniline; }
@@ -87,7 +87,7 @@ const kvs::LineObject::LineType GetLineType( const std::string& line_type )
  *  @return line color type
  */
 /*==========================================================================*/
-const kvs::LineObject::ColorType GetColorType( const std::string& color_type )
+kvs::LineObject::ColorType GetColorType( const std::string& color_type )
 {
     if (      color_type == "vertex" ) { return kvs::LineObject::VertexColor; }
     else if ( color_type == "line"   ) { return kvs::LineObject::LineColor; }

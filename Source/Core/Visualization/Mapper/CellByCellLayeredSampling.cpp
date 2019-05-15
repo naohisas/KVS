@@ -64,9 +64,9 @@ public:
         this->calculate_A_matrix( cell );
     }
 
-    kvs::Vec4 v( const size_t index ) const { return kvs::Vec4( m_v[index], 1.0f ); }
+    //kvs::Vec4 v( const size_t index ) const { return kvs::Vec4( m_v[index], 1.0f ); }
     kvs::Vec4 Lv( const size_t index ) const { return m_Lv[index]; }
-    const kvs::Mat4& L() const { return m_L; }
+    //const kvs::Mat4& L() const { return m_L; }
     const kvs::Mat4& A() const { return m_A; }
 
     kvs::Mat4 invL() const { return m_L.transposed(); }

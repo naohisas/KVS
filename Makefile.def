@@ -265,10 +265,10 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
   ifdef KVS_OPENMP_LINK_LIBRARY
     OPENMP_LINK_LIBRARY += $(KVS_OPENMP_LINK_LIBRARY)
   else
-    # For FCCpx/mpiFCCpx
+    # For Fujitsu C++ compiler (FCCpx/mpiFCCpx)
     ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
       OPENMP_LINK_LIBRARY +=
-    # For Intel compiler
+    # For Intel C++ compiler (icpc/mpiicpc)
     else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
       OPENMP_LINK_LIBRARY += -liomp
     # For g++
@@ -434,8 +434,17 @@ endif
 #=============================================================================
 CPPFLAGS :=
 
-# For FCCpx/mpiFCCpx
+# For Fujitsu C++ compiler (FCCpx/mpiFCCpx)
 ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+  ifdef DEBUG
+    CPPFLAGS += -O0 -g
+  else
+    CPPFLAGS += -O3
+  endif
+
+# For Intel C++ compiler (icpc/mpiicpc)
+else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
+  CPPFLAGS += -Wall
   ifdef DEBUG
     CPPFLAGS += -O0 -g
   else
@@ -457,10 +466,10 @@ endif
 
 # OpenMP
 ifeq "$(KVS_ENABLE_OPENMP)" "1"
-  # For FCCpx/mpiFCCpx
+  # For Fujitsu C++ compiler (FCCpx/mpiFCCpx)
   ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
     CPPFLAGS += -Kopenmp
-  # For Intel compiler
+  # For Intel C++ compiler (icpc mpiicpc)
   else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
     CPPFLAGS += -openmp
   # For g++
