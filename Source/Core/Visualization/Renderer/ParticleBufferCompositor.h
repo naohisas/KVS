@@ -84,8 +84,8 @@ private:
         kvs::Light* light );
 
 public:
-    KVS_DEPRECATED( const size_t numOfProjectedParticles() const ) { return this->numberOfProjectedParticles(); }
-    KVS_DEPRECATED( const size_t numOfStoredParticles() const ) { return this->numberOfStoredParticles(); }
+    KVS_DEPRECATED( size_t numOfProjectedParticles() const ) { return this->numberOfProjectedParticles(); }
+    KVS_DEPRECATED( size_t numOfStoredParticles() const ) { return this->numberOfStoredParticles(); }
 };
 
 } // end of namespace kvs
