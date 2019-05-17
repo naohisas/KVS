@@ -330,6 +330,17 @@ void Screen::disable()
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns the captured image of the current screen.
+ *  @return captured image
+ */
+/*===========================================================================*/
+kvs::ColorImage Screen::capture() const
+{
+    return m_scene->camera()->snapshot();
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Resets the x-form matrix of the basic screen components.
  */
 /*===========================================================================*/

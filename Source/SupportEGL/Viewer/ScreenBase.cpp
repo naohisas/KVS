@@ -31,17 +31,6 @@ ScreenBase::~ScreenBase()
     m_surface.destroy();
 }
 
-kvs::ColorImage ScreenBase::capture() const
-{
-    const size_t width = BaseClass::width();
-    const size_t height = BaseClass::height();
-    kvs::ValueArray<kvs::UInt8> buffer( width * height * 3 );
-
-    kvs::OpenGL::SetReadBuffer( GL_FRONT );
-    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
-    return kvs::ColorImage( width, height, buffer );
-}
-
 kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer() const
 {
     kvs::OpenGL::SetReadBuffer( GL_FRONT );
@@ -77,13 +66,6 @@ void ScreenBase::displayInfo()
     std::cout << "EGL_EXTENSIONS : ";
     std::cout << eglQueryString( display, EGL_EXTENSIONS ) << std::endl;
   */
-}
-
-void ScreenBase::draw()
-{
-    if ( !m_context.isValid() ) { this->create(); }
-    this->paintEvent();
-    m_context.swapBuffers( m_surface );
 }
 
 void ScreenBase::create()
@@ -152,6 +134,24 @@ void ScreenBase::show()
 void ScreenBase::redraw()
 {
     this->draw();
+}
+
+void ScreenBase::draw()
+{
+    if ( !m_context.isValid() ) { this->create(); }
+    this->paintEvent();
+    m_context.swapBuffers( m_surface );
+}
+
+kvs::ColorImage ScreenBase::capture() const
+{
+    const size_t width = BaseClass::width();
+    const size_t height = BaseClass::height();
+    kvs::ValueArray<kvs::UInt8> buffer( width * height * 3 );
+
+    kvs::OpenGL::SetReadBuffer( GL_FRONT );
+    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
+    return kvs::ColorImage( width, height, buffer );
 }
 
 void ScreenBase::errorMessage( const char* msg )

@@ -97,6 +97,7 @@ public:
     virtual void enable();
     virtual void disable();
     virtual void reset();
+    virtual kvs::ColorImage capture() const;
 
     virtual void initializeEvent();
     virtual void paintEvent();

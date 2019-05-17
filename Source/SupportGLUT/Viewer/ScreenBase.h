@@ -65,6 +65,8 @@ public:
     virtual void pushDown();
     virtual void redraw();
     virtual void resize( int width, int height );
+    virtual void draw();
+    virtual kvs::ColorImage capture() const;
     virtual bool isFullScreen() const;
     virtual void enable();
     virtual void disable();

@@ -609,6 +609,44 @@ void Scene::updateGLLightParameters() const
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns cube map image generated from 6 direction images.
+ *  @return cube map image
+ */
+/*===========================================================================*/
+kvs::CubeMapImage Scene::cubemap()
+{
+    kvs::CubeMapImage cube_map;
+
+    const float c_fov = this->camera()->fieldOfView();
+    const float c_front = this->camera()->front();
+    const kvs::Vec3 c_at = this->camera()->lookAt();
+    const kvs::Vec3 c_up = this->camera()->upVector();
+    const kvs::Vec3 c_p = this->camera()->position();
+    const kvs::Vec3 l_p = this->light()->position();
+    {
+        this->camera()->setFieldOfView( 90.0 );
+        this->camera()->setFront( 0.1 );
+        for ( size_t i = 0; i < kvs::CubeMapImage::NumberOfDirections; i++ )
+        {
+            const kvs::CubeMapImage::Direction dir = kvs::CubeMapImage::Direction( i );
+            const kvs::Vec3 dir_vec = kvs::CubeMapImage::DirectionVector( dir );
+            const kvs::Vec3 up_vec = kvs::CubeMapImage::UpVector( dir );
+            this->light()->setPosition( c_p );
+            this->camera()->setPosition( c_p, c_p + dir_vec, up_vec );
+            this->screen()->draw();
+            cube_map.setImage( dir, this->screen()->capture() );
+        }
+    }
+    this->camera()->setFieldOfView( c_fov );
+    this->camera()->setFront( c_front );
+    this->camera()->setPosition( c_p, c_at, c_up );
+    this->light()->setPosition( l_p );
+
+    return cube_map;
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Enables or disables the collision detection.
  *  @param  enable [in] flag for the collision detection
  */

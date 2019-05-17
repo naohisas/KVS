@@ -26,6 +26,7 @@
 #include <pwd.h>
 #include <cstring>
 #include <cerrno>
+#include <climits>
 #endif
 #include <cstdlib>
 

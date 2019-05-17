@@ -26,14 +26,14 @@ public:
     virtual ~ScreenBase();
 
     const kvs::ValueArray<kvs::UInt8>& buffer() const { return m_surface.buffer(); }
-    kvs::ColorImage capture() const;
     kvs::ValueArray<kvs::UInt8> readbackColorBuffer() const;
     kvs::ValueArray<kvs::Real32> readbackDepthBuffer() const;
-    void draw();
 
     virtual void create();
     virtual void show();
     virtual void redraw();
+    virtual void draw();
+    virtual kvs::ColorImage capture() const;
 
     virtual void initializeEvent() {}
     virtual void paintEvent() {}

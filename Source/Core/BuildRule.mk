@@ -121,6 +121,7 @@ $(OUTDIR)/./FileFormat/XML/XMLElement.o \
 $(OUTDIR)/./FileFormat/XML/XMLNode.o \
 $(OUTDIR)/./Image/BitImage.o \
 $(OUTDIR)/./Image/ColorImage.o \
+$(OUTDIR)/./Image/CubeMapImage.o \
 $(OUTDIR)/./Image/GrayImage.o \
 $(OUTDIR)/./Image/HCLColor.o \
 $(OUTDIR)/./Image/HSVColor.o \
@@ -129,6 +130,7 @@ $(OUTDIR)/./Image/LabColor.o \
 $(OUTDIR)/./Image/MshColor.o \
 $(OUTDIR)/./Image/RGBAColor.o \
 $(OUTDIR)/./Image/RGBColor.o \
+$(OUTDIR)/./Image/SphericalMapImage.o \
 $(OUTDIR)/./Image/XYZColor.o \
 $(OUTDIR)/./Matrix/FrustumMatrix44.o \
 $(OUTDIR)/./Matrix/LookAtMatrix44.o \

@@ -58,24 +58,6 @@ ScreenBase::~ScreenBase()
 {
 }
 
-kvs::ColorImage ScreenBase::capture() const
-{
-    const size_t width = BaseClass::width();
-    const size_t height = BaseClass::height();
-
-    // RGBA to RGB
-    const kvs::ValueArray<kvs::UInt8>& buffer = m_surface.buffer();
-    kvs::ValueArray<kvs::UInt8> pixels( width * height * 3 );
-    for ( size_t i = 0; i < width * height; i++ )
-    {
-        pixels[ 3 * i + 0 ] = buffer[ 4 * i + 0 ];
-        pixels[ 3 * i + 1 ] = buffer[ 4 * i + 1 ];
-        pixels[ 3 * i + 2 ] = buffer[ 4 * i + 2 ];
-    }
-
-    return kvs::ColorImage( width, height, pixels );
-}
-
 kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer() const
 {
     kvs::OpenGL::SetReadBuffer( GL_FRONT );
@@ -102,12 +84,6 @@ kvs::ValueArray<kvs::Real32> ScreenBase::readbackDepthBuffer() const
     ::Flip( buffer.data(), width, height, 1 );
 
     return buffer;
-}
-
-void ScreenBase::draw()
-{
-    if ( !m_context.isValid() ) { this->create(); }
-    this->paintEvent();
 }
 
 void ScreenBase::create()
@@ -150,6 +126,30 @@ void ScreenBase::show()
 void ScreenBase::redraw()
 {
     this->draw();
+}
+
+void ScreenBase::draw()
+{
+    if ( !m_context.isValid() ) { this->create(); }
+    this->paintEvent();
+}
+
+kvs::ColorImage ScreenBase::capture() const
+{
+    const size_t width = BaseClass::width();
+    const size_t height = BaseClass::height();
+
+    // RGBA to RGB
+    const kvs::ValueArray<kvs::UInt8>& buffer = m_surface.buffer();
+    kvs::ValueArray<kvs::UInt8> pixels( width * height * 3 );
+    for ( size_t i = 0; i < width * height; i++ )
+    {
+        pixels[ 3 * i + 0 ] = buffer[ 4 * i + 0 ];
+        pixels[ 3 * i + 1 ] = buffer[ 4 * i + 1 ];
+        pixels[ 3 * i + 2 ] = buffer[ 4 * i + 2 ];
+    }
+
+    return kvs::ColorImage( width, height, pixels );
 }
 
 } // end of namespace osmesa

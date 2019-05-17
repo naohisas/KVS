@@ -382,7 +382,7 @@ void ScreenBase::pushDown()
 
 /*===========================================================================*/
 /**
- *  @brief  Redraws the window.
+ *  @brief  Requires that the screen needs to be redrawn as soon as possible.
  */
 /*===========================================================================*/
 void ScreenBase::redraw()
@@ -408,6 +408,17 @@ void ScreenBase::resize( int width, int height )
 
 /*===========================================================================*/
 /**
+ *  @brief  Triggers redrawing the screen directory.
+ */
+/*===========================================================================*/
+void ScreenBase::draw()
+{
+    if ( m_id == -1 ) { this->create(); }
+    this->paintEvent();
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Checks whether the window is full-screen or not.
  *  @return true, if the window is full-screen
  */
@@ -415,6 +426,23 @@ void ScreenBase::resize( int width, int height )
 bool ScreenBase::isFullScreen() const
 {
     return m_is_fullscreen;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the captured image of the current screen.
+ *  @return captured image
+ */
+/*===========================================================================*/
+kvs::ColorImage ScreenBase::capture() const
+{
+    const size_t width = BaseClass::width();
+    const size_t height = BaseClass::height();
+    kvs::ValueArray<kvs::UInt8> buffer( width * height * 3 );
+
+    kvs::OpenGL::SetReadBuffer( GL_FRONT );
+    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
+    return kvs::ColorImage( width, height, buffer );
 }
 
 void ScreenBase::enable(){}
