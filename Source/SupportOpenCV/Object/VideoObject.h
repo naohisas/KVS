@@ -12,12 +12,11 @@
  *  $Id: VideoObject.h 1398 2012-12-05 09:33:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__OPENCV__VIDEO_OBJECT_H_INCLUDE
-#define KVS__OPENCV__VIDEO_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/ObjectBase>
 #include <kvs/Module>
 #include <kvs/opencv/CaptureDevice>
+#include <string>
 
 
 namespace kvs
@@ -33,8 +32,7 @@ namespace opencv
 /*===========================================================================*/
 class VideoObject : public kvs::ObjectBase
 {
-    kvsModuleName( kvs::opencv::VideoObject );
-    kvsModuleCategory( Object );
+    kvsModule( kvs::opencv::VideoObject, Object );
     kvsModuleBaseClass( kvs::ObjectBase );
 
 public:
@@ -45,7 +43,6 @@ public:
     };
 
 private:
-    int m_device_id; ///< capture device ID
     kvs::opencv::CaptureDevice m_device; ///< video capture device
     PixelType m_type; ///< pixel type
     size_t m_width; ///< capture widht
@@ -57,20 +54,20 @@ public:
     VideoObject( const int device_id );
     virtual ~VideoObject() {}
 
-    ObjectType objectType() const;
-    int deviceID() const { return m_device_id; }
     const kvs::opencv::CaptureDevice& device() const { return m_device; }
     PixelType type() const { return m_type; }
     size_t width() const { return m_width; }
     size_t height() const { return m_height; }
-    size_t nchannels() const { return m_nchannels; }
+    size_t numberOfChannels() const { return m_nchannels; }
 
-public:
-    const bool initialize( const size_t device_id );
+    void shallowCopy( const VideoObject& other );
+
+protected:
+    bool createCaptureDevice( const int device_id );
+    bool createCaptureDevice( const std::string& filename );
+    bool initialize( const kvs::opencv::CaptureDevice& device );
 };
 
 } // end of namespace opencv
 
 } // end of namespace kvs
-
-#endif // KVS__OPENCV__VIDEO_OBJECT_H_INCLUDE

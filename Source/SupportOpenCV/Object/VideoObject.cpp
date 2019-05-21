@@ -27,7 +27,6 @@ namespace opencv
  */
 /*===========================================================================*/
 VideoObject::VideoObject():
-    m_device_id( CV_CAP_ANY ),
     m_type( kvs::opencv::VideoObject::Color24 )
 {
 }
@@ -38,42 +37,83 @@ VideoObject::VideoObject():
  *  @param  device_id [in] device ID
  */
 /*===========================================================================*/
-VideoObject::VideoObject( const int device_id ):
-    m_device_id( device_id )
+VideoObject::VideoObject( const int device_id )
 {
-    if ( !this->initialize( device_id ) )
+    if ( !this->createCaptureDevice( device_id ) )
     {
-        kvsMessageError("Cannot initialize a capture device (%d).", device_id);
+        kvsMessageError( "Cannot create capture device from device:%d.", device_id );
+        return;
+    }
+
+    if ( !this->initialize( m_device ) )
+    {
+        kvsMessageError( "Cannot initialize video object from device:%d.", device_id );
+        return;
     }
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the object type.
- *  @return object type
+ *  @brief  Shallow copy.
+ *  @param  other [in] other video object
  */
 /*===========================================================================*/
-kvs::ObjectBase::ObjectType VideoObject::objectType() const
+void VideoObject::shallowCopy( const VideoObject& other )
 {
-    return kvs::ObjectBase::Image;
+    BaseClass::operator=( other );
+    m_device = other.m_device;
+    m_type = other.m_type;
+    m_width = other.m_width;
+    m_height = other.m_height;
+    m_nchannels = other.m_nchannels;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Create capture device specified by 'device_id'
+ *  @param  device_id [in] device ID
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool VideoObject::createCaptureDevice( const int device_id )
+{
+    if ( !m_device.create( device_id ) )
+    {
+        kvsMessageError( "Cannot create capture device from device:%d.", device_id );
+        return false;
+    }
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Read video file specified by 'filename'
+ *  @param  filename [in] filename
+ *  @return true, if the reading process is done successfully
+ */
+/*===========================================================================*/
+bool VideoObject::createCaptureDevice( const std::string& filename )
+{
+    if ( !m_device.create( filename ) )
+    {
+        kvsMessageError( "Cannot create capture device from %s.", filename.c_str() );
+        return false;
+    }
+
+    return true;
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Initialize the video object.
- *  @param  device_id [in] device ID
+ *  @param  device [in] capture device
  *  @return true, if the video object is initialized successfully
  */
 /*===========================================================================*/
-const bool VideoObject::initialize( const size_t device_id )
+bool VideoObject::initialize( const kvs::opencv::CaptureDevice& device )
 {
-    if ( !m_device.create( device_id ) )
-    {
-        kvsMessageError("Cannot create a capture device (%d).", device_id);
-        return false;
-    }
-
-    const IplImage* frame = m_device.queryFrame();
+    const IplImage* frame = device.queryFrame();
     if ( !frame )
     {
         kvsMessageError("Cannot query a new frame from the capture device.");

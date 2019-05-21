@@ -1,5 +1,7 @@
+Object/MovieObject
 Object/VideoObject
 OpenCV
+Renderer/MovieRenderer
 Renderer/VideoRenderer
 Viewer/CaptureDevice
 Viewer/Window

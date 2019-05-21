@@ -34,24 +34,12 @@ int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );
 
-    // Initialize capture device.
-    kvs::opencv::CaptureDevice device;
-    if ( !device.create( CV_CAP_ANY ) )
-    {
-        kvsMessageError("Capture device is NULL.");
-        return 1;
-    }
-
-    const IplImage* frame = device.queryFrame();
-    const size_t width = static_cast<size_t>( frame->width );
-    const size_t height = static_cast<size_t>( frame->height );
-
     kvs::opencv::VideoObject* object = new kvs::opencv::VideoObject( CV_CAP_ANY );
     kvs::opencv::VideoRenderer* renderer = new kvs::opencv::VideoRenderer();
 
     kvs::glut::Screen screen( &app );
     screen.setTitle( "kvs::opencv::VideoRenderer" );
-    screen.setSize( width, height );
+    screen.setSize( object->width(), object->height() );
     screen.registerObject( object, renderer );
     screen.addEvent( new IdleEvent() );
     screen.show();
