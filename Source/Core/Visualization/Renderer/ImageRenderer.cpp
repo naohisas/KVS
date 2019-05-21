@@ -26,20 +26,10 @@ namespace kvs
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new ImageRenderer class.
- *  @param  type [in] rendering type
  */
 /*==========================================================================*/
-ImageRenderer::ImageRenderer( const ImageRenderer::Type& type )
-{
-    m_type = type;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Destruct the ImageRenderer class.
- */
-/*==========================================================================*/
-ImageRenderer::~ImageRenderer()
+ImageRenderer::ImageRenderer():
+    m_enable_centering( true )
 {
 }
 
@@ -56,56 +46,34 @@ void ImageRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     kvs::IgnoreUnusedVariable( light );
 
     kvs::ImageObject* image = kvs::ImageObject::DownCast( object );
-    if ( !image ) return;
-
-    if ( !m_texture.isCreated() )
-    {
-        this->create_texture( image );
-    }
-
-    if ( m_type == Centering )
-    {
-        this->center_alignment( camera->windowWidth(), camera->windowHeight() );
-    }
+    if ( !image ) { return; }
 
     BaseClass::startTimer();
 
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
-    {
-        kvs::OpenGL::Disable( GL_DEPTH_TEST );
-        kvs::OpenGL::Disable( GL_TEXTURE_1D );
-        kvs::OpenGL::Disable( GL_TEXTURE_3D );
-        kvs::OpenGL::Enable( GL_TEXTURE_2D );
+    p.disable( GL_DEPTH_TEST );
+    p.disable( GL_TEXTURE_1D );
+    p.disable( GL_TEXTURE_3D );
+    p.enable( GL_TEXTURE_2D );
 
-        kvs::Texture::Binder unit( m_texture );
-        kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
-        p1.loadIdentity();
-        {
-            kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
-            p2.loadIdentity();
-            {
-                kvs::OpenGL::SetOrtho( m_left, m_right, m_bottom, m_top, -1, 1 );
-                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  1.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 0.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  0.0,  0.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 1.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  0.0 ) );
-                KVS_GL_CALL_VER( glTexCoord2f( 1.0, 0.0 ) ); KVS_GL_CALL_VER( glVertex2f(  1.0,  1.0 ) );
-                KVS_GL_CALL_END( glEnd() );
-            }
-        }
-    }
+    if ( !this->texture().isValid() ) { this->createTexture( image ); }
+    if ( this->isEnabledCentering() ) { this->alignCenter( camera ); }
+
+    this->texture().bind();
+    this->textureMapping();
+    this->texture().unbind();
 
     BaseClass::stopTimer();
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  @brief  Creates the texture region on the GPU.
+ *  @brief  Create texture.
  *  @param  image [in] pointer to the image object
  */
-/*==========================================================================*/
-void ImageRenderer::create_texture( const kvs::ImageObject* image )
+/*===========================================================================*/
+void ImageRenderer::createTexture( const kvs::ImageObject* image )
 {
     const double width  = image->width();
     const double height = image->height();
@@ -115,48 +83,57 @@ void ImageRenderer::create_texture( const kvs::ImageObject* image )
     m_bottom = 0.0;
     m_top = 1.0;
 
-    if ( image->pixelType() == kvs::ImageObject::Gray8 )
+    switch ( image->pixelType() )
+    {
+    case kvs::ImageObject::Gray8:
     {
         const size_t nchannels = 1;
         const size_t bytes_per_channel = 1;
         m_texture.setPixelFormat( nchannels, bytes_per_channel );
+        break;
     }
-    else if ( image->pixelType() == kvs::ImageObject::Gray16 )
+    case kvs::ImageObject::Gray16:
     {
         const size_t nchannels = 1;
         const size_t bytes_per_channel = 2;
         m_texture.setPixelFormat( nchannels, bytes_per_channel );
+        break;
     }
-    else if ( image->pixelType() == kvs::ImageObject::Color24 )
+    case kvs::ImageObject::Color24:
     {
         const size_t nchannels = 3;
         const size_t bytes_per_channel = 1;
         m_texture.setPixelFormat( nchannels, bytes_per_channel );
+        break;
     }
-    else if ( image->pixelType() == kvs::ImageObject::Color32 )
+    case kvs::ImageObject::Color32:
     {
         const size_t nchannels = 4;
         const size_t bytes_per_channel = 1;
         m_texture.setPixelFormat( nchannels, bytes_per_channel );
+        break;
     }
-    else
+    default:
     {
         kvsMessageError("Unknown pixel color type.");
+        break;
+    }
     }
 
     kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
     m_texture.create( image->width(), image->height(), image->pixels().data() );
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  @brief  Calculates centering parameters.
- *  @param  width [in] image width
- *  @param  height [in] image height
+ *  @brief  Renders the grabbed frame in the center of the window.
+ *  @param  camera [in] pointer to the camera
  */
-/*==========================================================================*/
-void ImageRenderer::center_alignment( const double width, const double height )
+/*===========================================================================*/
+void ImageRenderer::alignCenter( const kvs::Camera* camera )
 {
+    const double width = camera->windowWidth();
+    const double height = camera->windowHeight();
     const double current_aspect_ratio = width / height;
     const double aspect_ratio = current_aspect_ratio / m_initial_aspect_ratio;
     if( aspect_ratio >= 1.0 )
@@ -172,6 +149,30 @@ void ImageRenderer::center_alignment( const double width, const double height )
         m_right = 1.0;
         m_bottom = ( 1.0 - 1.0 / aspect_ratio ) * 0.5;
         m_top = ( 1.0 + 1.0 / aspect_ratio ) * 0.5;
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Texture mapping.
+ */
+/*===========================================================================*/
+void ImageRenderer::textureMapping()
+{
+    kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
+    p1.loadIdentity();
+    {
+        kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
+        p2.loadIdentity();
+        {
+            kvs::OpenGL::SetOrtho( m_left, m_right, m_bottom, m_top, -1, 1 );
+            kvs::OpenGL::Begin( GL_QUADS );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( 0.0f, 1.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( 0.0f, 0.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( 1.0f, 0.0f ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( 1.0f, 1.0f ) );
+            kvs::OpenGL::End();
+        }
     }
 }
 

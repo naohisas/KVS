@@ -60,12 +60,10 @@ public:
     void enableMirroring() { this->setEnabledMirroring( true ); }
     void disableCentering() { this->setEnabledCentering( false ); }
     void disableMirroring() { this->setEnabledMirroring( false ); }
-
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 protected:
     kvs::Texture2D& texture() { return m_texture; }
-
     void createTexture( const kvs::opencv::VideoObject* video );
     void alignCenter( const kvs::Camera* camera );
     void textureMapping();
