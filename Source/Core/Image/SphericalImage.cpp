@@ -1,5 +1,5 @@
-#include "SphericalMapImage.h"
-#include "CubeMapImage.h"
+#include "SphericalImage.h"
+#include "CubicImage.h"
 #include <kvs/ColorImage>
 #include <kvs/RGBColor>
 #include <kvs/OpenMP>
@@ -39,20 +39,20 @@ inline kvs::RGBColor Interp(
 namespace kvs
 {
 
-SphericalMapImage::SphericalMapImage( const kvs::ColorImage& image ):
+SphericalImage::SphericalImage( const kvs::ColorImage& image ):
     kvs::ColorImage( image )
 {
 }
 
-SphericalMapImage::SphericalMapImage( const kvs::CubeMapImage& cube_image )
+SphericalImage::SphericalImage( const kvs::CubicImage& cubic_image )
 {
-    this->stitch( cube_image );
+    this->stitch( cubic_image );
 }
 
-void SphericalMapImage::stitch( const kvs::CubeMapImage& cube_image )
+void SphericalImage::stitch( const kvs::CubicImage& cubic_image )
 {
-    const size_t w = cube_image.frontImage().width();
-    const size_t h = cube_image.frontImage().height();
+    const size_t w = cubic_image.frontImage().width();
+    const size_t h = cubic_image.frontImage().height();
 
     this->create( w * 4, h * 3, kvs::ImageBase::Color );
     KVS_OMP_PARALLEL_FOR( schedule(dynamic) )
@@ -80,37 +80,37 @@ void SphericalMapImage::stitch( const kvs::CubeMapImage& cube_image )
             {
                 const float si = kvs::Math::Abs( ( ( za + 1.0f ) / 2.0f - 1.0f ) * ( w - 1 ) );
                 const float sj = kvs::Math::Abs( ( ( ya + 1.0f ) / 2.0f ) * ( h - 1 ) );
-                pixel = ::Interp( cube_image.rightImage(), si, sj );
+                pixel = ::Interp( cubic_image.rightImage(), si, sj );
             }
             else if ( xa == -1 )
             {
                 const float si = kvs::Math::Abs( ( ( za + 1.0f ) / 2.0f ) * ( w - 1 ) );
                 const float sj = kvs::Math::Abs( ( ( ya + 1.0f ) / 2.0f ) * ( h - 1 ) );
-                pixel = ::Interp( cube_image.leftImage(), si, sj );
+                pixel = ::Interp( cubic_image.leftImage(), si, sj );
             }
             else if ( ya == 1 )
             {
                 const float si = kvs::Math::Abs( ( ( xa + 1.0f ) / 2.0f ) * ( w - 1 ) );
                 const float sj = kvs::Math::Abs( ( ( za + 1.0f ) / 2.0f - 1.0f ) * ( h - 1 ) );
-                pixel = ::Interp( cube_image.bottomImage(), si, sj );
+                pixel = ::Interp( cubic_image.bottomImage(), si, sj );
             }
             else if ( ya == -1 )
             {
                 const float si = kvs::Math::Abs( ( ( xa + 1.0f ) / 2.0f ) * ( w - 1 ) );
                 const float sj = kvs::Math::Abs( ( ( za + 1.0f ) / 2.0f ) * ( h - 1 ) );
-                pixel = ::Interp( cube_image.topImage(), si, sj );
+                pixel = ::Interp( cubic_image.topImage(), si, sj );
             }
             else if ( za == 1 )
             {
                 const float si = kvs::Math::Abs( ( ( xa + 1.0f ) / 2.0f ) * ( w - 1 ) );
                 const float sj = kvs::Math::Abs( ( ( ya + 1.0f ) / 2.0f ) * ( h - 1 ) );
-                pixel = ::Interp( cube_image.frontImage(), si, sj );
+                pixel = ::Interp( cubic_image.frontImage(), si, sj );
             }
             else if ( za == -1 )
             {
                 const float si = kvs::Math::Abs( ( ( xa + 1.0f ) / 2.0f - 1.0f ) * ( w - 1 ) );
                 const float sj = kvs::Math::Abs( ( ( ya + 1.0f ) / 2.0f ) * ( h - 1 ) );
-                pixel = ::Interp( cube_image.backImage(), si, sj );
+                pixel = ::Interp( cubic_image.backImage(), si, sj );
             }
             this->setPixel( i, j, pixel );
         }

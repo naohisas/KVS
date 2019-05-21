@@ -121,7 +121,7 @@ $(OUTDIR)\.\FileFormat\XML\XMLElement.obj \
 $(OUTDIR)\.\FileFormat\XML\XMLNode.obj \
 $(OUTDIR)\.\Image\BitImage.obj \
 $(OUTDIR)\.\Image\ColorImage.obj \
-$(OUTDIR)\.\Image\CubeMapImage.obj \
+$(OUTDIR)\.\Image\CubicImage.obj \
 $(OUTDIR)\.\Image\GrayImage.obj \
 $(OUTDIR)\.\Image\HCLColor.obj \
 $(OUTDIR)\.\Image\HSVColor.obj \
@@ -130,7 +130,7 @@ $(OUTDIR)\.\Image\LabColor.obj \
 $(OUTDIR)\.\Image\MshColor.obj \
 $(OUTDIR)\.\Image\RGBAColor.obj \
 $(OUTDIR)\.\Image\RGBColor.obj \
-$(OUTDIR)\.\Image\SphericalMapImage.obj \
+$(OUTDIR)\.\Image\SphericalImage.obj \
 $(OUTDIR)\.\Image\XYZColor.obj \
 $(OUTDIR)\.\Matrix\FrustumMatrix44.obj \
 $(OUTDIR)\.\Matrix\LookAtMatrix44.obj \

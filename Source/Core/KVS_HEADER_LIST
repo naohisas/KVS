@@ -41,7 +41,7 @@ FileFormat/XML/XMLElement
 FileFormat/XML/XMLNode
 Image/BitImage
 Image/ColorImage
-Image/CubeMapImage
+Image/CubicImage
 Image/GrayImage
 Image/HCLColor
 Image/HSVColor
@@ -50,7 +50,7 @@ Image/LabColor
 Image/MshColor
 Image/RGBAColor
 Image/RGBColor
-Image/SphericalMapImage
+Image/SphericalImage
 Image/XYZColor
 Matrix/FrustumMatrix44
 Matrix/LookAtMatrix44

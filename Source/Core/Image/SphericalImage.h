@@ -5,20 +5,20 @@
 namespace kvs
 {
 
-class CubeMapImage;
+class CubicImage;
 
 /*===========================================================================*/
 /**
  *  @brief  Spherical map image class.
  */
 /*===========================================================================*/
-class SphericalMapImage : public kvs::ColorImage
+class SphericalImage : public kvs::ColorImage
 {
 public:
-    SphericalMapImage( const kvs::ColorImage& image );
-    SphericalMapImage( const kvs::CubeMapImage& cube_image );
+    SphericalImage( const kvs::ColorImage& image );
+    SphericalImage( const kvs::CubicImage& cubic_image );
 
-    void stitch( const kvs::CubeMapImage& cube_image );
+    void stitch( const kvs::CubicImage& cubic_image );
 };
 
 } // end of namespace kvs

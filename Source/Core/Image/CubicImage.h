@@ -12,7 +12,7 @@ namespace kvs
  *  @brief  Cube map image class.
  */
 /*===========================================================================*/
-class CubeMapImage : public kvs::ColorImage
+class CubicImage : public kvs::ColorImage
 {
 public:
     enum Direction
@@ -44,7 +44,7 @@ private:
     kvs::ColorImage m_images[NumberOfDirections];
 
 public:
-    CubeMapImage(): m_layout( Cross ) {}
+    CubicImage(): m_layout( Cross ) {}
 
     Layout layout() const { return m_layout; }
     const kvs::ColorImage& image( const Direction& dir ) const { return m_images[dir]; }

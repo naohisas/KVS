@@ -613,9 +613,9 @@ void Scene::updateGLLightParameters() const
  *  @return cube map image
  */
 /*===========================================================================*/
-kvs::CubeMapImage Scene::cubemap()
+kvs::CubicImage Scene::cubemap()
 {
-    kvs::CubeMapImage cube_map;
+    kvs::CubicImage cube_map;
 
     const float c_fov = this->camera()->fieldOfView();
     const float c_front = this->camera()->front();
@@ -626,11 +626,11 @@ kvs::CubeMapImage Scene::cubemap()
     {
         this->camera()->setFieldOfView( 90.0 );
         this->camera()->setFront( 0.1 );
-        for ( size_t i = 0; i < kvs::CubeMapImage::NumberOfDirections; i++ )
+        for ( size_t i = 0; i < kvs::CubicImage::NumberOfDirections; i++ )
         {
-            const kvs::CubeMapImage::Direction dir = kvs::CubeMapImage::Direction( i );
-            const kvs::Vec3 dir_vec = kvs::CubeMapImage::DirectionVector( dir );
-            const kvs::Vec3 up_vec = kvs::CubeMapImage::UpVector( dir );
+            const kvs::CubicImage::Direction dir = kvs::CubicImage::Direction( i );
+            const kvs::Vec3 dir_vec = kvs::CubicImage::DirectionVector( dir );
+            const kvs::Vec3 up_vec = kvs::CubicImage::UpVector( dir );
             this->light()->setPosition( c_p );
             this->camera()->setPosition( c_p, c_p + dir_vec, up_vec );
             this->screen()->draw();

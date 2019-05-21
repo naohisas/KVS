@@ -1,4 +1,4 @@
-#include "CubeMapImage.h"
+#include "CubicImage.h"
 #include <kvs/Assert>
 #include <kvs/RGBColor>
 
@@ -6,7 +6,7 @@
 namespace
 {
 
-const std::string DirNames[ kvs::CubeMapImage::NumberOfDirections ] = {
+const std::string DirNames[ kvs::CubicImage::NumberOfDirections ] = {
     std::string( "right" ),
     std::string( "left" ),
     std::string( "top" ),
@@ -15,7 +15,7 @@ const std::string DirNames[ kvs::CubeMapImage::NumberOfDirections ] = {
     std::string( "front" )
 };
 
-const kvs::Vec3 DirVecs[ kvs::CubeMapImage::NumberOfDirections ] = {
+const kvs::Vec3 DirVecs[ kvs::CubicImage::NumberOfDirections ] = {
     kvs::Vec3( +1,  0,  0 ), // right
     kvs::Vec3( -1,  0,  0 ), // left
     kvs::Vec3(  0, +1,  0 ), // top
@@ -24,7 +24,7 @@ const kvs::Vec3 DirVecs[ kvs::CubeMapImage::NumberOfDirections ] = {
     kvs::Vec3(  0,  0, -1 )  // front
 };
 
-const kvs::Vec3 UpVecs[ kvs::CubeMapImage::NumberOfDirections ] = {
+const kvs::Vec3 UpVecs[ kvs::CubicImage::NumberOfDirections ] = {
     kvs::Vec3( 0, 1,  0 ), // right
     kvs::Vec3( 0, 1,  0 ), // left
     kvs::Vec3( 0, 0,  1 ), // top
@@ -57,22 +57,22 @@ inline void Draw(
 namespace kvs
 {
 
-std::string CubeMapImage::DirectionName( const CubeMapImage::Direction dir )
+std::string CubicImage::DirectionName( const CubicImage::Direction dir )
 {
     return ::DirNames[ dir ];
 }
 
-kvs::Vec3 CubeMapImage::DirectionVector( const CubeMapImage::Direction dir )
+kvs::Vec3 CubicImage::DirectionVector( const CubicImage::Direction dir )
 {
     return ::DirVecs[ dir ];
 }
 
-kvs::Vec3 CubeMapImage::UpVector( const CubeMapImage::Direction dir )
+kvs::Vec3 CubicImage::UpVector( const CubicImage::Direction dir )
 {
     return ::UpVecs[ dir ];
 }
 
-void CubeMapImage::stitch()
+void CubicImage::stitch()
 {
     const size_t w = this->frontImage().width();
     const size_t h = this->frontImage().height();
