@@ -6,6 +6,7 @@ OBJECTS = \
 $(OUTDIR)\.\Object\MovieObject.obj \
 $(OUTDIR)\.\Object\VideoObject.obj \
 $(OUTDIR)\.\Renderer\MovieRenderer.obj \
+$(OUTDIR)\.\Renderer\SphericalMovieRenderer.obj \
 $(OUTDIR)\.\Renderer\VideoRenderer.obj \
 $(OUTDIR)\.\Viewer\CaptureDevice.obj \
 $(OUTDIR)\.\Viewer\Window.obj \

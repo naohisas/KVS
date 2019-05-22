@@ -378,6 +378,7 @@ $(OUTDIR)/./Visualization/Renderer/ScatterPlotRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/Shader.o \
 $(OUTDIR)/./Visualization/Renderer/ShadingParameter.o \
 $(OUTDIR)/./Visualization/Renderer/SphereGlyph.o \
+$(OUTDIR)/./Visualization/Renderer/SphericalImageRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticLineRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticMultipleTetrahedraCompositor.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticMultipleTetrahedraRenderer.o \

@@ -121,6 +121,10 @@ void ImageRenderer::createTexture( const kvs::ImageObject* image )
     }
 
     kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
+    m_texture.setWrapS( GL_REPEAT );
+    m_texture.setWrapT( GL_REPEAT );
+    m_texture.setMagFilter( GL_LINEAR );
+    m_texture.setMinFilter( GL_LINEAR );
     m_texture.create( image->width(), image->height(), image->pixels().data() );
 }
 

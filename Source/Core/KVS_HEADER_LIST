@@ -325,6 +325,7 @@ Visualization/Renderer/ScatterPlotMatrixRenderer
 Visualization/Renderer/ScatterPlotRenderer
 Visualization/Renderer/Shader
 Visualization/Renderer/SphereGlyph
+Visualization/Renderer/SphericalImageRenderer
 Visualization/Renderer/StochasticLineRenderer
 Visualization/Renderer/StochasticMultipleTetrahedraCompositor
 Visualization/Renderer/StochasticMultipleTetrahedraRenderer
