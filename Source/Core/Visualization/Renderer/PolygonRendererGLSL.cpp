@@ -508,7 +508,7 @@ void PolygonRenderer::create_buffer_object( const kvs::PolygonObject* polygon )
     kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( polygon );
 
     m_vbo_manager.setVertexArray( coords, 3 );
-    m_vbo_manager.setColorArray( colors, 3 );
+    m_vbo_manager.setColorArray( colors, 4 );
     if ( normals.size() > 0 ) { m_vbo_manager.setNormalArray( normals ); }
     if ( m_has_connection ) { m_vbo_manager.setIndexArray( polygon->connections() ); }
     m_vbo_manager.create();
