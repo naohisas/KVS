@@ -393,7 +393,6 @@ void StochasticPolygonRenderer::setPolygonOffset( const float offset )
 StochasticPolygonRenderer::Engine::Engine():
     m_has_normal( false ),
     m_has_connection( false ),
-    m_random_index( 0 ),
     m_polygon_offset( 0.0f )
 {
 }
@@ -406,8 +405,7 @@ StochasticPolygonRenderer::Engine::Engine():
 void StochasticPolygonRenderer::Engine::release()
 {
     m_shader_program.release();
-    m_vbo.release();
-    m_ibo.release();
+    m_vbo_manager.release();
 }
 
 /*===========================================================================*/
@@ -418,7 +416,10 @@ void StochasticPolygonRenderer::Engine::release()
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticPolygonRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticPolygonRenderer::Engine::create(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
     kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
     m_has_normal = polygon->normals().size() > 0;
@@ -439,7 +440,10 @@ void StochasticPolygonRenderer::Engine::create( kvs::ObjectBase* object, kvs::Ca
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticPolygonRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticPolygonRenderer::Engine::update(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
 }
 
@@ -451,10 +455,11 @@ void StochasticPolygonRenderer::Engine::update( kvs::ObjectBase* object, kvs::Ca
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticPolygonRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticPolygonRenderer::Engine::setup(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
-    m_random_index = m_shader_program.attributeLocation("random_index");
-
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
     const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
@@ -476,14 +481,20 @@ void StochasticPolygonRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Cam
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticPolygonRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticPolygonRenderer::Engine::draw(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
     kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
 
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
+    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
     kvs::ProgramObject::Binder bind2( m_shader_program );
     kvs::Texture::Binder bind3( randomTexture() );
     {
+        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
+        kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
         const size_t size = randomTextureSize();
         const int count = repetitionCount() * ::RandomNumber();
         const float offset_x = static_cast<float>( ( count ) % size );
@@ -494,56 +505,10 @@ void StochasticPolygonRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Came
         const size_t nconnections = polygon->numberOfConnections();
         const size_t nvertices = ::NumberOfVertices( polygon );
         const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
-        const size_t index_size = nvertices * 2 * sizeof( kvs::UInt16 );
-        const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-        const size_t color_size = nvertices * 4 * sizeof( kvs::UInt8 );
-
-        KVS_GL_CALL( glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + index_size ) );
-
-        // Enable colors.
-        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
-        KVS_GL_CALL( glColorPointer( 4, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + index_size + coord_size ) );
-
-        // Enable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-            KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + index_size + coord_size + color_size ) );
-        }
-
-        // Enable random index.
-        KVS_GL_CALL( glEnableVertexAttribArray( m_random_index ) );
-        KVS_GL_CALL( glVertexAttribPointer( m_random_index, 2, GL_UNSIGNED_SHORT, GL_FALSE, 0, (GLubyte*)NULL + 0 ) );
 
         // Draw triangles.
-        if ( m_has_connection )
-        {
-            kvs::IndexBufferObject::Binder bind4( m_ibo );
-            KVS_GL_CALL( glDrawElements( GL_TRIANGLES, 3 * npolygons, GL_UNSIGNED_INT, 0 ) );
-        }
-        else
-        {
-            KVS_GL_CALL( glDrawArrays( GL_TRIANGLES, 0, 3 * npolygons ) );
-        }
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable colors.
-        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
-
-        // Disable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
-        }
-
-        // Disable random index.
-        KVS_GL_CALL( glDisableVertexAttribArray( m_random_index ) );
+        if ( m_has_connection ) { m_vbo_manager.drawElements( GL_TRIANGLES, 3 * npolygons ); }
+        else { m_vbo_manager.drawArrays( GL_TRIANGLES, 0, 3 * npolygons ); }
     }
 }
 
@@ -590,7 +555,7 @@ void StochasticPolygonRenderer::Engine::create_buffer_object( const kvs::Polygon
 {
     if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
     {
-        kvsMessageError("Not supported polygon type.");
+        kvsMessageError( "Not supported polygon type." );
         return;
     }
 
@@ -606,31 +571,12 @@ void StochasticPolygonRenderer::Engine::create_buffer_object( const kvs::Polygon
     kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( polygon );
     kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( polygon );
 
-    const size_t index_size = indices.byteSize();
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
-    const size_t normal_size = normals.byteSize();
-    const size_t byte_size = index_size + coord_size + color_size + normal_size;
-
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( index_size, indices.data(), 0 );
-    m_vbo.load( coord_size, coords.data(), index_size );
-    m_vbo.load( color_size, colors.data(), index_size + coord_size );
-    if ( normal_size > 0 )
-    {
-        m_vbo.load( normal_size, normals.data(), index_size + coord_size + color_size );
-    }
-    m_vbo.unbind();
-
-    if ( m_has_connection )
-    {
-        const size_t connection_size = polygon->connections().byteSize();
-        m_ibo.create( connection_size );
-        m_ibo.bind();
-        m_ibo.load( connection_size, polygon->connections().data(), 0 );
-        m_ibo.unbind();
-    }
+    m_vbo_manager.setVertexAttribArray( indices, m_shader_program.attributeLocation( "random_index" ), 2 );
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setColorArray( colors, 4 );
+    if ( normals.size() > 0 ) { m_vbo_manager.setNormalArray( normals ); }
+    if ( m_has_connection ) { m_vbo_manager.setIndexArray( polygon->connections() ); }
+    m_vbo_manager.create();
 }
 
 } // end of namespace kvs

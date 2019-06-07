@@ -16,6 +16,7 @@
 
 #include <kvs/Mouse>
 #include <kvs/ScreenBase>
+#include <kvs/CubicImage>
 
 
 namespace kvs
@@ -39,7 +40,6 @@ class RendererBase;
 class Scene
 {
 public:
-
     enum ControlTarget
     {
         TargetObject = 0, ///< controlling object
@@ -49,7 +49,6 @@ public:
     };
 
 private:
-
     kvs::ScreenBase* m_screen; ///< screen
     kvs::Camera* m_camera; ///< camera
     kvs::Light* m_light; ///< light
@@ -63,7 +62,6 @@ private:
     bool m_enable_collision_detection; ///< flag for collision detection
 
 public:
-
     Scene( kvs::ScreenBase* screen );
     virtual ~Scene();
 
@@ -98,6 +96,8 @@ public:
     void updateGLViewingMatrix() const;
     void updateGLProjectionMatrix() const;
     void updateGLLightParameters() const;
+
+    kvs::CubicImage cubemap();
 
     void setEnabledCollisionDetection( bool enable );
     void enableCollisionDetection() { this->setEnabledCollisionDetection( true ); }
@@ -137,7 +137,6 @@ public:
     void wheelFunction( int value );
 
 private:
-
     kvs::Vec2 position_in_device( const kvs::ObjectBase* object ) const;
     kvs::Vec2 position_in_device() const;
     bool detect_collision( const kvs::Vec2& p_win );

@@ -19,6 +19,7 @@
 #include <kvs/Deprecated>
 #include <kvs/EventHandler>
 #include <kvs/PaintDevice>
+#include <kvs/ColorImage>
 
 /*KVS_DEPRECATED*/
 #include <kvs/InitializeEventListener>
@@ -84,7 +85,9 @@ public:
     virtual void pushDown() {}
     virtual void redraw() {}
     virtual void resize( int, int ) {}
+    virtual void draw() {}
     virtual bool isFullScreen() const { return false; }
+    virtual kvs::ColorImage capture() const { return kvs::ColorImage( this->width(), this->height() ); }
     virtual void enable() {}
     virtual void disable() {}
     virtual void reset() {}

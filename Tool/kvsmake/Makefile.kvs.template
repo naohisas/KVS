@@ -106,6 +106,10 @@ INCLUDE_PATH += $(PYTHON_INCLUDE_PATH)
 INCLUDE_PATH += $(NUMPY_INCLUDE_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+INCLUDE_PATH += $(EGL_INCLUDE_PATH)
+endif
+
 INCLUDE_PATH += -I$(KVS_DIR)/include
 INCLUDE_PATH += $(OPENMP_INCLUDE_PATH)
 INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
@@ -132,6 +136,10 @@ LIBRARY_PATH += $(PYTHON_LIBRARY_PATH)
 LIBRARY_PATH += $(NUMPY_LIBRARY_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LIBRARY_PATH += $(EGL_LIBRARY_PATH)
+endif
+
 LIBRARY_PATH += -L$(KVS_DIR)/lib
 LIBRARY_PATH += $(OPENMP_LIBRARY_PATH)
 LIBRARY_PATH += $(GLEW_LIBRARY_PATH)
@@ -154,7 +162,15 @@ LINK_LIBRARY += -lkvsSupportOpenCV $(OPENCV_LINK_LIBRARY)
 endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
-LINK_LIBRARY += -lkvsSupportPython
+LINK_LIBRARY += -lkvsSupportPython $(PYTHON_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LINK_LIBRARY += -lkvsSupportEGL $(EGL_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+LINK_LIBRARY += -lkvsSupportOSMesa
 endif
 
 LINK_LIBRARY += -lkvsCore
@@ -192,52 +208,52 @@ $(TARGET_OCL): $(OBJECTS)
 	$(CC) -c $(CFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 %.o: %.f
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f90
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f95
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f03
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F90
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F95
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F03
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f90 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f95 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.f03 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F90 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F95 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.o: %.F03 %.mod
-	$(FC) -c $<
+	$(FC) -c $< $(INCLUDE_PATH)
 
 %.mod: %.f %.o
 	@:

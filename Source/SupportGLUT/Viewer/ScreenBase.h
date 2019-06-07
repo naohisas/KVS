@@ -12,9 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__GLUT__SCREEN_BASE_H_INCLUDE
-#define KVS__GLUT__SCREEN_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/Timer>
 #include <kvs/ScreenBase>
 #include <list>
@@ -44,7 +42,6 @@ class ScreenBase : public kvs::ScreenBase
     typedef kvs::ScreenBase BaseClass;
 
 private:
-
     int m_id; ///< window ID
     kvs::MouseEvent* m_mouse_event; ///< mouse event
     kvs::KeyEvent* m_key_event; ///< key event
@@ -54,7 +51,6 @@ private:
     std::list<kvs::glut::Timer*> m_timer_event_handler; ///< timer list for timer events
 
 public:
-
     ScreenBase( kvs::glut::Application* application );
     virtual ~ScreenBase();
 
@@ -69,6 +65,8 @@ public:
     virtual void pushDown();
     virtual void redraw();
     virtual void resize( int width, int height );
+    virtual void draw();
+    virtual kvs::ColorImage capture() const;
     virtual bool isFullScreen() const;
     virtual void enable();
     virtual void disable();
@@ -85,7 +83,6 @@ public:
     virtual void keyPressEvent( kvs::KeyEvent* event );
 
 private:
-
     // Callback functions for GLUT.
     friend void DisplayFunction();
     friend void ResizeFunction( int width, int height );
@@ -104,5 +101,3 @@ public:
 } // end of namespace glut
 
 } // end of namespace kvs
-
-#endif // KVS__GLUT__SCREEN_BASE_H_INCLUDE

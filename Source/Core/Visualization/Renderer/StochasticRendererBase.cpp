@@ -142,12 +142,17 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     if ( reset_count ) m_ensemble_buffer.clear();
     for ( size_t i = 0; i < repetitions; i++ )
     {
+        // Render to the ensemble buffer.
         m_ensemble_buffer.bind();
         m_engine->draw( object, camera, light );
         m_engine->countRepetitions();
         m_ensemble_buffer.unbind();
+
+        // Progressive averaging.
         m_ensemble_buffer.add();
     }
+
+    // Render to the framebuffer.
     m_ensemble_buffer.draw();
 
     kvs::OpenGL::Finish();

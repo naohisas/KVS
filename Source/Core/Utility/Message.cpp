@@ -12,87 +12,72 @@
  */
 /****************************************************************************/
 #include "Message.h"
-#include <kvs/Breakpoint>
-
-
-namespace
-{
-
-const size_t MaxMessageSize = 512;
-
-const char* tag[ kvs::Message::NumberOfMessageTypes ] =
-{
-    "KVS ERROR",
-    "KVS WARNING",
-    "KVS DEBUG",
-    "KVS ASSERT"
-};
-
-const char* color[ kvs::Message::NumberOfMessageTypes ] =
-{
-    KVS_MESSAGE_RED,
-    KVS_MESSAGE_PURPLE,
-    KVS_MESSAGE_BLUE,
-    KVS_MESSAGE_BROWN
-};
-
-}
+#include <kvs/ColorStream>
 
 
 namespace kvs
 {
 
-/*==========================================================================*/
+Message::Handler Message::m_handler = Message::DefaultHandler;
+
+/*===========================================================================*/
 /**
- *  Constuctor.
- *
- *  @param type [in] message type
- *  @param file [in] file name
- *  @param line [in] line number
- *  @param func [in] function name
- *  @param expr [in] expression
+ *  @brief  Default message handler (output message format)
+ *  @param  stream [in] output stream
+ *  @param  type [in] message type
+ *  @param  context [in] message context
+ *  @param  message [in] message
  */
-/*==========================================================================*/
-Message::Message( MessageType type, const char* file, int line, const char* func, bool expr )
-    : m_type( type )
-    , m_file( file )
-    , m_line( line )
-    , m_func( func )
-    , m_expr( expr )
+/*===========================================================================*/
+void Message::DefaultHandler(
+    std::ostream& stream,
+    const kvs::Message::Type type,
+    const kvs::Message::Context& context,
+    const std::string& message )
 {
+//    std::ostream* stream = &std::cerr;
+
+    stream << kvs::ColorStream::Bold;
+    switch ( type )
+    {
+    case kvs::Message::Error:
+    {
+        stream << kvs::ColorStream::Red( "KVS ERROR" ) << ": ";
+        break;
+    }
+    case kvs::Message::Warning:
+    {
+        stream << kvs::ColorStream::Yellow( "KVS WARNING" ) << ": ";
+        break;
+    }
+    case kvs::Message::Debug:
+    {
+        stream << kvs::ColorStream::Blue( "KVS DEBUG" ) << ": ";
+        break;
+    }
+    case kvs::Message::Assert:
+    {
+        stream << kvs::ColorStream::Red( "KVS ASSERT" ) << ": ";
+        break;
+    }
+    default: break;
+    }
+
+    stream << kvs::ColorStream::Underline << message << kvs::ColorStream::Reset << std::endl;
+    stream << "    " << "Func: " << context.func << std::endl;
+    stream << "    " << "File: " << context.file << ":" << context.line << std::endl;
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Operator '()'.
- *
- *  @param msg [in] message
+ *  @brief  Set a new message handler.
+ *  @param  handler [in] handler function
  */
-/*==========================================================================*/
-void Message::operator ()( const char* msg, ... )
+/*===========================================================================*/
+void Message::SetHandler( Message::Handler handler )
 {
-    if ( !m_expr )
-    {
-        char buffer[ ::MaxMessageSize ];
-
-        va_list args;
-        va_start( args, msg );
-        vsnprintf( buffer, sizeof( buffer ), msg, args );
-        va_end( args );
-        buffer[ ::MaxMessageSize - 1 ] = '\0';
-
-        // Output message tag.
-        std::cerr << KVS_MESSAGE_SET_COLOR( ::color[ m_type ] );
-        std::cerr << ::tag[ m_type ];
-        std::cerr << KVS_MESSAGE_RESET_COLOR;
-
-        // Output message.
-        std::cerr << ": " << buffer << std::endl;
-        std::cerr << "\t" << "FILE: " << m_file << " (" << m_line << ")" << std::endl;
-        std::cerr << "\t" << "FUNC: " << m_func << std::endl;
-
-        if ( m_type == Message::Assert ) { KVS_BREAKPOINT; }
-    }
+    if ( !handler ) { m_handler = DefaultHandler; }
+    else { m_handler = handler; }
 }
 
 } // end of namespace kvs

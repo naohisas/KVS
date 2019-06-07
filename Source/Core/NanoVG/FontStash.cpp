@@ -59,15 +59,8 @@ public:
         m_search_path_list.push_back("." + sep );
     }
 
-    void add( const std::string& path )
-    {
-        m_search_path_list.push_back( path );
-    }
-
-    void del()
-    {
-        m_search_path_list.clear();
-    }
+    //void add( const std::string& path ) { m_search_path_list.push_back( path ); }
+    //void del() { m_search_path_list.clear(); }
 
     std::string find( const std::string& source )
     {

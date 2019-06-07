@@ -12,9 +12,7 @@
  *  $Id: Screen.h 1768 2014-05-12 09:36:31Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__GLUT__SCREEN_H_INCLUDE
-#define KVS__GLUT__SCREEN_H_INCLUDE
-
+#pragma once
 #include "ScreenBase.h"
 #include <kvs/Scene>
 #include <kvs/Mouse>
@@ -58,12 +56,10 @@ class Timer;
 class Screen : public kvs::glut::ScreenBase
 {
 public:
-
     typedef kvs::glut::ScreenBase BaseClass;
     typedef kvs::Scene::ControlTarget ControlTarget;
 
 private:
-
     bool m_enable_default_paint_event; ///< flag for default paint event
     bool m_enable_default_resize_event; ///< flag for default resize event
     bool m_enable_default_mouse_press_event; ///< flag for default mouse press event
@@ -76,7 +72,6 @@ private:
     kvs::TimerEventListener* m_idle_mouse_event_listener; ///< idle mouse event listener
 
 public:
-
     Screen( kvs::glut::Application* application = 0 );
     virtual ~Screen();
 
@@ -102,6 +97,7 @@ public:
     virtual void enable();
     virtual void disable();
     virtual void reset();
+    virtual kvs::ColorImage capture() const;
 
     virtual void initializeEvent();
     virtual void paintEvent();
@@ -115,7 +111,6 @@ public:
     virtual void idleMouseEvent();
 
 protected:
-
     virtual void defaultPaintEvent();
     virtual void defaultResizeEvent( int width, int height );
     virtual void defaultMousePressEvent( kvs::MouseEvent* event );
@@ -146,5 +141,3 @@ public:
 } // end of namespace glut
 
 } // end of namespace kvs
-
-#endif // KVS__GLUT__SCREEN_H_INCLUDE

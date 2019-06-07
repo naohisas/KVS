@@ -12,12 +12,10 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__STOCHASTIC_UNIFORM_GRID_RENDERER_H_INCLUDE
-#define KVS__STOCHASTIC_UNIFORM_GRID_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/Module>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 #include <kvs/FrameBufferObject>
 #include <kvs/Texture2D>
 #include <kvs/Texture3D>
@@ -42,14 +40,14 @@ class StochasticUniformGridRenderer : public kvs::StochasticRendererBase
     kvsModuleBaseClass( kvs::StochasticRendererBase );
 
 public:
-
     class Engine;
 
 public:
-
     StochasticUniformGridRenderer();
     void setSamplingStep( const float step );
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
+    const kvs::TransferFunction& transferFunction() const;
+    float samplingStep() const;
 };
 
 /*===========================================================================*/
@@ -60,7 +58,6 @@ public:
 class StochasticUniformGridRenderer::Engine : public kvs::StochasticRenderingEngine
 {
 private:
-
     size_t m_random_index; ///< index used for refering the random texture
     float m_step; ///< sampling step
     bool m_transfer_function_changed; ///< flag for changin transfer function
@@ -70,12 +67,11 @@ private:
     kvs::Texture2D m_exit_texture; ///< exit point texture
     kvs::Texture3D m_volume_texture; ///< volume data (3D texture)
     kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
-    kvs::VertexBufferObject m_bounding_cube_buffer; ///< bounding cube (VBO)
+    kvs::VertexBufferObjectManager m_bounding_cube_buffer; ///< bounding cube (VBO)
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
     kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
 
 public:
-
     Engine();
     void release();
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
@@ -90,8 +86,10 @@ public:
         m_transfer_function_changed = true;
     }
 
-private:
+    float samplingStep() const { return m_step; }
+    const kvs::TransferFunction& transferFunction() const { return m_transfer_function; }
 
+private:
     void create_shader_program( const kvs::StructuredVolumeObject* volume );
     void create_volume_texture( const kvs::StructuredVolumeObject* volume );
     void create_transfer_function_texture();
@@ -103,5 +101,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STOCHASTIC_UNIFORM_GRID_RENDERER_H_INCLUDE

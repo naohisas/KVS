@@ -98,11 +98,8 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
 
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
-
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
-
-    // Rounded shape.
-    kvs::OpenGL::Enable( GL_POINT_SMOOTH );
+    kvs::OpenGL::Enable( GL_POINT_SMOOTH ); // Rounded shape.
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
@@ -128,12 +125,12 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     {
         m_object = object;
         m_shader_program.release();
-        m_vbo.release();
+        m_vbo_manager.release();
         this->create_shader_program();
         this->create_buffer_object( point );
     }
 
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
+    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
     kvs::ProgramObject::Binder bind2( m_shader_program );
     {
         const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
@@ -143,41 +140,10 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
         m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
         m_shader_program.setUniform( "NormalMatrix", N );
 
+        kvs::OpenGL::SetPointSize( point->size() );
+
         const size_t nvertices = point->numberOfVertices();
-        const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-        const size_t color_size = nvertices * 3 * sizeof( kvs::UInt8 );
-
-        KVS_GL_CALL( glPointSize( point->size() ) );
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + 0 ) );
-
-        // Enable colors.
-        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
-        KVS_GL_CALL( glColorPointer( 3, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
-
-        // Enable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-            KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size ) );
-        }
-
-        // Draw points.
-        KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, nvertices ) );
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable colors.
-        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
-
-        // Disable normals.
-        if ( m_has_normal )
-        {
-            KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
-        }
+        m_vbo_manager.drawArrays( GL_POINTS, 0, nvertices );
     }
 
     BaseClass::stopTimer();
@@ -229,20 +195,10 @@ void PointRenderer::create_buffer_object( const kvs::PointObject* point )
     kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( point );
     kvs::ValueArray<kvs::Real32> normals = point->normals();
 
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
-    const size_t normal_size = normals.byteSize();
-    const size_t byte_size = coord_size + color_size + normal_size;
-
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( coord_size, coords.data(), 0 );
-    m_vbo.load( color_size, colors.data(), coord_size );
-    if ( normal_size > 0 )
-    {
-        m_vbo.load( normal_size, normals.data(), coord_size + color_size );
-    }
-    m_vbo.unbind();
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setColorArray( colors, 3 );
+    if ( normals.size() > 0 ) { m_vbo_manager.setNormalArray( normals ); }
+    m_vbo_manager.create();
 }
 
 } // end of namespace glsl

@@ -12,17 +12,14 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__GLSL__LINE_RENDERER_H_INCLUDE
-#define KVS__GLSL__LINE_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/DebugNew>
 #include <kvs/Module>
 #include <kvs/LineObject>
 #include <kvs/LineRenderer>
 #include <kvs/Shader>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObject>
-#include <kvs/IndexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 
 
 namespace kvs
@@ -36,8 +33,7 @@ class LineRenderer : public kvs::LineRenderer
     kvsModule( kvs::glsl::LineRenderer, Renderer );
     kvsModuleBaseClass( kvs::LineRenderer );
 
-protected:
-
+private:
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
@@ -46,19 +42,15 @@ protected:
     bool m_has_connection; ///< check flag for the connection array
     kvs::Shader::ShadingModel* m_shader; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObject m_vbo; ///< vertex buffer object
-    kvs::IndexBufferObject m_ibo; ///< index buffer object
+    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
 
     kvs::Vec2 m_line_width_range;
     float m_outline_width;
     kvs::RGBColor m_outline_color;
 
 public:
-
     LineRenderer();
     virtual ~LineRenderer();
-
-public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
@@ -68,7 +60,6 @@ public:
     void setOutlineColor( const kvs::RGBColor color ) { m_outline_color = color; }
 
 private:
-
     void create_shader_program();
     void create_buffer_object( const kvs::LineObject* line );
 };
@@ -92,7 +83,3 @@ inline void LineRenderer::setShader( const ShadingType shader )
 } // end of namespace glsl
 
 } // end of namespace kvs
-
-#endif // KVS__GLSL__LINE_RENDERER_H_INCLUDE
-
-

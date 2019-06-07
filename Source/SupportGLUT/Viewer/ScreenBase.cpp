@@ -13,6 +13,7 @@
  */
 /*****************************************************************************/
 #include "ScreenBase.h"
+#include <kvs/Message>
 #include <kvs/Assert>
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
@@ -31,6 +32,10 @@ namespace
 
 const size_t MaxNumberOfScreens = 256;
 kvs::glut::ScreenBase* Context[ MaxNumberOfScreens ] = {};
+
+#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+int ResizeOnce[ MaxNumberOfScreens ] = {};
+#endif
 
 /*===========================================================================*/
 /**
@@ -75,6 +80,13 @@ void DisplayFunction()
 void ResizeFunction( int width, int height )
 {
     const int id = glutGetWindow();
+#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+    if ( ::ResizeOnce[id] == 0 )
+    {
+        glutReshapeWindow( width + 1, height + 1 );
+        ::ResizeOnce[id] = 1;
+    }
+#endif
     ::Context[id]->resizeEvent( width, height );
 }
 
@@ -245,7 +257,11 @@ void ScreenBase::create()
 
     // Set screen geometry.
     glutInitWindowPosition( BaseClass::x(), BaseClass::y() );
+#if defined( KVS_GL_HAS_LAYER_BACKED_VIEW )
+    glutInitWindowSize( BaseClass::width() - 1, BaseClass::height() - 1 );
+#else
     glutInitWindowSize( BaseClass::width(), BaseClass::height() );
+#endif
 
     // Create window.
     glutCreateWindow( BaseClass::title().c_str() );
@@ -366,7 +382,7 @@ void ScreenBase::pushDown()
 
 /*===========================================================================*/
 /**
- *  @brief  Redraws the window.
+ *  @brief  Requires that the screen needs to be redrawn as soon as possible.
  */
 /*===========================================================================*/
 void ScreenBase::redraw()
@@ -392,6 +408,17 @@ void ScreenBase::resize( int width, int height )
 
 /*===========================================================================*/
 /**
+ *  @brief  Triggers redrawing the screen directory.
+ */
+/*===========================================================================*/
+void ScreenBase::draw()
+{
+    if ( m_id == -1 ) { this->create(); }
+    this->paintEvent();
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Checks whether the window is full-screen or not.
  *  @return true, if the window is full-screen
  */
@@ -399,6 +426,23 @@ void ScreenBase::resize( int width, int height )
 bool ScreenBase::isFullScreen() const
 {
     return m_is_fullscreen;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the captured image of the current screen.
+ *  @return captured image
+ */
+/*===========================================================================*/
+kvs::ColorImage ScreenBase::capture() const
+{
+    const size_t width = BaseClass::width();
+    const size_t height = BaseClass::height();
+    kvs::ValueArray<kvs::UInt8> buffer( width * height * 3 );
+
+    kvs::OpenGL::SetReadBuffer( GL_FRONT );
+    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
+    return kvs::ColorImage( width, height, buffer );
 }
 
 void ScreenBase::enable(){}

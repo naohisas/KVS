@@ -38,7 +38,7 @@ int main( int argc, char** argv )
     KVS_MEMORY_DEBUGGER__SET_ARGUMENT( argc, argv );
 
     kvscheck::Argument arg( argc, argv );
-    if( !arg.parse() ) return false;
+    if( !arg.parse() ) { return 1; }
 
     if( arg.hasOption("version") )
     {
@@ -78,5 +78,5 @@ int main( int argc, char** argv )
         std::cout << kvscheck::FileChecker( filename ) << std::endl;
     }
 
-    return true;
+    return 0;
 }

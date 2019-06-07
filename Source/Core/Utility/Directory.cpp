@@ -12,6 +12,7 @@
  */
 /****************************************************************************/
 #include "Directory.h"
+#include <kvs/Message>
 #include <kvs/Platform>
 #if defined ( KVS_PLATFORM_WINDOWS )
 #include <windows.h>
@@ -22,87 +23,16 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <pwd.h>
 #include <cstring>
 #include <cerrno>
+#include <climits>
 #endif
-#include <kvs/Message>
-
-#ifdef PATH_MAX
-#define MAX_PATH_LENGTH PATH_MAX
-#else
-#define MAX_PATH_LENGTH 4096
-#endif
+#include <cstdlib>
 
 
 namespace
 {
-
-/*==========================================================================*/
-/**
- *  Get current path.
- *  @param path [in] path
- *  @return current path (absolute)
- */
-/*==========================================================================*/
-inline std::string GetCurrentPath()
-{
-#if defined ( KVS_PLATFORM_WINDOWS )
-    char current_path[MAX_PATH_LENGTH];
-    _getcwd( current_path, MAX_PATH_LENGTH );
-#else
-    char current_path[MAX_PATH_LENGTH];
-    if ( !getcwd( current_path, MAX_PATH_LENGTH ) )
-    {
-        kvsMessageError( "%s", strerror( errno ) );
-        return ".";
-     }
-#endif
-
-    return current_path;
-}
-
-/*==========================================================================*/
-/**
- *  Get absolute path of given path.
- *  @param path [in] path
- *  @return absolute path
- */
-/*==========================================================================*/
-inline std::string GetAbsolutePath( const std::string& path )
-{
-#if defined ( KVS_PLATFORM_WINDOWS )
-    char absolute_path[MAX_PATH_LENGTH];
-    _fullpath( absolute_path, const_cast<char*>( path.c_str() ), MAX_PATH_LENGTH );
-#else
-    char absolute_path[MAX_PATH_LENGTH];
-#if defined ( KVS_PLATFORM_CYGWIN )
-    /* WARNING: In the case of the cygwin environment, the realpath function
-     * returns NULL as the absolute path when an error occurs, for example,
-     * the directory which is not existed is given. In order to deal with this
-     * problem, the GetAbsolutePath function returns an uncanonical absolute
-     * path (ex. "/aaa/bbb/ccc/../ddd").
-     */
-    bool is_existed = false;
-    struct stat filestat;
-    if ( !stat( path.c_str(), &filestat ) )
-    {
-        is_existed = ( filestat.st_mode & S_IFDIR );
-    }
-
-    if ( !is_existed )
-    {
-        return GetCurrentPath() + "/" + path;
-    }
-#endif
-    if ( !realpath( path.c_str(), absolute_path ) )
-    {
-        kvsMessageError( "%s", strerror( errno ) );
-        return "";
-    }
-#endif
-
-    return absolute_path;
-}
 
 #if defined ( KVS_PLATFORM_WINDOWS )
 enum MBCharType
@@ -168,7 +98,50 @@ namespace kvs
 /*==========================================================================*/
 std::string Directory::Separator()
 {
-    return File::Separator();
+#if defined ( KVS_PLATFORM_WINDOWS )
+    return "\\";
+#else
+    return "/";
+#endif
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns absolute path for the specified directory path.
+ *  @param  directory_path [in] directory path
+ *  @return absolute path
+ */
+/*===========================================================================*/
+std::string Directory::Absolute( const std::string& directory_path )
+{
+    std::string path = directory_path;
+    if ( path[0] == '~' ) { path = kvs::Directory::HomePath() + path.substr(1); }
+
+#if defined ( KVS_PLATFORM_WINDOWS )
+    char absolute_path[ _MAX_PATH ];
+    if ( _fullpath( absolute_path, path.c_str(), _MAX_PATH ) )
+#else
+    char absolute_path[ PATH_MAX ];
+    if ( realpath( path.c_str(), absolute_path ) )
+#endif
+    {
+        return absolute_path;
+    }
+
+    return "";
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns true if the specified directory exists.
+ *  @param  directory_path [in] directory_path (directory name)
+ *  @return true if the directory exists
+ */
+/*===========================================================================*/
+bool Directory::Exists( const std::string& directory_path )
+{
+    kvs::Directory dir( directory_path );
+    return dir.exists();
 }
 
 /*==========================================================================*/
@@ -181,9 +154,9 @@ std::string Directory::Separator()
 bool Directory::Make( const std::string& directory_path )
 {
 #if defined ( KVS_PLATFORM_WINDOWS )
-    return _mkdir( ::GetAbsolutePath( directory_path ).c_str() ) == 0;
+    return _mkdir( Directory::Absolute( directory_path ).c_str() ) == 0;
 #else
-    return mkdir( ::GetAbsolutePath( directory_path ).c_str(), 0777 ) == 0;
+    return mkdir( Directory::Absolute( directory_path ).c_str(), 0777 ) == 0;
 #endif
 }
 
@@ -197,9 +170,9 @@ bool Directory::Make( const std::string& directory_path )
 bool Directory::Remove( const std::string& directory_path )
 {
 #if defined ( KVS_PLATFORM_WINDOWS )
-    return _rmdir( ::GetAbsolutePath( directory_path ).c_str() ) == 0;
+    return _rmdir( Directory::Absolute( directory_path ).c_str() ) == 0;
 #else
-    return  rmdir( ::GetAbsolutePath( directory_path ).c_str() ) == 0;
+    return rmdir( Directory::Absolute( directory_path ).c_str() ) == 0;
 #endif
 }
 
@@ -213,21 +186,101 @@ bool Directory::Remove( const std::string& directory_path )
 bool Directory::Change( const std::string& directory_path )
 {
 #if defined ( KVS_PLATFORM_WINDOWS )
-    return _chdir( ::GetAbsolutePath( directory_path ).c_str() ) == 0;
+    return _chdir( Directory::Absolute( directory_path ).c_str() ) == 0;
 #else
-    return chdir( ::GetAbsolutePath( directory_path ).c_str() ) == 0;
+    return chdir( Directory::Absolute( directory_path ).c_str() ) == 0;
 #endif
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Get current directory path.
+ *  @brief  Returns root directory path.
+ *  @return root directory path
+ */
+/*===========================================================================*/
+std::string Directory::RootPath()
+{
+#if defined ( KVS_PLATFORM_WINDOWS )
+    const char* system_drive = std::getenv( "SystemDrive" );
+    if ( system_drive ) { return std::string( system_drive ); }
+    return std::string("C:");
+#else
+    return std::string("/");
+#endif
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns home directory path.
+ *  @return home directory path
+ */
+/*===========================================================================*/
+std::string Directory::HomePath()
+{
+#if defined ( KVS_PLATFORM_WINDOWS )
+    const char* user_profile = std::getenv( "USERPROFILE" );
+    if ( user_profile ) { return std::string( user_profile ); }
+
+    const char* home_drive = std::getenv( "HOMEDRIVE" );
+    const char* home_path = std::getenv( "HOMEPATH" );
+    if ( home_drive && home_path ) { return std::string( home_drive ) + std::string( home_path ); }
+
+    const char* home = std::getenv( "HOME" );
+    if ( home ) { return std::string( home ); }
+#else
+    const char* home = std::getenv( "HOME" );
+    if ( home ) { return std::string( home ); }
+
+    struct passwd* pwd = getpwuid( getuid() );
+    if ( pwd ) { return std::string( pwd->pw_dir ); }
+#endif
+    return Directory::RootPath();
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns temp directory path.
+ *  @return temp directory path
+ */
+/*===========================================================================*/
+std::string Directory::TempPath()
+{
+#if defined ( KVS_PLATFORM_WINDOWS )
+    const char* temp = std::getenv( "TEMP" );
+    if ( temp ) { return std::string( temp ); }
+
+    const char* tmp = std::getenv( "TMP" );
+    if ( tmp ) { return std::string( tmp ); }
+
+    return Directory::RootPath();
+#else
+    const char* tmp_dir = std::getenv( "TMPDIR" );
+    if ( tmp_dir ) { return std::string( tmp_dir ); }
+
+    return std::string("/tmp");
+#endif
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns current directory path.
  *  @return current directory path
  */
-/*==========================================================================*/
-Directory Directory::Current()
+/*===========================================================================*/
+std::string Directory::CurrentPath()
 {
-    return Directory( ::GetCurrentPath() );
+#if defined ( KVS_PLATFORM_WINDOWS )
+    char current_path[ _MAX_PATH ];
+    if ( _getcwd( current_path, _MAX_PATH ) )
+#else
+    char current_path[ PATH_MAX ];
+    if ( getcwd( current_path, PATH_MAX ) )
+#endif
+    {
+        return current_path;
+    }
+
+    return ".";
 }
 
 /*==========================================================================*/
@@ -236,9 +289,8 @@ Directory Directory::Current()
  */
 /*==========================================================================*/
 Directory::Directory():
-    m_directory_path( "" ),
-    m_directory_name( "" ),
-    m_file_list()
+    m_path( "" ),
+    m_name( "" )
 {
 }
 
@@ -249,12 +301,10 @@ Directory::Directory():
  */
 /*==========================================================================*/
 Directory::Directory( const std::string& directory_path ):
-    m_directory_path( directory_path ),
-    m_directory_name( "" ),
-    m_file_list()
+    m_path( "" ),
+    m_name( "" )
 {
     this->parse( directory_path );
-    this->sort();
 }
 
 /*==========================================================================*/
@@ -264,7 +314,6 @@ Directory::Directory( const std::string& directory_path ):
 /*==========================================================================*/
 Directory::~Directory()
 {
-    m_file_list.clear();
 }
 
 /*==========================================================================*/
@@ -274,9 +323,9 @@ Directory::~Directory()
  *  @return directory path
  */
 /*==========================================================================*/
-std::string Directory::directoryPath( bool absolute ) const
+std::string Directory::path( bool absolute ) const
 {
-    return absolute ? ::GetAbsolutePath( m_directory_path ) : m_directory_path;
+    return absolute ? Directory::Absolute( m_path ) : m_path;
 }
 
 /*==========================================================================*/
@@ -285,31 +334,81 @@ std::string Directory::directoryPath( bool absolute ) const
  *  @return directory name
  */
 /*==========================================================================*/
-std::string Directory::directoryName() const
+std::string Directory::name() const
 {
-    return m_directory_name;
+    return m_name;
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Get file list.
+ *  @brief  Returns file list contained in the directory.
+ *  @param  sort [in] flag for sorting files
  *  @return file list
  */
-/*==========================================================================*/
-kvs::FileList& Directory::fileList()
+/*===========================================================================*/
+kvs::FileList Directory::fileList( const bool sort ) const
 {
-    return m_file_list;
-}
+    kvs::FileList file_list;
 
-/*==========================================================================*/
-/**
- *  Get file list.
- *  @return file list
- */
-/*==========================================================================*/
-const kvs::FileList& Directory::fileList() const
-{
-    return m_file_list;
+#if defined ( KVS_PLATFORM_WINDOWS )
+    WIN32_FIND_DATAA find_data;
+    HANDLE hFind;
+
+    char bufname[ _MAX_PATH ];
+    strcpy( bufname, m_path.c_str() );
+    int len = strlen( bufname );
+    /* If len is 0, dirname is empty. so I must get current directory
+     * entry(i.e. "*.*") and must not add '\'.
+     */
+    if ( len )
+    {
+        if ( bufname[ len - 1 ] != '\\' || ::GetMBCharType( bufname, len - 1 ) == MBTypeDB2 )
+        {
+            bufname[ len++ ] = '\\';
+        }
+    }
+
+    strcpy( bufname + len, "*.*" );
+    hFind = FindFirstFileA( bufname, &find_data );
+    do
+    {
+        const std::string path( m_path );
+        const std::string filename( find_data.cFileName );
+        const kvs::File file( path + Directory::Separator() + filename );
+
+        if ( file.isFile() )
+        {
+            file_list.push_back( file );
+        }
+    }
+    while ( FindNextFileA( hFind, &find_data ) );
+
+    FindClose( hFind );
+#else
+    if ( this->exists() )
+    {
+        DIR* dir = opendir( m_path.c_str() );
+        if ( !dir )
+        {
+            kvsMessageError( "%s is not opened.", m_path.c_str() );
+            return file_list;
+        }
+
+        struct dirent* ent;
+        while ( ( ent = readdir( dir ) ) != NULL )
+        {
+            const std::string path( m_path );
+            const std::string filename( ent->d_name );
+            const kvs::File file( path + Directory::Separator() + filename );
+            if ( file.isFile() ) { file_list.push_back( file ); }
+        }
+
+        closedir( dir );
+    }
+#endif
+
+    if ( sort ) { std::sort( file_list.begin(), file_list.end() ); }
+    return file_list;
 }
 
 /*==========================================================================*/
@@ -322,11 +421,11 @@ bool Directory::isDirectory() const
 {
 #if defined ( KVS_PLATFORM_WINDOWS )
     WIN32_FIND_DATAA find_data;
-    FindFirstFileA( m_directory_path.c_str(), &find_data );
+    FindFirstFileA( m_path.c_str(), &find_data );
     return ( find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) != 0;
 #else
     struct stat filestat;
-    if ( stat( m_directory_path.c_str(), &filestat ) ) { return false; }
+    if ( stat( m_path.c_str(), &filestat ) ) { return false; }
     return filestat.st_mode & S_IFDIR;
 #endif
 }
@@ -351,120 +450,15 @@ bool Directory::exists() const
 /*==========================================================================*/
 bool Directory::parse( const std::string& directory_path )
 {
-    m_directory_path = directory_path;
+    std::string path = directory_path;
+    if ( path[0] == '~' ) { path = kvs::Directory::HomePath() + path.substr(1); }
+    m_path = path;
 
-    const std::string absolute_directory_path =
-        ::GetAbsolutePath( directory_path );
-    const size_t last_sep_pos =
-        absolute_directory_path.find_last_of( Directory::Separator() );
-
-    m_directory_name = absolute_directory_path.substr( last_sep_pos + 1 );
-
-#if defined ( KVS_PLATFORM_WINDOWS )
-    WIN32_FIND_DATAA find_data;
-    HANDLE           hFind;
-
-    char bufname[MAX_PATH_LENGTH];
-
-    strcpy( bufname, m_directory_path.c_str() );
-    int len = strlen( bufname );
-    /* If len is 0, dirname is empty. so I must get current directory
-     * entry(i.e. "*.*") and must not add '\'.
-     */
-    if ( len )
-    {
-        if ( bufname[ len - 1 ] != '\\' ||
-             ::GetMBCharType( bufname, len - 1 ) == MBTypeDB2 )
-        {
-            bufname[ len++ ] = '\\';
-        }
-    }
-
-    strcpy( bufname + len, "*.*" );
-    hFind = FindFirstFileA( bufname, &find_data );
-    do
-    {
-        const std::string path( m_directory_path );
-        const std::string filename( find_data.cFileName );
-        const kvs::File   file( path + kvs::Directory::Separator() + filename );
-
-        if ( file.isFile() )
-        {
-            m_file_list.push_back( file );
-        }
-    }
-    while ( FindNextFileA( hFind, &find_data ) );
-
-    FindClose( hFind );
-#else
-    if ( this->exists() )
-    {
-        DIR* dir = opendir( m_directory_path.c_str() );
-
-        if ( !dir )
-        {
-            kvsMessageError( "%s is not opened.", m_directory_path.c_str() );
-            return false;
-        }
-
-        struct dirent* ent;
-        while ( ( ent = readdir( dir ) ) != NULL )
-        {
-            const std::string path( m_directory_path );
-            const std::string filename( ent->d_name );
-            const kvs::File   file( path + kvs::Directory::Separator() + filename );
-
-            if ( file.isFile() )
-            {
-                m_file_list.push_back( file );
-            }
-        }
-
-        closedir( dir );
-    }
-#endif
+    const std::string abs_dir_path = Directory::Absolute( directory_path );
+    const size_t last_sep_pos = abs_dir_path.find_last_of( Directory::Separator() );
+    m_name = abs_dir_path.substr( last_sep_pos + 1 );
 
     return true;
-}
-
-/*==========================================================================*/
-/**
- *  Sorting filename list.
- */
-/*==========================================================================*/
-void Directory::sort()
-{
-    std::sort( m_file_list.begin(), m_file_list.end() );
-}
-
-/*==========================================================================*/
-/**
- *  Find file from given directory.
- *  @param file [in] file
- *  @return iterator of the found file
- */
-/*==========================================================================*/
-kvs::FileList::iterator Directory::find( const File& file )
-{
-    kvs::FileList::iterator begin = m_file_list.begin();
-    kvs::FileList::iterator end   = m_file_list.end();
-
-    return std::find( begin, end, file );
-}
-
-/*==========================================================================*/
-/**
- *  Find file from given directory.
- *  @param file [in] file
- *  @return iterator of the found file
- */
-/*==========================================================================*/
-kvs::FileList::const_iterator Directory::find( const File& file ) const
-{
-    kvs::FileList::const_iterator begin = m_file_list.begin();
-    kvs::FileList::const_iterator end   = m_file_list.end();
-
-    return std::find( begin, end, file );
 }
 
 } // end of namespace kvs

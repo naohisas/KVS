@@ -20,7 +20,7 @@
 #include <kvs/OpenGL>
 #include <kvs/PaintEventListener>
 // SupportGLUT
-#include <kvs/glut/Label>
+//#include <kvs/glut/Label>
 
 
 /*===========================================================================*/
@@ -66,6 +66,7 @@ int main( int argc, char** argv )
     screen.show();
 
     // Message.
+    /*
     kvs::glut::Label message( &screen );
     message.setMargin( 10 );
     message.addText( "Rotation:    [Left Button]" );
@@ -73,6 +74,7 @@ int main( int argc, char** argv )
     message.addText( "Scaling:     [Shift] + [Left Button]" );
     message.addText( "Quit:        [Esc] or [q]" );
     message.show();
+    */
 
     return( app.run() );
 }

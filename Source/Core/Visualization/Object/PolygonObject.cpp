@@ -29,7 +29,7 @@ namespace
  *  @return polygon type
  */
 /*==========================================================================*/
-const kvs::PolygonObject::PolygonType GetPolygonType( const std::string& polygon_type )
+kvs::PolygonObject::PolygonType GetPolygonType( const std::string& polygon_type )
 {
     if (      polygon_type == "triangle"   ) { return kvs::PolygonObject::Triangle; }
     else if ( polygon_type == "quadrangle" ) { return kvs::PolygonObject::Quadrangle; }
@@ -47,7 +47,7 @@ const kvs::PolygonObject::PolygonType GetPolygonType( const std::string& polygon
  *  @return polygon color type
  */
 /*==========================================================================*/
-const kvs::PolygonObject::ColorType GetColorType( const std::string& color_type )
+kvs::PolygonObject::ColorType GetColorType( const std::string& color_type )
 {
     if (      color_type == "vertex"  ) { return kvs::PolygonObject::VertexColor; }
     else if ( color_type == "polygon" ) { return kvs::PolygonObject::PolygonColor; }
@@ -65,7 +65,7 @@ const kvs::PolygonObject::ColorType GetColorType( const std::string& color_type 
  *  @return polygon normal type
  */
 /*==========================================================================*/
-const kvs::PolygonObject::NormalType GetNormalType( const std::string& normal_type )
+kvs::PolygonObject::NormalType GetNormalType( const std::string& normal_type )
 {
     if (      normal_type == "vertex"  ) { return kvs::PolygonObject::VertexNormal; }
     else if ( normal_type == "polygon" ) { return kvs::PolygonObject::PolygonNormal; }

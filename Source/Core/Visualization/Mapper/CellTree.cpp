@@ -178,15 +178,8 @@ public:
         m_pc = pc;
     }
 
-    bool check()
-    {
-        return ( m_nodes != NULL );
-    }
-
-    void run()
-    {
-        this->split( m_index, m_min, m_max );
-    }
+    //bool check() { return ( m_nodes != NULL ); }
+    void run() { this->split( m_index, m_min, m_max ); }
 
     void split( kvs::UInt32 index, kvs::Real32 min[3], kvs::Real32 max[3] )
     {
@@ -417,7 +410,7 @@ public:
         delete [] m_pc;
     }
 
-    void setParallel() { m_parallel = true; }
+    //void setParallel() { m_parallel = true; }
 
     void build( kvs::CellTree& ct, const kvs::UnstructuredVolumeObject* volume )
     {

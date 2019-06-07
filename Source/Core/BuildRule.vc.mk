@@ -121,6 +121,7 @@ $(OUTDIR)\.\FileFormat\XML\XMLElement.obj \
 $(OUTDIR)\.\FileFormat\XML\XMLNode.obj \
 $(OUTDIR)\.\Image\BitImage.obj \
 $(OUTDIR)\.\Image\ColorImage.obj \
+$(OUTDIR)\.\Image\CubicImage.obj \
 $(OUTDIR)\.\Image\GrayImage.obj \
 $(OUTDIR)\.\Image\HCLColor.obj \
 $(OUTDIR)\.\Image\HSVColor.obj \
@@ -129,6 +130,7 @@ $(OUTDIR)\.\Image\LabColor.obj \
 $(OUTDIR)\.\Image\MshColor.obj \
 $(OUTDIR)\.\Image\RGBAColor.obj \
 $(OUTDIR)\.\Image\RGBColor.obj \
+$(OUTDIR)\.\Image\SphericalImage.obj \
 $(OUTDIR)\.\Image\XYZColor.obj \
 $(OUTDIR)\.\Matrix\FrustumMatrix44.obj \
 $(OUTDIR)\.\Matrix\LookAtMatrix44.obj \
@@ -376,6 +378,7 @@ $(OUTDIR)\.\Visualization\Renderer\ScatterPlotRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\Shader.obj \
 $(OUTDIR)\.\Visualization\Renderer\ShadingParameter.obj \
 $(OUTDIR)\.\Visualization\Renderer\SphereGlyph.obj \
+$(OUTDIR)\.\Visualization\Renderer\SphericalImageRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticLineRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticMultipleTetrahedraCompositor.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticMultipleTetrahedraRenderer.obj \
@@ -388,6 +391,7 @@ $(OUTDIR)\.\Visualization\Renderer\StochasticRenderingEngine.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticTetrahedraRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticUniformGridRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StylizedLineRenderer.obj \
+$(OUTDIR)\.\Visualization\Renderer\VertexBufferObjectManager.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRayIntersector.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRendererBase.obj \
 $(OUTDIR)\.\Visualization\Viewer\ApplicationBase.obj \

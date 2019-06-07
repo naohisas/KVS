@@ -12,9 +12,7 @@
  *  $Id: VideoRenderer.h 1398 2012-12-05 09:33:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__OPENCV__VIDEO_RENDERER_H_INCLUDE
-#define KVS__OPENCV__VIDEO_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/RendererBase>
 #include <kvs/Texture2D>
 #include <kvs/Module>
@@ -38,16 +36,8 @@ namespace opencv
 /*===========================================================================*/
 class VideoRenderer : public kvs::RendererBase
 {
-    kvsModuleName( kvs::opencv::VideoRenderer );
-    kvsModuleCategory( Renderer );
+    kvsModule( kvs::opencv::VideoRenderer, Renderer );
     kvsModuleBaseClass( kvs::RendererBase );
-
-public:
-    enum Type
-    {
-        Stretching = 0,
-        Centering  = 1
-    };
 
 private:
     double m_initial_aspect_ratio; ///< initial aspect ratio
@@ -55,22 +45,30 @@ private:
     double m_right; ///< screen right position
     double m_bottom; ///< screen bottom position
     double m_top; ///< screen top position
-    Type m_type; ///< rendering type
+    bool m_enable_centering; ///< enable center alignment
+    bool m_enable_mirroring; ///< enable mirror mapping
     kvs::Texture2D m_texture; ///< texture image
 
 public:
-    VideoRenderer( const Type type = VideoRenderer::Centering );
-    virtual ~VideoRenderer();
+    VideoRenderer();
 
+    bool isEnabledCentering() const { return m_enable_centering; }
+    bool isEnabledMirroring() const { return m_enable_mirroring; }
+    void setEnabledCentering( const bool enable ) { m_enable_centering = enable; }
+    void setEnabledMirroring( const bool enable ) { m_enable_mirroring = enable; }
+    void enableCentering() { this->setEnabledCentering( true ); }
+    void enableMirroring() { this->setEnabledMirroring( true ); }
+    void disableCentering() { this->setEnabledCentering( false ); }
+    void disableMirroring() { this->setEnabledMirroring( false ); }
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-private:
-    void create_texture( const kvs::opencv::VideoObject* video );
-    void centering( const double width, const double height );
+protected:
+    kvs::Texture2D& texture() { return m_texture; }
+    void createTexture( const kvs::opencv::VideoObject* video );
+    void alignCenter( const kvs::Camera* camera );
+    void textureMapping();
 };
 
 } // end of namespace opencv
 
 } // end of namespace kvs
-
-#endif // KVS__OPENCV__VIDEO_RENDERER_H_INCLUDE

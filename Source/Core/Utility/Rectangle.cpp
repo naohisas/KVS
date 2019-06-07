@@ -81,7 +81,7 @@ Rectangle::~Rectangle()
  *  @return true if the given point is inside the width
  */
 /*===========================================================================*/
-bool Rectangle::contains( const int x, const int y, const bool proper )
+bool Rectangle::contains( const int x, const int y, const bool proper ) const
 {
     /*
      *   p0 ------------ *

@@ -41,6 +41,7 @@
 #include <Core/FileFormat/XML/XMLNode.h>
 #include <Core/Image/BitImage.h>
 #include <Core/Image/ColorImage.h>
+#include <Core/Image/CubicImage.h>
 #include <Core/Image/GrayImage.h>
 #include <Core/Image/HCLColor.h>
 #include <Core/Image/HSVColor.h>
@@ -49,6 +50,7 @@
 #include <Core/Image/MshColor.h>
 #include <Core/Image/RGBAColor.h>
 #include <Core/Image/RGBColor.h>
+#include <Core/Image/SphericalImage.h>
 #include <Core/Image/XYZColor.h>
 #include <Core/Matrix/FrustumMatrix44.h>
 #include <Core/Matrix/LookAtMatrix44.h>
@@ -139,6 +141,7 @@
 #include <Core/Utility/BitArray.h>
 #include <Core/Utility/Breakpoint.h>
 #include <Core/Utility/ClassName.h>
+#include <Core/Utility/ColorStream.h>
 #include <Core/Utility/CommandLine.h>
 #include <Core/Utility/Compiler.h>
 #include <Core/Utility/Date.h>
@@ -158,6 +161,7 @@
 #include <Core/Utility/MemoryTracer.h>
 #include <Core/Utility/Message.h>
 #include <Core/Utility/Noncopyable.h>
+#include <Core/Utility/NullStream.h>
 #include <Core/Utility/Platform.h>
 #include <Core/Utility/Program.h>
 #include <Core/Utility/Range.h>
@@ -321,6 +325,7 @@
 #include <Core/Visualization/Renderer/ScatterPlotRenderer.h>
 #include <Core/Visualization/Renderer/Shader.h>
 #include <Core/Visualization/Renderer/SphereGlyph.h>
+#include <Core/Visualization/Renderer/SphericalImageRenderer.h>
 #include <Core/Visualization/Renderer/StochasticLineRenderer.h>
 #include <Core/Visualization/Renderer/StochasticMultipleTetrahedraCompositor.h>
 #include <Core/Visualization/Renderer/StochasticMultipleTetrahedraRenderer.h>
@@ -333,6 +338,7 @@
 #include <Core/Visualization/Renderer/StochasticTetrahedraRenderer.h>
 #include <Core/Visualization/Renderer/StochasticUniformGridRenderer.h>
 #include <Core/Visualization/Renderer/StylizedLineRenderer.h>
+#include <Core/Visualization/Renderer/VertexBufferObjectManager.h>
 #include <Core/Visualization/Renderer/VolumeRayIntersector.h>
 #include <Core/Visualization/Renderer/VolumeRendererBase.h>
 #include <Core/Visualization/Viewer/ApplicationBase.h>

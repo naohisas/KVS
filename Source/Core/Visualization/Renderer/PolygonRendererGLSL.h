@@ -12,16 +12,13 @@
  *  $Id: PolygonRenderer.h 1398 2012-12-05 09:33:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__GLSL__POLYGON_RENDERER_H_INCLUDE
-#define KVS__GLSL__POLYGON_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/DebugNew>
 #include <kvs/Module>
 #include <kvs/PolygonObject>
 #include <kvs/Shader>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObject>
-#include <kvs/IndexBufferObject>
+#include <kvs/VertexBufferObjectManager>
 
 
 namespace kvs
@@ -35,8 +32,7 @@ class PolygonRenderer : public kvs::PolygonRenderer
     kvsModule( kvs::glsl::PolygonRenderer, Renderer );
     kvsModuleBaseClass( kvs::PolygonRenderer );
 
-protected:
-
+private:
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
@@ -44,15 +40,11 @@ protected:
     bool m_has_connection; ///< check flag for the connection array
     kvs::Shader::ShadingModel* m_shader; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObject m_vbo; ///< vertex buffer object
-    kvs::IndexBufferObject m_ibo; ///< index buffer object
+    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
 
 public:
-
     PolygonRenderer();
     virtual ~PolygonRenderer();
-
-public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
@@ -60,7 +52,6 @@ public:
     void setShader( const ShadingType shader );
 
 private:
-
     void create_shader_program();
     void create_buffer_object( const kvs::PolygonObject* point );
 };
@@ -84,5 +75,3 @@ inline void PolygonRenderer::setShader( const ShadingType shader )
 } // end of namespace glsl
 
 } // end of namespace kvs
-
-#endif // KVS__GLSL__POLYGON_RENDERER_H_INCLUDE

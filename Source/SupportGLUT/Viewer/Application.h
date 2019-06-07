@@ -12,9 +12,7 @@
  *  $Id: Application.h 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__GLUT__APPLICATION_H_INCLUDE
-#define KVS__GLUT__APPLICATION_H_INCLUDE
-
+#pragma once
 #include <kvs/ApplicationBase>
 
 
@@ -32,7 +30,6 @@ namespace glut
 class Application : public kvs::ApplicationBase
 {
 public:
-
     Application( int argc, char** argv );
     virtual ~Application();
 
@@ -43,5 +40,3 @@ public:
 } // end of namespace glut
 
 } // end of namespace kvs
-
-#endif // KVS__GLUT__APPLICATION_H_INCLUDE

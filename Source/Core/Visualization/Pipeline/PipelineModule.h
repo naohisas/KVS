@@ -89,7 +89,7 @@ public:
 
     PipelineModule& operator = ( const PipelineModule& module );
 
-    const Category category() const { return m_category; }
+    Category category() const { return m_category; }
     const Module module() const { return m_module; }
     const kvs::FilterBase* filter() const { return m_module.filter; }
     const kvs::MapperBase* mapper() const { return m_module.mapper; }

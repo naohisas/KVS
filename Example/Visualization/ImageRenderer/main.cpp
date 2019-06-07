@@ -44,8 +44,7 @@ int main( int argc, char** argv )
     }
 
     // Create an image renderer.
-    const kvs::ImageRenderer::Type type = kvs::ImageRenderer::Stretching;
-    kvs::ImageRenderer* renderer = new kvs::ImageRenderer( type );
+    kvs::ImageRenderer* renderer = new kvs::ImageRenderer();
     if ( !renderer )
     {
         kvsMessageError("Cannot create an image renderer.");

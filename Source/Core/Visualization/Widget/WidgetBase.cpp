@@ -98,8 +98,8 @@ void WidgetBase::setBackgroundBorderOpacity( const float opacity )
 /*===========================================================================*/
 void WidgetBase::show()
 {
-    if ( m_width == 0 ) m_width = this->adjustedWidth();
-    if ( m_height == 0 ) m_height = this->adjustedHeight();
+    if ( Rectangle::width() == 0 ) Rectangle::setWidth( this->adjustedWidth() );
+    if ( Rectangle::height() == 0 ) Rectangle::setHeight( this->adjustedHeight() );
 
     m_is_shown = true;
 }
@@ -161,8 +161,8 @@ void WidgetBase::drawBackground()
 
 void WidgetBase::initializeEvent()
 {
-    if ( m_width == 0 ) m_width = this->adjustedWidth();
-    if ( m_height == 0 ) m_height = this->adjustedHeight();
+    if ( Rectangle::width() == 0 ) Rectangle::setWidth( this->adjustedWidth() );
+    if ( Rectangle::height() == 0 ) Rectangle::setHeight( this->adjustedHeight() );
 }
 
 } // end of namespace kvs

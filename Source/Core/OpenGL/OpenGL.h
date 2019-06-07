@@ -26,6 +26,7 @@
 #include <kvs/Xform>
 #include <kvs/RGBColor>
 #include <kvs/RGBAColor>
+#include <kvs/ValueArray>
 
 
 namespace kvs
@@ -305,6 +306,26 @@ void PushAttrib( GLbitfield mask );
 void PopAttrib();
 void PushClientAttrib( GLbitfield mask );
 void PopClientAttrib();
+
+void EnableClientState( GLenum array );
+void DisableClientState( GLenum array );
+
+void EnableVertexAttribArray( GLuint index );
+void DisableVertexAttribArray( GLuint index );
+
+void VertexPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
+void ColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
+void NormalPointer( GLenum type, GLsizei stride, const GLvoid* pointer );
+void TexCoordPointer( GLint size, GLenum type, GLsizei stride, const GLvoid* pointer );
+void VertexAttribPointer( GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer );
+
+void DrawArrays( GLenum mode, GLint first, GLsizei count );
+void MultiDrawArrays( GLenum mode, const GLint* first, const GLsizei* count, GLsizei drawcount );
+void MultiDrawArrays( GLenum mode, const kvs::ValueArray<GLint>& first, const kvs::ValueArray<GLsizei>& count );
+
+void DrawElements( GLenum mode, GLsizei count, GLenum type, const GLvoid* indices );
+void MultiDrawElements( GLenum mode, const GLsizei* count, GLenum type, const GLvoid* const* indices, GLsizei drawcount );
+void MultiDrawElements( GLenum mode, const kvs::ValueArray<GLsizei>& count, GLenum type, const GLvoid* const* indices );
 
 GLint Project(
     GLdouble objx, GLdouble objy, GLdouble objz,

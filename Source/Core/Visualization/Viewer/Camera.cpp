@@ -285,17 +285,15 @@ void Camera::update()
 {
     float ary[16];
 
-    KVS_GL_CALL( glMatrixMode( GL_PROJECTION ) );
-    KVS_GL_CALL( glLoadIdentity() );
-    kvs::Xform p( this->projectionMatrix() );
-    p.toArray( ary );
-    KVS_GL_CALL( glMultMatrixf( ary ) );
+    kvs::OpenGL::SetMatrixMode( GL_PROJECTION );
+    kvs::OpenGL::LoadIdentity();
+    kvs::Xform p( this->projectionMatrix() ); p.toArray( ary );
+    kvs::OpenGL::MultMatrix( ary );
 
-    KVS_GL_CALL( glMatrixMode( GL_MODELVIEW ) );
-    KVS_GL_CALL( glLoadIdentity() );
-    kvs::Xform v( this->viewingMatrix() );
-    v.toArray( ary );
-    KVS_GL_CALL( glMultMatrixf( ary ) );
+    kvs::OpenGL::SetMatrixMode( GL_MODELVIEW );
+    kvs::OpenGL::LoadIdentity();
+    kvs::Xform v( this->viewingMatrix() ); v.toArray( ary );
+    kvs::OpenGL::MultMatrix( ary );
 }
 
 /*==========================================================================*/
@@ -311,9 +309,9 @@ kvs::ColorImage Camera::snapshot()
     const int size = height * width * 3;
     kvs::ValueArray<kvs::UInt8> buffer( size );
 
-    KVS_GL_CALL( glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
-    KVS_GL_CALL( glReadBuffer( GL_FRONT ) );
-    KVS_GL_CALL( glReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() ) );
+    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
+    kvs::OpenGL::SetReadBuffer( GL_FRONT );
+    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
 
     kvs::ColorImage ret( width, height, buffer );
     ret.flip();
@@ -368,6 +366,9 @@ void Camera::scale( const kvs::Vec3& scaling )
 {
     this->multiplyXform( kvs::Xform::Scaling( scaling ) );
 }
+
+
+
 
 const kvs::Mat4 Camera::modelViewMatrix() const
 {

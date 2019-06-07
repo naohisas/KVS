@@ -32,7 +32,7 @@ int main()
     if ( !device.create( CV_CAP_ANY ) )
     {
         kvsMessageError("Capture device is NULL.");
-        return false;
+        return 1;
     }
 
     // Create window.
@@ -46,7 +46,7 @@ int main()
         if ( !frame )
         {
             kvsMessageError("Frame is NULL.");
-            return false;
+            return 1;
         }
 
         window.show( frame );
@@ -58,5 +58,5 @@ int main()
         if ( ( kvs::opencv::Window::WaitKey(1) & 255 ) == 27 ) break;
     }
 
-    return true;
+    return 0;
 }

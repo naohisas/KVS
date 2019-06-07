@@ -108,7 +108,6 @@ void StochasticLineRenderer::setOpacity( const kvs::UInt8 opacity )
 StochasticLineRenderer::Engine::Engine():
     m_line_opacity( 255 ),
     m_has_connection( false ),
-    m_random_index( 0 ),
     m_line_offset( 0.0f )
 {
 }
@@ -121,8 +120,7 @@ StochasticLineRenderer::Engine::Engine():
 void StochasticLineRenderer::Engine::release()
 {
     m_shader_program.release();
-    m_vbo.release();
-    m_ibo.release();
+    m_vbo_manager.release();
 }
 
 /*===========================================================================*/
@@ -168,8 +166,6 @@ void StochasticLineRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camer
 /*===========================================================================*/
 void StochasticLineRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    m_random_index = m_shader_program.attributeLocation("random_index");
-
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
     m_shader_program.bind();
@@ -193,7 +189,7 @@ void StochasticLineRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera*
 {
     kvs::LineObject* line = kvs::LineObject::DownCast( object );
 
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
+    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
     kvs::ProgramObject::Binder bind2( m_shader_program );
     kvs::Texture::Binder bind3( randomTexture() );
     {
@@ -204,72 +200,37 @@ void StochasticLineRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera*
         const kvs::Vec2 random_offset( offset_x, offset_y );
         m_shader_program.setUniform( "random_offset", random_offset );
 
-        const size_t nlines = line->numberOfConnections();
-        const size_t index_size = line->numberOfVertices() * 2 * sizeof( kvs::UInt16 );
-        const size_t coord_size = line->numberOfVertices() * 3 * sizeof( kvs::Real32 );
-
-        KVS_GL_CALL( glLineWidth( line->size() ) );
-
-        // Enable coords.
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (GLbyte*)NULL + index_size ) );
-
-        // Enable colors.
-        KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
-        KVS_GL_CALL( glColorPointer( 3, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + index_size + coord_size ) );
-
-        // Enable random index.
-        KVS_GL_CALL( glEnableVertexAttribArray( m_random_index ) );
-        KVS_GL_CALL( glVertexAttribPointer( m_random_index, 2, GL_UNSIGNED_SHORT, GL_FALSE, 0, (GLubyte*)NULL + 0 ) );
-
-        // Draw lines.
+        kvs::OpenGL::SetLineWidth( line->size() );
         if ( m_has_connection )
         {
-            kvs::IndexBufferObject::Binder bind4( m_ibo );
-            if ( line->lineType() == kvs::LineObject::Uniline )
+            const size_t nlines = line->numberOfConnections();
+            switch ( line->lineType() )
             {
-                KVS_GL_CALL( glDrawElements( GL_LINE_STRIP, nlines, GL_UNSIGNED_INT, 0 ) );
-            }
-            else if ( line->lineType() ==  kvs::LineObject::Segment )
-            {
-                KVS_GL_CALL( glDrawElements( GL_LINES, 2 * nlines, GL_UNSIGNED_INT, 0 ) );
+            case kvs::LineObject::Uniline:
+                m_vbo_manager.drawElements( GL_LINE_STRIP, nlines );
+                break;
+            case kvs::LineObject::Segment:
+                m_vbo_manager.drawElements( GL_LINES, 2 * nlines );
+                break;
+            default:
+                break;
             }
         }
         else
         {
-            if ( line->lineType() == kvs::LineObject::Polyline )
+            switch ( line->lineType() )
             {
-                // if OpenGL version is 1.4 or later
-                GLint* first = m_first_array.data();
-                GLsizei* count = m_count_array.data();
-                GLsizei primecount = m_first_array.size();
-                KVS_GL_CALL( glMultiDrawArrays( GL_LINE_STRIP, first, count, primecount ) );
-                // else
-                //for ( size_t i = 0; i < nlines; i++ )
-                //{
-                //    const GLint first = m_first_array[i];
-                //    const GLsizei count = m_count_array[i];
-                //    KVS_GL_CALL( glDrawArrays( GL_LINE_STRIP, first, count ) );
-                //}
-            }
-            else if ( line->lineType() == kvs::LineObject::Strip )
-            {
-                const size_t nvertices = line->numberOfVertices();
-                KVS_GL_CALL( glDrawArrays( GL_LINE_STRIP, 0, nvertices ) );
+            case kvs::LineObject::Polyline:
+                m_vbo_manager.drawArrays( GL_LINE_STRIP, m_first_array, m_count_array );
+                break;
+            case kvs::LineObject::Strip:
+                m_vbo_manager.drawArrays( GL_LINE_STRIP, 0, line->numberOfVertices() );
+                break;
+            default:
+                break;
             }
         }
-
-        // Disable coords.
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-
-        // Disable colors.
-        KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
-
-        // Disable random index.
-        KVS_GL_CALL( glDisableVertexAttribArray( m_random_index ) );
     }
-
-//    countRepetitions();
 }
 
 /*===========================================================================*/
@@ -309,39 +270,21 @@ void StochasticLineRenderer::Engine::create_buffer_object( const kvs::LineObject
     kvs::ValueArray<kvs::Real32> coords = line->coords();
     kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( line );
 
-    const size_t index_size = indices.byteSize();
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
-    const size_t byte_size = index_size + coord_size + color_size;
+    m_vbo_manager.setVertexAttribArray( indices, m_shader_program.attributeLocation("random_index"), 2 );
+    m_vbo_manager.setVertexArray( coords, 3 );
+    m_vbo_manager.setColorArray( colors, 3 );
+    if ( m_has_connection ) { m_vbo_manager.setIndexArray( line->connections() ); }
+    m_vbo_manager.create();
 
-    m_vbo.create( byte_size );
-    m_vbo.bind();
-    m_vbo.load( index_size, indices.data(), 0 );
-    m_vbo.load( coord_size, coords.data(), index_size );
-    m_vbo.load( color_size, colors.data(), index_size + coord_size );
-    m_vbo.unbind();
-
-    if ( m_has_connection )
+    if ( ( !m_has_connection ) && ( line->lineType() == kvs::LineObject::Polyline ) )
     {
-        const size_t nlines = line->numberOfConnections();
-        const size_t connection_size = sizeof( kvs::UInt32 ) * 2 * nlines;
-        m_ibo.create( connection_size );
-        m_ibo.bind();
-        m_ibo.load( connection_size, line->connections().data(), 0 );
-        m_ibo.unbind();
-    }
-    else
-    {
-        if ( line->lineType() == kvs::LineObject::Polyline )
+        const kvs::UInt32* pconnections = line->connections().data();
+        m_first_array.allocate( line->numberOfConnections() );
+        m_count_array.allocate( m_first_array.size() );
+        for ( size_t i = 0; i < m_first_array.size(); ++i )
         {
-            const kvs::UInt32* pconnections = line->connections().data();
-            m_first_array.allocate( line->numberOfConnections() );
-            m_count_array.allocate( m_first_array.size() );
-            for ( size_t i = 0; i < m_first_array.size(); ++i )
-            {
-                m_first_array[i] = pconnections[ 2 * i ];
-                m_count_array[i] = pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1;
-            }
+            m_first_array[i] = pconnections[ 2 * i ];
+            m_count_array[i] = pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1;
         }
     }
 }

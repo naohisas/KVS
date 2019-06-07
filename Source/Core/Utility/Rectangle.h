@@ -28,15 +28,13 @@ namespace kvs
 /*===========================================================================*/
 class Rectangle
 {
-protected:
-
+private:
     int m_x; ///< x position of widget on the window coordinate (org: upper-left)
     int m_y; ///< y position of widet on the window coordinate (org: upper-left)
     int m_width; ///< widget width
     int m_height; ///< widget height
 
 public:
-
     Rectangle();
     Rectangle( const int width, const int height );
     Rectangle( const int x, const int y, const int width, const int height );
@@ -65,9 +63,13 @@ public:
     void setHeight( const int height ) { m_height = height; }
     void setPosition( const int x, const int y ) { m_x = x; m_y = y; }
     void setSize( const int width, const int height ) { m_width = width; m_height = height; }
-    void setGeometry( const int x, const int y, const int width, const int height ) { this->setPosition( x, y ); this->setSize( width, height ); }
+    void setGeometry( const int x, const int y, const int width, const int height )
+    {
+        this->setPosition( x, y );
+        this->setSize( width, height );
+    }
 
-    bool contains( const int x, const int y, const bool proper = false );
+    bool contains( const int x, const int y, const bool proper = false ) const;
 };
 
 } // end of namespace kvs

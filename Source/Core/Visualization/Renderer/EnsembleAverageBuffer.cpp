@@ -15,10 +15,11 @@
 #include "EnsembleAverageBuffer.h"
 #include <kvs/OpenGL>
 
+
 namespace
 {
 
-void Draw()
+inline void Draw()
 {
     kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
     p1.loadIdentity();
@@ -27,12 +28,15 @@ void Draw()
         p2.loadIdentity();
         {
             kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-            kvs::OpenGL::Begin( GL_QUADS );
-            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 0 ), kvs::Vec2( 0, 0 ) );
-            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 0 ), kvs::Vec2( 1, 0 ) );
-            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 1 ), kvs::Vec2( 1, 1 ) );
-            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 1 ), kvs::Vec2( 0, 1 ) );
-            kvs::OpenGL::End();
+            kvs::OpenGL::WithEnabled e1( GL_TEXTURE_2D );
+            {
+                kvs::OpenGL::Begin( GL_QUADS );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 0 ), kvs::Vec2( 0, 0 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 0 ), kvs::Vec2( 1, 0 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 1 ), kvs::Vec2( 1, 1 ) );
+                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 1 ), kvs::Vec2( 0, 1 ) );
+                kvs::OpenGL::End();
+            }
         }
     }
 }
@@ -97,7 +101,7 @@ void EnsembleAverageBuffer::create( const size_t width, const size_t height )
         "    vec2 p = gl_TexCoord[0].xy;"
         "    vec3 Csrc = texture2D( current_color_buffer, p ).rgb;"
         "    vec3 Cdst = texture2D( accum_buffer, p ).rgb;"
-        "    float Dsrc = texture2D( current_depth_buffer, p ).r;"
+        "    float Dsrc = texture2D( current_depth_buffer, p ).z;"
         "    float Ddst = texture2D( accum_buffer, p ).a;"
         "    gl_FragColor = vec4( alpha * Csrc + ( 1.0 - alpha ) * Cdst, min( Dsrc, Ddst ) );"
         "}"
@@ -203,6 +207,7 @@ void EnsembleAverageBuffer::draw()
 {
     kvs::Texture::Binder tex( m_accum_texture, 0 );
     {
+        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
         m_drawing_shader.bind();
         m_drawing_shader.setUniform( "accum_texture", 0 );
         ::Draw();

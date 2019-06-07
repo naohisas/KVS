@@ -530,8 +530,13 @@ void RayCastingRenderer::initialize_bounding_cube_buffer( const kvs::StructuredV
         minx, maxy, minz  // 4
     };
 
-    const size_t byte_size = sizeof(float) * nelements;
-    m_bounding_cube_buffer.create( byte_size, coords );
+    kvs::VertexBufferObjectManager::VertexBuffer vertex_array;
+    vertex_array.type = GL_FLOAT;
+    vertex_array.size = sizeof( float ) * nelements;
+    vertex_array.dim = 3;
+    vertex_array.pointer = coords;
+    m_bounding_cube_buffer.setVertexArray( vertex_array );
+    m_bounding_cube_buffer.create();
 }
 
 /*===========================================================================*/
@@ -745,11 +750,8 @@ void RayCastingRenderer::update_framebuffer( const size_t width, const size_t he
 /*===========================================================================*/
 void RayCastingRenderer::draw_bounding_cube_buffer()
 {
-    kvs::VertexBufferObject::Binder binder( m_bounding_cube_buffer );
-    KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-    KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, 0 ) );
-    KVS_GL_CALL( glDrawArrays( GL_QUADS, 0, 72 ) );
-    KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
+    kvs::VertexBufferObjectManager::Binder binder( m_bounding_cube_buffer );
+    m_bounding_cube_buffer.drawArrays( GL_QUADS, 0, 72 );
 }
 
 /*===========================================================================*/
@@ -770,13 +772,13 @@ void RayCastingRenderer::draw_quad( const float opacity )
         p2.loadIdentity();
         {
             kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-            KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-            KVS_GL_CALL_VER( glColor4f( 1.0, 1.0, 1.0, opacity ) );
-            KVS_GL_CALL_VER( glTexCoord2f( 1, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 1 ) );
-            KVS_GL_CALL_VER( glTexCoord2f( 0, 1 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 1 ) );
-            KVS_GL_CALL_VER( glTexCoord2f( 0, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 0, 0 ) );
-            KVS_GL_CALL_VER( glTexCoord2f( 1, 0 ) ); KVS_GL_CALL_VER( glVertex2f( 1, 0 ) );
-            KVS_GL_CALL_END( glEnd() );
+            kvs::OpenGL::Begin( GL_QUADS );
+            kvs::OpenGL::Color( kvs::Vec4( 1.0, 1.0, 1.0, opacity ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 1 ), kvs::Vec2( 1, 1 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 1 ), kvs::Vec2( 0, 1 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 0 ), kvs::Vec2( 0, 0 ) );
+            kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 0 ), kvs::Vec2( 1, 0 ) );
+            kvs::OpenGL::End();
         }
     }
 }

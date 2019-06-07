@@ -121,6 +121,7 @@ $(OUTDIR)/./FileFormat/XML/XMLElement.o \
 $(OUTDIR)/./FileFormat/XML/XMLNode.o \
 $(OUTDIR)/./Image/BitImage.o \
 $(OUTDIR)/./Image/ColorImage.o \
+$(OUTDIR)/./Image/CubicImage.o \
 $(OUTDIR)/./Image/GrayImage.o \
 $(OUTDIR)/./Image/HCLColor.o \
 $(OUTDIR)/./Image/HSVColor.o \
@@ -129,6 +130,7 @@ $(OUTDIR)/./Image/LabColor.o \
 $(OUTDIR)/./Image/MshColor.o \
 $(OUTDIR)/./Image/RGBAColor.o \
 $(OUTDIR)/./Image/RGBColor.o \
+$(OUTDIR)/./Image/SphericalImage.o \
 $(OUTDIR)/./Image/XYZColor.o \
 $(OUTDIR)/./Matrix/FrustumMatrix44.o \
 $(OUTDIR)/./Matrix/LookAtMatrix44.o \
@@ -376,6 +378,7 @@ $(OUTDIR)/./Visualization/Renderer/ScatterPlotRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/Shader.o \
 $(OUTDIR)/./Visualization/Renderer/ShadingParameter.o \
 $(OUTDIR)/./Visualization/Renderer/SphereGlyph.o \
+$(OUTDIR)/./Visualization/Renderer/SphericalImageRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticLineRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticMultipleTetrahedraCompositor.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticMultipleTetrahedraRenderer.o \
@@ -388,6 +391,7 @@ $(OUTDIR)/./Visualization/Renderer/StochasticRenderingEngine.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticTetrahedraRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticUniformGridRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StylizedLineRenderer.o \
+$(OUTDIR)/./Visualization/Renderer/VertexBufferObjectManager.o \
 $(OUTDIR)/./Visualization/Renderer/VolumeRayIntersector.o \
 $(OUTDIR)/./Visualization/Renderer/VolumeRendererBase.o \
 $(OUTDIR)/./Visualization/Viewer/ApplicationBase.o \

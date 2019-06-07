@@ -41,6 +41,7 @@ FileFormat/XML/XMLElement
 FileFormat/XML/XMLNode
 Image/BitImage
 Image/ColorImage
+Image/CubicImage
 Image/GrayImage
 Image/HCLColor
 Image/HSVColor
@@ -49,6 +50,7 @@ Image/LabColor
 Image/MshColor
 Image/RGBAColor
 Image/RGBColor
+Image/SphericalImage
 Image/XYZColor
 Matrix/FrustumMatrix44
 Matrix/LookAtMatrix44
@@ -139,6 +141,7 @@ Utility/Binary
 Utility/BitArray
 Utility/Breakpoint
 Utility/ClassName
+Utility/ColorStream
 Utility/CommandLine
 Utility/Compiler
 Utility/Date
@@ -158,6 +161,7 @@ Utility/MemoryDebugger
 Utility/MemoryTracer
 Utility/Message
 Utility/Noncopyable
+Utility/NullStream
 Utility/Platform
 Utility/Program
 Utility/Range
@@ -321,6 +325,7 @@ Visualization/Renderer/ScatterPlotMatrixRenderer
 Visualization/Renderer/ScatterPlotRenderer
 Visualization/Renderer/Shader
 Visualization/Renderer/SphereGlyph
+Visualization/Renderer/SphericalImageRenderer
 Visualization/Renderer/StochasticLineRenderer
 Visualization/Renderer/StochasticMultipleTetrahedraCompositor
 Visualization/Renderer/StochasticMultipleTetrahedraRenderer
@@ -333,6 +338,7 @@ Visualization/Renderer/StochasticRenderingEngine
 Visualization/Renderer/StochasticTetrahedraRenderer
 Visualization/Renderer/StochasticUniformGridRenderer
 Visualization/Renderer/StylizedLineRenderer
+Visualization/Renderer/VertexBufferObjectManager
 Visualization/Renderer/VolumeRayIntersector
 Visualization/Renderer/VolumeRendererBase
 Visualization/Viewer/ApplicationBase

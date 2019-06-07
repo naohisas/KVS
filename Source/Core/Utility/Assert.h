@@ -11,16 +11,12 @@
  *  $Id: Assert.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
  */
 /****************************************************************************/
-#ifndef KVS__ASSERT_H_INCLUDE
-#define KVS__ASSERT_H_INCLUDE
-
+#pragma once
 #include <kvs/Message>
 
 #if defined ( KVS_ENABLE_DEBUG )
-#define KVS_ASSERT( exp ) \
-    ( kvs::Message( kvs::Message::Assert, KVS_MACRO_FILE, KVS_MACRO_LINE, KVS_MACRO_FUNC, ( exp ) ) ( # exp ) )
+#define KVS_ASSERT( exp )                                               \
+    kvs::Message( KVS_MACRO_FILE, KVS_MACRO_LINE, KVS_MACRO_FUNC ).assertion( exp, "The conditional expression of '" #exp "' must be true." )
 #else
 #define KVS_ASSERT( exp )
 #endif
-
-#endif // KVS__ASSERT_H_INCLUDE

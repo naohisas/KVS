@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Compiler.h
+ *  @file   Compiler.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -11,9 +12,7 @@
  *  $Id: Compiler.h 1582 2013-06-03 01:31:06Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__COMPILER_H_INCLUDE
-#define KVS__COMPILER_H_INCLUDE
-
+#pragma once
 #define KVS_COMPILER_NUMBER( x )           # x
 #define KVS_COMPILER_NUMBER_TO_STRING( x ) KVS_COMPILER_NUMBER( x )
 
@@ -50,7 +49,7 @@
 
 // Visual Studio 6.0
 #if   ( _MSC_VER == 1200 )
-#define KVS_COMPILER_VERSION "6.00"
+#define KVS_COMPILER_VERSION "6.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 6 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 6 < ( major ) || ( 6 == ( major ) && 0 < ( minor ) ) )
@@ -63,7 +62,7 @@
 
 // Visual Studio 2002
 #elif ( _MSC_VER == 1300 )
-#define KVS_COMPILER_VERSION "7.00"
+#define KVS_COMPILER_VERSION "7.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 7 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 7 < ( major ) || ( 7 == ( major ) && 0 < ( minor ) ) )
@@ -76,7 +75,7 @@
 
 // Visual Studio 2003
 #elif ( _MSC_VER == 1310 )
-#define KVS_COMPILER_VERSION "7.10"
+#define KVS_COMPILER_VERSION "7.1"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 7 == ( major ) && 1 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 7 < ( major ) || ( 7 == ( major ) && 1 < ( minor ) ) )
@@ -89,7 +88,7 @@
 
 // Visual Studio 2005
 #elif ( _MSC_VER == 1400 )
-#define KVS_COMPILER_VERSION "8.00"
+#define KVS_COMPILER_VERSION "8.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 8 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 8 < ( major ) || ( 8 == ( major ) && 0 < ( minor ) ) )
@@ -102,7 +101,7 @@
 
 // Visual Studio 2008
 #elif ( _MSC_VER == 1500 )
-#define KVS_COMPILER_VERSION "9.00"
+#define KVS_COMPILER_VERSION "9.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 9 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 9 < ( major ) || ( 9 == ( major ) && 0 < ( minor ) ) )
@@ -115,7 +114,7 @@
 
 // Visual Studio 2010
 #elif ( _MSC_VER == 1600 )
-#define KVS_COMPILER_VERSION "10.00"
+#define KVS_COMPILER_VERSION "10.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 10 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 10 < ( major ) || ( 10 == ( major ) && 0 < ( minor ) ) )
@@ -128,7 +127,7 @@
 
 // Visual Studio 2012
 #elif ( _MSC_VER == 1700 )
-#define KVS_COMPILER_VERSION "11.00"
+#define KVS_COMPILER_VERSION "11.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 11 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 11 < ( major ) || ( 11 == ( major ) && 0 < ( minor ) ) )
@@ -141,7 +140,7 @@
 
 // Visual Studio 2013
 #elif ( _MSC_VER == 1800 )
-#define KVS_COMPILER_VERSION "12.00"
+#define KVS_COMPILER_VERSION "12.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 12 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 12 < ( major ) || ( 12 == ( major ) && 0 < ( minor ) ) )
@@ -154,7 +153,7 @@
 
 // Visual Studio 2015
 #elif ( _MSC_VER == 1900 )
-#define KVS_COMPILER_VERSION "14.00"
+#define KVS_COMPILER_VERSION "14.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 14 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 14 < ( major ) || ( 14 == ( major ) && 0 < ( minor ) ) )
@@ -167,7 +166,7 @@
 
 // Visual Studio 2017
 #elif ( _MSC_VER == 1910 )
-#define KVS_COMPILER_VERSION "15.00"
+#define KVS_COMPILER_VERSION "15.0"
 #define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 0 == ( minor ) )
 #define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
     ( 15 < ( major ) || ( 15 == ( major ) && 0 < ( minor ) ) )
@@ -177,6 +176,78 @@
     ( 15 > ( major ) || ( 15 == ( major ) && 0 > ( minor ) ) )
 #define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
     ( 15 > ( major ) || ( 15 == ( major ) && 0 >= ( minor ) ) )
+
+#elif ( _MSC_VER == 1911 )
+#define KVS_COMPILER_VERSION "15.3"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 3 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 3 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 3 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 3 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 3 >= ( minor ) ) )
+
+#elif ( _MSC_VER == 1912 )
+#define KVS_COMPILER_VERSION "15.5"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 5 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 5 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 5 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 5 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 5 >= ( minor ) ) )
+
+#elif ( _MSC_VER == 1913 )
+#define KVS_COMPILER_VERSION "15.6"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 6 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 6 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 6 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 6 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 5 >= ( minor ) ) )
+
+#elif ( _MSC_VER == 1914 )
+#define KVS_COMPILER_VERSION "15.7"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 7 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 7 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 7 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 7 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 7 >= ( minor ) ) )
+
+#elif ( _MSC_VER == 1915 )
+#define KVS_COMPILER_VERSION "15.8"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 8 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 8 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 8 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 8 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 8 >= ( minor ) ) )
+
+#elif ( _MSC_VER == 1916 )
+#define KVS_COMPILER_VERSION "15.9"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 9 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 9 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 15 < ( major ) || ( 15 == ( major ) && 9 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 9 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 15 > ( major ) || ( 15 == ( major ) && 9 >= ( minor ) ) )
 
 #else
 #define KVS_COMPILER_VERSION "unknown"
@@ -243,5 +314,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__COMPILER_H_INCLUDE

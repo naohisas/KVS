@@ -57,7 +57,7 @@ public:
     void attachVolume( const kvs::UnstructuredVolumeObject* volume );
 
     const kvs::UnstructuredVolumeObject* volume() const { return m_volume; }
-    kvs::CellBase* const cell() const { return m_cell; }
+    kvs::CellBase* cell() const { return m_cell; }
     CacheMode cacheMode() const { return m_cache_mode; }
 
     virtual void build() = 0;

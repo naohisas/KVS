@@ -198,8 +198,8 @@ void Slider::draw_cursor( const int x, const int y, const int width )
 /*===========================================================================*/
 bool Slider::is_in_slider( const int x, const int y, const bool proper )
 {
-    const int bar_x = m_x + BaseClass::margin();
-    const int bar_y = m_y + BaseClass::margin() + BaseClass::characterHeight() + ::Default::SliderHeight / 2;
+    const int bar_x = BaseClass::x0() + BaseClass::margin();
+    const int bar_y = BaseClass::y0() + BaseClass::margin() + BaseClass::characterHeight() + ::Default::SliderHeight / 2;
     const int bar_width = BaseClass::width() - BaseClass::margin() * 2;
 
     const int x0 = bar_x;
@@ -228,8 +228,8 @@ bool Slider::is_in_slider( const int x, const int y, const bool proper )
 /*===========================================================================*/
 bool Slider::is_in_cursor( const int x, const int y, const bool proper )
 {
-    const int bar_x = m_x + BaseClass::margin();
-    const int bar_y = m_y + BaseClass::margin() + BaseClass::characterHeight() + ::Default::SliderHeight / 2;
+    const int bar_x = BaseClass::x0() + BaseClass::margin();
+    const int bar_y = BaseClass::y0() + BaseClass::margin() + BaseClass::characterHeight() + ::Default::SliderHeight / 2;
     const int bar_width = BaseClass::width() - BaseClass::margin() * 2;
 
     const int p = static_cast<int>( bar_width * ( m_value - m_min_value ) / ( m_max_value - m_min_value ) + 0.5f );
@@ -306,15 +306,15 @@ void Slider::paintEvent()
 
     // Draw the caption.
     {
-        const int x = m_x + m_margin;
-        const int y = m_y + m_margin;
+        const int x = BaseClass::x0() + m_margin;
+        const int y = BaseClass::y0() + m_margin;
         BaseClass::drawText( x, y + character_height, m_caption );
     }
 
     // Draw the slider bar and cursor.
     {
-        const int x = m_x + m_margin;
-        const int y = m_y + m_margin + character_height + ::Default::SliderHeight / 2;
+        const int x = BaseClass::x0() + m_margin;
+        const int y = BaseClass::y0() + m_margin + character_height + ::Default::SliderHeight / 2;
         const int width = BaseClass::width() - m_margin * 2;
         this->draw_slider_bar( x, y, width );
         this->draw_cursor( x, y, width );
@@ -325,15 +325,15 @@ void Slider::paintEvent()
     {
         {
             std::string min_value = kvs::String::ToString( m_min_value );
-            const int x = m_x + m_margin;
-            const int y = m_y + m_margin + character_height + ::Default::SliderHeight;
+            const int x = BaseClass::x0() + m_margin;
+            const int y = BaseClass::y0() + m_margin + character_height + ::Default::SliderHeight;
             BaseClass::drawText( x, y + character_height, min_value );
         }
 
         {
             std::string max_value = kvs::String::ToString( m_max_value );
             const int x = BaseClass::x1() - m_margin - max_value.size() * character_width;
-            const int y = m_y + m_margin + character_height + ::Default::SliderHeight;
+            const int y = BaseClass::y0() + m_margin + character_height + ::Default::SliderHeight;
             BaseClass::drawText( x, y + character_height, max_value );
         }
     }

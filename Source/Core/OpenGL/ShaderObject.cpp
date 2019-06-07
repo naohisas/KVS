@@ -41,9 +41,10 @@ GLuint ShaderObject::id() const
 std::string ShaderObject::log() const
 {
     KVS_ASSERT( this->isCreated() );
-    GLint length = 0;
-    KVS_GL_CALL( glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &length ) );
-    if ( length == 0 ) return "";
+//    GLint length = 0;
+//    KVS_GL_CALL( glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &length ) );
+//    if ( length == 0 ) return "";
+    GLint length = 512;
     std::vector<char> buffer( length );
     KVS_GL_CALL( glGetShaderInfoLog( m_id, length, NULL, &buffer[0] ) );
     return std::string( buffer.begin(), buffer.end() );

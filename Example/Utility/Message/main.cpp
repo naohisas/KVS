@@ -25,27 +25,35 @@
  *  @brief  Main function.
  */
 /*===========================================================================*/
-int main( void )
+int main()
 {
-    // Output error message.
-    kvsMessageError( "This is an error message." );
+    // Message with __FILE__, __LINE__, and __FUNC__.
+    kvsMessage( "This is default message." );
+    kvsMessage() << "This " << "is " << "also " << "default " << "message." << std::endl;
 
-    // Outpu debug message. This message is enable only when KVS_ENABLE_DEBUG
-    // is available.
-    kvsMessageDebug( "This is a debug message." );
+    // Debug message. This message is shown in debugging mode,
+    // or no message is shown in release mode.
+    kvsMessageDebug( "This is debug message." );
+    kvsMessageDebug() << "This " << "is " << "also " << "debug " << "message." << std::endl;
 
-    // Expression for displaying warning and assertion message.
+    // Warning message.
     srand( time( NULL ) );
-    bool expression;
-    expression = ( rand() % 2 == 0 );
+    if ( rand() % 2 == 0 )
+    {
+        kvsMessageWarning( "This is warning message." );
+        kvsMessageWarning() << "This " << "is " << "also " << "warning " << "message." << std::endl;
+    }
 
-    // Output warning message. This message is enable only when KVS_ENABLE_DEBUG
-    // is available.
-    kvsMessageWarning( expression, "This is a warning message." );
+    // Error message. Breakpoint is set after calling kvsMessageError
+    // in debugging mode.
+    if ( rand() % 2 == 0 )
+    {
+        kvsMessageError( "This is error message." );
+        kvsMessageError() << "This " << "is " << "also " << "error " << "message." << std::endl;
+    }
 
-    // Output assertion message. This message is enable only when KVS_ENABLE_DEBUG
-    // is available.
-    kvsMessageAssert( expression, "This is an assertion message." );
+    // Output assertion message. This message is shown in debugging mode.
+    kvsMessageAssert( ( rand() % 2 == 0 ), "This is assertion message." );
 
     return 0;
 }

@@ -92,16 +92,12 @@ private:
     kvs::UInt32 m_id[3]; ///< vertex IDs
 
 public:
-
     TriangleFace( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 );
 
 public:
-
-    const kvs::UInt32 id( const size_t index ) const;
-
+    kvs::UInt32 id( const size_t index ) const;
     void set( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 );
-
-    friend const bool operator == ( const TriangleFace& f0, const TriangleFace& f1 );
+    friend bool operator == ( const TriangleFace& f0, const TriangleFace& f1 );
 };
 
 /*===========================================================================*/
@@ -125,7 +121,7 @@ inline TriangleFace::TriangleFace( const kvs::UInt32 id0, const kvs::UInt32 id1,
  *  @return vertex ID
  */
 /*===========================================================================*/
-inline const kvs::UInt32 TriangleFace::id( const size_t index ) const
+inline kvs::UInt32 TriangleFace::id( const size_t index ) const
 {
     return m_id[ index ];
 }
@@ -153,7 +149,7 @@ inline void TriangleFace::set( const kvs::UInt32 id0, const kvs::UInt32 id1, con
  *  @return true, if the face 0 is equal to the face 1
  */
 /*===========================================================================*/
-inline const bool operator == ( const TriangleFace& f0, const TriangleFace& f1 )
+inline bool operator == ( const TriangleFace& f0, const TriangleFace& f1 )
 {
     for ( size_t i = 0; i < 3; i++ )
     {
@@ -176,20 +172,15 @@ inline const bool operator == ( const TriangleFace& f0, const TriangleFace& f1 )
 class QuadrangleFace
 {
 private:
-
     kvs::UInt32 m_id[4]; ///< vertex IDs
 
 public:
-
     QuadrangleFace( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2, const kvs::UInt32 id3 );
 
 public:
-
-    const kvs::UInt32 id( const size_t index ) const;
-
+    kvs::UInt32 id( const size_t index ) const;
     void set( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2, const kvs::UInt32 id3 );
-
-    friend const bool operator == ( const QuadrangleFace& f0, const QuadrangleFace& f1 );
+    friend bool operator == ( const QuadrangleFace& f0, const QuadrangleFace& f1 );
 };
 
 /*===========================================================================*/
@@ -213,7 +204,7 @@ inline QuadrangleFace::QuadrangleFace( const kvs::UInt32 id0, const kvs::UInt32 
  *  @return vertex ID
  */
 /*===========================================================================*/
-inline const kvs::UInt32 QuadrangleFace::id( const size_t index ) const
+inline kvs::UInt32 QuadrangleFace::id( const size_t index ) const
 {
     return m_id[ index ];
 }
@@ -242,7 +233,7 @@ inline void QuadrangleFace::set( const kvs::UInt32 id0, const kvs::UInt32 id1, c
  *  @return true, if the face 0 is equal to the face 1
  */
 /*===========================================================================*/
-inline const bool operator == ( const QuadrangleFace& f0, const QuadrangleFace& f1 )
+inline bool operator == ( const QuadrangleFace& f0, const QuadrangleFace& f1 )
 {
     for ( size_t i = 0; i < 4; i++ )
     {
@@ -265,29 +256,23 @@ inline const bool operator == ( const QuadrangleFace& f0, const QuadrangleFace& 
 class TriangleFaceMap
 {
 public:
-
     typedef kvs::UInt32 Key;
     typedef TriangleFace Value;
     typedef std::multimap<Key,Value> Bucket;
 
 private:
-
     size_t m_nvertices; ///< number of vertices of the original data
     Bucket m_bucket; ///< bucket for the edge data
 
 public:
-
     TriangleFaceMap( const size_t nvertices );
 
 public:
-
     const Bucket& bucket() const;
-
     void insert( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 );
 
 private:
-
-    const Key get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 );
+    Key get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 );
 };
 
 /*===========================================================================*/
@@ -354,7 +339,7 @@ inline void TriangleFaceMap::insert( const kvs::UInt32 id0, const kvs::UInt32 id
  *  @return key
  */
 /*===========================================================================*/
-inline const TriangleFaceMap::Key TriangleFaceMap::get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 )
+inline TriangleFaceMap::Key TriangleFaceMap::get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 )
 {
     const kvs::UInt32 sum = id0 + id1 + id2;
     return sum % kvs::UInt32( m_nvertices );
@@ -368,29 +353,23 @@ inline const TriangleFaceMap::Key TriangleFaceMap::get_key( const kvs::UInt32 id
 class QuadrangleFaceMap
 {
 public:
-
     typedef kvs::UInt32 Key;
     typedef QuadrangleFace Value;
     typedef std::multimap<Key,Value> Bucket;
 
 private:
-
     size_t m_nvertices; ///< number of vertices of the original data
     Bucket m_bucket; ///< bucket for the edge data
 
 public:
-
     QuadrangleFaceMap( const size_t nvertices );
 
 public:
-
     const Bucket& bucket() const;
-
     void insert( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2, const kvs::UInt32 id3 );
 
 private:
-
-    const Key get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2, const kvs::UInt32 id3 );
+    Key get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2, const kvs::UInt32 id3 );
 };
 
 /*===========================================================================*/
@@ -459,7 +438,7 @@ inline void QuadrangleFaceMap::insert( const kvs::UInt32 id0, const kvs::UInt32 
  *  @return key
  */
 /*===========================================================================*/
-inline const QuadrangleFaceMap::Key QuadrangleFaceMap::get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2, const kvs::UInt32 id3 )
+inline QuadrangleFaceMap::Key QuadrangleFaceMap::get_key( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2, const kvs::UInt32 id3 )
 {
     const kvs::UInt32 sum = id0 + id1 + id2 + id3;
     return sum % kvs::UInt32( m_nvertices );
