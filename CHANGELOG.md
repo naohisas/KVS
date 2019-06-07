@@ -1,3 +1,137 @@
+### Version 2.8.0 Released (2018.8.4)
+**Added new classes and functions**
++ kvs::ColorStream
++ kvs::NullStream
++ kvs::Mouse::trackball
++ kvs::OpenGL::EnableClientState
++ kvs::OpenGL::DisableClientState
++ kvs::OpenGL::VertexPointer
++ kvs::OpenGL::ColorPointer
++ kvs::OpenGL::NormalPointer
++ kvs::OpenGL::TexCoordPointer
++ kvs::OpenGL::MultiDrawArrays
++ kvs::OpenGL::DrawArrays
++ kvs::OpenGL::DrawElements
++ kvs::OpenGL::MultiDrawElements
++ kvs::OpenGL::EnableVertexAttribArray
++ kvs::OpenGL::DisableVertexAttribArray
++ kvs::OpenGL::VertexAttribPointer
++ kvs::VertexBufferObjectManager
++ kvs::StochasticRenderingCompositor::update
++ kvs::StochasticTetrahedraRenderer::transferFunction
++ kvs::StochasticTetrahedraRenderer::samplingStep
++ kvs::StochasticUniformGridRenderer::transferFunction
++ kvs::StochasticUniformGridRenderer::samplingStep
++ kvs::Directory::RootPath
++ kvs::Directory::Root
++ kvs::Directory::HomePath
++ kvs::Directory::Home
++ kvs::Directory::TempPath
++ kvs::Directory::Temp
++ kvs::Directory::CurrentPath
++ kvs::Directory::Absolute
++ kvs::File::Exists
++ kvs::CubicImage
++ kvs::SphericalImage
++ kvs::SphericalImageRenderer
++ kvs::opencv::MovieObject
++ kvs::opencv::MovieRenderer
++ kvs::opencv::SphericalMovieRenderer
+
+**Added SupportOSMesa
++ kvs::osmesa::Context
++ kvs::osmesa::Screen
++ kvs::osmesa::ScreenBase
++ kvs::osmesa::Surface
+
+**Added SupportEGL
++ kvs::egl::Config
++ kvs::egl::Context
++ kvs::egl::Display
++ kvs::egl::Screen
++ kvs::egl::ScreenBase
++ kvs::egl::Surface
+
+**Added new example
++ Example/SupportOSMesa/Hello
++ Example/SupportEGL/Hello
+
+**Added new envrionmental variables for compiling KVS
++ KVS_GL_DIR
++ KVS_GL_INCLUDE_PATH
++ KVS_GL_LIBRARY_PATH
++ KVS_GL_LINK_LIBRARY
++ KVS_GLUT_DIR
++ KVS_GLUT_INCLUDE_PATH
++ KVS_GLUT_LIBRARY_PATH
++ KVS_GLUT_LINK_LIBRARY
++ KVS_GLEW_DIR
++ KVS_GLEW_INCLUDE_PATH
++ KVS_GLEW_LIBRARY_PATH
++ KVS_GLEW_LINK_LIBRARY
++ KVS_OSMESA_DIR
++ KVS_OSMESA_INCLUDE_PATH
++ KVS_OSMESA_LIBRARY_PATH
++ KVS_OSMESA_LINK_LIBRARY
++ KVS_EGL_DIR
++ KVS_EGL_INCLUDE_PATH
++ KVS_EGL_LIBRARY_PATH
++ KVS_EGL_LINK_LIBRARY
++ KVS_OPENMP_DIR
++ KVS_OPENMP_INCLUDE_PATH
++ KVS_OPENMP_LIBRARY_PATH
++ KVS_OPENMP_LINK_LIBRARY
+
+**Added new support in kvsmake
++ Fortran codes can be compiled with kvsmake
+
+**Fixed problem
++ kvs::EnsembleAverageBuffer
++ kvs::StochasticPointRenderer
++ kvs::StochasticPolygonRenderer
++ kvs::StochasticTetrahedraRenderer
++ kvs::StochasticUniformGridRenderer
++ kvs::HydrogenVolumeData
++ kvs::CellByCellMetropolisSampling
++ kvs::glsl::PolygonRenderer
+
+**Modified message format in kvs::Message
++ kvsMessageError()
++ kvsMessageWarning()
++ kvsMessageDebug()
++ kvsMessageAssert()
+
+**Modified shader log message
++ kvs::ProgramObject
++ kvs::ProgramObject
+
+**Modified for Spark64
++ KVS_BREAKPOINT
++ KVS_PLATFORM_CPU_SPARK64
++ KVS_PLATFORM_CPU_NAME
+
+**Modified for VS2017 compiler
++ KVS_COMPILER_VERSION
+
+**Modified for Intel C++ compiler
+
+**Reimplemented with VBO
++ kvs::StylizedLineRenderer
+
+**Duprecated in kvs::Mouse
++ attachCamera (use trackball().attacheCamera instead)
++ setRotationCenter( use trackball().setRotationCenter instead)
++ scaling (use trackball().scaling instead)
++ rotation (use trackball().rotation instead)
+
+**Duprecated in kvs::Directory
++ directoryPath (use path instead)
++ directoryName (use name instead)
+
+**Removed method
++ kvs::Directory::sort
++ kvs::Directory::find
+
 ### Version 2.7.0 Released (2018.8.4)
 **Added new classes and functions**
 + kvs::HCLColor
