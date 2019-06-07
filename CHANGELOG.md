@@ -1,4 +1,4 @@
-### Version 2.8.0 Released (2018.8.4)
+### Version 2.8.0 Released (2019.6.7)
 **Added new classes and functions**
 + kvs::ColorStream
 + kvs::NullStream
@@ -38,13 +38,13 @@
 + kvs::opencv::MovieRenderer
 + kvs::opencv::SphericalMovieRenderer
 
-**Added SupportOSMesa
+**Added SupportOSMesa**
 + kvs::osmesa::Context
 + kvs::osmesa::Screen
 + kvs::osmesa::ScreenBase
 + kvs::osmesa::Surface
 
-**Added SupportEGL
+**Added SupportEGL**
 + kvs::egl::Config
 + kvs::egl::Context
 + kvs::egl::Display
@@ -52,11 +52,11 @@
 + kvs::egl::ScreenBase
 + kvs::egl::Surface
 
-**Added new example
+**Added new example**
 + Example/SupportOSMesa/Hello
 + Example/SupportEGL/Hello
 
-**Added new envrionmental variables for compiling KVS
+**Added new envrionmental variables for compiling KVS**
 + KVS_GL_DIR
 + KVS_GL_INCLUDE_PATH
 + KVS_GL_LIBRARY_PATH
@@ -82,10 +82,10 @@
 + KVS_OPENMP_LIBRARY_PATH
 + KVS_OPENMP_LINK_LIBRARY
 
-**Added new support in kvsmake
+**Added new support in kvsmake**
 + Fortran codes can be compiled with kvsmake
 
-**Fixed problem
+**Fixed problem**
 + kvs::EnsembleAverageBuffer
 + kvs::StochasticPointRenderer
 + kvs::StochasticPolygonRenderer
@@ -95,40 +95,40 @@
 + kvs::CellByCellMetropolisSampling
 + kvs::glsl::PolygonRenderer
 
-**Modified message format in kvs::Message
+**Modified message format in kvs::Message**
 + kvsMessageError()
 + kvsMessageWarning()
 + kvsMessageDebug()
 + kvsMessageAssert()
 
-**Modified shader log message
+**Modified shader log message**
 + kvs::ProgramObject
 + kvs::ProgramObject
 
-**Modified for Spark64
+**Modified for Spark64**
 + KVS_BREAKPOINT
 + KVS_PLATFORM_CPU_SPARK64
 + KVS_PLATFORM_CPU_NAME
 
-**Modified for VS2017 compiler
+**Modified for VS2017 compiler**
 + KVS_COMPILER_VERSION
 
-**Modified for Intel C++ compiler
+**Modified for Intel C++ compiler**
 
-**Reimplemented with VBO
+**Reimplemented with VBO**
 + kvs::StylizedLineRenderer
 
-**Duprecated in kvs::Mouse
+**Duprecated in kvs::Mouse**
 + attachCamera (use trackball().attacheCamera instead)
 + setRotationCenter( use trackball().setRotationCenter instead)
 + scaling (use trackball().scaling instead)
 + rotation (use trackball().rotation instead)
 
-**Duprecated in kvs::Directory
+**Duprecated in kvs::Directory**
 + directoryPath (use path instead)
 + directoryName (use name instead)
 
-**Removed method
+**Removed method**
 + kvs::Directory::sort
 + kvs::Directory::find
 
