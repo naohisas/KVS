@@ -169,6 +169,7 @@ Utility/Rectangle
 Utility/ReferenceCounter
 Utility/SharedPointer
 Utility/SmartPointer
+Utility/Stat
 Utility/String
 Utility/StringList
 Utility/SystemInformation

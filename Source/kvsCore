@@ -169,6 +169,7 @@
 #include <Core/Utility/ReferenceCounter.h>
 #include <Core/Utility/SharedPointer.h>
 #include <Core/Utility/SmartPointer.h>
+#include <Core/Utility/Stat.h>
 #include <Core/Utility/String.h>
 #include <Core/Utility/StringList.h>
 #include <Core/Utility/SystemInformation.h>
