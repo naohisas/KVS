@@ -106,6 +106,7 @@ Numeric/ResponseSurface
 Numeric/SVDecomposer
 Numeric/SVSolver
 Numeric/StudentTDistributiion
+Numeric/StudentTDistribution
 Numeric/Xorshift128
 OpenGL/BufferObject
 OpenGL/DisplayList

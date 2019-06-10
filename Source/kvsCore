@@ -106,6 +106,7 @@
 #include <Core/Numeric/SVDecomposer.h>
 #include <Core/Numeric/SVSolver.h>
 #include <Core/Numeric/StudentTDistributiion.h>
+#include <Core/Numeric/StudentTDistribution.h>
 #include <Core/Numeric/Xorshift128.h>
 #include <Core/OpenGL/BufferObject.h>
 #include <Core/OpenGL/DisplayList.h>
