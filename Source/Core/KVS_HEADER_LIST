@@ -85,9 +85,15 @@ Network/TCPServer
 Network/TCPSocket
 Network/Url
 Numeric/AdaptiveKMeans
+Numeric/BetaFunction
 Numeric/BoxMuller
+Numeric/ChiSquaredDistribution
 Numeric/EigenDecomposer
+Numeric/ExponentialDistribution
 Numeric/FastKMeans
+Numeric/FisherFDistribution
+Numeric/GammaFunction
+Numeric/GaussDistribution
 Numeric/GaussEliminationSolver
 Numeric/KMeans
 Numeric/LUDecomposer
@@ -99,6 +105,7 @@ Numeric/Quaternion
 Numeric/ResponseSurface
 Numeric/SVDecomposer
 Numeric/SVSolver
+Numeric/StudentTDistributiion
 Numeric/Xorshift128
 OpenGL/BufferObject
 OpenGL/DisplayList

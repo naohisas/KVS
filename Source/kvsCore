@@ -85,9 +85,15 @@
 #include <Core/Network/TCPSocket.h>
 #include <Core/Network/Url.h>
 #include <Core/Numeric/AdaptiveKMeans.h>
+#include <Core/Numeric/BetaFunction.h>
 #include <Core/Numeric/BoxMuller.h>
+#include <Core/Numeric/ChiSquaredDistribution.h>
 #include <Core/Numeric/EigenDecomposer.h>
+#include <Core/Numeric/ExponentialDistribution.h>
 #include <Core/Numeric/FastKMeans.h>
+#include <Core/Numeric/FisherFDistribution.h>
+#include <Core/Numeric/GammaFunction.h>
+#include <Core/Numeric/GaussDistribution.h>
 #include <Core/Numeric/GaussEliminationSolver.h>
 #include <Core/Numeric/KMeans.h>
 #include <Core/Numeric/LUDecomposer.h>
@@ -99,6 +105,7 @@
 #include <Core/Numeric/ResponseSurface.h>
 #include <Core/Numeric/SVDecomposer.h>
 #include <Core/Numeric/SVSolver.h>
+#include <Core/Numeric/StudentTDistributiion.h>
 #include <Core/Numeric/Xorshift128.h>
 #include <Core/OpenGL/BufferObject.h>
 #include <Core/OpenGL/DisplayList.h>

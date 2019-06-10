@@ -166,8 +166,14 @@ $(OUTDIR)\.\Network\TCPServer.obj \
 $(OUTDIR)\.\Network\TCPSocket.obj \
 $(OUTDIR)\.\Network\Url.obj \
 $(OUTDIR)\.\Numeric\AdaptiveKMeans.obj \
+$(OUTDIR)\.\Numeric\BetaFunction.obj \
+$(OUTDIR)\.\Numeric\ChiSquaredDistribution.obj \
 $(OUTDIR)\.\Numeric\EigenDecomposer.obj \
+$(OUTDIR)\.\Numeric\ExponentialDistribution.obj \
 $(OUTDIR)\.\Numeric\FastKMeans.obj \
+$(OUTDIR)\.\Numeric\FisherFDistribution.obj \
+$(OUTDIR)\.\Numeric\GammaFunction.obj \
+$(OUTDIR)\.\Numeric\GaussDistribution.obj \
 $(OUTDIR)\.\Numeric\GaussEliminationSolver.obj \
 $(OUTDIR)\.\Numeric\KMeans.obj \
 $(OUTDIR)\.\Numeric\LUDecomposer.obj \
@@ -179,6 +185,7 @@ $(OUTDIR)\.\Numeric\Quaternion.obj \
 $(OUTDIR)\.\Numeric\ResponseSurface.obj \
 $(OUTDIR)\.\Numeric\SVDecomposer.obj \
 $(OUTDIR)\.\Numeric\SVSolver.obj \
+$(OUTDIR)\.\Numeric\StudentTDistribution.obj \
 $(OUTDIR)\.\Numeric\Xorshift128.obj \
 $(OUTDIR)\.\OpenGL\BufferObject.obj \
 $(OUTDIR)\.\OpenGL\DisplayList.obj \
