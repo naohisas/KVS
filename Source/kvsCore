@@ -98,6 +98,7 @@
 #include <Core/Numeric/KMeans.h>
 #include <Core/Numeric/LUDecomposer.h>
 #include <Core/Numeric/LUSolver.h>
+#include <Core/Numeric/LinearRegression.h>
 #include <Core/Numeric/MersenneTwister.h>
 #include <Core/Numeric/QRDecomposer.h>
 #include <Core/Numeric/QRSolver.h>

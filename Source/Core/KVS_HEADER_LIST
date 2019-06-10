@@ -98,6 +98,7 @@ Numeric/GaussEliminationSolver
 Numeric/KMeans
 Numeric/LUDecomposer
 Numeric/LUSolver
+Numeric/LinearRegression
 Numeric/MersenneTwister
 Numeric/QRDecomposer
 Numeric/QRSolver

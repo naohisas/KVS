@@ -178,6 +178,7 @@ $(OUTDIR)/./Numeric/GaussEliminationSolver.o \
 $(OUTDIR)/./Numeric/KMeans.o \
 $(OUTDIR)/./Numeric/LUDecomposer.o \
 $(OUTDIR)/./Numeric/LUSolver.o \
+$(OUTDIR)/./Numeric/LinearRegression.o \
 $(OUTDIR)/./Numeric/MersenneTwister.o \
 $(OUTDIR)/./Numeric/QRDecomposer.o \
 $(OUTDIR)/./Numeric/QRSolver.o \
