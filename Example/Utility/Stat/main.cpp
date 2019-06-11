@@ -46,7 +46,9 @@ int main( int argc, char** argv )
     std::cout << "StdDev(X): " << kvs::Stat::StdDev( values1 ) << std::endl;
     std::cout << "StdDev(X,ShiftedVar): " << kvs::Stat::StdDev( values1, kvs::Stat::ShiftedVar<float> ) << std::endl;
     std::cout << "Corr(X,Y): " << kvs::Stat::Corr( values1, values2 ) << std::endl;
+    std::cout << "AutoCorr(X): " << kvs::Stat::AutoCorr( values1 ) << std::endl;
     std::cout << "AutoCorr(X,1): " << kvs::Stat::AutoCorr( values1, 1 ) << std::endl;
+    std::cout << "CrossCorr(X,Y): " << kvs::Stat::CrossCorr( values1, values2 ) << std::endl;
     std::cout << "CrossCorr(X,Y,1): " << kvs::Stat::CrossCorr( values1, values2, 1 ) << std::endl;
 
     return 0;
