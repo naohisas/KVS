@@ -2,6 +2,7 @@
 #include <kvs/Assert>
 #include <kvs/Vector>
 #include <kvs/Matrix>
+#include <kvs/StudentTDistribution>
 
 
 namespace
@@ -29,12 +30,20 @@ namespace kvs
 {
 
 template <typename T>
-LinearRegression<T>::LinearRegression()
+LinearRegression<T>::LinearRegression():
+    m_dof( 0 ),
+    m_rss( 0.0 ),
+    m_r2( 0.0 ),
+    m_adjusted_r2( 0.0 )
 {
 }
 
 template <typename T>
-LinearRegression<T>::LinearRegression( const kvs::ValueArray<T>& dep, const kvs::ValueTable<T>& indep )
+LinearRegression<T>::LinearRegression( const kvs::ValueArray<T>& dep, const kvs::ValueTable<T>& indep ):
+    m_dof( 0 ),
+    m_rss( 0.0 ),
+    m_r2( 0.0 ),
+    m_adjusted_r2( 0.0 )
 {
     this->fit( dep, indep );
 }
@@ -70,16 +79,29 @@ void LinearRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTa
 
     m_r2 = 1.0 - m_rss / ::DevSQ(Y);
 
-    const size_t p = indep.columnSize();
     const size_t n = dep.size();
-    const size_t dof = n - p - 1;
-    m_adjusted_r2 = 1.0 - ( 1.0 - m_r2 ) * ( n - 1.0 ) / dof;
+    const size_t k = indep.columnSize();
+    m_dof = n - k - 1;
+    m_adjusted_r2 = 1.0 - ( 1.0 - m_r2 ) * ( n - 1.0 ) / m_dof;
 
-    const kvs::Real64 ve = m_rss / dof;
-    m_t_values.setSize( m_coef.size() );
-    for ( size_t i = 0; i < m_t_values.size(); i++ )
+    const kvs::Real64 ve = m_rss / m_dof;
+    m_standard_errors.setSize( m_coef.size() );
+    for ( size_t i = 0; i < m_coef.size(); i++ )
     {
-        m_t_values[i] = m_coef[i] / std::sqrt( ve * XtX_inv[i][i] );
+        m_standard_errors[i] = std::sqrt( ve * XtX_inv[i][i] );
+    }
+}
+
+template <typename T>
+void LinearRegression<T>::test()
+{
+    m_t_values.setSize( m_coef.size() );
+    m_p_values.setSize( m_coef.size() );
+    kvs::StudentTDistribution tdist( m_dof );
+    for ( size_t i = 0; i < m_coef.size(); i++ )
+    {
+        m_t_values[i] = m_coef[i] / m_standard_errors[i];
+        m_p_values[i] = 2.0 * ( 1.0 - tdist.cdf( m_t_values[i] ) );
     }
 }
 
