@@ -51,6 +51,7 @@ void LinearRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTa
 {
     KVS_ASSERT( dep.size() == indep.column(0).size() );
 
+    // Dependent (Y) and independent (Xi) variables
     const size_t nrows = dep.size();
     const size_t ncols = indep.columnSize() + 1;
     kvs::Vector<T> Y( nrows );
@@ -66,21 +67,25 @@ void LinearRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTa
         }
     }
 
+    // Degree of freedom
+    const size_t n = dep.size();
+    const size_t k = indep.columnSize();
+    m_dof = n - k - 1;
+
+    // Regression coefficients
     const kvs::Matrix<T> Xt = X.transposed();
     const kvs::Matrix<T> XtX = Xt * X;
     const kvs::Vector<T> XtY = Xt * Y;
     const kvs::Matrix<T> XtX_inv = XtX.inverted();
+    m_coef = XtX_inv * XtY;
+
+    // R square
     const kvs::Vector<T> y = X * m_coef;
     const kvs::Real64 rss = ( Y - y ).length2();
-
-    m_coef = XtX_inv * XtY;
     m_r2 = 1.0 - rss / ::DevSQ(Y);
-
-    const size_t n = dep.size();
-    const size_t k = indep.columnSize();
-    m_dof = n - k - 1;
     m_adjusted_r2 = 1.0 - ( 1.0 - m_r2 ) * ( n - 1.0 ) / m_dof;
 
+    // Standard error
     const kvs::Real64 ve = rss / m_dof;
     m_standard_errors.setSize( m_coef.size() );
     for ( size_t i = 0; i < m_coef.size(); i++ )
