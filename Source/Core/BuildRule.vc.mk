@@ -277,6 +277,7 @@ $(OUTDIR)\.\Visualization\Exporter\UnstructuredVolumeExporter.obj \
 $(OUTDIR)\.\Visualization\Filter\InverseDistanceWeighting.obj \
 $(OUTDIR)\.\Visualization\Filter\KMeansClustering.obj \
 $(OUTDIR)\.\Visualization\Filter\LineIntegralConvolution.obj \
+$(OUTDIR)\.\Visualization\Filter\StructuredExtractScalar.obj \
 $(OUTDIR)\.\Visualization\Filter\StructuredVectorToScalar.obj \
 $(OUTDIR)\.\Visualization\Filter\TetrahedraToTetrahedra.obj \
 $(OUTDIR)\.\Visualization\Filter\Tubeline.obj \

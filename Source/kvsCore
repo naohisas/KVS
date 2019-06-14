@@ -227,6 +227,7 @@
 #include <Core/Visualization/Filter/InverseDistanceWeighting.h>
 #include <Core/Visualization/Filter/KMeansClustering.h>
 #include <Core/Visualization/Filter/LineIntegralConvolution.h>
+#include <Core/Visualization/Filter/StructuredExtractScalar.h>
 #include <Core/Visualization/Filter/StructuredVectorToScalar.h>
 #include <Core/Visualization/Filter/TetrahedraToTetrahedra.h>
 #include <Core/Visualization/Filter/TrilinearInterpolator.h>
