@@ -19,7 +19,6 @@ class LinearRegression
 private:
     size_t m_dof; ///< degree of freedom
     kvs::Vector<T> m_coef; ///< coefficients (m_eof[0]: intersect)
-    kvs::Real64 m_rss; ///< residual sum of squares (RSS)
     kvs::Real64 m_r2; ///< R square
     kvs::Real64 m_adjusted_r2; ///< adjusted R square
     kvs::Vector<T> m_standard_errors; ///< standard errors
@@ -31,7 +30,6 @@ public:
     LinearRegression( const kvs::ValueArray<T>& dep, const kvs::ValueTable<T>& indep );
 
     const kvs::Vector<T>& coef() const { return m_coef; }
-    kvs::Real64 rss() const { return m_rss; }
     kvs::Real64 r2() const { return m_r2; }
     kvs::Real64 adjustedR2() const { return m_adjusted_r2; }
     const kvs::Vector<T>& standardErrors() const { return m_standard_errors; }

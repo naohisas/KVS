@@ -32,7 +32,6 @@ namespace kvs
 template <typename T>
 LinearRegression<T>::LinearRegression():
     m_dof( 0 ),
-    m_rss( 0.0 ),
     m_r2( 0.0 ),
     m_adjusted_r2( 0.0 )
 {
@@ -41,7 +40,6 @@ LinearRegression<T>::LinearRegression():
 template <typename T>
 LinearRegression<T>::LinearRegression( const kvs::ValueArray<T>& dep, const kvs::ValueTable<T>& indep ):
     m_dof( 0 ),
-    m_rss( 0.0 ),
     m_r2( 0.0 ),
     m_adjusted_r2( 0.0 )
 {
@@ -72,19 +70,18 @@ void LinearRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTa
     const kvs::Matrix<T> XtX = Xt * X;
     const kvs::Vector<T> XtY = Xt * Y;
     const kvs::Matrix<T> XtX_inv = XtX.inverted();
-    m_coef = XtX_inv * XtY;
-
     const kvs::Vector<T> y = X * m_coef;
-    m_rss = ( Y - y ).length2();
+    const kvs::Real64 rss = ( Y - y ).length2();
 
-    m_r2 = 1.0 - m_rss / ::DevSQ(Y);
+    m_coef = XtX_inv * XtY;
+    m_r2 = 1.0 - rss / ::DevSQ(Y);
 
     const size_t n = dep.size();
     const size_t k = indep.columnSize();
     m_dof = n - k - 1;
     m_adjusted_r2 = 1.0 - ( 1.0 - m_r2 ) * ( n - 1.0 ) / m_dof;
 
-    const kvs::Real64 ve = m_rss / m_dof;
+    const kvs::Real64 ve = rss / m_dof;
     m_standard_errors.setSize( m_coef.size() );
     for ( size_t i = 0; i < m_coef.size(); i++ )
     {
