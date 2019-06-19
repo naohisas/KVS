@@ -178,12 +178,14 @@ $(OUTDIR)/./Numeric/GaussEliminationSolver.o \
 $(OUTDIR)/./Numeric/KMeans.o \
 $(OUTDIR)/./Numeric/LUDecomposer.o \
 $(OUTDIR)/./Numeric/LUSolver.o \
+$(OUTDIR)/./Numeric/LassoRegression.o \
 $(OUTDIR)/./Numeric/LinearRegression.o \
 $(OUTDIR)/./Numeric/MersenneTwister.o \
 $(OUTDIR)/./Numeric/QRDecomposer.o \
 $(OUTDIR)/./Numeric/QRSolver.o \
 $(OUTDIR)/./Numeric/Quaternion.o \
 $(OUTDIR)/./Numeric/ResponseSurface.o \
+$(OUTDIR)/./Numeric/RidgeRegression.o \
 $(OUTDIR)/./Numeric/SVDecomposer.o \
 $(OUTDIR)/./Numeric/SVSolver.o \
 $(OUTDIR)/./Numeric/StudentTDistribution.o \

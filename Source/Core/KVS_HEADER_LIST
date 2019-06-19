@@ -98,12 +98,14 @@ Numeric/GaussEliminationSolver
 Numeric/KMeans
 Numeric/LUDecomposer
 Numeric/LUSolver
+Numeric/LassoRegression
 Numeric/LinearRegression
 Numeric/MersenneTwister
 Numeric/QRDecomposer
 Numeric/QRSolver
 Numeric/Quaternion
 Numeric/ResponseSurface
+Numeric/RidgeRegression
 Numeric/SVDecomposer
 Numeric/SVSolver
 Numeric/StudentTDistributiion

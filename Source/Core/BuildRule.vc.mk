@@ -178,12 +178,14 @@ $(OUTDIR)\.\Numeric\GaussEliminationSolver.obj \
 $(OUTDIR)\.\Numeric\KMeans.obj \
 $(OUTDIR)\.\Numeric\LUDecomposer.obj \
 $(OUTDIR)\.\Numeric\LUSolver.obj \
+$(OUTDIR)\.\Numeric\LassoRegression.obj \
 $(OUTDIR)\.\Numeric\LinearRegression.obj \
 $(OUTDIR)\.\Numeric\MersenneTwister.obj \
 $(OUTDIR)\.\Numeric\QRDecomposer.obj \
 $(OUTDIR)\.\Numeric\QRSolver.obj \
 $(OUTDIR)\.\Numeric\Quaternion.obj \
 $(OUTDIR)\.\Numeric\ResponseSurface.obj \
+$(OUTDIR)\.\Numeric\RidgeRegression.obj \
 $(OUTDIR)\.\Numeric\SVDecomposer.obj \
 $(OUTDIR)\.\Numeric\SVSolver.obj \
 $(OUTDIR)\.\Numeric\StudentTDistribution.obj \
