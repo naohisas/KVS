@@ -279,6 +279,7 @@ $(OUTDIR)/./Visualization/Exporter/UnstructuredVolumeExporter.o \
 $(OUTDIR)/./Visualization/Filter/InverseDistanceWeighting.o \
 $(OUTDIR)/./Visualization/Filter/KMeansClustering.o \
 $(OUTDIR)/./Visualization/Filter/LineIntegralConvolution.o \
+$(OUTDIR)/./Visualization/Filter/PolygonToPolygon.o \
 $(OUTDIR)/./Visualization/Filter/StructuredExtractScalar.o \
 $(OUTDIR)/./Visualization/Filter/StructuredVectorToScalar.o \
 $(OUTDIR)/./Visualization/Filter/TetrahedraToTetrahedra.o \
