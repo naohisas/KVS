@@ -33,7 +33,8 @@ namespace kvs
 PolygonRenderer::PolygonRenderer():
     m_enable_anti_aliasing( false ),
     m_enable_multisample_anti_aliasing( false ),
-    m_enable_two_side_lighting( true )
+    m_enable_two_side_lighting( true ),
+    m_polygon_offset( 0.0f )
 {
 }
 
@@ -164,6 +165,10 @@ void PolygonRenderer::initialize()
 
     kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
+
+    // Polygon offset.
+    KVS_GL_CALL( glPolygonOffset( m_polygon_offset, 0.0 ) );
+    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
     if( !this->isEnabledShading() )
     {

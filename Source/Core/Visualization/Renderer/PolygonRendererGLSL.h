@@ -27,6 +27,11 @@ namespace kvs
 namespace glsl
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Polygon renderer class.
+ */
+/*===========================================================================*/
 class PolygonRenderer : public kvs::PolygonRenderer
 {
     kvsModule( kvs::glsl::PolygonRenderer, Renderer );
@@ -38,6 +43,7 @@ private:
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
     bool m_has_normal; ///< check flag for the normal array
     bool m_has_connection; ///< check flag for the connection array
+    float m_polygon_offset; ///< polygon offset
     kvs::Shader::ShadingModel* m_shader; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
     kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
@@ -48,8 +54,11 @@ public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
+    float polygonOffset() const { return m_polygon_offset; }
+
     template <typename ShadingType>
     void setShader( const ShadingType shader );
+    void setPolygonOffset( const float offset ) { m_polygon_offset = offset; }
 
 private:
     void create_shader_program();

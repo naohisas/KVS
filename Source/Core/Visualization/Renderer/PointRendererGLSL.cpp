@@ -180,6 +180,7 @@ void PointRenderer::create_shader_program()
     m_shader_program.setUniform( "shading.Kd", m_shader->Kd );
     m_shader_program.setUniform( "shading.Ks", m_shader->Ks );
     m_shader_program.setUniform( "shading.S",  m_shader->S );
+    m_shader_program.setUniform( "offset", 0 );
     m_shader_program.unbind();
 }
 

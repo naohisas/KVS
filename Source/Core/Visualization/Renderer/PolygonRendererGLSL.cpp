@@ -362,6 +362,7 @@ PolygonRenderer::PolygonRenderer():
     m_object( NULL ),
     m_has_normal( false ),
     m_has_connection( false ),
+    m_polygon_offset( 0.0f ),
     m_shader( NULL )
 {
     this->setShader( kvs::Shader::Lambert() );
@@ -480,6 +481,7 @@ void PolygonRenderer::create_shader_program()
     m_shader_program.setUniform( "shading.Kd", m_shader->Kd );
     m_shader_program.setUniform( "shading.Ks", m_shader->Ks );
     m_shader_program.setUniform( "shading.S",  m_shader->S );
+    m_shader_program.setUniform( "offset", m_polygon_offset );
     m_shader_program.unbind();
 }
 
