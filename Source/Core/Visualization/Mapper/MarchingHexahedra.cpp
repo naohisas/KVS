@@ -43,10 +43,10 @@ MarchingHexahedra::MarchingHexahedra():
 /*==========================================================================*/
 MarchingHexahedra::MarchingHexahedra(
     const kvs::UnstructuredVolumeObject* volume,
-    const double                       isolevel,
-    const NormalType                   normal_type,
-    const bool                         duplication,
-    const kvs::TransferFunction&       transfer_function ):
+    const double isolevel,
+    const NormalType normal_type,
+    const bool duplication,
+    const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
     kvs::PolygonObject(),
     m_duplication( duplication )
@@ -66,17 +66,6 @@ MarchingHexahedra::MarchingHexahedra(
 /*==========================================================================*/
 MarchingHexahedra::~MarchingHexahedra()
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a isolevel.
- *  @param  isolevel [in] isolevel
- */
-/*===========================================================================*/
-void MarchingHexahedra::setIsolevel( const double isolevel )
-{
-    m_isolevel = isolevel;
 }
 
 /*===========================================================================*/
@@ -135,6 +124,10 @@ void MarchingHexahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
+
+    const kvs::Real64 min_value = BaseClass::volume()->minValue();
+    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
     const std::type_info& type = volume->values().typeInfo()->type();
@@ -225,23 +218,23 @@ void MarchingHexahedra::extract_surfaces_with_duplication(
 
             // Calculate coordinates of the vertices which are composed
             // of the triangle polygon.
-            const kvs::Vector3f vertex0( this->interpolate_vertex<T>( v0, v1 ) );
+            const kvs::Vec3 vertex0( this->interpolate_vertex<T>( v0, v1 ) );
             coords.push_back( vertex0.x() );
             coords.push_back( vertex0.y() );
             coords.push_back( vertex0.z() );
 
-            const kvs::Vector3f vertex1( this->interpolate_vertex<T>( v2, v3 ) );
+            const kvs::Vec3 vertex1( this->interpolate_vertex<T>( v2, v3 ) );
             coords.push_back( vertex1.x() );
             coords.push_back( vertex1.y() );
             coords.push_back( vertex1.z() );
 
-            const kvs::Vector3f vertex2( this->interpolate_vertex<T>( v4, v5 ) );
+            const kvs::Vec3 vertex2( this->interpolate_vertex<T>( v4, v5 ) );
             coords.push_back( vertex2.x() );
             coords.push_back( vertex2.y() );
             coords.push_back( vertex2.z() );
 
             // Calculate a normal vector for the triangle polygon.
-            const kvs::Vector3f normal( ( vertex1 - vertex0 ).cross( vertex2 - vertex0 ) );
+            const kvs::Vec3 normal( ( vertex1 - vertex0 ).cross( vertex2 - vertex0 ) );
             normals.push_back( normal.x() );
             normals.push_back( normal.y() );
             normals.push_back( normal.z() );
@@ -297,7 +290,7 @@ size_t MarchingHexahedra::calculate_table_index( const size_t* local_index ) con
  */
 /*==========================================================================*/
 template <typename T>
-const kvs::Vector3f MarchingHexahedra::interpolate_vertex(
+const kvs::Vec3 MarchingHexahedra::interpolate_vertex(
     const int vertex0,
     const int vertex1 ) const
 {
@@ -315,7 +308,7 @@ const kvs::Vector3f MarchingHexahedra::interpolate_vertex(
     const float y = coords[coord0_index+1] + ratio * ( coords[coord1_index+1] - coords[coord0_index+1] );
     const float z = coords[coord0_index+2] + ratio * ( coords[coord1_index+2] - coords[coord0_index+2] );
 
-    return kvs::Vector3f( x, y, z );
+    return kvs::Vec3( x, y, z );
 }
 
 /*==========================================================================*/
@@ -327,12 +320,6 @@ const kvs::Vector3f MarchingHexahedra::interpolate_vertex(
 template <typename T>
 const kvs::RGBColor MarchingHexahedra::calculate_color()
 {
-    // Calculate the min/max values of the node data.
-    if ( !BaseClass::volume()->hasMinMaxValues() )
-    {
-        BaseClass::volume()->updateMinMaxValues();
-    }
-
     const kvs::Real64 min_value = BaseClass::volume()->minValue();
     const kvs::Real64 max_value = BaseClass::volume()->maxValue();
     const kvs::Real64 normalize_factor = 255.0 / ( max_value - min_value );

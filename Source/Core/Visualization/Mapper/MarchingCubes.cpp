@@ -45,19 +45,16 @@ MarchingCubes::MarchingCubes():
 /*==========================================================================*/
 MarchingCubes::MarchingCubes(
     const kvs::StructuredVolumeObject* volume,
-    const double                       isolevel,
-    const NormalType                   normal_type,
-    const bool                         duplication,
-    const kvs::TransferFunction&       transfer_function ):
+    const double isolevel,
+    const NormalType normal_type,
+    const bool duplication,
+    const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
     kvs::PolygonObject(),
     m_duplication( duplication )
 {
     SuperClass::setNormalType( normal_type );
-
     this->setIsolevel( isolevel );
-
-    // Extract the surfaces.
     this->exec( volume );
 }
 
@@ -68,17 +65,6 @@ MarchingCubes::MarchingCubes(
 /*==========================================================================*/
 MarchingCubes::~MarchingCubes()
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a isolevel.
- *  @param  isolevel [in] isolevel
- */
-/*===========================================================================*/
-void MarchingCubes::setIsolevel( const double isolevel )
-{
-    m_isolevel = isolevel;
 }
 
 /*===========================================================================*/
@@ -137,6 +123,10 @@ void MarchingCubes::mapping( const kvs::StructuredVolumeObject* volume )
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
 
+    const kvs::Real64 min_value = BaseClass::volume()->minValue();
+    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
+
     // Extract surfaces.
     const std::type_info& type = volume->values().typeInfo()->type();
     if (      type == typeid( kvs::Int8   ) ) this->extract_surfaces<kvs::Int8>( volume );
@@ -183,9 +173,9 @@ void MarchingCubes::extract_surfaces_with_duplication(
     std::vector<kvs::Real32> coords;
     std::vector<kvs::Real32> normals;
 
-    const kvs::Vector3ui ncells( volume->resolution() - kvs::Vector3ui::All(1) );
-    const kvs::UInt32    line_size( volume->numberOfNodesPerLine() );
-    const kvs::UInt32    slice_size( volume->numberOfNodesPerSlice() );
+    const kvs::Vec3u ncells( volume->resolution() - kvs::Vec3u::All(1) );
+    const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
+    const kvs::UInt32 slice_size( volume->numberOfNodesPerSlice() );
 
     // Extract surfaces.
     size_t index = 0;
@@ -221,55 +211,55 @@ void MarchingCubes::extract_surfaces_with_duplication(
                     const int e2 = MarchingCubesTable::TriangleID[table_index][i+1];
 
                     // Determine vertices for each edge.
-                    const kvs::Vector3f v0(
+                    const kvs::Vec3 v0(
                         static_cast<float>( x + MarchingCubesTable::VertexID[e0][0][0] ),
                         static_cast<float>( y + MarchingCubesTable::VertexID[e0][0][1] ),
                         static_cast<float>( z + MarchingCubesTable::VertexID[e0][0][2] ) );
 
-                    const kvs::Vector3f v1(
+                    const kvs::Vec3 v1(
                         static_cast<float>( x + MarchingCubesTable::VertexID[e0][1][0] ),
                         static_cast<float>( y + MarchingCubesTable::VertexID[e0][1][1] ),
                         static_cast<float>( z + MarchingCubesTable::VertexID[e0][1][2] ) );
 
-                    const kvs::Vector3f v2(
+                    const kvs::Vec3 v2(
                         static_cast<float>( x + MarchingCubesTable::VertexID[e1][0][0] ),
                         static_cast<float>( y + MarchingCubesTable::VertexID[e1][0][1] ),
                         static_cast<float>( z + MarchingCubesTable::VertexID[e1][0][2] ) );
 
-                    const kvs::Vector3f v3(
+                    const kvs::Vec3 v3(
                         static_cast<float>( x + MarchingCubesTable::VertexID[e1][1][0] ),
                         static_cast<float>( y + MarchingCubesTable::VertexID[e1][1][1] ),
                         static_cast<float>( z + MarchingCubesTable::VertexID[e1][1][2] ) );
 
-                    const kvs::Vector3f v4(
+                    const kvs::Vec3 v4(
                         static_cast<float>( x + MarchingCubesTable::VertexID[e2][0][0] ),
                         static_cast<float>( y + MarchingCubesTable::VertexID[e2][0][1] ),
                         static_cast<float>( z + MarchingCubesTable::VertexID[e2][0][2] ) );
 
-                    const kvs::Vector3f v5(
+                    const kvs::Vec3 v5(
                         static_cast<float>( x + MarchingCubesTable::VertexID[e2][1][0] ),
                         static_cast<float>( y + MarchingCubesTable::VertexID[e2][1][1] ),
                         static_cast<float>( z + MarchingCubesTable::VertexID[e2][1][2] ) );
 
                     // Calculate coordinates of the vertices which are composed
                     // of the triangle polygon.
-                    const kvs::Vector3f vertex0( this->interpolate_vertex<T>( v0, v1 ) );
+                    const kvs::Vec3 vertex0( this->interpolate_vertex<T>( v0, v1 ) );
                     coords.push_back( vertex0.x() );
                     coords.push_back( vertex0.y() );
                     coords.push_back( vertex0.z() );
 
-                    const kvs::Vector3f vertex1( this->interpolate_vertex<T>( v2, v3 ) );
+                    const kvs::Vec3 vertex1( this->interpolate_vertex<T>( v2, v3 ) );
                     coords.push_back( vertex1.x() );
                     coords.push_back( vertex1.y() );
                     coords.push_back( vertex1.z() );
 
-                    const kvs::Vector3f vertex2( this->interpolate_vertex<T>( v4, v5 ) );
+                    const kvs::Vec3 vertex2( this->interpolate_vertex<T>( v4, v5 ) );
                     coords.push_back( vertex2.x() );
                     coords.push_back( vertex2.y() );
                     coords.push_back( vertex2.z() );
 
                     // Calculate a normal vector for the triangle polygon.
-                    const kvs::Vector3f normal( ( vertex1 - vertex0 ).cross( vertex2 - vertex0 ) );
+                    const kvs::Vec3 normal( ( vertex1 - vertex0 ).cross( vertex2 - vertex0 ) );
                     normals.push_back( normal.x() );
                     normals.push_back( normal.y() );
                     normals.push_back( normal.z() );
@@ -377,9 +367,9 @@ size_t MarchingCubes::calculate_table_index( const size_t* local_index ) const
  */
 /*==========================================================================*/
 template <typename T>
-const kvs::Vector3f MarchingCubes::interpolate_vertex(
-    const kvs::Vector3f& vertex0,
-    const kvs::Vector3f& vertex1 ) const
+const kvs::Vec3 MarchingCubes::interpolate_vertex(
+    const kvs::Vec3& vertex0,
+    const kvs::Vec3& vertex1 ) const
 {
     const T* const values = static_cast<const T*>( BaseClass::volume()->values().data() );
     const kvs::StructuredVolumeObject* volume =
@@ -404,7 +394,7 @@ const kvs::Vector3f MarchingCubes::interpolate_vertex(
     const float y = ( 1.0f - ratio ) * vertex0.y() + ratio * vertex1.y();
     const float z = ( 1.0f - ratio ) * vertex0.z() + ratio * vertex1.z();
 
-    return kvs::Vector3f( x, y, z );
+    return kvs::Vec3( x, y, z );
 }
 
 /*==========================================================================*/
@@ -416,12 +406,6 @@ const kvs::Vector3f MarchingCubes::interpolate_vertex(
 template <typename T>
 const kvs::RGBColor MarchingCubes::calculate_color()
 {
-    // Calculate the min/max values of the node data.
-    if ( !BaseClass::volume()->hasMinMaxValues() )
-    {
-        BaseClass::volume()->updateMinMaxValues();
-    }
-
     const kvs::Real64 min_value = BaseClass::volume()->minValue();
     const kvs::Real64 max_value = BaseClass::volume()->maxValue();
     const kvs::Real64 normalize_factor = 255.0 / ( max_value - min_value );
@@ -446,14 +430,14 @@ void MarchingCubes::calculate_isopoints(
     const kvs::StructuredVolumeObject* volume =
         reinterpret_cast<const kvs::StructuredVolumeObject*>( BaseClass::volume() );
 
-    const kvs::Vector3ui resolution( volume->resolution() );
-    const kvs::Vector3ui ncells( resolution - kvs::Vector3ui::All(1) );
-    const kvs::UInt32    line_size( volume->numberOfNodesPerLine() );
-    const kvs::UInt32    slice_size( volume->numberOfNodesPerSlice() );
-    const double         isolevel = m_isolevel;
+    const kvs::Vec3u resolution( volume->resolution() );
+    const kvs::Vec3u ncells( resolution - kvs::Vec3u::All(1) );
+    const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
+    const kvs::UInt32 slice_size( volume->numberOfNodesPerSlice() );
+    const double isolevel = m_isolevel;
 
     kvs::UInt32 nisopoints = 0;
-    size_t      index = 0;
+    size_t index = 0;
     for ( kvs::UInt32 z = 0; z < resolution.z(); ++z )
     {
         for ( kvs::UInt32 y = 0; y < resolution.y(); ++y )
@@ -470,9 +454,9 @@ void MarchingCubes::calculate_isopoints(
                     if ( ( static_cast<double>( values[id0] ) > isolevel ) !=
                          ( static_cast<double>( values[id1] ) > isolevel ) )
                     {
-                        const kvs::Vector3f v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vector3f v2( static_cast<float>(x+1), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vector3f isopoint( this->interpolate_vertex<T>( v1, v2 ) );
+                        const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
+                        const kvs::Vec3 v2( static_cast<float>(x+1), static_cast<float>(y), static_cast<float>(z) );
+                        const kvs::Vec3 isopoint( this->interpolate_vertex<T>( v1, v2 ) );
 
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
@@ -487,9 +471,9 @@ void MarchingCubes::calculate_isopoints(
                     if ( ( static_cast<double>( values[id0] ) > isolevel ) !=
                          ( static_cast<double>( values[id2] ) > isolevel ) )
                     {
-                        const kvs::Vector3f v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vector3f v2( static_cast<float>(x), static_cast<float>(y+1), static_cast<float>(z) );
-                        const kvs::Vector3f isopoint( this->interpolate_vertex<T>( v1, v2 ) );
+                        const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
+                        const kvs::Vec3 v2( static_cast<float>(x), static_cast<float>(y+1), static_cast<float>(z) );
+                        const kvs::Vec3 isopoint( this->interpolate_vertex<T>( v1, v2 ) );
 
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
@@ -504,9 +488,9 @@ void MarchingCubes::calculate_isopoints(
                     if ( ( static_cast<double>( values[id0] ) > isolevel ) !=
                          ( static_cast<double>( values[id3] ) > isolevel ) )
                     {
-                        const kvs::Vector3f v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vector3f v2( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z+1) );
-                        const kvs::Vector3f isopoint( this->interpolate_vertex<T>( v1, v2 ) );
+                        const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
+                        const kvs::Vec3 v2( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z+1) );
+                        const kvs::Vec3 isopoint( this->interpolate_vertex<T>( v1, v2 ) );
 
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
@@ -536,10 +520,10 @@ void MarchingCubes::connect_isopoints(
     const kvs::StructuredVolumeObject* volume =
         reinterpret_cast<const kvs::StructuredVolumeObject*>( BaseClass::volume() );
 
-    const kvs::Vector3ui resolution( volume->resolution() );
-    const kvs::Vector3ui ncells( resolution - kvs::Vector3ui::All(1) );
-    const kvs::UInt32    line_size( volume->numberOfNodesPerLine() );
-    const kvs::UInt32    slice_size( volume->numberOfNodesPerSlice() );
+    const kvs::Vec3u resolution( volume->resolution() );
+    const kvs::Vec3u ncells( resolution - kvs::Vec3u::All(1) );
+    const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
+    const kvs::UInt32 slice_size( volume->numberOfNodesPerSlice() );
 
     size_t index = 0;
     size_t local_index[8];
@@ -623,12 +607,11 @@ void MarchingCubes::calculate_normals_on_polygon(
         const kvs::UInt32 coord1_index = 3 * connections[ index + 1 ];
         const kvs::UInt32 coord2_index = 3 * connections[ index + 2 ];
 
-        const kvs::Vector3f v0( coords_ptr + coord0_index );
-        const kvs::Vector3f v1( coords_ptr + coord1_index );
-        const kvs::Vector3f v2( coords_ptr + coord2_index );
+        const kvs::Vec3 v0( coords_ptr + coord0_index );
+        const kvs::Vec3 v1( coords_ptr + coord1_index );
+        const kvs::Vec3 v2( coords_ptr + coord2_index );
 
-        const kvs::Vector3f normal( ( v1 - v0 ).cross( v2 - v0 ) );
-
+        const kvs::Vec3 normal( ( v1 - v0 ).cross( v2 - v0 ) );
         normals[ index     ] = normal.x();
         normals[ index + 1 ] = normal.y();
         normals[ index + 2 ] = normal.z();
@@ -654,7 +637,6 @@ void MarchingCubes::calculate_normals_on_vertex(
     std::fill( normals.begin(), normals.end(), 0.0f );
 
     const kvs::Real32* const coords_ptr = &coords[ 0 ];
-
     const size_t size = connections.size();
     for ( kvs::UInt32 index = 0; index < size; index += 3 )
     {
@@ -662,11 +644,11 @@ void MarchingCubes::calculate_normals_on_vertex(
         const kvs::UInt32 coord1_index = 3 * connections[ index + 1 ];
         const kvs::UInt32 coord2_index = 3 * connections[ index + 2 ];
 
-        const kvs::Vector3f v0( coords_ptr + coord0_index );
-        const kvs::Vector3f v1( coords_ptr + coord1_index );
-        const kvs::Vector3f v2( coords_ptr + coord2_index );
+        const kvs::Vec3 v0( coords_ptr + coord0_index );
+        const kvs::Vec3 v1( coords_ptr + coord1_index );
+        const kvs::Vec3 v2( coords_ptr + coord2_index );
 
-        const kvs::Vector3f normal( ( v1 - v0 ).cross( v2 - v0 ) );
+        const kvs::Vec3 normal( ( v1 - v0 ).cross( v2 - v0 ) );
 
         normals[ coord0_index     ] += normal.x();
         normals[ coord0_index + 1 ] += normal.y();
