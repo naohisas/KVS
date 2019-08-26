@@ -86,6 +86,9 @@ public:
     const Matrix44 transposed() const;
     const Matrix44 inverted( T* determinant = 0 ) const;
 
+    bool isSymmetric() const;
+    bool isDiagonal() const;
+
 public:
     const Vector4<T>& operator []( const size_t index ) const;
     Vector4<T>& operator []( const size_t index );
@@ -564,6 +567,36 @@ inline const Matrix44<T> Matrix44<T>::inverted( T* determinant ) const
     Matrix44 result( *this );
     result.invert( determinant );
     return result;
+}
+
+template<typename T>
+inline bool Matrix44<T>::isSymmetric() const
+{
+    if ( !kvs::Math::Equal( m_rows[0][1], m_rows[1][0] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_rows[0][2], m_rows[2][0] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_rows[0][3], m_rows[3][0] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_rows[1][2], m_rows[2][1] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_rows[1][3], m_rows[3][1] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_rows[2][3], m_rows[3][2] ) ) { return false; }
+    return true;
+}
+
+template<typename T>
+inline bool Matrix44<T>::isDiagonal() const
+{
+    if ( !kvs::Math::IsZero( m_rows[0][1] ) ||
+         !kvs::Math::IsZero( m_rows[1][0] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_rows[0][2] ) ||
+         !kvs::Math::IsZero( m_rows[2][0] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_rows[0][3] ) ||
+         !kvs::Math::IsZero( m_rows[3][0] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_rows[1][2] ) ||
+         !kvs::Math::IsZero( m_rows[2][1] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_rows[1][3] ) ||
+         !kvs::Math::IsZero( m_rows[3][1] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_rows[2][3] ) ||
+         !kvs::Math::IsZero( m_rows[3][2] ) ) { return false; }
+    return true;
 }
 
 template<typename T>

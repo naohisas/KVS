@@ -87,6 +87,9 @@ public:
     const Matrix33 transposed() const;
     const Matrix33 inverted( T* determinant = 0 ) const;
 
+    bool isSymmetric() const;
+    bool isDiagonal() const;
+
 public:
     const Vector3<T>& operator []( const size_t index ) const;
     Vector3<T>& operator []( const size_t index );
@@ -544,6 +547,27 @@ inline const Matrix33<T> Matrix33<T>::inverted( T* determinant ) const
     Matrix33 result( *this );
     result.invert( determinant );
     return result;
+}
+
+template<typename T>
+inline bool Matrix33<T>::isSymmetric() const
+{
+    if ( !kvs::Math::Equal( m_rows[0][1], m_rows[1][0] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_rows[0][2], m_rows[2][0] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_rows[1][2], m_rows[2][1] ) ) { return false; }
+    return true;
+}
+
+template<typename T>
+inline bool Matrix33<T>::isDiagonal() const
+{
+    if ( !kvs::Math::IsZero( m_rows[0][1] ) ||
+         !kvs::Math::IsZero( m_rows[1][0] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_rows[0][2] ) ||
+         !kvs::Math::IsZero( m_rows[2][0] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_rows[1][2] ) ||
+         !kvs::Math::IsZero( m_rows[2][1] ) ) { return false; }
+    return true;
 }
 
 template<typename T>

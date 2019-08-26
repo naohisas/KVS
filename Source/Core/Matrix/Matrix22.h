@@ -79,6 +79,9 @@ public:
     const Matrix22 transposed() const;
     const Matrix22 inverted( T* determinant = 0 ) const;
 
+    bool isSymmetric() const;
+    bool isDiagonal() const;
+
 public:
     const Vector2<T>& operator []( const size_t index ) const;
     Vector2<T>& operator []( const size_t index );
@@ -445,6 +448,21 @@ inline const Matrix22<T> Matrix22<T>::inverted( T* determinant ) const
     Matrix22 result( *this );
     result.invert( determinant );
     return result;
+}
+
+template<typename T>
+inline bool Matrix22<T>::isSymmetric() const
+{
+    if ( !kvs::Math::Equal( m_rows[0][1], m_rows[1][0] ) ) { return false; }
+    return true;
+}
+
+template<typename T>
+inline bool Matrix22<T>::isDiagonal() const
+{
+    if ( !kvs::Math::IsZero( m_rows[0][1] ) ||
+         !kvs::Math::IsZero( m_rows[1][0] ) ) { return false; }
+    return true;
 }
 
 template<typename T>

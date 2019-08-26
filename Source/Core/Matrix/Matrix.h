@@ -79,6 +79,10 @@ public:
     const Matrix transposed() const;
     const Matrix inverted() const;
 
+    bool isSquare() const;
+    bool isSymmetric() const;
+    bool isDiagonal() const;
+
 public:
     const kvs::Vector<T>& operator []( const size_t index ) const;
     kvs::Vector<T>& operator []( const size_t index );
@@ -746,6 +750,45 @@ inline const Matrix<T> Matrix<T>::inverted() const
     Matrix result( *this );
     result.invert();
     return result;
+}
+
+template<typename T>
+inline bool Matrix<T>::isSquare() const
+{
+    return this->rowSize() == this->columnSize();
+}
+
+template<typename T>
+inline bool Matrix<T>::isSymmetric() const
+{
+    if ( !this->isSquare() ) { return false; }
+
+    for ( size_t i = 0; i < m_nrows; i++ )
+    {
+        for ( size_t j = i + 1; j < m_ncolumns; j++ )
+        {
+            if ( !kvs::Math::Equal( m_rows[i][j], m_rows[j][i] ) ) { return false; }
+        }
+    }
+
+    return true;
+}
+
+template<typename T>
+inline bool Matrix<T>::isDiagonal() const
+{
+    if ( !this->isSquare() ) { return false; }
+
+    for ( size_t i = 0; i < m_nrows; i++ )
+    {
+        for ( size_t j = i + 1; j < m_ncolumns; j++ )
+        {
+            if ( !kvs::Math::IsZero( m_rows[i][j] ) ||
+                 !kvs::Math::IsZero( m_rows[j][i] ) ) { return false; }
+        }
+    }
+
+    return true;
 }
 
 template<typename T>
