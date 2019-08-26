@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Vector4.h
+ *  @file   Vector4.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -32,7 +33,7 @@ template <typename T>
 class Vector4
 {
 private:
-    T m_elements[4]; ///< Elements.
+    T m_data[4]; ///< Elements.
 
 public:
     static const Vector4 Zero() { return Vector4( T(0), T(0), T(0), T(0) ); }
@@ -54,22 +55,23 @@ public:
     Vector4( const Vector3<T>& other, const T w );
     explicit Vector4( const T elements[4] );
 
-    T& x() { return m_elements[0]; }
-    T& y() { return m_elements[1]; }
-    T& z() { return m_elements[2]; }
-    T& w() { return m_elements[3]; }
-    const T& x() const { return m_elements[0]; }
-    const T& y() const { return m_elements[1]; }
-    const T& z() const { return m_elements[2]; }
-    const T& w() const { return m_elements[3]; }
-    const Vector2<T> xy() const { return Vector2<T>( m_elements[0], m_elements[1] ); }
-    const Vector3<T> xyz() const { return Vector3<T>( m_elements[0], m_elements[1], m_elements[2] ); }
+    T& x() { return m_data[0]; }
+    T& y() { return m_data[1]; }
+    T& z() { return m_data[2]; }
+    T& w() { return m_data[3]; }
+    const T& x() const { return m_data[0]; }
+    const T& y() const { return m_data[1]; }
+    const T& z() const { return m_data[2]; }
+    const T& w() const { return m_data[3]; }
+    const Vector2<T> xy() const { return Vector2<T>( m_data[0], m_data[1] ); }
+    const Vector3<T> xyz() const { return Vector3<T>( m_data[0], m_data[1], m_data[2] ); }
+    T* data() { return &m_data[0]; }
+    const T* data() const { return &m_data[0]; }
 
     void set( const T x, const T y, const T z, const T w );
     void set( const Vector2<T>& other, const T z, const T w );
     void set( const Vector3<T>& other, const T w );
     void set( const T elements[4] );
-
     void setZero();
     void setOnes();
     void setUnitX();
@@ -83,30 +85,22 @@ public:
     void swap( Vector4& other );
     void normalize();
     void print() const;
-
     double length() const;
     double length2() const;
     T dot( const Vector4& other ) const;
     const Vector4 normalized() const;
 
-    const T* data() const;
-    T* data();
-
 public:
     const T& operator [] ( const size_t index ) const;
-    T&       operator [] ( const size_t index );
-
-public:
+    T& operator [] ( const size_t index );
     Vector4& operator += ( const Vector4& rhs );
     Vector4& operator -= ( const Vector4& rhs );
     Vector4& operator *= ( const Vector4& rhs );
     Vector4& operator *= ( const T rhs );
     Vector4& operator /= ( const Vector4& rhs );
     Vector4& operator /= ( const T rhs );
-
     const Vector4 operator -() const;
 
-public:
     friend bool operator ==( const Vector4& lhs, const Vector4& rhs )
     {
         return kvs::Math::Equal( lhs[0], rhs[0] ) &&
@@ -167,6 +161,7 @@ public:
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
 };
 
+
 /*==========================================================================*/
 /**
  *  Type definition.
@@ -182,6 +177,7 @@ typedef Vector4<unsigned int> Vec4u;
 typedef Vector4<double> Vec4d;
 typedef Vector4<unsigned int> Vector4ui;
 typedef Vector4<unsigned int> Vec4ui;
+
 
 /*==========================================================================*/
 /**
@@ -267,10 +263,10 @@ inline Vector4<T>::Vector4( const T elements[4] )
 template<typename T>
 inline void Vector4<T>::set( const T x, const T y, const T z, const T w )
 {
-    m_elements[0] = x;
-    m_elements[1] = y;
-    m_elements[2] = z;
-    m_elements[3] = w;
+    m_data[0] = x;
+    m_data[1] = y;
+    m_data[2] = z;
+    m_data[3] = w;
 }
 
 /*==========================================================================*/
@@ -284,10 +280,10 @@ inline void Vector4<T>::set( const T x, const T y, const T z, const T w )
 template<typename T>
 inline void Vector4<T>::set( const Vector2<T>& other, const T z, const T w )
 {
-    m_elements[0] = other[0];
-    m_elements[1] = other[1];
-    m_elements[2] = z;
-    m_elements[3] = w;
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = z;
+    m_data[3] = w;
 }
 
 /*==========================================================================*/
@@ -300,10 +296,10 @@ inline void Vector4<T>::set( const Vector2<T>& other, const T z, const T w )
 template<typename T>
 inline void Vector4<T>::set( const Vector3<T>& other, const T w )
 {
-    m_elements[0] = other[0];
-    m_elements[1] = other[1];
-    m_elements[2] = other[2];
-    m_elements[3] = w;
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = other[2];
+    m_data[3] = w;
 }
 
 /*==========================================================================*/
@@ -315,92 +311,92 @@ inline void Vector4<T>::set( const Vector3<T>& other, const T w )
 template<typename T>
 inline void Vector4<T>::set( const T elements[4] )
 {
-    m_elements[0] = elements[0];
-    m_elements[1] = elements[1];
-    m_elements[2] = elements[2];
-    m_elements[3] = elements[3];
+    m_data[0] = elements[0];
+    m_data[1] = elements[1];
+    m_data[2] = elements[2];
+    m_data[3] = elements[3];
 }
 
 template<typename T>
 inline void Vector4<T>::setZero()
 {
-    m_elements[0] = T(0);
-    m_elements[1] = T(0);
-    m_elements[2] = T(0);
-    m_elements[3] = T(0);
+    m_data[0] = T(0);
+    m_data[1] = T(0);
+    m_data[2] = T(0);
+    m_data[3] = T(0);
 }
 
 template<typename T>
 inline void Vector4<T>::setOnes()
 {
-    m_elements[0] = T(1);
-    m_elements[1] = T(1);
-    m_elements[2] = T(1);
-    m_elements[3] = T(1);
+    m_data[0] = T(1);
+    m_data[1] = T(1);
+    m_data[2] = T(1);
+    m_data[3] = T(1);
 }
 
 template<typename T>
 inline void Vector4<T>::setUnitX()
 {
-    m_elements[0] = T(1);
-    m_elements[1] = T(0);
-    m_elements[2] = T(0);
-    m_elements[3] = T(0);
+    m_data[0] = T(1);
+    m_data[1] = T(0);
+    m_data[2] = T(0);
+    m_data[3] = T(0);
 }
 
 template<typename T>
 inline void Vector4<T>::setUnitY()
 {
-    m_elements[0] = T(0);
-    m_elements[1] = T(1);
-    m_elements[2] = T(0);
-    m_elements[3] = T(0);
+    m_data[0] = T(0);
+    m_data[1] = T(1);
+    m_data[2] = T(0);
+    m_data[3] = T(0);
 }
 
 template<typename T>
 inline void Vector4<T>::setUnitZ()
 {
-    m_elements[0] = T(0);
-    m_elements[1] = T(0);
-    m_elements[2] = T(1);
-    m_elements[3] = T(0);
+    m_data[0] = T(0);
+    m_data[1] = T(0);
+    m_data[2] = T(1);
+    m_data[3] = T(0);
 }
 
 template<typename T>
 inline void Vector4<T>::setUnitW()
 {
-    m_elements[0] = T(0);
-    m_elements[1] = T(0);
-    m_elements[2] = T(0);
-    m_elements[3] = T(1);
+    m_data[0] = T(0);
+    m_data[1] = T(0);
+    m_data[2] = T(0);
+    m_data[3] = T(1);
 }
 
 template<typename T>
 inline void Vector4<T>::setIdentity()
 {
-    m_elements[0] = T(1);
-    m_elements[1] = T(0);
-    m_elements[2] = T(0);
-    m_elements[3] = T(0);
+    m_data[0] = T(1);
+    m_data[1] = T(0);
+    m_data[2] = T(0);
+    m_data[3] = T(0);
 }
 
 template<typename T>
 inline void Vector4<T>::setConstant( const T x )
 {
-    m_elements[0] = x;
-    m_elements[1] = x;
-    m_elements[2] = x;
-    m_elements[3] = x;
+    m_data[0] = x;
+    m_data[1] = x;
+    m_data[2] = x;
+    m_data[3] = x;
 }
 
 template<typename T>
 inline void Vector4<T>::setRandom()
 {
     kvs::Xorshift128 r;
-    m_elements[0] = T(r());
-    m_elements[1] = T(r());
-    m_elements[2] = T(r());
-    m_elements[3] = T(r());
+    m_data[0] = T(r());
+    m_data[1] = T(r());
+    m_data[2] = T(r());
+    m_data[3] = T(r());
 }
 
 /*==========================================================================*/
@@ -412,10 +408,10 @@ inline void Vector4<T>::setRandom()
 template<typename T>
 inline void Vector4<T>::swap( Vector4& other )
 {
-    std::swap( m_elements[0], other[0] );
-    std::swap( m_elements[1], other[1] );
-    std::swap( m_elements[2], other[2] );
-    std::swap( m_elements[3], other[3] );
+    std::swap( m_data[0], other[0] );
+    std::swap( m_data[1], other[1] );
+    std::swap( m_data[2], other[2] );
+    std::swap( m_data[3], other[3] );
 }
 
 /*==========================================================================*/
@@ -465,10 +461,10 @@ template<typename T>
 inline double Vector4<T>::length2() const
 {
     double result = 0.0;
-    result += (double)m_elements[0] * (double)m_elements[0];
-    result += (double)m_elements[1] * (double)m_elements[1];
-    result += (double)m_elements[2] * (double)m_elements[2];
-    result += (double)m_elements[3] * (double)m_elements[3];
+    result += (double)m_data[0] * (double)m_data[0];
+    result += (double)m_data[1] * (double)m_data[1];
+    result += (double)m_data[2] * (double)m_data[2];
+    result += (double)m_data[3] * (double)m_data[3];
     return result;
 }
 
@@ -483,10 +479,10 @@ template<typename T>
 inline T Vector4<T>::dot( const Vector4& other ) const
 {
     T result( 0 );
-    result += m_elements[0] * other[0];
-    result += m_elements[1] * other[1];
-    result += m_elements[2] * other[2];
-    result += m_elements[3] * other[3];
+    result += m_data[0] * other[0];
+    result += m_data[1] * other[1];
+    result += m_data[2] * other[2];
+    result += m_data[3] * other[3];
     return result;
 }
 
@@ -508,73 +504,73 @@ template<typename T>
 inline const T& Vector4<T>::operator []( const size_t index ) const
 {
     KVS_ASSERT( index < 4 );
-    return m_elements[ index ];
+    return m_data[ index ];
 }
 
 template<typename T>
 inline T& Vector4<T>::operator []( const size_t index )
 {
     KVS_ASSERT( index < 4 );
-    return m_elements[ index ];
+    return m_data[ index ];
 }
 
 template<typename T>
 inline Vector4<T>& Vector4<T>::operator +=( const Vector4& rhs )
 {
-    m_elements[0] += rhs[0];
-    m_elements[1] += rhs[1];
-    m_elements[2] += rhs[2];
-    m_elements[3] += rhs[3];
+    m_data[0] += rhs[0];
+    m_data[1] += rhs[1];
+    m_data[2] += rhs[2];
+    m_data[3] += rhs[3];
     return *this;
 }
 
 template<typename T>
 inline Vector4<T>& Vector4<T>::operator -=( const Vector4& rhs )
 {
-    m_elements[0] -= rhs[0];
-    m_elements[1] -= rhs[1];
-    m_elements[2] -= rhs[2];
-    m_elements[3] -= rhs[3];
+    m_data[0] -= rhs[0];
+    m_data[1] -= rhs[1];
+    m_data[2] -= rhs[2];
+    m_data[3] -= rhs[3];
     return *this;
 }
 
 template<typename T>
 inline Vector4<T>& Vector4<T>::operator *=( const Vector4& rhs )
 {
-    m_elements[0] *= rhs[0];
-    m_elements[1] *= rhs[1];
-    m_elements[2] *= rhs[2];
-    m_elements[3] *= rhs[3];
+    m_data[0] *= rhs[0];
+    m_data[1] *= rhs[1];
+    m_data[2] *= rhs[2];
+    m_data[3] *= rhs[3];
     return *this;
 }
 
 template<typename T>
 inline Vector4<T>& Vector4<T>::operator *=( const T rhs )
 {
-    m_elements[0] *= rhs;
-    m_elements[1] *= rhs;
-    m_elements[2] *= rhs;
-    m_elements[3] *= rhs;
+    m_data[0] *= rhs;
+    m_data[1] *= rhs;
+    m_data[2] *= rhs;
+    m_data[3] *= rhs;
     return *this;
 }
 
 template<typename T>
 inline Vector4<T>& Vector4<T>::operator /=( const Vector4& rhs )
 {
-    m_elements[0] /= rhs[0];
-    m_elements[1] /= rhs[1];
-    m_elements[2] /= rhs[2];
-    m_elements[3] /= rhs[3];
+    m_data[0] /= rhs[0];
+    m_data[1] /= rhs[1];
+    m_data[2] /= rhs[2];
+    m_data[3] /= rhs[3];
     return *this;
 }
 
 template<typename T>
 inline Vector4<T>& Vector4<T>::operator /=( const T rhs )
 {
-    m_elements[0] /= rhs;
-    m_elements[1] /= rhs;
-    m_elements[2] /= rhs;
-    m_elements[3] /= rhs;
+    m_data[0] /= rhs;
+    m_data[1] /= rhs;
+    m_data[2] /= rhs;
+    m_data[3] /= rhs;
     return *this;
 }
 

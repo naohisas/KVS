@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Matrix33.h
+ *  @file   Matrix33.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -31,7 +32,7 @@ template<typename T>
 class Matrix33
 {
 private:
-    Vector3<T> m_rows[3]; ///< Row vectors.
+    Vector3<T> m_data[3]; ///< Row vectors.
 
 public:
     static const Matrix33 Zero() { Matrix33 m; m.setZero(); return m; }
@@ -58,7 +59,6 @@ public:
         const Vector3<T>& v2 );
     explicit Matrix33( const T elements[9] );
 
-public:
     void set(
         const T a00, const T a01, const T a02,
         const T a10, const T a11, const T a12,
@@ -68,7 +68,6 @@ public:
         const Vector3<T>& v1,
         const Vector3<T>& v2 );
     void set( const T elements[9] );
-
     void setZero();
     void setOnes();
     void setIdentity();
@@ -81,25 +80,21 @@ public:
     void transpose();
     void invert( T* determinant = 0 );
     void print() const;
-
     T trace() const;
     T determinant() const;
     const Matrix33 transposed() const;
     const Matrix33 inverted( T* determinant = 0 ) const;
-
     bool isSymmetric() const;
     bool isDiagonal() const;
 
 public:
     const Vector3<T>& operator []( const size_t index ) const;
     Vector3<T>& operator []( const size_t index );
-
     Matrix33& operator +=( const Matrix33& rhs );
     Matrix33& operator -=( const Matrix33& rhs );
     Matrix33& operator *=( const Matrix33& rhs );
     Matrix33& operator *=( const T rhs );
     Matrix33& operator /=( const T rhs );
-
     const Matrix33 operator -() const;
 
     friend bool operator ==( const Matrix33& lhs, const Matrix33& rhs )
@@ -172,6 +167,7 @@ public:
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
 };
+
 
 /*==========================================================================*/
 /**
@@ -328,9 +324,9 @@ inline void Matrix33<T>::set(
     const T a10, const T a11, const T a12,
     const T a20, const T a21, const T a22 )
 {
-    m_rows[0].set( a00, a01, a02 );
-    m_rows[1].set( a10, a11, a12 );
-    m_rows[2].set( a20, a21, a22 );
+    m_data[0].set( a00, a01, a02 );
+    m_data[1].set( a10, a11, a12 );
+    m_data[2].set( a20, a21, a22 );
 }
 
 /*==========================================================================*/
@@ -347,9 +343,9 @@ inline void Matrix33<T>::set(
     const Vector3<T>& v1,
     const Vector3<T>& v2 )
 {
-    m_rows[0] = v0;
-    m_rows[1] = v1;
-    m_rows[2] = v2;
+    m_data[0] = v0;
+    m_data[1] = v1;
+    m_data[2] = v2;
 }
 
 /*==========================================================================*/
@@ -361,65 +357,65 @@ inline void Matrix33<T>::set(
 template<typename T>
 inline void Matrix33<T>::set( const T elements[9] )
 {
-    m_rows[0].set( elements     );
-    m_rows[1].set( elements + 3 );
-    m_rows[2].set( elements + 6 );
+    m_data[0].set( elements     );
+    m_data[1].set( elements + 3 );
+    m_data[2].set( elements + 6 );
 }
 
 template<typename T>
 inline void Matrix33<T>::setZero()
 {
-    m_rows[0].setZero();
-    m_rows[1].setZero();
-    m_rows[2].setZero();
+    m_data[0].setZero();
+    m_data[1].setZero();
+    m_data[2].setZero();
 }
 
 template<typename T>
 inline void Matrix33<T>::setOnes()
 {
-    m_rows[0].setOnes();
-    m_rows[1].setOnes();
-    m_rows[2].setOnes();
+    m_data[0].setOnes();
+    m_data[1].setOnes();
+    m_data[2].setOnes();
 }
 
 template<typename T>
 inline void Matrix33<T>::setIdentity()
 {
-    m_rows[0].setUnitX();
-    m_rows[1].setUnitY();
-    m_rows[2].setUnitZ();
+    m_data[0].setUnitX();
+    m_data[1].setUnitY();
+    m_data[2].setUnitZ();
 }
 
 template<typename T>
 inline void Matrix33<T>::setConstant( const T x )
 {
-    m_rows[0].setConstant(x);
-    m_rows[1].setConstant(x);
-    m_rows[2].setConstant(x);
+    m_data[0].setConstant(x);
+    m_data[1].setConstant(x);
+    m_data[2].setConstant(x);
 }
 
 template<typename T>
 inline void Matrix33<T>::setDiagonal( const T x )
 {
-    m_rows[0].setZero(); m_rows[0][0] = x;
-    m_rows[1].setZero(); m_rows[1][1] = x;
-    m_rows[2].setZero(); m_rows[2][2] = x;
+    m_data[0].setZero(); m_data[0][0] = x;
+    m_data[1].setZero(); m_data[1][1] = x;
+    m_data[2].setZero(); m_data[2][2] = x;
 }
 
 template<typename T>
 inline void Matrix33<T>::setDiagonal( const kvs::Vector3<T>& v )
 {
-    m_rows[0].setZero(); m_rows[0][0] = v[0];
-    m_rows[1].setZero(); m_rows[1][1] = v[1];
-    m_rows[2].setZero(); m_rows[2][2] = v[2];
+    m_data[0].setZero(); m_data[0][0] = v[0];
+    m_data[1].setZero(); m_data[1][1] = v[1];
+    m_data[2].setZero(); m_data[2][2] = v[2];
 }
 
 template<typename T>
 inline void Matrix33<T>::setRandom()
 {
-    m_rows[0].setRandom();
-    m_rows[1].setRandom();
-    m_rows[2].setRandom();
+    m_data[0].setRandom();
+    m_data[1].setRandom();
+    m_data[2].setRandom();
 }
 
 /*==========================================================================*/
@@ -431,9 +427,9 @@ inline void Matrix33<T>::setRandom()
 template<typename T>
 inline void Matrix33<T>::swap( Matrix33& other )
 {
-    m_rows[0].swap( other[0] );
-    m_rows[1].swap( other[1] );
-    m_rows[2].swap( other[2] );
+    m_data[0].swap( other[0] );
+    m_data[1].swap( other[1] );
+    m_data[2].swap( other[2] );
 }
 
 /*==========================================================================*/
@@ -445,9 +441,9 @@ inline void Matrix33<T>::swap( Matrix33& other )
 template<typename T>
 inline void Matrix33<T>::transpose()
 {
-    std::swap( m_rows[0][1], m_rows[1][0] );
-    std::swap( m_rows[0][2], m_rows[2][0] );
-    std::swap( m_rows[1][2], m_rows[2][1] );
+    std::swap( m_data[0][1], m_data[1][0] );
+    std::swap( m_data[0][2], m_data[2][0] );
+    std::swap( m_data[1][2], m_data[2][1] );
 }
 
 /*==========================================================================*/
@@ -461,18 +457,18 @@ template<typename T>
 inline void Matrix33<T>::invert( T* determinant )
 {
     const T det22[9] = {
-        m_rows[1][1] * m_rows[2][2] - m_rows[1][2] * m_rows[2][1],
-        m_rows[1][0] * m_rows[2][2] - m_rows[1][2] * m_rows[2][0],
-        m_rows[1][0] * m_rows[2][1] - m_rows[1][1] * m_rows[2][0],
-        m_rows[0][1] * m_rows[2][2] - m_rows[0][2] * m_rows[2][1],
-        m_rows[0][0] * m_rows[2][2] - m_rows[0][2] * m_rows[2][0],
-        m_rows[0][0] * m_rows[2][1] - m_rows[0][1] * m_rows[2][0],
-        m_rows[0][1] * m_rows[1][2] - m_rows[0][2] * m_rows[1][1],
-        m_rows[0][0] * m_rows[1][2] - m_rows[0][2] * m_rows[1][0],
-        m_rows[0][0] * m_rows[1][1] - m_rows[0][1] * m_rows[1][0], };
+        m_data[1][1] * m_data[2][2] - m_data[1][2] * m_data[2][1],
+        m_data[1][0] * m_data[2][2] - m_data[1][2] * m_data[2][0],
+        m_data[1][0] * m_data[2][1] - m_data[1][1] * m_data[2][0],
+        m_data[0][1] * m_data[2][2] - m_data[0][2] * m_data[2][1],
+        m_data[0][0] * m_data[2][2] - m_data[0][2] * m_data[2][0],
+        m_data[0][0] * m_data[2][1] - m_data[0][1] * m_data[2][0],
+        m_data[0][1] * m_data[1][2] - m_data[0][2] * m_data[1][1],
+        m_data[0][0] * m_data[1][2] - m_data[0][2] * m_data[1][0],
+        m_data[0][0] * m_data[1][1] - m_data[0][1] * m_data[1][0], };
 
     const T det33 =
-        m_rows[0][0] * det22[0] - m_rows[0][1] * det22[1] + m_rows[0][2] * det22[2];
+        m_data[0][0] * det22[0] - m_data[0][1] * det22[1] + m_data[0][2] * det22[2];
 
     if ( determinant ) *determinant = det33;
 
@@ -505,7 +501,7 @@ inline void Matrix33<T>::print() const
 template<typename T>
 inline T Matrix33<T>::trace() const
 {
-    return m_rows[0][0] + m_rows[1][1] + m_rows[2][2];
+    return m_data[0][0] + m_data[1][1] + m_data[2][2];
 }
 
 /*==========================================================================*/
@@ -517,7 +513,7 @@ inline T Matrix33<T>::trace() const
 template<typename T>
 inline T Matrix33<T>::determinant() const
 {
-    return m_rows[0].cross( m_rows[1] ).dot( m_rows[2] );
+    return m_data[0].cross( m_data[1] ).dot( m_data[2] );
 }
 
 /*==========================================================================*/
@@ -552,21 +548,21 @@ inline const Matrix33<T> Matrix33<T>::inverted( T* determinant ) const
 template<typename T>
 inline bool Matrix33<T>::isSymmetric() const
 {
-    if ( !kvs::Math::Equal( m_rows[0][1], m_rows[1][0] ) ) { return false; }
-    if ( !kvs::Math::Equal( m_rows[0][2], m_rows[2][0] ) ) { return false; }
-    if ( !kvs::Math::Equal( m_rows[1][2], m_rows[2][1] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_data[0][1], m_data[1][0] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_data[0][2], m_data[2][0] ) ) { return false; }
+    if ( !kvs::Math::Equal( m_data[1][2], m_data[2][1] ) ) { return false; }
     return true;
 }
 
 template<typename T>
 inline bool Matrix33<T>::isDiagonal() const
 {
-    if ( !kvs::Math::IsZero( m_rows[0][1] ) ||
-         !kvs::Math::IsZero( m_rows[1][0] ) ) { return false; }
-    if ( !kvs::Math::IsZero( m_rows[0][2] ) ||
-         !kvs::Math::IsZero( m_rows[2][0] ) ) { return false; }
-    if ( !kvs::Math::IsZero( m_rows[1][2] ) ||
-         !kvs::Math::IsZero( m_rows[2][1] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_data[0][1] ) ||
+         !kvs::Math::IsZero( m_data[1][0] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_data[0][2] ) ||
+         !kvs::Math::IsZero( m_data[2][0] ) ) { return false; }
+    if ( !kvs::Math::IsZero( m_data[1][2] ) ||
+         !kvs::Math::IsZero( m_data[2][1] ) ) { return false; }
     return true;
 }
 
@@ -574,31 +570,31 @@ template<typename T>
 inline const Vector3<T>& Matrix33<T>::operator []( const size_t index ) const
 {
     KVS_ASSERT( index < 3 );
-    return m_rows[ index ];
+    return m_data[ index ];
 }
 
 template<typename T>
 inline Vector3<T>& Matrix33<T>::operator []( const size_t index )
 {
     KVS_ASSERT( index < 3 );
-    return m_rows[ index ];
+    return m_data[ index ];
 }
 
 template<typename T>
 inline Matrix33<T>& Matrix33<T>::operator +=( const Matrix33& rhs )
 {
-    m_rows[0] += rhs[0];
-    m_rows[1] += rhs[1];
-    m_rows[2] += rhs[2];
+    m_data[0] += rhs[0];
+    m_data[1] += rhs[1];
+    m_data[2] += rhs[2];
     return *this;
 }
 
 template<typename T>
 inline Matrix33<T>& Matrix33<T>::operator -=( const Matrix33& rhs )
 {
-    m_rows[0] -= rhs[0];
-    m_rows[1] -= rhs[1];
-    m_rows[2] -= rhs[2];
+    m_data[0] -= rhs[0];
+    m_data[1] -= rhs[1];
+    m_data[2] -= rhs[2];
     return *this;
 }
 
@@ -606,33 +602,33 @@ template<typename T>
 inline Matrix33<T>& Matrix33<T>::operator *=( const Matrix33& rhs )
 {
     this->set(
-        m_rows[0][0] * rhs[0][0] + m_rows[0][1] * rhs[1][0] + m_rows[0][2] * rhs[2][0],
-        m_rows[0][0] * rhs[0][1] + m_rows[0][1] * rhs[1][1] + m_rows[0][2] * rhs[2][1],
-        m_rows[0][0] * rhs[0][2] + m_rows[0][1] * rhs[1][2] + m_rows[0][2] * rhs[2][2],
-        m_rows[1][0] * rhs[0][0] + m_rows[1][1] * rhs[1][0] + m_rows[1][2] * rhs[2][0],
-        m_rows[1][0] * rhs[0][1] + m_rows[1][1] * rhs[1][1] + m_rows[1][2] * rhs[2][1],
-        m_rows[1][0] * rhs[0][2] + m_rows[1][1] * rhs[1][2] + m_rows[1][2] * rhs[2][2],
-        m_rows[2][0] * rhs[0][0] + m_rows[2][1] * rhs[1][0] + m_rows[2][2] * rhs[2][0],
-        m_rows[2][0] * rhs[0][1] + m_rows[2][1] * rhs[1][1] + m_rows[2][2] * rhs[2][1],
-        m_rows[2][0] * rhs[0][2] + m_rows[2][1] * rhs[1][2] + m_rows[2][2] * rhs[2][2] );
+        m_data[0][0] * rhs[0][0] + m_data[0][1] * rhs[1][0] + m_data[0][2] * rhs[2][0],
+        m_data[0][0] * rhs[0][1] + m_data[0][1] * rhs[1][1] + m_data[0][2] * rhs[2][1],
+        m_data[0][0] * rhs[0][2] + m_data[0][1] * rhs[1][2] + m_data[0][2] * rhs[2][2],
+        m_data[1][0] * rhs[0][0] + m_data[1][1] * rhs[1][0] + m_data[1][2] * rhs[2][0],
+        m_data[1][0] * rhs[0][1] + m_data[1][1] * rhs[1][1] + m_data[1][2] * rhs[2][1],
+        m_data[1][0] * rhs[0][2] + m_data[1][1] * rhs[1][2] + m_data[1][2] * rhs[2][2],
+        m_data[2][0] * rhs[0][0] + m_data[2][1] * rhs[1][0] + m_data[2][2] * rhs[2][0],
+        m_data[2][0] * rhs[0][1] + m_data[2][1] * rhs[1][1] + m_data[2][2] * rhs[2][1],
+        m_data[2][0] * rhs[0][2] + m_data[2][1] * rhs[1][2] + m_data[2][2] * rhs[2][2] );
     return *this;
 }
 
 template<typename T>
 inline Matrix33<T>& Matrix33<T>::operator *=( const T rhs )
 {
-    m_rows[0] *= rhs;
-    m_rows[1] *= rhs;
-    m_rows[2] *= rhs;
+    m_data[0] *= rhs;
+    m_data[1] *= rhs;
+    m_data[2] *= rhs;
     return *this;
 }
 
 template<typename T>
 inline Matrix33<T>& Matrix33<T>::operator /=( const T rhs )
 {
-    m_rows[0] /= rhs;
-    m_rows[1] /= rhs;
-    m_rows[2] /= rhs;
+    m_data[0] /= rhs;
+    m_data[1] /= rhs;
+    m_data[2] /= rhs;
     return *this;
 }
 

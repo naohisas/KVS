@@ -1,6 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Vector2.h
+ *  @file   Vector2.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -31,7 +32,7 @@ template<typename T>
 class Vector2
 {
 private:
-    T m_elements[2]; ///< Elements.
+    T m_data[2]; ///< Elements.
 
 public:
     static const Vector2 Zero() { return Vector2( T(0), T(0) ); }
@@ -49,17 +50,15 @@ public:
     Vector2( const T x, const T y );
     explicit Vector2( const T elements[2] );
 
-    T& x() { return m_elements[0]; }
-    T& y() { return m_elements[1]; }
-    const T& x() const { return m_elements[0]; }
-    const T& y() const { return m_elements[1]; }
-
-    T* data() { return &m_elements[0]; }
-    const T* data() const { return &m_elements[0]; }
+    T& x() { return m_data[0]; }
+    T& y() { return m_data[1]; }
+    const T& x() const { return m_data[0]; }
+    const T& y() const { return m_data[1]; }
+    T* data() { return &m_data[0]; }
+    const T* data() const { return &m_data[0]; }
 
     void set( const T x, const T y );
     void set( const T elements[2] );
-
     void setZero();
     void setOnes();
     void setUnitX();
@@ -80,17 +79,14 @@ public:
 public:
     const T& operator []( const size_t index ) const;
     T& operator []( const size_t index );
-
     Vector2& operator +=( const Vector2& rhs );
     Vector2& operator -=( const Vector2& rhs );
     Vector2& operator *=( const Vector2& rhs );
     Vector2& operator *=( const T rhs );
     Vector2& operator /=( const Vector2& rhs );
     Vector2& operator /=( const T rhs );
-
     const Vector2 operator -() const;
 
-public:
     friend bool operator ==( const Vector2& lhs, const Vector2& rhs )
     {
         return kvs::Math::Equal( lhs[0], rhs[0] ) &&
@@ -148,6 +144,7 @@ public:
     KVS_DEPRECATED( void set( const T x ) ) { *this = Constant( x ); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
 };
+
 
 /*==========================================================================*/
 /**
@@ -219,8 +216,8 @@ inline Vector2<T>::Vector2( const T elements[2] )
 template<typename T>
 inline void Vector2<T>::set( const T x, const T y )
 {
-    m_elements[0] = x;
-    m_elements[1] = y;
+    m_data[0] = x;
+    m_data[1] = y;
 }
 
 /*==========================================================================*/
@@ -232,58 +229,58 @@ inline void Vector2<T>::set( const T x, const T y )
 template<typename T>
 inline void Vector2<T>::set( const T elements[2] )
 {
-    m_elements[0] = elements[0];
-    m_elements[1] = elements[1];
+    m_data[0] = elements[0];
+    m_data[1] = elements[1];
 }
 
 template<typename T>
 inline void Vector2<T>::setZero()
 {
-    m_elements[0] = T(0);
-    m_elements[1] = T(0);
+    m_data[0] = T(0);
+    m_data[1] = T(0);
 }
 
 template<typename T>
 inline void Vector2<T>::setOnes()
 {
-    m_elements[0] = T(1);
-    m_elements[1] = T(1);
+    m_data[0] = T(1);
+    m_data[1] = T(1);
 }
 
 template<typename T>
 inline void Vector2<T>::setUnitX()
 {
-    m_elements[0] = T(1);
-    m_elements[1] = T(0);
+    m_data[0] = T(1);
+    m_data[1] = T(0);
 }
 
 template<typename T>
 inline void Vector2<T>::setUnitY()
 {
-    m_elements[0] = T(0);
-    m_elements[1] = T(1);
+    m_data[0] = T(0);
+    m_data[1] = T(1);
 }
 
 template<typename T>
 inline void Vector2<T>::setIdentity()
 {
-    m_elements[0] = T(1);
-    m_elements[1] = T(0);
+    m_data[0] = T(1);
+    m_data[1] = T(0);
 }
 
 template<typename T>
 inline void Vector2<T>::setConstant( const T x )
 {
-    m_elements[0] = x;
-    m_elements[1] = x;
+    m_data[0] = x;
+    m_data[1] = x;
 }
 
 template<typename T>
 inline void Vector2<T>::setRandom()
 {
     kvs::Xorshift128 r;
-    m_elements[0] = T(r());
-    m_elements[1] = T(r());
+    m_data[0] = T(r());
+    m_data[1] = T(r());
 }
 
 /*==========================================================================*/
@@ -295,8 +292,8 @@ inline void Vector2<T>::setRandom()
 template<typename T>
 inline void Vector2<T>::swap( Vector2& other )
 {
-    std::swap( m_elements[0], other[0] );
-    std::swap( m_elements[1], other[1] );
+    std::swap( m_data[0], other[0] );
+    std::swap( m_data[1], other[1] );
 }
 
 /*==========================================================================*/
@@ -345,8 +342,8 @@ template<typename T>
 inline double Vector2<T>::length2() const
 {
     double result = 0.0;
-    result += (double)m_elements[0] * (double)m_elements[0];
-    result += (double)m_elements[1] * (double)m_elements[1];
+    result += (double)m_data[0] * (double)m_data[0];
+    result += (double)m_data[1] * (double)m_data[1];
     return result;
 }
 
@@ -361,8 +358,8 @@ template<typename T>
 inline T Vector2<T>::dot( const Vector2& other ) const
 {
     T result( 0 );
-    result += m_elements[0] * other[0];
-    result += m_elements[1] * other[1];
+    result += m_data[0] * other[0];
+    result += m_data[1] * other[1];
     return result;
 }
 
@@ -384,61 +381,61 @@ template<typename T>
 inline const T& Vector2<T>::operator []( const size_t index ) const
 {
     KVS_ASSERT( index < 2 );
-    return m_elements[ index ];
+    return m_data[ index ];
 }
 
 template<typename T>
 inline T& Vector2<T>::operator []( const size_t index )
 {
     KVS_ASSERT( index < 2 );
-    return m_elements[ index ];
+    return m_data[ index ];
 }
 
 template<typename T>
 inline Vector2<T>& Vector2<T>::operator +=( const Vector2& rhs )
 {
-    m_elements[0] += rhs[0];
-    m_elements[1] += rhs[1];
+    m_data[0] += rhs[0];
+    m_data[1] += rhs[1];
     return *this;
 }
 
 template<typename T>
 inline Vector2<T>& Vector2<T>::operator -=( const Vector2& rhs )
 {
-    m_elements[0] -= rhs[0];
-    m_elements[1] -= rhs[1];
+    m_data[0] -= rhs[0];
+    m_data[1] -= rhs[1];
     return *this;
 }
 
 template<typename T>
 inline Vector2<T>& Vector2<T>::operator *=( const Vector2& rhs )
 {
-    m_elements[0] *= rhs[0];
-    m_elements[1] *= rhs[1];
+    m_data[0] *= rhs[0];
+    m_data[1] *= rhs[1];
     return *this;
 }
 
 template<typename T>
 inline Vector2<T>& Vector2<T>::operator *=( const T rhs )
 {
-    m_elements[0] *= rhs;
-    m_elements[1] *= rhs;
+    m_data[0] *= rhs;
+    m_data[1] *= rhs;
     return *this;
 }
 
 template<typename T>
 inline Vector2<T>& Vector2<T>::operator /=( const Vector2& rhs )
 {
-    m_elements[0] /= rhs[0];
-    m_elements[1] /= rhs[1];
+    m_data[0] /= rhs[0];
+    m_data[1] /= rhs[1];
     return *this;
 }
 
 template<typename T>
 inline Vector2<T>& Vector2<T>::operator /=( const T rhs )
 {
-    m_elements[0] /= rhs;
-    m_elements[1] /= rhs;
+    m_data[0] /= rhs;
+    m_data[1] /= rhs;
     return *this;
 }
 

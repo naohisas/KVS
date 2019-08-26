@@ -12,9 +12,7 @@
  *  $Id: ScalingMatrix33.h 1421 2013-02-27 17:31:12Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__SCALING_MATRIX33_H_INCLUDE
-#define KVS__SCALING_MATRIX33_H_INCLUDE
-
+#pragma once
 #include <cmath>
 #include <kvs/Matrix33>
 #include <kvs/Math>
@@ -73,5 +71,3 @@ inline kvs::Matrix33<T> ScalingMatrix33( const T s )
 }
 
 } // end of namespace kvs
-
-#endif // KVS__SCALING_MATRIX33_H_INCLUDE

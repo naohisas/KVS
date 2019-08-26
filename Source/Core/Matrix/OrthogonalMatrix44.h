@@ -12,9 +12,7 @@
  *  $Id: OrthogonalMatrix44.h 1421 2013-02-27 17:31:12Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__ORTHOGONAL_MATRIX44_H_INCLUDE
-#define KVS__ORTHOGONAL_MATRIX44_H_INCLUDE
-
+#pragma once
 #include <cmath>
 #include <kvs/Matrix44>
 #include <kvs/Math>
@@ -60,5 +58,3 @@ inline kvs::Matrix44<T> OrthogonalMatrix44(
 }
 
 } // end of namespace kvs
-
-#endif // KVS__ORTHOGONAL_MATRIX44_H_INCLUDE
