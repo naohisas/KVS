@@ -105,7 +105,7 @@ inline kvs::Mat4 ModelViewMatrix( const kvs::Camera* camera, const kvs::ObjectBa
     const kvs::Real32 scale = 6.0f / kvs::Math::Max( d.x(), d.y(), d.z() );
 
     const kvs::Mat4 T = TranslationMatrix( -center );
-    const kvs::Mat4 S = ScalingMatrix( kvs::Vec3::All( scale ) );
+    const kvs::Mat4 S = ScalingMatrix( kvs::Vec3::Constant( scale ) );
     const kvs::Mat4 V = camera->viewingMatrix();
     return V * S * T;
 }

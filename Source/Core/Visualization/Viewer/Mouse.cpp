@@ -101,7 +101,7 @@ void Mouse::move( const int x, const int y )
 /*==========================================================================*/
 void Mouse::wheel( const float value )
 {
-    m_trackball.setScaling( kvs::Vec3::All( value ) );
+    m_trackball.setScaling( kvs::Vec3::Constant( value ) );
 
     // Update the mouse cursor position.
     m_old = m_new;
@@ -155,7 +155,7 @@ bool Mouse::idle()
                 scaling *= factor;
                 if ( scaling.x() > 1.0f )
                 {
-                    scaling = kvs::Vec3::All( 1.0f );
+                    scaling = kvs::Vec3::Constant( 1.0f );
                     m_is_damping = false;
                 }
             }
@@ -165,7 +165,7 @@ bool Mouse::idle()
                 scaling *= factor;
                 if ( scaling.x() < 1.0f )
                 {
-                    scaling = kvs::Vec3::All( 1.0f );
+                    scaling = kvs::Vec3::Constant( 1.0f );
                     m_is_damping = false;
                 }
             }
@@ -191,7 +191,7 @@ bool Mouse::idle()
             translation *= factor;
             if ( translation.length() < 0.001 )
             {
-                translation = kvs::Vec3::All( 0.0f );
+                translation = kvs::Vec3::Constant( 0.0f );
                 m_is_damping = false;
             };
             m_trackball.setTranslation( translation );

@@ -27,7 +27,7 @@ template <typename T>
 kvs::Matrix<T> Identity( const size_t size )
 {
     kvs::Matrix<T> m( size, size );
-    m.identity();
+    m.setIdentity();
     m[0][0] = T(0);
     return m;
 }

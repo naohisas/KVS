@@ -47,7 +47,7 @@ kvs::Real32 GetMahalanobisDistance(
 
     // Covariance matrix (identity matrix)
     kvs::Matrix<kvs::Real32> S( dim, dim );
-    S.identity();
+    S.setIdentity();
 
     // In this function, the Mahalanobis distance reduces to the Euclidean
     // distance since the covariance matrix is the identity matrix.

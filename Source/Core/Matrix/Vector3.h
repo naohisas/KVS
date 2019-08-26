@@ -11,10 +11,8 @@
  *  $Id: Vector3.h 1757 2014-05-04 13:17:37Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__VECTOR_3_H_INCLUDE
-#define KVS__VECTOR_3_H_INCLUDE
-
-#include <iostream> // For std::cout.
+#pragma once
+#include <iostream>
 #include <kvs/Assert>
 #include <kvs/Math>
 #include <kvs/Vector2>
@@ -36,8 +34,14 @@ private:
     T m_elements[3]; ///< Elements.
 
 public:
-    static const Vector3 Zero();
-    static const Vector3 All( const T x );
+    static const Vector3 Zero() { return Vector3( T(0), T(0), T(0) ); }
+    static const Vector3 Ones() { return Vector3( T(1), T(1), T(1) ); }
+    static const Vector3 UnitX() { return Vector3( T(1), T(0), T(0) ); }
+    static const Vector3 UnitY() { return Vector3( T(0), T(1), T(0) ); }
+    static const Vector3 UnitZ() { return Vector3( T(0), T(0), T(1) ); }
+    static const Vector3 Identity() { return Vector3( T(1), T(0), T(0) ); }
+    static const Vector3 Constant( const T x ) { return Vector3( x, x, x ); }
+    static const Vector3 Random() { kvs::Xorshift128 r; return Vector3( T(r()), T(r()), T(r()) ); }
 
 public:
     Vector3();
@@ -47,19 +51,30 @@ public:
     explicit Vector3( const Vector2<T>& other, const T z );
     explicit Vector3( const T elements[3] );
 
+    T& x() { return m_elements[0]; }
+    T& y() { return m_elements[1]; }
+    T& z() { return m_elements[2]; }
+    const T& x() const { return m_elements[0]; }
+    const T& y() const { return m_elements[1]; }
+    const T& z() const { return m_elements[2]; }
+    const Vector2<T> xy() const { return Vector2<T>( m_elements[0], m_elements[1] ); }
+
+    T* data() { return &m_elements[0]; }
+    const T* data() const { return &m_elements[0]; }
+
     void set( const T x, const T y, const T z );
     void set( const Vector2<T>& other, const T z );
     void set( const T elements[3] );
 
-    T& x();
-    T& y();
-    T& z();
-    const T& x() const;
-    const T& y() const;
-    const T& z() const;
-    const Vector2<T> xy() const;
+    void setZero();
+    void setOnes();
+    void setUnitX();
+    void setUnitY();
+    void setUnitZ();
+    void setIdentity();
+    void setConstant( const T x );
+    void setRandom();
 
-    void zero();
     void swap( Vector3& other );
     void normalize();
     void print() const;
@@ -70,12 +85,9 @@ public:
     const Vector3 cross( const Vector3& other ) const;
     const Vector3 normalized() const;
 
-    const T* data() const;
-    T* data();
-
 public:
     const T& operator []( const size_t index ) const;
-    T&       operator []( const size_t index );
+    T& operator []( const size_t index );
 
     Vector3& operator +=( const Vector3& rhs );
     Vector3& operator -=( const Vector3& rhs );
@@ -139,49 +151,27 @@ public:
     }
 
 public:
-    KVS_DEPRECATED( explicit Vector3( const T x ) ) { *this = All( x ); }
-    KVS_DEPRECATED( void set( const T x ) ) { *this = All( x ); }
-};
+    KVS_DEPRECATED( static const Vector3 All( const T x ) ) { return Constant( x ); }
+    KVS_DEPRECATED( explicit Vector3( const T x ) ) { *this = Constant( x ); }
+    KVS_DEPRECATED( void set( const T x ) ) { *this = Constant( x ); }
+    KVS_DEPRECATED( void zero() ) { this->setZero(); }
+ };
 
 /*==========================================================================*/
 /**
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Vector3<int>          Vector3i;
+typedef Vector3<int> Vector3i;
 typedef Vector3<unsigned int> Vector3u;
-typedef Vector3<float>        Vector3f;
-typedef Vector3<double>       Vector3d;
-typedef Vector3<float>        Vec3;
-typedef Vector3<int>          Vec3i;
+typedef Vector3<float> Vector3f;
+typedef Vector3<double> Vector3d;
+typedef Vector3<float> Vec3;
+typedef Vector3<int> Vec3i;
 typedef Vector3<unsigned int> Vec3u;
-typedef Vector3<double>       Vec3d;
-
+typedef Vector3<double> Vec3d;
 typedef Vector3<unsigned int> Vector3ui;
 typedef Vector3<unsigned int> Vec3ui;
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a zero vector.
- */
-/*===========================================================================*/
-template <typename T>
-inline const Vector3<T> Vector3<T>::Zero()
-{
-    return Vector3( 0, 0, 0 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a vector which all elements are same as x.
- *  @param  x [in] element value
- */
-/*===========================================================================*/
-template <typename T>
-inline const Vector3<T> Vector3<T>::All( const T x )
-{
-    return Vector3( x, x, x );
-}
 
 /*==========================================================================*/
 /**
@@ -191,7 +181,7 @@ inline const Vector3<T> Vector3<T>::All( const T x )
 template<typename T>
 inline Vector3<T>::Vector3()
 {
-    this->zero();
+    this->setZero();
 }
 
 template <typename T>
@@ -285,101 +275,69 @@ inline void Vector3<T>::set( const T elements[3] )
     m_elements[2] = elements[2];
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Returns the first element.
- *  @return Reference of the first element.
- */
-/*==========================================================================*/
 template<typename T>
-inline T& Vector3<T>::x()
+inline void Vector3<T>::setZero()
 {
-    return m_elements[0];
+    m_elements[0] = T(0);
+    m_elements[1] = T(0);
+    m_elements[2] = T(0);
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Returns the second element.
- *  @return Reference of the second element.
- */
-/*==========================================================================*/
 template<typename T>
-inline T& Vector3<T>::y()
+inline void Vector3<T>::setOnes()
 {
-    return m_elements[1];
+    m_elements[0] = T(1);
+    m_elements[1] = T(1);
+    m_elements[2] = T(1);
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Returns the third element.
- *  @return Reference of the third element.
- */
-/*==========================================================================*/
 template<typename T>
-inline T& Vector3<T>::z()
+inline void Vector3<T>::setUnitX()
 {
-    return m_elements[2];
+    m_elements[0] = T(1);
+    m_elements[1] = T(0);
+    m_elements[2] = T(0);
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Returns the first element.
- *  @return Reference of the first element.
- */
-/*==========================================================================*/
 template<typename T>
-inline const T& Vector3<T>::x() const
+inline void Vector3<T>::setUnitY()
 {
-    return m_elements[0];
+    m_elements[0] = T(0);
+    m_elements[1] = T(1);
+    m_elements[2] = T(0);
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Returns the second element.
- *  @return Reference of the second element.
- */
-/*==========================================================================*/
 template<typename T>
-inline const T& Vector3<T>::y() const
+inline void Vector3<T>::setUnitZ()
 {
-    return m_elements[1];
+    m_elements[0] = T(0);
+    m_elements[1] = T(0);
+    m_elements[2] = T(1);
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Returns the third element.
- *  @return Reference of the third element.
- */
-/*==========================================================================*/
 template<typename T>
-inline const T& Vector3<T>::z() const
+inline void Vector3<T>::setIdentity()
 {
-    return m_elements[2];
+    m_elements[0] = T(1);
+    m_elements[1] = T(0);
+    m_elements[2] = T(0);
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Returns a vector which has the x and y elements of this vector.
- *  @param  vector which has the x and y elements
- */
-/*===========================================================================*/
-template <typename T>
-inline const Vector2<T> Vector3<T>::xy() const
+template<typename T>
+inline void Vector3<T>::setConstant( const T x )
 {
-    return Vector2<T>( m_elements[0], m_elements[1] );
+    m_elements[0] = x;
+    m_elements[1] = x;
+    m_elements[2] = x;
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets the elements to zero.
- */
-/*==========================================================================*/
 template<typename T>
-inline void Vector3<T>::zero()
+inline void Vector3<T>::setRandom()
 {
-    m_elements[0] = T( 0 );
-    m_elements[1] = T( 0 );
-    m_elements[2] = T( 0 );
+    kvs::Xorshift128 r;
+    m_elements[0] = T(r());
+    m_elements[1] = T(r());
+    m_elements[2] = T(r());
 }
 
 /*==========================================================================*/
@@ -496,18 +454,6 @@ inline const Vector3<T> Vector3<T>::normalized() const
     return *this * normalize_factor;
 }
 
-template <typename T>
-inline const T* Vector3<T>::data() const
-{
-    return &m_elements[0];
-}
-
-template <typename T>
-inline T* Vector3<T>::data()
-{
-    return &m_elements[0];
-}
-
 template<typename T>
 inline const T& Vector3<T>::operator []( const size_t index ) const
 {
@@ -583,5 +529,3 @@ inline const Vector3<T> Vector3<T>::operator -() const
 }
 
 } // end of namespace kvs
-
-#endif // KVS__VECTOR_3_H_INCLUDE

@@ -11,9 +11,7 @@
  *  $Id: EigenDecomposer.h 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__EIGEN_DECOMPOSER_H_INCLUDE
-#define KVS__EIGEN_DECOMPOSER_H_INCLUDE
-
+#pragma once
 #include <kvs/Matrix33>
 #include <kvs/Matrix44>
 #include <kvs/Matrix>
@@ -32,7 +30,6 @@ template <typename T>
 class EigenDecomposer
 {
 public:
-
     enum MatrixType
     {
         Unknown = 0, ///< unknown (auto-estimation)
@@ -41,7 +38,6 @@ public:
     };
 
 private:
-
     MatrixType m_matrix_type; ///< matrix type (symmetric or unsymmetric)
     kvs::Matrix<T> m_eigen_vectors; ///< eigen vectors as row vectors
     kvs::Vector<T> m_eigen_values; ///< eigen values as vector
@@ -49,12 +45,12 @@ private:
     static size_t m_max_iterations; ///< maximum number of iterations
 
 public:
-
-    static void SetMaxTolerance( const double max_tolerance );
-    static void SetMaxIterations( const size_t max_iterations );
+    static void SetMaxTolerance( const double tolerance ) { m_max_tolerance = tolerance; }
+    static void SetMaxIterations( const size_t iterations ) { m_max_iterations = iterations; }
+    static double MaxTolerance() { return m_max_tolerance; }
+    static size_t MaxIterations() { return m_max_iterations; }
 
 public:
-
     EigenDecomposer();
     EigenDecomposer( const kvs::Matrix33<T>& m, MatrixType type = EigenDecomposer::Unknown );
     EigenDecomposer( const kvs::Matrix44<T>& m, MatrixType type = EigenDecomposer::Unknown );
@@ -71,11 +67,8 @@ public:
     void decompose();
 
 private:
-
     bool calculate_by_qr();
     bool calculate_by_power();
 };
 
 } // end of namespace kvs
-
-#endif // KVS__EIGEN_DECOMPOSER_H_INCLUDE

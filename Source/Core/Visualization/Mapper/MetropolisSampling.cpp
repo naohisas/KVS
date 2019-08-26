@@ -187,7 +187,7 @@ void MetropolisSampling::generate_particles( const kvs::StructuredVolumeObject* 
     kvs::TrilinearInterpolator interpolator( volume );
 
     // Alias.
-    const kvs::Vector3ui r = volume->resolution() - kvs::Vector3ui::All(1);
+    const kvs::Vector3ui r = volume->resolution() - kvs::Vector3ui::Constant(1);
 
     // Allocate memory for generated particles.
     kvs::ValueArray<kvs::Real32> coords( m_nparticles * 3 );

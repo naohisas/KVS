@@ -129,7 +129,7 @@ const kvs::Matrix<T>& QRDecomposer<T>::Qt() const
 template <typename T>
 void QRDecomposer<T>::setMatrix( const Matrix33<T>& m )
 {
-    m_qt.setSize( 3, 3 ); m_qt.identity();
+    m_qt.setSize( 3, 3 ); m_qt.setIdentity();
     m_r.setSize( 3, 3 );
     m_m.setSize( 3, 3 );
     for ( size_t i = 0; i < 3; i++ )
@@ -151,7 +151,7 @@ void QRDecomposer<T>::setMatrix( const Matrix33<T>& m )
 template <typename T>
 void QRDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
 {
-    m_qt.setSize( 4, 4 ); m_qt.identity();
+    m_qt.setSize( 4, 4 ); m_qt.setIdentity();
     m_r.setSize( 4, 4 );
     m_m.setSize( 4, 4 );
     for ( size_t i = 0; i < 4; i++ )
@@ -173,7 +173,7 @@ void QRDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
 template <typename T>
 void QRDecomposer<T>::setMatrix( const kvs::Matrix<T>& m )
 {
-    m_qt.setSize( m.rowSize(), m.columnSize() ); m_qt.identity();
+    m_qt.setSize( m.rowSize(), m.columnSize() ); m_qt.setIdentity();
     m_r = m;
     m_m = m;
 }

@@ -11,9 +11,7 @@
  *  $Id: Matrix44.h 1757 2014-05-04 13:17:37Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__MATRIX_44_H_INCLUDE
-#define KVS__MATRIX_44_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <kvs/Assert>
 #include <kvs/Vector4>
@@ -35,10 +33,13 @@ private:
     Vector4<T> m_rows[4]; ///< Row vectors.
 
 public:
-    static const Matrix44 Zero();
-    static const Matrix44 Identity();
-    static const Matrix44 Diagonal( const T x );
-    static const Matrix44 All( const T x );
+    static const Matrix44 Zero() { Matrix44 m; m.setZero(); return m; }
+    static const Matrix44 Ones() { Matrix44 m; m.setOnes(); return m; }
+    static const Matrix44 Identity() { Matrix44 m; m.setIdentity(); return m; }
+    static const Matrix44 Constant( const T x ) { Matrix44 m; m.setConstant(x); return m; }
+    static const Matrix44 Diagonal( const T x ) { Matrix44 m; m.setDiagonal(x); return m; }
+    static const Matrix44 Diagonal( const kvs::Vector4<T>& v ) { Matrix44 m; m.setDiagonal(v); return m; }
+    static const Matrix44 Random() { Matrix44 m; m.setRandom(); return m; }
 
 public:
     Matrix44();
@@ -67,8 +68,14 @@ public:
         const Vector4<T>& v3 );
     void set( const T elements[16] );
 
-    void zero();
-    void identity();
+    void setZero();
+    void setOnes();
+    void setIdentity();
+    void setConstant( const T x );
+    void setDiagonal( const T x );
+    void setDiagonal( const kvs::Vector4<T>& v );
+    void setRandom();
+
     void swap( Matrix44& other );
     void transpose();
     void invert( T* determinant = 0 );
@@ -81,7 +88,7 @@ public:
 
 public:
     const Vector4<T>& operator []( const size_t index ) const;
-    Vector4<T>&       operator []( const size_t index );
+    Vector4<T>& operator []( const size_t index );
 
     Matrix44& operator +=( const Matrix44& rhs );
     Matrix44& operator -=( const Matrix44& rhs );
@@ -158,8 +165,11 @@ public:
     }
 
 public:
-    KVS_DEPRECATED( explicit Matrix44( const T a ) ) { *this = All( a ); }
-    KVS_DEPRECATED( void set( const T a ) ) { *this = All( a ); }
+    KVS_DEPRECATED( static const Matrix44 All( const T x ) ) { return Constant( x ); }
+    KVS_DEPRECATED( explicit Matrix44( const T a ) ) { *this = Constant( a ); }
+    KVS_DEPRECATED( void set( const T a ) ) { *this = Constant( a ); }
+    KVS_DEPRECATED( void zero() ) { this->setZero(); }
+    KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
 };
 
 /*==========================================================================*/
@@ -167,66 +177,11 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Matrix44<float>  Matrix44f;
+typedef Matrix44<float> Matrix44f;
 typedef Matrix44<double> Matrix44d;
-typedef Matrix44<float>  Mat4;
+typedef Matrix44<float> Mat4;
 typedef Matrix44<double> Mat4d;
 
-
-/*===========================================================================*/
-/**
- *  @brief  Returns an identity matrix.
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix44<T> Matrix44<T>::Identity()
-{
-    return Matrix44( 1, 0, 0, 0,
-                     0, 1, 0, 0,
-                     0, 0, 1, 0,
-                     0, 0, 0, 1 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a zero matrix.
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix44<T> Matrix44<T>::Zero()
-{
-    return Matrix44( 0, 0, 0, 0,
-                     0, 0, 0, 0,
-                     0, 0, 0, 0,
-                     0, 0, 0, 0 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a matrix which all elements are same as x.
- *  @param  x [in] element value
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix44<T> Matrix44<T>::All( const T x )
-{
-    return Matrix44( x, x, x, x,
-                     x, x, x, x,
-                     x, x, x, x,
-                     x, x, x, x );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a diagonal matrix which all diagonal elements are same as x.
- *  @param  x [in] element value
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix44<T> Matrix44<T>::Diagonal( const T x )
-{
-    return Identity() * x;
-}
 
 /*==========================================================================*/
 /**
@@ -236,7 +191,7 @@ const Matrix44<T> Matrix44<T>::Diagonal( const T x )
 template<typename T>
 inline Matrix44<T>::Matrix44()
 {
-    this->zero();
+    this->setZero();
 };
 
 /*==========================================================================*/
@@ -277,10 +232,10 @@ inline Matrix44<T>::Matrix44(
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new Matrix44.
- *  @param  v0 [in] Vector4.
- *  @param  v1 [in] Vector4.
- *  @param  v2 [in] Vector4.
- *  @param  v3 [in] Vector4.
+ *  @param  v0 [in] 1st row vector.
+ *  @param  v1 [in] 2nd row vector.
+ *  @param  v2 [in] 3rd row vector.
+ *  @param  v3 [in] 4th row vector.
  */
 /*==========================================================================*/
 template<typename T>
@@ -342,10 +297,10 @@ inline void Matrix44<T>::set(
 /*==========================================================================*/
 /**
  *  @brief  Sets the elements.
- *  @param  v0 [in] Vector4.
- *  @param  v1 [in] Vector4.
- *  @param  v2 [in] Vector4.
- *  @param  v3 [in] Vector4.
+ *  @param  v0 [in] 1st row vector.
+ *  @param  v1 [in] 2nd row vector.
+ *  @param  v2 [in] 3rd row vector.
+ *  @param  v3 [in] 4th row vector.
  */
 /*==========================================================================*/
 template<typename T>
@@ -376,26 +331,67 @@ inline void Matrix44<T>::set( const T elements[16] )
     m_rows[3].set( elements + 12 );
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets the elements to zero.
- */
-/*==========================================================================*/
 template<typename T>
-inline void Matrix44<T>::zero()
+inline void Matrix44<T>::setZero()
 {
-    *this = Zero();
+    m_rows[0].setZero();
+    m_rows[1].setZero();
+    m_rows[2].setZero();
+    m_rows[3].setZero();
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets this matrix to an identity matrix.
- */
-/*==========================================================================*/
 template<typename T>
-inline void Matrix44<T>::identity()
+inline void Matrix44<T>::setOnes()
 {
-    *this = Identity();
+    m_rows[0].setOnes();
+    m_rows[1].setOnes();
+    m_rows[2].setOnes();
+    m_rows[4].setOnes();
+}
+
+template<typename T>
+inline void Matrix44<T>::setIdentity()
+{
+    m_rows[0].setUnitX();
+    m_rows[1].setUnitY();
+    m_rows[2].setUnitZ();
+    m_rows[3].setUnitW();
+}
+
+template<typename T>
+inline void Matrix44<T>::setConstant( const T x )
+{
+    m_rows[0].setConstant(x);
+    m_rows[1].setConstant(x);
+    m_rows[2].setConstant(x);
+    m_rows[3].setConstant(x);
+}
+
+template<typename T>
+inline void Matrix44<T>::setDiagonal( const T x )
+{
+    m_rows[0].setZero(); m_rows[0][0] = x;
+    m_rows[1].setZero(); m_rows[1][1] = x;
+    m_rows[2].setZero(); m_rows[2][2] = x;
+    m_rows[3].setZero(); m_rows[3][3] = x;
+}
+
+template<typename T>
+inline void Matrix44<T>::setDiagonal( const kvs::Vector4<T>& v )
+{
+    m_rows[0].setZero(); m_rows[0][0] = v[0];
+    m_rows[1].setZero(); m_rows[1][1] = v[1];
+    m_rows[2].setZero(); m_rows[2][2] = v[2];
+    m_rows[3].setZero(); m_rows[3][3] = v[3];
+}
+
+template<typename T>
+inline void Matrix44<T>::setRandom()
+{
+    m_rows[0].setRandom();
+    m_rows[1].setRandom();
+    m_rows[2].setRandom();
+    m_rows[3].setRandom();
 }
 
 /*==========================================================================*/
@@ -654,5 +650,3 @@ inline const Matrix44<T> Matrix44<T>::operator -() const
 }
 
 } // end of namespace kvs
-
-#endif // KVS__MATRIX_44_H_INCLUDE

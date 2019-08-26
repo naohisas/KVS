@@ -40,12 +40,12 @@ ObjectManager::ObjectManager()
     m_current_object_id = 0;
     this->insert_root();
 
-    const kvs::Vec3 min_obj = kvs::Vec3::All(  1000000.0f );
-    const kvs::Vec3 max_obj = kvs::Vec3::All( -1000000.0f );
+    const kvs::Vec3 min_obj = kvs::Vec3::Constant(  1000000.0f );
+    const kvs::Vec3 max_obj = kvs::Vec3::Constant( -1000000.0f );
     ObjectBase::setMinMaxObjectCoords( min_obj, max_obj );
 
-    const kvs::Vec3 min_ext = kvs::Vec3::All( -3.0f );
-    const kvs::Vec3 max_ext = kvs::Vec3::All(  3.0f );
+    const kvs::Vec3 min_ext = kvs::Vec3::Constant( -3.0f );
+    const kvs::Vec3 max_ext = kvs::Vec3::Constant(  3.0f );
     ObjectBase::setMinMaxExternalCoords( min_ext, max_ext );
 }
 
@@ -755,7 +755,7 @@ void ObjectManager::update_normalize_parameters(
     const float max_diff = kvs::Math::Max( diff.x(), diff.y(), diff.z() );
     const float normalize = 6.0f / max_diff;
 
-    ObjectBase::setNormalize( kvs::Vec3::All( normalize ) );
+    ObjectBase::setNormalize( kvs::Vec3::Constant( normalize ) );
     ObjectBase::setObjectCenter( ( max_obj + min_obj ) * 0.5f );
 }
 
@@ -766,12 +766,12 @@ void ObjectManager::update_normalize_parameters(
 /*==========================================================================*/
 void ObjectManager::update_normalize_parameters()
 {
-    kvs::Vec3 min_ext = kvs::Vec3::All( -3.0f );
-    kvs::Vec3 max_ext = kvs::Vec3::All(  3.0f );
+    kvs::Vec3 min_ext = kvs::Vec3::Constant( -3.0f );
+    kvs::Vec3 max_ext = kvs::Vec3::Constant(  3.0f );
     ObjectBase::setMinMaxExternalCoords( min_ext, max_ext );
 
-    kvs::Vec3 min_obj = kvs::Vec3::All(  1000000 );
-    kvs::Vec3 max_obj = kvs::Vec3::All( -1000000 );
+    kvs::Vec3 min_obj = kvs::Vec3::Constant(  1000000 );
+    kvs::Vec3 max_obj = kvs::Vec3::Constant( -1000000 );
     int counter = 0;
     if ( m_object_tree.size() > 1 )
     {
@@ -806,15 +806,15 @@ void ObjectManager::update_normalize_parameters()
 
     if ( counter == 0 )
     {
-        ObjectBase::setNormalize( kvs::Vec3::All( 1.0 ) );
-        ObjectBase::setObjectCenter( kvs::Vec3::All( 0.0 ) );
+        ObjectBase::setNormalize( kvs::Vec3::Constant( 1.0 ) );
+        ObjectBase::setObjectCenter( kvs::Vec3::Constant( 0.0 ) );
     }
     else
     {
         const kvs::Vec3 diff = max_obj - min_obj;
         const float max_diff = kvs::Math::Max( diff.x(), diff.y(), diff.z() );
         const float normalize = 6.0f / max_diff;
-        ObjectBase::setNormalize( kvs::Vec3::All( normalize ) );
+        ObjectBase::setNormalize( kvs::Vec3::Constant( normalize ) );
         ObjectBase::setObjectCenter( ( max_obj + min_obj ) * 0.5f );
     }
 }

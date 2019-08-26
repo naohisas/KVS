@@ -11,9 +11,7 @@
  *  $Id: Matrix33.h 1757 2014-05-04 13:17:37Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__MATRIX_33_H_INCLUDE
-#define KVS__MATRIX_33_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <kvs/Assert>
 #include <kvs/Math>
@@ -36,10 +34,13 @@ private:
     Vector3<T> m_rows[3]; ///< Row vectors.
 
 public:
-    static const Matrix33 Zero();
-    static const Matrix33 Identity();
-    static const Matrix33 Diagonal( const T x );
-    static const Matrix33 All( const T x );
+    static const Matrix33 Zero() { Matrix33 m; m.setZero(); return m; }
+    static const Matrix33 Ones() { Matrix33 m; m.setOnes(); return m; }
+    static const Matrix33 Identity() { Matrix33 m; m.setIdentity(); return m; }
+    static const Matrix33 Constant( const T x ) { Matrix33 m; m.setConstant(x); return m; }
+    static const Matrix33 Diagonal( const T x ) { Matrix33 m; m.setDiagonal(x); return m; }
+    static const Matrix33 Diagonal( const kvs::Vector3<T>& v ) { Matrix33 m; m.setDiagonal(v); return m; }
+    static const Matrix33 Random() { Matrix33 m; m.setRandom(); return m; }
     static const Matrix33 Rotation( const Vector3<T>& axis, const double deg );
     static const Matrix33 RotationX( const double deg );
     static const Matrix33 RotationY( const double deg );
@@ -68,8 +69,14 @@ public:
         const Vector3<T>& v2 );
     void set( const T elements[9] );
 
-    void zero();
-    void identity();
+    void setZero();
+    void setOnes();
+    void setIdentity();
+    void setConstant( const T x );
+    void setDiagonal( const T x );
+    void setDiagonal( const kvs::Vector3<T>& v );
+    void setRandom();
+
     void swap( Matrix33& other );
     void transpose();
     void invert( T* determinant = 0 );
@@ -82,7 +89,7 @@ public:
 
 public:
     const Vector3<T>& operator []( const size_t index ) const;
-    Vector3<T>&       operator []( const size_t index );
+    Vector3<T>& operator []( const size_t index );
 
     Matrix33& operator +=( const Matrix33& rhs );
     Matrix33& operator -=( const Matrix33& rhs );
@@ -156,8 +163,11 @@ public:
     }
 
 public:
-    KVS_DEPRECATED( explicit Matrix33( const T a ) ) { *this = All( a ); }
-    KVS_DEPRECATED( void set( const T a ) ) { *this = All( a ); }
+    KVS_DEPRECATED( static const Matrix33 All( const T x ) ) { return Constant( x ); }
+    KVS_DEPRECATED( explicit Matrix33( const T a ) ) { *this = Constant( a ); }
+    KVS_DEPRECATED( void set( const T a ) ) { *this = Constant( a ); }
+    KVS_DEPRECATED( void zero() ) { this->setZero(); }
+    KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
 };
 
 /*==========================================================================*/
@@ -165,63 +175,11 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Matrix33<float>  Matrix33f;
+typedef Matrix33<float> Matrix33f;
 typedef Matrix33<double> Matrix33d;
-typedef Matrix33<float>  Mat3;
+typedef Matrix33<float> Mat3;
 typedef Matrix33<double> Mat3d;
 
-
-/*===========================================================================*/
-/**
- *  @brief  Returns an identity matrix.
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix33<T> Matrix33<T>::Identity()
-{
-    return Matrix33( 1, 0, 0,
-                     0, 1, 0,
-                     0, 0, 1 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a zero matrix.
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix33<T> Matrix33<T>::Zero()
-{
-    return Matrix33( 0, 0, 0,
-                     0, 0, 0,
-                     0, 0, 0 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a matrix which all elements are same as x.
- *  @param  x [in] element value
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix33<T> Matrix33<T>::All( const T x )
-{
-    return Matrix33( x, x, x,
-                     x, x, x,
-                     x, x, x );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a diagonal matrix which all diagonal elements are same as x.
- *  @param  x [in] element value
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix33<T> Matrix33<T>::Diagonal( const T x )
-{
-    return Identity() * x;
-}
 
 template<typename T>
 const Matrix33<T> Matrix33<T>::Rotation( const Vector3<T>& axis, const double deg )
@@ -289,7 +247,7 @@ const Matrix33<T> Matrix33<T>::RotationZ( const double deg )
 template<typename T>
 inline Matrix33<T>::Matrix33()
 {
-    this->zero();
+    this->setZero();
 };
 
 /*==========================================================================*/
@@ -375,9 +333,9 @@ inline void Matrix33<T>::set(
 /*==========================================================================*/
 /**
  *  @brief  Sets the elements.
- *  @param  v0 [in] Vector3.
- *  @param  v1 [in] Vector3.
- *  @param  v2 [in] Vector3.
+ *  @param  v0 [in] 1st row vector.
+ *  @param  v1 [in] 2nd row vector.
+ *  @param  v2 [in] 3rd row vector.
  */
 /*==========================================================================*/
 template<typename T>
@@ -405,26 +363,60 @@ inline void Matrix33<T>::set( const T elements[9] )
     m_rows[2].set( elements + 6 );
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets the elements to zero.
- */
-/*==========================================================================*/
 template<typename T>
-inline void Matrix33<T>::zero()
+inline void Matrix33<T>::setZero()
 {
-    *this = Zero();
+    m_rows[0].setZero();
+    m_rows[1].setZero();
+    m_rows[2].setZero();
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets this matrix to an identity matrix.
- */
-/*==========================================================================*/
 template<typename T>
-inline void Matrix33<T>::identity()
+inline void Matrix33<T>::setOnes()
 {
-    *this = Identity();
+    m_rows[0].setOnes();
+    m_rows[1].setOnes();
+    m_rows[2].setOnes();
+}
+
+template<typename T>
+inline void Matrix33<T>::setIdentity()
+{
+    m_rows[0].setUnitX();
+    m_rows[1].setUnitY();
+    m_rows[2].setUnitZ();
+}
+
+template<typename T>
+inline void Matrix33<T>::setConstant( const T x )
+{
+    m_rows[0].setConstant(x);
+    m_rows[1].setConstant(x);
+    m_rows[2].setConstant(x);
+}
+
+template<typename T>
+inline void Matrix33<T>::setDiagonal( const T x )
+{
+    m_rows[0].setZero(); m_rows[0][0] = x;
+    m_rows[1].setZero(); m_rows[1][1] = x;
+    m_rows[2].setZero(); m_rows[2][2] = x;
+}
+
+template<typename T>
+inline void Matrix33<T>::setDiagonal( const kvs::Vector3<T>& v )
+{
+    m_rows[0].setZero(); m_rows[0][0] = v[0];
+    m_rows[1].setZero(); m_rows[1][1] = v[1];
+    m_rows[2].setZero(); m_rows[2][2] = v[2];
+}
+
+template<typename T>
+inline void Matrix33<T>::setRandom()
+{
+    m_rows[0].setRandom();
+    m_rows[1].setRandom();
+    m_rows[2].setRandom();
 }
 
 /*==========================================================================*/
@@ -623,9 +615,7 @@ inline Matrix33<T>& Matrix33<T>::operator /=( const T rhs )
 template<typename T>
 inline const Matrix33<T> Matrix33<T>::operator -() const
 {
-    return Matrix33( *this ) *= T( -1 );
+    return Matrix33( *this ) *= T(-1);
 }
 
 } // end of namespace kvs
-
-#endif // KVS__MATRIX_33_H_INCLUDE

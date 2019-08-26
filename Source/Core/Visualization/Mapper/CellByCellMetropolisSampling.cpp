@@ -203,7 +203,7 @@ void CellByCellMetropolisSampling::generate_particles( const kvs::StructuredVolu
     density_map.attachObject( volume );
     density_map.create( BaseClass::transferFunction().opacityMap() );
 
-    const kvs::Vec3ui ncells( volume->resolution() - kvs::Vector3ui::All(1) );
+    const kvs::Vec3ui ncells( volume->resolution() - kvs::Vector3ui::Constant(1) );
     const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
 
     // Calculate number of particles.

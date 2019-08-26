@@ -227,7 +227,7 @@ void SlicePlane::extract_plane(
     const kvs::Real64 max_value( volume->maxValue() );
     const kvs::Real64 normalize_factor( 255.0 / ( max_value - min_value ) );
 
-    const kvs::Vector3ui ncells( volume->resolution() - kvs::Vector3ui::All(1) );
+    const kvs::Vector3ui ncells( volume->resolution() - kvs::Vector3ui::Constant(1) );
     const kvs::UInt32    line_size( volume->numberOfNodesPerLine() );
     const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
 

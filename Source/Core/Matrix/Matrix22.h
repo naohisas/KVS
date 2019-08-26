@@ -11,9 +11,7 @@
  *  $Id: Matrix22.h 1757 2014-05-04 13:17:37Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__MATRIX_22_H_INCLUDE
-#define KVS__MATRIX_22_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <kvs/Assert>
 #include <kvs/Math>
@@ -36,10 +34,13 @@ private:
     Vector2<T> m_rows[2]; ///< Row vectors.
 
 public:
-    static const Matrix22 Zero();
-    static const Matrix22 Identity();
-    static const Matrix22 Diagonal( const T x );
-    static const Matrix22 All( const T x );
+    static const Matrix22 Zero() { Matrix22 m; m.setZero(); return m; }
+    static const Matrix22 Ones() { Matrix22 m; m.setOnes(); return m; }
+    static const Matrix22 Identity() { Matrix22 m; m.setIdentity(); return m; }
+    static const Matrix22 Constant( const T x ) { Matrix22 m; m.setConstant(x); return m; }
+    static const Matrix22 Diagonal( const T x ) { Matrix22 m; m.setDiagonal(x); return m; }
+    static const Matrix22 Diagonal( const kvs::Vector2<T>& v ) { Matrix22 m; m.setDiagonal(v); return m; }
+    static const Matrix22 Random() { Matrix22 m; m.setRandom(); return m; }
     static const Matrix22 Rotation( const double deg );
 
 public:
@@ -60,8 +61,14 @@ public:
         const Vector2<T>& v1 );
     void set( const T elements[4] );
 
-    void zero();
-    void identity();
+    void setZero();
+    void setOnes();
+    void setIdentity();
+    void setConstant( const T x );
+    void setDiagonal( const T x );
+    void setDiagonal( const kvs::Vector2<T>& v );
+    void setRandom();
+
     void swap( Matrix22& other );
     void transpose();
     void invert( T* determinant = 0 );
@@ -74,7 +81,7 @@ public:
 
 public:
     const Vector2<T>& operator []( const size_t index ) const;
-    Vector2<T>&       operator []( const size_t index );
+    Vector2<T>& operator []( const size_t index );
 
     Matrix22& operator +=( const Matrix22& rhs );
     Matrix22& operator -=( const Matrix22& rhs );
@@ -145,8 +152,11 @@ public:
     }
 
 public:
-    KVS_DEPRECATED( explicit Matrix22( const T a ) ) { *this = All( a ); }
-    KVS_DEPRECATED( void set( const T a ) ) { *this = All( a ); }
+    KVS_DEPRECATED( static const Matrix22 All( const T x ) ) { return Constant( x ); }
+    KVS_DEPRECATED( explicit Matrix22( const T a ) ) { *this = Constant( a ); }
+    KVS_DEPRECATED( void set( const T a ) ) { *this = Constant( a ); }
+    KVS_DEPRECATED( void zero() ) { this->setZero(); }
+    KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
 };
 
 /*==========================================================================*/
@@ -154,60 +164,11 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Matrix22<float>  Matrix22f;
+typedef Matrix22<float> Matrix22f;
 typedef Matrix22<double> Matrix22d;
-typedef Matrix22<float>  Mat2;
+typedef Matrix22<float> Mat2;
 typedef Matrix22<double> Mat2d;
 
-
-/*===========================================================================*/
-/**
- *  @brief  Returns an identity matrix.
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix22<T> Matrix22<T>::Identity()
-{
-    return Matrix22( 1, 0,
-                     0, 1 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a zero matrix.
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix22<T> Matrix22<T>::Zero()
-{
-    return Matrix22( 0, 0,
-                     0, 0 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a matrix which all elements are same as x.
- *  @param  x [in] element value
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix22<T> Matrix22<T>::All( const T x )
-{
-    return Matrix22( x, x,
-                     x, x );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a diagonal matrix which all diagonal elements are same as x.
- *  @param  x [in] element value
- */
-/*===========================================================================*/
-template<typename T>
-const Matrix22<T> Matrix22<T>::Diagonal( const T x )
-{
-    return Identity() * x;
-}
 
 template<typename T>
 const Matrix22<T> Matrix22<T>::Rotation( const double deg )
@@ -215,9 +176,9 @@ const Matrix22<T> Matrix22<T>::Rotation( const double deg )
     const T rad = static_cast<T>( kvs::Math::Deg2Rad( deg ) );
     const T sinA = static_cast<T>( std::sin( rad ) );
     const T cosA = static_cast<T>( std::cos( rad ) );
-
-    return Matrix22( cosA, -sinA,
-                     sinA,  cosA );
+    return Matrix22(
+        cosA, -sinA,
+        sinA,  cosA );
 }
 
 /*==========================================================================*/
@@ -228,7 +189,7 @@ const Matrix22<T> Matrix22<T>::Rotation( const double deg )
 template<typename T>
 inline Matrix22<T>::Matrix22()
 {
-    this->zero();
+    this->setZero();
 };
 
 /*==========================================================================*/
@@ -253,8 +214,8 @@ inline Matrix22<T>::Matrix22(
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new Matrix22.
- *  @param  v0 [in] Vector2.
- *  @param  v1 [in] Vector2.
+ *  @param  v0 [in] 1st row vector.
+ *  @param  v1 [in] 2nd row vector.
  */
 /*==========================================================================*/
 template<typename T>
@@ -298,8 +259,8 @@ inline void Matrix22<T>::set(
 /*==========================================================================*/
 /**
  *  @brief  Sets the elements.
- *  @param  v0 [in] Vector2.
- *  @param  v1 [in] Vector2.
+ *  @param  v0 [in] 1st row vector.
+ *  @param  v1 [in] 2nd row vector.
  */
 /*==========================================================================*/
 template<typename T>
@@ -324,26 +285,53 @@ inline void Matrix22<T>::set( const T elements[4] )
     m_rows[1].set( elements + 2 );
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets the elements to zero.
- */
-/*==========================================================================*/
 template<typename T>
-inline void Matrix22<T>::zero()
+inline void Matrix22<T>::setZero()
 {
-    *this = Zero();
+    m_rows[0].setZero();
+    m_rows[1].setZero();
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets this matrix to an identity matrix.
- */
-/*==========================================================================*/
 template<typename T>
-inline void Matrix22<T>::identity()
+inline void Matrix22<T>::setOnes()
 {
-    *this = Identity();
+    m_rows[0].setOnes();
+    m_rows[1].setOnes();
+}
+
+template<typename T>
+inline void Matrix22<T>::setIdentity()
+{
+    m_rows[0].setUnitX();
+    m_rows[1].setUnitY();
+}
+
+template<typename T>
+inline void Matrix22<T>::setConstant( const T x )
+{
+    m_rows[0].setConstant(x);
+    m_rows[1].setConstant(x);
+}
+
+template<typename T>
+inline void Matrix22<T>::setDiagonal( const T x )
+{
+    m_rows[0].setZero(); m_rows[0][0] = x;
+    m_rows[1].setZero(); m_rows[1][1] = x;
+}
+
+template<typename T>
+inline void Matrix22<T>::setDiagonal( const kvs::Vector2<T>& v )
+{
+    m_rows[0].setZero(); m_rows[0][0] = v[0];
+    m_rows[1].setZero(); m_rows[1][1] = v[1];
+}
+
+template<typename T>
+inline void Matrix22<T>::setRandom()
+{
+    m_rows[0].setRandom();
+    m_rows[1].setRandom();
 }
 
 /*==========================================================================*/
@@ -519,9 +507,7 @@ inline Matrix22<T>& Matrix22<T>::operator /=( const T rhs )
 template<typename T>
 inline const Matrix22<T> Matrix22<T>::operator -() const
 {
-    return Matrix22( *this ) *= T( -1 );
+    return Matrix22( *this ) *= T(-1);
 }
 
 } // end of namespace kvs
-
-#endif // KVS__MATRIX_22_H_INCLUDE

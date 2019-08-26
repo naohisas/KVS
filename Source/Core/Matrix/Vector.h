@@ -11,15 +11,17 @@
  *  $Id: Vector.h 1366 2012-11-29 08:46:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__VECTOR_H_INCLUDE
-#define KVS__VECTOR_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <vector>
 #include <cstring>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <kvs/Vector2>
+#include <kvs/Vector3>
+#include <kvs/Vector4>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -34,23 +36,40 @@ template <typename T>
 class Vector
 {
 private:
-    size_t m_size;     ///< Vector size( dimension ).
-    T*     m_elements; ///< Array of elements.
+    size_t m_size; ///< Vector size( dimension ).
+    T* m_elements; ///< Array of elements.
+
+public:
+    static const Vector Zero( const size_t size );
+    static const Vector Ones( const size_t size );
+    static const Vector Unit( const size_t size, const size_t index = 0 );
+    static const Vector Identity( const size_t size );
+    static const Vector Constant( const size_t size, const T x );
+    static const Vector Random( const size_t size );
 
 public:
     explicit Vector( const size_t size = 0 );
     Vector( const size_t size, const T* elements );
-    Vector( const std::vector<T>& std_vector );
+    Vector( const std::vector<T>& other );
+    Vector( const kvs::Vector2<T>& other );
+    Vector( const kvs::Vector3<T>& other );
+    Vector( const kvs::Vector4<T>& other );
+
     ~Vector();
 
     Vector( const Vector& other );
     Vector& operator =( const Vector& rhs );
 
     void setSize( const size_t size );
+    void setZero();
+    void setOnes();
+    void setUnit( const size_t index = 0 );
+    void setIdentity();
+    void setConstant( const T x );
+    void setRandom();
 
     size_t size() const;
 
-    void zero();
     void swap( Vector& other );
     void normalize();
     void print() const;
@@ -137,7 +156,69 @@ public:
         }
         return os;
     }
+
+public:
+    KVS_DEPRECATED( void zero() ) { this->setZero(); }
 };
+
+/*==========================================================================*/
+/**
+ *  Type definition.
+ */
+/*==========================================================================*/
+typedef Vector<int> Veci;
+typedef Vector<unsigned int> Vecu;
+typedef Vector<float> Vec;
+typedef Vector<double> Vecd;
+
+
+template <typename T>
+inline const Vector<T> Vector<T>::Zero( const size_t size )
+{
+    Vector<T> v( size );
+    v.setZero();
+    return v;
+}
+
+template <typename T>
+inline const Vector<T> Vector<T>::Ones( const size_t size )
+{
+    Vector<T> v( size );
+    v.setOnes();
+    return v;
+}
+
+template <typename T>
+inline const Vector<T> Vector<T>::Unit( const size_t size, const size_t index )
+{
+    Vector<T> v( size );
+    v.setUnit( index );
+    return v;
+}
+
+template <typename T>
+inline const Vector<T> Vector<T>::Identity( const size_t size )
+{
+    Vector<T> v( size );
+    v.setIdentity();
+    return v;
+}
+
+template <typename T>
+inline const Vector<T> Vector<T>::Constant( const size_t size, const T x )
+{
+    Vector<T> v( size );
+    v.setConstant( x );
+    return v;
+}
+
+template <typename T>
+inline const Vector<T> Vector<T>::Random( const size_t size )
+{
+    Vector<T> v( size );
+    v.setRandom();
+    return v;
+}
 
 /*==========================================================================*/
 /**
@@ -151,7 +232,8 @@ inline Vector<T>::Vector( const size_t size ):
     m_elements( 0 )
 {
     this->setSize( size );
-    this->zero();
+    this->setZero();
+//    this->zero();
 }
 
 /*==========================================================================*/
@@ -173,16 +255,43 @@ inline Vector<T>::Vector( const size_t size, const T* elements ):
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new Vector.
- *  @param  std_vector [in] std::vector.
+ *  @param  other [in] std::vector.
  */
 /*==========================================================================*/
 template <typename T>
-inline Vector<T>::Vector( const std::vector<T>& std_vector ):
+inline Vector<T>::Vector( const std::vector<T>& other ):
     m_size( 0 ),
     m_elements( 0 )
 {
-    this->setSize( std_vector.size() );
-    memcpy( m_elements, &std_vector[0], sizeof( T ) * this->size() );
+    this->setSize( other.size() );
+    memcpy( m_elements, &other[0], sizeof(T) * this->size() );
+}
+
+template <typename T>
+inline Vector<T>::Vector( const kvs::Vector2<T>& other ):
+    m_size( 0 ),
+    m_elements( 0 )
+{
+    this->setSize( 2 );
+    memcpy( m_elements, other.data(), sizeof(T) * this->size() );
+}
+
+template <typename T>
+inline Vector<T>::Vector( const kvs::Vector3<T>& other ):
+    m_size( 0 ),
+    m_elements( 0 )
+{
+    this->setSize( 3 );
+    memcpy( m_elements, other.data(), sizeof(T) * this->size() );
+}
+
+template <typename T>
+inline Vector<T>::Vector( const kvs::Vector4<T>& other ):
+    m_size( 0 ),
+    m_elements( 0 )
+{
+    this->setSize( 4 );
+    memcpy( m_elements, other.data(), sizeof(T) * this->size() );
 }
 
 /*===========================================================================*/
@@ -247,7 +356,62 @@ inline void Vector<T>::setSize( const size_t size )
         }
     }
 
-    this->zero();
+//    this->zero();
+    this->setZero();
+}
+
+template <typename T>
+inline void Vector<T>::setZero()
+{
+    if ( m_size > 0 )
+    {
+        for ( size_t i = 0; i < m_size; ++i ) { m_elements[i] = T(0); }
+    }
+}
+
+template <typename T>
+inline void Vector<T>::setOnes()
+{
+    if ( m_size > 0 )
+    {
+        for ( size_t i = 0; i < m_size; ++i ) { m_elements[i] = T(1); }
+    }
+}
+
+template <typename T>
+inline void Vector<T>::setUnit( const size_t index )
+{
+    KVS_ASSERT( index < m_size );
+    if ( m_size > 0 )
+    {
+        this->setZero();
+        m_elements[index] = T(1);
+    }
+}
+
+template <typename T>
+inline void Vector<T>::setIdentity()
+{
+    this->setUnit(0);
+}
+
+template <typename T>
+inline void Vector<T>::setConstant( const T x )
+{
+    if ( m_size > 0 )
+    {
+        for ( size_t i = 0; i < m_size; ++i ) { m_elements[i] = x; }
+    }
+}
+
+template <typename T>
+inline void Vector<T>::setRandom()
+{
+    if ( m_size > 0 )
+    {
+        kvs::Xorshift128 r;
+        for ( size_t i = 0; i < m_size; ++i ) { m_elements[i] = T(r()); }
+    }
 }
 
 /*==========================================================================*/
@@ -260,22 +424,6 @@ template <typename T>
 inline size_t Vector<T>::size() const
 {
     return m_size;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Sets the elements to zero.
- */
-/*==========================================================================*/
-template <typename T>
-inline void Vector<T>::zero()
-{
-    const size_t size = this->size();
-    T* const     v    = m_elements;
-    for ( size_t i = 0; i < size; ++i )
-    {
-        v[i] = T( 0 );
-    }
 }
 
 /*==========================================================================*/
@@ -337,14 +485,11 @@ inline double Vector<T>::length() const
 template <typename T>
 inline double Vector<T>::length2() const
 {
-    const size_t   size = this->size();
-    const T* const v    = m_elements;
+    const size_t size = this->size();
+    const T* const v = m_elements;
 
     double result = 0.0;
-    for ( size_t i = 0; i < size; ++i )
-    {
-        result += (double)v[i] * (double)v[i];
-    }
+    for ( size_t i = 0; i < size; ++i ) { result += (double)v[i] * (double)v[i]; }
     return result;
 }
 
@@ -360,14 +505,11 @@ inline T Vector<T>::dot( const Vector<T>& other ) const
 {
     KVS_ASSERT( this->size() == other.size() );
 
-    const size_t   size = this->size();
-    const T* const v    = m_elements;
+    const size_t size = this->size();
+    const T* const v = m_elements;
 
     T result( 0 );
-    for ( size_t i = 0; i < size; ++i )
-    {
-        result += v[i] * other[i];
-    }
+    for ( size_t i = 0; i < size; ++i ) { result += v[i] * other[i]; }
     return result;
 }
 
@@ -403,13 +545,9 @@ template <typename T>
 inline Vector<T>& Vector<T>::operator +=( const Vector& rhs )
 {
     KVS_ASSERT( this->size() == rhs.size() );
-
     const size_t size = this->size();
-    T* const     v    = m_elements;
-    for ( size_t i = 0; i < size; ++i )
-    {
-        v[i] += rhs[i];
-    }
+    T* const v = m_elements;
+    for ( size_t i = 0; i < size; ++i ) { v[i] += rhs[i]; }
     return *this;
 }
 
@@ -417,13 +555,9 @@ template <typename T>
 inline Vector<T>& Vector<T>::operator -=( const Vector& rhs )
 {
     KVS_ASSERT( this->size() == rhs.size() );
-
     const size_t size = this->size();
-    T* const     v    = m_elements;
-    for ( size_t i = 0; i < size; ++i )
-    {
-        v[i] -= rhs[i];
-    }
+    T* const v = m_elements;
+    for ( size_t i = 0; i < size; ++i ) { v[i] -= rhs[i]; }
     return *this;
 }
 
@@ -431,13 +565,9 @@ template <typename T>
 inline Vector<T>& Vector<T>::operator *=( const Vector& rhs )
 {
     KVS_ASSERT( this->size() == rhs.size() );
-
     const size_t size = this->size();
-    T* const     v    = m_elements;
-    for ( size_t i = 0; i < size; ++i )
-    {
-        v[i] *= rhs[i];
-    }
+    T* const v = m_elements;
+    for ( size_t i = 0; i < size; ++i ) { v[i] *= rhs[i]; }
     return *this;
 }
 
@@ -445,11 +575,8 @@ template <typename T>
 inline Vector<T>& Vector<T>::operator *=( const T rhs )
 {
     const size_t size = this->size();
-    T* const     v    = m_elements;
-    for ( size_t i = 0; i < size; ++i )
-    {
-        v[i] *= rhs;
-    }
+    T* const v = m_elements;
+    for ( size_t i = 0; i < size; ++i ) { v[i] *= rhs; }
     return *this;
 }
 
@@ -457,11 +584,8 @@ template <typename T>
 inline Vector<T>& Vector<T>::operator /=( const T rhs )
 {
     const size_t size = this->size();
-    T* const     v    = m_elements;
-    for ( size_t i = 0; i < size; ++i )
-    {
-        v[i] /= rhs;
-    }
+    T* const v = m_elements;
+    for ( size_t i = 0; i < size; ++i ) { v[i] /= rhs; }
     return *this;
 }
 
@@ -472,5 +596,3 @@ inline const Vector<T> Vector<T>::operator -() const
 }
 
 } // end of namespace kvs
-
-#endif // KVS__VECTOR_H_INCLUDE

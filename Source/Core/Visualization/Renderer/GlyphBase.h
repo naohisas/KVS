@@ -92,7 +92,7 @@ public:
     void setDirections( const kvs::ValueArray<kvs::Real32>& directions ) { m_directions = directions; }
     void setColors( const kvs::ValueArray<kvs::UInt8>& colors ) { m_colors = colors; }
     void setOpacities( const kvs::ValueArray<kvs::UInt8>& opacities ) { m_opacities = opacities; }
-    void setScale( const kvs::Real32 scale ) { m_scale = kvs::Vec3::All( scale ); }
+    void setScale( const kvs::Real32 scale ) { m_scale = kvs::Vec3::Constant( scale ); }
     void setScale( const kvs::Vec3& scale ) { m_scale = scale; }
     void setTransferFunction( const kvs::TransferFunction& tfunc ) { m_tfunc = tfunc; }
     SizeMode sizeMode() const { return m_size_mode; }
