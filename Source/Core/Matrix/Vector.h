@@ -78,7 +78,7 @@ public:
     void normalize();
     void print() const;
     double length() const;
-    double length2() const;
+    double squaredLength() const;
     T dot( const Vector& other ) const;
     const Vector normalized() const;
 
@@ -158,6 +158,7 @@ public:
 
 public:
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
+    KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
 };
 
 
@@ -439,7 +440,7 @@ inline void Vector<T>::print() const
 template <typename T>
 inline double Vector<T>::length() const
 {
-    return std::sqrt( this->length2() );
+    return std::sqrt( this->squaredLength() );
 }
 
 /*==========================================================================*/
@@ -449,13 +450,13 @@ inline double Vector<T>::length() const
  */
 /*==========================================================================*/
 template <typename T>
-inline double Vector<T>::length2() const
+inline double Vector<T>::squaredLength() const
 {
     const size_t size = this->size();
     const T* const v = m_data;
 
     double result = 0.0;
-    for ( size_t i = 0; i < size; ++i ) { result += (double)v[i] * (double)v[i]; }
+    for ( size_t i = 0; i < size; ++i ) { result += static_cast<double>( v[i] * v[i] ); }
     return result;
 }
 

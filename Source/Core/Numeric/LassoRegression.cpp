@@ -115,7 +115,7 @@ void LassoRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTab
             kvs::Vector<T> beta = m_coef; beta[j] = T(0);
             const kvs::Vector<T> rj = Y - X * beta;
             const kvs::Vector<T> Xj = ::Column( X, j );
-            m_coef[j] = ::SoftThresholding<T>( Xj.dot( rj ), lambda ) / Xj.length2();
+            m_coef[j] = ::SoftThresholding<T>( Xj.dot( rj ), lambda ) / Xj.squaredLength();
             m_coef[0] = ::Intercept<T>( Y, X, m_coef );
         }
     }
@@ -127,7 +127,7 @@ void LassoRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTab
 
     // Fitting scores (R square)
     const kvs::Vector<T> y = X * m_coef;
-    const kvs::Real64 rss = ( Y - y ).length2();
+    const kvs::Real64 rss = ( Y - y ).squaredLength();
     m_r2 = 1.0 - rss / ::DevSQ(Y);
     m_adjusted_r2 = 1.0 - ( 1.0 - m_r2 ) * ( n - 1.0 ) / m_dof;
 

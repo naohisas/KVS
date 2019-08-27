@@ -86,7 +86,7 @@ public:
     void normalize();
     void print() const;
     double length() const;
-    double length2() const;
+    double squaredLength() const;
     T dot( const Vector4& other ) const;
     const Vector4 normalized() const;
 
@@ -159,6 +159,7 @@ public:
     KVS_DEPRECATED( explicit Vector4( const T x ) ) { *this = Constant( x ); }
     KVS_DEPRECATED( void set( const T x ) ) { *this = Constant( x ); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
+    KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
 };
 
 
@@ -448,7 +449,7 @@ inline void Vector4<T>::print() const
 template<typename T>
 inline double Vector4<T>::length() const
 {
-    return std::sqrt( this->length2() );
+    return std::sqrt( this->squaredLength() );
 }
 
 /*==========================================================================*/
@@ -458,13 +459,13 @@ inline double Vector4<T>::length() const
  */
 /*==========================================================================*/
 template<typename T>
-inline double Vector4<T>::length2() const
+inline double Vector4<T>::squaredLength() const
 {
     double result = 0.0;
-    result += (double)m_data[0] * (double)m_data[0];
-    result += (double)m_data[1] * (double)m_data[1];
-    result += (double)m_data[2] * (double)m_data[2];
-    result += (double)m_data[3] * (double)m_data[3];
+    result += static_cast<double>( m_data[0] * m_data[0] );
+    result += static_cast<double>( m_data[1] * m_data[1] );
+    result += static_cast<double>( m_data[2] * m_data[2] );
+    result += static_cast<double>( m_data[3] * m_data[3] );
     return result;
 }
 
