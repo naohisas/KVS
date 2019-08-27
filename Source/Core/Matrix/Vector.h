@@ -89,6 +89,7 @@ public:
     Vector& operator -=( const Vector& rhs );
     Vector& operator *=( const Vector& rhs );
     Vector& operator *=( const T rhs );
+    Vector& operator /=( const Vector& rhs );
     Vector& operator /=( const T rhs );
     const Vector operator -() const;
 
@@ -135,6 +136,11 @@ public:
     friend const Vector operator *( const T lhs, const Vector& rhs )
     {
         return rhs * lhs;
+    }
+
+    friend const Vector operator /( const Vector& lhs, const Vector& rhs )
+    {
+        return Vector( lhs ) /= rhs;
     }
 
     friend const Vector operator /( const Vector& lhs, const T rhs )
@@ -544,6 +550,15 @@ inline Vector<T>& Vector<T>::operator *=( const T rhs )
     const size_t size = this->size();
     T* const v = m_data;
     for ( size_t i = 0; i < size; ++i ) { v[i] *= rhs; }
+    return *this;
+}
+
+template<typename T>
+inline Vector<T>& Vector<T>::operator /=( const Vector& rhs )
+{
+    const size_t size = this->size();
+    T* const v = m_data;
+    for ( size_t i = 0; i < size; ++i ) { v[i] /= rhs[i]; }
     return *this;
 }
 
