@@ -42,7 +42,7 @@ public:
     static const Vector3 UnitZ() { return Vector3( T(0), T(0), T(1) ); }
     static const Vector3 Identity() { return Vector3( T(1), T(0), T(0) ); }
     static const Vector3 Constant( const T x ) { return Vector3( x, x, x ); }
-    static const Vector3 Random() { kvs::Xorshift128 r; return Vector3( T(r()), T(r()), T(r()) ); }
+    static const Vector3 Random() { Vector3 v; v.setRandom(); return v; }
 
 public:
     Vector3();
@@ -333,10 +333,82 @@ inline void Vector3<T>::setConstant( const T x )
 template<typename T>
 inline void Vector3<T>::setRandom()
 {
-    kvs::Xorshift128 r;
-    m_data[0] = T(r());
-    m_data[1] = T(r());
-    m_data[2] = T(r());
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0) ) );
+    m_data[0] = T( 2.0 * r() - 1.0 ); // in [-1,1]
+    m_data[1] = T( 2.0 * r() - 1.0 ); // in [-1,1]
+    m_data[2] = T( 2.0 * r() - 1.0 ); // in [-1,1]
+}
+
+template<>
+inline void Vector3<kvs::Int8>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*2 ) );
+    m_data[0] = kvs::Int8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [CHAR_MIN, CHAR_MAX]
+    m_data[1] = kvs::Int8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [CHAR_MIN, CHAR_MAX]
+    m_data[2] = kvs::Int8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [CHAR_MIN, CHAR_MAX]
+}
+
+template<>
+inline void Vector3<kvs::UInt8>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*3 ) );
+    m_data[0] = kvs::UInt8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [0, UINT_MAX]
+    m_data[1] = kvs::UInt8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [0, UINT_MAX]
+    m_data[2] = kvs::UInt8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [0, UINT_MAX]
+}
+
+template<>
+inline void Vector3<kvs::Int16>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*4 ) );
+    m_data[0] = kvs::Int16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [SHRT_MIN, SHRT_MAX]
+    m_data[1] = kvs::Int16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [SHRT_MIN, SHRT_MAX]
+    m_data[2] = kvs::Int16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [SHRT_MIN, SHRT_MAX]
+}
+
+template<>
+inline void Vector3<kvs::UInt16>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*5 ) );
+    m_data[0] = kvs::UInt16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [0, UINT_MAX]
+    m_data[1] = kvs::UInt16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [0, UINT_MAX]
+    m_data[2] = kvs::UInt16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [0, UINT_MAX]
+}
+
+template<>
+inline void Vector3<kvs::Int32>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*6 ) );
+    m_data[0] = kvs::Int32( r.randInteger() ); // in [INT_MIN, INT_MAX]
+    m_data[1] = kvs::Int32( r.randInteger() ); // in [INT_MIN, INT_MAX]
+    m_data[2] = kvs::Int32( r.randInteger() ); // in [INT_MIN, INT_MAX]
+}
+
+template<>
+inline void Vector3<kvs::UInt32>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*7 ) );
+    m_data[0] = r.randInteger(); // in [0, UINT_MAX]
+    m_data[1] = r.randInteger(); // in [0, UINT_MAX]
+    m_data[2] = r.randInteger(); // in [0, UINT_MAX]
+}
+
+template<>
+inline void Vector3<kvs::Int64>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*8 ) );
+    m_data[0] = kvs::Int64( ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ) ); // in [LONG_MIN, LONG_MAX]
+    m_data[1] = kvs::Int64( ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ) ); // in [LONG_MIN, LONG_MAX]
+    m_data[2] = kvs::Int64( ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ) ); // in [LONG_MIN, LONG_MAX]
+}
+
+template<>
+inline void Vector3<kvs::UInt64>::setRandom()
+{
+    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*9 ) );
+    m_data[0] = ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ); // in [0, ULONG_MAX]
+    m_data[1] = ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ); // in [0, ULONG_MAX]
+    m_data[2] = ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ); // in [0, ULONG_MAX]
 }
 
 /*==========================================================================*/

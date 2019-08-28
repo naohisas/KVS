@@ -93,7 +93,7 @@ void RidgeRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTab
 
     // Fitting scores (R square)
     const kvs::Vector<T> y = X * m_coef;
-    const kvs::Real64 rss = ( Y - y ).length2();
+    const kvs::Real64 rss = ( Y - y ).squaredLength();
     m_r2 = 1.0 - rss / ::DevSQ(Y);
     m_adjusted_r2 = 1.0 - ( 1.0 - m_r2 ) * ( n - 1.0 ) / m_dof;
 

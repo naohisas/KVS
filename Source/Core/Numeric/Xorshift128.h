@@ -35,6 +35,7 @@ private:
 
 public:
     Xorshift128();
+    Xorshift128( const kvs::UInt32 seed );
 
     void setSeed( kvs::UInt32 seed );
 
