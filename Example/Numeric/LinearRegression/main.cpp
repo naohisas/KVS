@@ -44,10 +44,13 @@ int main( int argc, char** argv )
 
     kvs::LinearRegression<float> regression( dep, indep );
     std::cout << "Coef: " << regression.coef() << std::endl;
-    std::cout << "RSS: " << regression.rss() << std::endl;
     std::cout << "R2: " << regression.r2() << std::endl;
     std::cout << "Adjusted R2: " << regression.adjustedR2() << std::endl;
+
+    // t-Test
+    regression.test();
     std::cout << "t-values: " << regression.tValues() << std::endl;
+    std::cout << "p-values: " << regression.pValues() << std::endl;
 
     return 0;
 }
