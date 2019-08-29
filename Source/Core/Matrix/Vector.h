@@ -96,14 +96,10 @@ public:
     friend bool operator ==( const Vector& lhs, const Vector& rhs )
     {
         const size_t size = lhs.size();
-
-        if ( size != rhs.size() )
-           return false;
-
+        if ( size != rhs.size() ) { return false; }
         for ( size_t i = 0; i < size; ++i )
         {
-            if ( !kvs::Math::Equal( lhs[i], rhs[i] ) )
-                return false;
+            if ( !kvs::Math::Equal( lhs[i], rhs[i] ) ) { return false; }
         }
         return true;
     }
