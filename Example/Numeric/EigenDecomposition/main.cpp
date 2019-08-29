@@ -15,9 +15,9 @@
 /*****************************************************************************/
 #include <iostream>
 #include <kvs/EigenDecomposer>
-#include <kvs/Vector3>
-#include <kvs/Matrix33>
+#include <kvs/Vector>
 #include <kvs/Matrix>
+#include <kvs/Timer>
 
 
 /*===========================================================================*/
@@ -50,7 +50,21 @@ void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& ei
     std::cout << "(" << M * E[1] << ") == (" << L[1] * E[1] << ")" << std::endl;
     std::cout << "> M * E2 == L2 * E2" << std::endl;
     std::cout << "(" << M * E[2] << ") == (" << L[2] * E[2] << ")" << std::endl;
-    std::cout << std::endl;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Perfomance test of the eigen decompsition..
+ *  @param  M [in] input matrix
+ *  @param  n [in] number of trials
+ */
+/*===========================================================================*/
+void Perf( const kvs::Matrix<double>& M, const size_t n )
+{
+    kvs::Timer timer( kvs::Timer::Start );
+    for ( size_t i = 0; i < n; i++ ) { kvs::EigenDecomposer<double> e( M ); }
+    timer.stop();
+    std::cout << "Processing time (10000 times): " << timer.sec() << " [sec]" << std::endl;
 }
 
 /*===========================================================================*/
@@ -58,7 +72,7 @@ void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& ei
  *  @brief  Main function.
  */
 /*===========================================================================*/
-int main( void )
+int main()
 {
     /* The maximum number of interations and the tolerance can be set for the
      * eigen value decompostion (QR method or Power method) by using the
@@ -70,9 +84,9 @@ int main( void )
 
     // Case 1: Symmetric matrix
     {
-        /* For symmetric matrix, the QR method is used for the calculation
-         * of the eigen values and vectors. The matrix M has three
-         * eigenvalues (Li) and three eigenvectors (Ei for Li).
+        /* For symmetric matrix, the tridiagonal QR method is used for
+         * the calculation of the eigen values and vectors. The matrix
+         * M has three eigenvalues (Li) and three eigenvectors (Ei for Li).
          *
          *   L0 = 1.944, E0 = (0.519,  0.637,  0.570)
          *   L1 = 0.707, E1 = (0.787, -0.096, -0.609)
@@ -84,15 +98,17 @@ int main( void )
         M[2][0] = 0.3; M[2][1] = 0.6; M[2][2] = 1.0;
 
         kvs::EigenDecomposer<double> eigen( M );
-
         Print( M, eigen );
+        Perf( M, 100000 );
     }
+
+    std::cout << std::endl;
 
     // Case 2: Asymmetric matrix
     {
-        /* For asymmetric matrix, the Power method is used for the calculation
-         * of the eigen values and vectors. The matrix M has three
-         * eigenvalues (Li) and three eigenvectors (Ei for Li).
+        /* For asymmetric matrix, the hessenberg QR method is used for
+         * the calculation of the eigen values and vectors. The matrix
+         * M has three  eigenvalues (Li) and three eigenvectors (Ei for Li).
          *
          *   L0 = 11.464, E0 = (0.146, -0.509,  0.848)
          *   L1 =  4.536, E1 = (0.658, -0.681, -0.322)
@@ -104,7 +120,7 @@ int main( void )
         M[2][0] = 5.0; M[2][1] = -6.0; M[2][2] =  7.0;
 
         kvs::EigenDecomposer<double> eigen( M );
-
         Print( M, eigen );
+        Perf( M, 100000 );
     }
 }
