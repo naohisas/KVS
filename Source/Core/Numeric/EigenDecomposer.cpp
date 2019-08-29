@@ -36,7 +36,7 @@ inline T HouseholderTransformation( kvs::Vector<T>& vec )
 }
 
 template <typename T>
-inline void Tridiagonalize( kvs::Matrix<T>& m, kvs::Vector<T>* d, kvs::Vector<T>* e )
+inline void Tridiagonalization( kvs::Matrix<T>& m, kvs::Vector<T>* d, kvs::Vector<T>* e )
 {
     KVS_ASSERT( ::IsSymmetricMatrix<T>( m ) );
     KVS_ASSERT( m.rowSize() >= 3 );
@@ -141,7 +141,7 @@ inline void Tridiagonalize( kvs::Matrix<T>& m, kvs::Vector<T>* d, kvs::Vector<T>
 }
 
 template <typename T>
-inline void Hessenberg( kvs::Matrix<T>& A )
+inline void HessenbergDecomposition( kvs::Matrix<T>& A )
 {
     const size_t dim = A.rowSize();
     for ( size_t k = 1; k <= dim-2; ++k )
@@ -191,7 +191,6 @@ template <typename T>
 inline void InverseIteration( kvs::Matrix<T> A, const T eval, kvs::Vector<T>& evec )
 {
     const double max_tolerance = kvs::EigenDecomposer<T>::MaxTolerance();
-    const size_t max_iterations = kvs::EigenDecomposer<T>::MaxIterations();
 
     const size_t dim = A.rowSize();
     kvs::Vector<T> y( dim ); y[0] = T(1);
@@ -209,13 +208,13 @@ inline void InverseIteration( kvs::Matrix<T> A, const T eval, kvs::Vector<T>& ev
         v2s = sqrt(v2);
         for ( size_t j = 0; j < dim; ++j ) y[j] = v[j] / v2s;
     }
-    while ( abs( 1.0 - mu * mu / v2 ) > max_tolerance );
+    while ( std::abs( 1.0 - mu * mu / v2 ) > max_tolerance );
 
     evec = y;
 }
 
 template <typename T>
-inline bool QRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kvs::Vector<T>& e )
+inline bool TridiagonalQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kvs::Vector<T>& e )
 {
     const double max_tolerance = kvs::EigenDecomposer<T>::MaxTolerance();
     const size_t max_iterations = kvs::EigenDecomposer<T>::MaxIterations();
@@ -293,20 +292,22 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
     const double max_tolerance = kvs::EigenDecomposer<T>::MaxTolerance();
     const size_t max_iterations = kvs::EigenDecomposer<T>::MaxIterations();
 
-    ::Hessenberg( A );
+    ::HessenbergDecomposition( A );
 
     const int dim = A.rowSize();
     kvs::Vector<T> s( dim );
     kvs::Vector<T> c( dim );
+    size_t iter = 0;
     for ( int m = dim; m >= 2; )
     {
-        if ( abs( A[m-1][m-2] ) < max_tolerance ) { --m; continue; }
+        if ( std::abs( A[m-1][m-2] ) < max_tolerance ) { --m; iter = 0; continue; }
+        if ( ++iter > max_iterations ) { return false; }
 
         T shift = A[m-1][m-1];
         for ( int i = 0; i < m; ++i ) { A[i][i] -= shift; }
         for ( int k = 0; k < m-1; ++k )
         {
-            T a = A[k][k], b = A[k+1][k], r = sqrt(a*a + b*b);
+            T a = A[k][k], b = A[k+1][k], r = std::sqrt(a*a + b*b);
             s[k] = r == 0.0 ? 0.0 : b/r;
             c[k] = r == 0.0 ? 0.0 : a/r;
             for ( int j = k; j < m; ++j )
@@ -334,6 +335,40 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
     }
 
     return true;
+}
+
+template <typename T>
+inline bool EigSort( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals )
+{
+    // Sorting eigen values and vectors.
+    const size_t dim = evecs.rowSize();
+    for ( size_t k = 0; k < dim - 1; k++ )
+    {
+        // Search maximum value and index.
+        size_t max_index = k;
+        T max_value = evals[ max_index ];
+        for ( size_t i = k + 1; i < dim; i++ )
+        {
+            if ( evals[i] > max_value )
+            {
+                max_index = i;
+                max_value = evals[i];
+            }
+        }
+
+        // Swap the row-vector.
+        if ( max_index != k )
+        {
+            evals[ max_index ] = evals[k];
+            evals[k] = max_value;
+            for ( size_t j = 0; j < dim; j++ )
+            {
+                T temp = evecs[max_index][j];
+                evecs[max_index][j] = evecs[k][j];
+                evecs[k][j] = temp;
+            }
+        }
+    }
 }
 
 template <typename T>
@@ -414,19 +449,20 @@ void EigenDecomposer<T>::decompose()
     switch( m_matrix_type )
     {
     case EigenDecomposer::Symmetric:
-        this->calculate_by_qr();
+        this->decompose_symmetric_matrix();
         break;
     case EigenDecomposer::Unsymmetric:
-        this->calculate_by_power();
+        this->decompose_unsymmetric_matrix();
         break;
-    default: // EigenDecomposer::Unknown
+    default:
+        // EigenDecomposer::Unknown
         if ( m_eigen_vectors.isSymmetric() )
         {
-            this->calculate_by_qr();
+            this->decompose_symmetric_matrix();
         }
         else
         {
-            this->calculate_by_power();
+            this->decompose_unsymmetric_matrix();
         }
         break;
     }
@@ -434,256 +470,53 @@ void EigenDecomposer<T>::decompose()
 
 /*===========================================================================*/
 /**
- *  @brief  Calculate eigen values and vectors by using Power method.
+ *  @brief  Calculates all eigen values and its eigen vectors with tridiagonal QR iteration.
  */
 /*===========================================================================*/
 template <typename T>
-bool EigenDecomposer<T>::calculate_by_power()
+bool EigenDecomposer<T>::decompose_symmetric_matrix()
+{
+    KVS_ASSERT( m_eigen_vectors.isSymmetric() );
+    KVS_ASSERT( m_eigen_vectors.rowSize() >= 3 );
+
+    // Tridiagonalization.
+    const size_t dim = m_eigen_vectors.rowSize();
+    kvs::Vector<T> e( dim );
+    ::Tridiagonalization<T>( m_eigen_vectors, &m_eigen_values, &e );
+    for ( int i = static_cast<int>(dim) - 1; i > 0; i-- ) { e[i] = e[i-1]; } e[0] = T(0);
+
+    // QR factorization for the tridiagonal matrix.
+    if ( !::TridiagonalQRMethod( m_eigen_vectors, m_eigen_values, e ) ) { return false; }
+
+    // Sorting eigen pairs.
+    ::EigSort( m_eigen_vectors, m_eigen_values );
+
+    return true;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Calculates all eigen values and its eigen vectors with hessenberg QR iteration.
+ */
+/*===========================================================================*/
+template <typename T>
+bool EigenDecomposer<T>::decompose_unsymmetric_matrix()
 {
     KVS_ASSERT( m_eigen_vectors.rowSize() == m_eigen_vectors.columnSize() );
 
-#if 1
+    // QR factorization.
     const size_t dim = m_eigen_vectors.rowSize();
-
     kvs::Matrix<T> m( m_eigen_vectors );
-    ::HessenbergQRMethod( m_eigen_vectors, m_eigen_values, m );
+    if ( !::HessenbergQRMethod( m_eigen_vectors, m_eigen_values, m ) ) { return false; }
 
+    // Inverse iteration for calculating eigen vectors with the eigen values.
     for ( size_t i = 0; i < dim; i++ )
     {
         ::InverseIteration( m, m_eigen_values[i], m_eigen_vectors[i] );
     }
 
-    // Sorting eigen values and vectors.
-    for ( size_t k = 0; k < dim - 1; k++ )
-    {
-        // Search maximum value and index.
-        size_t max_index = k;
-        T max_value = m_eigen_values[ max_index ];
-        for ( size_t i = k + 1; i < dim; i++ )
-        {
-            if ( m_eigen_values[i] > max_value )
-            {
-                max_index = i;
-                max_value = m_eigen_values[i];
-            }
-        }
-
-        // Swap the row-vector.
-        if ( max_index != k )
-        {
-            m_eigen_values[ max_index ] = m_eigen_values[k];
-            m_eigen_values[k] = max_value;
-            for ( size_t j = 0; j < dim; j++ )
-            {
-                T temp = m_eigen_vectors[max_index][j];
-                m_eigen_vectors[max_index][j] = m_eigen_vectors[k][j];
-                m_eigen_vectors[k][j] = temp;
-            }
-        }
-    }
-
-/*
-    kvs::Matrix<T> m( m_eigen_vectors );
-    const size_t dim = m_eigen_vectors.rowSize();
-    for ( size_t k = 0; k < dim; k++ )
-    {
-        if ( !::PowerMethod( m, m_eigen_values[k], m_eigen_vectors[k] ) ) { return false; }
-
-        T r = m_eigen_values[k];
-        const kvs::Vector<T>& x = m_eigen_vectors[k];
-        kvs::Vector<T> c = m * x;
-        for ( size_t i = 0; i < dim; i++ ) { if ( x[i] * c[i] < T(0) ) { r = -r; } }
-        for ( size_t i = 0; i < dim; i++ ) { m[i] -= r * x[i] * x; }
-    }
-*/
-
-/*
-    const size_t dim = m_eigen_vectors.rowSize();
-    kvs::Matrix<T> m( m_eigen_vectors );
-    if ( !::PowerMethod( m, m_eigen_values[0], m_eigen_vectors[0] ) ) { return false; }
-
-    const T R0 = m_eigen_values[0];
-    const kvs::Vector<T> V0 = m_eigen_vectors[0];
-
-    T r0 = R0;
-    kvs::Vector<T> v0 = V0;
-    kvs::Vector<T> x = m[0] / ( r0 * v0[0] );
-    for ( size_t i = 0; i < dim; i++ ) { m[i] -= r0 * v0[i] * x; }
-
-    for ( size_t k = 1; k < dim; k++ )
-    {
-        // Power iteration.
-        if ( !::PowerMethod( m, m_eigen_values[k], m_eigen_vectors[k] ) ) { return false; }
-
-        // Delfation.
-        T r1 = m_eigen_values[k];
-        kvs::Vector<T> v1 = m_eigen_vectors[k];
-
-//        kvs::Vector<T> w = v1; for ( size_t i = 0; i < k; i++ ) { w[i] = T(0); }
-//        kvs::Vector<T> w = v1; w[0] = T(0);
-        kvs::Vector<T> w = v1;
-//        kvs::Vector<T> v = ( r1 - R0 ) * w + R0 * x.dot( w ) * V0;
-        kvs::Vector<T> v = ( r1 - r0 ) * w + r0 * x.dot( w ) * v0;
-        v.normalize();
-        m_eigen_vectors[k] = v;
-
-        x = m[k] / ( r1 * w[k] );
-//        for ( size_t i = 0; i < dim; i++ ) { m[i] -= r1 * v1[i] * x; }
-//        for ( size_t i = 0; i < dim; i++ ) { m[i] -= r1 * v[i] * x; }
-//        for ( size_t i = 0; i < dim; i++ ) { m[i] -= r1 * v1[i] * x; }
-        for ( size_t i = 0; i < dim; i++ ) { m[i] -= r1 * w[i] * x; }
-
-        r0 = r1;
-//        v0 = v;
-        v0 = w;
-    }
-
-    return true;
-*/
-#else
-    const size_t dim = m_eigen_vectors.rowSize();
-    kvs::Matrix<T> eigen_vectors( dim, dim );
-    kvs::Matrix<T> m( m_eigen_vectors );
-
-    // temporally vectors
-    kvs::Vector<T> temp_vec0( dim );
-    kvs::Vector<T> temp_vec1( dim );
-    kvs::Vector<T> temp_vec2( dim );
-    for ( size_t i = 0; i < dim; i++ ) temp_vec0[i] = T(1);
-
-    // temporally matrices
-    kvs::Matrix<T> temp_mat0( dim, dim );
-    kvs::Matrix<T> temp_mat1( dim, dim );
-    for ( size_t i = 0; i < dim; i++ ) temp_mat0[i][i] = T(1);
-
-    // Calculate the eigen values and the eigen matrices.
-    //
-    // NOTE: 'number_of_eigen_values' is a parameter which is number of eigen
-    // values that we want to get. If we want to get a maximum eigen value and
-    // a eigen vector only, we specify 'number_of_eigen_values = 1'. By doing
-    // this, we can get the maximum eigen value and matrix fastly. In contrast,
-    // 'number_of_eigen_values = dim' means that all eigen values and vectors
-    // are calculated. Where 'dim' is a dimension of given matrix.
-    size_t number_of_calculated_eigen_values = 0;
-    const size_t number_of_eigen_values = dim;
-    for ( size_t k = 0; k < number_of_eigen_values; k++ )
-    {
-        double length1 = temp_vec0.length();
-        double length2 = 0.0;
-
-        temp_vec1 = temp_vec0;
-
-        size_t iter = 0;
-        while ( iter < m_max_iterations )
-        {
-            // Modify the rounding error.
-            if ( iter % 15 == 0 )
-            {
-                temp_vec2 = temp_mat0 * temp_vec1;
-                temp_vec1 = temp_vec2;
-                temp_vec1.normalize();
-            }
-
-            temp_vec2 = m_eigen_vectors * temp_vec1;
-            length2 = temp_vec2.length();
-            temp_vec2.normalize();
-
-            // Convergence test
-            if ( std::fabs( ( length2 - length1 ) / length1 ) < m_max_tolerance )
-            {
-                // converged
-                int k1 = -1;
-                for ( size_t i = 0; i < dim && k1 < 0; i++ )
-                {
-                    if ( std::fabs( static_cast<double>( temp_vec2[i] ) ) > 0.001 )
-                    {
-                        k1 = static_cast<int>(i);
-                        if ( temp_vec2[i] * temp_vec1[i] < T(0) ) length2 = -length2;
-                    }
-                }
-
-                m_eigen_values[k] = static_cast<T>( length2 ); // set calculated eigen value
-                eigen_vectors[k] = temp_vec2; // set calculated eigen vector
-
-                if ( k != dim - 1 )
-                {
-                    kvs::Matrix<T> diag( dim, dim );
-                    for ( size_t i = 0; i < dim; i++ ) diag[i][i] = static_cast<T>( length2 );
-
-                    kvs::Matrix<T> x( m_eigen_vectors - diag );
-                    temp_mat1 = x * temp_mat0;
-                    temp_mat0 = temp_mat1;
-                    temp_vec1 = temp_mat0 * temp_vec0;
-                    if ( !kvs::Math::IsZero( temp_vec1.length() ) ) temp_vec0 = temp_vec1;
-                }
-
-                break;
-            }
-            else
-            {
-                // not converged
-                temp_vec1 = temp_vec2;
-                length1 = length2;
-                iter++;
-            }
-        } // end of 'while( iter < m_max_iterations )'
-        if ( iter < m_max_iterations ) number_of_calculated_eigen_values++;
-    } // end of 'for( int k = 0; k < number_of_eigen_values; k++ )'
-
-    m_eigen_vectors = eigen_vectors;
-
-    return true;
-#endif
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Calculate eigen values and vectors by using QR method.
- */
-/*===========================================================================*/
-template <typename T>
-bool EigenDecomposer<T>::calculate_by_qr()
-{
-    KVS_ASSERT( ::IsSymmetricMatrix<T>( m_eigen_vectors ) );
-    KVS_ASSERT( m_eigen_vectors.rowSize() >= 3 );
-
-    // Tridiagonalize the matrix.
-    const size_t dim = m_eigen_vectors.rowSize();
-    kvs::Vector<T> e( dim );
-    ::Tridiagonalize<T>( m_eigen_vectors, &m_eigen_values, &e );
-    for ( int i = static_cast<int>(dim) - 1; i > 0; i-- ) { e[i] = e[i-1]; } e[0] = T(0);
-
-    // Calculate eigen values and vectors using QR method.
-    if ( !::QRMethod( m_eigen_vectors, m_eigen_values, e ) ) { return false; }
-
-    // Sorting eigen values and vectors.
-    for ( size_t k = 0; k < dim - 1; k++ )
-    {
-        // Search maximum value and index.
-        size_t max_index = k;
-        T max_value = m_eigen_values[ max_index ];
-        for ( size_t i = k + 1; i < dim; i++ )
-        {
-            if ( m_eigen_values[i] > max_value )
-            {
-                max_index = i;
-                max_value = m_eigen_values[i];
-            }
-        }
-
-        // Swap the row-vector.
-        if ( max_index != k )
-        {
-            m_eigen_values[ max_index ] = m_eigen_values[k];
-            m_eigen_values[k] = max_value;
-            for ( size_t j = 0; j < dim; j++ )
-            {
-                T temp = m_eigen_vectors[max_index][j];
-                m_eigen_vectors[max_index][j] = m_eigen_vectors[k][j];
-                m_eigen_vectors[k][j] = temp;
-            }
-        }
-    }
+    // Sorting eigen pairs.
+    ::EigSort( m_eigen_vectors, m_eigen_values );
 
     return true;
 }

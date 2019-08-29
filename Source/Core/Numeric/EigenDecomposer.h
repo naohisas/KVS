@@ -65,8 +65,8 @@ public:
     void decompose();
 
 private:
-    bool calculate_by_qr();
-    bool calculate_by_power();
+    bool decompose_symmetric_matrix();
+    bool decompose_unsymmetric_matrix();
 
 public:
     KVS_DEPRECATED( EigenDecomposer( const kvs::Matrix33<T>& m, MatrixType type = EigenDecomposer::Unknown ) )
