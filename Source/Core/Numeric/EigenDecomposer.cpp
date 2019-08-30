@@ -338,7 +338,7 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
 }
 
 template <typename T>
-inline bool EigSort( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals )
+inline void EigSort( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals )
 {
     // Sorting eigen values and vectors.
     const size_t dim = evecs.rowSize();
