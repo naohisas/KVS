@@ -11,13 +11,11 @@
  *  $Id: Value.h 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__VALUE_H_INCLUDE
-#define KVS__VALUE_H_INCLUDE
-
+#pragma once
 #include <limits>
-#if KVS_ENABLE_DEPRECATED
-#include <kvs/Endian>
-#endif
+#include <cstdlib>
+#include <kvs/Type>
+
 
 namespace kvs
 {
@@ -30,230 +28,238 @@ namespace kvs
 template<typename T>
 class Value
 {
-#if KVS_ENABLE_DEPRECATED
+private:
+    // Simple random number generator based on Xorshift128
+    static kvs::UInt32 m_seeds[4];
+    static void set_seed( kvs::UInt32 seed );
+    static kvs::UInt8 get_rand_uint8();
+    static kvs::UInt16 get_rand_uint16();
+    static kvs::UInt32 get_rand_uint32();
+    static kvs::UInt64 get_rand_uint64();
+    static kvs::Real32 get_rand_real32();
+    static kvs::Real64 get_rand_real64();
 
-protected:
-
-    T m_value; ///< value
-
-public:
-
-    Value();
-
-    Value( T value );
-
-    Value( const Value<T>& value );
-
-    ~Value();
-
-public:
-
-    T operator () () const;
-
-    Value<T>& operator = ( const Value<T>& other );
-
-    Value<T>& operator += ( const Value<T>& other );
-
-    Value<T>& operator -= ( const Value<T>& other );
-
-    Value<T>& operator *= ( const Value<T>& other );
-
-    Value<T>& operator /= ( const Value<T>& other );
-
-public:
-
-    void swapByte();
-#else
 private:
     Value();
-#endif
+
 public:
-
-    static T Zero();
-
-    static T Min();
-
-    static T Max();
-
-    static T Epsilon();
+    static T Zero() { return T(0); }
+    static T Min() { return std::numeric_limits<T>::min(); }
+    static T Max() { return std::numeric_limits<T>::max(); }
+    static T Epsilon() { return std::numeric_limits<T>::epsilon(); }
+    static void SetSeed( const kvs::UInt32 seed ) { set_seed( seed ); }
+    static T Random() { return T(0); }
+    static T Random( const T /* min */, const T /* max */ ) { return T(0); }
 };
-#if KVS_ENABLE_DEPRECATED
-template<typename T>
-inline Value<T>::Value()
+
+template <typename T>
+kvs::UInt32 Value<T>::m_seeds[4] =
 {
-    m_value = Value<T>::Zero();
+    123456789,
+    362436069,
+    521288629,
+    88675123
+};
+
+template <typename T>
+inline void Value<T>::set_seed( kvs::UInt32 seed )
+{
+    m_seeds[0] = seed = 1812433253U * ( seed ^ ( seed >> 30 ) ) + 1;
+    m_seeds[1] = seed = 1812433253U * ( seed ^ ( seed >> 30 ) ) + 2;
+    m_seeds[2] = seed = 1812433253U * ( seed ^ ( seed >> 30 ) ) + 3;
+    m_seeds[3] = seed = 1812433253U * ( seed ^ ( seed >> 30 ) ) + 4;
 }
 
-template<typename T>
-inline Value<T>::Value( T value ):
-    m_value( value )
+template <typename T>
+inline kvs::UInt8 Value<T>::get_rand_uint8()
 {
+    return kvs::UInt8( get_rand_uint16() >> 8 );
 }
 
-template<typename T>
-inline Value<T>::Value( const Value<T>& value ):
-    m_value( value.m_value )
+template <typename T>
+inline kvs::UInt16 Value<T>::get_rand_uint16()
 {
+    return kvs::UInt16( get_rand_uint32() >> 16 );
 }
 
-template<typename T>
-inline Value<T>::~Value()
+template <typename T>
+inline kvs::UInt32 Value<T>::get_rand_uint32()
 {
+    kvs::UInt32* s = m_seeds;
+    kvs::UInt32 t = ( s[0] ^ ( s[0] << 11 ) );
+    s[0] = s[1]; s[1] = s[2]; s[2] = s[3];
+    s[3] = ( s[3] ^ ( s[3] >> 19 ) ) ^ ( t ^ ( t >> 8 ) );
+    return s[3];
 }
 
-template<typename T>
-inline T Value<T>::operator () () const
+template <typename T>
+inline kvs::UInt64 Value<T>::get_rand_uint64()
 {
-    return m_value;
+    return kvs::UInt64( get_rand_uint32() ) << 32 | get_rand_uint32();
 }
 
-template<typename T>
-inline Value<T>& Value<T>::operator = ( const Value<T>& other )
+template <typename T>
+inline kvs::Real32 Value<T>::get_rand_real32()
 {
-    m_value = other.m_value;
-    return *this;
+    return get_rand_uint32() * ( 1.0f / kvs::Real32( 4294967296.0 ) );
 }
 
-template<typename T>
-inline Value<T>& Value<T>::operator += ( const Value<T>& other )
+template <typename T>
+inline kvs::Real64 Value<T>::get_rand_real64()
 {
-    m_value = static_cast<T>( m_value + other.m_value );
-    return *this;
-}
-
-template<typename T>
-inline Value<T>& Value<T>::operator -= ( const Value<T>& other )
-{
-    m_value = static_cast<T>( m_value - other.m_value );
-    return *this;
-}
-
-template<typename T>
-inline Value<T>& Value<T>::operator *= ( const Value<T>& other )
-{
-    m_value = static_cast<T>( m_value * other.m_value );
-    return *this;
-}
-
-template<typename T>
-inline Value<T>& Value<T>::operator /= ( const Value<T>& other )
-{
-    m_value = static_cast<T>( m_value / other.m_value );
-    return *this;
-}
-
-template<typename T>
-inline void Value<T>::swapByte()
-{
-    kvs::Endian::Swap( &m_value );
-}
-#endif
-template<typename T>
-inline T Value<T>::Zero()
-{
-    return T( 0 );
-}
-
-template<typename T>
-inline T Value<T>::Min()
-{
-    return std::numeric_limits<T>::min();
+    return get_rand_uint64() * ( 1.0 / kvs::Real64( 18446744073709551616.0 ) );
 }
 
 template <>
-inline float Value<float>::Min()
+inline kvs::Real32 Value<kvs::Real32>::Min()
 {
-    return -std::numeric_limits<float>::max();
+    return -std::numeric_limits<kvs::Real32>::max();
 }
 
 template <>
-inline double Value<double>::Min()
+inline kvs::Real64 Value<kvs::Real64>::Min()
 {
-    return -std::numeric_limits<double>::max();
+    return -std::numeric_limits<kvs::Real64>::max();
 }
 
-template <>
-inline long double Value<long double>::Min()
+template<>
+inline kvs::UInt8 Value<kvs::UInt8>::Random()
 {
-    return -std::numeric_limits<long double>::max();
+    // Returns a random number in [0,2^8-1] = [0,255]
+    return get_rand_uint8();
 }
 
-template<typename T>
-inline T Value<T>::Max()
+template<>
+inline kvs::UInt16 Value<kvs::UInt16>::Random()
 {
-    return std::numeric_limits<T>::max();
+    // Returns a random number in [0,2^16-1] = [0,65535]
+    return get_rand_uint16();
 }
 
-template<typename T>
-inline T Value<T>::Epsilon()
+template<>
+inline kvs::UInt32 Value<kvs::UInt32>::Random()
 {
-    return std::numeric_limits<T>::epsilon();
-}
-#if KVS_ENABLE_DEPRECATED
-template<typename T>
-inline bool operator == ( const Value<T>& other1, const Value<T>& other2 )
-{
-    return other1.m_value == other1.m_value;
+    // Returns a random number in [0,2^32-1] = [0,4294967295]
+    return get_rand_uint32();
 }
 
-template<typename T>
-inline bool operator < ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::UInt64 Value<kvs::UInt64>::Random()
 {
-    return other1.m_value < other1.m_value;
+    // Returns a random number in [0,2^64-1] = [0,18446744073709551615]
+    return get_rand_uint64();
 }
 
-template<typename T>
-inline bool operator!= ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::Int8 Value<kvs::Int8>::Random()
 {
-    return !( other1 == other2 );
+    // Returns a random number in [-2^7,2^7-1] = [-128,127]
+    return kvs::Int8( get_rand_uint8() );
 }
 
-template<typename T>
-inline bool operator > ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::Int16 Value<kvs::Int16>::Random()
 {
-    return other2 < other1;
+    // Returns a random number in [-2^15,2^15-1] = [-32768,32767]
+    return kvs::Int16( get_rand_uint16() );
 }
 
-template<typename T>
-inline bool operator <= ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::Int32 Value<kvs::Int32>::Random()
 {
-    return !( other2 < other1 );
+    // Returns a random number in [-2^31,2^31-1] = [-2147483648,2147483647]
+    return kvs::Int32( get_rand_uint32() );
 }
 
-template<typename T>
-inline bool operator >= ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::Int64 Value<kvs::Int64>::Random()
 {
-    return !( other1 < other2 );
+    // Returns a random number in [-2^63,2^63-1] = [-9223372036854775808,9223372036854775807]
+    return kvs::Int64( get_rand_uint64() );
 }
 
-template<typename T>
-inline Value<T> operator + ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::Real32 Value<kvs::Real32>::Random()
 {
-    Value<T> result( other1 ); result += other2;
-    return result;
+    // Returns a random number in [0,1]
+    return get_rand_real32();
 }
 
-template<typename T>
-inline Value<T> operator - ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::Real64 Value<kvs::Real64>::Random()
 {
-    Value<T> result( other1 ); result -= other2;
-    return result;
+    // Returns a random number in [0,1]
+    return get_rand_real64();
 }
 
-template<typename T>
-inline Value<T> operator * ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::UInt8 Value<kvs::UInt8>::Random( const kvs::UInt8 min, const kvs::UInt8 max )
 {
-    Value<T> result( other1 ); result *= other2;
-    return result;
+    // Returns a random number in [min,max]
+    return min + kvs::UInt8( get_rand_uint8() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt8>::Max() ) );
 }
 
-template<typename T>
-inline Value<T> operator / ( const Value<T>& other1, const Value<T>& other2 )
+template<>
+inline kvs::UInt16 Value<kvs::UInt16>::Random( const kvs::UInt16 min, const kvs::UInt16 max )
 {
-    Value<T> result( other1 ); result /= other2;
-    return result;
+    // Returns a random number in [min,max]
+    return min + kvs::UInt16( get_rand_uint16() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt16>::Max() ) );
 }
-#endif
+
+template<>
+inline kvs::UInt32 Value<kvs::UInt32>::Random( const kvs::UInt32 min, const kvs::UInt32 max )
+{
+    // Returns a random number in [min,max]
+    return min + kvs::UInt32( get_rand_uint32() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt32>::Max() ) );
+}
+
+template<>
+inline kvs::UInt64 Value<kvs::UInt64>::Random( const kvs::UInt64 min, const kvs::UInt64 max )
+{
+    // Returns a random number in [min,max]
+    return min + kvs::UInt64( get_rand_uint64() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt64>::Max() ) );
+}
+
+template<>
+inline kvs::Int8 Value<kvs::Int8>::Random( const kvs::Int8 min, const kvs::Int8 max )
+{
+    // Returns a random number in [min,max]
+    return min + kvs::Int8( get_rand_uint8() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt8>::Max() ) );
+}
+
+template<>
+inline kvs::Int16 Value<kvs::Int16>::Random( const kvs::Int16 min, const kvs::Int16 max )
+{
+    // Returns a random number in [min,max]
+    return min + kvs::Int16( get_rand_uint16() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt16>::Max() ) );
+}
+
+template<>
+inline kvs::Int32 Value<kvs::Int32>::Random( const kvs::Int32 min, const kvs::Int32 max )
+{
+    // Returns a random number in [min,max]
+    return min + kvs::UInt32( get_rand_uint32() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt32>::Max() ) );
+}
+
+template<>
+inline kvs::Int64 Value<kvs::Int64>::Random( const kvs::Int64 min, const kvs::Int64 max )
+{
+    // Returns a random number in [min,max]
+    return min + kvs::Int64( get_rand_uint64() * ( max - min + 1.0 ) / ( 1.0 + Value<kvs::UInt64>::Max() ) );
+}
+
+template<>
+inline kvs::Real32 Value<kvs::Real32>::Random( const kvs::Real32 min, const kvs::Real32 max )
+{
+    // Returns a random number in [min,max]
+    return min + get_rand_real32() * ( max - min );
+}
+
+template<>
+inline kvs::Real64 Value<kvs::Real64>::Random( const kvs::Real64 min, const kvs::Real64 max )
+{
+    // Returns a random number in [min,max]
+    return min + get_rand_real64() * ( max - min );
+}
+
 } // end of namespace kvs
-
-#endif // KVS__VALUE_H_INCLUDE
