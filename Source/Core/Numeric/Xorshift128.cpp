@@ -54,10 +54,6 @@ void Xorshift128::setSeed( kvs::UInt32 seed )
     m_y = seed = 1812433253UL * ( seed ^ ( seed >> 30 ) ) + 2;
     m_z = seed = 1812433253UL * ( seed ^ ( seed >> 30 ) ) + 3;
     m_w = seed = 1812433253UL * ( seed ^ ( seed >> 30 ) ) + 4;
-//    m_x = 1812433253UL * ( seed ^ ( seed >> 30 ) ) + 1;
-//    m_y = 1812433253UL * ( seed ^ ( seed >> 30 ) ) + 2;
-//    m_z = 1812433253UL * ( seed ^ ( seed >> 30 ) ) + 3;
-//    m_w = 1812433253UL * ( seed ^ ( seed >> 30 ) ) + 4;
 }
 
 } // end of namespace kvs

@@ -11,12 +11,9 @@
  *  $Id: MersenneTwister.h 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__MERSENNE_TWISTER_H_INCLUDE
-#define KVS__MERSENNE_TWISTER_H_INCLUDE
-
+#pragma once
 #include <ctime>
 #include <climits>
-
 #ifdef _MSC_VER
 #pragma warning (disable : 4146)
 #endif
@@ -33,7 +30,6 @@ namespace kvs
 class MersenneTwister
 {
 private:
-
     enum { N = 624 };
     enum { M = 397 }; // period parameter
     unsigned long m_state[N]; ///< internal state
@@ -41,7 +37,6 @@ private:
     int m_left; ///< number of values left before reload needed
 
 public:
-
     MersenneTwister();
     explicit MersenneTwister( const unsigned long seed );
     explicit MersenneTwister( const unsigned long* const seeds, const unsigned long length = N );
@@ -55,11 +50,9 @@ public:
     double rand53();
     unsigned long randInteger();
     unsigned long randInteger( const unsigned long n );
-
-    double operator ()( void );
+    double operator ()();
 
 private:
-
     void initialize( const unsigned long seed );
     void reload( void );
     unsigned long high_bit( const unsigned long u ) const;
@@ -67,37 +60,43 @@ private:
     unsigned long low_bits( const unsigned long u ) const;
     unsigned long mix_bits( const unsigned long u, const unsigned long v ) const;
     unsigned long twist( const unsigned long m, const unsigned long s0, const unsigned long s1 ) const;
-
     static unsigned long hash( std::time_t t, std::clock_t c );
 };
 
 /*==========================================================================*/
 /**
  *  @brief  Returns uniform random number.
- *  @return uniform random number
+ *  @return uniform random number in [0,1]
  */
 /*==========================================================================*/
 inline double MersenneTwister::rand()
 {
-    return( double ( this->randInteger() ) * ( 1.0 / 4294967295.0 ) );
+    // 0xffffffff = 4294967295 = 2^32 - 1 (=UINT_MAX)
+    // 0x7fffffff = 2147483647 = 2^31 - 1 (=INT_MAX)
+    // [0,0xffffffff]: randInteger()
+    // [0,0x7fffffff]: long( randInteger() >> 1 )
+    // [0,1]: randInteger() * ( 1.0 / 4294967296.0 )
+    // [0,1): randInteger() * ( 1.0 / 4294967295.0 )
+    // (0,1): double( randInteger() ) + 0.5 ) * ( 1.0 / 4294967296.0 )
+    return double ( this->randInteger() ) * ( 1.0 / 4294967295.0 ); // in [0,1]
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Returns uniform random number.
  *  @param  n [in] maximum value
- *  @return uniform random number
+ *  @return uniform random number in [0,n]
  */
 /*==========================================================================*/
 inline double MersenneTwister::rand( const double n )
 {
-    return( this->rand() * n );
+    return this->rand() * n;
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Returns uniform random number (53-bit precision).
- *  @return uniform random number
+ *  @return uniform random number in [0,1)
  */
 /*==========================================================================*/
 inline double MersenneTwister::rand53()
@@ -107,13 +106,13 @@ inline double MersenneTwister::rand53()
     // http://www001.upp.so-net.ne.jp/isaku/zmtrand.c.html
     const unsigned long a = this->randInteger() >> 5;
     const unsigned long b = this->randInteger() >> 6;
-    return( ( a * 67108864.0 + b ) * ( 1.0 / 9007199254740992.0 ) );
+    return ( a * 67108864.0 + b ) * ( 1.0 / 9007199254740992.0 );
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Returns uniform random number (32-bit integer).
- *  @return uniform random number
+ *  @return uniform random number in [0,0xffffffff] = [0,UINT_MAX]
  */
 /*==========================================================================*/
 inline unsigned long MersenneTwister::randInteger()
@@ -130,15 +129,14 @@ inline unsigned long MersenneTwister::randInteger()
     s1 ^= ( s1 >> 11 );
     s1 ^= ( s1 <<  7 ) & 0x9d2c5680UL;
     s1 ^= ( s1 << 15 ) & 0xefc60000UL;
-
-    return( s1 ^ ( s1 >> 18 ) );
+    return s1 ^ ( s1 >> 18 );
 }
 
 /*==========================================================================*/
 /**
  *  @brief  Returns uniform random number.
  *  @param  n [in] maximum number
- *  @return uniform random number
+ *  @return uniform random number in [0,n]
  */
 /*==========================================================================*/
 inline unsigned long MersenneTwister::randInteger( const unsigned long n )
@@ -160,7 +158,7 @@ inline unsigned long MersenneTwister::randInteger( const unsigned long n )
     }
     while ( i > n );
 
-    return( i );
+    return i;
 }
 
 /*==========================================================================*/
@@ -171,7 +169,7 @@ inline unsigned long MersenneTwister::randInteger( const unsigned long n )
 /*==========================================================================*/
 inline double MersenneTwister::operator ()()
 {
-    return( this->rand() );
+    return this->rand();
 }
 
 /*==========================================================================*/
@@ -184,19 +182,10 @@ inline void MersenneTwister::reload()
     // Generate N new values in state
     // Made clearer and faster by Matthew Bellew (matthew.bellew@home.com)
     register unsigned long* p = m_state;
-    register int            i;
-
-    for ( i = N - M; i--; ++p )
-    {
-        *p = twist( p[M], p[0], p[1] );
-    }
-
-    for ( i = M; --i; ++p )
-    {
-        *p = twist( p[M - N], p[0], p[1] );
-    }
+    register int i;
+    for ( i = N - M; i--; ++p ) { *p = twist( p[M], p[0], p[1] ); }
+    for ( i = M; --i; ++p ) { *p = twist( p[M - N], p[0], p[1] ); }
     *p = twist( p[M - N], p[0], m_state[0] );
-
     m_left = N, m_next = m_state;
 }
 
@@ -209,7 +198,7 @@ inline void MersenneTwister::reload()
 /*==========================================================================*/
 inline unsigned long MersenneTwister::high_bit( const unsigned long u ) const
 {
-    return( u & 0x80000000UL );
+    return u & 0x80000000UL;
 }
 
 /*==========================================================================*/
@@ -221,7 +210,7 @@ inline unsigned long MersenneTwister::high_bit( const unsigned long u ) const
 /*==========================================================================*/
 inline unsigned long MersenneTwister::low_bit( const unsigned long u ) const
 {
-    return( u & 0x00000001UL );
+    return u & 0x00000001UL;
 }
 
 /*==========================================================================*/
@@ -233,7 +222,7 @@ inline unsigned long MersenneTwister::low_bit( const unsigned long u ) const
 /*==========================================================================*/
 inline unsigned long MersenneTwister::low_bits( const unsigned long u ) const
 {
-    return( u & 0x7fffffffUL );
+    return u & 0x7fffffffUL;
 }
 
 /*==========================================================================*/
@@ -246,7 +235,7 @@ inline unsigned long MersenneTwister::low_bits( const unsigned long u ) const
 /*==========================================================================*/
 inline unsigned long MersenneTwister::mix_bits( const unsigned long u, const unsigned long v ) const
 {
-    return( high_bit( u ) | low_bits( v ) );
+    return high_bit( u ) | low_bits( v );
 }
 
 /*==========================================================================*/
@@ -263,9 +252,7 @@ inline unsigned long MersenneTwister::twist(
     const unsigned long s0,
     const unsigned long s1 ) const
 {
-    return( m ^ ( mix_bits( s0, s1 ) >> 1 ) ^ ( -low_bit( s1 ) & 0x9908b0dfUL ) );
+    return m ^ ( mix_bits( s0, s1 ) >> 1 ) ^ ( -low_bit( s1 ) & 0x9908b0dfUL );
 }
 
 } // end of namespace kvs
-
-#endif // KVS__MERSENNE_TWISTER_H_INCLUDE
