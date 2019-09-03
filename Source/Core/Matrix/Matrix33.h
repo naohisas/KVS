@@ -16,6 +16,7 @@
 #include <iostream>
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <kvs/Indent>
 #include <kvs/Vector3>
 #include <kvs/Deprecated>
 
@@ -42,6 +43,9 @@ public:
     static const Matrix33 Diagonal( const T x ) { Matrix33 m; m.setDiagonal(x); return m; }
     static const Matrix33 Diagonal( const kvs::Vector3<T>& v ) { Matrix33 m; m.setDiagonal(v); return m; }
     static const Matrix33 Random() { Matrix33 m; m.setRandom(); return m; }
+    static const Matrix33 Random( const kvs::UInt32 seed ) { Matrix33 m; m.setRandom( seed ); return m; }
+    static const Matrix33 Random( const T min, const T max ) { Matrix33 m; m.setRandom( min, max ); return m; }
+    static const Matrix33 Random( const T min, const T max, const kvs::UInt32 seed ) { Matrix33 m; m.setRandom( min, max, seed ); return m; }
     static const Matrix33 Rotation( const Vector3<T>& axis, const double deg );
     static const Matrix33 RotationX( const double deg );
     static const Matrix33 RotationY( const double deg );
@@ -75,11 +79,15 @@ public:
     void setDiagonal( const T x );
     void setDiagonal( const kvs::Vector3<T>& v );
     void setRandom();
+    void setRandom( const kvs::UInt32 seed );
+    void setRandom( const T min, const T max );
+    void setRandom( const T min, const T max, const kvs::UInt32 seed );
 
     void swap( Matrix33& other );
     void transpose();
     void invert( T* determinant = 0 );
-    void print() const;
+    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+
     T trace() const;
     T determinant() const;
     const Matrix33 transposed() const;
@@ -157,7 +165,7 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const Matrix33& rhs )
     {
-        return os << rhs[0] << "\n" << rhs[1] << "\n" << rhs[2];
+        return os << "[" << rhs[0] << ", " << rhs[1] << ", " << rhs[2] << "]";
     }
 
 public:
@@ -166,6 +174,7 @@ public:
     KVS_DEPRECATED( void set( const T a ) ) { *this = Constant( a ); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
+    KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
 };
 
 
@@ -418,6 +427,30 @@ inline void Matrix33<T>::setRandom()
     m_data[2].setRandom();
 }
 
+template<typename T>
+inline void Matrix33<T>::setRandom( const kvs::UInt32 seed )
+{
+    m_data[0].setRandom( seed );
+    m_data[1].setRandom();
+    m_data[2].setRandom();
+}
+
+template<typename T>
+inline void Matrix33<T>::setRandom( const T min, const T max )
+{
+    m_data[0].setRandom( min, max );
+    m_data[1].setRandom( min, max );
+    m_data[2].setRandom( min, max );
+}
+
+template<typename T>
+inline void Matrix33<T>::setRandom( const T min, const T max, const kvs::UInt32 seed )
+{
+    m_data[0].setRandom( min, max, seed );
+    m_data[1].setRandom( min, max );
+    m_data[2].setRandom( min, max );
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Swaps this and other.
@@ -487,9 +520,12 @@ inline void Matrix33<T>::invert( T* determinant )
  */
 /*==========================================================================*/
 template<typename T>
-inline void Matrix33<T>::print() const
+inline void Matrix33<T>::print( std::ostream& os, const kvs::Indent& indent ) const
 {
-    std::cout << *this << std::endl;
+    os << indent << "[" << m_data[0];
+    os << "," << std::endl << indent << " " << m_data[1];
+    os << "," << std::endl << indent << " " << m_data[2];
+    os << "]" << std::endl;
 }
 
 /*==========================================================================*/

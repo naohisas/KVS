@@ -18,6 +18,7 @@
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <kvs/Indent>
 #include <kvs/Vector>
 #include <kvs/Matrix22>
 #include <kvs/Matrix33>
@@ -49,6 +50,9 @@ public:
     static const Matrix Diagonal( const size_t nrows, const size_t ncols, const T x );
     static const Matrix Diagonal( const kvs::Vector<T>& v );
     static const Matrix Random( const size_t nrows, const size_t ncols );
+    static const Matrix Random( const size_t nrows, const size_t ncols, const kvs::UInt32 seed );
+    static const Matrix Random( const size_t nrows, const size_t ncols, const T min, const T max );
+    static const Matrix Random( const size_t nrows, const size_t ncols, const T min, const T max, const kvs::UInt32 seed );
 
 public:
     Matrix();
@@ -73,11 +77,15 @@ public:
     void setDiagonal( const T x );
     void setDiagonal( const kvs::Vector<T>& v );
     void setRandom();
+    void setRandom( const kvs::UInt32 seed );
+    void setRandom( const T min, const T max );
+    void setRandom( const T min, const T max, const kvs::UInt32 seed );
 
     void swap( Matrix& other );
     void transpose();
     void invert();
-    void print() const;
+    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
+
     T trace() const;
     T determinant() const;
     size_t pivot( const size_t row_index ) const;
@@ -206,15 +214,10 @@ public:
     friend std::ostream& operator <<( std::ostream& os, const Matrix& rhs )
     {
         const size_t nrows = rhs.rowSize();
-        if ( nrows != 0 )
-        {
-            for ( size_t r = 0; r < nrows - 1; ++r )
-            {
-                os <<  rhs[r] << std::endl;
-            }
-            os << rhs[ nrows - 1 ];
-        }
-        return os;
+        if ( nrows == 0 ) { return os << "[[ ]]"; }
+        os << "[" << rhs[0];
+        for ( size_t i = 1; i < nrows; ++i ) { os << ", " << rhs[i]; }
+        return os << "]";
     }
 
 public:
@@ -222,6 +225,7 @@ public:
     KVS_DEPRECATED( size_t ncolumns() const ) { return this->columnSize(); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
+    KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
 };
 
 
@@ -235,51 +239,82 @@ typedef Matrix<double> Matd;
 
 
 template <typename T>
-const Matrix<T> Matrix<T>::Zero( const size_t nrows, const size_t ncols )
+inline const Matrix<T> Matrix<T>::Zero( const size_t nrows, const size_t ncols )
 {
-    Matrix<T> m( nrows, ncols ); m.setZero();
+    Matrix<T> m( nrows, ncols );
+    m.setZero();
     return m;
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::Ones( const size_t nrows, const size_t ncols )
+inline const Matrix<T> Matrix<T>::Ones( const size_t nrows, const size_t ncols )
 {
-    Matrix<T> m( nrows, ncols ); m.setOnes();
+    Matrix<T> m( nrows, ncols );
+    m.setOnes();
     return m;
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::Identity( const size_t nrows, const size_t ncols )
+inline const Matrix<T> Matrix<T>::Identity( const size_t nrows, const size_t ncols )
 {
-    Matrix<T> m( nrows, ncols ); m.setIdentity();
+    Matrix<T> m( nrows, ncols );
+    m.setIdentity();
     return m;
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::Constant( const size_t nrows, const size_t ncols, const T x )
+inline const Matrix<T> Matrix<T>::Constant( const size_t nrows, const size_t ncols, const T x )
 {
-    Matrix<T> m( nrows, ncols ); m.setConstant( x );
+    Matrix<T> m( nrows, ncols );
+    m.setConstant( x );
     return m;
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::Diagonal( const size_t nrows, const size_t ncols, const T x )
+inline const Matrix<T> Matrix<T>::Diagonal( const size_t nrows, const size_t ncols, const T x )
 {
-    Matrix<T> m( nrows, ncols ); m.setDiagonal( x );
+    Matrix<T> m( nrows, ncols );
+    m.setDiagonal( x );
     return m;
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::Diagonal( const kvs::Vector<T>& v )
+inline const Matrix<T> Matrix<T>::Diagonal( const kvs::Vector<T>& v )
 {
-    Matrix<T> m( v.size(), v.size() ); m.setDiagonal( v );
+    Matrix<T> m( v.size(), v.size() );
+    m.setDiagonal( v );
     return m;
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::Random( const size_t nrows, const size_t ncols )
+inline const Matrix<T> Matrix<T>::Random( const size_t nrows, const size_t ncols )
 {
-    Matrix<T> m( nrows, ncols ); m.setRandom();
+    Matrix<T> m( nrows, ncols );
+    m.setRandom();
+    return m;
+}
+
+template <typename T>
+inline const Matrix<T> Matrix<T>::Random( const size_t nrows, const size_t ncols, const kvs::UInt32 seed )
+{
+    Matrix<T> m( nrows, ncols );
+    m.setRandom( seed );
+    return m;
+}
+
+template <typename T>
+inline const Matrix<T> Matrix<T>::Random( const size_t nrows, const size_t ncols, const T min, const T max )
+{
+    Matrix<T> m( nrows, ncols );
+    m.setRandom( min, max );
+    return m;
+}
+
+template <typename T>
+inline const Matrix<T> Matrix<T>::Random( const size_t nrows, const size_t ncols, const T min, const T max, const kvs::UInt32 seed )
+{
+    Matrix<T> m( nrows, ncols );
+    m.setRandom( min, max, seed );
     return m;
 }
 
@@ -526,6 +561,35 @@ inline void Matrix<T>::setRandom()
     }
 }
 
+template<typename T>
+inline void Matrix<T>::setRandom( const kvs::UInt32 seed )
+{
+    if ( m_nrows > 0 )
+    {
+        m_data[0].setRandom( seed );
+        for ( size_t i = 1; i < m_nrows; ++i ) { m_data[i].setRandom(); }
+    }
+}
+
+template<typename T>
+inline void Matrix<T>::setRandom( const T min, const T max )
+{
+    if ( m_nrows > 0 )
+    {
+        for ( size_t i = 0; i < m_nrows; ++i ) { m_data[i].setRandom( min, max ); }
+    }
+}
+
+template<typename T>
+inline void Matrix<T>::setRandom( const T min, const T max, const kvs::UInt32 seed )
+{
+    if ( m_nrows > 0 )
+    {
+        m_data[0].setRandom( min, max, seed );
+        for ( size_t i = 1; i < m_nrows; ++i ) { m_data[i].setRandom( min, max ); }
+    }
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Swaps this and other.
@@ -641,9 +705,18 @@ inline void Matrix<T>::invert()
  */
 /*==========================================================================*/
 template<typename T>
-inline void Matrix<T>::print() const
+inline void Matrix<T>::print( std::ostream& os, const kvs::Indent& indent ) const
 {
-    std::cout << *this << std::endl;
+    if ( m_nrows == 0 ) { os << indent << "[[ ]]" << std::endl; }
+    else
+    {
+        os << indent << "[" << m_data[0];
+        for ( size_t i = 1; i < m_nrows; ++i )
+        {
+            os << "," << std::endl << indent << " " << m_data[i];
+        }
+        os << "]" << std::endl;
+    }
 }
 
 /*==========================================================================*/

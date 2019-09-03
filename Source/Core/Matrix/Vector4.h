@@ -16,6 +16,7 @@
 #include <iostream>
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <kvs/Value>
 #include <kvs/Vector2>
 #include <kvs/Vector3>
 #include <kvs/Deprecated>
@@ -45,6 +46,9 @@ public:
     static const Vector4 Identity() { return Vector4( T(1), T(0), T(0), T(0) ); }
     static const Vector4 Constant( const T x ) { return Vector4( x, x, x, x ); }
     static const Vector4 Random() { Vector4 v; v.setRandom(); return v; }
+    static const Vector4 Random( const kvs::UInt32 seed ) { Vector4 v; v.setRandom( seed ); return v; }
+    static const Vector4 Random( const T min, const T max ) { Vector4 v; v.setRandom( min, max ); return v; }
+    static const Vector4 Random( const T min, const T max, const kvs::UInt32 seed ) { Vector4 v; v.setRandom( min, max, seed ); return v; }
 
 public:
     Vector4();
@@ -81,10 +85,13 @@ public:
     void setIdentity();
     void setConstant( const T x );
     void setRandom();
+    void setRandom( const kvs::UInt32 seed );
+    void setRandom( const T min, const T max );
+    void setRandom( const T min, const T max, const kvs::UInt32 seed );
 
     void swap( Vector4& other );
     void normalize();
-    void print() const;
+    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     double length() const;
     double squaredLength() const;
     T dot( const Vector4& other ) const;
@@ -151,7 +158,7 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const Vector4& rhs )
     {
-        return os << rhs[0] << " " << rhs[1] << " " << rhs[2] << " " << rhs[3];
+        return os << "[" << rhs[0] << ", " << rhs[1] << ", " << rhs[2] << ", " << rhs[3] << "]";
     }
 
 public:
@@ -160,6 +167,7 @@ public:
     KVS_DEPRECATED( void set( const T x ) ) { *this = Constant( x ); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
+    KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
 };
 
 
@@ -393,91 +401,45 @@ inline void Vector4<T>::setConstant( const T x )
 template<typename T>
 inline void Vector4<T>::setRandom()
 {
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0) ) );
-    m_data[0] = T( 2.0 * r() - 1.0 ); // in [-1,1]
-    m_data[1] = T( 2.0 * r() - 1.0 ); // in [-1,1]
-    m_data[2] = T( 2.0 * r() - 1.0 ); // in [-1,1]
-    m_data[3] = T( 2.0 * r() - 1.0 ); // in [-1,1]
+    static bool flag = true;
+    if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; }
+    m_data[0] = kvs::Value<T>::Random();
+    m_data[1] = kvs::Value<T>::Random();
+    m_data[2] = kvs::Value<T>::Random();
+    m_data[3] = kvs::Value<T>::Random();
 }
 
-template<>
-inline void Vector4<kvs::Int8>::setRandom()
+template<typename T>
+inline void Vector4<T>::setRandom( const kvs::UInt32 seed )
 {
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*2 ) );
-    m_data[0] = kvs::Int8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [CHAR_MIN, CHAR_MAX]
-    m_data[1] = kvs::Int8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [CHAR_MIN, CHAR_MAX]
-    m_data[2] = kvs::Int8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [CHAR_MIN, CHAR_MAX]
-    m_data[3] = kvs::Int8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [CHAR_MIN, CHAR_MAX]
+    if ( seed > 0 ) kvs::Value<T>::SetSeed( seed );
+    else kvs::Value<T>::SetRandomSeed();
+    m_data[0] = kvs::Value<T>::Random();
+    m_data[1] = kvs::Value<T>::Random();
+    m_data[2] = kvs::Value<T>::Random();
+    m_data[3] = kvs::Value<T>::Random();
 }
 
-template<>
-inline void Vector4<kvs::UInt8>::setRandom()
+template<typename T>
+inline void Vector4<T>::setRandom( const T min, const T max )
 {
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*3 ) );
-    m_data[0] = kvs::UInt8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [0, UINT_MAX]
-    m_data[1] = kvs::UInt8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [0, UINT_MAX]
-    m_data[2] = kvs::UInt8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [0, UINT_MAX]
-    m_data[3] = kvs::UInt8( r.randInteger() % ( UCHAR_MAX + 1 ) ); // in [0, UINT_MAX]
+    static bool flag = true;
+    if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; }
+    m_data[0] = kvs::Value<T>::Random( min, max );
+    m_data[1] = kvs::Value<T>::Random( min, max );
+    m_data[2] = kvs::Value<T>::Random( min, max );
+    m_data[3] = kvs::Value<T>::Random( min, max );
 }
 
-template<>
-inline void Vector4<kvs::Int16>::setRandom()
+template<typename T>
+inline void Vector4<T>::setRandom( const T min, const T max, const kvs::UInt32 seed )
 {
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*4 ) );
-    m_data[0] = kvs::Int16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [SHRT_MIN, SHRT_MAX]
-    m_data[1] = kvs::Int16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [SHRT_MIN, SHRT_MAX]
-    m_data[2] = kvs::Int16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [SHRT_MIN, SHRT_MAX]
-    m_data[3] = kvs::Int16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [SHRT_MIN, SHRT_MAX]
-}
-
-template<>
-inline void Vector4<kvs::UInt16>::setRandom()
-{
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*5 ) );
-    m_data[0] = kvs::UInt16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [0, UINT_MAX]
-    m_data[1] = kvs::UInt16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [0, UINT_MAX]
-    m_data[2] = kvs::UInt16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [0, UINT_MAX]
-    m_data[3] = kvs::UInt16( r.randInteger() % ( USHRT_MAX + 1 ) ); // in [0, UINT_MAX]
-}
-
-template<>
-inline void Vector4<kvs::Int32>::setRandom()
-{
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*6 ) );
-    m_data[0] = kvs::Int32( r.randInteger() ); // in [INT_MIN, INT_MAX]
-    m_data[1] = kvs::Int32( r.randInteger() ); // in [INT_MIN, INT_MAX]
-    m_data[2] = kvs::Int32( r.randInteger() ); // in [INT_MIN, INT_MAX]
-    m_data[3] = kvs::Int32( r.randInteger() ); // in [INT_MIN, INT_MAX]
-}
-
-template<>
-inline void Vector4<kvs::UInt32>::setRandom()
-{
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*7 ) );
-    m_data[0] = r.randInteger(); // in [0, UINT_MAX]
-    m_data[1] = r.randInteger(); // in [0, UINT_MAX]
-    m_data[2] = r.randInteger(); // in [0, UINT_MAX]
-    m_data[3] = r.randInteger(); // in [0, UINT_MAX]
-}
-
-template<>
-inline void Vector4<kvs::Int64>::setRandom()
-{
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*8 ) );
-    m_data[0] = kvs::Int64( ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ) ); // in [LONG_MIN, LONG_MAX]
-    m_data[1] = kvs::Int64( ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ) ); // in [LONG_MIN, LONG_MAX]
-    m_data[2] = kvs::Int64( ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ) ); // in [LONG_MIN, LONG_MAX]
-    m_data[3] = kvs::Int64( ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ) ); // in [LONG_MIN, LONG_MAX]
-}
-
-template<>
-inline void Vector4<kvs::UInt64>::setRandom()
-{
-    static kvs::Xorshift128 r( static_cast<kvs::UInt32>( time(0)*9 ) );
-    m_data[0] = ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ); // in [0, ULONG_MAX]
-    m_data[1] = ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ); // in [0, ULONG_MAX]
-    m_data[2] = ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ); // in [0, ULONG_MAX]
-    m_data[3] = ( kvs::UInt64( r.randInteger() ) << 32 ) | kvs::UInt64( r.randInteger() ); // in [0, ULONG_MAX]
+    if ( seed > 0 ) kvs::Value<T>::SetSeed( seed );
+    else kvs::Value<T>::SetRandomSeed();
+    m_data[0] = kvs::Value<T>::Random( min, max );
+    m_data[1] = kvs::Value<T>::Random( min, max );
+    m_data[2] = kvs::Value<T>::Random( min, max );
+    m_data[3] = kvs::Value<T>::Random( min, max );
 }
 
 /*==========================================================================*/
@@ -515,9 +477,9 @@ inline void Vector4<T>::normalize()
  */
 /*==========================================================================*/
 template<typename T>
-inline void Vector4<T>::print() const
+inline void Vector4<T>::print( std::ostream& os, const kvs::Indent& indent ) const
 {
-    std::cout << *this << std::endl;
+    os << indent << *this << std::endl;
 }
 
 /*==========================================================================*/

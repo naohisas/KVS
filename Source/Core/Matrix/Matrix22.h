@@ -16,6 +16,7 @@
 #include <iostream>
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <kvs/Indent>
 #include <kvs/Vector2>
 #include <kvs/Deprecated>
 
@@ -42,6 +43,9 @@ public:
     static const Matrix22 Diagonal( const T x ) { Matrix22 m; m.setDiagonal(x); return m; }
     static const Matrix22 Diagonal( const kvs::Vector2<T>& v ) { Matrix22 m; m.setDiagonal(v); return m; }
     static const Matrix22 Random() { Matrix22 m; m.setRandom(); return m; }
+    static const Matrix22 Random( const kvs::UInt32 seed ) { Matrix22 m; m.setRandom( seed ); return m; }
+    static const Matrix22 Random( const T min, const T max ) { Matrix22 m; m.setRandom( min, max ); return m; }
+    static const Matrix22 Random( const T min, const T max, const kvs::UInt32 seed ) { Matrix22 m; m.setRandom( min, max, seed ); return m; }
     static const Matrix22 Rotation( const double deg );
 
 public:
@@ -68,11 +72,14 @@ public:
     void setDiagonal( const T x );
     void setDiagonal( const kvs::Vector2<T>& v );
     void setRandom();
+    void setRandom( const kvs::UInt32 seed );
+    void setRandom( const T min, const T max );
+    void setRandom( const T min, const T max, const kvs::UInt32 seed );
 
     void swap( Matrix22& other );
     void transpose();
     void invert( T* determinant = 0 );
-    void print() const;
+    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
 
     T trace() const;
     T determinant() const;
@@ -148,7 +155,7 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const Matrix22& rhs )
     {
-        return os << rhs[0] << "\n" << rhs[1];
+        return os << "[" << rhs[0] << ", " << rhs[1] << "]";
     }
 
 public:
@@ -157,6 +164,7 @@ public:
     KVS_DEPRECATED( void set( const T a ) ) { *this = Constant( a ); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
+    KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
 };
 
 
@@ -335,6 +343,27 @@ inline void Matrix22<T>::setRandom()
     m_data[1].setRandom();
 }
 
+template<typename T>
+inline void Matrix22<T>::setRandom( const kvs::UInt32 seed )
+{
+    m_data[0].setRandom( seed );
+    m_data[1].setRandom();
+}
+
+template<typename T>
+inline void Matrix22<T>::setRandom( const T min, const T max )
+{
+    m_data[0].setRandom( min, max );
+    m_data[1].setRandom( min, max );
+}
+
+template<typename T>
+inline void Matrix22<T>::setRandom( const T min, const T max, const kvs::UInt32 seed )
+{
+    m_data[0].setRandom( min, max, seed );
+    m_data[1].setRandom( min, max );
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Swaps this and other.
@@ -389,9 +418,11 @@ inline void Matrix22<T>::invert( T* determinant )
  */
 /*==========================================================================*/
 template<typename T>
-inline void Matrix22<T>::print() const
+inline void Matrix22<T>::print( std::ostream& os, const kvs::Indent& indent ) const
 {
-    std::cout << *this << std::endl;
+    os << indent << "[" << m_data[0];
+    os << "," << std::endl << indent << " " << m_data[1];
+    os << "]" << std::endl;
 }
 
 /*==========================================================================*/
