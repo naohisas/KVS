@@ -1,3 +1,99 @@
+### Version 2.x.x Released (20xx.x.x)
+**Added new classes and functions**
++ kvs::Stat::Sum
++ kvs::Stat::Mean
++ kvs::Stat::Var
++ kvs::Stat::VarP
++ kvs::Stat::Cov
++ kvs::Stat::CovP
++ kvs::Stat::StdDev
++ kvs::Stat::StdDevP
++ kvs::Stat::Corr
++ kvs::Stat::AutoCorr
++ kvs::Stat::CrossCorr
++ kvs::StudentTDistributiion
++ kvs::FisherFDistribution
++ kvs::ChiSquaredDistribution
++ kvs::GaussDistribution
++ kvs::ExponentialDistribution
++ kvs::BetaFunction
++ kvs::GammaFunction
++ kvs::LinearRegression
++ kvs::LassoRegression
++ kvs::RidgeRegression
++ kvs::StructuredExtractScalar
++ kvs::PolygonToPolygon
++ kvs::Value::Random
++ kvs::Value::SetSeed
++ kvs::Value::SetRandomSeed
+
+**Added new methods**
++ kvs::PolygonRenderer::setPolygonOffset
++ kvs::glsl::PolygonRenderer::setPolygonOffset
++ kvs::Vector{n}::Zero
++ kvs::Vector{2,3,4,n}::Ones
++ kvs::Vector{2,3,4}::UnitX
++ kvs::Vector{2,3,4}::UnitY
++ kvs::Vector{3,4}::UnitZ
++ kvs::Vector{4}::UnitW
++ kvs::Vector{n}::Unit
++ kvs::Vector{2,3,4,n}::Constant
++ kvs::Vector{2,3,4,n}::Identity
++ kvs::Vector{2,3,4,n}::Random
++ kvs::Vector{2,3,4,n}::setZero
++ kvs::Vector{2,3,4,n}::setOnes
++ kvs::Vector{2,3,4}::setUnitX
++ kvs::Vector{2,3,4}::setUnitY
++ kvs::Vector{3,4}::setUnitZ
++ kvs::Vector{4}::setUnitW
++ kvs::Vector{n}::setUnit
++ kvs::Vector{2,3,4,n}::setConstant
++ kvs::Vector{2,3,4,n}::setIdentity
++ kvs::Vector{2,3,4,n}::setRandom
++ kvs::Vector{n}::opeator =/
++ kvs::Matrix{22,33,44,nm}::Zero
++ kvs::Matrix{22,33,44,nm}::Ones
++ kvs::Matrix{22,33,44,nm}::Identity
++ kvs::Matrix{22,33,44,nm}::Constant
++ kvs::Matrix{22,33,44,nm}::Random
++ kvs::Matrix{22,33,44,nm}::setZero
++ kvs::Matrix{22,33,44,nm}::setOnes
++ kvs::Matrix{22,33,44,nm}::setIdentity
++ kvs::Matrix{22,33,44,nm}::setConstant
++ kvs::Matrix{22,33,44,nm}::setDiagonal
++ kvs::Matrix{22,33,44,nm}::setRandom
++ kvs::Matrix{nm}::isSquare
++ kvs::Matrix{22,33,44,nm}::isSymmetric
++ kvs::Matrix{22,33,44,nm}::isDiagonal
+
+**Added new example**
++ Example/Utility/Stat
++ Example/Numeric/DistributionFunctions
++ Example/Numeric/LinearRegression
++ Example/Numeric/Matrix
+
+**Deprecated methods**
++ kvs::Vector2::All (use kvs::Vector2::Constant)
++ kvs::Vector2::zero (use kvs::Vector2::setZero)
++ kvs::Vector3::All (use kvs::Vector3::Constant)
++ kvs::Vector3::zero (use kvs::Vector3::setZero)
++ kvs::Vector4::All (use kvs::Vector4::Constant)
++ kvs::Vector4::zero (use kvs::Vector4::setZero)
++ kvs::Vector::zero (use kvs::Vector::setZero)
++ kvs::Matrix2::zero (use kvs::Matrix2::setZero)
++ kvs::Matrix2::identity (use kvs::Matrix2::setIdentity)
++ kvs::Matrix3::zero (use kvs::Matrix3::setZero)
++ kvs::Matrix3::identity (use kvs::Matrix3::setIdentity)
++ kvs::Matrix4::zero (use kvs::Matrix4::setZero)
++ kvs::Matrix4::identity (use kvs::Matrix4::setIdentity)
++ kvs::Matrix::zero (use kvs::Matrix::setZero)
++ kvs::Matrix::identity (use kvs::Matrix::setIdentity)
++ kvs::Vector{2,3,4,n}::length2 (use kvs::Vector{2,3,4,n}::squaredLength)
++ kvs::Quaternion::length2 (use kvs::QUaternion::squaredLength)
+
+**Fixed problem**
++ kvs::EigenDecomposer
+
 ### Version 2.8.0 Released (2019.6.7)
 **Added new classes and functions**
 + kvs::ColorStream
@@ -17,6 +113,14 @@
 + kvs::OpenGL::DisableVertexAttribArray
 + kvs::OpenGL::VertexAttribPointer
 + kvs::VertexBufferObjectManager
++ kvs::CubicImage
++ kvs::SphericalImage
++ kvs::SphericalImageRenderer
++ kvs::opencv::MovieObject
++ kvs::opencv::MovieRenderer
++ kvs::opencv::SphericalMovieRenderer
+
+**Add new methods**
 + kvs::StochasticRenderingCompositor::update
 + kvs::StochasticTetrahedraRenderer::transferFunction
 + kvs::StochasticTetrahedraRenderer::samplingStep
@@ -31,12 +135,6 @@
 + kvs::Directory::CurrentPath
 + kvs::Directory::Absolute
 + kvs::File::Exists
-+ kvs::CubicImage
-+ kvs::SphericalImage
-+ kvs::SphericalImageRenderer
-+ kvs::opencv::MovieObject
-+ kvs::opencv::MovieRenderer
-+ kvs::opencv::SphericalMovieRenderer
 
 **Added SupportOSMesa**
 + kvs::osmesa::Context
