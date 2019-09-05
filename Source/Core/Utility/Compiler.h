@@ -281,6 +281,19 @@
 #endif
 
 
+/*----------------------------------------------------------------------------
+ * C++ version
+ *----------------------------------------------------------------------------*/
+#define KVS_COMPILER_SUPPORT_CXX98              \
+    ( __cplusplus >= 199711L )
+#define KVS_COMPILER_SUPPORT_CXX17              \
+    ( __cplusplus >= 201703L )
+#define KVS_COMPILER_SUPPORT_CXX11              \
+    ( __cplusplus >= 201103L )
+#define KVS_COMPILER_SUPPORT_CXX20              \
+    ( __cplusplus > 201703L )
+
+
 namespace kvs
 {
 
