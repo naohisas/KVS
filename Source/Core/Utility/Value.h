@@ -33,7 +33,7 @@ private:
     // Simple random number generator based on Xorshift128
     static kvs::UInt32 m_seeds[4];
     static void set_seed( kvs::UInt32 seed );
-    static void set_random_seed();
+    static kvs::UInt32 get_random_seed();
     static kvs::UInt8 get_rand_uint8();
     static kvs::UInt16 get_rand_uint16();
     static kvs::UInt32 get_rand_uint32();
@@ -50,7 +50,8 @@ public:
     static T Max() { return std::numeric_limits<T>::max(); }
     static T Epsilon() { return std::numeric_limits<T>::epsilon(); }
     static void SetSeed( const kvs::UInt32 seed ) { set_seed( seed ); }
-    static void SetRandomSeed() { set_random_seed(); }
+    static void SetRandomSeed() { set_seed( get_random_seed() ); }
+    static kvs::UInt32 RandomSeed() { return get_random_seed(); }
     static T Random() { return T(0); }
     static T Random( const T /* min */, const T /* max */ ) { return T(0); }
 };
@@ -74,7 +75,7 @@ inline void Value<T>::set_seed( kvs::UInt32 seed )
 }
 
 template <typename T>
-inline void Value<T>::set_random_seed()
+inline kvs::UInt32 Value<T>::get_random_seed()
 {
     kvs::UInt32 a = static_cast<kvs::UInt32>( std::time(0) );
     kvs::UInt32 b = static_cast<kvs::UInt32>( std::clock() );
@@ -88,7 +89,7 @@ inline void Value<T>::set_random_seed()
     a = a - b; a = a - c; a = a ^ ( c >> 3  );
     b = b - c; b = b - a; b = b ^ ( a << 10 );
     c = c - a; c = c - b; c = c ^ ( b >> 15 );
-    set_seed( c );
+    return c;
 }
 
 template <typename T>

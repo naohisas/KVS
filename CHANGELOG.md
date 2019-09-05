@@ -24,6 +24,7 @@
 + kvs::StructuredExtractScalar
 + kvs::PolygonToPolygon
 + kvs::Value::Random
++ kvs::Value::RandomSeed
 + kvs::Value::SetSeed
 + kvs::Value::SetRandomSeed
 
@@ -65,12 +66,23 @@
 + kvs::Matrix{nm}::isSquare
 + kvs::Matrix{22,33,44,nm}::isSymmetric
 + kvs::Matrix{22,33,44,nm}::isDiagonal
++ kvs::ValueArray::Random
++ kvs::ValueArray::Linear
++ kvs::ValueArray::min
++ kvs::ValueArray::max
++ kvs::ValueArray::sum
++ kvs::ValueArray::argmin
++ kvs::ValueArray::argmax
++ kvs::ValueArray::argsort
++ kvs::ValueArray::sort
++ kvs::ValueArray::shuffle
 
 **Added new example**
 + Example/Utility/Stat
 + Example/Numeric/DistributionFunctions
 + Example/Numeric/LinearRegression
 + Example/Numeric/Matrix
++ Example/Numeric/ValueArray
 
 **Deprecated methods**
 + kvs::Vector2::All (use kvs::Vector2::Constant)
