@@ -23,10 +23,6 @@
 + kvs::RidgeRegression
 + kvs::StructuredExtractScalar
 + kvs::PolygonToPolygon
-+ kvs::Value::Random
-+ kvs::Value::RandomSeed
-+ kvs::Value::SetSeed
-+ kvs::Value::SetRandomSeed
 
 **Added new methods**
 + kvs::PolygonRenderer::setPolygonOffset
@@ -66,6 +62,10 @@
 + kvs::Matrix{nm}::isSquare
 + kvs::Matrix{22,33,44,nm}::isSymmetric
 + kvs::Matrix{22,33,44,nm}::isDiagonal
++ kvs::Value::Random
++ kvs::Value::RandomSeed
++ kvs::Value::SetSeed
++ kvs::Value::SetRandomSeed
 + kvs::ValueArray::Random
 + kvs::ValueArray::Linear
 + kvs::ValueArray::min
@@ -95,14 +95,21 @@
 + kvs::ValueTable::beginRow
 + kvs::ValueTable::endRow
 + kvs::ValueTable::clone
-+ kvs::ValueTable::endRow
 
 **Added new examples**
 + Example/Utility/Stat
++ Example/Utility/ValueArray
++ Example/Utility/ValueTable
 + Example/Numeric/DistributionFunctions
 + Example/Numeric/LinearRegression
-+ Example/Numeric/Matrix
-+ Example/Numeric/ValueArray
++ Example/Matrix/Matrix
++ Example/Matrix/Matrix22
++ Example/Matrix/Matrix33
++ Example/Matrix/Matrix44
++ Example/Matrix/Vector
++ Example/Matrix/Vector2
++ Example/Matrix/Vector3
++ Example/Matrix/Vector4
 
 **Added new macros**
 + KVS_COMPILER_SUPPORT_CXX98
