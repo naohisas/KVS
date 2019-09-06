@@ -31,6 +31,6 @@ template class ValueTable<kvs::Int64>;
 template class ValueTable<kvs::UInt64>;
 template class ValueTable<kvs::Real32>;
 template class ValueTable<kvs::Real64>;
-template class ValueTable<std::string>;
+//template class ValueTable<std::string>;
 
 } // end of namespace kvs

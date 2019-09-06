@@ -76,13 +76,39 @@
 + kvs::ValueArray::argsort
 + kvs::ValueArray::sort
 + kvs::ValueArray::shuffle
++ kvs::ValueTable::Random
++ kvs::ValueTable::Linear
++ kvs::ValueTable::begin
++ kvs::ValueTable::end
++ kvs::ValueTable::rbegin
++ kvs::ValueTable::rend
++ kvs::ValueTable::beginInColumnOrder
++ kvs::ValueTable::endInColumnOrder
++ kvs::ValueTable::rbeginInColumnOrder
++ kvs::ValueTable::rendInColumnOrder
++ kvs::ValueTable::beginInRowOrder
++ kvs::ValueTable::endInRowOrder
++ kvs::ValueTable::rbeginInRowOrder
++ kvs::ValueTable::rendInRowOrder
++ kvs::ValueTable::beginColumn
++ kvs::ValueTable::endColumn
++ kvs::ValueTable::beginRow
++ kvs::ValueTable::endRow
++ kvs::ValueTable::clone
++ kvs::ValueTable::endRow
 
-**Added new example**
+**Added new examples**
 + Example/Utility/Stat
 + Example/Numeric/DistributionFunctions
 + Example/Numeric/LinearRegression
 + Example/Numeric/Matrix
 + Example/Numeric/ValueArray
+
+**Added new macros**
++ KVS_COMPILER_SUPPORT_CXX98
++ KVS_COMPILER_SUPPORT_CXX17
++ KVS_COMPILER_SUPPORT_CXX11
++ KVS_COMPILER_SUPPORT_CXX20
 
 **Deprecated methods**
 + kvs::Vector2::All (use kvs::Vector2::Constant)
@@ -102,6 +128,7 @@
 + kvs::Matrix::identity (use kvs::Matrix::setIdentity)
 + kvs::Vector{2,3,4,n}::length2 (use kvs::Vector{2,3,4,n}::squaredLength)
 + kvs::Quaternion::length2 (use kvs::QUaternion::squaredLength)
++ kvs::ValueTable::clear (use kvs::ValueTable::release )
 
 **Fixed problem**
 + kvs::EigenDecomposer

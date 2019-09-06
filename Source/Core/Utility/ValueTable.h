@@ -12,14 +12,13 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__VALUE_TABLE_H_INCLUDE
-#define KVS__VALUE_TABLE_H_INCLUDE
-
+#pragma once
 #include <vector>
 #include <iterator>
 #include <algorithm>
 #include <kvs/ValueArray>
 #include <kvs/Assert>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -33,23 +32,76 @@ namespace kvs
 template <typename T>
 class ValueTable
 {
-public:
+    class ColumnOrderIterator;
+    class RowOrderIterator;
 
+public:
     typedef kvs::ValueArray<T> Column;
     typedef std::vector<Column> Columns;
+
+    // Iterators.
     typedef typename Columns::iterator column_iterator;
     typedef typename Columns::const_iterator const_column_iterator;
-    typedef Column& column_reference;
-    typedef const Column& const_column_reference;
     typedef std::reverse_iterator<column_iterator> column_reverse_iterator;
     typedef const std::reverse_iterator<const_column_iterator> const_column_reverse_iterator;
 
-private:
+    typedef Column& column_reference;
+    typedef const Column& const_column_reference;
 
-    Columns m_columns;
+    typedef ValueTable<T> this_type;
+    typedef T value_type;
+
+    // Column order iterators.
+    typedef ColumnOrderIterator column_order_iterator;
+    typedef const ColumnOrderIterator const_column_order_iterator;
+    typedef std::reverse_iterator<column_order_iterator> column_order_reverse_iterator;
+    typedef std::reverse_iterator<const_column_order_iterator> const_column_order_reverse_iterator;
+
+    // Row order iterators.
+    typedef RowOrderIterator row_order_iterator;
+    typedef const RowOrderIterator const_row_order_iterator;
+    typedef std::reverse_iterator<row_order_iterator> row_order_reverse_iterator;
+    typedef std::reverse_iterator<const_row_order_iterator> const_row_order_reverse_iterator;
+
+    // Standard iterators (column-order).
+    typedef column_order_iterator iterator;
+    typedef const_column_order_iterator const_iterator;
+    typedef column_order_reverse_iterator reverse_iterator;
+    typedef const_column_order_reverse_iterator const_reverse_iterator;
+
+private:
+    Columns m_columns; ///< column vector
 
 public:
+    static ValueTable Random( const size_t nrows, const size_t ncols, const unsigned int seed = 0 )
+    {
+        this_type m( ncols );
+        const_column_iterator last = m.endColumn();
+        for ( column_iterator c = m.beginColumn(); c != last; ++c ) { *c = Column::Random( nrows, seed ); }
+        return m;
+    }
 
+    static ValueTable Random( const size_t nrows, const size_t ncols, const T min, const T max, const unsigned int seed = 0 )
+    {
+        this_type m( ncols );
+        const_column_iterator last = m.endColumn();
+        for ( column_iterator c = m.beginColumn(); c != last; ++c ) { *c = Column::Random( nrows, min, max, seed ); }
+        return m;
+    }
+
+    static ValueTable Linear( const size_t nrows, const size_t ncols, const T start = T(0), const T step = T(1) )
+    {
+        this_type m( ncols );
+        const_column_iterator last = m.endColumn();
+        T value = start;
+        for ( column_iterator c = m.beginColumn(); c != last; ++c, value += step * nrows )
+        {
+            *c = Column::Linear( nrows, value, step );
+        }
+        return m;
+    }
+
+public:
     ValueTable(){}
 
     explicit ValueTable( const size_t ncolumns )
@@ -60,7 +112,7 @@ public:
     ValueTable( const size_t nrows, const size_t ncolumns )
     {
         m_columns.resize( ncolumns );
-        for ( size_t i = 0; i < ncolumns; i++ )
+        for ( size_t i = 0; i < ncolumns; ++i )
         {
             m_columns[i] = kvs::ValueArray<T>( nrows );
         }
@@ -117,68 +169,198 @@ public:
         return !( lhs < rhs );
     }
 
-    column_iterator beginColumn()
+    friend std::ostream& operator <<( std::ostream& os, const this_type& rhs )
     {
-        return m_columns.begin();
+        const size_t ncols = rhs.columnSize();
+        if ( ncols == 0 ) { return os << "{{ }}"; }
+        os << "{" << rhs[0];
+        for ( size_t i = 1; i < ncols; ++i ) { os << ", " << rhs[i]; }
+        return os << "}";
     }
 
-    const_column_iterator beginColumn() const
+    iterator begin()
     {
-        return m_columns.begin();
+        return this->beginInColumnOrder();
     }
 
-    column_iterator endColumn()
+    const_iterator begin() const
     {
-        return this->beginColumn() + this->columnSize();
+        return this->beginInColumnOrder();
     }
 
-    const_column_iterator endColumn() const
+    iterator end()
     {
-        return this->beginColumn() + this->columnSize();
+        return this->endInColumnOrder();
     }
 
-    column_reverse_iterator rbeginColumn()
+    const_iterator end() const
     {
-        return column_reverse_iterator( this->endColumn() );
+        return this->endInColumnOrder();
     }
 
-    const_column_reverse_iterator rbeginColumn() const
+    reverse_iterator rbegin()
     {
-        return const_column_reverse_iterator( this->endColumn() );
+        return this->rbeginInColumnOrder();
     }
 
-    column_reverse_iterator rendColumn()
+    const_reverse_iterator rbegin() const
     {
-        return column_reverse_iterator( this->beginColumn() );
+        return this->rbeginInColumnOrder();
     }
 
-    const_column_reverse_iterator rendColumn() const
+    reverse_iterator rend()
     {
-        return const_column_reverse_iterator( this->beginColumn() );
+        return this->rendInColumnOrder();
     }
 
-    column_reference frontColumn()
+    const_reverse_iterator rend() const
     {
-        KVS_ASSERT( !this->empty() );
-        return ( *this )[0];
+        return this->rendInColumnOrder();
     }
 
-    const_column_reference frontColumn() const
+    // Column order iteratirons.
+    column_order_iterator beginInColumnOrder()
     {
-        KVS_ASSERT( !this->empty() );
-        return ( *this )[0];
+        typename Column::iterator row = m_columns.begin()->begin();
+        column_iterator column = m_columns.begin();
+        column_iterator begin = m_columns.begin();
+        column_iterator end = m_columns.end();
+        return column_order_iterator( row, column, begin, end );
     }
 
-    column_reference backColumn()
+    const_column_order_iterator beginInColumnOrder() const
     {
-        KVS_ASSERT( !this->empty() );
-        return ( *this )[ this->columnSize() - 1 ];
+        return const_column_order_iterator( this->beginInColumnOrder() );
     }
 
-    const_column_reference backColumn() const
+    column_order_iterator endInColumnOrder()
     {
-        KVS_ASSERT( !this->empty() );
-        return ( *this )[ this->columnSize() - 1 ];
+        typename Column::iterator row = m_columns.end()->end();
+        column_iterator column = m_columns.end();
+        column_iterator begin = m_columns.begin();
+        column_iterator end = m_columns.end();
+        return column_order_iterator( row, column, begin, end );
+    }
+
+    const_column_order_iterator endInColumnOrder() const
+    {
+        return const_column_order_iterator( this->endInColumnOrder() );
+    }
+
+    column_order_reverse_iterator rbeginInColumnOrder()
+    {
+        return column_order_reverse_iterator( this->endInColumnOrder() );
+    }
+
+    const_column_order_reverse_iterator rbeginInColumnOrder() const
+    {
+        return const_column_order_reverse_iterator( this->endInColumnOrder() );
+    }
+
+    column_order_reverse_iterator rendInColumnOrder()
+    {
+        return column_order_reverse_iterator( this->beginInColumnOrder() );
+    }
+
+    const_column_order_reverse_iterator rendInColumnOrder() const
+    {
+        return const_column_order_reverse_iterator( this->beginInColumnOrder() );
+    }
+
+    // Row order iterations.
+    row_order_iterator beginInRowOrder()
+    {
+        typename Column::iterator row = m_columns.begin()->begin();
+        column_iterator column = m_columns.begin();
+        column_iterator begin = m_columns.begin();
+        column_iterator end = m_columns.end();
+        size_t offset = 0;
+        return row_order_iterator( row, column, begin, end, offset );
+    }
+
+    const_row_order_iterator beginInRowOrder() const
+    {
+        return const_row_order_iterator( this->beginInRowOrder() );
+    }
+
+    row_order_iterator endInRowOrder()
+    {
+        typename Column::iterator row = m_columns.end()->end();
+        column_iterator column = m_columns.end();
+        column_iterator begin = m_columns.begin();
+        column_iterator end = m_columns.end();
+        size_t offset = ( end - 1 )->size();
+        return row_order_iterator( row, column, begin, end, offset );
+    }
+
+    const_row_order_iterator endInRowOrder() const
+    {
+        return const_row_order_iterator( this->endInRowOrder() );
+    }
+
+    row_order_reverse_iterator rbeginInRowOrder()
+    {
+        return row_order_reverse_iterator( this->endInRowOrder() );
+    }
+
+    const_row_order_reverse_iterator rbeginInRowOrder() const
+    {
+        return const_row_order_reverse_iterator( this->endInRowOrder() );
+    }
+
+    row_order_reverse_iterator rendInRowOrder()
+    {
+        return row_order_reverse_iterator( this->beginInRowOrder() );
+    }
+
+    const_row_order_reverse_iterator rendInRowOrder() const
+    {
+        return const_row_order_reverse_iterator( this->beginInRowOrder() );
+    }
+
+    column_order_iterator beginColumn( const size_t column_index )
+    {
+        KVS_ASSERT( column_index < this->columnSize() );
+        return this->beginInColumnOrder() + column_index * this->rowSize();
+    }
+
+    column_order_iterator endColumn( const size_t column_index )
+    {
+        KVS_ASSERT( column_index < this->columnSize() );
+        return this->beginInColumnOrder() + ( column_index + 1 ) * this->rowSize();
+    }
+
+    row_order_iterator beginRow( const size_t row_index )
+    {
+        KVS_ASSERT( row_index < this->rowSize() );
+        return this->beginInRowOrder() + row_index * this->columnSize();
+    }
+
+    row_order_iterator endRow( const size_t row_index )
+    {
+        KVS_ASSERT( row_index < this->rowSize() );
+        return this->beginInRowOrder() + ( row_index + 1 ) * this->columnSize();
+    }
+
+    // Deprecated ?
+    // {
+    column_iterator beginColumn() { return m_columns.begin(); }
+    const_column_iterator beginColumn() const { return m_columns.begin(); }
+    column_iterator endColumn() { return this->beginColumn() + this->columnSize(); }
+    const_column_iterator endColumn() const { return this->beginColumn() + this->columnSize(); }
+    column_reverse_iterator rbeginColumn() { return column_reverse_iterator( this->endColumn() ); }
+    const_column_reverse_iterator rbeginColumn() const { return const_column_reverse_iterator( this->endColumn() ); }
+    column_reverse_iterator rendColumn() { return column_reverse_iterator( this->beginColumn() ); }
+    const_column_reverse_iterator rendColumn() const { return const_column_reverse_iterator( this->beginColumn() ); }
+    column_reference frontColumn() { KVS_ASSERT( !this->empty() ); return ( *this )[0]; }
+    const_column_reference frontColumn() const { KVS_ASSERT( !this->empty() ); return ( *this )[0]; }
+    column_reference backColumn() { KVS_ASSERT( !this->empty() ); return ( *this )[ this->columnSize() - 1 ]; }
+    const_column_reference backColumn() const { KVS_ASSERT( !this->empty() ); return ( *this )[ this->columnSize() - 1 ]; }
+    // }
+
+    size_t columnSize() const
+    {
+        return m_columns.size();
     }
 
     void pushBackColumn( const Column& column )
@@ -191,9 +373,9 @@ public:
         m_columns.pop_back();
     }
 
-    size_t columnSize() const
+    size_t rowSize( const size_t column_index = 0 ) const
     {
-        return m_columns.size();
+        return ( *this )[ column_index ].size();
     }
 
     column_reference column( const size_t index )
@@ -249,17 +431,334 @@ public:
         return this->columnSize() == 0;
     }
 
-    void clear()
-    {
-        m_columns.clear();
-    }
-
     void swap( ValueTable& other )
     {
         std::swap( m_columns, other.m_columns );
     }
+
+    ValueTable clone() const
+    {
+        ValueTable result;
+        const_column_iterator last = this->endColumn();
+        for ( const_column_iterator c = this->beginColumn(); c != last; ++c )
+        {
+            result.pushBackColumn( c->clone() );
+        }
+        return result;
+    }
+
+    void fill( const T& value )
+    {
+        const_column_iterator last = this->endColumn();
+        for ( column_iterator c = this->beginColumn(); c != last; ++c )
+        {
+            c->fill( value );
+        }
+    }
+
+    void release()
+    {
+        Columns().swap( m_columns );
+    }
+
+public:
+    KVS_DEPRECATED( void clear() ) { m_columns.clear(); }
+};
+
+template <typename T>
+class ValueTable<T>::ColumnOrderIterator
+{
+private:
+    typedef ColumnOrderIterator this_type;
+    typedef typename ValueTable<T>::Column::reference row_reference;
+    typedef typename ValueTable<T>::Column::iterator row_iterator;
+    typedef typename ValueTable<T>::Column::const_reference const_row_reference;
+    typedef typename ValueTable<T>::Column::const_iterator const_row_iterator;
+
+public:
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::random_access_iterator_tag iterator_category;
+
+private:
+    row_iterator m_row_iterator;
+    column_iterator m_col_iterator;
+    column_iterator m_col_begin;
+    column_iterator m_col_end;
+
+public:
+    ColumnOrderIterator( const ColumnOrderIterator& other ):
+        m_row_iterator( other.m_row_iterator ),
+        m_col_iterator( other.m_col_iterator ),
+        m_col_begin( other.m_col_begin ),
+        m_col_end( other.m_col_end ) {}
+
+    ColumnOrderIterator(
+        row_iterator row_iterator,
+        column_iterator col_iterator,
+        column_iterator& col_begin,
+        column_iterator& col_end ):
+        m_row_iterator( row_iterator ),
+        m_col_iterator( col_iterator ),
+        m_col_begin( col_begin ),
+        m_col_end( col_end ) {}
+
+    this_type& operator ++()
+    {
+        this->increment();
+        return *this;
+    }
+
+    this_type& operator --()
+    {
+        this->decrement();
+        return *this;
+    }
+
+    this_type operator ++(int)
+    {
+        this_type result = *this;
+        this->increment();
+        return result;
+    }
+
+    this_type operator --(int)
+    {
+        this_type result = *this;
+        this->decrement();
+        return result;
+    }
+
+    this_type& operator +=( unsigned int n )
+    {
+        while ( n > 0 ) { ++(*this); --n; }
+        return *this;
+    }
+
+    this_type& operator -=( unsigned int n )
+    {
+        while ( n > 0 ) { --(*this); --n; }
+        return *this;
+    }
+
+    this_type operator +( unsigned int n )
+    {
+        this_type result = *this;
+        result += n;
+        return result;
+    }
+
+    this_type operator -( unsigned int n )
+    {
+        this_type result = *this;
+        result -= n;
+        return result;
+    }
+
+    row_reference operator *()
+    {
+        return *m_row_iterator;
+    }
+
+    const_row_reference operator *() const
+    {
+        return *m_row_iterator;
+    }
+
+    bool operator ==( const this_type& other )
+    {
+        return ( m_row_iterator == other.m_row_iterator &&
+                 m_col_iterator == other.m_col_iterator );
+    }
+
+    bool operator !=( const this_type& other )
+    {
+        return !( *this == other );
+    }
+
+private:
+    void increment()
+    {
+        if ( m_row_iterator == m_col_end->end() ) { return; }
+        ++m_row_iterator;
+        if ( m_row_iterator == m_col_iterator->end() )
+        {
+            ++m_col_iterator;
+            if ( m_col_iterator != m_col_end )
+            {
+                m_row_iterator = m_col_iterator->begin();
+            }
+            else
+            {
+                m_row_iterator = m_col_iterator->end();
+            }
+        }
+    }
+
+    void decrement()
+    {
+        if ( m_row_iterator == m_col_begin->begin() ) { return; }
+        if ( m_col_iterator == m_col_end || m_row_iterator == m_col_iterator->begin() )
+        {
+            --m_col_iterator;
+            m_row_iterator = m_col_iterator->end();
+        }
+        --m_row_iterator;
+    }
+};
+
+template <typename T>
+class ValueTable<T>::RowOrderIterator
+{
+private:
+    typedef RowOrderIterator this_type;
+    typedef typename ValueTable<T>::Column::reference row_reference;
+    typedef typename ValueTable<T>::Column::iterator row_iterator;
+    typedef typename ValueTable<T>::Column::const_reference const_row_reference;
+    typedef typename ValueTable<T>::Column::const_iterator const_row_iterator;
+
+public:
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::random_access_iterator_tag iterator_category;
+
+private:
+    row_iterator m_row_iterator;
+    column_iterator m_col_iterator;
+    column_iterator m_col_begin;
+    column_iterator m_col_end;
+    size_t m_row_offset;
+
+public:
+    RowOrderIterator( const RowOrderIterator& other ):
+        m_row_iterator( other.m_row_iterator ),
+        m_col_iterator( other.m_col_iterator ),
+        m_col_begin( other.m_col_begin ),
+        m_col_end( other.m_col_end ),
+        m_row_offset( other.m_row_offset ) {}
+
+    RowOrderIterator(
+        row_iterator row_iterator,
+        column_iterator col_iterator,
+        column_iterator& col_begin,
+        column_iterator& col_end,
+        size_t row_offset ):
+        m_row_iterator( row_iterator ),
+        m_col_iterator( col_iterator ),
+        m_col_begin( col_begin ),
+        m_col_end( col_end ),
+        m_row_offset( row_offset ) {}
+
+    this_type& operator ++()
+    {
+        this->increment();
+        return *this;
+    }
+
+    this_type& operator --()
+    {
+        this->decrement();
+        return *this;
+    }
+
+    this_type operator ++(int)
+    {
+        this_type result = *this;
+        this->increment();
+        return result;
+    }
+
+    this_type operator --(int)
+    {
+        this_type result = *this;
+        this->decrement();
+        return result;
+    }
+
+    this_type& operator +=( unsigned int n )
+    {
+        while ( n > 0 ) { ++(*this); --n; }
+        return *this;
+    }
+
+    this_type& operator -=( unsigned int n )
+    {
+        while ( n > 0 ) { --(*this); --n; }
+        return *this;
+    }
+
+    this_type operator +( unsigned int n )
+    {
+        this_type result = *this;
+        result += n;
+        return result;
+    }
+
+    this_type operator -( unsigned int n )
+    {
+        this_type result = *this;
+        result -= n;
+        return result;
+    }
+
+    row_reference operator *()
+    {
+        return *m_row_iterator;
+    }
+
+    const_row_reference operator *() const
+    {
+        return *m_row_iterator;
+    }
+
+    bool operator ==( const this_type& other )
+    {
+        return ( m_col_iterator == other.m_col_iterator &&
+                 m_row_iterator == other.m_row_iterator );
+    }
+
+    bool operator !=( const this_type& other )
+    {
+        return !( *this == other );
+    }
+
+private:
+    void increment()
+    {
+        if ( m_row_iterator == m_col_end->end() ) { return; }
+
+        ++m_col_iterator;
+        if ( m_col_iterator == m_col_end )
+        {
+            m_col_iterator = m_col_begin;
+            m_row_offset++;
+        }
+
+        m_row_iterator = m_col_iterator->begin() + m_row_offset;
+        if ( m_row_iterator == m_col_iterator->end() )
+        {
+            m_row_iterator = m_col_end->end();
+            m_col_iterator = m_col_end;
+        }
+    }
+
+    void decrement()
+    {
+        if ( m_row_iterator == m_col_begin->begin() ) { return; }
+
+        if ( m_col_iterator == m_col_begin || m_row_iterator == m_col_end->end() )
+        {
+            m_col_iterator = m_col_end;
+            --m_row_offset;
+        }
+        --m_col_iterator;
+
+        m_row_iterator = m_col_iterator->begin() + m_row_offset;
+    }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__VALUE_TABLE_H_INCLUDE
