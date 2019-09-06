@@ -69,7 +69,7 @@ public:
     static ValueArray Random( const size_t size, const unsigned int seed = 0 )
     {
         if ( size == 0 ) { return ValueArray(); }
-        if ( seed == 0 ) { kvs::Value<T>::SetRandomSeed(); }
+        if ( seed == 0 ) { static bool flag = true; if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; } }
         else { kvs::Value<T>::SetSeed( seed ); }
         this_type v( size );
         const_iterator last = v.end();
@@ -80,7 +80,7 @@ public:
     static ValueArray Random( const size_t size, const T min, const T max, const unsigned int seed = 0 )
     {
         if ( size == 0 ) { return ValueArray(); }
-        if ( seed == 0 ) { kvs::Value<T>::SetRandomSeed(); }
+        if ( seed == 0 ) { static bool flag = true; if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; } }
         else { kvs::Value<T>::SetSeed( seed ); }
         this_type v( size );
         const_iterator last = v.end();
