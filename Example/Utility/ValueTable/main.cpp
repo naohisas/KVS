@@ -3,6 +3,70 @@
 #include <kvs/Timer>
 
 
+void PerfTest( const size_t size, const size_t n )
+{
+    std::cout << "Performance Test" << std::endl;
+
+    typedef kvs::ValueTable<float> Table;
+    const kvs::Indent indent(4);
+
+    // Random
+    /*
+    {
+        Table t;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < n; ++i ) { t = Table::Random( size, size ); }
+        timer.stop();
+        std::cout << indent << "Random: " << timer.sec() << " [sec]" << std::endl;
+    }
+    */
+
+    // Random
+    /*
+    {
+        Table t;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < n; ++i ) { t = Table::Linear( size, size ); }
+        timer.stop();
+        std::cout << indent << "Linear: " << timer.sec() << " [sec]" << std::endl;
+    }
+    */
+
+    // Iterators
+    {
+        Table t = Table::Random( size, size );
+        {
+            kvs::Timer timer( kvs::Timer::Start );
+            for ( Table::iterator i = t.begin(); i != t.end(); ++i ) { *i *= 1; }
+            timer.stop();
+            std::cout << indent << "Iterator: " << timer.sec() << " [sec]" << std::endl;
+        }
+
+        {
+            kvs::Timer timer( kvs::Timer::Start );
+            for ( Table::reverse_iterator i = t.rbegin(); i != t.rend(); ++i ) { *i *= 1; }
+            timer.stop();
+            std::cout << indent << "Reverse iterator: " << timer.sec() << " [sec]" << std::endl;
+        }
+
+        {
+            kvs::Timer timer( kvs::Timer::Start );
+            Table::row_order_iterator i = t.beginInRowOrder();
+            for ( ; i != t.endInRowOrder(); ++i ) { *i *= 1; }
+            timer.stop();
+            std::cout << indent << "Row order iterator: " << timer.sec() << " [sec]" << std::endl;
+        }
+
+        {
+            kvs::Timer timer( kvs::Timer::Start );
+            Table::row_order_reverse_iterator i = t.rbeginInRowOrder();
+            for ( ; i != t.rendInRowOrder(); ++i ) { *i *= 1; }
+            timer.stop();
+            std::cout << indent << "Row order reverse iterator: " << timer.sec() << " [sec]" << std::endl;
+        }
+    }
+}
+
 int main()
 {
     const kvs::Indent indent(4);
@@ -146,7 +210,7 @@ int main()
     std::cout << "Iterator" << std::endl;
     {
         kvs::ValueTable<int> v = kvs::ValueTable<int>::Linear( 3, 4 );
-        std::cout << indent << "v = " << v << std::endl;
+        std::cout << "v = " << v << std::endl;
 
         {
             std::cout << "kvs::ValueTable<int>::iterator ";
@@ -159,10 +223,28 @@ int main()
 
         {
             std::cout << "kvs::ValueTable<int>::reverse_iterator ";
-            std::cout << "(column-major order - reverse)" << std::endl;
+            std::cout << "(column-major order: reverse)" << std::endl;
             kvs::ValueTable<int>::reverse_iterator c = v.rbegin();
             std::cout << indent << "{" << *c;
             while ( ++c != v.rend() ) { std::cout << ", " << *c; }
+            std::cout << "}" << std::endl;
+        }
+
+        {
+            std::cout << "kvs::ValueTable<int>::iterator ";
+            std::cout << "(column-major order: colum(1))" << std::endl;
+            kvs::ValueTable<int>::iterator r = v.beginColumn(1);
+            std::cout << indent << "{" << *r;
+            while ( ++r != v.endColumn(1) ) { std::cout << ", " << *r; }
+            std::cout << "}" << std::endl;
+        }
+
+        {
+            std::cout << "kvs::ValueTable<int>::iterator ";
+            std::cout << "(column-major order: colum(1) - column(2))" << std::endl;
+            kvs::ValueTable<int>::iterator r = v.beginColumn(1);
+            std::cout << indent << "{" << *r;
+            while ( ++r != v.endColumn(2) ) { std::cout << ", " << *r; }
             std::cout << "}" << std::endl;
         }
 
@@ -177,13 +259,43 @@ int main()
 
         {
             std::cout << "kvs::ValueTable<int>::row_order_reverse_iterator ";
-            std::cout << "(row-major order - reverse)" << std::endl;
+            std::cout << "(row-major order: reverse)" << std::endl;
             kvs::ValueTable<int>::row_order_reverse_iterator r = v.rbeginInRowOrder();
             std::cout << indent << "{" << *r;
             while ( ++r != v.rendInRowOrder() ) { std::cout << ", " << *r; }
             std::cout << "}" << std::endl;
         }
+
+        {
+            std::cout << "kvs::ValueTable<int>::row_order_iterator ";
+            std::cout << "(row-major order: row(1))" << std::endl;
+            kvs::ValueTable<int>::row_order_iterator r = v.beginRow(1);
+            std::cout << indent << "{" << *r;
+            while ( ++r != v.endRow(1) ) { std::cout << ", " << *r; }
+            std::cout << "}" << std::endl;
+        }
+
+        {
+            std::cout << "kvs::ValueTable<int>::row_order_iterator ";
+            std::cout << "(row-major order: row(1) - row(2))" << std::endl;
+            kvs::ValueTable<int>::row_order_iterator r = v.beginRow(1);
+            std::cout << indent << "{" << *r;
+            while ( ++r != v.endRow(2) ) { std::cout << ", " << *r; }
+            std::cout << "}" << std::endl;
+        }
+
+        {
+            std::cout << "kvs::ValueTable<int>::iterator ( *c *= 2 )" << std::endl;
+            kvs::ValueTable<int>::iterator c = v.begin();
+            std::cout << indent << "{" << ( *c * 2 );
+            while ( ++c != v.end() ) { std::cout << ", " << ( *c * 2 ); }
+            std::cout << "}" << std::endl;
+        }
+
+        std::cout << std::endl;
     }
+
+    PerfTest( 10000, 10000 );
 
     return 0;
 }
