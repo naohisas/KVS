@@ -37,14 +37,40 @@ void PerfTest( const size_t size, const size_t n )
         Table t = Table::Random( size, size );
         {
             kvs::Timer timer( kvs::Timer::Start );
-            for ( Table::iterator i = t.begin(); i != t.end(); ++i ) { *i *= 1; }
+            for ( size_t j = 0; j < size; ++j )
+            {
+                for ( size_t i = 0; i < size; ++i )
+                {
+                    t.at( i, j ) *= 2;
+                }
+            }
+            timer.stop();
+            std::cout << indent << "For-loop (column-major): " << timer.sec() << " [sec]" << std::endl;
+        }
+
+        {
+            kvs::Timer timer( kvs::Timer::Start );
+            for ( size_t i = 0; i < size; ++i )
+            {
+                for ( size_t j = 0; j < size; ++j )
+                {
+                    t.at( i, j ) *= 2;
+                }
+            }
+            timer.stop();
+            std::cout << indent << "For-loop (row-major): " << timer.sec() << " [sec]" << std::endl;
+        }
+
+        {
+            kvs::Timer timer( kvs::Timer::Start );
+            for ( Table::iterator i = t.begin(); i != t.end(); ++i ) { *i *= 2; }
             timer.stop();
             std::cout << indent << "Iterator: " << timer.sec() << " [sec]" << std::endl;
         }
 
         {
             kvs::Timer timer( kvs::Timer::Start );
-            for ( Table::reverse_iterator i = t.rbegin(); i != t.rend(); ++i ) { *i *= 1; }
+            for ( Table::reverse_iterator i = t.rbegin(); i != t.rend(); ++i ) { *i *= 2; }
             timer.stop();
             std::cout << indent << "Reverse iterator: " << timer.sec() << " [sec]" << std::endl;
         }
@@ -60,7 +86,7 @@ void PerfTest( const size_t size, const size_t n )
         {
             kvs::Timer timer( kvs::Timer::Start );
             Table::row_order_reverse_iterator i = t.rbeginInRowOrder();
-            for ( ; i != t.rendInRowOrder(); ++i ) { *i *= 1; }
+            for ( ; i != t.rendInRowOrder(); ++i ) { *i *= 2; }
             timer.stop();
             std::cout << indent << "Row order reverse iterator: " << timer.sec() << " [sec]" << std::endl;
         }
