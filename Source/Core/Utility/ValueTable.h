@@ -183,17 +183,7 @@ public:
         return this->beginInColumnOrder();
     }
 
-    const_iterator begin() const
-    {
-        return this->beginInColumnOrder();
-    }
-
     iterator end()
-    {
-        return this->endInColumnOrder();
-    }
-
-    const_iterator end() const
     {
         return this->endInColumnOrder();
     }
@@ -203,17 +193,7 @@ public:
         return this->rbeginInColumnOrder();
     }
 
-    const_reverse_iterator rbegin() const
-    {
-        return this->rbeginInColumnOrder();
-    }
-
     reverse_iterator rend()
-    {
-        return this->rendInColumnOrder();
-    }
-
-    const_reverse_iterator rend() const
     {
         return this->rendInColumnOrder();
     }
@@ -228,11 +208,6 @@ public:
         return column_order_iterator( row, column, begin, end );
     }
 
-    const_column_order_iterator beginInColumnOrder() const
-    {
-        return const_column_order_iterator( this->beginInColumnOrder() );
-    }
-
     column_order_iterator endInColumnOrder()
     {
         typename Column::iterator row = m_columns.end()->end();
@@ -242,29 +217,14 @@ public:
         return column_order_iterator( row, column, begin, end );
     }
 
-    const_column_order_iterator endInColumnOrder() const
-    {
-        return const_column_order_iterator( this->endInColumnOrder() );
-    }
-
     column_order_reverse_iterator rbeginInColumnOrder()
     {
         return column_order_reverse_iterator( this->endInColumnOrder() );
     }
 
-    const_column_order_reverse_iterator rbeginInColumnOrder() const
-    {
-        return const_column_order_reverse_iterator( this->endInColumnOrder() );
-    }
-
     column_order_reverse_iterator rendInColumnOrder()
     {
         return column_order_reverse_iterator( this->beginInColumnOrder() );
-    }
-
-    const_column_order_reverse_iterator rendInColumnOrder() const
-    {
-        return const_column_order_reverse_iterator( this->beginInColumnOrder() );
     }
 
     // Row order iterations.
@@ -278,11 +238,6 @@ public:
         return row_order_iterator( row, column, begin, end, offset );
     }
 
-    const_row_order_iterator beginInRowOrder() const
-    {
-        return const_row_order_iterator( this->beginInRowOrder() );
-    }
-
     row_order_iterator endInRowOrder()
     {
         typename Column::iterator row = m_columns.end()->end();
@@ -293,29 +248,14 @@ public:
         return row_order_iterator( row, column, begin, end, offset );
     }
 
-    const_row_order_iterator endInRowOrder() const
-    {
-        return const_row_order_iterator( this->endInRowOrder() );
-    }
-
     row_order_reverse_iterator rbeginInRowOrder()
     {
         return row_order_reverse_iterator( this->endInRowOrder() );
     }
 
-    const_row_order_reverse_iterator rbeginInRowOrder() const
-    {
-        return const_row_order_reverse_iterator( this->endInRowOrder() );
-    }
-
     row_order_reverse_iterator rendInRowOrder()
     {
         return row_order_reverse_iterator( this->beginInRowOrder() );
-    }
-
-    const_row_order_reverse_iterator rendInRowOrder() const
-    {
-        return const_row_order_reverse_iterator( this->beginInRowOrder() );
     }
 
     column_order_iterator beginColumn( const size_t column_index )
