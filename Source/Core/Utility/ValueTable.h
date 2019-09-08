@@ -518,7 +518,20 @@ public:
         return !( *this == other );
     }
 
+    friend difference_type operator -( const this_type& lhs, const this_type& rhs )
+    {
+        return difference_type( lhs.index() ) - difference_type( rhs.index() );
+    }
+
 private:
+    size_t index() const
+    {
+        const size_t nrows = std::distance( m_col_begin->begin(), m_col_begin->end() );
+        const size_t j = std::distance( m_col_begin, m_col_iterator );
+        const size_t i = ( m_col_iterator == m_col_end ) ? 0 : std::distance( m_col_iterator->begin(), m_row_iterator );
+        return j * nrows + i;
+    }
+
     void increment()
     {
         if ( m_row_iterator == m_col_end->end() ) { return; }
@@ -666,7 +679,21 @@ public:
         return !( *this == other );
     }
 
+    friend difference_type operator -( const this_type& lhs, const this_type& rhs )
+    {
+        return difference_type( lhs.index() ) - difference_type( rhs.index() );
+    }
+
 private:
+    size_t index() const
+    {
+        const size_t nrows = std::distance( m_col_begin->begin(), m_col_begin->end() );
+        const size_t ncols = std::distance( m_col_begin, m_col_end );
+        const size_t j = ( m_row_iterator == m_col_end->end() ) ? nrows : std::distance( m_col_iterator->begin(), m_row_iterator );
+        const size_t i = ( m_col_iterator == m_col_end ) ? 0 : std::distance( m_col_begin, m_col_iterator );
+        return j * ncols + i;
+    }
+
     void increment()
     {
         if ( m_row_iterator == m_col_end->end() ) { return; }

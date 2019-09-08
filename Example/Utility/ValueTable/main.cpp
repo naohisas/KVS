@@ -321,6 +321,35 @@ int main()
         std::cout << std::endl;
     }
 
+    // Slicing.
+    std::cout << "Slicing" << std::endl;
+    {
+        kvs::ValueTable<int> v = kvs::ValueTable<int>::Random( 3, 3, 0, 9 );
+        std::cout << "v = " << v << std::endl;
+
+        std::cout << "Column-major order slicing" << std::endl;
+        for ( size_t i = 0; i < 3; ++i )
+        {
+            std::cout << indent << "c" << i << " = "
+                      << kvs::ValueArray<int>( v.beginColumn(i), v.endColumn(i) ) << std::endl;
+        }
+
+        std::cout << "Column-major order array" << std::endl;
+        std::cout << indent << "c = " << kvs::ValueArray<int>( v.beginColumn(0), v.endColumn(2) ) << std::endl;
+
+        std::cout << "Row-major order slicing" << std::endl;
+        for ( size_t i = 0; i < 3; ++i )
+        {
+            std::cout << indent << "r" << i << " = "
+                      << kvs::ValueArray<int>( v.beginRow(i), v.endRow(i) ) << std::endl;
+        }
+
+        std::cout << "Row-major order array" << std::endl;
+        std::cout << indent << "r = " << kvs::ValueArray<int>( v.beginRow(0), v.endRow(2) ) << std::endl;
+
+        std::cout << std::endl;
+    }
+
     PerfTest( 10000, 10000 );
 
     return 0;
