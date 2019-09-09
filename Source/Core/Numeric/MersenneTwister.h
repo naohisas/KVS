@@ -124,7 +124,7 @@ inline unsigned long MersenneTwister::randInteger()
     if ( m_left == 0 ) { this->reload(); }
     --m_left;
 
-    register unsigned long s1;
+    unsigned long s1;
     s1  = *m_next++;
     s1 ^= ( s1 >> 11 );
     s1 ^= ( s1 <<  7 ) & 0x9d2c5680UL;
@@ -181,8 +181,8 @@ inline void MersenneTwister::reload()
 {
     // Generate N new values in state
     // Made clearer and faster by Matthew Bellew (matthew.bellew@home.com)
-    register unsigned long* p = m_state;
-    register int i;
+    unsigned long* p = m_state;
+    int i;
     for ( i = N - M; i--; ++p ) { *p = twist( p[M], p[0], p[1] ); }
     for ( i = M; --i; ++p ) { *p = twist( p[M - N], p[0], p[1] ); }
     *p = twist( p[M - N], p[0], m_state[0] );

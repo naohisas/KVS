@@ -69,9 +69,9 @@ void MersenneTwister::setSeed()
     {
         unsigned long seeds[N];
 
-        register unsigned long* s       = seeds;
-        register int            i       = N;
-        register bool           success = true;
+        unsigned long* s       = seeds;
+        int            i       = N;
+        bool           success = true;
 
         while ( success && i-- )
         {
@@ -121,9 +121,9 @@ void MersenneTwister::setSeed(
     // in each element are discarded.
     // Just call setSeed() if you want to get array from /dev/urandom
     this->initialize( 19650218UL );
-    register int           i = 1;
-    register unsigned long j = 0;
-    register int           k = ( N > length ? N : length );
+    int           i = 1;
+    unsigned long j = 0;
+    int           k = ( N > length ? N : length );
 
     for ( ; k; --k )
     {
@@ -162,9 +162,9 @@ void MersenneTwister::initialize( const unsigned long seed )
     // See Knuth TAOCP Vol 2, 3rd Ed, p.106 for multiplier.
     // In previous versions, most significant bits (MSBs) of the seed affect
     // only MSBs of the state array.  Modified 9 Jan 2002 by Makoto Matsumoto.
-    register unsigned long* s = m_state;
-    register unsigned long* r = m_state;
-    register int            i = 1;
+    unsigned long* s = m_state;
+    unsigned long* r = m_state;
+    int            i = 1;
     *s++ = seed & 0xffffffffUL;
     for ( ; i < N; ++i )
     {
