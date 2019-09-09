@@ -38,7 +38,7 @@ inline T HouseholderTransformation( kvs::Vector<T>& vec )
 template <typename T>
 inline void Tridiagonalization( kvs::Matrix<T>& m, kvs::Vector<T>* d, kvs::Vector<T>* e )
 {
-    KVS_ASSERT( ::IsSymmetricMatrix<T>( m ) );
+    KVS_ASSERT( m.isSymmetric() );
     KVS_ASSERT( m.rowSize() >= 3 );
     KVS_ASSERT( d->size() == m.rowSize() );
     KVS_ASSERT( e->size() == m.rowSize() );

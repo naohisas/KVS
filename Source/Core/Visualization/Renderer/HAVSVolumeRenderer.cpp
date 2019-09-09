@@ -45,7 +45,7 @@ void PartialSort(
     kvs::HAVSVolumeRenderer::SortedFace* dst,
     int* count )
 {
-    register unsigned int i;
+    unsigned int i;
     kvs::HAVSVolumeRenderer::SortedFace* k;
 
     static int index[256];
@@ -793,9 +793,9 @@ void HAVSVolumeRenderer::Meshes::radix_sort(
     int lo,
     int up )
 {
-    register int length = up -lo;
-    register unsigned int i;
-    register unsigned int u;
+    int length = up -lo;
+    unsigned int i;
+    unsigned int u;
 
     SortedFace* uints = array + lo;
     int count[4][256] = {{0}};
