@@ -1,6 +1,85 @@
 #include <iostream>
+#include <kvs/Timer>
 #include <kvs/Matrix>
 
+
+void PerfTest( const size_t size, const size_t nloops )
+{
+    std::cout << "Performance Test" << std::endl;
+
+    typedef kvs::Matrix<float> Mat;
+    const kvs::Indent indent(4);
+
+    // Random
+    {
+        Mat a;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { a = Mat::Random( size, size ); }
+        timer.stop();
+        std::cout << indent << "Random: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // Swap
+    {
+        Mat a = Mat::Random( size, size );
+        Mat b = Mat::Random( size, size );
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { a.swap( b ); }
+        timer.stop();
+        std::cout << indent << "Swap: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // Transpose
+    {
+        Mat a = Mat::Random( size, size );
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { a.transposed(); }
+        timer.stop();
+        std::cout << indent << "Transpose: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // Inverse
+    {
+        Mat a = Mat::Random( size, size );
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { a.inverted(); }
+        timer.stop();
+        std::cout << indent << "Inverse: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // + operator
+    {
+        Mat a = Mat::Random( size, size );
+        Mat b = Mat::Random( size, size );
+        Mat c;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a + b; }
+        timer.stop();
+        std::cout << indent << "+ operator: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // - operator
+    {
+        Mat a = Mat::Random( size, size );
+        Mat b = Mat::Random( size, size );
+        Mat c;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a - b; }
+        timer.stop();
+        std::cout << indent << "- operator: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // * operator
+    {
+        Mat a = Mat::Random( size, size );
+        Mat b = Mat::Random( size, size );
+        Mat c;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a * b; }
+        timer.stop();
+        std::cout << indent << "* operator: " << timer.sec() << " [sec]" << std::endl;
+    }
+}
 
 int main()
 {
@@ -95,6 +174,11 @@ int main()
     std::cout << "kvs::Mat::Random(5,5,seed)" << std::endl; kvs::Mat::Random( nrows, ncols, 1 ).print( std::cout, indent );
     std::cout << "kvs::Mat::Random(5,5,min,max)" << std::endl; kvs::Mat::Random( nrows, ncols, -1.0f, 1.0f ).print( std::cout, indent );
     std::cout << "kvs::Mat::Random(5,5,min,max,seed)" << std::endl; kvs::Mat::Random( nrows, ncols, -1.0f, 1.0f, 2 ).print( std::cout, indent );
+    std::cout << std::endl;
+
+    const size_t size = 100;
+    const size_t nloops = 10000;
+    PerfTest( size, nloops );
 
     return 0;
 }
