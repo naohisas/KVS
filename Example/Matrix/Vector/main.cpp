@@ -1,6 +1,108 @@
 #include <iostream>
+#include <kvs/Timer>
 #include <kvs/Vector>
 
+
+void PerfTest( const size_t size, const size_t nloops )
+{
+    std::cout << "Performance Test" << std::endl;
+
+    typedef kvs::Vector<float> Vec;
+    const kvs::Indent indent(4);
+
+    // Random
+    {
+        Vec a;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { a = Vec::Random( size ); }
+        timer.stop();
+        std::cout << indent << "Random: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // Swap
+    {
+        Vec a = Vec::Random( size );
+        Vec b = Vec::Random( size );
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { a.swap( b ); }
+        timer.stop();
+        std::cout << indent << "Swap: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // Normalize
+    {
+        Vec a = Vec::Random( size );
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { a.normalized(); }
+        timer.stop();
+        std::cout << indent << "Normalize: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // Length
+    {
+        Vec a = Vec::Random( size );
+        double b = 0.0;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { b = a.length(); }
+        timer.stop();
+        std::cout << indent << "Length: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // Dot product
+    {
+        Vec a = Vec::Random( size );
+        Vec b = Vec::Random( size );
+        float c = 0.0f;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a.dot( b ); }
+        timer.stop();
+        std::cout << indent << "Dot: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // + operator
+    {
+        Vec a = Vec::Random( size );
+        Vec b = Vec::Random( size );
+        Vec c;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a + b; }
+        timer.stop();
+        std::cout << indent << "+ operator: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // - operator
+    {
+        Vec a = Vec::Random( size );
+        Vec b = Vec::Random( size );
+        Vec c;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a - b; }
+        timer.stop();
+        std::cout << indent << "- operator: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // * operator
+    {
+        Vec a = Vec::Random( size );
+        Vec b = Vec::Random( size );
+        Vec c;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a * b; }
+        timer.stop();
+        std::cout << indent << "* operator: " << timer.sec() << " [sec]" << std::endl;
+    }
+
+    // / operator
+    {
+        Vec a = Vec::Random( size );
+        Vec b = Vec::Random( size );
+        Vec c;
+        kvs::Timer timer( kvs::Timer::Start );
+        for ( size_t i = 0; i < nloops; ++i ) { c = a / b; }
+        timer.stop();
+        std::cout << indent << "/ operator: " << timer.sec() << " [sec]" << std::endl;
+    }
+}
 
 int main()
 {
@@ -87,6 +189,11 @@ int main()
     std::cout << "kvs::Vec::Random(n,seed) = " << kvs::Vec::Random(n,1) << std::endl;
     std::cout << "kvs::Vec::Random(n,min,max) = " << kvs::Vec::Random(n,-1.0f,1.0f) << std::endl;
     std::cout << "kvs::Vec::Random(n,min,max,seed) = " << kvs::Vec::Random(n,-1.0f,1.0f,2) << std::endl;
+    std::cout << std::endl;
+
+    const size_t size = 10000;
+    const size_t nloops = 10000;
+    PerfTest( size, nloops );
 
     return 0;
 }
