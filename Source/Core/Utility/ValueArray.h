@@ -22,24 +22,11 @@
 #include <kvs/Assert>
 #include <kvs/Value>
 #include <kvs/SharedPointer>
+#include <kvs/Deleter>
 
 
 namespace kvs
 {
-
-namespace temporal
-{
-
-template <typename T>
-struct ArrayDeleter
-{
-    void operator ()( T* ptr )
-    {
-        delete [] ptr;
-    }
-};
-
-}
 
 /*==========================================================================*/
 /**
@@ -336,7 +323,8 @@ public:
 public:
     void allocate( const size_t size )
     {
-        m_values.reset( new value_type[ size ], kvs::temporal::ArrayDeleter<value_type>() );
+//        m_values.reset( new value_type[ size ], kvs::temporal::ArrayDeleter<value_type>() );
+        m_values.reset( new value_type[ size ], kvs::Deleter<value_type[]>() );
         m_size = size;
     }
 

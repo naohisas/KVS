@@ -157,6 +157,7 @@ Utility/CommandLine
 Utility/Compiler
 Utility/Date
 Utility/DebugNew
+Utility/Deleter
 Utility/Deprecated
 Utility/Directory
 Utility/Endian

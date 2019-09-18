@@ -157,6 +157,7 @@
 #include <Core/Utility/Compiler.h>
 #include <Core/Utility/Date.h>
 #include <Core/Utility/DebugNew.h>
+#include <Core/Utility/Deleter.h>
 #include <Core/Utility/Deprecated.h>
 #include <Core/Utility/Directory.h>
 #include <Core/Utility/Endian.h>
