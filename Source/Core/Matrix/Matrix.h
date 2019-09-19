@@ -159,11 +159,9 @@ public:
         {
             for ( size_t c = 0; c < N; ++c )
             {
-//                result[r][c] = T(0);
                 T sum(0);
                 for ( size_t k = 0; k < M; ++k )
                 {
-//                    result[r][c] += lhs[r][k] * rhs[k][c];
                     sum += lhs[r][k] * rhs[k][c];
                 }
                 result[r][c] = sum;
@@ -178,16 +176,10 @@ public:
         KVS_ASSERT( lhs.columnSize() == rhs.size() );
 
         const size_t nrows = lhs.rowSize();
-        const size_t ncols = lhs.columnSize();
-
         kvs::Vector<T> result( nrows );
         for ( size_t r = 0; r < nrows; ++r )
         {
-            result[r] = T(0);
-            for ( size_t c = 0; c < ncols; ++c )
-            {
-                result[r] += lhs[r][c] * rhs[c];
-            }
+            result[r] = lhs[r].dot( rhs );
         }
 
         return std::move( result );
@@ -203,11 +195,12 @@ public:
         kvs::Vector<T> result( ncols );
         for ( size_t c = 0; c < ncols; ++c )
         {
-            result[c] = T(0);
+            T sum(0);
             for ( size_t r = 0; r < nrows; ++r )
             {
-                result[c] += lhs[r] * rhs[r][c];
+                sum += lhs[r] * rhs[r][c];
             }
+            result[c] = sum;
         }
 
         return std::move( result );
@@ -886,7 +879,6 @@ template<typename T>
 inline const kvs::Vector<T>& Matrix<T>::operator []( const size_t index ) const
 {
     KVS_ASSERT( index < this->rowSize() );
-//    return m_data[ index ];
     return *( m_data + index );
 }
 
@@ -894,7 +886,6 @@ template<typename T>
 inline kvs::Vector<T>& Matrix<T>::operator []( const size_t index )
 {
     KVS_ASSERT( index < this->rowSize() );
-//    return m_data[ index ];
     return *( m_data + index );
 }
 

@@ -18,6 +18,7 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
+#include <iterator>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Math>
@@ -43,8 +44,14 @@ class Vector
 public:
     typedef Vector<T> this_type;
     typedef T value_type;
-    typedef value_type* iterator;
-    typedef const value_type* const_iterator;
+    typedef T* iterator;
+    typedef const T* const_iterator;
+    typedef T& reference;
+    typedef const T& const_reference;
+    typedef std::size_t size_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::reverse_iterator<iterator> reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 private:
     size_t m_size; ///< Vector size( dimension ).
@@ -590,7 +597,6 @@ template <typename T>
 inline const T& Vector<T>::operator []( const size_t index ) const
 {
     KVS_ASSERT( index < this->size() );
-//    return m_data[ index ];
     return *( m_data + index );
 }
 
@@ -598,7 +604,6 @@ template <typename T>
 inline T& Vector<T>::operator []( const size_t index )
 {
     KVS_ASSERT( index < this->size() );
-//    return m_data[ index ];
     return *( m_data + index );
 }
 
