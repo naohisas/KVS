@@ -23,6 +23,7 @@
 + kvs::RidgeRegression
 + kvs::StructuredExtractScalar
 + kvs::PolygonToPolygon
++ kvs::Deleter
 
 **Added new methods**
 + kvs::PolygonRenderer::setPolygonOffset
@@ -48,6 +49,10 @@
 + kvs::Vector{2,3,4,n}::setIdentity
 + kvs::Vector{2,3,4,n}::setRandom
 + kvs::Vector{n}::opeator =/
++ kvs::Vector{n}::Vector( Vector&& ) // move constructor
++ kvs::Vector{n}::operator =( Vector&& ) // move assignment operator
++ kvs::Vector{n}::begin
++ kvs::Vector{n}::end
 + kvs::Matrix{22,33,44,nm}::Zero
 + kvs::Matrix{22,33,44,nm}::Ones
 + kvs::Matrix{22,33,44,nm}::Identity
@@ -62,6 +67,11 @@
 + kvs::Matrix{nm}::isSquare
 + kvs::Matrix{22,33,44,nm}::isSymmetric
 + kvs::Matrix{22,33,44,nm}::isDiagonal
++ kvs::Matrix{nm}::Matrix( Matrix&& ) // move constructor
++ kvs::Matrix{nm}::operator =( Matrix&& ) // move assignment operator
++ kvs::Matrix{nm}::size
++ kvs::Matrix{nm}::beginRows
++ kvs::Matrix{nm}::endRows
 + kvs::Value::Random
 + kvs::Value::RandomSeed
 + kvs::Value::SetSeed

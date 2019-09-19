@@ -17,6 +17,7 @@
 #include <vector>
 #include <cstring>
 #include <algorithm>
+#include <numeric>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Math>
@@ -39,6 +40,12 @@ namespace kvs
 template <typename T>
 class Vector
 {
+public:
+    typedef Vector<T> this_type;
+    typedef T value_type;
+    typedef value_type* iterator;
+    typedef const value_type* const_iterator;
+
 private:
     size_t m_size; ///< Vector size( dimension ).
     T* m_data; ///< Array of elements.
@@ -55,21 +62,31 @@ public:
     static const Vector Random( const size_t size, const T min, const T max, const kvs::UInt32 seed );
 
 public:
-    explicit Vector( const size_t size = 0 );
+    Vector(): m_size( 0 ), m_data( nullptr ) {}
+    ~Vector() { delete [] m_data; }
+
+    explicit Vector( const size_t size );
     Vector( const size_t size, const T* elements );
     Vector( const std::vector<T>& other );
     Vector( const kvs::Vector2<T>& other );
     Vector( const kvs::Vector3<T>& other );
     Vector( const kvs::Vector4<T>& other );
 
-    ~Vector();
-
     Vector( const Vector& other );
     Vector& operator =( const Vector& rhs );
 
+    Vector( Vector&& other ) noexcept;
+    Vector& operator =( Vector&& rhs ) noexcept;
+
+public:
     T* data() { return m_data; }
     const T* data() const { return m_data; }
     size_t size() const { return m_size; }
+
+    iterator begin() { return m_data; }
+    iterator end() { return m_data + m_size; }
+    const_iterator begin() const { return m_data; }
+    const_iterator end() const { return m_data + m_size; }
 
     void setSize( const size_t size );
     void setZero();
@@ -103,13 +120,8 @@ public:
 
     friend bool operator ==( const Vector& lhs, const Vector& rhs )
     {
-        const size_t size = lhs.size();
-        if ( size != rhs.size() ) { return false; }
-        for ( size_t i = 0; i < size; ++i )
-        {
-            if ( !kvs::Math::Equal( lhs[i], rhs[i] ) ) { return false; }
-        }
-        return true;
+        if ( lhs.size() != rhs.size() ) { return false; }
+        return std::equal( lhs.begin(), lhs.end(), rhs.begin() );
     }
 
     friend bool operator !=( const Vector& lhs, const Vector& rhs )
@@ -119,37 +131,43 @@ public:
 
     friend const Vector operator +( const Vector& lhs, const Vector& rhs )
     {
-        return Vector( lhs ) += rhs;
+        Vector v( lhs ); v += rhs;
+        return std::move( v );
     }
 
     friend const Vector operator -( const Vector& lhs, const Vector& rhs )
     {
-        return Vector( lhs ) -= rhs;
+        Vector v( lhs ); v -= rhs;
+        return std::move( v );
     }
 
     friend const Vector operator *( const Vector& lhs, const Vector& rhs )
     {
-        return Vector( lhs ) *= rhs;
+        Vector v( lhs ); v *= rhs;
+        return std::move( v );
     }
 
     friend const Vector operator *( const Vector& lhs, const T rhs )
     {
-        return Vector( lhs ) *= rhs;
+        Vector v( lhs ); v *= rhs;
+        return std::move( v );
     }
 
     friend const Vector operator *( const T lhs, const Vector& rhs )
     {
-        return rhs * lhs;
+        return std::move( rhs * lhs );
     }
 
     friend const Vector operator /( const Vector& lhs, const Vector& rhs )
     {
-        return Vector( lhs ) /= rhs;
+        Vector v( lhs ); v /= rhs;
+        return std::move( v );
     }
 
     friend const Vector operator /( const Vector& lhs, const T rhs )
     {
-        return Vector( lhs ) /= rhs;
+        Vector v( lhs ); v /= rhs;
+        return std::move( v );
     }
 
     friend std::ostream& operator << ( std::ostream& os, const Vector& rhs )
@@ -184,7 +202,7 @@ inline const Vector<T> Vector<T>::Zero( const size_t size )
 {
     Vector<T> v( size );
     v.setZero();
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -192,7 +210,7 @@ inline const Vector<T> Vector<T>::Ones( const size_t size )
 {
     Vector<T> v( size );
     v.setOnes();
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -200,7 +218,7 @@ inline const Vector<T> Vector<T>::Unit( const size_t size, const size_t index )
 {
     Vector<T> v( size );
     v.setUnit( index );
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -208,7 +226,7 @@ inline const Vector<T> Vector<T>::Identity( const size_t size )
 {
     Vector<T> v( size );
     v.setIdentity();
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -216,7 +234,7 @@ inline const Vector<T> Vector<T>::Constant( const size_t size, const T x )
 {
     Vector<T> v( size );
     v.setConstant( x );
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -224,7 +242,7 @@ inline const Vector<T> Vector<T>::Random( const size_t size )
 {
     Vector<T> v( size );
     v.setRandom();
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -232,7 +250,7 @@ inline const Vector<T> Vector<T>::Random( const size_t size, const kvs::UInt32 s
 {
     Vector<T> v( size );
     v.setRandom( seed );
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -240,7 +258,7 @@ inline const Vector<T> Vector<T>::Random( const size_t size, const T min, const 
 {
     Vector<T> v( size );
     v.setRandom( min, max );
-    return v;
+    return std::move( v );
 }
 
 template <typename T>
@@ -248,7 +266,7 @@ inline const Vector<T> Vector<T>::Random( const size_t size, const T min, const 
 {
     Vector<T> v( size );
     v.setRandom( min, max, seed );
-    return v;
+    return std::move( v );
 }
 
 /*==========================================================================*/
@@ -259,10 +277,9 @@ inline const Vector<T> Vector<T>::Random( const size_t size, const T min, const 
 /*==========================================================================*/
 template <typename T>
 inline Vector<T>::Vector( const size_t size ):
-    m_size( 0 ),
-    m_data( 0 )
+    m_size( size ),
+    m_data( new T [ size ] )
 {
-    this->setSize( size );
     this->setZero();
 }
 
@@ -275,10 +292,9 @@ inline Vector<T>::Vector( const size_t size ):
 /*==========================================================================*/
 template <typename T>
 inline Vector<T>::Vector( const size_t size, const T* elements ):
-    m_size( 0 ),
-    m_data( 0 )
+    m_size( size ),
+    m_data( new T [ size ] )
 {
-    this->setSize( size );
     std::memcpy( m_data, elements, sizeof( T ) * this->size() );
 }
 
@@ -290,49 +306,34 @@ inline Vector<T>::Vector( const size_t size, const T* elements ):
 /*==========================================================================*/
 template <typename T>
 inline Vector<T>::Vector( const std::vector<T>& other ):
-    m_size( 0 ),
-    m_data( 0 )
+    m_size( other.size() ),
+    m_data( new T [ other.size() ] )
 {
-    this->setSize( other.size() );
     std::memcpy( m_data, &other[0], sizeof(T) * this->size() );
 }
 
 template <typename T>
 inline Vector<T>::Vector( const kvs::Vector2<T>& other ):
-    m_size( 0 ),
-    m_data( 0 )
+    m_size( 2 ),
+    m_data( new T [2] )
 {
-    this->setSize( 2 );
     std::memcpy( m_data, other.data(), sizeof(T) * this->size() );
 }
 
 template <typename T>
 inline Vector<T>::Vector( const kvs::Vector3<T>& other ):
-    m_size( 0 ),
-    m_data( 0 )
+    m_size( 3 ),
+    m_data( new T [3] )
 {
-    this->setSize( 3 );
     std::memcpy( m_data, other.data(), sizeof(T) * this->size() );
 }
 
 template <typename T>
 inline Vector<T>::Vector( const kvs::Vector4<T>& other ):
-    m_size( 0 ),
-    m_data( 0 )
+    m_size( 4 ),
+    m_data( new T [4] )
 {
-    this->setSize( 4 );
     std::memcpy( m_data, other.data(), sizeof(T) * this->size() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the Vector.
- */
-/*===========================================================================*/
-template <typename T>
-inline Vector<T>::~Vector()
-{
-    delete [] m_data;
 }
 
 /*==========================================================================*/
@@ -343,11 +344,10 @@ inline Vector<T>::~Vector()
 /*==========================================================================*/
 template <typename T>
 inline Vector<T>::Vector( const Vector& other ):
-    m_size( 0 ),
-    m_data( 0 )
+    m_size( other.size() ),
+    m_data( new T [ other.size() ] )
 {
-    this->setSize( other.size() );
-    std::memcpy( m_data, other.m_data, sizeof( T ) * this->size() );
+    std::memcpy( m_data, other.m_data, sizeof(T) * this->size() );
 }
 
 /*==========================================================================*/
@@ -359,8 +359,42 @@ inline Vector<T>::Vector( const Vector& other ):
 template <typename T>
 inline Vector<T>& Vector<T>::operator =( const Vector& rhs )
 {
-    this->setSize( rhs.size() );
-    std::memcpy( m_data, rhs.m_data, sizeof( T ) * this->size() );
+    if ( this != &rhs )
+    {
+        if ( m_size != rhs.size() )
+        {
+            delete [] m_data;
+            m_size = rhs.size();
+            m_data = new T [ rhs.size() ];
+        }
+
+        std::memcpy( m_data, rhs.m_data, sizeof(T) * m_size );
+    }
+
+    return *this;
+}
+
+template <typename T>
+inline Vector<T>::Vector( Vector&& other ) noexcept:
+    m_size( other.m_size ),
+    m_data( other.m_data )
+{
+    other.m_size = 0;
+    other.m_data = nullptr;
+}
+
+template <typename T>
+inline Vector<T>& Vector<T>::operator =( Vector&& rhs ) noexcept
+{
+    if ( this != &rhs )
+    {
+        m_size = rhs.m_size;
+        m_data = rhs.m_data;
+
+        rhs.m_size = 0;
+        rhs.m_data = nullptr;
+    }
+
     return *this;
 }
 
@@ -375,10 +409,10 @@ inline void Vector<T>::setSize( const size_t size )
 {
     if ( this->size() != size )
     {
-        delete [] m_data; m_data = 0;
-        if ( size != 0 ) { m_data = new T[ size ]; }
+        delete [] m_data;
         m_size = size;
-        this->setZero();
+        m_data = new T [ size ];
+        std::memset( m_data, 0, sizeof(T) * m_size );
     }
 }
 
@@ -421,7 +455,8 @@ inline void Vector<T>::setRandom()
     {
         static bool flag = true;
         if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; }
-        for ( size_t i = 0; i < m_size; ++i ) { m_data[i] = kvs::Value<T>::Random(); }
+        const_iterator last = this->end();
+        for ( iterator v = this->begin(); v != last; ++v ) { *v = kvs::Value<T>::Random(); }
     }
 }
 
@@ -432,7 +467,8 @@ inline void Vector<T>::setRandom( const kvs::UInt32 seed )
     {
         if ( seed > 0 ) kvs::Value<T>::SetSeed( seed );
         else kvs::Value<T>::SetRandomSeed();
-        for ( size_t i = 0; i < m_size; ++i ) { m_data[i] = kvs::Value<T>::Random(); }
+        const_iterator last = this->end();
+        for ( iterator v = this->begin(); v != last; ++v ) { *v = kvs::Value<T>::Random(); }
     }
 }
 
@@ -443,7 +479,8 @@ inline void Vector<T>::setRandom( const T min, const T max )
     {
         static bool flag = true;
         if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; }
-        for ( size_t i = 0; i < m_size; ++i ) { m_data[i] = kvs::Value<T>::Random( min, max ); }
+        const_iterator last = this->end();
+        for ( iterator v = this->begin(); v != last; ++v ) { *v = kvs::Value<T>::Random( min, max ); }
     }
 }
 
@@ -454,7 +491,8 @@ inline void Vector<T>::setRandom( const T min, const T max, const kvs::UInt32 se
     {
         if ( seed > 0 ) kvs::Value<T>::SetSeed( seed );
         else kvs::Value<T>::SetRandomSeed();
-        for ( size_t i = 0; i < m_size; ++i ) { m_data[i] = kvs::Value<T>::Random( min, max ); }
+        const_iterator last = this->end();
+        for ( iterator v = this->begin(); v != last; ++v ) { *v = kvs::Value<T>::Random( min, max ); }
     }
 }
 
@@ -517,12 +555,7 @@ inline double Vector<T>::length() const
 template <typename T>
 inline double Vector<T>::squaredLength() const
 {
-    const size_t size = this->size();
-    const T* const v = m_data;
-
-    double result = 0.0;
-    for ( size_t i = 0; i < size; ++i ) { result += static_cast<double>( v[i] * v[i] ); }
-    return result;
+    return std::inner_product( this->begin(), this->end(), this->begin(), double(0) );
 }
 
 /*==========================================================================*/
@@ -536,13 +569,7 @@ template <typename T>
 inline T Vector<T>::dot( const Vector<T>& other ) const
 {
     KVS_ASSERT( this->size() == other.size() );
-
-    const size_t size = this->size();
-    const T* const v = m_data;
-
-    T result( 0 );
-    for ( size_t i = 0; i < size; ++i ) { result += v[i] * other[i]; }
-    return result;
+    return std::inner_product( this->begin(), this->end(), other.begin(), double(0) );
 }
 
 /*==========================================================================*/
@@ -563,23 +590,25 @@ template <typename T>
 inline const T& Vector<T>::operator []( const size_t index ) const
 {
     KVS_ASSERT( index < this->size() );
-    return m_data[ index ];
+//    return m_data[ index ];
+    return *( m_data + index );
 }
 
 template <typename T>
 inline T& Vector<T>::operator []( const size_t index )
 {
     KVS_ASSERT( index < this->size() );
-    return m_data[ index ];
+//    return m_data[ index ];
+    return *( m_data + index );
 }
 
 template <typename T>
 inline Vector<T>& Vector<T>::operator +=( const Vector& rhs )
 {
     KVS_ASSERT( this->size() == rhs.size() );
-    const size_t size = this->size();
-    T* const v = m_data;
-    for ( size_t i = 0; i < size; ++i ) { v[i] += rhs[i]; }
+    const_iterator r = rhs.begin();
+    const_iterator last = this->end();
+    for ( iterator v = this->begin(); v != last; ++v, ++r ) { *v += *r; }
     return *this;
 }
 
@@ -587,9 +616,9 @@ template <typename T>
 inline Vector<T>& Vector<T>::operator -=( const Vector& rhs )
 {
     KVS_ASSERT( this->size() == rhs.size() );
-    const size_t size = this->size();
-    T* const v = m_data;
-    for ( size_t i = 0; i < size; ++i ) { v[i] -= rhs[i]; }
+    const_iterator r = rhs.begin();
+    const_iterator last = this->end();
+    for ( iterator v = this->begin(); v != last; ++v, ++r ) { *v -= *r; }
     return *this;
 }
 
@@ -597,43 +626,42 @@ template <typename T>
 inline Vector<T>& Vector<T>::operator *=( const Vector& rhs )
 {
     KVS_ASSERT( this->size() == rhs.size() );
-    const size_t size = this->size();
-    T* const v = m_data;
-    for ( size_t i = 0; i < size; ++i ) { v[i] *= rhs[i]; }
+    const_iterator r = rhs.begin();
+    const_iterator last = this->end();
+    for ( iterator v = this->begin(); v != last; ++v, ++r ) { *v *= *r; }
     return *this;
 }
 
 template <typename T>
 inline Vector<T>& Vector<T>::operator *=( const T rhs )
 {
-    const size_t size = this->size();
-    T* const v = m_data;
-    for ( size_t i = 0; i < size; ++i ) { v[i] *= rhs; }
+    const_iterator last = this->end();
+    for ( iterator v = this->begin(); v != last; ++v ) { *v *= rhs; }
     return *this;
 }
 
 template<typename T>
 inline Vector<T>& Vector<T>::operator /=( const Vector& rhs )
 {
-    const size_t size = this->size();
-    T* const v = m_data;
-    for ( size_t i = 0; i < size; ++i ) { v[i] /= rhs[i]; }
+    const_iterator r = rhs.begin();
+    const_iterator last = this->end();
+    for ( iterator v = this->begin(); v != last; ++v, ++r ) { *v /= *r; }
     return *this;
 }
 
 template <typename T>
 inline Vector<T>& Vector<T>::operator /=( const T rhs )
 {
-    const size_t size = this->size();
-    T* const v = m_data;
-    for ( size_t i = 0; i < size; ++i ) { v[i] /= rhs; }
+    const_iterator last = this->end();
+    for ( iterator v = this->begin(); v != last; ++v ) { *v /= rhs; }
     return *this;
 }
 
 template<typename T>
 inline const Vector<T> Vector<T>::operator -() const
 {
-    return Vector( *this ) *= T( -1 );
+    Vector v( *this ); v *= T( -1 );
+    return std::move( v );
 }
 
 } // end of namespace kvs
