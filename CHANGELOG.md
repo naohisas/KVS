@@ -48,10 +48,10 @@
 + kvs::Vector{2,3,4,n}::setConstant
 + kvs::Vector{2,3,4,n}::setIdentity
 + kvs::Vector{2,3,4,n}::setRandom
-+ kvs::Vector{n}::opeator =/
 + kvs::Vector{n}::Vector( InIter first, InIter last )
 + kvs::Vector{n}::Vector( Vector&& ) // move constructor
 + kvs::Vector{n}::operator =( Vector&& ) // move assignment operator
++ kvs::Vector{n}::opeator =/
 + kvs::Vector{n}::begin
 + kvs::Vector{n}::end
 + kvs::Matrix{22,33,44,nm}::Zero
@@ -72,23 +72,23 @@
 + kvs::Matrix{nm}::operator =( Matrix&& ) // move assignment operator
 + kvs::Matrix{nm}::size
 + kvs::Matrix{nm}::beginRows
-+ kvs::Matrix{nm}::endRows
 + kvs::Matrix{nm}::begin
-+ kvs::Matrix{nm}::end
-+ kvs::Matrix{nm}::rbegin
-+ kvs::Matrix{nm}::rend
 + kvs::Matrix{nm}::beginInRowOrder
-+ kvs::Matrix{nm}::endInRowOrder
-+ kvs::Matrix{nm}::rbeginInRowOrder
-+ kvs::Matrix{nm}::rendInRowOrder
-+ kvs::Matrix{nm}::beginRow
-+ kvs::Matrix{nm}::endRow
 + kvs::Matrix{nm}::beginInColumnOrder
-+ kvs::Matrix{nm}::endInColumnOrder
-+ kvs::Matrix{nm}::rbeginInColumnOrder
-+ kvs::Matrix{nm}::rendInColumnOrder
++ kvs::Matrix{nm}::beginRow
 + kvs::Matrix{nm}::beginColumn
++ kvs::Matrix{nm}::endRows
++ kvs::Matrix{nm}::end
++ kvs::Matrix{nm}::endInRowOrder
++ kvs::Matrix{nm}::endInColumnOrder
++ kvs::Matrix{nm}::endRow
 + kvs::Matrix{nm}::endColumn
++ kvs::Matrix{nm}::rbegin
++ kvs::Matrix{nm}::rbeginInRowOrder
++ kvs::Matrix{nm}::rbeginInColumnOrder
++ kvs::Matrix{nm}::rend
++ kvs::Matrix{nm}::rendInRowOrder
++ kvs::Matrix{nm}::rendInColumnOrder
 + kvs::Value::Random
 + kvs::Value::RandomSeed
 + kvs::Value::SetSeed
