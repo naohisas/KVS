@@ -35,21 +35,28 @@ void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& ei
     std::cout.precision(3);
     std::cout.setf( std::ios::right );
     std::cout.setf( std::ios::fixed, std::ios::floatfield );
-    std::cout << "> matrix (M)" << std::endl << M << std::endl;
-    std::cout << "> eigen values (L)" << std::endl;
-    std::cout << "L0 = " << L[0] << std::endl;
-    std::cout << "L1 = " << L[1] << std::endl;
-    std::cout << "L2 = " << L[2] << std::endl;
-    std::cout << "> eigen vectors (E)" << std::endl;
-    std::cout << "E0 = (" << E[0] << ")" << std::endl;
-    std::cout << "E1 = (" << E[1] << ")" << std::endl;
-    std::cout << "E2 = (" << E[2] << ")" << std::endl;
-    std::cout << "> M * E0 == L0 * E0" << std::endl;
-    std::cout << "(" << M * E[0] << ") == (" << L[0] * E[0] << ")" << std::endl;
-    std::cout << "> M * E1 == L1 * E1" << std::endl;
-    std::cout << "(" << M * E[1] << ") == (" << L[1] * E[1] << ")" << std::endl;
-    std::cout << "> M * E2 == L2 * E2" << std::endl;
-    std::cout << "(" << M * E[2] << ") == (" << L[2] * E[2] << ")" << std::endl;
+    std::cout << "Input matrix" << std::endl;
+    std::cout << "    M = " << M << std::endl;
+    std::cout << "Eigen values" << std::endl;
+    std::cout << "    L0 = " << L[0] << std::endl;
+    std::cout << "    L1 = " << L[1] << std::endl;
+    std::cout << "    L2 = " << L[2] << std::endl;
+    std::cout << "Eigen vectors" << std::endl;
+    std::cout << "    E0 = " << E[0] << std::endl;
+    std::cout << "    E1 = " << E[1] << std::endl;
+    std::cout << "    E2 = " << E[2] << std::endl;
+    std::cout << "M * E0" << std::endl;
+    std::cout << "L0 * E0" << std::endl;
+    std::cout << "    " << M * E[0] << std::endl;
+    std::cout << "    " << L[0] * E[0] << std::endl;
+    std::cout << "M * E1" << std::endl;
+    std::cout << "L1 * E1" << std::endl;
+    std::cout << "    " << M * E[1] << std::endl;
+    std::cout << "    " << L[1] * E[1] << std::endl;
+    std::cout << "M * E2" << std::endl;
+    std::cout << "L2 * E2" << std::endl;
+    std::cout << "    " << M * E[2] << std::endl;
+    std::cout << "    " << L[2] * E[2] << std::endl;
 }
 
 /*===========================================================================*/

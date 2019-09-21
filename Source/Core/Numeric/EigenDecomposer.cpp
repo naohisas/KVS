@@ -14,6 +14,7 @@
 #include "EigenDecomposer.h"
 #include <kvs/LUSolver>
 #include <cmath>
+#include <numeric>
 
 
 namespace
@@ -29,7 +30,8 @@ inline T HouseholderTransformation( kvs::Vector<T>& vec )
         vec[0] += ret;
 
         const T t = T(1) / static_cast<T>( std::sqrt( static_cast<double>( vec[0] * ret ) ) );
-        for ( size_t i = 0; i < vec.size(); i++ ) { vec[i] *= t; }
+//        for ( size_t i = 0; i < vec.size(); i++ ) { vec[i] *= t; }
+        vec *= t;
     }
 
     return -ret;
@@ -56,14 +58,14 @@ inline void Tridiagonalization( kvs::Matrix<T>& m, kvs::Vector<T>* d, kvs::Vecto
         // Generate the vector from under the 'k+1'-th elements
         // of the 'row_vec' vector.
         // vec1 = { row_vec[k+1], row_vec[k+2], ... , row_vec[dim-k-1] }
-        kvs::Vector<T> vec1( dim - k - 1 );
+       kvs::Vector<T> vec1( dim - k - 1 );
         for ( size_t i = 0; i < vec1.size(); i++ ) vec1[i] = row_vec[ ( k + 1 ) + i ];
 
         // Householder reduction of the 'vec1' vector.
         (*e)[k] = HouseholderTransformation<T>( vec1 );
-        for ( size_t i = 0; i < vec1.size(); i++ ) row_vec[ ( k + 1 ) + i ] = vec1[i];
-        for ( size_t i = 0; i < vec1.size(); i++ ) m[k][ ( k + 1 ) + i ] = vec1[i];
-        if ( kvs::Math::IsZero( (*e)[k] ) ) continue;
+        std::copy( vec1.begin(), vec1.end(), row_vec.begin() + ( k + 1 ) );
+        std::copy( vec1.begin(), vec1.end(), m[k].begin() + ( k + 1 ) );
+        if ( kvs::Math::IsZero( (*e)[k] ) ) { continue; }
 
         // Calculate the 'd' vector.
         for ( int i = k + 1; i < dim; i++ )
@@ -84,8 +86,8 @@ inline void Tridiagonalization( kvs::Matrix<T>& m, kvs::Vector<T>* d, kvs::Vecto
         T t = vec1.dot( vec2 ) / T(2);
         for ( int i = dim - 1; i > k; i-- )
         {
-            T p = row_vec[i];
-            T q = (*d)[i] -= t * p;
+            const T p = row_vec[i];
+            const T q = (*d)[i] -= t * p;
             for ( int j = i; j < dim; j++ )
             {
                 m[i][j] -= p * (*d)[j] + q * row_vec[j];
@@ -202,7 +204,7 @@ inline void InverseIteration( kvs::Matrix<T> A, const T eval, kvs::Vector<T>& ev
     T mu, v2, v2s;
     do
     {
-        kvs::Vector<T> v = solver.solve( y ); // A v = y
+        const kvs::Vector<T> v = solver.solve( y ); // A v = y
         mu = v.dot( y );
         v2 = v.dot( v );
         v2s = sqrt(v2);
@@ -303,16 +305,16 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
         if ( std::abs( A[m-1][m-2] ) < max_tolerance ) { --m; iter = 0; continue; }
         if ( ++iter > max_iterations ) { return false; }
 
-        T shift = A[m-1][m-1];
+        const T shift = A[m-1][m-1];
         for ( int i = 0; i < m; ++i ) { A[i][i] -= shift; }
         for ( int k = 0; k < m-1; ++k )
         {
-            T a = A[k][k], b = A[k+1][k], r = std::sqrt(a*a + b*b);
+            const T a = A[k][k], b = A[k+1][k], r = std::sqrt(a*a + b*b);
             s[k] = r == 0.0 ? 0.0 : b/r;
             c[k] = r == 0.0 ? 0.0 : a/r;
             for ( int j = k; j < m; ++j )
             {
-                T x = A[k][j], y = A[k+1][j];
+                const T x = A[k][j], y = A[k+1][j];
                 A[ k ][j] =  c[k] * x + s[k] * y;
                 A[k+1][j] = -s[k] * x + c[k] * y;
             }
@@ -321,7 +323,7 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
         {
             for ( int i = 0; i <= k+1; ++i)
             {
-                T x = A[i][k], y = A[i][k+1];
+                const T x = A[i][k], y = A[i][k+1];
                 A[i][ k ] =  c[k] * x + s[k] * y;
                 A[i][k+1] = -s[k] * x + c[k] * y;
             }
@@ -329,10 +331,7 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
         for ( size_t i = 0; i < m; ++i) { A[i][i] += shift; }
     }
 
-    for ( int i = 0; i < dim; ++i )
-    {
-        evals[i] = A[i][i];
-    }
+    for ( int i = 0; i < dim; ++i ) { evals[i] = A[i][i]; }
 
     return true;
 }

@@ -40,9 +40,6 @@ public:
     };
 
 private:
-    MatrixType m_matrix_type; ///< matrix type (symmetric or unsymmetric)
-    kvs::Matrix<T> m_eigen_vectors; ///< eigen vectors as row vectors
-    kvs::Vector<T> m_eigen_values; ///< eigen values as vector
     static double m_max_tolerance; ///< tolerance
     static size_t m_max_iterations; ///< maximum number of iterations
 
@@ -51,6 +48,11 @@ public:
     static void SetMaxIterations( const size_t iterations ) { m_max_iterations = iterations; }
     static double MaxTolerance() { return m_max_tolerance; }
     static size_t MaxIterations() { return m_max_iterations; }
+
+private:
+    MatrixType m_matrix_type; ///< matrix type (symmetric or unsymmetric)
+    kvs::Matrix<T> m_eigen_vectors; ///< eigen vectors as row vectors
+    kvs::Vector<T> m_eigen_values; ///< eigen values as vector
 
 public:
     EigenDecomposer() {}
