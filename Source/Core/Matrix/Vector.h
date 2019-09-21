@@ -44,18 +44,20 @@ class Vector
 public:
     typedef Vector<T> this_type;
     typedef T value_type;
-    typedef T* iterator;
-    typedef const T* const_iterator;
-    typedef T& reference;
-    typedef const T& const_reference;
     typedef std::size_t size_type;
     typedef std::ptrdiff_t difference_type;
+    typedef T& reference;
+    typedef const T& const_reference;
+
+    // Iterators
+    typedef T* iterator;
+    typedef const T* const_iterator;
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 private:
     size_t m_size; ///< Vector size( dimension ).
-    T* m_data; ///< Array of elements.
+    value_type* m_data; ///< Array of elements.
 
 public:
     static const Vector Zero( const size_t size );
@@ -78,6 +80,9 @@ public:
     Vector( const kvs::Vector2<T>& other );
     Vector( const kvs::Vector3<T>& other );
     Vector( const kvs::Vector4<T>& other );
+
+    template <typename InIter>
+    Vector( InIter first, InIter last );
 
     Vector( const Vector& other );
     Vector& operator =( const Vector& rhs );
@@ -341,6 +346,15 @@ inline Vector<T>::Vector( const kvs::Vector4<T>& other ):
     m_data( new T [4] )
 {
     std::memcpy( m_data, other.data(), sizeof(T) * this->size() );
+}
+
+template <typename T>
+template <typename InIter>
+inline Vector<T>::Vector( InIter first, InIter last ):
+    m_size( std::distance( first, last ) ),
+    m_data( new T [ m_size ] )
+{
+    std::copy( first, last, this->begin() );
 }
 
 /*==========================================================================*/
@@ -670,3 +684,4 @@ inline const Vector<T> Vector<T>::operator -() const
 }
 
 } // end of namespace kvs
+

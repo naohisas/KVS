@@ -49,6 +49,7 @@
 + kvs::Vector{2,3,4,n}::setIdentity
 + kvs::Vector{2,3,4,n}::setRandom
 + kvs::Vector{n}::opeator =/
++ kvs::Vector{n}::Vector( InIter first, InIter last )
 + kvs::Vector{n}::Vector( Vector&& ) // move constructor
 + kvs::Vector{n}::operator =( Vector&& ) // move assignment operator
 + kvs::Vector{n}::begin
