@@ -1,6 +1,7 @@
 #include <iostream>
 #include <kvs/Timer>
 #include <kvs/Matrix>
+#include <kvs/Vector>
 
 
 void PerfTest( const size_t size, const size_t nloops )
@@ -108,11 +109,19 @@ int main()
 
     kvs::Matrix33<float> m2(
         1.0f, 2.0f, 3.0f,
-        2.0f, 3.0f, 4.0f,
-        3.0f, 4.0f, 5.0f );
+        4.0f, 5.0f, 6.0f,
+        7.0f, 8.0f, 9.0f );
     kvs::Matrix<float> c( m2 );
     std::cout << "c matrix" << std::endl;
     c.print( std::cout, kvs::Indent(4) );
+
+    std::cout << std::endl;
+    std::cout << "Iterator" << std::endl;
+    std::cout << "c = " << c << std::endl;
+    std::cout << "c vector in row-major order: " << kvs::Vector<float>( c.begin(), c.end() ) << std::endl;
+    std::cout << "c vector in column-major order: " << kvs::Vector<float>( c.beginInColumnOrder(), c.endInColumnOrder() ) << std::endl;
+    std::cout << "0-th row vector: " << kvs::Vector<float>( c.beginRow(0), c.endRow(0) ) << std::endl;
+    std::cout << "0-th column vector: " << kvs::Vector<float>( c.beginColumn(0), c.endColumn(0) ) << std::endl;
 
     std::cout << std::endl;
     std::cout << "Calculation Operator" << std::endl;
