@@ -680,3 +680,13 @@ inline const Vector<T> Vector<T>::operator -() const
 
 } // end of namespace kvs
 
+namespace std
+{
+
+template <typename T>
+inline void swap( kvs::Vector<T>& lhs, kvs::Vector<T>& rhs )
+{
+    lhs.swap( rhs );
+}
+
+} // end of namespace std

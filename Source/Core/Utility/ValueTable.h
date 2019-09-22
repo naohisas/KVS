@@ -729,3 +729,14 @@ private:
 };
 
 } // end of namespace kvs
+
+namespace std
+{
+
+template <typename T>
+inline void swap( kvs::ValueTable<T>& lhs, kvs::ValueTable<T>& rhs )
+{
+    lhs.swap( rhs );
+}
+
+} // end of namespace std

@@ -5,33 +5,15 @@
 #include <kvs/FisherFDistribution>
 #include <kvs/ValueArray>
 #include <iostream>
-#include <iterator>
 
-
-template <typename T>
-std::ostream& operator << ( std::ostream& os, const kvs::ValueArray<T>& values )
-{
-    std::copy( values.begin(), values.end(), std::ostream_iterator<T>( os, ", " ) );
-    return os;
-}
-
-template <typename T>
-kvs::ValueArray<T> Xvalues( const double xmin, const double xmax, const double dx )
-{
-    const size_t n = size_t( ( xmax - xmin ) / dx );
-    kvs::ValueArray<T> values( n );
-    for ( size_t i = 0; i < n; i++ ) { values[i] = xmin + dx * i; }
-    return values;
-}
 
 int main()
 {
-    const double xmin = 0.0;
-    const double xmax = 5.0;
-    const double dx = 0.1;
-    kvs::ValueArray<float> xvalues = Xvalues<float>( xmin, xmax, dx );
-    std::cout << "X = {" << xvalues << "}" << std::endl;
-    std::cout << std::endl;
+    const size_t size = 50;
+    const float start = 0.0f;
+    const float step = 0.1f;
+    kvs::ValueArray<float> xvalues = kvs::ValueArray<float>::Linear( size, start, step );
+    std::cout << "X = " << xvalues << std::endl << std::endl;
 
     const double mean = 0.0;
     const double sdev = 1.0;

@@ -1418,3 +1418,14 @@ private:
 };
 
 } // end of namespace kvs
+
+namespace std
+{
+
+template <typename T>
+inline void swap( kvs::Matrix<T>& lhs, kvs::Matrix<T>& rhs )
+{
+    lhs.swap( rhs );
+}
+
+} // end of namespace std
