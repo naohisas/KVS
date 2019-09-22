@@ -15,6 +15,7 @@
 #pragma once
 #include <iostream>
 #include <cstring>
+#include <initializer_list>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Math>
@@ -93,6 +94,8 @@ public:
     Matrix( const kvs::Matrix22<T>& other );
     Matrix( const kvs::Matrix33<T>& other );
     Matrix( const kvs::Matrix44<T>& other );
+
+    Matrix( std::initializer_list<row_type> list );
 
     Matrix( const Matrix& other );
     Matrix& operator =( const Matrix& rhs );
@@ -515,6 +518,15 @@ inline Matrix<T>::Matrix( const kvs::Matrix44<T>& other ):
     m_data[1] = other[1];
     m_data[2] = other[2];
     m_data[3] = other[3];
+}
+
+template <typename T>
+inline Matrix<T>::Matrix( std::initializer_list<row_type> list ):
+    m_nrows( std::distance( list.begin(), list.end() ) ),
+    m_ncols( list.begin()->size() ),
+    m_data( new row_type [ m_nrows ] )
+{
+    std::copy( list.begin(), list.end(), this->beginRows() );
 }
 
 /*==========================================================================*/

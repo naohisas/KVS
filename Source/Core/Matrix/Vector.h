@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <numeric>
 #include <iterator>
+#include <initializer_list>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Math>
@@ -83,6 +84,8 @@ public:
 
     template <typename InIter>
     Vector( InIter first, InIter last );
+
+    Vector( std::initializer_list<T> list );
 
     Vector( const Vector& other );
     Vector& operator =( const Vector& rhs );
@@ -356,6 +359,14 @@ inline Vector<T>::Vector( InIter first, InIter last ):
     m_data( new T [ m_size ] )
 {
     std::copy( first, last, this->begin() );
+}
+
+template <typename T>
+inline Vector<T>::Vector( std::initializer_list<T> list ):
+    m_size( std::distance( list.begin(), list.end() ) ),
+    m_data( new T [ m_size ] )
+{
+    std::copy( list.begin(), list.end(), this->begin() );
 }
 
 /*==========================================================================*/
