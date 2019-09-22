@@ -433,7 +433,7 @@ template <typename T>
 void EigenDecomposer<T>::setMatrix( const kvs::Matrix<T>& m, MatrixType type )
 {
     m_matrix_type = type;
-    m_eigen_values.setSize( m.rowSize() );
+    m_eigen_values.resize( m.rowSize() );
     m_eigen_vectors = m;
 }
 

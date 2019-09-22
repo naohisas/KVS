@@ -181,9 +181,9 @@ const kvs::Matrix<T>& SVDecomposer<T>::rightSingularMatrix() const
 template <typename T>
 void SVDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
 {
-    m_w.setSize( 3 );
-    m_v.setSize( 3, 3 );
-    m_u.setSize( 3, 3 );
+    m_w.resize( 3 );
+    m_v.resize( 3, 3 );
+    m_u.resize( 3, 3 );
     for ( size_t i = 0; i < 3; i++ )
     {
         for ( size_t j = 0; j < 3; j++ )
@@ -202,9 +202,9 @@ void SVDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
 template <typename T>
 void SVDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
 {
-    m_w.setSize( 4 );
-    m_v.setSize( 4, 4 );
-    m_u.setSize( 4, 4 );
+    m_w.resize( 4 );
+    m_v.resize( 4, 4 );
+    m_u.resize( 4, 4 );
     for ( size_t i = 0; i < 4; i++ )
     {
         for ( size_t j = 0; j < 4; j++ )
@@ -224,8 +224,8 @@ template <typename T>
 void SVDecomposer<T>::setMatrix( const Matrix<T>& m )
 {
     m_u = m;
-    m_w.setSize( m.columnSize() );
-    m_v.setSize( m.columnSize(), m.columnSize() );
+    m_w.resize( m.columnSize() );
+    m_v.resize( m.columnSize(), m.columnSize() );
 }
 
 /*===========================================================================*/

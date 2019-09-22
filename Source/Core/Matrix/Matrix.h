@@ -199,7 +199,6 @@ public:
         return this->beginInColumnOrder() + ( column_index + 1 ) * this->rowSize();
     }
 
-    void setSize( const size_t nrows, const size_t ncols );
     void setZero();
     void setOnes();
     void setIdentity();
@@ -211,6 +210,7 @@ public:
     void setRandom( const T min, const T max );
     void setRandom( const T min, const T max, const kvs::UInt32 seed );
 
+    void resize( const size_t nrows, const size_t ncols );
     void swap( Matrix& other );
     void transpose();
     void invert();
@@ -351,6 +351,7 @@ public:
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
     KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
+    KVS_DEPRECATED( void setSize( const size_t nrows, const size_t ncols ) ) { this->resize( nrows, ncols ); }
 };
 
 
@@ -457,7 +458,7 @@ inline Matrix<T>::Matrix( const size_t nrows, const size_t ncols ):
     m_data( new row_type [ nrows ] )
 {
     const_rows_iterator last = m_data + m_nrows;
-    for ( rows_iterator v = m_data; v != last; ++v ) { v->setSize( ncols ); }
+    for ( rows_iterator v = m_data; v != last; ++v ) { v->resize( ncols ); }
 }
 
 /*==========================================================================*/
@@ -478,7 +479,7 @@ inline Matrix<T>::Matrix( const size_t nrows, const size_t ncols, const T* const
     const_rows_iterator last = m_data + m_nrows;
     for ( rows_iterator v = m_data; v != last; ++v, offset += ncols )
     {
-        v->setSize( ncols );
+        v->resize( ncols );
         std::memcpy( v->data(), elements + offset, sizeof(T) * v->size() );
     }
 }
@@ -589,46 +590,6 @@ inline Matrix<T>& Matrix<T>::operator =( Matrix&& rhs ) noexcept
     return *this;
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets the size of matrix.
- *  @param  nrows    [in] Number of rows of matrix.
- *  @param  ncols [in] Number of columns of matrix.
- */
-/*==========================================================================*/
-template<typename T>
-inline void Matrix<T>::setSize( const size_t nrows, const size_t ncols )
-{
-    if ( nrows == 0 )
-    {
-        delete [] m_data;
-        m_nrows = 0;
-        m_ncols = 0;
-        m_data = nullptr;
-        return;
-    }
-
-    if ( m_nrows != nrows )
-    {
-        delete [] m_data;
-        m_data = new row_type [ nrows ];
-        m_nrows = nrows;
-    }
-
-    if ( ncols == 0 )
-    {
-        m_ncols = 0;
-        return;
-    }
-
-    if ( m_ncols != ncols )
-    {
-        const_rows_iterator last = m_data + nrows;
-        for ( rows_iterator v = m_data; v != last; ++v ) { v->setSize( ncols ); }
-        m_ncols = ncols;
-    }
-}
-
 template<typename T>
 inline void Matrix<T>::setZero()
 {
@@ -711,6 +672,46 @@ inline void Matrix<T>::setRandom( const T min, const T max, const kvs::UInt32 se
         m_data[0].setRandom( min, max, seed );
         const_rows_iterator last = m_data + m_nrows;
         for ( rows_iterator v = m_data + 1; v != last; ++v ) { v->setRandom( min, max ); }
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Sets the size of matrix.
+ *  @param  nrows [in] Number of rows of matrix.
+ *  @param  ncols [in] Number of columns of matrix.
+ */
+/*==========================================================================*/
+template<typename T>
+inline void Matrix<T>::resize( const size_t nrows, const size_t ncols )
+{
+    if ( nrows == 0 )
+    {
+        delete [] m_data;
+        m_nrows = 0;
+        m_ncols = 0;
+        m_data = nullptr;
+        return;
+    }
+
+    if ( m_nrows != nrows )
+    {
+        delete [] m_data;
+        m_data = new row_type [ nrows ];
+        m_nrows = nrows;
+    }
+
+    if ( ncols == 0 )
+    {
+        m_ncols = 0;
+        return;
+    }
+
+    if ( m_ncols != ncols )
+    {
+        const_rows_iterator last = m_data + nrows;
+        for ( rows_iterator v = m_data; v != last; ++v ) { v->resize( ncols ); }
+        m_ncols = ncols;
     }
 }
 

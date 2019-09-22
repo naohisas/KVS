@@ -157,10 +157,10 @@ const kvs::Vector<int>& LUDecomposer<T>::pivots() const
 template <typename T>
 void LUDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
 {
-    m_l.setSize( 3, 3 );
-    m_u.setSize( 3, 3 );
-    m_pivots.setSize( 3 );
-    m_lu.setSize( 3, 3 );
+    m_l.resize( 3, 3 );
+    m_u.resize( 3, 3 );
+    m_pivots.resize( 3 );
+    m_lu.resize( 3, 3 );
     for ( size_t i = 0; i < 3; i++ )
     {
         for ( size_t j = 0; j < 3; j++ )
@@ -179,10 +179,10 @@ void LUDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
 template <typename T>
 void LUDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
 {
-    m_l.setSize( 4, 4 );
-    m_u.setSize( 4, 4 );
-    m_pivots.setSize( 4 );
-    m_lu.setSize( 4, 4 );
+    m_l.resize( 4, 4 );
+    m_u.resize( 4, 4 );
+    m_pivots.resize( 4 );
+    m_lu.resize( 4, 4 );
     for ( size_t i = 0; i < 4; i++ )
     {
         for ( size_t j = 0; j < 4; j++ )
@@ -201,9 +201,9 @@ void LUDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
 template <typename T>
 void LUDecomposer<T>::setMatrix( const Matrix<T>& m )
 {
-    m_l.setSize( m.rowSize(), m.columnSize() );
-    m_u.setSize( m.rowSize(), m.columnSize() );
-    m_pivots.setSize( m.rowSize() );
+    m_l.resize( m.rowSize(), m.columnSize() );
+    m_u.resize( m.rowSize(), m.columnSize() );
+    m_pivots.resize( m.rowSize() );
     m_lu = m;
 }
 

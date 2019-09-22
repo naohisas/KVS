@@ -54,6 +54,7 @@
 + kvs::Vector{n}::opeator =/
 + kvs::Vector{n}::begin
 + kvs::Vector{n}::end
++ kvs::Vector{n}::resize
 + kvs::Matrix{22,33,44,nm}::Zero
 + kvs::Matrix{22,33,44,nm}::Ones
 + kvs::Matrix{22,33,44,nm}::Identity
@@ -89,6 +90,7 @@
 + kvs::Matrix{nm}::rend
 + kvs::Matrix{nm}::rendInRowOrder
 + kvs::Matrix{nm}::rendInColumnOrder
++ kvs::Matrix{nm}::resize
 + kvs::Value::Random
 + kvs::Value::RandomSeed
 + kvs::Value::SetSeed
@@ -153,6 +155,8 @@
 + kvs::Vector4::All (use kvs::Vector4::Constant)
 + kvs::Vector4::zero (use kvs::Vector4::setZero)
 + kvs::Vector::zero (use kvs::Vector::setZero)
++ kvs::Vector{2,3,4,n}::length2 (use kvs::Vector{2,3,4,n}::squaredLength)
++ kvs::Vector{n}::setSize (use kvs::Vector{n}::resize)
 + kvs::Matrix2::zero (use kvs::Matrix2::setZero)
 + kvs::Matrix2::identity (use kvs::Matrix2::setIdentity)
 + kvs::Matrix3::zero (use kvs::Matrix3::setZero)
@@ -161,7 +165,7 @@
 + kvs::Matrix4::identity (use kvs::Matrix4::setIdentity)
 + kvs::Matrix::zero (use kvs::Matrix::setZero)
 + kvs::Matrix::identity (use kvs::Matrix::setIdentity)
-+ kvs::Vector{2,3,4,n}::length2 (use kvs::Vector{2,3,4,n}::squaredLength)
++ kvs::Matrix{mn}::setSize (use kvs::Matrix{mn}::resize)
 + kvs::Quaternion::length2 (use kvs::QUaternion::squaredLength)
 + kvs::ValueTable::clear (use kvs::ValueTable::release )
 

@@ -104,7 +104,7 @@ void LassoRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTab
     // The Annals of Applied Statistics, Vol.2, No.1, pp.224-244, 2008
 
     // Initialize coefficients
-    m_coef.setSize( ncols );
+    m_coef.resize( ncols );
     m_coef[0] = ::Intercept<T>( Y, X, m_coef );
     const size_t max_iterations = 100;
     const float lambda = m_complexity * nrows;
@@ -136,7 +136,7 @@ void LassoRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTab
     const kvs::Matrix<T> XtX = Xt * X;
     const kvs::Matrix<T> XtX_inv = XtX.inverted();
     const kvs::Real64 ve = rss / m_dof;
-    m_standard_errors.setSize( m_coef.size() );
+    m_standard_errors.resize( m_coef.size() );
     for ( size_t i = 0; i < m_coef.size(); i++ )
     {
         m_standard_errors[i] = std::sqrt( ve * XtX_inv[i][i] );
@@ -146,8 +146,8 @@ void LassoRegression<T>::fit( const kvs::ValueArray<T>& dep, const kvs::ValueTab
 template <typename T>
 void LassoRegression<T>::test()
 {
-    m_t_values.setSize( m_coef.size() );
-    m_p_values.setSize( m_coef.size() );
+    m_t_values.resize( m_coef.size() );
+    m_p_values.resize( m_coef.size() );
     kvs::StudentTDistribution tdist( m_dof );
     for ( size_t i = 0; i < m_coef.size(); i++ )
     {

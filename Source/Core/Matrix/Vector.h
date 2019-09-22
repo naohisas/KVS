@@ -100,7 +100,6 @@ public:
     const_iterator begin() const { return m_data; }
     const_iterator end() const { return m_data + m_size; }
 
-    void setSize( const size_t size );
     void setZero();
     void setOnes();
     void setUnit( const size_t index = 0 );
@@ -111,6 +110,7 @@ public:
     void setRandom( const T min, const T max );
     void setRandom( const T min, const T max, const kvs::UInt32 seed );
 
+    void resize( const size_t size );
     void swap( Vector& other );
     void normalize();
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
@@ -195,6 +195,7 @@ public:
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
     KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
+    KVS_DEPRECATED( void setSize( const size_t size ) ) { this->resize( size ); }
 };
 
 
@@ -419,24 +420,6 @@ inline Vector<T>& Vector<T>::operator =( Vector&& rhs ) noexcept
     return *this;
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Sets the size of vector.
- *  @param  size [in] Size of vector.
- */
-/*==========================================================================*/
-template <typename T>
-inline void Vector<T>::setSize( const size_t size )
-{
-    if ( this->size() != size )
-    {
-        delete [] m_data;
-        m_size = size;
-        m_data = new T [ size ];
-        std::memset( m_data, 0, sizeof(T) * m_size );
-    }
-}
-
 template <typename T>
 inline void Vector<T>::setZero()
 {
@@ -514,6 +497,18 @@ inline void Vector<T>::setRandom( const T min, const T max, const kvs::UInt32 se
         else kvs::Value<T>::SetRandomSeed();
         const_iterator last = this->end();
         for ( iterator v = this->begin(); v != last; ++v ) { *v = kvs::Value<T>::Random( min, max ); }
+    }
+}
+
+template <typename T>
+inline void Vector<T>::resize( const size_t size )
+{
+    if ( this->size() != size )
+    {
+        delete [] m_data;
+        m_size = size;
+        m_data = new T [ size ];
+        std::memset( m_data, 0, sizeof(T) * m_size );
     }
 }
 

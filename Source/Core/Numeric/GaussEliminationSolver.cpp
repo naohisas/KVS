@@ -64,7 +64,7 @@ GaussEliminationSolver<T>::~GaussEliminationSolver()
 template <typename T>
 GaussEliminationSolver<T>& GaussEliminationSolver<T>::operator = ( const kvs::Vector<T>& v )
 {
-    this->setSize( v.size() );
+    this->resize( v.size() );
     for ( size_t i = 0; i < this->size(); ++i )
     {
         (*this)[i] = v[i];

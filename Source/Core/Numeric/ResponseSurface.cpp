@@ -4,7 +4,7 @@
  *  @brief  Response surface method class
  *
  *  @author Yukio YASUHARA
- *  @date   2012/12/04 11:36:03
+ *  @date   2019/09/22 10:26:16
  */
 /*----------------------------------------------------------------------------
  *
@@ -113,8 +113,8 @@ const kvs::Vector<T>& ResponseSurface<T>::solve(
     m_nterms = GetNumberOfTerms( m_nvariables );
     m_responses = responses;
 
-    kvs::Vector<T>::setSize( m_nterms );
-    m_t_values.setSize( m_nterms );
+    kvs::Vector<T>::resize( m_nterms );
+    m_t_values.resize( m_nterms );
     m_mask.allocate( m_nterms );
     m_mask.set(); // all coefficients are active.
 
@@ -275,7 +275,7 @@ template <typename T>
 void ResponseSurface<T>::create_coefficient_matrix(
     const kvs::Matrix<T>& variables )
 {
-    m_coefficient_matrix.setSize( m_responses.size(), m_nterms );
+    m_coefficient_matrix.resize( m_responses.size(), m_nterms );
     for ( size_t row = 0; row < m_responses.size(); row++ )
     {
         m_coefficient_matrix[row][0] = 1;

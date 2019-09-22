@@ -86,14 +86,14 @@ public:
     KVS_DEPRECATED( void setMatrix( const kvs::Matrix33<T>& m, MatrixType type = EigenDecomposer::Unknown ) )
     {
         m_matrix_type = type;
-        m_eigen_values.setSize(3);
+        m_eigen_values.resize(3);
         m_eigen_vectors = kvs::Matrix<T>(m);
     }
 
     KVS_DEPRECATED( void setMatrix( const kvs::Matrix44<T>& m, MatrixType type = EigenDecomposer::Unknown ) )
     {
         m_matrix_type = type;
-        m_eigen_values.setSize(4);
+        m_eigen_values.resize(4);
         m_eigen_vectors = kvs::Matrix<T>(m);
     }
 };
