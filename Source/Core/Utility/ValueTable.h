@@ -16,6 +16,7 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <initializer_list>
 #include <kvs/ValueArray>
 #include <kvs/Assert>
 #include <kvs/Deprecated>
@@ -118,6 +119,12 @@ public:
         }
     }
 
+    ValueTable( std::initializer_list<Column> list )
+    {
+        m_columns.resize( std::distance( list.begin(), list.end() ) );
+        std::copy( list.begin(), list.end(), m_columns.begin() );
+    }
+
     column_reference operator []( const size_t column_index )
     {
         KVS_ASSERT( column_index < m_columns.size() );
@@ -145,8 +152,9 @@ public:
 
     friend bool operator <( const ValueTable& lhs, const ValueTable& rhs )
     {
-        return std::lexicographical_compare( lhs.beginColumn(), lhs.endColumn(),
-                                             rhs.beginColumn(), rhs.endColumn() );
+        return std::lexicographical_compare(
+            lhs.beginColumn(), lhs.endColumn(),
+            rhs.beginColumn(), rhs.endColumn() );
     }
 
     friend bool operator !=( const ValueTable& lhs, const ValueTable& rhs )

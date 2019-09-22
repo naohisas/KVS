@@ -104,6 +104,10 @@ int main()
         std::cout << "std::vector<float> temp; ..." << std::endl;
         std::cout << "kvs::ValueArray<float> v( temp );" << std::endl;
         std::cout << indent << "v = " << v3 << std::endl;
+
+        kvs::ValueArray<float> v4 = { 4, 5, 6 };
+        std::cout << "kvs::ValueArray<float> v4 = { 4, 5, 6 };" << std::endl;
+        std::cout << indent << "v = " << v4 << std::endl;
         std::cout << std::endl;
     }
 

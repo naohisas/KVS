@@ -18,6 +18,7 @@
 #include <utility>
 #include <vector>
 #include <iostream>
+#include <initializer_list>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Value>
@@ -113,6 +114,12 @@ public:
     {
         this->allocate( std::distance( first, last ) );
         std::copy( first, last, this->begin() );
+    }
+
+    ValueArray( std::initializer_list<T> list )
+    {
+        this->allocate( std::distance( list.begin(), list.end() ) );
+        std::copy( list.begin(), list.end(), this->begin() );
     }
 
     ValueArray( const kvs::SharedPointer<T>& sp, size_t size ):

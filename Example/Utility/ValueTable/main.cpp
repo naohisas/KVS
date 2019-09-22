@@ -138,6 +138,13 @@ int main()
         {
             std::cout << indent << "r" << row << " = " << v3.row(row) << std::endl;
         }
+
+        kvs::ValueTable<float> v4 = {
+            {1, 2, 3},   // column 0
+            {4, 5, 6},   // column 1
+            {7, 8, 9} }; // column 2
+        std::cout << "kvs::ValueTable<float> v4 = { {...}, {...}, {...} };" << std::endl;
+        std::cout << indent << "v = " << v4 << std::endl;
         std::cout << std::endl;
     }
 
