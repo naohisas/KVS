@@ -18,7 +18,11 @@
 #include <kvs/Vector>
 #include <kvs/Matrix>
 #include <kvs/Timer>
+#include <kvs/Indent>
 
+
+namespace
+{
 
 /*===========================================================================*/
 /**
@@ -27,8 +31,9 @@
  *  @param  eigen [in] eigen decomposer
  */
 /*===========================================================================*/
-void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& eigen )
+void PrintResult( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& eigen )
 {
+    const kvs::Indent indent(4);
     const kvs::Vector<double>& L = eigen.eigenValues();
     const kvs::Matrix<double>& E = eigen.eigenVectors();
 
@@ -36,27 +41,22 @@ void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& ei
     std::cout.setf( std::ios::right );
     std::cout.setf( std::ios::fixed, std::ios::floatfield );
     std::cout << "Input matrix" << std::endl;
-    std::cout << "    M = " << M << std::endl;
+    std::cout << indent << "M = " << M << std::endl;
     std::cout << "Eigen values" << std::endl;
-    std::cout << "    L0 = " << L[0] << std::endl;
-    std::cout << "    L1 = " << L[1] << std::endl;
-    std::cout << "    L2 = " << L[2] << std::endl;
+    std::cout << indent << "L0 = " << L[0] << std::endl;
+    std::cout << indent << "L1 = " << L[1] << std::endl;
+    std::cout << indent << "L2 = " << L[2] << std::endl;
     std::cout << "Eigen vectors" << std::endl;
-    std::cout << "    E0 = " << E[0] << std::endl;
-    std::cout << "    E1 = " << E[1] << std::endl;
-    std::cout << "    E2 = " << E[2] << std::endl;
-    std::cout << "M * E0" << std::endl;
-    std::cout << "L0 * E0" << std::endl;
-    std::cout << "    " << M * E[0] << std::endl;
-    std::cout << "    " << L[0] * E[0] << std::endl;
-    std::cout << "M * E1" << std::endl;
-    std::cout << "L1 * E1" << std::endl;
-    std::cout << "    " << M * E[1] << std::endl;
-    std::cout << "    " << L[1] * E[1] << std::endl;
-    std::cout << "M * E2" << std::endl;
-    std::cout << "L2 * E2" << std::endl;
-    std::cout << "    " << M * E[2] << std::endl;
-    std::cout << "    " << L[2] * E[2] << std::endl;
+    std::cout << indent << "E0 = " << E[0] << std::endl;
+    std::cout << indent << "E1 = " << E[1] << std::endl;
+    std::cout << indent << "E2 = " << E[2] << std::endl;
+    std::cout << "Check" << std::endl;
+    std::cout << indent << "M  * E0 = " << M * E[0] << std::endl;
+    std::cout << indent << "L0 * E0 = " << L[0] * E[0] << std::endl;
+    std::cout << indent << "M  * E1 = " << M * E[1] << std::endl;
+    std::cout << indent << "L1 * E1 = " << L[1] * E[1] << std::endl;
+    std::cout << indent << "M  * E2 = " << M * E[2] << std::endl;
+    std::cout << indent << "L2 * E2 = " << L[2] * E[2] << std::endl;
 }
 
 /*===========================================================================*/
@@ -66,12 +66,17 @@ void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& ei
  *  @param  n [in] number of trials
  */
 /*===========================================================================*/
-void Perf( const kvs::Matrix<double>& M, const size_t n )
+void PerfTest( const kvs::Matrix<double>& M, const size_t nloops )
 {
+    const kvs::Indent indent(4);
+
+    std::cout << "Performance Test" << std::endl;
     kvs::Timer timer( kvs::Timer::Start );
-    for ( size_t i = 0; i < n; i++ ) { kvs::EigenDecomposer<double> e( M ); }
+    for ( size_t i = 0; i < nloops; i++ ) { kvs::EigenDecomposer<double> e( M ); }
     timer.stop();
-    std::cout << "Processing time (10000 times): " << timer.sec() << " [sec]" << std::endl;
+    std::cout << indent << "Calculation (" << nloops << " times): " << timer.sec() << " [sec]" << std::endl;
+}
+
 }
 
 /*===========================================================================*/
@@ -105,8 +110,10 @@ int main()
         M[2][0] = 0.3; M[2][1] = 0.6; M[2][2] = 1.0;
 
         kvs::EigenDecomposer<double> eigen( M );
-        Print( M, eigen );
-        Perf( M, 100000 );
+        ::PrintResult( M, eigen );
+
+        const size_t nloops = 100000;
+        ::PerfTest( M, nloops );
     }
 
     std::cout << std::endl;
@@ -127,7 +134,9 @@ int main()
         M[2][0] = 5.0; M[2][1] = -6.0; M[2][2] =  7.0;
 
         kvs::EigenDecomposer<double> eigen( M );
-        Print( M, eigen );
-        Perf( M, 100000 );
+        ::PrintResult( M, eigen );
+
+        const size_t nloops = 100000;
+        ::PerfTest( M, nloops );
     }
 }

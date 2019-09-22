@@ -3,9 +3,12 @@
 #include <kvs/Vector>
 
 
+namespace
+{
+
 void PerfTest( const size_t size, const size_t nloops )
 {
-    std::cout << "Performance Test" << std::endl;
+    std::cout << "Performance Test (" << nloops << " times)" << std::endl;
 
     typedef kvs::Vector<float> Vec;
     const kvs::Indent indent(4);
@@ -104,6 +107,8 @@ void PerfTest( const size_t size, const size_t nloops )
     }
 }
 
+}
+
 int main()
 {
     std::cout << "Definition" << std::endl;
@@ -193,7 +198,7 @@ int main()
 
     const size_t size = 10000;
     const size_t nloops = 10000;
-    PerfTest( size, nloops );
+    ::PerfTest( size, nloops );
 
     return 0;
 }

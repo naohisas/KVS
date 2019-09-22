@@ -4,9 +4,12 @@
 #include <kvs/Vector>
 
 
+namespace
+{
+
 void PerfTest( const size_t size, const size_t nloops )
 {
-    std::cout << "Performance Test" << std::endl;
+    std::cout << "Performance Test (" << nloops << " times)" << std::endl;
 
     typedef kvs::Matrix<float> Mat;
     const kvs::Indent indent(4);
@@ -81,6 +84,9 @@ void PerfTest( const size_t size, const size_t nloops )
         std::cout << indent << "* operator: " << timer.sec() << " [sec]" << std::endl;
     }
 }
+
+}
+
 
 int main()
 {
@@ -187,7 +193,7 @@ int main()
 
     const size_t size = 100;
     const size_t nloops = 10000;
-    PerfTest( size, nloops );
+    ::PerfTest( size, nloops );
 
     return 0;
 }
