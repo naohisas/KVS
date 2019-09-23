@@ -1,55 +1,46 @@
+#include <iostream>
+#include <kvs/Indent>
 #include <kvs/Stat>
 #include <kvs/ValueArray>
-#include <kvs/MersenneTwister>
-#include <iostream>
-#include <fstream>
-#include <iterator>
-#include <algorithm>
 
-
-template <typename T>
-std::ostream& operator << ( std::ostream& os, const kvs::ValueArray<T>& values )
-{
-    std::copy( values.begin(), values.end(), std::ostream_iterator<T>( os, ", " ) );
-    return os;
-}
-
-template <typename T>
-kvs::ValueArray<T> Random( const size_t n )
-{
-    kvs::ValueArray<T> values( n );
-    kvs::MersenneTwister engine;
-    std::generate( values.begin(), values.end(), engine );
-    return values;
-}
 
 int main( int argc, char** argv )
 {
     const size_t n = 10;
-    kvs::ValueArray<float> values1 = Random<float>( n );
-    kvs::ValueArray<float> values2 = Random<float>( n );
-    std::cout << "X = {" << values1 << "}" << std::endl;
-    std::cout << "Y = {" << values2 << "}" << std::endl;
+    kvs::ValueArray<float> X = kvs::ValueArray<float>::Random( n );
+    kvs::ValueArray<float> Y = kvs::ValueArray<float>::Random( n );
+    std::cout << "X = " << X << std::endl;
+    std::cout << "Y = " << Y << std::endl;
+
+    const kvs::Indent indent( 4 );
 
     std::cout << std::endl;
-    std::cout << "Sum(X): " << kvs::Stat::Sum( values1 ) << std::endl;
-    std::cout << "Mean(X): " << kvs::Stat::Mean( values1 ) << std::endl;
-    std::cout << "Var(X): " << kvs::Stat::Var( values1 ) << std::endl;
-    std::cout << "ShiftedVar(X): " << kvs::Stat::ShiftedVar( values1 ) << std::endl;
-    std::cout << "TwoPassVar(X): " << kvs::Stat::TwoPassVar( values1 ) << std::endl;
-    std::cout << "CompensatedVar(X): " << kvs::Stat::CompensatedVar( values1 ) << std::endl;
-    std::cout << "OnlineVar(X): " << kvs::Stat::OnlineVar( values1 ) << std::endl;
-    std::cout << "Cov(X,Y): " << kvs::Stat::Cov( values1, values2 ) << std::endl;
-    std::cout << "ShiftedCov(X,Y): " << kvs::Stat::ShiftedCov( values1, values2 ) << std::endl;
-    std::cout << "TwoPassCov(X,Y): " << kvs::Stat::TwoPassCov( values1, values2 ) << std::endl;
-    std::cout << "OnlineCov(X,Y): " << kvs::Stat::OnlineCov( values1, values2 ) << std::endl;
-    std::cout << "StdDev(X): " << kvs::Stat::StdDev( values1 ) << std::endl;
-    std::cout << "StdDev(X,ShiftedVar): " << kvs::Stat::StdDev( values1, kvs::Stat::ShiftedVar<float> ) << std::endl;
-    std::cout << "Corr(X,Y): " << kvs::Stat::Corr( values1, values2 ) << std::endl;
-    std::cout << "AutoCorr(X): " << kvs::Stat::AutoCorr( values1 ) << std::endl;
-    std::cout << "AutoCorr(X,1): " << kvs::Stat::AutoCorr( values1, 1 ) << std::endl;
-    std::cout << "CrossCorr(X,Y): " << kvs::Stat::CrossCorr( values1, values2 ) << std::endl;
-    std::cout << "CrossCorr(X,Y,1): " << kvs::Stat::CrossCorr( values1, values2, 1 ) << std::endl;
+    std::cout << "Sum(X): " << kvs::Stat::Sum( X ) << std::endl;
+    std::cout << "Mean(X): " << kvs::Stat::Mean( X ) << std::endl;
+    std::cout << "Var(X): " << kvs::Stat::Var( X ) << std::endl;
+    std::cout << indent << "ShiftedVar(X): " << kvs::Stat::ShiftedVar( X ) << std::endl;
+    std::cout << indent << "TwoPassVar(X): " << kvs::Stat::TwoPassVar( X ) << std::endl;
+    std::cout << indent << "CompensatedVar(X): " << kvs::Stat::CompensatedVar( X ) << std::endl;
+    std::cout << indent << "OnlineVar(X): " << kvs::Stat::OnlineVar( X ) << std::endl;
+    std::cout << "Cov(X,Y): " << kvs::Stat::Cov( X, Y ) << std::endl;
+    std::cout << indent << "ShiftedCov(X,Y): " << kvs::Stat::ShiftedCov( X, Y ) << std::endl;
+    std::cout << indent << "TwoPassCov(X,Y): " << kvs::Stat::TwoPassCov( X, Y ) << std::endl;
+    std::cout << indent << "OnlineCov(X,Y): " << kvs::Stat::OnlineCov( X, Y ) << std::endl;
+    std::cout << "StdDev(X): " << kvs::Stat::StdDev( X ) << std::endl;
+    std::cout << indent << "StdDev(X,ShiftedVar): " << kvs::Stat::StdDev( X, kvs::Stat::ShiftedVar<float> ) << std::endl;
+    std::cout << "Corr(X,Y): " << kvs::Stat::Corr( X, Y ) << std::endl;
+    std::cout << "AutoCorr(X): " << kvs::Stat::AutoCorr( X ) << std::endl;
+    std::cout << indent << "AutoCorr(X,0): " << kvs::Stat::AutoCorr( X, 0 ) << std::endl;
+    std::cout << indent << "AutoCorr(X,1): " << kvs::Stat::AutoCorr( X, 1 ) << std::endl;
+    std::cout << indent << "AutoCorr(X,2): " << kvs::Stat::AutoCorr( X, 2 ) << std::endl;
+    std::cout << "CrossCorr(X,Y): " << kvs::Stat::CrossCorr( X, Y ) << std::endl;
+    std::cout << indent << "CrossCorr(X,Y,0): " << kvs::Stat::CrossCorr( X, Y, 0 ) << std::endl;
+    std::cout << indent << "CrossCorr(X,Y,1): " << kvs::Stat::CrossCorr( X, Y, 1 ) << std::endl;
+    std::cout << indent << "CrossCorr(X,Y,2): " << kvs::Stat::CrossCorr( X, Y, 2 ) << std::endl;
 
+    kvs::Stat::Standardize(X);
+    std::cout << "Standardize(X): " << X << std::endl;
+    std::cout << indent << "Mean(X): " << kvs::Stat::Mean(X) << std::endl;
+    std::cout << indent << "Var(X): " << kvs::Stat::Var(X) << std::endl;
     return 0;
 }

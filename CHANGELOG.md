@@ -11,6 +11,7 @@
 + kvs::Stat::Corr
 + kvs::Stat::AutoCorr
 + kvs::Stat::CrossCorr
++ kvs::Stat::Standardize
 + kvs::StudentTDistributiion
 + kvs::FisherFDistribution
 + kvs::ChiSquaredDistribution

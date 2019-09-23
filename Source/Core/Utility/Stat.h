@@ -3,6 +3,7 @@
 #include <numeric>
 #include <kvs/Assert>
 #include <kvs/ValueArray>
+#include <kvs/ValueTable>
 #include <kvs/Math>
 #include <kvs/Value>
 
@@ -555,6 +556,34 @@ kvs::ValueArray<T> CrossCorr( const kvs::ValueArray<T>& values1, const kvs::Valu
     kvs::ValueArray<T> corrs( n );
     for ( size_t i = 0; i < n; i++ ) { corrs[i] = CrossCorr( values1, values2, i ); }
     return corrs;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Standardize the given array.
+ *  @param  values [in/out] array
+ */
+/*===========================================================================*/
+template <typename T>
+void Standardize( kvs::ValueArray<T>& values )
+{
+    KVS_ASSERT( values.size() - 1 != 0 );
+
+    const size_t n = values.size();
+    T sum = T(0), sum2 = T(0);
+    for ( size_t i = 0; i < n; i++ )
+    {
+        sum += values[i];
+        sum2 += values[i] * values[i];
+    }
+
+    const kvs::Real64 var = kvs::Real64( ( sum2 - ( sum * sum ) / n ) ) / ( n - 1 );
+    const kvs::Real64 stddev = std::sqrt( var );
+    const kvs::Real64 mean = kvs::Real64( sum ) / n;
+    for ( size_t i = 0; i < n; i++ )
+    {
+        values[i] = ( values[i] - mean ) / stddev;
+    }
 }
 
 } // end of namespace Stat
