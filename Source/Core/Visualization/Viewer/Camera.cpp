@@ -142,6 +142,12 @@ void Camera::setLookAt( const kvs::Vec3& look_at )
     this->setPosition( this->position(), look_at, this->upVector() );
 }
 
+float Camera::devicePixelRatio() const
+{
+    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
+    return vp[2] / m_window_width;
+}
+
 /*==========================================================================*/
 /**
  *  Get the camera position.

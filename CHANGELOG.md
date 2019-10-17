@@ -125,6 +125,7 @@
 + kvs::ValueTable::beginRow
 + kvs::ValueTable::endRow
 + kvs::ValueTable::clone
++ kvs::Camera::devicePixelRatio
 
 **Added new examples**
 + Example/Utility/Stat
