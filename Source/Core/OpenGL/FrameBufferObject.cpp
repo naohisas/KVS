@@ -24,57 +24,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Construct a new FrameBufferObject class.
- */
-/*===========================================================================*/
-FrameBufferObject::FrameBufferObject():
-    m_id( 0 )
-{
-}
-
-/*===========================================================================*/
-/**
- *  Destroy the FrameBufferObject class.
- */
-/*===========================================================================*/
-FrameBufferObject::~FrameBufferObject()
-{
-    this->release();
-}
-
-/*===========================================================================*/
-/**
- *  Return object ID.
- *  @return object ID
- */
-/*===========================================================================*/
-GLuint FrameBufferObject::id() const
-{
-    return m_id;
-}
-
-/*===========================================================================*/
-/**
- *  Create frame buffer object.
- */
-/*===========================================================================*/
-void FrameBufferObject::create()
-{
-    this->createID();
-}
-
-/*===========================================================================*/
-/**
- *  Release frame buffer object.
- */
-/*===========================================================================*/
-void FrameBufferObject::release()
-{
-    this->deleteID();
-}
-
-/*===========================================================================*/
-/**
  *  Bind frame buffer object.
  */
 /*===========================================================================*/
@@ -109,8 +58,7 @@ bool FrameBufferObject::isValid() const
 
 bool FrameBufferObject::isBound() const
 {
-    if ( !this->isCreated() ) return false;
-
+    if ( !this->isCreated() ) { return false; }
     GLint id = kvs::OpenGL::Integer( GL_FRAMEBUFFER_BINDING );
     return static_cast<GLuint>( id ) == m_id;
 }

@@ -11,9 +11,7 @@
  *  $Id: FrameBuffer.h 1554 2013-04-20 15:52:04Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__FRAME_BUFFER_H_INCLUDE
-#define KVS__FRAME_BUFFER_H_INCLUDE
-
+#pragma once
 #include <kvs/OpenGL>
 #include <kvs/Deprecated>
 
@@ -29,12 +27,10 @@ namespace kvs
 class FrameBuffer
 {
 private:
-
     GLenum m_format; ///< pixel data format
     GLenum m_type; ///< pixel data type
 
 public:
-
     FrameBuffer();
     FrameBuffer( const GLenum format, const GLenum type );
     virtual ~FrameBuffer();
@@ -114,5 +110,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__FRAME_BUFFER_H_INCLUDE
