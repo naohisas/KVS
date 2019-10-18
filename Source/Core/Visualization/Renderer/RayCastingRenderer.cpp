@@ -93,7 +93,10 @@ void RayCastingRenderer::exec(
          BaseClass::windowHeight() != camera->windowHeight() )
     {
         BaseClass::setWindowSize( camera->windowWidth(), camera->windowHeight() );
-        const size_t npixels = BaseClass::windowWidth() * BaseClass::windowHeight();
+        BaseClass::setDevicePixelRatio( camera->devicePixelRatio() );
+        const int framebuffer_width = BaseClass::framebufferWidth();
+        const int framebuffer_height = BaseClass::framebufferHeight();
+        const size_t npixels = framebuffer_width * framebuffer_height;
         BaseClass::allocateColorData( npixels * 4 );
         BaseClass::allocateDepthData( npixels );
         kvs::OpenGL::GetModelViewMatrix( m_modelview );
@@ -177,7 +180,7 @@ void RayCastingRenderer::rasterize(
         {
             if ( m_modelview[i] != modelview[i] )
             {
-                ray_width = m_ray_width;
+                ray_width = m_ray_width * BaseClass::devicePixelRatio();
                 break;
             }
         }
@@ -194,8 +197,8 @@ void RayCastingRenderer::rasterize(
     kvs::VolumeRayIntersector ray( volume, modelview, projection, viewport );
 
     // Execute ray casting.
-    const size_t height = BaseClass::windowHeight();
-    const size_t width  = BaseClass::windowWidth();
+    const size_t width = BaseClass::framebufferWidth();
+    const size_t height = BaseClass::framebufferHeight();
     const kvs::Shader::ShadingModel& shader = BaseClass::shader();
     const kvs::ColorMap& cmap = BaseClass::transferFunction().colorMap();
     const kvs::OpacityMap& omap = BaseClass::transferFunction().opacityMap();
@@ -264,7 +267,7 @@ void RayCastingRenderer::rasterize(
                 } while ( ray.isInside() );
 
                 // Set pixel value.
-                pixel_data[ pixel_index     ] = static_cast<kvs::UInt8>( kvs::Math::Min( r, 255.0f ) + 0.5f );
+                pixel_data[ pixel_index + 0 ] = static_cast<kvs::UInt8>( kvs::Math::Min( r, 255.0f ) + 0.5f );
                 pixel_data[ pixel_index + 1 ] = static_cast<kvs::UInt8>( kvs::Math::Min( g, 255.0f ) + 0.5f );
                 pixel_data[ pixel_index + 2 ] = static_cast<kvs::UInt8>( kvs::Math::Min( b, 255.0f ) + 0.5f );
                 pixel_data[ pixel_index + 3 ] = static_cast<kvs::UInt8>( kvs::Math::Round( a * 255.0f ) );

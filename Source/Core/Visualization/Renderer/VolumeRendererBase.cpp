@@ -27,8 +27,9 @@ namespace kvs
  */
 /*==========================================================================*/
 VolumeRendererBase::VolumeRendererBase():
-    m_width( 0 ),
-    m_height( 0 ),
+    m_window_width( 0 ),
+    m_window_height( 0 ),
+    m_device_pixel_ratio( 1.0f ),
     m_shader( NULL )
 {
     m_depth_buffer.setFormat( GL_DEPTH_COMPONENT );
@@ -99,8 +100,10 @@ void VolumeRendererBase::fillColorData( const kvs::UInt8 value )
 /*===========================================================================*/
 void VolumeRendererBase::readImage()
 {
-    m_depth_buffer.readPixels( 0, 0, m_width, m_height, m_depth_data.data() );
-    m_color_buffer.readPixels( 0, 0, m_width, m_height, m_color_data.data() );
+    const size_t width = this->framebufferWidth();
+    const size_t height = this->framebufferHeight();
+    m_depth_buffer.readPixels( 0, 0, width, height, m_depth_data.data() );
+    m_color_buffer.readPixels( 0, 0, width, height, m_color_data.data() );
 }
 
 /*==========================================================================*/
@@ -110,15 +113,15 @@ void VolumeRendererBase::readImage()
 /*==========================================================================*/
 void VolumeRendererBase::drawImage()
 {
-    GLint viewport[4];
-    kvs::OpenGL::GetViewport( viewport );
+    const size_t width = this->framebufferWidth();
+    const size_t height = this->framebufferHeight();
 
     kvs::OpenGL::SetDepthFunc( GL_LEQUAL );
     kvs::OpenGL::SetDepthMask( GL_TRUE );
     kvs::OpenGL::SetColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
     {
         kvs::OpenGL::WithEnabled e( GL_DEPTH_TEST );
-        m_depth_buffer.drawPixels( 0, 0, m_width, m_height, m_depth_data.data() );
+        m_depth_buffer.drawPixels( 0, 0, width, height, m_depth_data.data() );
     }
 
     kvs::OpenGL::SetBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
@@ -126,7 +129,7 @@ void VolumeRendererBase::drawImage()
     {
         kvs::OpenGL::WithEnabled e( GL_BLEND );
         kvs::OpenGL::WithDisabled d( GL_DEPTH_TEST );
-        m_color_buffer.drawPixels( 0, 0, m_width, m_height, m_color_data.data() );
+        m_color_buffer.drawPixels( 0, 0, width, height, m_color_data.data() );
     }
 }
 

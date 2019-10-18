@@ -69,7 +69,7 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
     this->initialize();
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    ::LineRenderingFunction( line );
+    ::LineRenderingFunction( line, camera->devicePixelRatio() );
 
     BaseClass::stopTimer();
 }
@@ -107,7 +107,7 @@ void LineRenderer::initialize()
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
 
     // Polygon offset.
-    KVS_GL_CALL( glPolygonOffset( 1.0, 0.0 ) );
+    kvs::OpenGL::SetPolygonOffset( 1.0, 0.0 );
     kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
     // Lighting.
@@ -132,7 +132,7 @@ void LineRenderer::initialize()
             kvs::OpenGL::Enable( GL_LINE_SMOOTH );
             kvs::OpenGL::Enable( GL_BLEND );
             kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            KVS_GL_CALL( glHint( GL_LINE_SMOOTH_HINT, GL_NICEST ) );
+            kvs::OpenGL::Hint( GL_LINE_SMOOTH_HINT, GL_NICEST );
         }
     }
 }

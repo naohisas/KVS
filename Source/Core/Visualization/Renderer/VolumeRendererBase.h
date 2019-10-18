@@ -12,9 +12,7 @@
  *  $Id: VolumeRendererBase.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__VOLUME_RENDERER_BASE_H_INCLUDE
-#define KVS__VOLUME_RENDERER_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/DebugNew>
 #include <kvs/RendererBase>
 #include <kvs/TransferFunction>
@@ -36,9 +34,9 @@ class VolumeRendererBase : public kvs::RendererBase
     kvsModule( kvs::VolumeRendererBase, Renderer );
 
 private:
-
-    size_t m_width; ///< width of rendering image
-    size_t m_height; ///< height of rendering image 
+    size_t m_window_width; ///< window width
+    size_t m_window_height; ///< window height
+    float m_device_pixel_ratio; ///< device pixel ratio
     kvs::ValueArray<kvs::Real32> m_depth_data; ///< depth data as float type
     kvs::ValueArray<kvs::UInt8> m_color_data; ///< color (RGBA) data as uchar type
     kvs::FrameBuffer m_depth_buffer; ///< depth buffer
@@ -47,7 +45,6 @@ private:
     kvs::Shader::ShadingModel* m_shader; ///< shading method
 
 public:
-
     VolumeRendererBase();
     virtual ~VolumeRendererBase();
 
@@ -56,20 +53,23 @@ public:
         kvs::Camera* camera = NULL,
         kvs::Light* light  = NULL ) = 0;
 
-    size_t windowWidth() const { return m_width; }
-    size_t windowHeight() const { return m_height; }
+    size_t windowWidth() const { return m_window_width; }
+    size_t windowHeight() const { return m_window_height; }
+    size_t framebufferWidth() const { return m_window_width * m_device_pixel_ratio; }
+    size_t framebufferHeight() const { return m_window_height * m_device_pixel_ratio; }
+    float devicePixelRatio() const { return m_device_pixel_ratio; }
     template <typename ShadingType>
     void setShader( const ShadingType shader );
     void setTransferFunction( const kvs::TransferFunction& tfunc ) { m_tfunc = tfunc; }
     const kvs::TransferFunction& transferFunction() const { return m_tfunc; }
 
 protected:
-
     kvs::ValueArray<kvs::UInt8>& colorData() { return m_color_data; }
     kvs::ValueArray<kvs::Real32>& depthData() { return m_depth_data; }
     kvs::Shader::ShadingModel& shader() { return *m_shader; }
     kvs::TransferFunction& transferFunction() { return m_tfunc; }
-    void setWindowSize( const size_t width, const size_t height ) { m_width = width; m_height = height; }
+    void setWindowSize( const size_t width, const size_t height ) { m_window_width = width; m_window_height = height; }
+    void setDevicePixelRatio( const float dpr ) { m_device_pixel_ratio = dpr; }
     void allocateDepthData( const size_t size );
     void allocateColorData( const size_t size );
     void fillDepthData( const kvs::Real32 value );
@@ -95,5 +95,3 @@ inline void VolumeRendererBase::setShader( const ShadingType shader )
 };
 
 } // end of namespace kvs
-
-#endif // KVS__VOLUME_RENDERER_BASE_H_INCLUDE

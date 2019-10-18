@@ -12,9 +12,7 @@
  *  $Id: LineRenderingFunction.h 1418 2013-02-21 07:02:46Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__LINE_RENDERING_FUNCTION_H_INCLUDE
-#define KVS__LINE_RENDERING_FUNCTION_H_INCLUDE
-
+#pragma once
 #include <kvs/LineObject>
 #include <kvs/RGBColor>
 #include <kvs/Vector3>
@@ -34,397 +32,310 @@ namespace
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering strip line with VCs and S.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Strip_VCs_S( const kvs::LineObject* line )
+void Rendering_Strip_VCs_S( const kvs::LineObject* line, const float dpr )
 {
-    glLineWidth( line->size( 0 ) );
-    glBegin( GL_LINE_STRIP );
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
     {
         const size_t nvertices = line->numberOfVertices();
-
-        for( size_t i = 0; i < nvertices; i++ )
+        for ( size_t i = 0; i < nvertices; i++ )
         {
-            const kvs::RGBColor& color    = line->color(i);
-            const kvs::Vector3f& position = line->coord(i);
-
-            glColor3ub( color.r(),    color.g(),    color.b()  );
-            glVertex3f( position.x(), position.y(), position.z() );
+            kvs::OpenGL::Color( line->color(i) );
+            kvs::OpenGL::Vertex( line->coord(i) );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering strip ine with VCs and Ss.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Strip_VCs_Ss( const kvs::LineObject* line )
+void Rendering_Strip_VCs_Ss( const kvs::LineObject* line, const float dpr )
 {
     const size_t nlines = line->numberOfVertices() - 1;
-    for( size_t i = 0; i < nlines; i++ )
+    for ( size_t i = 0; i < nlines; i++ )
     {
-        glLineWidth( line->size(i) );
-
-        const kvs::RGBColor& color1    = line->color(i);
-        const kvs::Vector3f& position1 = line->coord(i);
-        const kvs::RGBColor& color2    = line->color(i+1);
-        const kvs::Vector3f& position2 = line->coord(i+1);
-
-        glBegin( GL_LINES );
-        {
-            glColor3ub( color1.r(),    color1.g(),    color1.b()  );
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glColor3ub( color2.r(),    color2.g(),    color2.b()  );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
+        kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Color( line->color(i) );
+        kvs::OpenGL::Vertex( line->coord(i) );
+        kvs::OpenGL::Color( line->color(i+1) );
+        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::End();
     }
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering strip line with LC and S.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Strip_LC_S( const kvs::LineObject* line )
+void Rendering_Strip_LC_S( const kvs::LineObject* line, const float dpr )
 {
-    glLineWidth( line->size( 0 ) );
-
-    const size_t         nvertices = line->numberOfVertices();
-    const kvs::RGBColor& color     = line->color(0);
-
-    glBegin( GL_LINE_STRIP );
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Color( line->color(0) );
+    const size_t nvertices = line->numberOfVertices();
+    for ( size_t i = 0; i < nvertices; i++ )
     {
-        glColor3ub( color.r(), color.g(), color.b() );
-        for( size_t i = 0; i < nvertices; i++ )
-        {
-            const kvs::Vector3f& position = line->coord(i);
-            glVertex3f( position.x(), position.y(), position.z() );
-        }
+        kvs::OpenGL::Vertex( line->coord(i) );
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering strip line with LCs and S.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Strip_LCs_S( const kvs::LineObject* line )
+void Rendering_Strip_LCs_S( const kvs::LineObject* line, const float dpr )
 {
-    glLineWidth( line->size( 0 ) );
-
+    kvs::OpenGL::SetLineWidth( line->size( 0 ) * dpr );
+    kvs::OpenGL::Begin( GL_LINES );
     const size_t num = line->numberOfVertices() - 1;
-
-    glBegin( GL_LINES );
+    for ( size_t i = 0; i < num; i++ )
     {
-        for( size_t i = 0; i < num; i++ )
-        {
-            const kvs::RGBColor& color     = line->color(i);
-            const kvs::Vector3f& position1 = line->coord(i);
-            const kvs::Vector3f& position2 = line->coord(i+1);
-
-            glColor3ub( color.r(),    color.g(),    color.b()  );
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
+        kvs::OpenGL::Color( line->color(i) );
+        kvs::OpenGL::Vertex( line->coord(i) );
+        kvs::OpenGL::Vertex( line->coord(i+1) );
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering strip line with LC and Ss.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Strip_LC_Ss( const kvs::LineObject* line )
+void Rendering_Strip_LC_Ss( const kvs::LineObject* line, const float dpr )
 {
-    const size_t         num   = line->numberOfVertices() - 1;
-    const kvs::RGBColor& color = line->color(0);
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    for( size_t i = 0; i < num; i++ )
+    kvs::OpenGL::Color( line->color(0) );
+    const size_t num = line->numberOfVertices() - 1;
+    for ( size_t i = 0; i < num; i++ )
     {
-        glLineWidth( line->size( i ) );
-
-        const kvs::Vector3f& position1 = line->coord(i);
-        const kvs::Vector3f& position2 = line->coord(i+1);
-
-        glBegin( GL_LINES );
-        {
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
+        kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Vertex( line->coord(i) );
+        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::End();
     }
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering strip line with LCs and Ss.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Strip_LCs_Ss( const kvs::LineObject* line )
+void Rendering_Strip_LCs_Ss( const kvs::LineObject* line, const float dpr )
 {
     const size_t num = line->numberOfVertices() - 1;
-
-    for( size_t i = 0; i < num; i++ )
+    for ( size_t i = 0; i < num; i++ )
     {
-        const kvs::RGBColor& color     = line->color(i);
-        const kvs::Vector3f& position1 = line->coord(i);
-        const kvs::Vector3f& position2 = line->coord(i+1);
-
-        glLineWidth( line->size( i ) );
-        glColor3ub( color.r(),    color.g(),    color.b()  );
-
-        glBegin( GL_LINES );
-        {
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
+        kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
+        kvs::OpenGL::Color( line->color(i) );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Vertex( line->coord(i) );
+        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::End();
     }
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering uniline with VCs and S.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Uniline_VCs_S( const kvs::LineObject* line )
+void Rendering_Uniline_VCs_S( const kvs::LineObject* line, const float dpr )
 {
-    glLineWidth( line->size( 0 ) );
-
-    glBegin( GL_LINE_STRIP );
-    {
-        const size_t nconnections = line->numberOfConnections();
-        for( size_t i = 0; i < nconnections; i++ )
-        {
-            size_t id = *( line->connections().data() + i );
-
-            const kvs::RGBColor& color    = line->color(id);
-            const kvs::Vector3f& position = line->coord(id);
-
-            glColor3ub( color.r(),    color.g(),    color.b()  );
-            glVertex3f( position.x(), position.y(), position.z() );
-        }
-    }
-    glEnd();
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Uniline_VCs_Ss( const kvs::LineObject* line )
-{
-    const size_t num = line->numberOfConnections() - 1;
-    for( size_t i = 0; i < num; i++ )
-    {
-        size_t id1 = *( line->connections().data() + i   );
-        size_t id2 = *( line->connections().data() + i+1 );
-
-        const kvs::RGBColor& color1    = line->color(id1);
-        const kvs::RGBColor& color2    = line->color(id2);
-        const kvs::Vector3f& position1 = line->coord(id1);
-        const kvs::Vector3f& position2 = line->coord(id2);
-
-        glLineWidth( line->size( i ) );
-        glBegin( GL_LINES );
-        {
-            glColor3ub( color1.r(),    color1.g(),    color1.b()  );
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glColor3ub( color2.r(),    color2.g(),    color2.b()  );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
-    }
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Uniline_LC_S( const kvs::LineObject* line )
-{
-    glLineWidth( line->size( 0 ) );
-
-    glBegin( GL_LINE_STRIP );
-    {
-        const kvs::RGBColor& color = line->color(0);
-        glColor3ub( color.r(), color.g(), color.b() );
-
-        const size_t nconnections = line->numberOfConnections();
-
-        for( size_t i = 0; i < nconnections; i++ )
-        {
-            const kvs::Vector3f& position = line->coord(i);
-            glVertex3d( position.x(), position.y(), position.z() );
-        }
-    }
-    glEnd();
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Uniline_LCs_S( const kvs::LineObject* line )
-{
-    glLineWidth( line->size( 0 ) );
-
-    glBegin( GL_LINES );
-    {
-        const size_t num = line->numberOfConnections() - 1;
-        for( size_t i = 0; i < num; i++ )
-        {
-            const kvs::RGBColor& color     = line->color(i);
-            const kvs::Vector3f& position1 = line->coord(i);
-            const kvs::Vector3f& position2 = line->coord(i+1);
-
-            glColor3ub( color.r(),    color.g(),    color.b()  );
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-    }
-    glEnd();
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Uniline_LC_Ss( const kvs::LineObject* line )
-{
-    const kvs::RGBColor& color = line->color(0);
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    const size_t num = line->numberOfConnections() - 1;
-
-    for( size_t i = 0; i < num; i++ )
-    {
-        const kvs::Vector3f& position1 = line->coord(i  );
-        const kvs::Vector3f& position2 = line->coord(i+1);
-
-        glLineWidth( line->size( i ) );
-        glBegin( GL_LINES );
-        {
-            glVertex3d( position1.x(), position1.y(), position1.z() );
-            glVertex3d( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
-    }
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Uniline_LCs_Ss( const kvs::LineObject* line )
-{
-    const size_t num = line->numberOfConnections() - 1;
-    for( size_t i = 0; i < num; i++ )
-    {
-        const kvs::RGBColor& color     = line->color(i);
-        const kvs::Vector3f& position1 = line->coord(i);
-        const kvs::Vector3f& position2 = line->coord(i+1);
-
-        glLineWidth( line->size( i ) );
-        glColor3ub( color.r(), color.g(), color.b()  );
-        glBegin( GL_LINES );
-        {
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
-    }
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Polyline_VCs_S( const kvs::LineObject* line )
-{
-    glLineWidth( line->size( 0 ) );
-
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
     const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
+    for ( size_t i = 0; i < nconnections; i++ )
     {
-        const size_t index = 2 * i;
-        const size_t id1   = *( line->connections().data() + index );
-        const size_t id2   = *( line->connections().data() + index + 1 );
+        const size_t id = *( line->connections().data() + i );
+        kvs::OpenGL::Color( line->color(id) );
+        kvs::OpenGL::Vertex( line->coord(id) );
+    }
+    kvs::OpenGL::End();
+}
 
-        glBegin( GL_LINE_STRIP );
-        {
-            for( size_t j = id1; j <= id2; j++ )
-            {
-                const kvs::RGBColor& color    = line->color(j);
-                const kvs::Vector3f& position = line->coord(j);
-
-                glColor3ub( color.r(),    color.g(),    color.b()  );
-                glVertex3f( position.x(), position.y(), position.z() );
-            }
-        }
-        glEnd();
+/*==========================================================================*/
+/**
+ *  Rendering uniline with VCs and Ss.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Uniline_VCs_Ss( const kvs::LineObject* line, const float dpr )
+{
+    const size_t num = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < num; i++ )
+    {
+        const size_t id1 = *( line->connections().data() + i   );
+        const size_t id2 = *( line->connections().data() + i+1 );
+        kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Color( line->color(id1) );
+        kvs::OpenGL::Vertex( line->coord(id1) );
+        kvs::OpenGL::Color( line->color(id2) );
+        kvs::OpenGL::Vertex( line->coord(id2) );
+        kvs::OpenGL::End();
     }
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering uniline with LC and S.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Polyline_VCs_Ss( const kvs::LineObject* line )
+void Rendering_Uniline_LC_S( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Begin( GL_LINE_STRIP );
+    kvs::OpenGL::Color( line->color(0) );
+    const size_t nconnections = line->numberOfConnections();
+    for ( size_t i = 0; i < nconnections; i++ )
+    {
+        kvs::OpenGL::Vertex( line->coord(i) );
+    }
+    kvs::OpenGL::End();
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering uniline with LCs and S.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Uniline_LCs_S( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Begin( GL_LINES );
+    const size_t num = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < num; i++ )
+    {
+        kvs::OpenGL::Color( line->color(i) );
+        kvs::OpenGL::Vertex( line->coord(i) );
+        kvs::OpenGL::Vertex( line->coord(i+1) );
+    }
+    kvs::OpenGL::End();
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering uniline with LC and Ss.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Uniline_LC_Ss( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::Color( line->color(0) );
+    const size_t num = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < num; i++ )
+    {
+        kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Vertex( line->coord(i) );
+        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::End();
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering uniline with LCs and Ss.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Uniline_LCs_Ss( const kvs::LineObject* line, const float dpr )
+{
+    const size_t num = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < num; i++ )
+    {
+        kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
+        kvs::OpenGL::Color( line->color(i) );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Vertex( line->coord(i) );
+        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::End();
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering polyline with VCs and S.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Polyline_VCs_S( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    const size_t nconnections = line->numberOfConnections();
+    for ( size_t i = 0; i < nconnections; i++ )
+    {
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        const size_t index = 2 * i;
+        const size_t id1 = *( line->connections().data() + index );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        for ( size_t j = id1; j <= id2; j++ )
+        {
+            kvs::OpenGL::Color( line->color(j) );
+            kvs::OpenGL::Vertex( line->coord(j) );
+        }
+        kvs::OpenGL::End();
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering polyline with VCs and Ss.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Polyline_VCs_Ss( const kvs::LineObject* line, const float dpr )
 {
     int ctr = 0;
     const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
+    for ( size_t i = 0; i < nconnections; i++ )
     {
-        const size_t index = 2*i;
-        const size_t id1   = *( line->connections().data() + index   );
-        const size_t id2   = *( line->connections().data() + index+1 );
-
-        for( size_t j = id1; j < id2; j++ )
+        const size_t index = 2 * i;
+        const size_t id1 = *( line->connections().data() + index   );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        for ( size_t j = id1; j < id2; j++ )
         {
-            const kvs::RGBColor& color1    = line->color(j);
-            const kvs::RGBColor& color2    = line->color(j+1);
-            const kvs::Vector3f& position1 = line->coord(j);
-            const kvs::Vector3f& position2 = line->coord(j+1);
-
-            glLineWidth( line->size( ctr ) );
-            glBegin( GL_LINES );
-            {
-                glColor3ub( color1.r(),    color1.g(),    color1.b()  );
-                glVertex3f( position1.x(), position1.y(), position1.z() );
-                glColor3ub( color2.r(),    color2.g(),    color2.b()  );
-                glVertex3f( position2.x(), position2.y(), position2.z() );
-            }
-            glEnd();
-
+            kvs::OpenGL::SetLineWidth( line->size(ctr) * dpr );
+            kvs::OpenGL::Begin( GL_LINES );
+            kvs::OpenGL::Color( line->color(j) );
+            kvs::OpenGL::Vertex( line->coord(j) );
+            kvs::OpenGL::Color( line->color(j+1) );
+            kvs::OpenGL::Vertex( line->coord(j+1) );
+            kvs::OpenGL::End();
             ctr++;
         }
     }
@@ -432,107 +343,84 @@ void Rendering_Polyline_VCs_Ss( const kvs::LineObject* line )
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering polyline with LC and S.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Polyline_LC_S( const kvs::LineObject* line )
+void Rendering_Polyline_LC_S( const kvs::LineObject* line, const float dpr )
 {
-    glLineWidth( line->size( 0 ) );
-
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
     const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
+    for ( size_t i = 0; i < nconnections; i++ )
     {
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        kvs::OpenGL::Color( line->color(0) );
         const size_t index = 2 * i;
-        const size_t id1   = *( line->connections().data() + index );
-        const size_t id2   = *( line->connections().data() + index + 1 );
-
-        glBegin( GL_LINE_STRIP );
+        const size_t id1 = *( line->connections().data() + index );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        for ( size_t j = id1; j < id2; j++ )
         {
-            const kvs::RGBColor& color = line->color(0);
-            glColor3ub( color.r(), color.g(), color.b() );
-
-            for( size_t j = id1; j < id2; j++ )
-            {
-                const kvs::Vector3f& position1 = line->coord(j);
-                const kvs::Vector3f& position2 = line->coord(j+1);
-
-                glVertex3f( position1.x(), position1.y(), position1.z() );
-                glVertex3f( position2.x(), position2.y(), position2.z() );
-            }
+            kvs::OpenGL::Vertex( line->coord(j) );
+            kvs::OpenGL::Vertex( line->coord(j+1) );
         }
-        glEnd();
+        kvs::OpenGL::End();
     }
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering polyline with LCs and S.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Polyline_LCs_S( const kvs::LineObject* line )
+void Rendering_Polyline_LCs_S( const kvs::LineObject* line, const float dpr )
 {
-    glLineWidth( line->size( 0 ) );
-
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
     int ctr = 0;
     const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
+    for ( size_t i = 0; i < nconnections; i++ )
     {
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
         const size_t index = 2 * i;
-        const size_t id1   = *( line->connections().data() + index );
-        const size_t id2   = *( line->connections().data() + index + 1 );
-
-        glBegin( GL_LINE_STRIP );
+        const size_t id1 = *( line->connections().data() + index );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        for ( size_t j = id1; j < id2; j++ )
         {
-            for( size_t j = id1; j < id2; j++ )
-            {
-                const kvs::Vector3f& position1 = line->coord(j);
-                const kvs::Vector3f& position2 = line->coord(j+1);
-                const kvs::RGBColor& color     = line->color(ctr);
-
-                glColor3ub( color.r(), color.g(), color.b() );
-                glVertex3f( position1.x(), position1.y(), position1.z() );
-                glVertex3f( position2.x(), position2.y(), position2.z() );
-                ctr++;
-            }
+            kvs::OpenGL::Color( line->color(ctr) );
+            kvs::OpenGL::Vertex( line->coord(j) );
+            kvs::OpenGL::Vertex( line->coord(j+1) );
+            ctr++;
         }
-        glEnd();
+        kvs::OpenGL::End();
     }
 }
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering polyline with LC and Ss.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Polyline_LC_Ss( const kvs::LineObject* line )
+void Rendering_Polyline_LC_Ss( const kvs::LineObject* line, const float dpr )
 {
     int ctr = 0;
     const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
+    for ( size_t i = 0; i < nconnections; i++ )
     {
-        const size_t index = 2*i;
-        const size_t id1   = *( line->connections().data() + index   );
-        const size_t id2   = *( line->connections().data() + index+1 );
-
-        const kvs::RGBColor& color = line->color(0);
-        glColor3ub( color.r(), color.g(), color.b() );
-
-        for( size_t j = id1; j < id2; j++ )
+        kvs::OpenGL::Color( line->color(0) );
+        const size_t index = 2 * i;
+        const size_t id1 = *( line->connections().data() + index   );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        for ( size_t j = id1; j < id2; j++ )
         {
-            const kvs::Vector3f& position1 = line->coord(j);
-            const kvs::Vector3f& position2 = line->coord(j+1);
-
-            glLineWidth( line->size( ctr ) );
-            glBegin( GL_LINES );
-            {
-                glVertex3f( position1.x(), position1.y(), position1.z() );
-                glVertex3f( position2.x(), position2.y(), position2.z() );
-            }
-            glEnd();
-
+            kvs::OpenGL::SetLineWidth( line->size(ctr) * dpr );
+            kvs::OpenGL::Begin( GL_LINES );
+            kvs::OpenGL::Vertex( line->coord(j) );
+            kvs::OpenGL::Vertex( line->coord(j+1) );
+            kvs::OpenGL::End();
             ctr++;
         }
     }
@@ -540,221 +428,173 @@ void Rendering_Polyline_LC_Ss( const kvs::LineObject* line )
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering polyline with LCs and Ss.
  *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Polyline_LCs_Ss( const kvs::LineObject* line )
+void Rendering_Polyline_LCs_Ss( const kvs::LineObject* line, const float dpr )
 {
     int ctr = 0;
     const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
+    for ( size_t i = 0; i < nconnections; i++ )
     {
-        const size_t index = 2*i;
-        const size_t id1   = *( line->connections().data() + index   );
-        const size_t id2   = *( line->connections().data() + index+1 );
-
-        for( size_t j = id1; j < id2; j++ )
-        {
-            const kvs::RGBColor& color     = line->color(ctr);
-            const kvs::Vector3f& position1 = line->coord(j);
-            const kvs::Vector3f& position2 = line->coord(j+1);
-
-            glLineWidth( line->size( ctr ) );
-            glBegin( GL_LINES );
-            {
-                glColor3ub( color.r(),     color.g(),     color.b()     );
-                glVertex3f( position1.x(), position1.y(), position1.z() );
-                glVertex3f( position2.x(), position2.y(), position2.z() );
-            }
-            glEnd();
-
-            ctr++;
-        }
-    }
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Segment_VCs_S( const kvs::LineObject* line )
-{
-    glLineWidth( line->size( 0 ) );
-
-    glBegin( GL_LINES );
-    {
-        const size_t num = line->numberOfConnections() * 2;
-        for( size_t i = 0; i < num; i++ )
-        {
-            const size_t id = *( line->connections().data() + i );
-
-            const kvs::RGBColor& color    = line->color(id);
-            const kvs::Vector3f& position = line->coord(id);
-
-            glColor3ub( color.r(),    color.g(),    color.b()  );
-            glVertex3f( position.x(), position.y(), position.z() );
-        }
-    }
-    glEnd();
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Segment_VCs_Ss( const kvs::LineObject* line )
-{
-    const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
-    {
-        const size_t index = 2*i;
-        const size_t id1   = *( line->connections().data() + index   );
-        const size_t id2   = *( line->connections().data() + index+1 );
-
-        const kvs::RGBColor& color1    = line->color(id1);
-        const kvs::RGBColor& color2    = line->color(id2);
-        const kvs::Vector3f& position1 = line->coord(id1);
-        const kvs::Vector3f& position2 = line->coord(id2);
-
-        glLineWidth( line->size( i ) );
-        glBegin( GL_LINES );
-        {
-            glColor3ub( color1.r(),    color1.g(),    color1.b()  );
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glColor3ub( color2.r(),    color2.g(),    color2.b()  );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
-    }
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Segment_LC_S( const kvs::LineObject* line )
-{
-    glLineWidth( line->size( 0 ) );
-
-    const kvs::RGBColor& color = line->color(0);
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    glBegin( GL_LINES );
-    {
-        const size_t num = line->numberOfConnections() * 2;
-        for( size_t i = 0; i < num; i++ )
-        {
-            const size_t id = *( line->connections().data() + i );
-            const kvs::Vector3f& position = line->coord(id);
-
-            glVertex3f( position.x(), position.y(), position.z() );
-        }
-    }
-    glEnd();
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Segment_LCs_S( const kvs::LineObject* line )
-{
-    glLineWidth( line->size( 0 ) );
-
-    glBegin( GL_LINES );
-    {
-        const size_t nconnections = line->numberOfConnections();
-        for( size_t i = 0; i < nconnections; i++ )
-        {
-            const kvs::RGBColor& color = line->color(i);
-
-            const size_t index = 2 * i;
-            const size_t id1 = *( line->connections().data() + index   );
-            const size_t id2 = *( line->connections().data() + index+1 );
-
-            const kvs::Vector3f& position1 = line->coord(id1);
-            const kvs::Vector3f& position2 = line->coord(id2);
-
-            glColor3ub( color.r(),    color.g(),    color.b()  );
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-    }
-    glEnd();
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Segment_LC_Ss( const kvs::LineObject* line )
-{
-    const kvs::RGBColor& color = line->color(0);
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
-    {
-        const size_t index = 2*i;
-        const size_t id1   = *( line->connections().data() + index );
-        const size_t id2   = *( line->connections().data() + index+1 );
-
-        const kvs::Vector3f& position1 = line->coord(id1);
-        const kvs::Vector3f& position2 = line->coord(id2);
-
-        glLineWidth( line->size( i ) );
-        glBegin( GL_LINES );
-        {
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
-        }
-        glEnd();
-    }
-}
-
-/*==========================================================================*/
-/**
- *  
- *  @param line [in] pointer to the line object
- */
-/*==========================================================================*/
-void Rendering_Segment_LCs_Ss( const kvs::LineObject* line )
-{
-    const size_t nconnections = line->numberOfConnections();
-    for( size_t i = 0; i < nconnections; i++ )
-    {
-        const kvs::RGBColor& color = line->color(i);
-
         const size_t index = 2 * i;
         const size_t id1 = *( line->connections().data() + index   );
         const size_t id2 = *( line->connections().data() + index+1 );
-        const kvs::Vector3f& position1 = line->coord(id1);
-        const kvs::Vector3f& position2 = line->coord(id2);
-
-        glColor3ub( color.r(), color.g(), color.b() );
-        glLineWidth( line->size( i ) );
-
-        glBegin( GL_LINES );
+        for ( size_t j = id1; j < id2; j++ )
         {
-            glVertex3f( position1.x(), position1.y(), position1.z() );
-            glVertex3f( position2.x(), position2.y(), position2.z() );
+            kvs::OpenGL::SetLineWidth( line->size(ctr) * dpr );
+            kvs::OpenGL::Begin( GL_LINES );
+            kvs::OpenGL::Color( line->color(ctr) );
+            kvs::OpenGL::Vertex( line->coord(j) );
+            kvs::OpenGL::Vertex( line->coord(j+1) );
+            kvs::OpenGL::End();
+            ctr++;
         }
-        glEnd();
     }
 }
 
-typedef void (*LineRenderingFunctionType)( const kvs::LineObject* line );
+/*==========================================================================*/
+/**
+ *  Rendering segment line VCs and S.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Segment_VCs_S( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Begin( GL_LINES );
+    const size_t num = line->numberOfConnections() * 2;
+    for ( size_t i = 0; i < num; i++ )
+    {
+        const size_t id = *( line->connections().data() + i );
+        kvs::OpenGL::Color( line->color(id) );
+        kvs::OpenGL::Vertex( line->coord(id) );
+    }
+    kvs::OpenGL::End();
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering segment line VCs and Ss.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Segment_VCs_Ss( const kvs::LineObject* line, const float dpr )
+{
+    const size_t nconnections = line->numberOfConnections();
+    for ( size_t i = 0; i < nconnections; i++ )
+    {
+        const size_t index = 2 * i;
+        const size_t id1 = *( line->connections().data() + index   );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Color( line->color(id1) );
+        kvs::OpenGL::Vertex( line->coord(id1) );
+        kvs::OpenGL::Color( line->color(id2) );
+        kvs::OpenGL::Vertex( line->coord(id2) );
+        kvs::OpenGL::End();
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering segment line LC and S.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Segment_LC_S( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Color( line->color(0) );
+    kvs::OpenGL::Begin( GL_LINES );
+    const size_t num = line->numberOfConnections() * 2;
+    for ( size_t i = 0; i < num; i++ )
+    {
+        const size_t id = *( line->connections().data() + i );
+        kvs::OpenGL::Vertex( line->coord(id) );
+    }
+    kvs::OpenGL::End();
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering segment line LCs and S.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Segment_LCs_S( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
+    kvs::OpenGL::Begin( GL_LINES );
+    const size_t nconnections = line->numberOfConnections();
+    for ( size_t i = 0; i < nconnections; i++ )
+    {
+        const size_t index = 2 * i;
+        const size_t id1 = *( line->connections().data() + index   );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        kvs::OpenGL::Color( line->color(i) );
+        kvs::OpenGL::Vertex( line->coord(id1) );
+        kvs::OpenGL::Vertex( line->coord(id2) );
+    }
+    kvs::OpenGL::End();
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering segment line with LC and Ss.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Segment_LC_Ss( const kvs::LineObject* line, const float dpr )
+{
+    kvs::OpenGL::Color( line->color(0) );
+    const size_t nconnections = line->numberOfConnections();
+    for ( size_t i = 0; i < nconnections; i++ )
+    {
+        const size_t index = 2 * i;
+        const size_t id1 = *( line->connections().data() + index );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        kvs::OpenGL::SetLineWidth( line->size( i ) * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Vertex( line->coord( id1 ) );
+        kvs::OpenGL::Vertex( line->coord( id2 ) );
+        kvs::OpenGL::End();
+    }
+}
+
+/*==========================================================================*/
+/**
+ *  Rendering segment line with LCs and Ss.
+ *  @param line [in] pointer to the line object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_Segment_LCs_Ss( const kvs::LineObject* line, const float dpr )
+{
+    const size_t nconnections = line->numberOfConnections();
+    for ( size_t i = 0; i < nconnections; i++ )
+    {
+        const size_t index = 2 * i;
+        const size_t id1 = *( line->connections().data() + index );
+        const size_t id2 = *( line->connections().data() + index + 1 );
+        kvs::OpenGL::Color( line->color( i ) );
+        kvs::OpenGL::SetLineWidth( line->size( i ) * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        kvs::OpenGL::Vertex( line->coord( id1 ) );
+        kvs::OpenGL::Vertex( line->coord( id2 ) );
+        kvs::OpenGL::End();
+    }
+}
+
+typedef void (*LineRenderingFunctionType)( const kvs::LineObject* line, const float dpr );
 
 enum LineRenderingType
 {
@@ -844,9 +684,8 @@ LineRenderingFunctionType Rendering[NumberOfRenderingTypes] =
 
 LineRenderingType GetLineRenderingType( const kvs::LineObject* line )
 {
-    const size_t nsizes    = line->numberOfSizes();
-    const size_t ncolors   = line->numberOfColors();
-
+    const size_t nsizes = line->numberOfSizes();
+    const size_t ncolors = line->numberOfColors();
     switch( line->lineType() )
     {
     case kvs::LineObject::Strip:    RETURN_RENDERING_TYPE( Strip );
@@ -859,12 +698,12 @@ LineRenderingType GetLineRenderingType( const kvs::LineObject* line )
     return( Type_Strip_VCs_S );
 };
 
-void LineRenderingFunction( const kvs::LineObject* line )
+void LineRenderingFunction( const kvs::LineObject* line, const float dpr = 1.0f )
 {
-    if( line->numberOfVertices() > 0 )
+    if ( line->numberOfVertices() > 0 )
     {
         LineRenderingType type = GetLineRenderingType( line );
-        Rendering[type]( line );
+        Rendering[type]( line, dpr );
     }
 };
 
@@ -877,5 +716,3 @@ void LineRenderingFunction( const kvs::LineObject* )
 #endif // KVS_ENABLE_OPENGL
 
 } // end of namespace
-
-#endif // KVS__LINE_RENDERING_FUNCTION_H_INCLUDE
