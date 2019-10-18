@@ -150,6 +150,13 @@
 + Example/Matrix/Vector2
 + Example/Matrix/Vector3
 + Example/Matrix/Vector4
++ Example/Visualization/CheckBox
++ Example/Visualization/ColorMapBar
++ Example/Visualization/Label
++ Example/Visualization/OrientationAxis
++ Example/Visualization/PushButton
++ Example/Visualization/RadioButton
++ Example/Visualization/Slider
 
 **Added new macros**
 + KVS_COMPILER_SUPPORT_CXX98
