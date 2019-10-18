@@ -26,8 +26,8 @@ namespace
 {
 const double MinValue = 0.0f;
 const double MaxValue = 255.0f;
-const size_t ColorMapBarWidth = 150;
-const size_t ColorMapBarHeight = 30;
+const size_t ColorMapBarWidth = 200;
+const size_t ColorMapBarHeight = 20;
 const size_t ColorMapBarMargin = 10;
 }
 

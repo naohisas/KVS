@@ -126,6 +126,15 @@
 + kvs::ValueTable::endRow
 + kvs::ValueTable::clone
 + kvs::Camera::devicePixelRatio
++ kvs::OrientationAxis::setAxisTypeToCornered
++ kvs::OrientationAxis::setAxisTypeToCentered
++ kvs::OrientationAxis::setBoxTypeToWired
++ kvs::OrientationAxis::setBoxTypeToSolid
++ kvs::OrientationAxis::setProjectionTypeToPerspective
++ kvs::OrientationAxis::setProjectionTypeToOrthogonal
++ kvs::Label::setText for std::string
++ kvs::Label::addText for std::string
++ kvs::WidgetBase::font
 
 **Added new examples**
 + Example/Utility/Stat
