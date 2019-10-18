@@ -49,5 +49,5 @@ int main( int argc, char** argv )
     orientation_axis.setBoxType( kvs::glut::OrientationAxis::SolidBox );
     orientation_axis.show();
 
-    return( app.run() );
+    return app.run();
 }
