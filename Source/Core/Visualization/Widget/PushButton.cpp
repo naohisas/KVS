@@ -134,7 +134,7 @@ int PushButton::get_aligned_y()
 void PushButton::draw_button()
 {
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );
     const GLfloat x1 = static_cast<GLfloat>( BaseClass::x1() - BaseClass::margin() );

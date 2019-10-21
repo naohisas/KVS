@@ -66,7 +66,7 @@ CheckBox::CheckBox( kvs::ScreenBase* screen ):
 void CheckBox::draw_box()
 {
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     const int dy = BaseClass::painter().fontMetrics().height() - ::BoxHeight;
     const GLfloat x0 = static_cast<GLfloat>( BaseClass::x0() + BaseClass::margin() );

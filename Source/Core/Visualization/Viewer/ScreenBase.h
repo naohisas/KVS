@@ -52,6 +52,7 @@ private:
     kvs::DisplayFormat m_display_format; ///< display format
     kvs::EventHandler* m_event_handler; ///< event handler
     kvs::PaintDevice* m_paint_device; ///< paint device
+    float m_device_pixel_ratio; ///< device pixel ratio
 
 public:
     ScreenBase();
@@ -65,6 +66,7 @@ public:
     const kvs::DisplayFormat& displayFormat() const { return m_display_format; }
     kvs::EventHandler* eventHandler() { return m_event_handler; }
     kvs::PaintDevice* paintDevice() { return m_paint_device; }
+    float devicePixelRatio() const { return m_device_pixel_ratio; }
 
     void setPosition( const int x, const int y ) { m_x = x; m_y = y; }
     void setSize( const int width, const int height ) { m_width = width; m_height = height; }
@@ -101,6 +103,9 @@ public:
     KVS_DEPRECATED( void addMouseDoubleClickEvent( kvs::MouseDoubleClickEventListener* event ) ) { this->addEvent( event ); }
     KVS_DEPRECATED( void addWheelEvent( kvs::WheelEventListener* event ) ) { this->addEvent( event ); }
     KVS_DEPRECATED( void addKeyPressEvent( kvs::KeyPressEventListener* event ) ) { this->addEvent( event ); }
+
+protected:
+    void setDevicePixelRatio( const float ratio ) { m_device_pixel_ratio = ratio; }
 };
 
 } // end of namespace kvs

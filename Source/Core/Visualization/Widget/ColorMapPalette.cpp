@@ -314,10 +314,11 @@ void ColorMapPalette::draw_palette()
     attrib.disable( GL_TEXTURE_2D );
     attrib.disable( GL_TEXTURE_3D );
 
-    const int x0 = m_palette.x0();
-    const int x1 = m_palette.x1();
-    const int y0 = m_palette.y0();
-    const int y1 = m_palette.y1();
+    const float dpr = screen()->devicePixelRatio();
+    const int x0 = m_palette.x0() * dpr;
+    const int x1 = m_palette.x1() * dpr;
+    const int y0 = m_palette.y0() * dpr;
+    const int y1 = m_palette.y1() * dpr;
 
     // Draw color map texture.
     m_texture.bind();
@@ -345,8 +346,7 @@ void ColorMapPalette::draw_border( const kvs::Rectangle& rect )
     const kvs::RGBColor border_color = kvs::RGBColor::Black();
 
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     engine->beginPath();
     engine->setStrokeWidth( border_width );

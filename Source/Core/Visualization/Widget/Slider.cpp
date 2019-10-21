@@ -348,7 +348,7 @@ void Slider::paintEvent()
     BaseClass::drawBackground();
 
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     const float height = BaseClass::painter().fontMetrics().height();
     // Draw the caption.

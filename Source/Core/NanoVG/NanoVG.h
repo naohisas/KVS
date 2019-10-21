@@ -59,7 +59,8 @@ public:
     ~NanoVG();
 
     // Frame
-    void beginFrame( int width, int height, float pixel_ratio = 1.0f );
+//    void beginFrame( int width, int height, float pixel_ratio = 1.0f );
+    void beginFrame( int width, int height, float pixel_ratio );
     void cancelFrame();
     void endFrame();
 

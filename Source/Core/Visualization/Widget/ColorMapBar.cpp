@@ -318,26 +318,32 @@ void ColorMapBar::draw_color_bar( const int x, const int y, const int width, con
     attrib.disable( GL_TEXTURE_3D );
     attrib.enable( GL_TEXTURE_2D );
 
+    const float dpr = screen()->devicePixelRatio();
+    const kvs::Vec2 p0 = kvs::Vec2( x, y ) * dpr;
+    const kvs::Vec2 p1 = kvs::Vec2( x + width, y ) * dpr;
+    const kvs::Vec2 p2 = kvs::Vec2( x + width, y + height ) * dpr;
+    const kvs::Vec2 p3 = kvs::Vec2( x, y + height ) * dpr;
+
     kvs::Texture::Binder binder( m_texture );
     switch ( m_orientation )
     {
     case ColorMapBar::Horizontal:
     {
         kvs::OpenGL::Begin( GL_QUADS );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x,         y ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x + width, y ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x + width, y + height ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x,         y + height ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), p0 );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), p1 );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), p2 );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), p3 );
         kvs::OpenGL::End();
         break;
     }
     case ColorMapBar::Vertical:
     {
         kvs::OpenGL::Begin( GL_QUADS );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x,         y ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x + width, y ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x + width, y + height ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x,         y + height ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), p0 );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), p1 );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), p2 );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), p3 );
         kvs::OpenGL::End();
         break;
     }
@@ -357,8 +363,7 @@ void ColorMapBar::draw_color_bar( const int x, const int y, const int width, con
 void ColorMapBar::draw_border( const int x, const int y, const int width, const int height )
 {
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     engine->beginPath();
     engine->setStrokeWidth( m_border_width );

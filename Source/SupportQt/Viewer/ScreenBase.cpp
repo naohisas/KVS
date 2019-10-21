@@ -251,6 +251,10 @@ void ScreenBase::initializeGL()
     // Create paint device.
     BaseClass::paintDevice()->create();
 
+    // Set device pixel ratio.
+    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
+    BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
+
     this->initializeEvent();
 }
 
