@@ -135,6 +135,8 @@
 + kvs::Label::setText for std::string
 + kvs::Label::addText for std::string
 + kvs::WidgetBase::font
++ kvs::opencv::MovieRenderer::currentFrameIndex
++ kvs::opencv::MovieRenderer::setFrameIndex
 
 **Added new examples**
 + Example/Utility/Stat
