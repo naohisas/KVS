@@ -189,6 +189,7 @@ bool WriteNormalData(
                 return false;
             }
         }
+
         // <DataArray>
         else
         {

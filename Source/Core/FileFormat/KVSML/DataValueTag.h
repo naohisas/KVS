@@ -69,7 +69,7 @@ inline bool DataValueTag::read(
     BaseClass::m_node = kvs::XMLNode::FindChildNode( parent, tag_name );
     if ( !BaseClass::m_node )
     {
-        kvsMessageError( "Cannot find <%s>.", tag_name.c_str() );
+        kvsMessageError( "Cannot find <%s> in <%s>.", tag_name.c_str(), parent->Value().c_str() );
         return false;
     }
 

@@ -154,16 +154,35 @@ bool ReadNormalData(
             return false;
         }
 
-        // <DataArray>
-        const size_t dimension = 3;
-        const size_t nelements = nnormals * dimension;
-        kvs::kvsml::DataArrayTag data_tag;
-        if ( !data_tag.read( normal_tag.node(), nelements, normals ) )
+        // <DataValue>
+        if ( kvs::XMLNode::FindChildNode( normal_tag.node(), "DataValue" ) )
         {
-            kvsMessageError( "Cannot read <%s> for <%s>.",
-                             data_tag.name().c_str(),
-                             normal_tag.name().c_str() );
-            return false;
+            // In this case, 'nnormals' is equal to 1.
+            const size_t dimension = 3;
+            const size_t nelements = dimension; // = 1 * dimension
+            kvs::kvsml::DataValueTag data_tag;
+            if ( !data_tag.read( normal_tag.node(), nelements, normals ) )
+            {
+                kvsMessageError( "Cannot read <%s> for <%s>.",
+                                 data_tag.name().c_str(),
+                                 normal_tag.name().c_str() );
+                return false;
+            }
+        }
+
+        // <DataArray>
+        else
+        {
+            const size_t dimension = 3;
+            const size_t nelements = nnormals * dimension;
+            kvs::kvsml::DataArrayTag data_tag;
+            if ( !data_tag.read( normal_tag.node(), nelements, normals ) )
+            {
+                kvsMessageError( "Cannot read <%s> for <%s>.",
+                                 data_tag.name().c_str(),
+                                 normal_tag.name().c_str() );
+                return false;
+            }
         }
     }
 
