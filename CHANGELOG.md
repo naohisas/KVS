@@ -192,6 +192,15 @@
 **Fixed problem**
 + kvs::EigenDecomposer
 
+**Removed classes**
++ kvs::KVSMLObjectImage (use kvs::KVSMLImageObject)
++ kvs::KVSMLObjectLine (use kvs::KVSMLLineObject)
++ kvs::KVSMLObjectPoint (use kvs::KVSMLPointObject)
++ kvs::KVSMLObjectPolygon (use kvs::KVSMLPolygonObject)
++ kvs::KVSMLObjectStructuredVolume (use kvs::KVSMLStructuredVolumeObject)
++ kvs::KVSMLObjectTable (use kvs::KVSMLTableObject)
++ kvs::KVSMLObjectUnstructuredVolume (use kvs::KVSMLUnstructuredVolumeObject)
+
 ### Version 2.8.0 Released (2019.6.7)
 **Added new classes and functions**
 + kvs::ColorStream
