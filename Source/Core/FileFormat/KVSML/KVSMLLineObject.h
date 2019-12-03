@@ -13,7 +13,6 @@
  */
 /****************************************************************************/
 #pragma once
-
 #include <kvs/FileFormatBase>
 #include <kvs/ValueArray>
 #include <kvs/Type>
@@ -34,7 +33,6 @@ namespace kvs
 class KVSMLLineObject : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
 
     enum WritingDataType
@@ -44,8 +42,7 @@ public:
         ExternalBinary ///< external binary data type
     };
 
-protected:
-
+private:
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     kvs::kvsml::ObjectTag m_object_tag; ///< Object tag information
     WritingDataType m_writing_type; ///< writing data type
@@ -57,12 +54,10 @@ protected:
     kvs::ValueArray<kvs::Real32> m_sizes; ///< size array
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLLineObject();
     KVSMLLineObject( const std::string& filename );
 
@@ -82,6 +77,9 @@ public:
     const kvs::Vec3& maxExternalCoord() const { return m_object_tag.maxExternalCoord(); }
 
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
+    void setWritingDataTypeToAscii() { this->setWritingDataType( Ascii ); }
+    void setWritingDataTypeToExternalAscii() { this->setWritingDataType( ExternalAscii ); }
+    void setWritingDataTypeToExternalBinary() { this->setWritingDataType( ExternalBinary ); }
     void setLineType( const std::string& type ) { m_line_type = type; }
     void setColorType( const std::string& type ) { m_color_type = type; }
     void setCoords( const kvs::ValueArray<kvs::Real32>& coords ) { m_coords = coords; }

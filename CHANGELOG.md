@@ -137,6 +137,24 @@
 + kvs::WidgetBase::font
 + kvs::opencv::MovieRenderer::currentFrameIndex
 + kvs::opencv::MovieRenderer::setFrameIndex
++ kvs::KVSMLLineObject::setsetWritingDataTypeToAscii
++ kvs::KVSMLLineObject::setsetWritingDataTypeToExternalAscii
++ kvs::KVSMLLineObject::setsetWritingDataTypeToExternalBinary
++ kvs::KVSMLPointObject::setsetWritingDataTypeToAscii
++ kvs::KVSMLPointObject::setsetWritingDataTypeToExternalAscii
++ kvs::KVSMLPointObject::setsetWritingDataTypeToExternalBinary
++ kvs::KVSMLPolygonObject::setsetWritingDataTypeToAscii
++ kvs::KVSMLPolygonObject::setsetWritingDataTypeToExternalAscii
++ kvs::KVSMLPolygonObject::setsetWritingDataTypeToExternalBinary
++ kvs::KVSMLStructuredVolumeObject::setsetWritingDataTypeToAscii
++ kvs::KVSMLStructuredVolumeObject::setsetWritingDataTypeToExternalAscii
++ kvs::KVSMLStructuredVolumeObject::setsetWritingDataTypeToExternalBinary
++ kvs::KVSMLTableObject::setsetWritingDataTypeToAscii
++ kvs::KVSMLTableObject::setsetWritingDataTypeToExternalAscii
++ kvs::KVSMLTableObject::setsetWritingDataTypeToExternalBinary
++ kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToAscii
++ kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToExternalAscii
++ kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToExternalBinary
 
 **Added new examples**
 + Example/Utility/Stat

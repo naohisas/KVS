@@ -33,7 +33,6 @@ namespace kvs
 class KVSMLPointObject : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
 
     enum WritingDataType
@@ -44,7 +43,6 @@ public:
     };
 
 private:
-
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     kvs::kvsml::ObjectTag m_object_tag; ///< Object tag information
     WritingDataType m_writing_type; ///< writing data type
@@ -54,12 +52,10 @@ private:
     kvs::ValueArray<kvs::Real32> m_sizes; ///< size array
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLPointObject();
     KVSMLPointObject( const std::string& filename );
 
@@ -77,6 +73,9 @@ public:
     const kvs::Vec3& maxExternalCoord() const { return m_object_tag.maxExternalCoord(); }
 
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
+    void setWritingDataTypeToAscii() { this->setWritingDataType( Ascii ); }
+    void setWritingDataTypeToExternalAscii() { this->setWritingDataType( ExternalAscii ); }
+    void setWritingDataTypeToExternalBinary() { this->setWritingDataType( ExternalBinary ); }
     void setCoords( const kvs::ValueArray<kvs::Real32>& coords ) { m_coords = coords; }
     void setColors( const kvs::ValueArray<kvs::UInt8>& colors ) { m_colors = colors; }
     void setNormals( const kvs::ValueArray<kvs::Real32>& normals ) { m_normals = normals; }

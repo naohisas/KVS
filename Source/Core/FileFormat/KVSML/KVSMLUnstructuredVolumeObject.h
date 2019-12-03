@@ -41,7 +41,6 @@ namespace kvs
 class KVSMLUnstructuredVolumeObject : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
 
     enum WritingDataType
@@ -52,7 +51,6 @@ public:
     };
 
 private:
-
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     kvs::kvsml::ObjectTag m_object_tag; ///< Object tag information
     kvs::kvsml::UnstructuredVolumeObjectTag m_volume_tag; ///< Unstructured volume object tag information
@@ -67,12 +65,10 @@ private:
     kvs::ValueArray<kvs::UInt32> m_connections; ///< connection id array
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLUnstructuredVolumeObject();
     KVSMLUnstructuredVolumeObject( const std::string& filename );
 
@@ -101,6 +97,9 @@ public:
     const kvs::ValueArray<kvs::UInt32>& connections() const { return m_connections; }
 
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
+    void setWritingDataTypeToAscii() { this->setWritingDataType( Ascii ); }
+    void setWritingDataTypeToExternalAscii() { this->setWritingDataType( ExternalAscii ); }
+    void setWritingDataTypeToExternalBinary() { this->setWritingDataType( ExternalBinary ); }
     void setCellType( const std::string& type ) { m_volume_tag.setCellType( type ); }
     void setLabel( const std::string& label ) { m_value_tag.setLabel( label ); }
     void setUnit( const std::string& unit ) { m_value_tag.setUnit( unit ); }

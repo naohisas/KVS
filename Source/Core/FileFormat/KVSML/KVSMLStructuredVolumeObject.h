@@ -35,7 +35,6 @@ namespace kvs
 class KVSMLStructuredVolumeObject : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
 
     enum WritingDataType
@@ -46,7 +45,6 @@ public:
     };
 
 private:
-
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     kvs::kvsml::ObjectTag m_object_tag; ///< Object tag information
     WritingDataType m_writing_type; ///< writing data type
@@ -65,12 +63,10 @@ private:
     kvs::ValueArray<float> m_coords; ///< coordinate array
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLStructuredVolumeObject();
     KVSMLStructuredVolumeObject( const std::string& filename );
 
@@ -97,6 +93,9 @@ public:
     const kvs::ValueArray<float>& coords() const { return m_coords; }
 
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
+    void setWritingDataTypeToAscii() { this->setWritingDataType( Ascii ); }
+    void setWritingDataTypeToExternalAscii() { this->setWritingDataType( ExternalAscii ); }
+    void setWritingDataTypeToExternalBinary() { this->setWritingDataType( ExternalBinary ); }
     void setGridType( const std::string& type ) { m_grid_type = type; }
     void setLabel( const std::string& label ) { m_has_label = true; m_label = label; }
     void setUnit( const std::string& unit ) { m_has_unit = true; m_unit = unit; }

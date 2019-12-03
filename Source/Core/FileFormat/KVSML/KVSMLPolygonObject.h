@@ -33,7 +33,6 @@ namespace kvs
 class KVSMLPolygonObject : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
 
     enum WritingDataType
@@ -44,7 +43,6 @@ public:
     };
 
 private:
-
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     kvs::kvsml::ObjectTag m_object_tag; ///< Object tag information
     WritingDataType m_writing_type; ///< writing data type
@@ -58,12 +56,10 @@ private:
     kvs::ValueArray<kvs::Real32> m_normals; ///< normal array
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLPolygonObject();
     KVSMLPolygonObject( const std::string& filename );
 
@@ -85,6 +81,9 @@ public:
     const kvs::Vec3& maxExternalCoord() const { return m_object_tag.maxExternalCoord(); }
 
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
+    void setWritingDataTypeToAscii() { this->setWritingDataType( Ascii ); }
+    void setWritingDataTypeToExternalAscii() { this->setWritingDataType( ExternalAscii ); }
+    void setWritingDataTypeToExternalBinary() { this->setWritingDataType( ExternalBinary ); }
     void setPolygonType( const std::string& type ) { m_polygon_type = type; }
     void setColorType( const std::string& type ) { m_color_type = type; }
     void setNormalType( const std::string& type ) { m_normal_type = type; }
