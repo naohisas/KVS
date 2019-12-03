@@ -15,13 +15,6 @@
 #include <Core/FileFormat/IPLab/IPLabList.h>
 #include <Core/FileFormat/KVSML/KVSMLImageObject.h>
 #include <Core/FileFormat/KVSML/KVSMLLineObject.h>
-#include <Core/FileFormat/KVSML/KVSMLObjectImage.h>
-#include <Core/FileFormat/KVSML/KVSMLObjectLine.h>
-#include <Core/FileFormat/KVSML/KVSMLObjectPoint.h>
-#include <Core/FileFormat/KVSML/KVSMLObjectPolygon.h>
-#include <Core/FileFormat/KVSML/KVSMLObjectStructuredVolume.h>
-#include <Core/FileFormat/KVSML/KVSMLObjectTable.h>
-#include <Core/FileFormat/KVSML/KVSMLObjectUnstructuredVolume.h>
 #include <Core/FileFormat/KVSML/KVSMLPointObject.h>
 #include <Core/FileFormat/KVSML/KVSMLPolygonObject.h>
 #include <Core/FileFormat/KVSML/KVSMLStructuredVolumeObject.h>

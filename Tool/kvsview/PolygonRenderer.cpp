@@ -15,7 +15,7 @@
 #include "PolygonRenderer.h"
 #include <kvs/DebugNew>
 #include <kvs/File>
-#include <kvs/KVSMLObjectPolygon>
+#include <kvs/KVSMLPolygonObject>
 #include <kvs/Stl>
 #include <kvs/PipelineModule>
 #include <kvs/VisualizationPipeline>

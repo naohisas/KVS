@@ -15,13 +15,6 @@ FileFormat/IPLab/IPLab
 FileFormat/IPLab/IPLabList
 FileFormat/KVSML/KVSMLImageObject
 FileFormat/KVSML/KVSMLLineObject
-FileFormat/KVSML/KVSMLObjectImage
-FileFormat/KVSML/KVSMLObjectLine
-FileFormat/KVSML/KVSMLObjectPoint
-FileFormat/KVSML/KVSMLObjectPolygon
-FileFormat/KVSML/KVSMLObjectStructuredVolume
-FileFormat/KVSML/KVSMLObjectTable
-FileFormat/KVSML/KVSMLObjectUnstructuredVolume
 FileFormat/KVSML/KVSMLPointObject
 FileFormat/KVSML/KVSMLPolygonObject
 FileFormat/KVSML/KVSMLStructuredVolumeObject

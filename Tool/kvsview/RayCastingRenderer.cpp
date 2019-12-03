@@ -16,7 +16,7 @@
 #include <kvs/DebugNew>
 #include <kvs/IgnoreUnusedVariable>
 #include <kvs/File>
-#include <kvs/KVSMLObjectStructuredVolume>
+#include <kvs/KVSMLStructuredVolumeObject>
 #include <kvs/AVSField>
 #include <kvs/PipelineModule>
 #include <kvs/VisualizationPipeline>
