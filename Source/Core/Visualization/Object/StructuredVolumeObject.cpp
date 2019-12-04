@@ -228,11 +228,13 @@ bool StructuredVolumeObject::write( const std::string& filename, const bool asci
     case kvs::StructuredVolumeObject::Rectilinear:
     {
         kvsml.setGridType("rectilinear");
+        kvsml.setCoords( this->coords() );
         break;
     }
     case kvs::StructuredVolumeObject::Curvilinear:
     {
         kvsml.setGridType("curvilinear");
+        kvsml.setCoords( this->coords() );
         break;
     }
     case kvs::StructuredVolumeObject::UnknownGridType:

@@ -38,7 +38,7 @@ private:
     bool m_has_grid_type; ///< flag to check whether 'grid_type' is specified or not
     std::string m_grid_type; ///< grid type
     bool m_has_resolution; ///< flag to check whether 'resolution' is specified or not
-    kvs::Vector3ui m_resolution; ///< grid resolution
+    kvs::Vec3u m_resolution; ///< grid resolution
 
 public:
     StructuredVolumeObjectTag();
@@ -46,10 +46,10 @@ public:
     bool hasGridType() const;
     const std::string& gridType() const;
     bool hasResolution() const;
-    const kvs::Vector3ui& resolution() const;
+    const kvs::Vec3u& resolution() const;
 
     void setGridType( const std::string& grid_type );
-    void setResolution( const kvs::Vector3ui& resolution );
+    void setResolution( const kvs::Vec3u& resolution );
 
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );
