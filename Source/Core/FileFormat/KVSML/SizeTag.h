@@ -11,9 +11,7 @@
  *  $Id: SizeTag.h 1342 2012-11-07 13:47:24Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__SIZE_TAG_H_INCLUDE
-#define KVS__KVSML__SIZE_TAG_H_INCLUDE
-
+#pragma once
 #include "TagBase.h"
 
 
@@ -31,11 +29,9 @@ namespace kvsml
 class SizeTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 public:
-
     SizeTag();
 
 };
@@ -43,5 +39,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__SIZE_TAG_H_INCLUDE

@@ -11,9 +11,7 @@
  *  $Id: ImageObjectTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__IMAGE_OBJECT_H_INCLUDE
-#define KVS__KVSML__IMAGE_OBJECT_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/XMLNode>
 #include <kvs/Vector3>
@@ -34,18 +32,15 @@ namespace kvsml
 class ImageObjectTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_width; ///< flag to check whether 'width' is specified or not
     bool m_has_height; ///< flag to check whether 'height' is specified or not
     size_t m_width; ///< image width
     size_t m_height; ///< image height
 
 public:
-
     ImageObjectTag();
 
     bool hasWidth() const { return m_has_height; }
@@ -63,5 +58,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__IMAGE_OBJECT_H_INCLUDE

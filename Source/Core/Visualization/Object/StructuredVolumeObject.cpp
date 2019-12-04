@@ -220,27 +220,29 @@ bool StructuredVolumeObject::write( const std::string& filename, const bool asci
 
     switch ( this->gridType() )
     {
-    case kvs::StructuredVolumeObject::UnknownGridType:
-    {
-        kvsMessageError("Unknown grid type.");
-        break;
-    }
     case kvs::StructuredVolumeObject::Uniform:
     {
         kvsml.setGridType("uniform");
         break;
     }
-/*
     case kvs::StructuredVolumeObject::Rectilinear:
+    {
         kvsml.setGridType("rectilinear");
         break;
+    }
     case kvs::StructuredVolumeObject::Curvilinear:
+    {
         kvsml.setGridType("curvilinear");
         break;
-*/
+    }
+    case kvs::StructuredVolumeObject::UnknownGridType:
+    {
+        kvsMessageError( "Unknown grid type." );
+        break;
+    }
     default:
     {
-        kvsMessageError("'uniform' grid type is only supported.");
+        kvsMessageError( "Not supported grid type." );
         break;
     }
     }

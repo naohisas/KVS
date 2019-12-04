@@ -11,9 +11,7 @@
  *  $Id: DataArrayTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__DATA_ARRAY_TAG_H_INCLUDE
-#define KVS__KVSML__DATA_ARRAY_TAG_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/ValueArray>
 #include <kvs/AnyValueArray>
@@ -40,11 +38,9 @@ namespace kvsml
 class DataArrayTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_type; ///< flag to check whether 'type' is specified or not
     bool m_has_file; ///< flag to check whether 'file' is specified or not
     bool m_has_format; ///< flag to check whether 'format' is specified or not
@@ -55,7 +51,6 @@ private:
     std::string m_endian; ///< endianness of the binary data
 
 public:
-
     DataArrayTag();
 
     bool hasType() const { return m_has_type; }
@@ -79,7 +74,6 @@ public:
     bool write( kvs::XMLNode::SuperClass* parent, const kvs::ValueArray<T>& data, const std::string pathname );
 
 private:
-
     void read_attribute();
     bool read_data( const size_t nelements, kvs::AnyValueArray* data );
     template <typename T>
@@ -319,5 +313,3 @@ bool DataArrayTag::read_data( const size_t nelements, kvs::ValueArray<T>* data )
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__DATA_ARRAY_TAG_H_INCLUDE

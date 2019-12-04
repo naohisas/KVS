@@ -12,9 +12,7 @@
  *  $Id: ObjectTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__OBJECT_TAG_H_INCLUDE
-#define KVS__KVSML__OBJECT_TAG_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/Vector3>
 #include <kvs/XMLDocument>
@@ -36,11 +34,9 @@ namespace kvsml
 class ObjectTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_type; ///< flag to check whether 'type' is specified or not
     bool m_has_external_coord; ///< flag to check whether 'external_coord' is specified or not
     bool m_has_object_coord; ///< flag to check whether 'object_coord' is specified or not
@@ -51,7 +47,6 @@ private:
     kvs::Vec3 m_max_object_coord; ///< max. object coordinate
 
 public:
-
     ObjectTag();
 
     bool hasType() const;
@@ -74,5 +69,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__OBJECT_TAG_H_INCLUDE

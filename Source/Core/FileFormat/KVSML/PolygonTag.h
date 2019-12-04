@@ -11,9 +11,7 @@
  *  $Id: PolygonTag.h 1344 2012-11-07 14:59:01Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__POLYGON_TAG_H_INCLUDE
-#define KVS__KVSML__POLYGON_TAG_H_INCLUDE
-
+#pragma once
 #include <kvs/XMLNode>
 #include "TagBase.h"
 
@@ -32,28 +30,18 @@ namespace kvsml
 class PolygonTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_npolygons; ///< flag to check whether 'npolygons' is specified or not
     size_t m_npolygons; ///< number of polygons
 
 public:
-
     PolygonTag();
-
-public:
 
     bool hasNPolygons() const;
     size_t npolygons() const;
-
-public:
-
     void setNPolygons( const size_t npolygons );
-
-public:
 
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );
@@ -62,5 +50,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__POLYGONS_TAG_H_INCLUDE

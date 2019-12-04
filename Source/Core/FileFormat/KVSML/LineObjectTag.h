@@ -12,9 +12,7 @@
  *  $Id: LineObjectTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__LINE_OBJECT_TAG_H_INCLUDE
-#define KVS__KVSML__LINE_OBJECT_TAG_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/XMLNode>
 #include <kvs/Vector3>
@@ -35,18 +33,15 @@ namespace kvsml
 class LineObjectTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_line_type; ///< flag to check whether 'line_type' is specified or not
     bool m_has_color_type; ///< flag to check whether 'color_type' is specified or not
     std::string m_line_type; ///< line type
     std::string m_color_type; ///< color type
 
 public:
-
     LineObjectTag();
 
     bool hasLineType() const { return m_has_line_type; }
@@ -64,5 +59,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__LINE_OBJECT_TAG_H_INCLUDE

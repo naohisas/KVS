@@ -11,9 +11,7 @@
  *  $Id: ValueTag.h 1811 2014-09-03 02:53:36Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__VALUE_TAG_H_INCLUDE
-#define KVS__KVSML__VALUE_TAG_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/XMLNode>
 #include "TagBase.h"
@@ -33,11 +31,9 @@ namespace kvsml
 class ValueTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     kvs::kvsml::TagAttribute<std::string> m_label; ///< data label
     kvs::kvsml::TagAttribute<std::string> m_unit; ///< data unit
     kvs::kvsml::TagAttribute<size_t> m_veclen; ///< vector length
@@ -45,7 +41,6 @@ private:
     kvs::kvsml::TagAttribute<double> m_max_value; ///< maximum value
 
 public:
-
     ValueTag();
 
     bool hasLabel() const { return m_label.hasValue(); }
@@ -72,5 +67,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__VALUE_TAG_H_INCLUDE
