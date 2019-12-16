@@ -60,7 +60,7 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     kvs::IgnoreUnusedVariable( light );
     kvs::IgnoreUnusedVariable( camera );
 
-    kvs::PolygonObject* polygon = reinterpret_cast<kvs::PolygonObject*>( object );
+    kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
 
     BaseClass::startTimer();
 
@@ -99,7 +99,7 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
             kvs::OpenGL::Enable( GL_POLYGON_SMOOTH );
             kvs::OpenGL::Enable( GL_BLEND );
             kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            KVS_GL_CALL( glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST ) );
+            kvs::OpenGL::Hint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
         }
     }
 
@@ -167,7 +167,7 @@ void PolygonRenderer::initialize()
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
 
     // Polygon offset.
-    KVS_GL_CALL( glPolygonOffset( m_polygon_offset, 0.0 ) );
+    kvs::OpenGL::SetPolygonOffset( m_polygon_offset, 0.0 );
     kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
     if( !this->isEnabledShading() )

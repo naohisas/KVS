@@ -1332,6 +1332,46 @@ void Color( GLuint r, GLuint g, GLuint b, GLuint a )
     KVS_GL_CALL_VER( glColor4ui( r, g, b, a ) );
 }
 
+void Color( const GLbyte* c, const GLbyte a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
+void Color( const GLshort* c, const GLshort a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
+void Color( const GLint* c, const GLint a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
+void Color( const GLfloat* c, const GLfloat a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
+void Color( const GLdouble* c, const GLdouble a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
+void Color( const GLubyte* c, const GLubyte a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
+void Color( const GLushort* c, const GLushort a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
+void Color( const GLuint* c, const GLuint a )
+{
+    Color( c[0], c[1], c[2], a );
+}
+
 void Color3( const GLbyte* c )
 {
     KVS_GL_CALL_VER( glColor3bv( c ) );

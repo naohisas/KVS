@@ -12,9 +12,7 @@
  *  $Id: PolygonRenderingFunction.h 1418 2013-02-21 07:02:46Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS_CORE_POLYGON_RENDERING_FUNCTION_H_INCLUDE
-#define KVS_CORE_POLYGON_RENDERING_FUNCTION_H_INCLUDE
-
+#pragma once
 #include <kvs/PolygonObject>
 #include <kvs/RGBColor>
 #include <kvs/Type>
@@ -56,20 +54,17 @@ namespace
 /*===========================================================================*/
 void Rendering_Tri_VCs_O( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::UInt8*  colors  = polygon->colors().data();
-        const kvs::Real32* coords  = polygon->coords().data();
-        const kvs::UInt8   opacity = polygon->opacity();
-
+        const kvs::UInt8 opacity = polygon->opacity();
         const size_t nvertices = polygon->numberOfVertices();
         for ( size_t i = 0, index = 0; i < nvertices; i++, index += 3 )
         {
-            glColor4ub( *( colors + index ), *( colors + index + 1 ), *( colors + index + 2 ), opacity );
-            glVertex3fv( coords + index );
+            kvs::OpenGL::Color( polygon->colors().data() + index, opacity );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -80,31 +75,27 @@ void Rendering_Tri_VCs_O( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_VCs_O_Cs( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::UInt8*  colors      = polygon->colors().data();
-        const kvs::Real32* coords      = polygon->coords().data();
+        const kvs::UInt8 opacity = polygon->opacity();
         const kvs::UInt32* connections = polygon->connections().data();
-        const kvs::UInt8   opacity     = polygon->opacity();
-
         const size_t nconnections = polygon->numberOfConnections();
         for ( size_t i = 0, index = 0; i < nconnections; i++, index += 3 )
         {
             const size_t id0 = *( connections + index ) * 3;
+            kvs::OpenGL::Color( polygon->colors().data() + id0, opacity );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id0 );
+
             const size_t id1 = *( connections + index + 1 ) * 3;
+            kvs::OpenGL::Color( polygon->colors().data() + id1, opacity );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id1 );
+
             const size_t id2 = *( connections + index + 2 ) * 3;
-
-            glColor4ub( *( colors + id0 ), *( colors + id0 + 1 ), *( colors + id0 + 2 ), opacity );
-            glVertex3f( *( coords + id0 ), *( coords + id0 + 1 ), *( coords + id0 + 2 ) );
-
-            glColor4ub( *( colors + id1 ), *( colors + id1 + 1 ), *( colors + id1 + 2 ), opacity );
-            glVertex3f( *( coords + id1 ), *( coords + id1 + 1 ), *( coords + id1 + 2 ) );
-
-            glColor4ub( *( colors + id2 ), *( colors + id2 + 1 ), *( colors + id2 + 2 ), opacity );
-            glVertex3f( *( coords + id2 ), *( coords + id2 + 1 ), *( coords + id2 + 2 ) );
+            kvs::OpenGL::Color( polygon->colors().data() + id2, opacity );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id2 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -115,20 +106,16 @@ void Rendering_Tri_VCs_O_Cs( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_VCs_Os( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::UInt8*  colors    = polygon->colors().data();
-        const kvs::Real32* coords    = polygon->coords().data();
-        const kvs::UInt8*  opacities = polygon->opacities().data();
-
         const size_t nvertices = polygon->numberOfVertices();
         for ( size_t i = 0, index = 0; i < nvertices; i++, index += 3 )
         {
-            glColor4ub( *( colors + index ), *( colors + index + 1 ), *( colors + index + 2 ), opacities[i] );
-            glVertex3f( *( coords + index ), *( coords + index + 1 ), *( coords + index + 2 ) );
+            kvs::OpenGL::Color( polygon->colors().data() + index, polygon->opacity(i) );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -139,31 +126,29 @@ void Rendering_Tri_VCs_Os( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_VCs_Os_Cs( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::UInt8*  colors      = polygon->colors().data();
-        const kvs::Real32* coords      = polygon->coords().data();
         const kvs::UInt32* connections = polygon->connections().data();
-        const kvs::UInt8*  opacities   = polygon->opacities().data();
-
         const size_t nconnections = polygon->numberOfConnections();
         for ( size_t i = 0, index = 0; i < nconnections; i++, index += 3 )
         {
             const size_t id0 = *( connections + index ) * 3;
+            const kvs::UInt8 opacity0 = polygon->opacity( id0 / 3 );
+            kvs::OpenGL::Color( polygon->colors().data() + id0, opacity0 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id0 );
+
             const size_t id1 = *( connections + index + 1 ) * 3;
+            const kvs::UInt8 opacity1 = polygon->opacity( id1 / 3 );
+            kvs::OpenGL::Color( polygon->colors().data() + id1, opacity1 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id1 );
+
             const size_t id2 = *( connections + index + 2 ) * 3;
-
-            glColor4ub( *( colors + id0 ), *( colors + id0 + 1 ), *( colors + id0 + 2 ), opacities[id0/3] );
-            glVertex3f( *( coords + id0 ), *( coords + id0 + 1 ), *( coords + id0 + 2 ) );
-
-            glColor4ub( *( colors + id1 ), *( colors + id1 + 1 ), *( colors + id1 + 2 ), opacities[id1/3] );
-            glVertex3f( *( coords + id1 ), *( coords + id1 + 1 ), *( coords + id1 + 2 ) );
-
-            glColor4ub( *( colors + id2 ), *( colors + id2 + 1 ), *( colors + id2 + 2 ), opacities[id2/3] );
-            glVertex3f( *( coords + id2 ), *( coords + id2 + 1 ), *( coords + id2 + 2 ) );
+            const kvs::UInt8 opacity2 = polygon->opacity( id2 / 3 );
+            kvs::OpenGL::Color( polygon->colors().data() + id2, opacity2 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id2 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -174,22 +159,19 @@ void Rendering_Tri_VCs_Os_Cs( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_SC_O( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::Real32*  coords  = polygon->coords().data();
-        const kvs::RGBColor color   = polygon->color(0);
-        const kvs::UInt8    opacity = polygon->opacity(0);
-
-        glColor4ub( color.r(), color.g(), color.b(), opacity );
+        const kvs::RGBColor color = polygon->color(0);
+        const kvs::UInt8 opacity = polygon->opacity(0);
+        kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
 
         const size_t nvertices = polygon->numberOfVertices();
         for ( size_t i = 0, index = 0; i < nvertices; i++, index += 3 )
         {
-            glVertex3f( *( coords + index ), *( coords + index + 1 ), *( coords + index + 2 ) );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index );
         }
-
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -200,28 +182,25 @@ void Rendering_Tri_SC_O( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_SC_O_Cs( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::Real32*  coords      = polygon->coords().data();
-        const kvs::UInt32*  connections = polygon->connections().data();
-        const kvs::RGBColor color       = polygon->color(0);
-        const kvs::UInt8    opacity     = polygon->opacity(0);
+        const kvs::RGBColor color = polygon->color(0);
+        const kvs::UInt8 opacity = polygon->opacity(0);
+        kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
 
-        glColor4ub( color.r(), color.g(), color.b(), opacity );
-
+        const kvs::UInt32* connections = polygon->connections().data();
         const size_t nconnections = polygon->numberOfConnections();
         for ( size_t i = 0, index = 0; i < nconnections; i++, index += 3 )
         {
             const size_t id0 = *( connections + index ) * 3;
             const size_t id1 = *( connections + index + 1 ) * 3;
             const size_t id2 = *( connections + index + 2 ) * 3;
-
-            glVertex3f( *( coords + id0 ), *( coords + id0 + 1 ), *( coords + id0 + 2 ) );
-            glVertex3f( *( coords + id1 ), *( coords + id1 + 1 ), *( coords + id1 + 2 ) );
-            glVertex3f( *( coords + id2 ), *( coords + id2 + 1 ), *( coords + id2 + 2 ) );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id0 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id1 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id2 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -232,23 +211,20 @@ void Rendering_Tri_SC_O_Cs( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_SC_Os( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::RGBColor color     = polygon->color(0);
-        const kvs::UInt8*   opacities = polygon->opacities().data();
-        const kvs::Real32*  coords    = polygon->coords().data();
-
+        const kvs::RGBColor color = polygon->color(0);
         const size_t nopacities = polygon->numberOfOpacities();
         for ( size_t i = 0, index = 0; i < nopacities; i++, index += 9 )
         {
-            glColor4ub( color.r(), color.g(), color.b(), opacities[i] );
-
-            glVertex3f( *( coords + index ),     *( coords + index + 1 ), *( coords + index + 2 ) );
-            glVertex3f( *( coords + index + 3 ), *( coords + index + 4 ), *( coords + index + 5 ) );
-            glVertex3f( *( coords + index + 6 ), *( coords + index + 7 ), *( coords + index + 8 ) );
+            const kvs::UInt8 opacity = polygon->opacity(i);
+            kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index + 3 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index + 6 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -259,27 +235,25 @@ void Rendering_Tri_SC_Os( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_SC_Os_Cs( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::RGBColor color       = polygon->color(0);
-        const kvs::UInt32*  connections = polygon->connections().data();
-        const kvs::Real32*  coords      = polygon->coords().data();
-        const kvs::UInt8*   opacities   = polygon->opacities().data();
-
+        const kvs::RGBColor color = polygon->color(0);
+        const kvs::UInt32* connections = polygon->connections().data();
         const size_t nconnections = polygon->numberOfConnections();
         for ( size_t i = 0, index = 0; i < nconnections; i++, index += 3 )
         {
+            const kvs::UInt8 opacity = polygon->opacity(i);
+            kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
+
             const size_t id0 = *( connections + index ) * 3;
             const size_t id1 = *( connections + index + 1 ) * 3;
             const size_t id2 = *( connections + index + 2 ) * 3;
-
-            glColor4ub( color.r(), color.g(), color.b(), opacities[i] );
-            glVertex3f( *( coords + id0 ), *( coords + id0 + 1 ), *( coords + id0 + 2 ) );
-            glVertex3f( *( coords + id1 ), *( coords + id1 + 1 ), *( coords + id1 + 2 ) );
-            glVertex3f( *( coords + id2 ), *( coords + id2 + 1 ), *( coords + id2 + 2 ) );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id0 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id1 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id2 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -290,23 +264,19 @@ void Rendering_Tri_SC_Os_Cs( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_PCs_O( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::UInt8   opacity = polygon->opacity(0);
-        const kvs::UInt8*  colors  = polygon->colors().data();
-        const kvs::Real32* coords  = polygon->coords().data();
-
+        const kvs::UInt8 opacity = polygon->opacity(0);
         const size_t ncolors = polygon->numberOfColors();
         for ( size_t i = 0, index3 = 0, index9 = 0; i < ncolors; i++, index3 += 3, index9 += 9 )
         {
-            glColor4ub( *( colors + index3 ), *( colors + index3 + 1 ), *( colors + index3 + 2 ), opacity );
-
-            glVertex3f( *( coords + index9 ),     *( coords + index9 + 1 ), *( coords + index9 + 2 ) );
-            glVertex3f( *( coords + index9 + 3 ), *( coords + index9 + 4 ), *( coords + index9 + 5 ) );
-            glVertex3f( *( coords + index9 + 6 ), *( coords + index9 + 7 ), *( coords + index9 + 8 ) );
+            kvs::OpenGL::Color( polygon->colors().data() + index3, opacity );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index9 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index9 + 3 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index9 + 6 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -317,27 +287,24 @@ void Rendering_Tri_PCs_O( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_PCs_O_Cs( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
+        const kvs::UInt8 opacity = polygon->opacity(0);
         const kvs::UInt32* connections = polygon->connections().data();
-        const kvs::UInt8*  colors      = polygon->colors().data();
-        const kvs::UInt8   opacity     = polygon->opacity(0);
-        const kvs::Real32* coords      = polygon->coords().data();
-
         const size_t nconnections = polygon->numberOfConnections();
         for ( size_t i = 0, index = 0; i < nconnections; i++, index += 3 )
         {
+            kvs::OpenGL::Color( polygon->colors().data() + index, opacity );
+
             const size_t id0 = *( connections + index ) * 3;
             const size_t id1 = *( connections + index + 1 ) * 3;
             const size_t id2 = *( connections + index + 2 ) * 3;
-
-            glColor4ub( *( colors + index ), *( colors + index + 1 ), *( colors + index + 2 ), opacity );
-            glVertex3f( *( coords + id0 ), *( coords + id0 + 1 ), *( coords + id0 + 2 ) );
-            glVertex3f( *( coords + id1 ), *( coords + id1 + 1 ), *( coords + id1 + 2 ) );
-            glVertex3f( *( coords + id2 ), *( coords + id2 + 1 ), *( coords + id2 + 2 ) );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id0 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id1 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id2 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -348,23 +315,19 @@ void Rendering_Tri_PCs_O_Cs( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_PCs_Os( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
-        const kvs::UInt8*  colors    = polygon->colors().data();
-        const kvs::UInt8*  opacities = polygon->opacities().data();
-        const kvs::Real32* coords    = polygon->coords().data();
-
         const size_t ncolors = polygon->numberOfColors();
         for ( size_t i = 0, index3 = 0, index9 = 0; i < ncolors; i++, index3 += 3, index9 += 9 )
         {
-            glColor4ub( *( colors + index3 ), *( colors + index3 + 1 ), *( colors + index3 + 2 ), opacities[i] );
-
-            glVertex3f( *( coords + index9 ),     *( coords + index9 + 1 ), *( coords + index9 + 2 ) );
-            glVertex3f( *( coords + index9 + 3 ), *( coords + index9 + 4 ), *( coords + index9 + 5 ) );
-            glVertex3f( *( coords + index9 + 6 ), *( coords + index9 + 7 ), *( coords + index9 + 8 ) );
+            const kvs::UInt8 opacity = polygon->opacity(i);
+            kvs::OpenGL::Color( polygon->colors().data() + index3, opacity );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index9 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index9 + 3 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + index9 + 6 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -375,27 +338,24 @@ void Rendering_Tri_PCs_Os( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void Rendering_Tri_PCs_Os_Cs( const kvs::PolygonObject* polygon )
 {
-    glBegin( GL_TRIANGLES );
+    kvs::OpenGL::Begin( GL_TRIANGLES );
     {
         const kvs::UInt32* connections = polygon->connections().data();
-        const kvs::UInt8*  colors      = polygon->colors().data();
-        const kvs::UInt8*  opacities   = polygon->opacities().data();
-        const kvs::Real32* coords      = polygon->coords().data();
-
         const size_t nconnections = polygon->numberOfConnections();
         for ( size_t i = 0, index = 0; i < nconnections; i++, index += 3 )
         {
+            const kvs::UInt8 opacity = polygon->opacity(i);
+            kvs::OpenGL::Color( polygon->colors().data() + index, opacity );
+
             const size_t id0 = *( connections + index ) * 3;
             const size_t id1 = *( connections + index + 1 ) * 3;
             const size_t id2 = *( connections + index + 2 ) * 3;
-
-            glColor4ub( *( colors + index ), *( colors + index + 1 ), *( colors + index + 2 ), opacities[i] );
-            glVertex3f( *( coords + id0 ), *( coords + id0 + 1 ), *( coords + id0 + 2 ) );
-            glVertex3f( *( coords + id1 ), *( coords + id1 + 1 ), *( coords + id1 + 2 ) );
-            glVertex3f( *( coords + id2 ), *( coords + id2 + 1 ), *( coords + id2 + 2 ) );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id0 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id1 );
+            kvs::OpenGL::Vertex3( polygon->coords().data() + id2 );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -3080,85 +3040,85 @@ PolygonRenderingFunctionType Rendering[NumberOfRenderingTypes] =
 PolygonRenderingType GetPolygonRenderingType( const kvs::PolygonObject* polygon )
 {
     const size_t nopacities = polygon->numberOfOpacities();
-    const size_t ncolors    = polygon->numberOfColors();
-    const size_t nconnects  = polygon->numberOfConnections();
+    const size_t ncolors = polygon->numberOfColors();
+    const size_t nconnects = polygon->numberOfConnections();
     const kvs::PolygonObject::PolygonType polygon_type = polygon->polygonType();
-    const kvs::PolygonObject::NormalType  normal_type  = polygon->normalType();
-    const kvs::PolygonObject::ColorType   color_type   = polygon->colorType();
+    const kvs::PolygonObject::NormalType normal_type = polygon->normalType();
+    const kvs::PolygonObject::ColorType color_type = polygon->colorType();
 
-    if( polygon->normals().size() == 0 )
+    if ( polygon->normals().size() == 0 )
     {
-        if( polygon_type == kvs::PolygonObject::Triangle )
+        if ( polygon_type == kvs::PolygonObject::Triangle )
         {
-            if( color_type == kvs::PolygonObject::VertexColor )
+            if ( color_type == kvs::PolygonObject::VertexColor )
             {
-                if( ncolors == 1 )
+                if ( ncolors == 1 )
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Tri_SC_O : Type_Tri_SC_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Tri_SC_O : Type_Tri_SC_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Tri_SC_Os : Type_Tri_SC_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Tri_SC_Os : Type_Tri_SC_Os_Cs;
                 }
                 else
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Tri_VCs_O : Type_Tri_VCs_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Tri_VCs_O : Type_Tri_VCs_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Tri_VCs_Os : Type_Tri_VCs_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Tri_VCs_Os : Type_Tri_VCs_Os_Cs;
                 }
             }
-            else if( color_type == kvs::PolygonObject::PolygonColor )
+            else if ( color_type == kvs::PolygonObject::PolygonColor )
             {
-                if( ncolors == 1 )
+                if ( ncolors == 1 )
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Tri_SC_O : Type_Tri_SC_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Tri_SC_O : Type_Tri_SC_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Tri_SC_Os : Type_Tri_SC_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Tri_SC_Os : Type_Tri_SC_Os_Cs;
                 }
                 else
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Tri_PCs_O : Type_Tri_PCs_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Tri_PCs_O : Type_Tri_PCs_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Tri_PCs_Os : Type_Tri_PCs_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Tri_PCs_Os : Type_Tri_PCs_Os_Cs;
                 }
             }
         }
-        else if( polygon_type == kvs::PolygonObject::Quadrangle )
+        else if ( polygon_type == kvs::PolygonObject::Quadrangle )
         {
-            if( color_type == kvs::PolygonObject::VertexColor )
+            if ( color_type == kvs::PolygonObject::VertexColor )
             {
-                if( ncolors == 1 )
+                if ( ncolors == 1 )
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Quad_SC_O : Type_Quad_SC_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Quad_SC_O : Type_Quad_SC_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Quad_SC_Os : Type_Quad_SC_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Quad_SC_Os : Type_Quad_SC_Os_Cs;
                 }
                 else
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Quad_VCs_O : Type_Quad_VCs_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Quad_VCs_O : Type_Quad_VCs_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Quad_VCs_Os : Type_Quad_VCs_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Quad_VCs_Os : Type_Quad_VCs_Os_Cs;
                 }
             }
-            else if( color_type == kvs::PolygonObject::PolygonColor )
+            else if ( color_type == kvs::PolygonObject::PolygonColor )
             {
-                if( ncolors == 1 )
+                if ( ncolors == 1 )
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Quad_SC_O : Type_Quad_SC_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Quad_SC_O : Type_Quad_SC_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Quad_SC_Os : Type_Quad_SC_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Quad_SC_Os : Type_Quad_SC_Os_Cs;
                 }
                 else
                 {
-                    if( nopacities == 1 )
-                        return( ( nconnects == 0 ) ? Type_Quad_PCs_O : Type_Quad_PCs_O_Cs );
+                    if ( nopacities == 1 )
+                        return ( nconnects == 0 ) ? Type_Quad_PCs_O : Type_Quad_PCs_O_Cs;
                     else
-                        return( ( nconnects == 0 ) ? Type_Quad_PCs_Os : Type_Quad_PCs_Os_Cs );
+                        return ( nconnects == 0 ) ? Type_Quad_PCs_Os : Type_Quad_PCs_Os_Cs;
                 }
             }
         }
@@ -3166,165 +3126,165 @@ PolygonRenderingType GetPolygonRenderingType( const kvs::PolygonObject* polygon 
 
     else
     {
-        if( normal_type == kvs::PolygonObject::VertexNormal )
+        if ( normal_type == kvs::PolygonObject::VertexNormal )
         {
-            if( polygon_type == kvs::PolygonObject::Triangle )
+            if ( polygon_type == kvs::PolygonObject::Triangle )
             {
-                if( color_type == kvs::PolygonObject::VertexColor )
+                if ( color_type == kvs::PolygonObject::VertexColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_SC_O : Type_Tri_VN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_VN_SC_O : Type_Tri_VN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_SC_Os : Type_Tri_VN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_VN_SC_Os : Type_Tri_VN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_VCs_O : Type_Tri_VN_VCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_VN_VCs_O : Type_Tri_VN_VCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_VCs_Os : Type_Tri_VN_VCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_VN_VCs_Os : Type_Tri_VN_VCs_Os_Cs;
                     }
                 }
-                else if( color_type == kvs::PolygonObject::PolygonColor )
+                else if ( color_type == kvs::PolygonObject::PolygonColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_SC_O : Type_Tri_VN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_VN_SC_O : Type_Tri_VN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_SC_Os : Type_Tri_VN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_VN_SC_Os : Type_Tri_VN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_PCs_O : Type_Tri_VN_PCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_VN_PCs_O : Type_Tri_VN_PCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_VN_PCs_Os : Type_Tri_VN_PCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_VN_PCs_Os : Type_Tri_VN_PCs_Os_Cs;
                     }
                 }
             }
-            else if( polygon_type == kvs::PolygonObject::Quadrangle )
+            else if ( polygon_type == kvs::PolygonObject::Quadrangle )
             {
-                if( color_type == kvs::PolygonObject::VertexColor )
+                if ( color_type == kvs::PolygonObject::VertexColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_SC_O : Type_Quad_VN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_VN_SC_O : Type_Quad_VN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_SC_Os : Type_Quad_VN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_VN_SC_Os : Type_Quad_VN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_VCs_O : Type_Quad_VN_VCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_VN_VCs_O : Type_Quad_VN_VCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_VCs_Os : Type_Quad_VN_VCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_VN_VCs_Os : Type_Quad_VN_VCs_Os_Cs;
                     }
                 }
-                else if( color_type == kvs::PolygonObject::PolygonColor )
+                else if ( color_type == kvs::PolygonObject::PolygonColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_SC_O : Type_Quad_VN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_VN_SC_O : Type_Quad_VN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_SC_Os : Type_Quad_VN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_VN_SC_Os : Type_Quad_VN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_PCs_O : Type_Quad_VN_PCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_VN_PCs_O : Type_Quad_VN_PCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_VN_PCs_Os : Type_Quad_VN_PCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_VN_PCs_Os : Type_Quad_VN_PCs_Os_Cs;
                     }
                 }
             }
         }
 
-        else if( normal_type == kvs::PolygonObject::PolygonNormal )
+        else if ( normal_type == kvs::PolygonObject::PolygonNormal )
         {
-            if( polygon_type == kvs::PolygonObject::Triangle )
+            if ( polygon_type == kvs::PolygonObject::Triangle )
             {
-                if( color_type == kvs::PolygonObject::VertexColor )
+                if ( color_type == kvs::PolygonObject::VertexColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_SC_O : Type_Tri_PN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_PN_SC_O : Type_Tri_PN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_SC_Os : Type_Tri_PN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_PN_SC_Os : Type_Tri_PN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_VCs_O : Type_Tri_PN_VCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_PN_VCs_O : Type_Tri_PN_VCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_VCs_Os : Type_Tri_PN_VCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_PN_VCs_Os : Type_Tri_PN_VCs_Os_Cs;
                     }
                 }
-                else if( color_type == kvs::PolygonObject::PolygonColor )
+                else if ( color_type == kvs::PolygonObject::PolygonColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_SC_O : Type_Tri_PN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_PN_SC_O : Type_Tri_PN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_SC_Os : Type_Tri_PN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_PN_SC_Os : Type_Tri_PN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_PCs_O : Type_Tri_PN_PCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Tri_PN_PCs_O : Type_Tri_PN_PCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Tri_PN_PCs_Os : Type_Tri_PN_PCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Tri_PN_PCs_Os : Type_Tri_PN_PCs_Os_Cs;
                     }
                 }
             }
 
-            else if( polygon_type == kvs::PolygonObject::Quadrangle )
+            else if ( polygon_type == kvs::PolygonObject::Quadrangle )
             {
-                if( color_type == kvs::PolygonObject::VertexColor )
+                if ( color_type == kvs::PolygonObject::VertexColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_SC_O : Type_Quad_PN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_PN_SC_O : Type_Quad_PN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_SC_Os : Type_Quad_PN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_PN_SC_Os : Type_Quad_PN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_VCs_O : Type_Quad_PN_VCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_PN_VCs_O : Type_Quad_PN_VCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_VCs_Os : Type_Quad_PN_VCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_PN_VCs_Os : Type_Quad_PN_VCs_Os_Cs;
                     }
                 }
-                else if( color_type == kvs::PolygonObject::PolygonColor )
+                else if ( color_type == kvs::PolygonObject::PolygonColor )
                 {
-                    if( ncolors == 1 )
+                    if ( ncolors == 1 )
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_SC_O : Type_Quad_PN_SC_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_PN_SC_O : Type_Quad_PN_SC_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_SC_Os : Type_Quad_PN_SC_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_PN_SC_Os : Type_Quad_PN_SC_Os_Cs;
                     }
                     else
                     {
-                        if( nopacities == 1 )
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_PCs_O : Type_Quad_PN_PCs_O_Cs );
+                        if ( nopacities == 1 )
+                            return ( nconnects == 0 ) ? Type_Quad_PN_PCs_O : Type_Quad_PN_PCs_O_Cs;
                         else
-                            return( ( nconnects == 0 ) ? Type_Quad_PN_PCs_Os : Type_Quad_PN_PCs_Os_Cs );
+                            return ( nconnects == 0 ) ? Type_Quad_PN_PCs_Os : Type_Quad_PN_PCs_Os_Cs;
                     }
                 }
             }
         }
     }
 
-    return( Type_Tri_VCs_O );
+    return Type_Tri_VCs_O;
 };
 
 void PolygonRenderingFunction( const kvs::PolygonObject* polygon )
@@ -3345,5 +3305,3 @@ void PolygonRenderingFunction( const kvs::PolygonObject* )
 #endif
 
 } // end of namespace
-
-#endif // KVS_CORE_POLYGON_RENDERING_FUNCTION_H_INCLUDE

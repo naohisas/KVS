@@ -154,7 +154,7 @@ void PointRenderer::initialize()
             kvs::OpenGL::Enable( GL_POINT_SMOOTH );
             kvs::OpenGL::Enable( GL_BLEND );
             kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            KVS_GL_CALL( glHint( GL_POINT_SMOOTH_HINT, GL_NICEST ) );
+            kvs::OpenGL::Hint( GL_POINT_SMOOTH_HINT, GL_NICEST );
         }
     }
 
