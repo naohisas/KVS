@@ -49,6 +49,7 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
     m_painter.begin( screen() );
     {
+        const float dpr = camera->devicePixelRatio();
         const int x0 = m_left_margin;
         const int x1 = camera->windowWidth() - m_right_margin;
         const int y0 = m_top_margin;
@@ -60,22 +61,22 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
         {
             kvs::OpenGL::Begin( GL_QUADS );
             kvs::OpenGL::Color( m_background_color );
-            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) * dpr );
             kvs::OpenGL::End();
         }
 
         // Draw axes.
         const int d = int( m_axis_width * 0.5 );
-        kvs::OpenGL::SetLineWidth( m_axis_width );
+        kvs::OpenGL::SetLineWidth( m_axis_width * dpr );
         kvs::OpenGL::Begin( GL_LINES );
         kvs::OpenGL::Color( m_axis_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y1 ), kvs::Vec2( x1 + d, y1 ) ); // X axis (bottom)
-        kvs::OpenGL::Vertices( kvs::Vec2( x0, y1 + d ), kvs::Vec2( x0, y0 - d ) ); // Y axis (left)
-        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y0 ), kvs::Vec2( x1 + d, y0 ) ); // X axis (top)
-        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 + d ), kvs::Vec2( x1, y0 - d ) ); // Y axis (right)
+        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y1 ) * dpr, kvs::Vec2( x1 + d, y1 ) * dpr ); // X axis (bottom)
+        kvs::OpenGL::Vertices( kvs::Vec2( x0, y1 + d ) * dpr, kvs::Vec2( x0, y0 - d ) * dpr ); // Y axis (left)
+        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y0 ) * dpr, kvs::Vec2( x1 + d, y0 ) * dpr ); // X axis (top)
+        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 + d ) * dpr, kvs::Vec2( x1, y0 - d ) * dpr ); // Y axis (right)
         kvs::OpenGL::End();
 
         // Draw min/max values.
