@@ -12,9 +12,7 @@
  *  $Id: PointRenderer.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__POINT_RENDERER_H_INCLUDE
-#define KVS__POINT_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/RendererBase>
 #include <kvs/Module>
 
@@ -36,14 +34,12 @@ class PointRenderer : public kvs::RendererBase
     kvsModule( kvs::PointRenderer, Renderer );
     kvsModuleBaseClass( kvs::RendererBase );
 
-protected:
-
+private:
     mutable bool m_enable_anti_aliasing; ///< flag for anti-aliasing (AA)
     mutable bool m_enable_multisample_anti_aliasing; ///< flag for multisample anti-aliasing (MSAA)
     mutable bool m_enable_two_side_lighting; ///< flag for two-side lighting
 
 public:
-
     PointRenderer();
     virtual ~PointRenderer();
 
@@ -56,12 +52,9 @@ public:
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 private:
-
     void initialize();
 };
 
 } // end of namespace kvs
 
 #include "PointRendererGLSL.h"
-
-#endif // KVS__POINT_RENDERER_H_INCLUDE
