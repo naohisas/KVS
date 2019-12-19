@@ -13,11 +13,13 @@
  *  $Id: main.cpp 1493 2013-04-04 01:11:26Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
+#include <kvs/glut/Application>
+#include <kvs/glut/Screen>
 #include <kvs/PolygonImporter>
 #include <kvs/PolygonObject>
 #include <kvs/PolygonRenderer>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Message>
+#include <cstdlib>
 
 
 /*===========================================================================*/
@@ -32,32 +34,40 @@ int main( int argc, char** argv )
     kvs::glut::Application app( argc, argv );
     kvs::glut::Screen screen( &app );
     screen.setGeometry( 0, 0, 512, 512 );
-    screen.setTitle( "PolygonRenderer" );
-    screen.show();
 
     kvs::PolygonObject* object = NULL;
     if ( argc > 1 )
     {
-        object = new kvs::PolygonImporter( argv[1] );
-        object->print( std::cout );
+        const std::string filename( argv[1] );
+        object = new kvs::PolygonImporter( filename );
+    }
+    else if ( const char* kvs_data_dir = std::getenv( "KVS_DATA_DIR" ) )
+    {
+        const std::string filename = std::string( kvs_data_dir ) + "/bunny.ply";
+        object = new kvs::PolygonImporter( filename );
     }
     else
     {
-        std::cerr << "Usage: " << argv[0] << " <filename>" << std::endl;
-        exit( EXIT_FAILURE );
+        kvsMessageError() << "Cannot import polygon data file." << std::endl;
+        return (false);
     }
 
     bool glsl = true;
     if ( glsl )
     {
         kvs::glsl::PolygonRenderer* renderer = new kvs::glsl::PolygonRenderer();
+        renderer->setShader( kvs::Shader::Phong() );
+        screen.setTitle( "kvs::glsl::PolygonRenderer" );
         screen.registerObject( object, renderer );
     }
     else
     {
         kvs::PolygonRenderer* renderer = new kvs::PolygonRenderer();
+        screen.setTitle( "kvs::PolygonRenderer" );
         screen.registerObject( object, renderer );
     }
+
+    screen.show();
 
     return app.run();
 }

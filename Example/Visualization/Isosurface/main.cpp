@@ -33,6 +33,9 @@
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );
+    kvs::glut::Screen screen( &app );
+    screen.setGeometry( 0, 0, 512, 512 );
+    screen.setTitle( "kvs::Isosurface" );
 
     /* Read volume data from the specified data file. If the data file is not
      * specified, scalar hydrogen volume data is created by using
@@ -40,21 +43,20 @@ int main( int argc, char** argv )
      */
     kvs::StructuredVolumeObject* volume = NULL;
     if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else            volume = new kvs::HydrogenVolumeData( kvs::Vector3ui( 64, 64, 64 ) );
-
+    else volume = new kvs::HydrogenVolumeData( kvs::Vec3u( 64, 64, 64 ) );
     if ( !volume )
     {
-        kvsMessageError( "Cannot create a structured volume object." );
-        return( false );
+        kvsMessageError() << "Cannot create a structured volume object." << std::endl;
+        return (false);
     }
 
-    /* Extract surfaces by using the Isosurface class.
+    /* Extract surfaces by using the kvs::Isosurface class.
+     *
      *    i: isolevel
      *    n: NormalType (PolygonNormal/VertexNormal)
      *    d: check flag whether the duplicate vertices are deleted (false) or not
      *    t: transfer function
      */
-    volume->updateMinMaxValues();
     const double i = ( volume->maxValue() + volume->minValue() ) * 0.5;
     const kvs::PolygonObject::NormalType n = kvs::PolygonObject::VertexNormal;
     const bool d = false;
@@ -62,19 +64,15 @@ int main( int argc, char** argv )
     kvs::PolygonObject* object = new kvs::Isosurface( volume, i, n, d, t );
     if ( !object )
     {
-        kvsMessageError( "Cannot create a polygon object." );
+        kvsMessageError() << "Cannot create a polygon object." << std::endl;
         delete volume;
-        return( false );
+        return (false);
     }
 
     delete volume;
 
-    // Screen.
-    kvs::glut::Screen screen( &app );
     screen.registerObject( object );
-    screen.setGeometry( 0, 0, 512, 512 );
-    screen.setTitle( "kvs::Isosurface" );
     screen.show();
 
-    return( app.run() );
+    return app.run();
 }
