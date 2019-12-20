@@ -152,6 +152,7 @@ void HAVSVolumeRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs
     if ( BaseClass::windowWidth() == 0 && BaseClass::windowHeight() == 0 )
     {
         BaseClass::setWindowSize( camera->windowWidth(), camera->windowHeight() );
+        BaseClass::setDevicePixelRatio( camera->devicePixelRatio() );
         this->initialize_geometry();
         this->initialize_shader();
         this->initialize_table();
@@ -415,12 +416,12 @@ void HAVSVolumeRenderer::draw_initialization_pass()
         p2.loadIdentity();
         {
             kvs::OpenGL::SetOrtho( 0, width, 0, height );
-            KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-            KVS_GL_CALL_VER( glVertex2i( 0, 0 ) );
-            KVS_GL_CALL_VER( glVertex2i( width, 0 ) );
-            KVS_GL_CALL_VER( glVertex2i( width, height ) );
-            KVS_GL_CALL_VER( glVertex2i( 0, height ) );
-            KVS_GL_CALL_END( glEnd() );
+            kvs::OpenGL::Begin( GL_QUADS );
+            kvs::OpenGL::Vertex( GLint(0), GLint(0) );
+            kvs::OpenGL::Vertex( GLint(width), GLint(0) );
+            kvs::OpenGL::Vertex( GLint(width), GLint(height) );
+            kvs::OpenGL::Vertex( GLint(0), GLint(height) );
+            kvs::OpenGL::End();
         }
     }
 }
@@ -451,32 +452,32 @@ void HAVSVolumeRenderer::draw_geometry_pass()
 
     if ( this->isEnabledVBO() )
     {
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
+        kvs::OpenGL::EnableClientState( GL_VERTEX_ARRAY );
         m_vertex_coords.bind();
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, (char*)NULL ) );
+        kvs::OpenGL::VertexPointer( 3, GL_FLOAT, 0, (char*)NULL );
 
-        KVS_GL_CALL( glEnableClientState( GL_TEXTURE_COORD_ARRAY ) );
+        kvs::OpenGL::EnableClientState( GL_TEXTURE_COORD_ARRAY );
         m_vertex_values.bind();
-        KVS_GL_CALL( glTexCoordPointer( 1, GL_FLOAT, 0, (char*)NULL ) );
+        kvs::OpenGL::TexCoordPointer( 1, GL_FLOAT, 0, (char*)NULL );
 
         m_vertex_indices.bind();
-        KVS_GL_CALL( glDrawElements( GL_TRIANGLES, m_meshes->nrenderfaces() * 3, GL_UNSIGNED_INT, (char*)NULL ) );
+        kvs::OpenGL::DrawElements( GL_TRIANGLES, m_meshes->nrenderfaces() * 3, GL_UNSIGNED_INT, (char*)NULL );
 
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glDisableClientState( GL_TEXTURE_COORD_ARRAY ) );
+        kvs::OpenGL::DisableClientState( GL_VERTEX_ARRAY );
+        kvs::OpenGL::DisableClientState( GL_TEXTURE_COORD_ARRAY );
     }
     else
     {
-        KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glVertexPointer( 3, GL_FLOAT, 0, m_meshes->coords().data() ) );
+        kvs::OpenGL::EnableClientState( GL_VERTEX_ARRAY );
+        kvs::OpenGL::VertexPointer( 3, GL_FLOAT, 0, m_meshes->coords().data() );
 
-        KVS_GL_CALL( glEnableClientState( GL_TEXTURE_COORD_ARRAY ) );
-        KVS_GL_CALL( glTexCoordPointer( 1, GL_FLOAT, 0, m_meshes->values().data() ) );
+        kvs::OpenGL::EnableClientState( GL_TEXTURE_COORD_ARRAY );
+        kvs::OpenGL::TexCoordPointer( 1, GL_FLOAT, 0, m_meshes->values().data() );
 
-        KVS_GL_CALL( glDrawElements( GL_TRIANGLES, m_meshes->nrenderfaces() * 3, GL_UNSIGNED_INT, m_pindices ) );
+        kvs::OpenGL::DrawElements( GL_TRIANGLES, m_meshes->nrenderfaces() * 3, GL_UNSIGNED_INT, m_pindices );
 
-        KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
-        KVS_GL_CALL( glDisableClientState( GL_TEXTURE_COORD_ARRAY ) );
+        kvs::OpenGL::DisableClientState( GL_VERTEX_ARRAY );
+        kvs::OpenGL::DisableClientState( GL_TEXTURE_COORD_ARRAY );
     }
 }
 
@@ -516,12 +517,12 @@ void HAVSVolumeRenderer::draw_flush_pass()
             kvs::OpenGL::SetOrtho( 0, width, 0, height );
             for ( size_t i = 0; i < this->kBufferSize() - 1; i++ )
             {
-                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-                KVS_GL_CALL_VER( glVertex2i( 0, 0 ) );
-                KVS_GL_CALL_VER( glVertex2i( 0, height ) );
-                KVS_GL_CALL_VER( glVertex2i( width, height ) );
-                KVS_GL_CALL_VER( glVertex2i( width, 0 ) );
-                KVS_GL_CALL_END( glEnd() );
+                kvs::OpenGL::Begin( GL_QUADS );
+                kvs::OpenGL::Vertex( GLint(0), GLint(0) );
+                kvs::OpenGL::Vertex( GLint(0), GLint(height) );
+                kvs::OpenGL::Vertex( GLint(width), GLint(height) );
+                kvs::OpenGL::Vertex( GLint(width), GLint(0) );
+                kvs::OpenGL::End();
             }
         }
     }
@@ -552,12 +553,12 @@ void HAVSVolumeRenderer::draw_texture()
                 kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
                 // Draw texture using screen-aligned quad
-                KVS_GL_CALL_BEG( glBegin( GL_QUADS ) );
-                KVS_GL_CALL_VER( glTexCoord2i( 0, 0 ) ); KVS_GL_CALL_VER( glVertex2i( 0, 0 ) );
-                KVS_GL_CALL_VER( glTexCoord2i( 1, 0 ) ); KVS_GL_CALL_VER( glVertex2i( width, 0 ) );
-                KVS_GL_CALL_VER( glTexCoord2i( 1, 1 ) ); KVS_GL_CALL_VER( glVertex2i( width, height ) );
-                KVS_GL_CALL_VER( glTexCoord2i( 0, 1 ) ); KVS_GL_CALL_VER( glVertex2i( 0, height ) );
-                KVS_GL_CALL_END( glEnd() );
+                kvs::OpenGL::Begin( GL_QUADS );
+                kvs::OpenGL::TexCoord( GLint(0), GLint(0) ); kvs::OpenGL::Vertex( GLint(0), GLint(0) );
+                kvs::OpenGL::TexCoord( GLint(1), GLint(0) ); kvs::OpenGL::Vertex( GLint(width), GLint(0) );
+                kvs::OpenGL::TexCoord( GLint(1), GLint(1) ); kvs::OpenGL::Vertex( GLint(width), GLint(height) );
+                kvs::OpenGL::TexCoord( GLint(0), GLint(1) ); kvs::OpenGL::Vertex( GLint(0), GLint(height) );
+                kvs::OpenGL::End();
             }
         }
     }

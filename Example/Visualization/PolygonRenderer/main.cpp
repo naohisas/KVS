@@ -48,7 +48,7 @@ int main( int argc, char** argv )
     }
     else
     {
-        kvsMessageError() << "Cannot import polygon data file." << std::endl;
+        kvsMessageError() << "Cannot import data file." << std::endl;
         return (false);
     }
 
