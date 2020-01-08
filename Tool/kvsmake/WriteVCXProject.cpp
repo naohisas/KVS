@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file WriteVCProject.cpp
+ *  @file   WriteVCXProject.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,12 +9,11 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: WriteVCXProject.cpp 1498 2013-04-04 07:30:41Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
+/*****************************************************************************/
 #include <kvs/Compiler>
 #if defined ( KVS_COMPILER_VC )
-
 #include "WriteVCXProject.h"
 #include <string>
 #include <fstream>

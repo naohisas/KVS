@@ -15,7 +15,6 @@
 #include "ExtensionChecker.h"
 #include <kvs/OpenGL>
 #include <kvs/Message>
-
 #if defined( KVS_SUPPORT_GLUT )
 #include <kvs/glut/GLUT>
 #endif
@@ -56,28 +55,6 @@ ExtensionChecker::ExtensionChecker( int argc, char** argv )
         "It seems that KVS_SUPPORT_GLUT option is disabled in the installed KVS. "
         "GLUT is required to check OpenGL information using kvscheck command.");
 #endif
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns OpenGL extension list.
- *  @return GL extension list
- */
-/*===========================================================================*/
-const kvs::StringList& ExtensionChecker::GLExtensions() const
-{
-    return m_gl_extensions;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns GLU extension list.
- *  @return GLU extension list
- */
-/*===========================================================================*/
-const kvs::StringList& ExtensionChecker::GLUExtensions() const
-{
-    return m_glu_extensions;
 }
 
 /*==========================================================================*/

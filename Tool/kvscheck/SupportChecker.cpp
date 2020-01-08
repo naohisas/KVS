@@ -14,22 +14,17 @@
 #if defined( KVS_SUPPORT_GLEW )
 #include <kvs/glew/GLEW>
 #endif
-
 #include "SupportChecker.h"
 #include <kvs/String>
-
 #if defined( KVS_SUPPORT_GLUT )
 #include <kvs/glut/GLUT>
 #endif
-
 #if defined( KVS_SUPPORT_SAGE )
 #include <kvs/sage/SAGE>
 #endif
-
 #if defined( KVS_SUPPORT_OPENCV )
 #include <kvs/opencv/OpenCV>
 #endif
-
 #if defined( KVS_SUPPORT_CUDA )
 #include <kvs/cuda/CUDA>
 #endif
@@ -86,28 +81,6 @@ SupportChecker::SupportChecker()
         m_versions.push_back( kvs::cuda::Version() );
     }
 #endif
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Returns a description list of the supported libraries.
- *  @return description list of the supported libraries
- */
-/*==========================================================================*/
-const kvs::StringList& SupportChecker::descriptionList() const
-{
-    return m_descriptions;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Returns a version list of the supported libraries.
- *  @return version list of the supported libraries
- */
-/*==========================================================================*/
-const kvs::StringList& SupportChecker::versionList() const
-{
-    return m_versions;
 }
 
 /*==========================================================================*/

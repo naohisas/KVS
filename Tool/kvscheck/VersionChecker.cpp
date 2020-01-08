@@ -31,16 +31,6 @@ VersionChecker::VersionChecker()
 
 /*==========================================================================*/
 /**
- *  @brief  Returns a KVS version name.
- */
-/*==========================================================================*/
-const std::string& VersionChecker::name() const
-{
-    return m_name;
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Outputs version information.
  *  @param  os [in] output stream
  *  @param  checker [in] version checker

@@ -12,9 +12,7 @@
  *  $Id: Constant.h 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVSMAKE__CONSTANT_H_INCLUDE
-#define KVSMAKE__CONSTANT_H_INCLUDE
-
+#pragma once
 #include <cstdlib>
 #include <string>
 #include <kvs/Compiler>
@@ -41,5 +39,3 @@ const std::string QtProjectTemplate( KVS_DIR + "/bin/QtProject.template" );
 #endif
 
 } // end of namespace kvsmake
-
-#endif // KVSMAKE__CONSTANT_H_INCLUDE

@@ -12,9 +12,7 @@
  *  $Id: WriteQtProject.h 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVSMAKE__WRITE_QT_PROJECT_H_INCLUDE
-#define KVSMAKE__WRITE_QT_PROJECT_H_INCLUDE
-
+#pragma once
 #include <string>
 
 
@@ -24,5 +22,3 @@ namespace kvsmake
 bool WriteQtProject( const std::string& project_name );
 
 } // end of namespace kvsmake
-
-#endif // KVSMAKE__WRITE_QT_PROJECT_H_INCLUDE

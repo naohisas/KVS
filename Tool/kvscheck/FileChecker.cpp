@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file FileChecker.cpp
+ *  @file   FileChecker.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,9 +9,9 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: FileChecker.cpp 1433 2013-03-17 01:23:37Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
+/*****************************************************************************/
 #include "FileChecker.h"
 #include <kvs/AVSField>
 #include <kvs/AVSUcd>
@@ -129,17 +130,6 @@ namespace kvscheck
 FileChecker::FileChecker( const std::string& filename )
 {
     m_filename = filename;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a filename.
- *  @return filename
- */
-/*===========================================================================*/
-const std::string& FileChecker::filename() const
-{
-    return m_filename;
 }
 
 /*===========================================================================*/

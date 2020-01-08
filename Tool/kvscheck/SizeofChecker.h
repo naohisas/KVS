@@ -12,9 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVSCHECK__SIZEOF_CHECKER_H_INCLUDE
-#define KVSCHECK__SIZEOF_CHECKER_H_INCLUDE
-
+#pragma once
 #include <iostream>
 
 
@@ -29,23 +27,8 @@ namespace kvscheck
 class SizeofChecker
 {
 public:
-
-    template <typename T> size_t sizeOf() const;
+    template <typename T> size_t sizeOf() const { return sizeof(T); }
     friend std::ostream& operator << ( std::ostream& os, const SizeofChecker& checker );
 };
 
-/*===========================================================================*/
-/**
- *  @brief  Returns size of specified type.
- *  @return size in byte
- */
-/*===========================================================================*/
-template <typename T>
-inline size_t SizeofChecker::sizeOf() const
-{
-    return sizeof( T );
-}
-
 } // end of namespace kvscheck
-
-#endif // KVSCHECK__SIZEOF_CHECKER_H_INCLUDE

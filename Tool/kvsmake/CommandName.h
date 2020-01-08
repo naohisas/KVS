@@ -12,15 +12,13 @@
  *  $Id: CommandName.h 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVSMAKE__COMMAND_NAME_H_INCLUDE
-#define KVSMAKE__COMMAND_NAME_H_INCLUDE
-
+#pragma once
 #include <string>
 
 
 namespace kvsmake
 {
-const std::string CommandName = "kvsmake";
-}
 
-#endif // KVSMAKE__COMMAND_NAME_H_INCLUDE
+const std::string CommandName = "kvsmake";
+
+}

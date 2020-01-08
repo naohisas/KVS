@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file CompilerChecker.h
+ *  @file   CompilerChecker.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,12 +9,10 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: CompilerChecker.h 1433 2013-03-17 01:23:37Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
-#ifndef KVSCHECK__COMPILER_CHECKER_H_INCLUDE
-#define KVSCHECK__COMPILER_CHECKER_H_INCLUDE
-
+/*****************************************************************************/
+#pragma once
 #include <string>
 #include <iostream>
 
@@ -28,20 +27,15 @@ namespace kvscheck
 /*==========================================================================*/
 class CompilerChecker
 {
-protected:
-
+private:
     std::string m_name; ///< compiler name
     std::string m_version; ///< compiler version
 
 public:
-
     CompilerChecker();
-
-    const std::string& name() const;
-    const std::string& version() const;
+    const std::string& name() const { return m_name; }
+    const std::string& version() const { return m_version; }
     friend std::ostream& operator << ( std::ostream& os, const CompilerChecker& checker );
 };
 
 } // end of namespace kvscheck
-
-#endif // KVSCHECK__COMPILER_CHECKER_H_INCLUDE

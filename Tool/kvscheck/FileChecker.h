@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file FileChecker.h
+ *  @file   FileChecker.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,12 +9,10 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: FileChecker.h 1433 2013-03-17 01:23:37Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
-#ifndef KVSCHECK__FILE_CHECKER_H_INCLUDE
-#define KVSCHECK__FILE_CHECKER_H_INCLUDE
-
+/*****************************************************************************/
+#pragma once
 #include <string>
 #include <iostream>
 
@@ -29,7 +28,6 @@ namespace kvscheck
 class FileChecker
 {
 public:
-
     enum FormatType
     {
         UnknownFormat = 0, ///< unknown format (not supported format)
@@ -51,18 +49,13 @@ public:
     };
 
 private:
-
     std::string m_filename; ///< filename
 
 public:
-
     FileChecker( const std::string& filename );
-
-    const std::string& filename() const;
+    const std::string& filename() const { return m_filename; }
     FormatType fileFormat() const;
     friend std::ostream& operator << ( std::ostream& os, const FileChecker& checker );
 };
 
 } // end of namespace kvscheck
-
-#endif // KVSCHECK__FILE_CHECKER_H_INCLUDE

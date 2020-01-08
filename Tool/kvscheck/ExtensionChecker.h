@@ -12,9 +12,7 @@
  *  $Id$
  */
 /****************************************************************************/
-#ifndef KVSCHECK__EXTENSION_CHECKER_H_INCLUDE
-#define KVSCHECK__EXTENSION_CHECKER_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/StringList>
 
@@ -29,20 +27,15 @@ namespace kvscheck
 /*===========================================================================*/
 class ExtensionChecker
 {
-protected:
-
+private:
     kvs::StringList m_gl_extensions; ///< OpenGL extensions
     kvs::StringList m_glu_extensions; ///< GLU extensions
 
 public:
-
     ExtensionChecker( int argc, char** argv );
-
-    const kvs::StringList& GLExtensions() const;
-    const kvs::StringList& GLUExtensions() const;
+    const kvs::StringList& GLExtensions() const { return m_gl_extensions; }
+    const kvs::StringList& GLUExtensions() const { return m_glu_extensions; }
     friend std::ostream& operator << ( std::ostream& os, const ExtensionChecker& checker );
 };
 
 } // end of namespace kvscheck
-
-#endif // KVSCHECK__EXTENSION_CHECKER_H_INCLUDE

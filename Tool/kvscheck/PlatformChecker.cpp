@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file PlatformChecker.cpp
+ *  @file   PlatformChecker.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,9 +9,9 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: PlatformChecker.cpp 1433 2013-03-17 01:23:37Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
+/*****************************************************************************/
 #include "PlatformChecker.h"
 #include <kvs/Platform>
 #include <kvs/SystemInformation>
@@ -30,26 +31,6 @@ PlatformChecker::PlatformChecker()
 {
     m_name = kvs::Platform::Name();
     m_cpu = kvs::Platform::CPUName();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a platform name.
- */
-/*===========================================================================*/
-const std::string& PlatformChecker::name() const
-{
-    return m_name;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Returns a CPU name.
- */
-/*==========================================================================*/
-const std::string& PlatformChecker::cpu() const
-{
-    return m_cpu;
 }
 
 /*==========================================================================*/

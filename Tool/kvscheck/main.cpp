@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file main.cpp
+ *  @file   main.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,9 +9,9 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: main.cpp 1433 2013-03-17 01:23:37Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
+/*****************************************************************************/
 #include <kvs/MemoryDebugger>
 #include "Argument.h"
 #include "CompilerChecker.h"
@@ -38,41 +39,49 @@ int main( int argc, char** argv )
     KVS_MEMORY_DEBUGGER__SET_ARGUMENT( argc, argv );
 
     kvscheck::Argument arg( argc, argv );
-    if( !arg.parse() ) { return 1; }
+    if ( !arg.parse() ) { return 1; }
 
-    if( arg.hasOption("version") )
+    if ( arg.hasOption("version") )
     {
         std::cout << kvscheck::VersionChecker() << std::endl;
     }
-    if( arg.hasOption("platform") )
+
+    if ( arg.hasOption("platform") )
     {
         std::cout << kvscheck::PlatformChecker() << std::endl;
     }
-    if( arg.hasOption("compiler") )
+
+    if ( arg.hasOption("compiler") )
     {
         std::cout << kvscheck::CompilerChecker() << std::endl;
     }
-    if( arg.hasOption("sizeof") )
+
+    if ( arg.hasOption("sizeof") )
     {
         std::cout << kvscheck::SizeofChecker() << std::endl;
     }
-    if( arg.hasOption("support") )
+
+    if ( arg.hasOption("support") )
     {
         std::cout << kvscheck::SupportChecker() << std::endl;
     }
-    if( arg.hasOption("minmax") )
+
+    if ( arg.hasOption("minmax") )
     {
         std::cout << kvscheck::MinMaxChecker() << std::endl;
     }
-    if( arg.hasOption("opengl") )
+
+    if ( arg.hasOption("opengl") )
     {
         std::cout << kvscheck::OpenGLChecker( argc, argv ) << std::endl;
     }
-    if( arg.hasOption("extension") )
+
+    if ( arg.hasOption("extension") )
     {
         std::cout << kvscheck::ExtensionChecker( argc, argv ) << std::endl;
     }
-    if( arg.hasOption("file") )
+
+    if ( arg.hasOption("file") )
     {
         const std::string filename = arg.value<std::string>();
         std::cout << kvscheck::FileChecker( filename ) << std::endl;

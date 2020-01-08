@@ -37,9 +37,7 @@ const std::string Description("Tetrahedral volume data (quadratic) to tetrahedra
 class Argument : public kvsconv::Argument::Common
 {
 public:
-
     Argument( int argc, char** argv );
-
     const std::string inputFilename();
     const std::string outputFilename( const std::string& filename );
     kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();

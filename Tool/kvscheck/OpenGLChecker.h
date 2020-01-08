@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file OpenGLChecker.h
+ *  @file   OpenGLChecker.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,12 +9,10 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: OpenGLChecker.h 1437 2013-03-18 01:42:43Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
-#ifndef KVSCHECK__OPENGL_CHECKER_H_INCLUDE
-#define KVSCHECK__OPENGL_CHECKER_H_INCLUDE
-
+/*****************************************************************************/
+#pragma once
 #include <string>
 
 
@@ -27,8 +26,7 @@ namespace kvscheck
 /*===========================================================================*/
 class OpenGLChecker
 {
-protected:
-
+private:
     std::string m_vendor; ///< vendor name
     std::string m_renderer; ///< renderer (GPU) name
     std::string m_gl_version; ///< OpenGL version
@@ -37,18 +35,14 @@ protected:
     std::string m_glew_version; ///< GLEW version
 
 public:
-
     OpenGLChecker( int argc, char** argv );
-
-    const std::string& vendor() const;
-    const std::string& renderer() const;
-    const std::string& GLVersion() const;
-    const std::string& GLSLVersion() const;
-    const std::string& GLUVersion() const;
-    const std::string& GLEWVersion() const;
+    const std::string& vendor() const { return m_vendor; }
+    const std::string& renderer() const { return m_renderer; }
+    const std::string& GLVersion() const { return m_gl_version; }
+    const std::string& GLSLVersion() const { return m_glsl_version; }
+    const std::string& GLUVersion() const { return m_glu_version; }
+    const std::string& GLEWVersion() const { return m_glew_version; }
     friend std::ostream& operator << ( std::ostream& os, const OpenGLChecker& checker );
 };
 
 } // end of namespace kvscheck
-
-#endif // KVSCHECK__OPENGL_CHECKER_H_INCLUDE

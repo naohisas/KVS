@@ -14,7 +14,6 @@
 /****************************************************************************/
 #include <kvs/Compiler>
 #if defined ( KVS_COMPILER_VC )
-
 #include "WriteVCProject.h"
 #include <string>
 #include <fstream>

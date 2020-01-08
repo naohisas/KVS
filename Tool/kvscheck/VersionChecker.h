@@ -1,6 +1,7 @@
-/****************************************************************************/
+/*****************************************************************************/
 /**
- *  @file VersionChecker.h
+ *  @file   VersionChecker.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,12 +9,10 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: VersionChecker.h 1433 2013-03-17 01:23:37Z naohisa.sakamoto@gmail.com $
+ *  $Id$
  */
-/****************************************************************************/
-#ifndef KVSCHECK__VERSION_CHECKER_H_INCLUDE
-#define KVSCHECK__VERSION_CHECKER_H_INCLUDE
-
+/*****************************************************************************/
+#pragma once
 #include <string>
 #include <iostream>
 
@@ -28,18 +27,13 @@ namespace kvscheck
 /*==========================================================================*/
 class VersionChecker
 {
-protected:
-
+private:
     std::string m_name; ///< KVS version name
 
 public:
-
     VersionChecker();
-
-    const std::string& name() const;
+    const std::string& name() const { return m_name; }
     friend std::ostream& operator << ( std::ostream& os, const VersionChecker& checker );
 };
 
 } // end of namespace kvscheck
-
-#endif // KVSCHECK__VERSION_CHECKER_H_INCLUDE
