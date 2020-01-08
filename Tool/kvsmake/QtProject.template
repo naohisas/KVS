@@ -144,12 +144,12 @@ equals( KVS_SUPPORT_OPENCV, "1" ) {
         OPENCV_LIBRARY_PATH = $$KVS_OPENCV_DIR/lib
     } else {
         contains( $$system( "pkg-config --list-all" ), "opencv4" ) {
-            OPENCV_INCLUDE_PATH = $$system( "pkg-config --cflags opencv4")
+            OPENCV_INCLUDE_PATH = $$system( "pkg-config --cflags opencv4 | sed -e 's/-I//g'")
             OPENCV_LIBRARY_PATH = $$system( "pkg-config --libs-only-L opencv4" )
             OPENCV_LINK_LIBRARY = $$system( "pkg-config --libs opencv4" )
 	    DEFINES += KVS_OPENCV4
         } else {
-            OPENCV_INCLUDE_PATH = $$system( "pkg-config --cflags opencv")
+            OPENCV_INCLUDE_PATH = $$system( "pkg-config --cflags opencv | sed -e 's/-I//g'")
             OPENCV_LIBRARY_PATH = $$system( "pkg-config --libs-only-L opencv" )
             OPENCV_LINK_LIBRARY = $$system( "pkg-config --libs opencv" )
         }
