@@ -13,6 +13,7 @@
  */
 /*****************************************************************************/
 #include <kvs/MemoryDebugger>
+#include <kvs/CommandLine>
 #include "Argument.h"
 #include "CompilerChecker.h"
 #include "FileChecker.h"
@@ -38,53 +39,64 @@ int main( int argc, char** argv )
 {
     KVS_MEMORY_DEBUGGER__SET_ARGUMENT( argc, argv );
 
-    kvscheck::Argument arg( argc, argv );
-    if ( !arg.parse() ) { return 1; }
+//    kvscheck::Argument arg( argc, argv );
+//    if ( !arg.parse() ) { return 1; }
+    kvs::CommandLine cl( argc, argv );
+    cl.addHelpOption();
+    cl.addOption( "version", "Output KVS version. (optional)" );
+    cl.addOption( "platform", "Output platforma information. (optional)" );
+    cl.addOption( "compiler", "Output compiler information. (optional)" );
+    cl.addOption( "sizeof", "Output 'sizeof' information. (optional)" );
+    cl.addOption( "support", "Output supported library information. (optional)" );
+    cl.addOption( "minmax", "Output min/max information. (optional)" );
+    cl.addOption( "opengl", "Output OpenGL information. (optional)" );
+    cl.addOption( "extension", "Output OpenGL extension information. (optional)" );
+    cl.addOption( "file", "Output file information. (optional)" );
+    if ( !cl.parse() ) { return 1; }
 
-    if ( arg.hasOption("version") )
+    if ( cl.hasOption("version") )
     {
-        std::cout << kvscheck::VersionChecker() << std::endl;
+        return kvscheck::Version().exec( argc, argv );
     }
 
-    if ( arg.hasOption("platform") )
+    if ( cl.hasOption("platform") )
     {
-        std::cout << kvscheck::PlatformChecker() << std::endl;
+        return kvscheck::Platform().exec( argc, argv );
     }
 
-    if ( arg.hasOption("compiler") )
+    if ( cl.hasOption("compiler") )
     {
-        std::cout << kvscheck::CompilerChecker() << std::endl;
+        return kvscheck::Compiler().exec( argc, argv );
     }
 
-    if ( arg.hasOption("sizeof") )
+    if ( cl.hasOption("sizeof") )
     {
-        std::cout << kvscheck::SizeofChecker() << std::endl;
+        return kvscheck::SizeOf().exec( argc, argv );
     }
 
-    if ( arg.hasOption("support") )
+    if ( cl.hasOption("support") )
     {
-        std::cout << kvscheck::SupportChecker() << std::endl;
+        return kvscheck::Support().exec( argc, argv );
     }
 
-    if ( arg.hasOption("minmax") )
+    if ( cl.hasOption("minmax") )
     {
-        std::cout << kvscheck::MinMaxChecker() << std::endl;
+        return kvscheck::MinMax().exec( argc, argv );
     }
 
-    if ( arg.hasOption("opengl") )
+    if ( cl.hasOption("opengl") )
     {
-        std::cout << kvscheck::OpenGLChecker( argc, argv ) << std::endl;
+        return kvscheck::OpenGL().exec( argc, argv );
     }
 
-    if ( arg.hasOption("extension") )
+    if ( cl.hasOption("extension") )
     {
-        std::cout << kvscheck::ExtensionChecker( argc, argv ) << std::endl;
+        return kvscheck::Extension().exec( argc, argv );
     }
 
-    if ( arg.hasOption("file") )
+    if ( cl.hasOption("file") )
     {
-        const std::string filename = arg.value<std::string>();
-        std::cout << kvscheck::FileChecker( filename ) << std::endl;
+        return kvscheck::File().exec( argc, argv );
     }
 
     return 0;

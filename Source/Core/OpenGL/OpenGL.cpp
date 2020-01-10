@@ -322,7 +322,7 @@ std::string GLEWVersion()
     return "Unknown";
   #endif
 #else
-    return "GLEW is not enabled";
+    return "GLEW is not available";
 #endif
 }
 

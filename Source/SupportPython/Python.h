@@ -21,6 +21,7 @@ namespace kvs
 namespace python
 {
 
+std::string Description();
 std::string Version();
 void Initialize( const bool import = true );
 void Finalize();
