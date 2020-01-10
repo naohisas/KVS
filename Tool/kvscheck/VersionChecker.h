@@ -48,24 +48,4 @@ inline int Version::exec( int argc, char** argv )
     return 0;
 }
 
-
-
-
-
-/*==========================================================================*/
-/**
- *  KVS version checker class.
- */
-/*==========================================================================*/
-class VersionChecker
-{
-private:
-    std::string m_name; ///< KVS version name
-
-public:
-    VersionChecker();
-    const std::string& name() const { return m_name; }
-    friend std::ostream& operator << ( std::ostream& os, const VersionChecker& checker );
-};
-
 } // end of namespace kvscheck

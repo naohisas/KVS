@@ -14,7 +14,7 @@
 /*****************************************************************************/
 #include <kvs/MemoryDebugger>
 #include <kvs/CommandLine>
-#include "Argument.h"
+//#include "Argument.h"
 #include "CompilerChecker.h"
 #include "FileChecker.h"
 #include "PlatformChecker.h"

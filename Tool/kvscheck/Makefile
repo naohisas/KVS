@@ -123,16 +123,6 @@ endif
 #  Object.
 #=============================================================================
 OBJECTS := \
-$(OUTDIR)/Argument.o \
-$(OUTDIR)/CompilerChecker.o \
-$(OUTDIR)/FileChecker.o \
-$(OUTDIR)/OpenGLChecker.o \
-$(OUTDIR)/ExtensionChecker.o \
-$(OUTDIR)/PlatformChecker.o \
-$(OUTDIR)/SizeofChecker.o \
-$(OUTDIR)/SupportChecker.o \
-$(OUTDIR)/MinMaxChecker.o \
-$(OUTDIR)/VersionChecker.o \
 $(OUTDIR)/main.o \
 
 

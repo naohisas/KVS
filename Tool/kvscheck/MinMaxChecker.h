@@ -65,17 +65,4 @@ inline int MinMax::exec( int argc, char** argv )
 
 #undef KVSCHECK_PRINT_MINMAX
 
-/*==========================================================================*/
-/**
- *  Min/Max value checker class.
- */
-/*==========================================================================*/
-class MinMaxChecker
-{
-public:
-    template <typename T> const T minValueOf() const { return kvs::Value<T>::Min(); }
-    template <typename T> const T maxValueOf() const { return kvs::Value<T>::Max(); }
-    friend std::ostream& operator << ( std::ostream& os, const MinMaxChecker& checker );
-};
-
 } // end of namespace kvscheck

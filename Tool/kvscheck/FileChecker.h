@@ -222,42 +222,6 @@ inline int File::exec( int argc, char** argv )
     return 1;
 }
 
-/*==========================================================================*/
-/**
- *  File checker class.
- */
-/*==========================================================================*/
-class FileChecker
-{
-public:
-    enum FormatType
-    {
-        UnknownFormat = 0, ///< unknown format (not supported format)
-        AVSFieldFormat,    ///< AVS Field format
-        AVSUcdFormat,      ///< AVS UCD format
-        BitmapFormat,      ///< Bitmap image format
-        CSVFormat,         ///< CSV format
-        DICOMFormat,       ///< DICOM image format
-        GISFormat,         ///< GIS format
-        GrADSFormat,       ///< GrADS format
-        KVSMLFormat,       ///< KVSML format
-        PLYFormat,         ///< PLY format
-        PBMFormat,         ///< PBM image format
-        PGMFormat,         ///< PGM image format
-        PPMFormat,         ///< PPM image format
-        STLFormat,         ///< STL format
-        TIFFFormat,        ///< TIFF image format
-        IPLabFormat        ///< IPLab image format
-    };
-
-private:
-    std::string m_filename; ///< filename
-
-public:
-    FileChecker( const std::string& filename );
-    const std::string& filename() const { return m_filename; }
-    FormatType fileFormat() const;
-    friend std::ostream& operator << ( std::ostream& os, const FileChecker& checker );
-};
+#undef KVSCHECK_PRINT_FILE
 
 } // end of namespace kvscheck

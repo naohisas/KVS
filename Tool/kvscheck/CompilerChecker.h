@@ -36,22 +36,4 @@ inline int Compiler::exec( int argc, char** argv )
     return 0;
 }
 
-/*==========================================================================*/
-/**
- *  Compiler checker class.
- */
-/*==========================================================================*/
-class CompilerChecker
-{
-private:
-    std::string m_name; ///< compiler name
-    std::string m_version; ///< compiler version
-
-public:
-    CompilerChecker();
-    const std::string& name() const { return m_name; }
-    const std::string& version() const { return m_version; }
-    friend std::ostream& operator << ( std::ostream& os, const CompilerChecker& checker );
-};
-
 } // end of namespace kvscheck

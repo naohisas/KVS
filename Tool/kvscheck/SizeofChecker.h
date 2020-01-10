@@ -39,16 +39,4 @@ inline int SizeOf::exec( int argc, char** argv )
     return 0;
 }
 
-/*==========================================================================*/
-/**
- *  'sizeof' checker class.
- */
-/*==========================================================================*/
-class SizeofChecker
-{
-public:
-    template <typename T> size_t sizeOf() const { return sizeof(T); }
-    friend std::ostream& operator << ( std::ostream& os, const SizeofChecker& checker );
-};
-
 } // end of namespace kvscheck

@@ -81,22 +81,4 @@ inline int Extension::exec( int argc, char** argv )
 #endif
 }
 
-/*===========================================================================*/
-/**
- *  @brief  OpenGL extension information checker class.
- */
-/*===========================================================================*/
-class ExtensionChecker
-{
-private:
-    kvs::StringList m_gl_extensions; ///< OpenGL extensions
-    kvs::StringList m_glu_extensions; ///< GLU extensions
-
-public:
-    ExtensionChecker( int argc, char** argv );
-    const kvs::StringList& GLExtensions() const { return m_gl_extensions; }
-    const kvs::StringList& GLUExtensions() const { return m_glu_extensions; }
-    friend std::ostream& operator << ( std::ostream& os, const ExtensionChecker& checker );
-};
-
 } // end of namespace kvscheck
