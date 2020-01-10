@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   SupportChecker.h
+ *  @file   Support.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -43,12 +43,25 @@
 namespace kvscheck
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  KVS support library checker class.
+ */
+/*===========================================================================*/
 class Support : public kvs::Program
 {
 public:
     int exec( int argc, char** argv );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Executes the checker program.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
+ *  @return 0 if the process is done sucessfully
+ */
+/*===========================================================================*/
 inline int Support::exec( int argc, char** argv )
 {
     kvs::StringList libraries; // Support library list

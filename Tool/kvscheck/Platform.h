@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   PlatformChecker.h
+ *  @file   Platform.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -24,12 +24,25 @@
 namespace kvscheck
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Platform checker class.
+ */
+/*===========================================================================*/
 class Platform : public kvs::Program
 {
 public:
     int exec( int argc, char** argv );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Executes the checker program.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
+ *  @return 0 if the process is done sucessfully
+ */
+/*===========================================================================*/
 inline int Platform::exec( int argc, char** argv )
 {
     const std::string name = kvs::Platform::Name();

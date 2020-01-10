@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   FileChecker.h
+ *  @file   File.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -47,6 +47,11 @@
 namespace kvscheck
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  File checker class.
+ */
+/*===========================================================================*/
 class File : public kvs::Program
 {
 public:
@@ -60,9 +65,16 @@ public:
     os << "File format class : " << #fileformat << std::endl;           \
     os << "Reading time      : " << timer.sec() << " [sec]" << std::endl; \
     os << "Information       : " << std::endl;                          \
-    file.print( os, kvs::Indent(2) );
+    file.print( os, kvs::Indent(4) );
 
-
+/*===========================================================================*/
+/**
+ *  @brief  Executes the checker program.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
+ *  @return 0 if the process is done sucessfully
+ */
+/*===========================================================================*/
 inline int File::exec( int argc, char** argv )
 {
     kvs::CommandLine cl( argc, argv );

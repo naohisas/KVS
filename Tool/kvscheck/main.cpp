@@ -14,16 +14,15 @@
 /*****************************************************************************/
 #include <kvs/MemoryDebugger>
 #include <kvs/CommandLine>
-//#include "Argument.h"
-#include "CompilerChecker.h"
-#include "FileChecker.h"
-#include "PlatformChecker.h"
-#include "VersionChecker.h"
-#include "SizeofChecker.h"
-#include "SupportChecker.h"
-#include "MinMaxChecker.h"
-#include "OpenGLChecker.h"
-#include "ExtensionChecker.h"
+#include "Compiler.h"
+#include "File.h"
+#include "Platform.h"
+#include "Version.h"
+#include "SizeOf.h"
+#include "Support.h"
+#include "MinMax.h"
+#include "OpenGL.h"
+#include "Extension.h"
 
 KVS_MEMORY_DEBUGGER;
 
@@ -39,8 +38,6 @@ int main( int argc, char** argv )
 {
     KVS_MEMORY_DEBUGGER__SET_ARGUMENT( argc, argv );
 
-//    kvscheck::Argument arg( argc, argv );
-//    if ( !arg.parse() ) { return 1; }
     kvs::CommandLine cl( argc, argv );
     cl.addHelpOption();
     cl.addOption( "version", "Output KVS version. (optional)" );

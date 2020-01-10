@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   SizeofChecker.h
+ *  @file   SizeOf.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -20,12 +20,25 @@
 namespace kvscheck
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Type size checker class
+ */
+/*===========================================================================*/
 class SizeOf : public kvs::Program
 {
 public:
     int exec( int argc, char** argv );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Executes the checker program.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
+ *  @return 0 if the process is done sucessfully
+ */
+/*===========================================================================*/
 inline int SizeOf::exec( int argc, char** argv )
 {
     std::cout << "sizeof(char)   : " << sizeof(char) << " bytes" << std::endl;

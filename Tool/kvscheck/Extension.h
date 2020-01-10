@@ -1,6 +1,6 @@
 /****************************************************************************/
 /**
- *  @file   ExtensionChecker.h
+ *  @file   Extension.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -26,12 +26,25 @@
 namespace kvscheck
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  OpenGL extension checker class.
+ */
+/*===========================================================================*/
 class Extension : public kvs::Program
 {
 public:
     int exec( int argc, char** argv );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Executes the checker program.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
+ *  @return 0 if the process is done sucessfully
+ */
+/*===========================================================================*/
 inline int Extension::exec( int argc, char** argv )
 {
 #if defined( KVS_SUPPORT_GLUT )

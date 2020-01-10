@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   CompilerChecker.h
+ *  @file   Compiler.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -22,12 +22,25 @@
 namespace kvscheck
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Complier checker class.
+ */
+/*===========================================================================*/
 class Compiler : public kvs::Program
 {
 public:
     int exec( int argc, char** argv );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Executes the checker program.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
+ *  @return 0 if the process is done sucessfully
+ */
+/*===========================================================================*/
 inline int Compiler::exec( int argc, char** argv )
 {
     const std::string name = kvs::Compiler::Name();

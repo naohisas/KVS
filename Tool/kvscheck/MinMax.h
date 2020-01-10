@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   MinMaxChecker.h
+ *  @file   MinMax.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -23,6 +23,11 @@
 namespace kvscheck
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Min/max value checker class.
+ */
+/*===========================================================================*/
 class MinMax : public kvs::Program
 {
 public:
@@ -48,6 +53,14 @@ public:
     }                                                                   \
     os << std::endl;
 
+/*===========================================================================*/
+/**
+ *  @brief  Executes the checker program.
+ *  @param  argc [in] argument count
+ *  @param  argv [in] argument values
+ *  @return 0 if the process is done sucessfully
+ */
+/*===========================================================================*/
 inline int MinMax::exec( int argc, char** argv )
 {
     KVSCHECK_PRINT_MINMAX( std::cout, char );
