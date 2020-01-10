@@ -14,6 +14,7 @@
 #pragma once
 #include <algorithm>
 #include <numeric>
+#include <functional>
 #include <iterator>
 #include <utility>
 #include <vector>

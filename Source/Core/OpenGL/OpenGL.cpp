@@ -1812,7 +1812,7 @@ void DrawElements( GLenum mode, GLsizei count, GLenum type, const GLvoid* indice
 void MultiDrawElements( GLenum mode, const GLsizei* count, GLenum type, const GLvoid* const* indices, GLsizei drawcount )
 {
 // if OpenGL version is 1.4 or later?
-    KVS_GL_CALL( glMultiDrawElements( mode, count, type, indices, drawcount ) );
+    KVS_GL_CALL( glMultiDrawElements( mode, count, type, (const GLvoid**)indices, drawcount ) );
 // else
 //    for ( GLsizei i = 0; i < drawcount; ++i )
 //    {
