@@ -53,47 +53,47 @@ int main( int argc, char** argv )
 
     if ( cl.hasOption("version") )
     {
-        return kvscheck::Version().exec( argc, argv );
+        return kvscheck::Version().start( argc, argv );
     }
 
     if ( cl.hasOption("platform") )
     {
-        return kvscheck::Platform().exec( argc, argv );
+        return kvscheck::Platform().start( argc, argv );
     }
 
     if ( cl.hasOption("compiler") )
     {
-        return kvscheck::Compiler().exec( argc, argv );
+        return kvscheck::Compiler().start( argc, argv );
     }
 
     if ( cl.hasOption("sizeof") )
     {
-        return kvscheck::SizeOf().exec( argc, argv );
+        return kvscheck::SizeOf().start( argc, argv );
     }
 
     if ( cl.hasOption("support") )
     {
-        return kvscheck::Support().exec( argc, argv );
+        return kvscheck::Support().start( argc, argv );
     }
 
     if ( cl.hasOption("minmax") )
     {
-        return kvscheck::MinMax().exec( argc, argv );
+        return kvscheck::MinMax().start( argc, argv );
     }
 
     if ( cl.hasOption("opengl") )
     {
-        return kvscheck::OpenGL().exec( argc, argv );
+        return kvscheck::OpenGL().start( argc, argv );
     }
 
     if ( cl.hasOption("extension") )
     {
-        return kvscheck::Extension().exec( argc, argv );
+        return kvscheck::Extension().start( argc, argv );
     }
 
     if ( cl.hasOption("file") )
     {
-        return kvscheck::File().exec( argc, argv );
+        return kvscheck::File().start( argc, argv );
     }
 
     return 0;

@@ -32,7 +32,6 @@ namespace kvscheck
 /*===========================================================================*/
 class OpenGL : public kvs::Program
 {
-public:
     int exec( int argc, char** argv );
 };
 

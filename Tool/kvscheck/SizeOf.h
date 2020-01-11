@@ -27,7 +27,6 @@ namespace kvscheck
 /*===========================================================================*/
 class SizeOf : public kvs::Program
 {
-public:
     int exec( int argc, char** argv );
 };
 

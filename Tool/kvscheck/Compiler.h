@@ -29,7 +29,6 @@ namespace kvscheck
 /*===========================================================================*/
 class Compiler : public kvs::Program
 {
-public:
     int exec( int argc, char** argv );
 };
 

@@ -33,7 +33,6 @@ namespace kvscheck
 /*===========================================================================*/
 class Extension : public kvs::Program
 {
-public:
     int exec( int argc, char** argv );
 };
 

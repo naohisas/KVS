@@ -30,7 +30,6 @@ namespace kvscheck
 /*===========================================================================*/
 class MinMax : public kvs::Program
 {
-public:
     int exec( int argc, char** argv );
 };
 
