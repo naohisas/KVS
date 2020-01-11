@@ -1,6 +1,6 @@
 /****************************************************************************/
 /**
- *  @file   WriteVCProjectCUDA.cpp
+ *  @file   VCProjectCUDA.cpp
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -12,7 +12,7 @@
  *  $Id: WriteVCProjectCUDA.cpp 1416 2013-02-15 10:59:48Z s.yamada0808@gmail.com $
  */
 /****************************************************************************/
-#include "WriteVCProjectCUDA.h"
+#include "VCProjectCUDA.h"
 #include "Constant.h"
 #include <string>
 #include <fstream>

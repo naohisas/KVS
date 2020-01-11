@@ -30,11 +30,11 @@ TARGET_EXE = $(OUTDIR)\$(PROJECT_NAME).exe
 #  Object.
 #=============================================================================
 OBJECTS = \
-$(OUTDIR)\WriteMakefile.obj \
-$(OUTDIR)\WriteQtProject.obj \
-$(OUTDIR)\WriteVCProject.obj \
-$(OUTDIR)\WriteVCProjectCUDA.obj \
-$(OUTDIR)\WriteVCXProject.obj \
+$(OUTDIR)\Makefile.obj \
+$(OUTDIR)\QtProject.obj \
+$(OUTDIR)\VCProject.obj \
+$(OUTDIR)\VCProjectCUDA.obj \
+$(OUTDIR)\VCXProject.obj \
 $(OUTDIR)\main.obj \
 
 

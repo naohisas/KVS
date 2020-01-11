@@ -1,6 +1,6 @@
 /****************************************************************************/
 /**
- *  @file   WriteQtProject.h
+ *  @file   VCProjectCUDA.h
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -9,7 +9,7 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: WriteQtProject.h 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
+ *  $Id: WriteVCProjectCUDA.h 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
 #pragma once
@@ -20,13 +20,13 @@
 namespace kvsmake
 {
 
-class QtProject : public kvs::Program
+class VCProjectCUDA : public kvs::Program
 {
 private:
     std::string m_project_name;
     int exec( int argc, char** argv );
 public:
-    QtProject( const std::string& project_name ): m_project_name( project_name ) {}
+    VCProjectCUDA( const std::string& project_name ): m_project_name( project_name ) {}
 };
 
 } // end of namespace kvsmake

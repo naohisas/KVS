@@ -21,12 +21,12 @@
 #include <kvs/File>
 #include <kvs/CommandLine>
 #include "Constant.h"
-#include "WriteMakefile.h"
-#include "WriteQtProject.h"
+#include "Makefile.h"
+#include "QtProject.h"
 //#if defined ( KVS_COMPILER_VC )
-#include "WriteVCProject.h"
-#include "WriteVCXProject.h"
-#include "WriteVCProjectCUDA.h"
+#include "VCProject.h"
+#include "VCXProject.h"
+#include "VCProjectCUDA.h"
 //#endif
 
 KVS_MEMORY_DEBUGGER;

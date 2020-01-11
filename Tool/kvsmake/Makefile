@@ -34,11 +34,11 @@ endif
 #  Object.
 #=============================================================================
 OBJECTS := \
-$(OUTDIR)/WriteMakefile.o \
-$(OUTDIR)/WriteQtProject.o \
-$(OUTDIR)/WriteVCProject.o \
-$(OUTDIR)/WriteVCXProject.o \
-$(OUTDIR)/WriteVCProjectCUDA.o \
+$(OUTDIR)/Makefile.o \
+$(OUTDIR)/QtProject.o \
+$(OUTDIR)/VCProject.o \
+$(OUTDIR)/VCXProject.o \
+$(OUTDIR)/VCProjectCUDA.o \
 $(OUTDIR)/main.o \
 
 

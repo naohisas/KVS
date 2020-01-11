@@ -1,6 +1,6 @@
 /****************************************************************************/
 /**
- *  @file   WriteMakefile.cpp
+ *  @file   Makefile.cpp
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -12,7 +12,7 @@
  *  $Id: WriteMakefile.cpp 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#include "WriteMakefile.h"
+#include "Makefile.h"
 #include <string>
 #include <fstream>
 #include <kvs/Message>

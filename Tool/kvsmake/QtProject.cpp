@@ -1,6 +1,6 @@
 /****************************************************************************/
 /**
- *  @file   WriteQtProject.cpp
+ *  @file   QtProject.cpp
  *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
@@ -12,7 +12,7 @@
  *  $Id: WriteQtProject.cpp 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#include "WriteQtProject.h"
+#include "QtProject.h"
 #include <string>
 #include <fstream>
 #include <kvs/Message>
