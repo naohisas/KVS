@@ -20,6 +20,7 @@
 #include <kvs/Directory>
 #include <kvs/File>
 #include <kvs/CommandLine>
+#include "Build.h"
 #include "Constant.h"
 #include "Makefile.h"
 #include "QtProject.h"
@@ -28,6 +29,7 @@
 #include "VCProjectCUDA.h"
 
 KVS_MEMORY_DEBUGGER;
+
 
 /*==========================================================================*/
 /**
@@ -43,15 +45,12 @@ int main( int argc, char** argv )
     kvs::CommandLine cl( argc, argv );
     cl.addHelpOption();
     cl.addValue( "project name / make options", false );
-    // Makefile generation option.
     cl.addOption( "g", "Generate a Makefile. The target name will be set to the specified name.", 1 );
     cl.addOption( "G", "Generate a Makefile. The target name will be automatically set to the current directory name.", 0 );
-    // Qt project generation option.
     cl.addOption( "q", "Generate a Qt project file. The target name will be set to the specified name.", 1 );
     cl.addOption( "Q", "Generate a Qt project file. The target name will be automatically set to the current directory name.", 0 );
     cl.addOption( "qtproj", "Generate a Qt project file. The target name will be set to the specified name.", 1 );
     cl.addOption( "Qtproj", "Generate a Qt project file. The target name will be automatically set to the current directory name.", 0 );
-    // VC project generation option.
     cl.addOption( "vcproj", "generate a MSVC project file. The target name will be set to the specified name.", 1 );
     cl.addOption( "Vcproj", "generate a MSVC project file. The target name will be automatically set to the current directory name.", 0 );
     cl.addOption( "vcproj_cuda", "generate a VC project file with CUDA option. The target name will be set to the specified name.", 1 );
@@ -118,21 +117,5 @@ int main( int argc, char** argv )
         return kvsmake::VCProjectCUDA( project_name ).start( argc, argv );
     }
 
-    if ( !kvs::File( kvsmake::MakefileName ).exists() )
-    {
-        kvsMessageError( "Cannot find %s.", kvsmake::MakefileName.c_str() );
-        exit( EXIT_FAILURE );
-    }
-
-    std::string make_arguments;
-    for ( int i = 1; i < argc; ++i )
-    {
-        make_arguments += std::string( " " ) + std::string( argv[i] );
-    }
-
-    const std::string command =
-        kvsmake::MakeCommand + std::string( " -f " ) +
-        kvsmake::MakefileName + make_arguments;
-
-    return system( command.c_str() );
+    return kvsmake::Build().start( argc, argv );
 }
