@@ -74,8 +74,8 @@ clean:
 install:
 	IF NOT EXIST $(INSTALL_DIR)\bin $(MKDIR) $(INSTALL_DIR)\bin
 	$(INSTALL) Makefile.vc.kvs.template $(INSTALL_DIR)\bin
-	$(INSTALL) VCProject.template       $(INSTALL_DIR)\bin
-	$(INSTALL) VCProjectCUDA.template   $(INSTALL_DIR)\bin
-	$(INSTALL) VCXProject.template       $(INSTALL_DIR)\bin
-	$(INSTALL) QtProject.template       $(INSTALL_DIR)\bin
+	$(INSTALL) QtProject.template $(INSTALL_DIR)\bin
+	$(INSTALL) VCProject.template $(INSTALL_DIR)\bin
+	$(INSTALL) VCXProject.template $(INSTALL_DIR)\bin
+	$(INSTALL) VCProjectCUDA.template $(INSTALL_DIR)\bin
 	$(INSTALL_EXE) $(TARGET_EXE) $(INSTALL_DIR)\bin

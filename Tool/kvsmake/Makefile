@@ -36,6 +36,9 @@ endif
 OBJECTS := \
 $(OUTDIR)/WriteMakefile.o \
 $(OUTDIR)/WriteQtProject.o \
+$(OUTDIR)/WriteVCProject.o \
+$(OUTDIR)/WriteVCXProject.o \
+$(OUTDIR)/WriteVCProjectCUDA.o \
 $(OUTDIR)/main.o \
 
 
@@ -73,5 +76,8 @@ clean:
 install:
 	$(MKDIR) $(INSTALL_DIR)/bin
 	$(INSTALL) Makefile.kvs.template $(INSTALL_DIR)/bin
-	$(INSTALL) QtProject.template    $(INSTALL_DIR)/bin
+	$(INSTALL) QtProject.template $(INSTALL_DIR)/bin
+	$(INSTALL) VCProject.template $(INSTALL_DIR)/bin
+	$(INSTALL) VCXProject.template $(INSTALL_DIR)/bin
+	$(INSTALL) VCProjectCUDA.template $(INSTALL_DIR)/bin
 	$(INSTALL_EXE) $(TARGET_EXE) $(INSTALL_DIR)/bin

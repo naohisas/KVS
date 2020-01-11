@@ -14,6 +14,7 @@
 /****************************************************************************/
 #pragma once
 #include <kvs/Compiler>
+
 #if defined ( KVS_COMPILER_VC )
 #include <string>
 
@@ -22,6 +23,26 @@ namespace kvsmake
 {
 
 bool WriteVCProject( const std::string& project_name );
+
+} // end of namespace kvsmake
+
+#else // else KVS_COMPILER_VC
+
+#include <string>
+#include <kvs/Program>
+
+
+namespace kvsmake
+{
+
+class VCProject : public kvs::Program
+{
+private:
+    std::string m_project_name;
+    int exec( int argc, char** argv );
+public:
+    VCProject( const std::string& project_name ): m_project_name( project_name ) {}
+};
 
 } // end of namespace kvsmake
 

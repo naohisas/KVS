@@ -74,6 +74,28 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 namespace kvsmake
 {
 
+int Makefile::exec( int, char** )
+{
+    //  Open a template file.
+    std::ifstream in( kvsmake::MakefileTemplate.c_str() );
+    if ( !in.is_open() )
+    {
+        kvsMessageError() << "Cannot open " << kvsmake::MakefileTemplate << "." << std::endl;
+        return false;
+    }
+
+    //  Open a Makefile.
+    std::ofstream out( kvsmake::MakefileName.c_str() );
+    if ( !out.is_open() )
+    {
+        kvsMessageError( "Cannot open %s.", kvsmake::MakefileName.c_str() );
+        return false;
+    }
+
+    ::Write( in, out, m_project_name );
+    return true;
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Writes a makefile.
@@ -91,10 +113,10 @@ bool WriteMakefile( const std::string& project_name )
     }
 
     //  Open a Makefile.
-    std::ofstream out( kvsmake::Makefile.c_str() );
+    std::ofstream out( kvsmake::MakefileName.c_str() );
     if ( !out.is_open() )
     {
-        kvsMessageError( "Cannot open %s.", kvsmake::Makefile.c_str() );
+        kvsMessageError( "Cannot open %s.", kvsmake::MakefileName.c_str() );
         return false;
     }
 

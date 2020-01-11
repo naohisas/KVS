@@ -25,4 +25,24 @@ bool WriteVCProjectCUDA( const std::string& project_name );
 
 } // end of namespace kvsmake
 
+#else // else KVS_COMPILER_VC
+
+#include <string>
+#include <kvs/Program>
+
+
+namespace kvsmake
+{
+
+class VCProjectCUDA : public kvs::Program
+{
+private:
+    std::string m_project_name;
+    int exec( int argc, char** argv );
+public:
+    VCProjectCUDA( const std::string& project_name ): m_project_name( project_name ) {}
+};
+
+} // end of namespace kvsmake
+
 #endif

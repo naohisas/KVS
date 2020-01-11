@@ -23,11 +23,11 @@
 #include "Constant.h"
 #include "WriteMakefile.h"
 #include "WriteQtProject.h"
-#if defined ( KVS_COMPILER_VC )
+//#if defined ( KVS_COMPILER_VC )
 #include "WriteVCProject.h"
-#include "WriteVCProjectCUDA.h"
 #include "WriteVCXProject.h"
-#endif
+#include "WriteVCProjectCUDA.h"
+//#endif
 
 KVS_MEMORY_DEBUGGER;
 
@@ -42,81 +42,101 @@ int main( int argc, char** argv )
 {
     KVS_MEMORY_DEBUGGER__SET_ARGUMENT( argc, argv );
 
-    kvs::CommandLine argument( argc, argv );
-    argument.addHelpOption();
-    argument.addValue( "project_name/make_options", false );
-    argument.addOption( "g", "Generate a makefile.", 1 );
-    argument.addOption( "G", "Generate a makefile and set it's target name to the current directory name", 0 );
-    argument.addOption( "q", "Generate a project file for Qt.", 1 );
-    argument.addOption( "Q", "Generate a project file for Qt and set it's target name to the current directory name.", 0 );
-    argument.addOption( "qtproj", "Generate a project file for Qt.", 1 );
-    argument.addOption( "Qtproj", "Generate a project file for Qt and set it's target name to the current directory name.", 0 );
+    kvs::CommandLine cl( argc, argv );
+    cl.addHelpOption();
+    cl.addValue( "project name / make options", false );
+    // Makefile generation option.
+    cl.addOption( "g", "Generate a Makefile. The target name will be set to the specified name.", 1 );
+    cl.addOption( "G", "Generate a Makefile. The target name will be automatically set to the current directory name.", 0 );
+    // Qt project generation option.
+    cl.addOption( "q", "Generate a Qt project file. The target name will be set to the specified name.", 1 );
+    cl.addOption( "Q", "Generate a Qt project file. The target name will be automatically set to the current directory name.", 0 );
+    cl.addOption( "qtproj", "Generate a Qt project file. The target name will be set to the specified name.", 1 );
+    cl.addOption( "Qtproj", "Generate a Qt project file. The target name will be automatically set to the current directory name.", 0 );
+//#if defined ( KVS_COMPILER_VC )
+    // VC project generation option.
+    cl.addOption( "vcproj", "generate a MSVC project file. The target name will be set to the specified name.", 1 );
+    cl.addOption( "Vcproj", "generate a MSVC project file. The target name will be automatically set to the current directory name.", 0 );
+    cl.addOption( "vcproj_cuda", "generate a VC project file with CUDA option. The target name will be set to the specified name.", 1 );
+//#endif
+    if ( !cl.parse() ) { exit( EXIT_FAILURE ); }
+
+    if ( cl.hasOption( "g" ) )
+    {
+        const std::string project_name( cl.optionValue<std::string>( "g" ) );
+//        kvsmake::WriteMakefile( project_name );
+//        return 0;
+        return kvsmake::Makefile( project_name ).start( argc, argv );
+    }
+
+    if ( cl.hasOption( "G" ) )
+    {
+        const kvs::Directory dir( "." );
+        const std::string project_name( dir.name() );
+//        return kvsmake::WriteMakefile( project_name );
+        return kvsmake::Makefile( project_name ).start( argc, argv );
+    }
+
+    if ( cl.hasOption( "q" ) || cl.hasOption( "qtproj" ) )
+    {
+        const std::string project_name( cl.optionValue<std::string>( "qtproj" ) );
+//        return kvsmake::WriteQtProject( project_name );
+        return kvsmake::QtProject( project_name ).start( argc, argv );
+    }
+
+    if ( cl.hasOption( "Q" ) || cl.hasOption( "Qtproj" ) )
+    {
+        const kvs::Directory dir( "." );
+        const std::string project_name( dir.name() );
+//        return kvsmake::WriteQtProject( project_name );
+        return kvsmake::QtProject( project_name ).start( argc, argv );
+    }
+
+    if ( cl.hasOption( "vcproj" ) )
+    {
+        const std::string project_name( cl.optionValue<std::string>( "vcproj" ) );
 #if defined ( KVS_COMPILER_VC )
-    argument.addOption( "vcproj", "generate a project file for VC and set it's target name to the current directory name.", 0 );
-    argument.addOption( "Vcproj", "generate a project file for VC.", 1 );
-    argument.addOption( "vcproj_cuda", "generate a project file for VC and CUDA.", 1 );
+#if KVS_COMPILER_VERSION_GREATER_OR_EQUAL( 10, 0 )
+//        return kvsmake::WriteVCXProject( project_name );
+        return kvsmake::VCXProject( project_name ).start( argc, argv );
+#else
+//        return kvsmake::WriteVCProject( project_name );
+        return kvsmake::VCProject( project_name ).start( argc, argv );
 #endif
-    if ( !argument.parse() ) { exit( EXIT_FAILURE ); }
-
-    if ( argument.hasOption( "g" ) )
-    {
-        const std::string project_name( argument.optionValue<std::string>( "g" ) );
-        kvsmake::WriteMakefile( project_name );
-        return 0;
+#else // else KVS_COMPILER_VC
+//        return kvsmake::WriteVCXProject( project_name );
+        return kvsmake::VCXProject( project_name ).start( argc, argv );
+#endif
     }
 
-    if ( argument.hasOption( "G" ) )
+    if ( cl.hasOption( "Vcproj" ) )
     {
         const kvs::Directory dir( "." );
         const std::string project_name( dir.name() );
-        return kvsmake::WriteMakefile( project_name );
-    }
-
-    if ( argument.hasOption( "q" ) || argument.hasOption( "qtproj" ) )
-    {
-        const std::string project_name( argument.optionValue<std::string>( "qtproj" ) );
-        return kvsmake::WriteQtProject( project_name );
-    }
-
-    if ( argument.hasOption( "Q" ) || argument.hasOption( "Qtproj" ) )
-    {
-        const kvs::Directory dir( "." );
-        const std::string project_name( dir.name() );
-        return kvsmake::WriteQtProject( project_name );
-    }
-
 #if defined ( KVS_COMPILER_VC )
-    if ( argument.hasOption( "vcproj" ) )
-    {
-        const std::string project_name( argument.optionValue<std::string>( "vcproj" ) );
 #if KVS_COMPILER_VERSION_GREATER_OR_EQUAL( 10, 0 )
-        return kvsmake::WriteVCXProject( project_name );
+//        return kvsmake::WriteVCXProject( project_name );
+        return kvsmake::VCXProject( project_name ).start( argc, argv );
 #else
-        return kvsmake::WriteVCProject( project_name );
+//        return kvsmake::WriteVCProject( project_name );
+        return kvsmake::VCProject( project_name ).start( argc, argv );
+#endif
+#else
+//        return kvsmake::WriteVCXProject( project_name );
+        return kvsmake::VCXProject( project_name ).start( argc, argv );
 #endif
     }
 
-    if ( argument.hasOption( "Vcproj" ) )
+    if ( cl.hasOption( "vcproj_cuda" ) )
     {
-        const kvs::Directory dir( "." );
-        const std::string project_name( dir.name() );
-#if KVS_COMPILER_VERSION_GREATER_OR_EQUAL( 10, 0 )
-        return kvsmake::WriteVCXProject( project_name );
-#else
-        return kvsmake::WriteVCProject( project_name );
-#endif
+        const std::string project_name( cl.optionValue<std::string>( "vcproj_cuda" ) );
+//        return kvsmake::WriteVCProjectCUDA( project_name );
+        return kvsmake::VCProjectCUDA( project_name ).start( argc, argv );
     }
 
-    if ( argument.hasOption( "vcproj_cuda" ) )
+    if ( !kvs::File( kvsmake::MakefileName ).exists() )
     {
-        const std::string project_name( argument.optionValue<std::string>( "vcproj_cuda" ) );
-        return kvsmake::WriteVCProjectCUDA( project_name );
-    }
-#endif // KVS_COMPILER_VC
-
-    if ( !kvs::File( kvsmake::Makefile ).exists() )
-    {
-        kvsMessageError( "Cannot find %s.", kvsmake::Makefile.c_str() );
+        kvsMessageError( "Cannot find %s.", kvsmake::MakefileName.c_str() );
         exit( EXIT_FAILURE );
     }
 
@@ -127,10 +147,8 @@ int main( int argc, char** argv )
     }
 
     const std::string command =
-        kvsmake::MakeCommand +
-        std::string( " -f " ) +
-        kvsmake::Makefile +
-        make_arguments;
+        kvsmake::MakeCommand + std::string( " -f " ) +
+        kvsmake::MakefileName + make_arguments;
 
     return system( command.c_str() );
 }

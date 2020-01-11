@@ -84,6 +84,28 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 namespace kvsmake
 {
 
+int QtProject::exec( int, char** )
+{
+    //  Open a template file.
+    std::ifstream in( kvsmake::QtProjectTemplate.c_str() );
+    if ( !in.is_open() )
+    {
+        kvsMessageError() << "Cannot open " << kvsmake::QtProjectTemplate << "." << std::endl;
+        return false;
+    }
+    //  Open a project file.
+    const std::string filename( m_project_name + ".pro" );
+    std::ofstream out( filename.c_str() );
+    if ( !out.is_open() )
+    {
+        kvsMessageError() << "Cannot open " << filename << std::endl;;
+        return false;
+    }
+
+    ::Write( in, out, m_project_name );
+    return true;
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Writes a Qt project file.
