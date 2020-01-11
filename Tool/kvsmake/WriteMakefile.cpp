@@ -96,32 +96,4 @@ int Makefile::exec( int, char** )
     return true;
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Writes a makefile.
- *  @param  project_name [in] project name
- */
-/*===========================================================================*/
-bool WriteMakefile( const std::string& project_name )
-{
-    //  Open a template file.
-    std::ifstream in( kvsmake::MakefileTemplate.c_str() );
-    if ( !in.is_open() )
-    {
-        kvsMessageError( "Cannot open %s.", kvsmake::MakefileTemplate.c_str() );
-        return false;
-    }
-
-    //  Open a Makefile.
-    std::ofstream out( kvsmake::MakefileName.c_str() );
-    if ( !out.is_open() )
-    {
-        kvsMessageError( "Cannot open %s.", kvsmake::MakefileName.c_str() );
-        return false;
-    }
-
-    ::Write( in, out, project_name );
-    return true;
-}
-
 } // end of namespace kvsmake

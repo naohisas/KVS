@@ -29,6 +29,4 @@ public:
     Makefile( const std::string& project_name ): m_project_name( project_name ) {}
 };
 
-bool WriteMakefile( const std::string& project_name );
-
 }

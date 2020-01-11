@@ -106,34 +106,4 @@ int QtProject::exec( int, char** )
     return true;
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Writes a Qt project file.
- *  @param  project_name [in] project name
- */
-/*===========================================================================*/
-bool WriteQtProject( const std::string& project_name )
-{
-    //  Open a template file.
-    std::ifstream in( kvsmake::QtProjectTemplate.c_str() );
-    if ( !in.is_open() )
-    {
-        kvsMessageError( "Cannot open %s.", kvsmake::QtProjectTemplate.c_str() );
-        return false;
-    }
-
-    //  Open a project file.
-    const std::string filename( project_name + ".pro" );
-
-    std::ofstream out( filename.c_str() );
-    if ( !out.is_open() )
-    {
-        kvsMessageError( "Cannot open %s.", filename.c_str() );
-        return false;
-    }
-
-    ::Write( in, out, project_name );
-    return true;
-}
-
 } // end of namespace kvsmake

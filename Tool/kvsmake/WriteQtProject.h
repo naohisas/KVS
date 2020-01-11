@@ -29,7 +29,4 @@ public:
     QtProject( const std::string& project_name ): m_project_name( project_name ) {}
 };
 
-
-bool WriteQtProject( const std::string& project_name );
-
 } // end of namespace kvsmake
