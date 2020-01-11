@@ -117,7 +117,15 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 namespace kvsmake
 {
 
-int VCProject::exec( int argc, char** argv )
+/*===========================================================================*/
+/**
+ *  @brief  Executes MSVC project file generation.
+ *  @param  argc [in] argument count (not used)
+ *  @param  argv [in] argument values (not used)
+ *  @return 0 if the project file is generated successfully
+ */
+/*===========================================================================*/
+int VCProject::exec( int /* argc */, char** /* argv */ )
 {
     //  Open a template file.
     std::ifstream in( kvsmake::VCProjectTemplate.c_str() );

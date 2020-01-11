@@ -107,11 +107,13 @@ namespace kvsmake
 
 /*===========================================================================*/
 /**
- *  @brief  Writes a VC project file.
- *  @param  project_name [in] project name
+ *  @brief  Executes MSVC project file generation.
+ *  @param  argc [in] argument count (not used)
+ *  @param  argv [in] argument values (not used)
+ *  @return 0 if the project file is generated successfully
  */
 /*===========================================================================*/
-int VCXProject::exec( int argc, char** argv )
+int VCXProject::exec( int /* argc */, char** /* argv */ )
 {
     //  Open a template file.
     std::ifstream in( kvsmake::VCXProjectTemplate.c_str() );

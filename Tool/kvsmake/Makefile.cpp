@@ -29,7 +29,7 @@ namespace
 
 /*===========================================================================*/
 /**
- *  @brief  Writes a makefile.
+ *  @brief  Writes a Makefile.
  *  @param  in [in] input stream
  *  @param  out [in] output stream
  *  @param  project_name [in] project name
@@ -74,7 +74,15 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 namespace kvsmake
 {
 
-int Makefile::exec( int, char** )
+/*===========================================================================*/
+/**
+ *  @brief  Executes Makefile generation.
+ *  @param  argc [in] argument count (not used)
+ *  @param  argv [in] argument values (not used)
+ *  @return 0 if the Makefile is generated successfully
+ */
+/*===========================================================================*/
+int Makefile::exec( int /* argc */, char** /* argv */ )
 {
     //  Open a template file.
     std::ifstream in( kvsmake::MakefileTemplate.c_str() );
@@ -88,7 +96,7 @@ int Makefile::exec( int, char** )
     std::ofstream out( kvsmake::MakefileName.c_str() );
     if ( !out.is_open() )
     {
-        kvsMessageError( "Cannot open %s.", kvsmake::MakefileName.c_str() );
+        kvsMessageError() << "Cannot open " << kvsmake::MakefileName << "." << std::endl;
         return false;
     }
 

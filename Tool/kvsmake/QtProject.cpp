@@ -84,7 +84,15 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 namespace kvsmake
 {
 
-int QtProject::exec( int, char** )
+/*===========================================================================*/
+/**
+ *  @brief  Executes Qt project file generation.
+ *  @param  argc [in] argument count (not used)
+ *  @param  argv [in] argument values (not used)
+ *  @return 0 if the project file is generated successfully
+ */
+/*===========================================================================*/
+int QtProject::exec( int /* argc */, char** /* argv */ )
 {
     //  Open a template file.
     std::ifstream in( kvsmake::QtProjectTemplate.c_str() );
@@ -98,7 +106,7 @@ int QtProject::exec( int, char** )
     std::ofstream out( filename.c_str() );
     if ( !out.is_open() )
     {
-        kvsMessageError() << "Cannot open " << filename << std::endl;;
+        kvsMessageError() << "Cannot open " << filename << "." << std::endl;;
         return false;
     }
 
