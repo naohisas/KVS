@@ -149,7 +149,7 @@ inline void HessenbergDecomposition( kvs::Matrix<T>& A )
     for ( size_t k = 1; k <= dim-2; ++k )
     {
         kvs::Vector<T> u( dim );
-        for ( int i = k; i < dim; ++i ) u[i] = A[i][k-1];
+        for ( size_t i = k; i < dim; ++i ) u[i] = A[i][k-1];
 
         T ss = 0; for ( size_t i = k + 1; i < dim; ++i ) ss += u[i] * u[i];
         if ( abs(ss) <= 0.0 ) continue;
@@ -310,8 +310,8 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
         for ( int k = 0; k < m-1; ++k )
         {
             const T a = A[k][k], b = A[k+1][k], r = std::sqrt(a*a + b*b);
-            s[k] = r == 0.0 ? 0.0 : b/r;
-            c[k] = r == 0.0 ? 0.0 : a/r;
+            s[k] = r == T(0) ? T(0) : b/r;
+            c[k] = r == T(0) ? T(0) : a/r;
             for ( int j = k; j < m; ++j )
             {
                 const T x = A[k][j], y = A[k+1][j];
@@ -328,7 +328,7 @@ inline bool HessenbergQRMethod( kvs::Matrix<T>& evecs, kvs::Vector<T>& evals, kv
                 A[i][k+1] = -s[k] * x + c[k] * y;
             }
         }
-        for ( size_t i = 0; i < m; ++i) { A[i][i] += shift; }
+        for ( int i = 0; i < m; ++i) { A[i][i] += shift; }
     }
 
     for ( int i = 0; i < dim; ++i ) { evals[i] = A[i][i]; }

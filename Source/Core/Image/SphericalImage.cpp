@@ -59,11 +59,11 @@ void SphericalImage::stitch( const kvs::CubicImage& cubic_image )
     for ( size_t j = 0; j < this->height(); j++ )
     {
         const float v = 1.0f - (float)j / ( this->height() - 1 );
-        const float theta = v * kvs::Math::pi;
+        const float theta = v * (float)kvs::Math::pi;
         for ( size_t i = 0; i < this->width(); i++ )
         {
             const float u = (float)i / ( this->width() - 1 );
-            const float phi = u * 2.0f * kvs::Math::pi;
+            const float phi = u * 2.0f * (float)kvs::Math::pi;
 
             const float x = std::sin( phi ) * std::sin( theta ) * -1.0f;
             const float y = std::cos( theta );

@@ -596,7 +596,7 @@ template <typename T>
 inline T Vector<T>::dot( const Vector<T>& other ) const
 {
     KVS_ASSERT( this->size() == other.size() );
-    return std::inner_product( this->begin(), this->end(), other.begin(), double(0) );
+    return std::inner_product( this->begin(), this->end(), other.begin(), static_cast<T>(0) );
 }
 
 /*==========================================================================*/

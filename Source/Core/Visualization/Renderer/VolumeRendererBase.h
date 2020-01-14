@@ -55,8 +55,8 @@ public:
 
     size_t windowWidth() const { return m_window_width; }
     size_t windowHeight() const { return m_window_height; }
-    size_t framebufferWidth() const { return m_window_width * m_device_pixel_ratio; }
-    size_t framebufferHeight() const { return m_window_height * m_device_pixel_ratio; }
+    size_t framebufferWidth() const { return static_cast<size_t>( m_window_width * m_device_pixel_ratio ); }
+    size_t framebufferHeight() const { return static_cast<size_t>( m_window_height * m_device_pixel_ratio ); }
     float devicePixelRatio() const { return m_device_pixel_ratio; }
     template <typename ShadingType>
     void setShader( const ShadingType shader );

@@ -123,14 +123,14 @@ kvs::MshColor MshColor::Mix(
             M2 = Mmid;
             s2 = 0.0;
             h2 = 0.0;
-            ratio = 2.0 * ratio;
+            ratio = 2.0f * ratio;
         }
         else
         {
             M1 = Mmid;
             s1 = 0.0;
             h1 = 0.0;
-            ratio = 2.0 * ratio - 1.0;
+            ratio = 2.0f * ratio - 1.0f;
         }
 
     }

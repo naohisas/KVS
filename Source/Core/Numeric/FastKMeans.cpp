@@ -71,7 +71,7 @@ void InitializeCenterWithRandomSeeding(
     const size_t nrows = table.column(0).size();
     for ( size_t i = 0; i < nclusters; i++ )
     {
-        const kvs::UInt32 index = nrows * random.rand();
+        const kvs::UInt32 index = static_cast<kvs::UInt32>( nrows * random.rand() );
         center[i] = table.rowAsValueArray<kvs::Real32>( index );
     }
 }
@@ -93,7 +93,7 @@ void InitializeCenterWithSmartSeeding(
 {
     const size_t nrows = table.column(0).size();
     const size_t ncolumns = table.columnSize();
-    const kvs::UInt32 index = nrows * random.rand();
+    const kvs::UInt32 index = static_cast<kvs::UInt32>( nrows * random.rand() );
     center[0] = table.rowAsValueArray<kvs::Real32>( index );
 
     for ( size_t i = 1; i < nclusters; i++ )
@@ -280,8 +280,8 @@ void UpdateBounds(
 {
     // Algorithm 5: UPDATE-BOUNDS( p, a, u, l )
 
-    kvs::Real32 r = 0.0f;
-    kvs::Real32 rp = 0.0f;
+    kvs::UInt32 r = 0;
+    kvs::UInt32 rp = 0;
 
     kvs::Real32 pmax = kvs::Value<kvs::Real32>::Min();
     const size_t nclusters = p.size();
@@ -384,7 +384,7 @@ FastKMeans::FastKMeans():
     m_seeding_method( FastKMeans::SmartSeeding ),
     m_nclusters( 10 ),
     m_max_iterations( 100 ),
-    m_tolerance( 1.e-6 ),
+    m_tolerance( float(1.e-6) ),
     m_cluster_centers( NULL )
 {
 }

@@ -170,7 +170,12 @@ NVGpaint NanoVG::boxGradient( const kvs::Vec4& rect, float r, float f, const kvs
 
 NVGpaint NanoVG::boxGradient( const kvs::Rectangle& rect, float r, float f, const kvs::RGBAColor& icol, const kvs::RGBAColor& ocol )
 {
-    return this->boxGradient( rect.x(), rect.y(), rect.width(), rect.height(), r, f, ::ToNVGColor( icol ), ::ToNVGColor( ocol ) );
+    return this->boxGradient(
+        static_cast<float>( rect.x() ),
+        static_cast<float>( rect.y() ),
+        static_cast<float>( rect.width() ),
+        static_cast<float>( rect.height() ),
+        r, f, ::ToNVGColor( icol ), ::ToNVGColor( ocol ) );
 }
 
 NVGpaint NanoVG::radialGradient( float cx, float cy, float inr, float outr, NVGcolor icol, NVGcolor ocol )
@@ -285,7 +290,11 @@ void NanoVG::rect( const kvs::Vec4& rect )
 
 void NanoVG::rect( const kvs::Rectangle& rect )
 {
-    this->rect( rect.x(), rect.y(), rect.width(), rect.height() );
+    this->rect(
+        static_cast<float>( rect.x() ),
+        static_cast<float>( rect.y() ),
+        static_cast<float>( rect.width() ),
+        static_cast<float>( rect.height() ) );
 }
 
 void NanoVG::roundedRect( float x, float y, float w, float h, float r )
@@ -300,7 +309,12 @@ void NanoVG::roundedRect( const kvs::Vec4& rect, float r )
 
 void NanoVG::roundedRect( const kvs::Rectangle& rect, float r )
 {
-    this->roundedRect( rect.x(), rect.y(), rect.width(), rect.height(), r );
+    this->roundedRect(
+        static_cast<float>( rect.x() ),
+        static_cast<float>( rect.y() ),
+        static_cast<float>( rect.width() ),
+        static_cast<float>( rect.height() ),
+        r );
 }
 
 void NanoVG::roundedRect( float x, float y, float w, float h, float rad_top_left, float rad_top_right, float rad_bottom_right, float rad_bottom_left )
@@ -315,7 +329,12 @@ void NanoVG::roundedRect( const kvs::Vec4& rect, float rad_top_left, float rad_t
 
 void NanoVG::roundedRect( const kvs::Rectangle& rect, float rad_top_left, float rad_top_right, float rad_bottom_right, float rad_bottom_left )
 {
-    this->roundedRect( rect.x(), rect.y(), rect.width(), rect.height(), rad_bottom_left, rad_bottom_right, rad_bottom_right, rad_bottom_left );
+    this->roundedRect(
+        static_cast<float>( rect.x() ),
+        static_cast<float>( rect.y() ),
+        static_cast<float>( rect.width() ),
+        static_cast<float>( rect.height() ),
+        rad_bottom_left, rad_bottom_right, rad_bottom_right, rad_bottom_left );
 }
 
 void NanoVG::ellipse( float cx, float cy, float rx, float ry )

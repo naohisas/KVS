@@ -26,7 +26,7 @@ namespace kvsview
 class Main
 {
 public:
-    bool exec( int argc, char** argv );
+    int exec( int argc, char** argv );
 };
 
 } // end of namespace kvsview

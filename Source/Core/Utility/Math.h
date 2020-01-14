@@ -309,9 +309,9 @@ inline bool IsNaN( double a )
     return !( a == a );
 }
 
-inline double PI()
+inline float PI()
 {
-    return 6 * std::asin( 0.5 );
+    return 6 * std::asin( 0.5f );
 }
 
 

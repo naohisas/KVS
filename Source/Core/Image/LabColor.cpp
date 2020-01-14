@@ -22,18 +22,18 @@ namespace
 
 //const kvs::Vec3 ReferenceWhite( 1.0, 1.0, 1.0 );
 //const kvs::Vec3 ReferenceWhite( 0.964221, 1.0, 0.825211 ); // D50
-const kvs::Vec3 ReferenceWhite( 0.95047, 1.0, 1.08883 ); // D65
+const kvs::Vec3 ReferenceWhite( 0.95047f, 1.0f, 1.08883f ); // D65
 
 kvs::Real32 f( const kvs::Real32 t )
 {
-    if ( t > 0.008856 ) { return std::pow( t, 1.0f / 3.0f ); }
-    else { return 7.787037 * t + 16.0 / 116.0; }
+    if ( t > 0.008856f ) { return std::pow( t, 1.0f / 3.0f ); }
+    else { return 7.787037f * t + 16.0f / 116.0f; }
 }
 
 kvs::Real32 finv( const kvs::Real32 t )
 {
-    if ( t > 0.008856 ) { return std::pow( t, 3.0f ); }
-    else { return ( t - 16.0 / 116.0 ) / 7.787037; }
+    if ( t > 0.008856f ) { return std::pow( t, 3.0f ); }
+    else { return ( t - 16.0f / 116.0f ) / 7.787037f; }
 }
 
 kvs::LabColor XYZ2Lab( const kvs::XYZColor& xyz )
@@ -46,9 +46,9 @@ kvs::LabColor XYZ2Lab( const kvs::XYZColor& xyz )
     const kvs::Real32 Y = xyz.y();
     const kvs::Real32 Z = xyz.z();
 
-    const kvs::Real32 l = 116.0 * ( f( Y / Yn ) - 16.0 / 116.0 );
-    const kvs::Real32 a = 500.0 * ( f( X / Xn ) - f( Y / Yn ) );
-    const kvs::Real32 b = 200.0 * ( f( Y / Yn ) - f( Z / Zn ) );
+    const kvs::Real32 l = 116.0f * ( f( Y / Yn ) - 16.0f / 116.0f );
+    const kvs::Real32 a = 500.0f * ( f( X / Xn ) - f( Y / Yn ) );
+    const kvs::Real32 b = 200.0f * ( f( Y / Yn ) - f( Z / Zn ) );
     return kvs::LabColor( l, a, b );
 }
 
@@ -62,9 +62,9 @@ kvs::XYZColor Lab2XYZ( const kvs::LabColor& lab )
     const kvs::Real32 a = lab.a();
     const kvs::Real32 b = lab.b();
 
-    const kvs::Real32 y = ( l + 16.0 ) / 116.0;
-    const kvs::Real32 x = a / 500.0 + y;
-    const kvs::Real32 z = y - b / 200.0;
+    const kvs::Real32 y = ( l + 16.0f ) / 116.0f;
+    const kvs::Real32 x = a / 500.0f + y;
+    const kvs::Real32 z = y - b / 200.0f;
 
     const kvs::Real32 X = Xn * finv( x );
     const kvs::Real32 Y = Yn * finv( y );
