@@ -109,10 +109,11 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
         const std::string y_label = m_y_label.empty() ? table->label(1) : m_y_label;
         if ( y_label.size() > 0 )
         {
-            kvs::OpenGL::PushMatrix();
             const float y_value_position = kvs::Math::Min( y_min_position.x(), y_max_position.x() );
-//            kvs::OpenGL::Translate( y_value_position - 5.0f, ( y0 + y1 + metrics.width( y_label ) ) * 0.5f, 0.0f );
-            kvs::OpenGL::Translate( y_value_position * dpr - 5.0f, ( y0 + y1 + metrics.width( y_label ) ) * 0.5f * dpr, 0.0f );
+            const float y_label_position_x = y_value_position - 5.0f;
+            const float y_label_position_y = ( y0 + y1 + metrics.width( y_label ) ) * 0.5f;
+            kvs::OpenGL::PushMatrix();
+            kvs::OpenGL::Translate( y_label_position_x * dpr, y_label_position_y * dpr, 0.0f );
             kvs::OpenGL::Rotate( -90.0, 0, 0, 1 );
             m_painter.drawText( kvs::Vec2( 0, 0 ), y_label );
             kvs::OpenGL::PopMatrix();
