@@ -177,6 +177,7 @@
 + Example/Visualization/PushButton
 + Example/Visualization/RadioButton
 + Example/Visualization/Slider
++ Example/Visualization/ScatterPlot
 
 **Added new macros**
 + KVS_COMPILER_SUPPORT_CXX98
