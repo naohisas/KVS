@@ -178,6 +178,7 @@
 + Example/Visualization/RadioButton
 + Example/Visualization/Slider
 + Example/Visualization/ScatterPlot
++ Example/Visualization/RGBFormulae
 
 **Added new macros**
 + KVS_COMPILER_SUPPORT_CXX98
