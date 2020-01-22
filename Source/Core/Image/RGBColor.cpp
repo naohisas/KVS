@@ -17,6 +17,7 @@
 #include <kvs/Assert>
 #include "RGBColor.h"
 #include "HSVColor.h"
+#include "MshColor.h"
 #include "RGBAColor.h"
 #include "XYZColor.h"
 
@@ -67,6 +68,11 @@ RGBColor::RGBColor( const kvs::HSVColor& hsv )
     *this = hsv.toRGBColor();
 }
 
+RGBColor::RGBColor( const kvs::MshColor& msh )
+{
+    *this = msh.toRGBColor();
+}
+
 RGBColor::RGBColor( const kvs::Vec3& rgb )
 {
     *this = rgb;
@@ -115,25 +121,31 @@ RGBColor& RGBColor::operator = ( const HSVColor& hsv )
     return *this;
 }
 
+RGBColor& RGBColor::operator = ( const MshColor& msh )
+{
+    *this = msh.toRGBColor();
+    return *this;
+}
+
 RGBColor& RGBColor::operator = ( const kvs::Vec3& rgb )
 {
-    KVS_ASSERT( 0.0f <= rgb.x() && rgb.x() <= 1.0f );
-    KVS_ASSERT( 0.0f <= rgb.y() && rgb.y() <= 1.0f );
-    KVS_ASSERT( 0.0f <= rgb.z() && rgb.z() <= 1.0f );
-    m_r = kvs::Math::Round( rgb.x() * 255.0f );
-    m_g = kvs::Math::Round( rgb.y() * 255.0f );
-    m_b = kvs::Math::Round( rgb.z() * 255.0f );
+    const kvs::Real32 r = kvs::Math::Clamp( rgb.x(), 0.0f, 1.0f );
+    const kvs::Real32 g = kvs::Math::Clamp( rgb.y(), 0.0f, 1.0f );
+    const kvs::Real32 b = kvs::Math::Clamp( rgb.z(), 0.0f, 1.0f );
+    m_r = kvs::Math::Round( r * 255.0f );
+    m_g = kvs::Math::Round( g * 255.0f );
+    m_b = kvs::Math::Round( b * 255.0f );
     return *this;
 }
 
 RGBColor& RGBColor::operator = ( const kvs::Vec3i& rgb )
 {
-    KVS_ASSERT( 0 <= rgb.x() && rgb.x() <= 255 );
-    KVS_ASSERT( 0 <= rgb.y() && rgb.y() <= 255 );
-    KVS_ASSERT( 0 <= rgb.z() && rgb.z() <= 255 );
-    m_r = static_cast<kvs::UInt8>( rgb.x() );
-    m_g = static_cast<kvs::UInt8>( rgb.y() );
-    m_b = static_cast<kvs::UInt8>( rgb.z() );
+    const int r = kvs::Math::Clamp( rgb.x(), 0, 255 );
+    const int g = kvs::Math::Clamp( rgb.y(), 0, 255 );
+    const int b = kvs::Math::Clamp( rgb.z(), 0, 255 );
+    m_r = static_cast<kvs::UInt8>( r );
+    m_g = static_cast<kvs::UInt8>( g );
+    m_b = static_cast<kvs::UInt8>( b );
     return *this;
 }
 
@@ -184,6 +196,11 @@ kvs::HSVColor RGBColor::toHSVColor() const
 kvs::XYZColor RGBColor::toXYZColor() const
 {
     return kvs::XYZColor( *this );
+}
+
+kvs::MshColor RGBColor::toMshColor() const
+{
+    return kvs::MshColor( *this );
 }
 
 } // end of namespace kvs

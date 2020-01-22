@@ -155,6 +155,20 @@
 + kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToAscii
 + kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToExternalAscii
 + kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToExternalBinary
++ kvs::ColorMap::CoolWarm
++ kvs::ColorMap::BrewerBrBG
++ kvs::ColorMap::BrewerPiYG
++ kvs::ColorMap::BrewerPRGn
++ kvs::ColorMap::BrewerPuOr
++ kvs::ColorMap::BrewerRdBu
++ kvs::ColorMap::BrewerRdGy
++ kvs::ColorMap::BrewerRdYlBu
++ kvs::ColorMap::BrewerRdYlGn
++ kvs::ColorMap::BrewerSpectral
++ kvs::LabColor::Mix
++ kvs::LabColor::toRGBColor
++ kvs::MshColor::toRGBColor
++ kvs::RGBColor::toMshColor
 
 **Added new examples**
 + Example/Utility/Stat

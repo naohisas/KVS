@@ -16,39 +16,359 @@
 #include <kvs/Assert>
 #include <kvs/RGBColor>
 #include <kvs/HSVColor>
+#include <kvs/LabColor>
+#include <kvs/MshColor>
 #include <kvs/Math>
 
 
 namespace
 {
 
+// Default values.
 const size_t Resolution = 256;
 const size_t NumberOfChannels = 3;
 
-struct Equal
+ /*===========================================================================*/
+ /**
+  *  @brief  Returns a piecewise-linearly interpolated color map.
+  *  @param  colors [in] color list
+  *  @param  resolution [in] resolution of the color map
+  *  @param  space [in] interpolation color space
+  *  @return color map interpolated in the specified color space
+  */
+ /*===========================================================================*/
+inline kvs::ColorMap Interpolate(
+    const std::list<kvs::RGBColor>& colors,
+    const size_t resolution,
+    kvs::ColorMap::ColorSpace space )
 {
-    float value;
+    const size_t ncolors = colors.size();
+    const float stride = 1.0f / ( ncolors - 1 );
 
-    Equal( const float v ) : value( v ){}
-
-    bool operator() ( const kvs::ColorMap::Point& point ) const
+    kvs::ColorMap cmap( resolution );
+    cmap.addPoint( 0.0f, colors.front() ); // start point
+    auto color = colors.begin(); color++;
+    auto end = colors.end(); end--;
+    size_t index = 1;
+    while ( color != end )
     {
-        return kvs::Math::Equal( point.first, value );
+        const float value = kvs::Math::Round( resolution * stride * index );
+        cmap.addPoint( value, *color );
+        color++; index++;
     }
-};
+    cmap.addPoint( float( resolution - 1 ), colors.back() ); // end point
+    cmap.setColorSpace( space );
+    cmap.create();
 
-struct Less
-{
-    bool operator() ( const kvs::ColorMap::Point& p1, const kvs::ColorMap::Point& p2 ) const
-    {
-        return p1.first < p2.first;
-    }
-};
+    return cmap;
+}
 
 }
 
+
 namespace kvs
 {
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns cool-warm diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return cool-warm colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Kenneth Moreland, "Diverging Color Maps for Scientific Visualization",
+ *      In Proceedings of the 5th International Symposium on Visual Computing,
+ *      December 2009. DOI: 10.1007/978-3-642-10520-3_9.
+ *      https://www.kennethmoreland.com/color-maps/
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::CoolWarm( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor(  59, 76, 192 ) );
+    colors.push_back( kvs::RGBColor( 180,  4,  38 ) );
+    return ::Interpolate( colors, resolution, kvs::ColorMap::MshSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer BrBG (brown, (white), blue-green) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return BrBG diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerBrBG( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor(  84,  48,   5 ) );
+    colors.push_back( kvs::RGBColor( 140,  81,  10 ) );
+    colors.push_back( kvs::RGBColor( 191, 129,  45 ) );
+    colors.push_back( kvs::RGBColor( 223, 194, 125 ) );
+    colors.push_back( kvs::RGBColor( 246, 232, 195 ) );
+    colors.push_back( kvs::RGBColor( 245, 245, 245 ) );
+    colors.push_back( kvs::RGBColor( 199, 234, 229 ) );
+    colors.push_back( kvs::RGBColor( 128, 205, 193 ) );
+    colors.push_back( kvs::RGBColor(  53, 151, 143 ) );
+    colors.push_back( kvs::RGBColor(   1, 102,  94 ) );
+    colors.push_back( kvs::RGBColor(   0,  60,  48 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer PiYG (pink, (white), yello-green) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return PiYG diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerPiYG( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 142,   1,  82 ) );
+    colors.push_back( kvs::RGBColor( 197,  27, 125 ) );
+    colors.push_back( kvs::RGBColor( 222, 119, 174 ) );
+    colors.push_back( kvs::RGBColor( 241, 182, 218 ) );
+    colors.push_back( kvs::RGBColor( 253, 224, 239 ) );
+    colors.push_back( kvs::RGBColor( 247, 247, 247 ) );
+    colors.push_back( kvs::RGBColor( 230, 245, 208 ) );
+    colors.push_back( kvs::RGBColor( 184, 225, 134 ) );
+    colors.push_back( kvs::RGBColor( 127, 188, 134 ) );
+    colors.push_back( kvs::RGBColor(  77, 146,  33 ) );
+    colors.push_back( kvs::RGBColor(  39, 100,  25 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer PRGn (purple, (white), green) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return PRGn diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerPRGn( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor(  64,   0,  75 ) );
+    colors.push_back( kvs::RGBColor( 118,  42, 131 ) );
+    colors.push_back( kvs::RGBColor( 153, 112, 171 ) );
+    colors.push_back( kvs::RGBColor( 194, 165, 207 ) );
+    colors.push_back( kvs::RGBColor( 231, 212, 232 ) );
+    colors.push_back( kvs::RGBColor( 247, 247, 247 ) );
+    colors.push_back( kvs::RGBColor( 217, 240, 211 ) );
+    colors.push_back( kvs::RGBColor( 166, 219, 160 ) );
+    colors.push_back( kvs::RGBColor(  90, 174,  97 ) );
+    colors.push_back( kvs::RGBColor(  27, 120,  55 ) );
+    colors.push_back( kvs::RGBColor(   0,  68,  27 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer PuOr (orange, (white), purple) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return PuOr diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerPuOr( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 127,  59,   8 ) );
+    colors.push_back( kvs::RGBColor( 179,  88,   6 ) );
+    colors.push_back( kvs::RGBColor( 224, 130,  20 ) );
+    colors.push_back( kvs::RGBColor( 253, 184,  99 ) );
+    colors.push_back( kvs::RGBColor( 254, 224, 182 ) );
+    colors.push_back( kvs::RGBColor( 247, 247, 247 ) );
+    colors.push_back( kvs::RGBColor( 216, 218, 235 ) );
+    colors.push_back( kvs::RGBColor( 178, 171, 210 ) );
+    colors.push_back( kvs::RGBColor( 128, 115, 172 ) );
+    colors.push_back( kvs::RGBColor(  84,  39, 136 ) );
+    colors.push_back( kvs::RGBColor(  45,   0,  75 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer RdBu (red, (white), blue) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return RdBu diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerRdBu( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 103,   0,  31 ) );
+    colors.push_back( kvs::RGBColor( 178,  24,  43 ) );
+    colors.push_back( kvs::RGBColor( 214,  96,  77 ) );
+    colors.push_back( kvs::RGBColor( 244, 165, 130 ) );
+    colors.push_back( kvs::RGBColor( 253, 219, 199 ) );
+    colors.push_back( kvs::RGBColor( 247, 247, 247 ) );
+    colors.push_back( kvs::RGBColor( 209, 229, 240 ) );
+    colors.push_back( kvs::RGBColor( 146, 197, 222 ) );
+    colors.push_back( kvs::RGBColor(  67, 147, 195 ) );
+    colors.push_back( kvs::RGBColor(  33, 102, 172 ) );
+    colors.push_back( kvs::RGBColor(   5,  48,  97 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer RdGy (red, (white), grey) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return RdGy diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerRdGy( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 103,   0,  31 ) );
+    colors.push_back( kvs::RGBColor( 178,  24,  43 ) );
+    colors.push_back( kvs::RGBColor( 214,  96,  77 ) );
+    colors.push_back( kvs::RGBColor( 244, 165, 130 ) );
+    colors.push_back( kvs::RGBColor( 253, 219, 199 ) );
+    colors.push_back( kvs::RGBColor( 255, 255, 255 ) );
+    colors.push_back( kvs::RGBColor( 224, 224, 224 ) );
+    colors.push_back( kvs::RGBColor( 186, 186, 186 ) );
+    colors.push_back( kvs::RGBColor( 135, 135, 135 ) );
+    colors.push_back( kvs::RGBColor(  77,  77,  77 ) );
+    colors.push_back( kvs::RGBColor(  26,  26,  26 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer RdYlBu (red, yello, blue) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return RdYlBu diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerRdYlBu( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 165,   0,  38 ) );
+    colors.push_back( kvs::RGBColor( 215,  48,  39 ) );
+    colors.push_back( kvs::RGBColor( 244, 109,  67 ) );
+    colors.push_back( kvs::RGBColor( 253, 174,  97 ) );
+    colors.push_back( kvs::RGBColor( 254, 224, 144 ) );
+    colors.push_back( kvs::RGBColor( 255, 255, 191 ) );
+    colors.push_back( kvs::RGBColor( 224, 243, 248 ) );
+    colors.push_back( kvs::RGBColor( 171, 217, 233 ) );
+    colors.push_back( kvs::RGBColor( 116, 173, 209 ) );
+    colors.push_back( kvs::RGBColor(  69, 117, 180 ) );
+    colors.push_back( kvs::RGBColor(  49,  54, 149 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer RdYlGn (red, yello, green) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return RdYlGn diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerRdYlGn( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 165,   0,  38 ) );
+    colors.push_back( kvs::RGBColor( 215,  48,  39 ) );
+    colors.push_back( kvs::RGBColor( 244, 109,  67 ) );
+    colors.push_back( kvs::RGBColor( 253, 174,  97 ) );
+    colors.push_back( kvs::RGBColor( 254, 224, 139 ) );
+    colors.push_back( kvs::RGBColor( 255, 255, 191 ) );
+    colors.push_back( kvs::RGBColor( 217, 239, 139 ) );
+    colors.push_back( kvs::RGBColor( 166, 217, 106 ) );
+    colors.push_back( kvs::RGBColor( 102, 189,  99 ) );
+    colors.push_back( kvs::RGBColor(  26, 152,  80 ) );
+    colors.push_back( kvs::RGBColor(   0, 104,  55 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer spectral (red, orange, yello, green, blue) diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return spectral diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerSpectral( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 158,   1,  66 ) );
+    colors.push_back( kvs::RGBColor( 213,  62,  79 ) );
+    colors.push_back( kvs::RGBColor( 244, 109,  67 ) );
+    colors.push_back( kvs::RGBColor( 253, 174,  97 ) );
+    colors.push_back( kvs::RGBColor( 254, 224, 139 ) );
+    colors.push_back( kvs::RGBColor( 255, 255, 191 ) );
+    colors.push_back( kvs::RGBColor( 230, 245, 152 ) );
+    colors.push_back( kvs::RGBColor( 171, 221, 164 ) );
+    colors.push_back( kvs::RGBColor( 102, 194, 165 ) );
+    colors.push_back( kvs::RGBColor(  50, 136, 189 ) );
+    colors.push_back( kvs::RGBColor(  94,  79, 162 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
 
 /*==========================================================================*/
 /**
@@ -192,7 +512,27 @@ void ColorMap::addPoint( const float value, const kvs::HSVColor color )
 /*===========================================================================*/
 void ColorMap::removePoint( const float value )
 {
-    m_points.remove_if( ::Equal( value ) );
+    m_points.remove_if( [ value ]( Point& p ) { return kvs::Math::Equal( p.first, value ); } );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Clears all of the control points.
+ */
+/*===========================================================================*/
+void ColorMap::clearPoints()
+{
+    m_points.clear();
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Reverses the control points.
+ */
+/*===========================================================================*/
+void ColorMap::reversePoints()
+{
+    m_points.reverse();
 }
 
 /*==========================================================================*/
@@ -231,11 +571,11 @@ void ColorMap::create()
             *( color++ ) = rgb.g();
             *( color++ ) = rgb.b();
         }
-
     }
+
     else
     {
-        m_points.sort( ::Less() );
+        m_points.sort( [] ( const Point& p1, const Point& p2 ) { return p1.first < p2.first; } );
 
         const kvs::RGBColor black( 0, 0, 0 );
         const kvs::RGBColor white( 255, 255, 255 );
@@ -278,6 +618,18 @@ void ColorMap::create()
                         const kvs::HSVColor c0 = p0.second;
                         const kvs::HSVColor c1 = p1.second;
                         color = kvs::HSVColor::Mix( c0, c1, ratio );
+                    }
+                    else if ( m_color_space == LabSpace )
+                    {
+                        const kvs::LabColor c0 = p0.second;
+                        const kvs::LabColor c1 = p1.second;
+                        color = kvs::LabColor::Mix( c0, c1, ratio );
+                    }
+                    else if ( m_color_space == MshSpace )
+                    {
+                        const kvs::MshColor c0 = p0.second;
+                        const kvs::MshColor c1 = p1.second;
+                        color = kvs::MshColor::Mix( c0, c1, ratio );
                     }
                     break;
                 }

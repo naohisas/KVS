@@ -13,6 +13,7 @@
  */
 /*****************************************************************************/
 #include "LabColor.h"
+#include "RGBColor.h"
 #include "XYZColor.h"
 #include "MshColor.h"
 
@@ -72,10 +73,42 @@ kvs::XYZColor Lab2XYZ( const kvs::LabColor& lab )
     return kvs::XYZColor( X, Y, Z );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Converts color space from RGB to Lab.
+ *  @param  rgb [in] RGB color
+ *  @return Lab color
+ */
+/*===========================================================================*/
+inline kvs::LabColor RGB2Lab( const kvs::RGBColor& rgb )
+{
+    return rgb.toXYZColor().toLabColor();
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Converts color space from Lab to RGB.
+ *  @param  lab [in] Lab color
+ *  @return RGB color
+ */
+/*===========================================================================*/
+inline kvs::RGBColor Lab2RGB( const kvs::LabColor& lab )
+{
+    return lab.toXYZColor().toRGBColor();
+}
+
 }
 
 namespace kvs
 {
+
+kvs::LabColor LabColor::Mix( const kvs::LabColor& lab1, const kvs::LabColor& lab2, const kvs::Real32 t )
+{
+    const kvs::Real32 l = kvs::Math::Mix( lab1.l(), lab2.l(), t );
+    const kvs::Real32 a = kvs::Math::Mix( lab1.a(), lab2.a(), t );
+    const kvs::Real32 b = kvs::Math::Mix( lab1.b(), lab2.b(), t );
+    return kvs::LabColor( l, a, b );
+}
 
 LabColor::LabColor( kvs::Real32 l, kvs::Real32 a, kvs::Real32 b ):
     m_l( l ),
@@ -98,9 +131,19 @@ LabColor::LabColor( const kvs::LabColor& lab ):
 {
 }
 
+LabColor::LabColor( const kvs::RGBColor& rgb )
+{
+    *this = ::RGB2Lab( rgb );
+}
+
 LabColor::LabColor( const kvs::XYZColor& xyz )
 {
     *this = ::XYZ2Lab( xyz );
+}
+
+kvs::RGBColor LabColor::toRGBColor() const
+{
+    return ::Lab2RGB( *this );
 }
 
 kvs::XYZColor LabColor::toXYZColor() const
@@ -140,6 +183,12 @@ kvs::LabColor& LabColor::operator = ( const kvs::LabColor& lab )
 kvs::LabColor& LabColor::operator = ( const kvs::XYZColor& xyz )
 {
     *this = ::XYZ2Lab( xyz );
+    return *this;
+}
+
+kvs::LabColor& LabColor::operator = ( const kvs::RGBColor& rgb )
+{
+    *this = ::RGB2Lab( rgb );
     return *this;
 }
 
