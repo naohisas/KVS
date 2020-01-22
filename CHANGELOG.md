@@ -193,6 +193,7 @@
 + Example/Visualization/Slider
 + Example/Visualization/ScatterPlot
 + Example/Visualization/RGBFormulae
++ Example/Visualization/DivergingColorMap
 
 **Added new macros**
 + KVS_COMPILER_SUPPORT_CXX98
