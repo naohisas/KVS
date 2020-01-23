@@ -194,6 +194,7 @@
 + Example/Visualization/ScatterPlot
 + Example/Visualization/RGBFormulae
 + Example/Visualization/DivergingColorMap
++ Example/Visualization/ParallelCoordinates
 
 **Added new macros**
 + KVS_COMPILER_SUPPORT_CXX98
