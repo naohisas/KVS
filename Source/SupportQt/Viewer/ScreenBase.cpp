@@ -24,6 +24,7 @@
 #include <SupportQt/Viewer/KVSMouseButton.h>
 #include <SupportQt/Viewer/KVSKey.h>
 #include <kvs/OpenGL>
+#include <kvs/Version>
 
 
 namespace kvs
@@ -277,23 +278,20 @@ void ScreenBase::paintGL()
 /*===========================================================================*/
 void ScreenBase::resizeGL( int width, int height )
 {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 1, 0 )
-#if QT_VERSION <  QT_VERSION_CHECK( 5, 2, 0 )
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+//#if ( KVS_VERSION_MAJOR > 2 || ( KVS_VERSION_MAJOR == 2 && KVS_VERSION_MINOR > 8 ) )
     // NOTE: High-dpi model such as retina display has been supported in Qt5.
     // Therefore, when using Qt5 on Mac with retina display, the 'width' and
-    // 'height' specified as arguments of this method will be scaled by a device
-    // pixel ratio (DPR) parameter. However, in the current KVS, the DPR has
-    // not been supported. Due to this problem, the rendering image generated
-    // by the pixel-based rendering technique, such as ray casting renderer
-    // and particle-based renderer, will be partially broken.
+    // 'height' specified as arguments of this method are scaled by a device
+    // pixel ratio (DPR) parameter. The DPR has been supported in KVS since
+    // 2.9. In KVS with SupportQt, the width and height which are not scaled
+    // are passed to the resizeEvent method in order to keep the compatibility
+    // with the previous version of KVS-based applications.
     const qreal scale = QGLWidget::devicePixelRatio();
     width = static_cast<size_t>( width / scale + 0.5 );
     height = static_cast<size_t>( height / scale + 0.5 );
+//#endif
 #endif
-#endif
-//    const qreal scale = QGLWidget::devicePixelRatio();
-//    width = static_cast<size_t>( width * scale + 0.5 );
-//    height = static_cast<size_t>( height * scale + 0.5 );
 
     this->resizeEvent( width, height );
 }
