@@ -25,6 +25,7 @@
 + kvs::StructuredExtractScalar
 + kvs::PolygonToPolygon
 + kvs::Deleter
++ kvs::Json
 
 **Added new methods**
 + kvs::PolygonRenderer::setPolygonOffset

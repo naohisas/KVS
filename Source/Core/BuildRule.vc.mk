@@ -61,6 +61,9 @@ $(OUTDIR)\.\FileFormat\GrADS\Vars.obj \
 $(OUTDIR)\.\FileFormat\GrADS\XYZDef.obj \
 $(OUTDIR)\.\FileFormat\IPLab\IPLab.obj \
 $(OUTDIR)\.\FileFormat\IPLab\IPLabList.obj \
+$(OUTDIR)\.\FileFormat\JSON\Array.obj \
+$(OUTDIR)\.\FileFormat\JSON\Json.obj \
+$(OUTDIR)\.\FileFormat\JSON\Object.obj \
 $(OUTDIR)\.\FileFormat\KVSML\CellTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\ColorMapTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\ColorTag.obj \
@@ -605,6 +608,12 @@ $<
 $<
 <<
 
+{.\FileFormat\JSON\}.cpp{$(OUTDIR)\.\FileFormat\JSON\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\JSON $(MKDIR) $(OUTDIR)\.\FileFormat\JSON
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\JSON\ @<<
+$<
+<<
+
 {.\FileFormat\IPLab\}.cpp{$(OUTDIR)\.\FileFormat\IPLab\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\IPLab $(MKDIR) $(OUTDIR)\.\FileFormat\IPLab
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\IPLab\ @<<
@@ -705,6 +714,8 @@ install::
 	$(INSTALL) .\FileFormat\GrADS\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
 	$(INSTALL) .\FileFormat\IPLab\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\JSON $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\JSON
+	$(INSTALL) .\FileFormat\JSON\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\JSON
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML
 	$(INSTALL) .\FileFormat\KVSML\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\PLY $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\PLY

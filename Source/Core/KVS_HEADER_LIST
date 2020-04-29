@@ -13,6 +13,7 @@ FileFormat/GIS/Gis
 FileFormat/GrADS/GrADS
 FileFormat/IPLab/IPLab
 FileFormat/IPLab/IPLabList
+FileFormat/JSON/Json
 FileFormat/KVSML/KVSMLImageObject
 FileFormat/KVSML/KVSMLLineObject
 FileFormat/KVSML/KVSMLPointObject
