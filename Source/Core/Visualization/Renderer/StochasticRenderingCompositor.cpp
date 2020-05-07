@@ -40,8 +40,8 @@ namespace kvs
 /*===========================================================================*/
 StochasticRenderingCompositor::StochasticRenderingCompositor( kvs::Scene* scene ):
     m_scene( scene ),
-    m_width( 0 ),
-    m_height( 0 ),
+    m_window_width( 0 ),
+    m_window_height( 0 ),
     m_repetition_level( 1 ),
     m_coarse_level( 1 ),
     m_enable_lod( false ),
@@ -137,15 +137,20 @@ void StochasticRenderingCompositor::draw()
 /*===========================================================================*/
 void StochasticRenderingCompositor::check_window_created()
 {
-    const bool window_created = m_width == 0 && m_height == 0;
+    const bool window_created = m_window_width == 0 && m_window_height == 0;
     if ( window_created )
     {
         const size_t width = m_scene->camera()->windowWidth();
         const size_t height = m_scene->camera()->windowHeight();
-        m_width = width;
-        m_height = height;
-        m_ensemble_buffer.create( width, height );
+        m_window_width = width;
+        m_window_height = height;
+
+        const float dpr = m_scene->camera()->devicePixelRatio();
+        const size_t framebuffer_width = static_cast<size_t>( width * dpr );
+        const size_t framebuffer_height = static_cast<size_t>( height * dpr );
+        m_ensemble_buffer.create( framebuffer_width, framebuffer_height );
         m_ensemble_buffer.clear();
+
         m_object_xform = this->object_xform();
         m_camera_position = m_scene->camera()->position();
         m_light_position = m_scene->light()->position();
@@ -162,14 +167,19 @@ void StochasticRenderingCompositor::check_window_resized()
 {
     const size_t width = m_scene->camera()->windowWidth();
     const size_t height = m_scene->camera()->windowHeight();
-    const bool window_resized = m_width != width || m_height != height;
+    const bool window_resized = m_window_width != width || m_window_height != height;
     if ( window_resized )
     {
-        m_width = width;
-        m_height = height;
+        m_window_width = width;
+        m_window_height = height;
+
+        const float dpr = m_scene->camera()->devicePixelRatio();
+        const size_t framebuffer_width = static_cast<size_t>( width * dpr );
+        const size_t framebuffer_height = static_cast<size_t>( height * dpr );
         m_ensemble_buffer.release();
-        m_ensemble_buffer.create( width, height );
+        m_ensemble_buffer.create( framebuffer_width, framebuffer_height );
         m_ensemble_buffer.clear();
+
         this->engines_update();
     }
 }
