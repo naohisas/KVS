@@ -104,7 +104,8 @@ bool ParticleBasedRenderer::createParticleBuffer(
     const size_t height,
     const size_t subpixel_level )
 {
-    m_buffer = new kvs::ParticleBuffer( width, height, subpixel_level );
+    const size_t dpr = BaseClass::devicePixelRatio();
+    m_buffer = new kvs::ParticleBuffer( width, height, subpixel_level, dpr );
     if ( !m_buffer ) return( false );
 
     return( true );
@@ -155,8 +156,12 @@ void ParticleBasedRenderer::create_image(
     if ( ( current_width != width ) || ( current_height != height ) )
     {
         BaseClass::setWindowSize( width, height );
-        BaseClass::allocateColorData( width * height * 4 );
-        BaseClass::allocateDepthData( width * height );
+        BaseClass::setDevicePixelRatio( camera->devicePixelRatio() );
+        const int framebuffer_width = BaseClass::framebufferWidth();
+        const int framebuffer_height = BaseClass::framebufferHeight();
+        const size_t npixels = framebuffer_width * framebuffer_height;
+        BaseClass::allocateColorData( npixels * 4 );
+        BaseClass::allocateDepthData( npixels );
 
         this->deleteParticleBuffer();
         this->createParticleBuffer( width, height, m_subpixel_level );
@@ -197,7 +202,7 @@ void ParticleBasedRenderer::project_particle(
 
     // Aliases.
     const size_t nv = point->numberOfVertices();
-    const kvs::Real32* v  = point->coords().data();
+    const kvs::Real32* v = point->coords().data();
 
     size_t index3 = 0;
     const size_t bounds_width = BaseClass::windowWidth() - 1;
