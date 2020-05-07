@@ -29,8 +29,9 @@ namespace kvs
  */
 /*===========================================================================*/
 StochasticRendererBase::StochasticRendererBase( kvs::StochasticRenderingEngine* engine ):
-    m_width( 0 ),
-    m_height( 0 ),
+    m_window_width( 0 ),
+    m_window_height( 0 ),
+    m_device_pixel_ratio( 1.0f ),
     m_repetition_level( 1 ),
     m_coarse_level( 1 ),
     m_enable_lod( false ),
@@ -82,12 +83,15 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
-    const bool window_created = m_width == 0 && m_height == 0;
+    const bool window_created = m_window_width == 0 && m_window_height == 0;
     if ( window_created )
     {
-        m_width = width;
-        m_height = height;
-        m_ensemble_buffer.create( width, height );
+        // Set window width and height
+        m_window_width = width;
+        m_window_height = height;
+        m_device_pixel_ratio = camera->devicePixelRatio();
+
+        m_ensemble_buffer.create( this->framebufferWidth(), this->framebufferHeight() );
         m_ensemble_buffer.clear();
         m_modelview = kvs::OpenGL::ModelViewMatrix();
         m_light_position = light->position();
@@ -97,14 +101,18 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
         m_engine->create( object, camera, light );
     }
 
-    const bool window_resized = m_width != width || m_height != height;
+    const bool window_resized = m_window_width != width || m_window_height != height;
     if ( window_resized )
     {
-        m_width = width;
-        m_height = height;
+        // Update window size
+        m_window_width = width;
+        m_window_height = height;
+
+        // Update ensemble buffer
         m_ensemble_buffer.release();
-        m_ensemble_buffer.create( width, height );
+        m_ensemble_buffer.create( this->framebufferWidth(), this->framebufferHeight() );
         m_ensemble_buffer.clear();
+
         m_engine->update( object, camera, light );
     }
 

@@ -12,9 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__STOCHASTIC_RENDERER_BASE_H_INCLUDE
-#define KVS__STOCHASTIC_RENDERER_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/RendererBase>
 #include <kvs/Shader>
 #include <kvs/Matrix44>
@@ -42,9 +40,9 @@ class StochasticRendererBase : public kvs::RendererBase
     friend class StochasticRenderingCompositor;
 
 private:
-
-    size_t m_width;
-    size_t m_height;
+    size_t m_window_width; ///< window width
+    size_t m_window_height; ///< window height
+    float m_device_pixel_ratio; ///< device pixel ratio
     size_t m_repetition_level; ///< repetition level
     size_t m_coarse_level; ///< repetition level for the coarse rendering (LOD)
     bool m_enable_lod; ///< flag for LOD rendering
@@ -56,17 +54,21 @@ private:
     kvs::StochasticRenderingEngine* m_engine; ///< rendering engine
 
 public:
-
     StochasticRendererBase( kvs::StochasticRenderingEngine* engine );
     virtual ~StochasticRendererBase();
 
     virtual void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void release();
-    size_t windowWidth() const { return m_width; }
-    size_t windowHeight() const { return m_height; }
+    size_t windowWidth() const { return m_window_width; }
+    size_t windowHeight() const { return m_window_height; }
+    size_t framebufferWidth() const { return static_cast<size_t>( m_window_width * m_device_pixel_ratio ); }
+    size_t framebufferHeight() const { return static_cast<size_t>( m_window_height * m_device_pixel_ratio ); }
+    float devicePixelRatio() const { return m_device_pixel_ratio; }
     size_t repetitionLevel() const { return m_repetition_level; }
     bool isEnabledLODControl() const { return m_enable_lod; }
     bool isEnabledRefinement() const { return m_enable_refinement; }
+    void setWindowSize( const size_t width, const size_t height ) { m_window_width = width; m_window_height = height; }
+    void setDevicePixelRatio( const float dpr ) { m_device_pixel_ratio = dpr; }
     void setRepetitionLevel( const size_t repetition_level ) { m_repetition_level = repetition_level; }
     void setEnabledLODControl( const bool enable ) { m_enable_lod = enable; }
     void setEnabledRefinement( const bool enable ) { m_enable_refinement = enable; }
@@ -80,7 +82,6 @@ public:
     void setShader( const ShadingType shader );
 
 protected:
-
     kvs::Shader::ShadingModel& shader() { return *m_shader; }
     kvs::StochasticRenderingEngine& engine() { return *m_engine; }
 };
@@ -93,5 +94,3 @@ inline void StochasticRendererBase::setShader( const ShadingType shader )
 }
 
 } // end of namespace kvs
-
-#endif // KVS__STOCHASTIC_RENDERER_BASE_H_INCLUDE

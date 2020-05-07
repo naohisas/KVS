@@ -305,8 +305,11 @@ void ParticleBasedRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera
 
     if ( kvs::Math::IsZero( m_initial_viewport[2] ) )
     {
-        m_initial_viewport[2] = static_cast<float>( camera->windowWidth() );
-        m_initial_viewport[3] = static_cast<float>( camera->windowHeight() );
+        const float dpr = camera->devicePixelRatio();
+        const float framebuffer_width = camera->windowWidth() * dpr;
+        const float framebuffer_height = camera->windowHeight() * dpr;
+        m_initial_viewport[2] = framebuffer_width;
+        m_initial_viewport[3] = framebuffer_height;
     }
 
     const kvs::Vec4 I( point->objectCenter(), 1.0f );
@@ -324,7 +327,9 @@ void ParticleBasedRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera
 /*===========================================================================*/
 void ParticleBasedRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    m_initial_viewport[2] = static_cast<float>( camera->windowWidth() );
+    const float dpr = camera->devicePixelRatio();
+    const float framebuffer_width = camera->windowWidth() * dpr;
+    m_initial_viewport[2] = static_cast<float>( framebuffer_width );
 }
 
 /*===========================================================================*/
@@ -375,13 +380,14 @@ void ParticleBasedRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* 
 
         const kvs::Mat4 m = kvs::OpenGL::ModelViewMatrix();
         const float scale = kvs::Vec3( m[0][0], m[1][0], m[2][0] ).length();
-        const float width = static_cast<float>( camera->windowWidth() );
-        const float height = static_cast<float>( camera->windowHeight() );
+        const float dpr = camera->devicePixelRatio();
+        const float width = camera->windowWidth() * dpr;
+        const float height = camera->windowHeight() * dpr;
 
         const float Cr = ( width / width0 ) * ( height / height0 );
         const float Cs = scale / scale0;
         const float D0 = m_initial_object_depth;
-        const float object_scale = Cr * Cs;
+        const float object_scale = Cr * Cs * dpr;
         const float object_depth = object_scale * D0;
         m_shader_program.setUniform( "object_scale", object_scale );
         m_shader_program.setUniform( "object_depth", object_depth );
