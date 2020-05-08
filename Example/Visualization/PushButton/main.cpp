@@ -4,14 +4,6 @@
  *  @brief  Example program for the PushButton widget.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1518 2013-04-10 01:13:11Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/RGBColor>
 #include <kvs/PaintEventListener>
@@ -31,6 +23,11 @@ kvs::RGBColor Color = Gray;
 }
 
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined paint event class.
+ */
+/*===========================================================================*/
 class PaintEvent : public kvs::PaintEventListener
 {
     void update()
@@ -48,6 +45,11 @@ class PaintEvent : public kvs::PaintEventListener
     }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Push button for specifying the color of red.
+ */
+/*===========================================================================*/
 class RedButton : public kvs::PushButton
 {
 public:
@@ -55,6 +57,11 @@ public:
     void pressed() { ::Color = ::Red; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Push button for specifying the color of green.
+ */
+/*===========================================================================*/
 class GreenButton : public kvs::PushButton
 {
 public:
@@ -62,6 +69,11 @@ public:
     void pressed() { ::Color = ::Green; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Push button for specifying the color of blue.
+ */
+/*===========================================================================*/
 class BlueButton : public kvs::PushButton
 {
 public:
@@ -69,6 +81,11 @@ public:
     void pressed() { ::Color = ::Blue; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Push button for reset.
+ */
+/*===========================================================================*/
 class ResetButton : public kvs::PushButton
 {
 public:
@@ -76,6 +93,11 @@ public:
     void pressed() { ::Color = ::Gray; screen()->reset(); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Push button for quit.
+ */
+/*===========================================================================*/
 class QuitButton : public kvs::PushButton
 {
 public:
@@ -83,6 +105,14 @@ public:
     void pressed() { exit( EXIT_SUCCESS ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::Isosurface class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
@@ -47,7 +39,7 @@ int main( int argc, char** argv )
     if ( !volume )
     {
         kvsMessageError() << "Cannot create a structured volume object." << std::endl;
-        return (false);
+        return ( false );
     }
 
     /* Extract surfaces by using the kvs::Isosurface class.
@@ -66,7 +58,7 @@ int main( int argc, char** argv )
     {
         kvsMessageError() << "Cannot create a polygon object." << std::endl;
         delete volume;
-        return (false);
+        return ( false );
     }
 
     delete volume;

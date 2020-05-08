@@ -4,14 +4,6 @@
  *  @brief  Example program for drawing multiple screens.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1518 2013-04-10 01:13:11Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
@@ -57,8 +49,9 @@ class RectanglePaintEvent : public kvs::PaintEventListener
 /*===========================================================================*/
 /**
  *  @brief  Main function.
- *  @param  argc [i] argument counter
+ *  @param  argc [i] argument count
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )

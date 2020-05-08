@@ -4,14 +4,6 @@
  *  @author Naohisa Sakamoto
  *  @brief  Example program for kvs::KMeansClustering class.
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include <kvs/ValueTable>
 #include <kvs/ValueArray>

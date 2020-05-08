@@ -4,14 +4,6 @@
  *  @brief  Example program for EventListener class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1519 2013-04-10 01:14:14Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/InitializeEventListener>
 #include <kvs/PaintEventListener>

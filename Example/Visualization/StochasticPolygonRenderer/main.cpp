@@ -4,19 +4,11 @@
  *  @author Naohisa Sakamoto
  *  @brief  Example program for kvs::StochasticPolygonRenderer class.
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
-#include <kvs/glut/CheckBox>
-#include <kvs/glut/Slider>
+#include <kvs/CheckBox>
+#include <kvs/Slider>
 #include <kvs/PolygonObject>
 #include <kvs/PolygonImporter>
 #include <kvs/StructuredVolumeObject>
@@ -34,12 +26,12 @@
  *  @brief  LOD check box.
  */
 /*===========================================================================*/
-class LODCheckBox : public kvs::glut::CheckBox
+class LODCheckBox : public kvs::CheckBox
 {
 public:
 
     LODCheckBox( kvs::glut::Screen* screen ):
-        kvs::glut::CheckBox( screen )
+        kvs::CheckBox( screen )
     {
         setMargin( 10 );
         setCaption( "Level-of-Detail" );
@@ -60,12 +52,12 @@ public:
  *  @brief  Opacity slider.
  */
 /*===========================================================================*/
-class OpacitySlider : public kvs::glut::Slider
+class OpacitySlider : public kvs::Slider
 {
 public:
 
     OpacitySlider( kvs::glut::Screen* screen ):
-        kvs::glut::Slider( screen )
+        kvs::Slider( screen )
     {
         setWidth( 150 );
         setMargin( 10 );
@@ -90,12 +82,12 @@ public:
  *  @brief  Repetition slider.
  */
 /*===========================================================================*/
-class RepetitionSlider : public kvs::glut::Slider
+class RepetitionSlider : public kvs::Slider
 {
 public:
 
     RepetitionSlider( kvs::glut::Screen* screen ):
-        kvs::glut::Slider( screen )
+        kvs::Slider( screen )
     {
         setWidth( 150 );
         setMargin( 10 );
@@ -152,8 +144,9 @@ kvs::PolygonObject* Import( int argc, char** argv )
 /*===========================================================================*/
 /**
  *  @brief  Main function.
- *  @param  argc [i] argument count
+ *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )

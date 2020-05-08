@@ -23,6 +23,11 @@ void ChangeG( const int g ) { ::Color = kvs::RGBColor( ::Color.r(), g, ::Color.b
 void ChangeB( const int b ) { ::Color = kvs::RGBColor( ::Color.r(), ::Color.g(), b ); }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined paint event class.
+ */
+/*===========================================================================*/
 class PaintEvent : public kvs::PaintEventListener
 {
     void update()
@@ -39,6 +44,11 @@ class PaintEvent : public kvs::PaintEventListener
     }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Slider for changing the color of red.
+ */
+/*===========================================================================*/
 class RedSlider : public kvs::Slider
 {
 public:
@@ -46,6 +56,11 @@ public:
     void sliderMoved() { ::ChangeR( kvs::Math::Round( this->value() ) ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Slider for changing the color of green.
+ */
+/*===========================================================================*/
 class GreenSlider : public kvs::Slider
 {
 public:
@@ -53,6 +68,11 @@ public:
     void sliderMoved() { ::ChangeG( kvs::Math::Round( this->value() ) ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Slider for changing the color of blue.
+ */
+/*===========================================================================*/
 class BlueSlider : public kvs::Slider
 {
 public:
@@ -60,6 +80,11 @@ public:
     void sliderMoved() { ::ChangeB( kvs::Math::Round( this->value() ) ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Slider for changing the opacity.
+ */
+/*===========================================================================*/
 class OpacitySlider : public kvs::Slider
 {
 public:
@@ -67,6 +92,14 @@ public:
     void valueChanged() { ::Opacity = this->value(); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument counter
+ *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

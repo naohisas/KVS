@@ -1,3 +1,10 @@
+/*****************************************************************************/
+/**
+ *  @file   main.cpp
+ *  @brief  Example program for kvs::ColorMap (diverging colormap) class.
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
 #include <kvs/Label>
@@ -5,6 +12,13 @@
 #include <kvs/ColorMap>
 
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument counter
+ *  @param  argv [i] argument values
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

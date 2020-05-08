@@ -4,14 +4,6 @@
  *  @author Naohisa Sakamoto
  *  @brief  Example program for kvs::ParticleBasedRenderer class.
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
@@ -57,6 +49,7 @@ kvs::StructuredVolumeObject* Import( int argc, char** argv )
  *  @brief  Main function.
  *  @param  argc [i] argument count
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )

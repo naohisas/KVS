@@ -13,20 +13,23 @@
 #include <kvs/RayCastingRenderer>
 
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument counter
+ *  @param  argv [i] argument values
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );
 
     // Color map.
-    kvs::ColorMap cmap( 256 );
-    cmap.addPoint( 0, kvs::RGBColor( 0, 0, 0 ) );
-    cmap.addPoint( 128, kvs::RGBColor( 255, 0, 0 ) );
-    cmap.addPoint( 255, kvs::RGBColor( 255, 255, 255 ) );
-    cmap.create();
+    auto cmap = kvs::ColorMap::BrewerSpectral( 256 );
 
     // Object and renderer.
-    kvs::StructuredVolumeObject* object = new kvs::HydrogenVolumeData( kvs::Vector3ui( 32, 32, 32 ) );
-    kvs::glsl::RayCastingRenderer* renderer = new kvs::glsl::RayCastingRenderer();
+    auto* object = new kvs::HydrogenVolumeData( kvs::Vector3ui( 32, 32, 32 ) );
+    auto* renderer = new kvs::glsl::RayCastingRenderer();
     renderer->setTransferFunction( kvs::TransferFunction( cmap ) );
 
     // Screen.
@@ -37,6 +40,7 @@ int main( int argc, char** argv )
 
     // Colormap bar.
     kvs::ColorMapBar cmap_bar( &screen );
+    cmap_bar.setCaption( "Colormap" );
     cmap_bar.setColorMap( cmap );
     cmap_bar.show();
 

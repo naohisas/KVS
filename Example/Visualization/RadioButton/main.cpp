@@ -23,6 +23,11 @@ const kvs::RGBColor Blue( 0, 0, 255 );
 kvs::RGBColor Color = Gray;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined paint event class.
+ */
+/*===========================================================================*/
 class PaintEvent : public kvs::PaintEventListener
 {
     void update()
@@ -40,6 +45,11 @@ class PaintEvent : public kvs::PaintEventListener
     }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Radio button for changing the color to gray.
+ */
+/*===========================================================================*/
 class GrayButton : public kvs::RadioButton
 {
 public:
@@ -47,6 +57,11 @@ public:
     void stateChanged() { if ( this->state() ) ::Color = ::Gray; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Radio button for changing the color to red.
+ */
+/*===========================================================================*/
 class RedButton : public kvs::RadioButton
 {
 public:
@@ -54,6 +69,11 @@ public:
     void stateChanged() { if ( this->state() ) ::Color = ::Red; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Radio button for changing the color to green.
+ */
+/*===========================================================================*/
 class GreenButton : public kvs::RadioButton
 {
 public:
@@ -61,6 +81,11 @@ public:
     void stateChanged() { if ( this->state() ) ::Color = ::Green; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Radio button for changing the color to blue.
+ */
+/*===========================================================================*/
 class BlueButton : public kvs::RadioButton
 {
 public:
@@ -68,6 +93,14 @@ public:
     void stateChanged() { if ( this->state() ) ::Color = ::Blue; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

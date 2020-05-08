@@ -14,6 +14,14 @@
 #include <kvs/Isosurface>
 
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

@@ -1,3 +1,10 @@
+/*****************************************************************************/
+/**
+ *  @file   main.cpp
+ *  @author Naohisa Sakamoto
+ *  @brief  Example program for kvs::RGBFormulae class.
+ */
+/*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
 #include <kvs/ColorMapBar>
@@ -5,6 +12,14 @@
 #include <kvs/Label>
 
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

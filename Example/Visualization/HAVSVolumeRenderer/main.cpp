@@ -4,14 +4,6 @@
  *  @author Naohisa Sakamoto
  *  @brief  Example program for kvs::glew::HAVSVolumeRenderer class.
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
@@ -39,7 +31,7 @@ int main( int argc, char** argv )
     if ( argc > 1 )
     {
         const std::string filename( argv[1] );
-        object = new kvs::UnstructuredVolumeImporter( argv[1] );
+        object = new kvs::UnstructuredVolumeImporter( filename );
     }
     else if ( const char* kvs_data_dir = std::getenv( "KVS_DATA_DIR" ) )
     {
@@ -49,7 +41,7 @@ int main( int argc, char** argv )
     else
     {
         kvsMessageError() << "Cannot import data file." << std::endl;
-        return (false);
+        return ( false );
     }
 
     kvs::HAVSVolumeRenderer* renderer = new kvs::HAVSVolumeRenderer();

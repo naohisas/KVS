@@ -19,6 +19,11 @@ bool EdgeFlag = true;
 bool PlaneFlag = true;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined paint event class.
+ */
+/*===========================================================================*/
 class PaintEvent : public kvs::PaintEventListener
 {
     void update()
@@ -63,6 +68,11 @@ class PaintEvent : public kvs::PaintEventListener
     }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined checkbox.
+ */
+/*===========================================================================*/
 class EdgeBox : public kvs::CheckBox
 {
 public:
@@ -78,6 +88,13 @@ public:
     void stateChanged() { ::PlaneFlag = this->state(); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument counter
+ *  @param  argv [i] argument values
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

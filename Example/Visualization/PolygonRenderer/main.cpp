@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::PolygonRenderer class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1493 2013-04-04 01:11:26Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
@@ -25,8 +17,9 @@
 /*===========================================================================*/
 /**
  *  @brief  Main function.
- *  @param  argc [i] argument counter
+ *  @param  argc [i] argument count
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )

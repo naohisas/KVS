@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::SlicePlane class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
@@ -28,6 +20,7 @@
  *  @brief  Main function.
  *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
@@ -44,8 +37,8 @@ int main( int argc, char** argv )
 
     if ( !volume )
     {
-        kvsMessageError( "Cannot create a structured volume object." );
-        return( false );
+        kvsMessageError() << "Cannot create a structured volume object." << std::endl;
+        return ( false );
     }
 
     /* Extract planes by using SlicePlane class.
@@ -61,9 +54,9 @@ int main( int argc, char** argv )
     kvs::PolygonObject* object = new kvs::SlicePlane( volume, p, n, t );
     if ( !object )
     {
-        kvsMessageError( "Cannot create a polygon object by Slice plane." );
+        kvsMessageError() << "Cannot create a polygon object by Slice plane." << std::endl;
         delete volume;
-        return( false );
+        return ( false );
     }
 
     delete volume;
@@ -74,5 +67,5 @@ int main( int argc, char** argv )
     screen.setTitle( "kvs::SlicePlane" );
     screen.show();
 
-    return( app.run() );
+    return app.run();
 }

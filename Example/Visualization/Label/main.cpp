@@ -14,6 +14,11 @@
 #include <kvs/FontMetrics>
 
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined paint event class.
+ */
+/*===========================================================================*/
 class PaintEvent : public kvs::PaintEventListener
 {
     void update()
@@ -26,6 +31,14 @@ class PaintEvent : public kvs::PaintEventListener
     }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument count
+ *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

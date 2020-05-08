@@ -4,14 +4,6 @@
  *  @author Naohisa Sakamoto
  *  @brief  Example program for kvs::StochasticMultivariateTetrahedraRenderer class.
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
@@ -26,8 +18,9 @@
 /*===========================================================================*/
 /**
  *  @brief  Main function.
- *  @param  argc [i] argument count
+ *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
