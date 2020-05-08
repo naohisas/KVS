@@ -131,7 +131,10 @@ void StochasticLineRenderer::Engine::release()
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticLineRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticLineRenderer::Engine::create(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
     kvs::LineObject* line = kvs::LineObject::DownCast( object );
     kvs::LineObject::LineType type = line->lineType();
@@ -152,7 +155,10 @@ void StochasticLineRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camer
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticLineRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticLineRenderer::Engine::update(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
 }
 
@@ -164,7 +170,10 @@ void StochasticLineRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camer
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticLineRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticLineRenderer::Engine::setup(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
@@ -185,7 +194,10 @@ void StochasticLineRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticLineRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticLineRenderer::Engine::draw(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
     kvs::LineObject* line = kvs::LineObject::DownCast( object );
 
@@ -193,6 +205,8 @@ void StochasticLineRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera*
     kvs::ProgramObject::Binder bind2( m_shader_program );
     kvs::Texture::Binder bind3( randomTexture() );
     {
+        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
+
         const size_t size = randomTextureSize();
         const int count = repetitionCount() * ::RandomNumber();
         const float offset_x = static_cast<float>( ( count ) % size );
@@ -255,7 +269,7 @@ void StochasticLineRenderer::Engine::create_buffer_object( const kvs::LineObject
 {
     if ( line->numberOfColors() != 1 && line->colorType() == kvs::LineObject::LineColor )
     {
-        kvsMessageError("Not supported line color type.");
+        kvsMessageError() << "Not supported line color type." << std::endl;
         return;
     }
 
