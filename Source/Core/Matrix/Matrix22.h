@@ -14,6 +14,8 @@
 /****************************************************************************/
 #pragma once
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <kvs/Assert>
 #include <kvs/Math>
 #include <kvs/Indent>
@@ -79,7 +81,6 @@ public:
     void swap( Matrix22& other );
     void transpose();
     void invert( T* determinant = 0 );
-    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
 
     T trace() const;
     T determinant() const;
@@ -87,6 +88,37 @@ public:
     const Matrix22 inverted( T* determinant = 0 ) const;
     bool isSymmetric() const;
     bool isDiagonal() const;
+
+    std::string format(
+        const bool newline = false,
+        const kvs::Indent& indent = kvs::Indent(0) ) const
+    {
+        return this->format( ", ", "[", "]", newline, indent );
+    }
+
+    std::string format(
+        const std::string delim,
+        const bool newline = false,
+        const kvs::Indent& indent = kvs::Indent(0) ) const
+    {
+        return this->format( delim, "[", "]", newline, indent );
+    }
+
+    std::string format(
+        const std::string bracket_l,
+        const std::string bracket_r,
+        const bool newline = false,
+        const kvs::Indent& indent = kvs::Indent(0) ) const
+    {
+        return this->format( ", ", bracket_l, bracket_r, newline, indent );
+    }
+
+    std::string format(
+        const std::string delim,
+        const std::string bracket_l,
+        const std::string bracket_r,
+        const bool newline = false,
+        const kvs::Indent& indent = kvs::Indent(0) ) const;
 
 public:
     const Vector2<T>& operator []( const size_t index ) const;
@@ -155,7 +187,7 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const Matrix22& rhs )
     {
-        return os << "[" << rhs[0] << ", " << rhs[1] << "]";
+        return os << rhs.format( " ", "", "", true );
     }
 
 public:
@@ -164,7 +196,7 @@ public:
     KVS_DEPRECATED( void set( const T a ) ) { *this = Constant( a ); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( void identity() ) { this->setIdentity(); }
-    KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
+    KVS_DEPRECATED( void print() const ) { std::cout << *this << std::endl; }
 };
 
 
@@ -414,15 +446,32 @@ inline void Matrix22<T>::invert( T* determinant )
 
 /*==========================================================================*/
 /**
- *  @brief  Prints the elements of this.
+ *  @brief  Prints the elements as a formatted string.
+ *  @param  delim [in] delimiter
+ *  @param  bracket_l [in] left bracket
+ *  @param  bracket_r [in] right bracket
+ *  @param  newline [in] flag for newline for each row
+ *  @param  indent [in] indent for each row
  */
 /*==========================================================================*/
 template<typename T>
-inline void Matrix22<T>::print( std::ostream& os, const kvs::Indent& indent ) const
+inline std::string Matrix22<T>::format(
+    const std::string delim,
+    const std::string bracket_l,
+    const std::string bracket_r,
+    const bool newline,
+    const kvs::Indent& indent ) const
 {
-    os << indent << "[" << m_data[0];
-    os << "," << std::endl << indent << " " << m_data[1];
-    os << "]" << std::endl;
+    std::ostringstream os;
+    os << indent << bracket_l;
+    {
+        const std::string offset( bracket_l.size(), ' ' );
+        os << m_data[0].format( delim, bracket_l, bracket_r );
+        os << delim; if ( newline ) { os << std::endl << indent << offset; }
+        os << m_data[1].format( delim, bracket_l, bracket_r );
+    }
+    os << bracket_r;
+    return os.str();
 }
 
 /*==========================================================================*/

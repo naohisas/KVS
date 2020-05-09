@@ -14,6 +14,7 @@
 /****************************************************************************/
 #pragma once
 #include <iostream>
+#include <sstream>
 #include <climits>
 #include <kvs/Assert>
 #include <kvs/Math>
@@ -77,11 +78,28 @@ public:
 
     void swap( Vector2& other );
     void normalize();
-    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     double length() const;
     double squaredLength() const;
     T dot( const Vector2& other ) const;
     const Vector2 normalized() const;
+
+    std::string format(
+        const std::string delim = ", " ) const
+    {
+        return this->format( delim, "[", "]" );
+    }
+
+    std::string format(
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        return this->format( ", ", bracket_l, bracket_r );
+    }
+
+    std::string format(
+        const std::string delim,
+        const std::string bracket_l,
+        const std::string bracket_r ) const;
 
 public:
     const T& operator []( const size_t index ) const;
@@ -142,7 +160,7 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const Vector2& rhs )
     {
-        return os << "[" << rhs[0] << ", " << rhs[1] << "]";
+        return os << rhs.format( " ", "", "" );
     }
 
 public:
@@ -151,7 +169,7 @@ public:
     KVS_DEPRECATED( void set( const T x ) ) { *this = Constant( x ); }
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
-    KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
+    KVS_DEPRECATED( void print() const ) { std::cout << *this << std::endl; }
 };
 
 
@@ -348,17 +366,6 @@ inline void Vector2<T>::normalize()
 
 /*==========================================================================*/
 /**
- *  @brief  Prints the elements of this.
- */
-/*==========================================================================*/
-template<typename T>
-inline void Vector2<T>::print( std::ostream& os, const kvs::Indent& indent ) const
-{
-    os << indent << *this << std::endl;
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Calculates a length of this.
  *  @return Length of this.
  */
@@ -412,6 +419,28 @@ inline const Vector2<T> Vector2<T>::normalized() const
     const double length = this->length();
     const T normalize_factor = length > 0.0 ? static_cast<T>( 1.0 / length ) : T( 0 );
     return *this * normalize_factor;
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Prints the elements as a formatted string.
+ *  @param  delim [in] delimiter
+ *  @param  bracket_l [in] left bracket
+ *  @param  bracket_r [in] right bracket
+ */
+/*==========================================================================*/
+template<typename T>
+inline std::string Vector2<T>::format(
+    const std::string delim,
+    const std::string bracket_l,
+    const std::string bracket_r ) const
+{
+    std::ostringstream os;
+    os << bracket_l
+       << m_data[0] << delim
+       << m_data[1]
+       << bracket_r;
+    return os.str();
 }
 
 template<typename T>

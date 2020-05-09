@@ -14,6 +14,7 @@
 /****************************************************************************/
 #pragma once
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <cstring>
 #include <algorithm>
@@ -116,11 +117,28 @@ public:
     void resize( const size_t size );
     void swap( Vector& other );
     void normalize();
-    void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
     double length() const;
     double squaredLength() const;
     T dot( const Vector& other ) const;
     const Vector normalized() const;
+
+    std::string format(
+        const std::string delim = ", " ) const
+    {
+        return this->format( delim, "[", "]" );
+    }
+
+    std::string format(
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        return this->format( ", ", bracket_l, bracket_r );
+    }
+
+    std::string format(
+        const std::string delim,
+        const std::string bracket_l,
+        const std::string bracket_r ) const;
 
 public:
     const T& operator []( const size_t index ) const;
@@ -187,17 +205,13 @@ public:
 
     friend std::ostream& operator << ( std::ostream& os, const Vector& rhs )
     {
-        const size_t size = rhs.size();
-        if ( size == 0 ) { return os << "[ ]"; }
-        os << "[" << rhs[0];
-        for ( size_t i = 1; i < size; ++i ) { os << ", " << rhs[i]; }
-        return os << "]";
+        return os << rhs.format( " ", "", "" );
     }
 
 public:
     KVS_DEPRECATED( void zero() ) { this->setZero(); }
     KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
-    KVS_DEPRECATED( void print() const ) { this->print( std::cout ); }
+    KVS_DEPRECATED( void print() const ) { std::cout << *this << std::endl; }
     KVS_DEPRECATED( void setSize( const size_t size ) ) { this->resize( size ); }
 };
 
@@ -278,7 +292,11 @@ inline const Vector<T> Vector<T>::Random( const size_t size, const T min, const 
 }
 
 template <typename T>
-inline const Vector<T> Vector<T>::Random( const size_t size, const T min, const T max, const kvs::UInt32 seed )
+inline const Vector<T> Vector<T>::Random(
+    const size_t size,
+    const T min,
+    const T max,
+    const kvs::UInt32 seed )
 {
     Vector<T> v( size );
     v.setRandom( min, max, seed );
@@ -552,17 +570,6 @@ inline void Vector<T>::normalize()
 
 /*==========================================================================*/
 /**
- *  @brief  Prints the elements.
- */
-/*==========================================================================*/
-template <typename T>
-inline void Vector<T>::print( std::ostream& os, const kvs::Indent& indent ) const
-{
-    os << indent << *this << std::endl;
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Calculates a length of this.
  *  @return Length of this.
  */
@@ -611,6 +618,32 @@ inline const Vector<T> Vector<T>::normalized() const
     const double length = this->length();
     const T normalize_factor = length > 0.0 ? static_cast<T>( 1.0 / length ) : T( 0 );
     return *this * normalize_factor;
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Prints the elements as a formatted string.
+ *  @param delim [in] delimiter
+ *  @param bracket_l [in] left bracket
+ *  @param bracket_r [in] right bracket
+ */
+/*==========================================================================*/
+template<typename T>
+inline std::string Vector<T>::format(
+    const std::string delim,
+    const std::string bracket_l,
+    const std::string bracket_r ) const
+{
+    std::ostringstream os;
+    if ( m_size == 0 ) { os << bracket_l << delim << bracket_r; }
+    else
+    {
+        os << bracket_l;
+        os << m_data[0];
+        for ( size_t i = 1; i < m_size; ++i ) { os << delim << m_data[i]; }
+        os << bracket_r;
+    }
+    return os.str();
 }
 
 template <typename T>

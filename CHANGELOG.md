@@ -50,6 +50,7 @@
 + kvs::Vector{2,3,4,n}::setConstant
 + kvs::Vector{2,3,4,n}::setIdentity
 + kvs::Vector{2,3,4,n}::setRandom
++ kvs::Vector{2,3,4,n}::format
 + kvs::Vector{n}::Vector( InIter first, InIter last )
 + kvs::Vector{n}::Vector( Vector&& ) // move constructor
 + kvs::Vector{n}::operator =( Vector&& ) // move assignment operator
@@ -68,9 +69,10 @@
 + kvs::Matrix{22,33,44,nm}::setConstant
 + kvs::Matrix{22,33,44,nm}::setDiagonal
 + kvs::Matrix{22,33,44,nm}::setRandom
-+ kvs::Matrix{nm}::isSquare
 + kvs::Matrix{22,33,44,nm}::isSymmetric
 + kvs::Matrix{22,33,44,nm}::isDiagonal
++ kvs::Matrix{22,33,44,nm}::format
++ kvs::Matrix{nm}::isSquare
 + kvs::Matrix{nm}::Matrix( Matrix&& ) // move constructor
 + kvs::Matrix{nm}::operator =( Matrix&& ) // move assignment operator
 + kvs::Matrix{nm}::size
@@ -138,24 +140,24 @@
 + kvs::WidgetBase::font
 + kvs::opencv::MovieRenderer::currentFrameIndex
 + kvs::opencv::MovieRenderer::setFrameIndex
-+ kvs::KVSMLLineObject::setsetWritingDataTypeToAscii
-+ kvs::KVSMLLineObject::setsetWritingDataTypeToExternalAscii
-+ kvs::KVSMLLineObject::setsetWritingDataTypeToExternalBinary
-+ kvs::KVSMLPointObject::setsetWritingDataTypeToAscii
-+ kvs::KVSMLPointObject::setsetWritingDataTypeToExternalAscii
-+ kvs::KVSMLPointObject::setsetWritingDataTypeToExternalBinary
-+ kvs::KVSMLPolygonObject::setsetWritingDataTypeToAscii
-+ kvs::KVSMLPolygonObject::setsetWritingDataTypeToExternalAscii
-+ kvs::KVSMLPolygonObject::setsetWritingDataTypeToExternalBinary
-+ kvs::KVSMLStructuredVolumeObject::setsetWritingDataTypeToAscii
-+ kvs::KVSMLStructuredVolumeObject::setsetWritingDataTypeToExternalAscii
-+ kvs::KVSMLStructuredVolumeObject::setsetWritingDataTypeToExternalBinary
-+ kvs::KVSMLTableObject::setsetWritingDataTypeToAscii
-+ kvs::KVSMLTableObject::setsetWritingDataTypeToExternalAscii
-+ kvs::KVSMLTableObject::setsetWritingDataTypeToExternalBinary
-+ kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToAscii
-+ kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToExternalAscii
-+ kvs::KVSMLUnstructuredVolumeObject::setsetWritingDataTypeToExternalBinary
++ kvs::KVSMLLineObject::setWritingDataTypeToAscii
++ kvs::KVSMLLineObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLLineObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLPointObject::setWritingDataTypeToAscii
++ kvs::KVSMLPointObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLPointObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLPolygonObject::setWritingDataTypeToAscii
++ kvs::KVSMLPolygonObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLPolygonObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLStructuredVolumeObject::setWritingDataTypeToAscii
++ kvs::KVSMLStructuredVolumeObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLStructuredVolumeObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLTableObject::setWritingDataTypeToAscii
++ kvs::KVSMLTableObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLTableObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLUnstructuredVolumeObject::setWritingDataTypeToAscii
++ kvs::KVSMLUnstructuredVolumeObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLUnstructuredVolumeObject::setWritingDataTypeToExternalBinary
 + kvs::ColorMap::CoolWarm
 + kvs::ColorMap::BrewerBrBG
 + kvs::ColorMap::BrewerPiYG
