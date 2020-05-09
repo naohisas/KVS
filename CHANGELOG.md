@@ -1,4 +1,4 @@
-### Version 2.x.x Released (20xx.x.x)
+### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**
 + kvs::Stat::Sum
 + kvs::Stat::Mean
