@@ -11,9 +11,7 @@
  *  $Id: DataWriter.h 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__DATA_WRITER_H_INCLUDE
-#define KVS__KVSML__DATA_WRITER_H_INCLUDE
-
+#pragma once
 #include <kvs/ValueArray>
 #include <kvs/XMLNode>
 #include <kvs/Type>
@@ -71,5 +69,3 @@ bool WriteOpacityData(
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__DATA_WRITER_H_INCLUDE

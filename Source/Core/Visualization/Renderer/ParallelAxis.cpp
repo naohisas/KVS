@@ -53,6 +53,7 @@ void ParallelAxis::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
             if ( table->labels().at(i).size() > 0 ) { has_label = true; break; }
         }
 
+        const float dpr = camera->devicePixelRatio();
         const int x0 = m_left_margin;
         const int x1 = camera->windowWidth() - m_right_margin;
         const int y0 = m_top_margin;
@@ -60,7 +61,7 @@ void ParallelAxis::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
         const kvs::FontMetrics metrics = m_painter.fontMetrics();
 
         // Draw axes.
-        kvs::OpenGL::SetLineWidth( m_axis_width );
+        kvs::OpenGL::SetLineWidth( m_axis_width * dpr );
         kvs::OpenGL::Begin( GL_LINES );
         const size_t naxes = table->numberOfColumns();
         const float stride = float( x1 - x0 ) / ( naxes - 1 );
@@ -68,7 +69,7 @@ void ParallelAxis::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
         {
             const float x = m_left_margin + stride * i;
             kvs::OpenGL::Color( m_axis_color );
-            kvs::OpenGL::Vertices( kvs::Vec2( x, y0 ), kvs::Vec2( x, y1 ) );
+            kvs::OpenGL::Vertices( kvs::Vec2( x, y0 ) * dpr, kvs::Vec2( x, y1 ) * dpr );
         }
         kvs::OpenGL::End();
 

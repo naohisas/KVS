@@ -4,14 +4,6 @@
  *  @brief  Example program for legend bar.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1518 2013-04-10 01:13:11Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
@@ -34,8 +26,7 @@ int main( int argc, char** argv )
 
     // Object and renderer.
     kvs::StructuredVolumeObject* object = new kvs::HydrogenVolumeData( kvs::Vector3ui( 32, 32, 32 ) );
-    kvs::RayCastingRenderer* renderer = new kvs::RayCastingRenderer();
-    renderer->enableLODControl();
+    kvs::glsl::RayCastingRenderer* renderer = new kvs::glsl::RayCastingRenderer();
     renderer->setTransferFunction( kvs::TransferFunction( cmap ) );
 
     // Screen.
@@ -49,5 +40,5 @@ int main( int argc, char** argv )
     legend_bar.setColorMap( cmap );
     legend_bar.show();
 
-    return( app.run() );
+    return app.run();
 }

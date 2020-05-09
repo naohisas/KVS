@@ -55,7 +55,7 @@ void Trackball::scale( const kvs::Vec2i& start, const kvs::Vec2i& end )
     const float h = static_cast<float>( m_ref_camera->windowHeight() );
     const float s = 1.0f + m_scaling_factor * ( n_old.y() - n_new.y() ) / h;
 
-    m_scaling = kvs::Vec3::All( s );
+    m_scaling = kvs::Vec3::Constant( s );
 }
 
 /*==========================================================================*/

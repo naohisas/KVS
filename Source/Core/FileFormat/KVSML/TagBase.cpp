@@ -92,7 +92,7 @@ bool TagBase::read( const kvs::XMLNode::SuperClass* parent )
     m_node = kvs::XMLNode::FindChildNode( parent, m_name );
     if ( !m_node )
     {
-        KVS_THROW( kvs::FileReadFaultException, "Cannot find <" + m_name + ">." );
+        KVS_THROW( kvs::FileReadFaultException, "Cannot find <" + m_name + "> in <" + parent->Value() + ">." );
     }
 
     return true;
@@ -116,7 +116,7 @@ bool TagBase::write_with_element( kvs::XMLNode::SuperClass* parent, const kvs::X
     m_node = parent->InsertEndChild( element );
     if ( !m_node )
     {
-        KVS_THROW( kvs::FileWriteFaultException, "Cannot insert <" + m_name + ">." );
+        KVS_THROW( kvs::FileWriteFaultException, "Cannot insert <" + m_name + "> to <" + parent->Value() + ">." );
     }
 
     return true;

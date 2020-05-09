@@ -11,9 +11,7 @@
  *  $Id: TransferFunctionTag.h 1344 2012-11-07 14:59:01Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__TRANSFER_FUNCTION_TAG_H_INCLUDE
-#define KVS__KVSML__TRANSFER_FUNCTION_TAG_H_INCLUDE
-
+#pragma once
 #include <kvs/XMLNode>
 #include "TagBase.h"
 
@@ -32,11 +30,9 @@ namespace kvsml
 class TransferFunctionTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_file; ///< flag to check whether 'file' is specified or not
     std::string m_file; ///< name of external file for 'argb' data
     bool m_has_resolution; ///< flag to check whether 'resolution' is specified or not
@@ -47,10 +43,7 @@ private:
     float m_max_value; ///< max. scalar value
 
 public:
-
     TransferFunctionTag();
-
-public:
 
     bool hasFile() const;
     const std::string& file() const;
@@ -61,14 +54,10 @@ public:
     bool hasMaxValue() const;
     float maxValue() const;
 
-public:
-
     void setFile( const std::string& file );
     void setResolution( const size_t resolution );
     void setMinValue( const float min_value );
     void setMaxValue( const float max_value );
-
-public:
 
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );
@@ -77,5 +66,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__TRANSFER_FUNCTION_TAG_H_INCLUDE

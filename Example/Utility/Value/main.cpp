@@ -22,56 +22,31 @@
  *  @brief  Main function.
  */
 /*===========================================================================*/
-int main( void )
+int main()
 {
-    std::cout << "char min: " << (int)kvs::Value<char>::Min() << std::endl;
-    std::cout << "char max: " << (int)kvs::Value<char>::Max() << std::endl;
-    std::cout << "char epsilon: " << (int)kvs::Value<char>::Epsilon() << std::endl;
-    std::cout << std::endl;
-
-    std::cout << "uchar min: " << (int)kvs::Value<unsigned char>::Min() << std::endl;
-    std::cout << "uchar max: " << (int)kvs::Value<unsigned char>::Max() << std::endl;
-    std::cout << "uchar epsilon: " << (int)kvs::Value<unsigned char>::Epsilon() << std::endl;
-    std::cout << std::endl;
-
-    std::cout << "short min: " << kvs::Value<short>::Min() << std::endl;
-    std::cout << "short max: " << kvs::Value<short>::Max() << std::endl;
-    std::cout << "short epsilon: " << kvs::Value<short>::Epsilon() << std::endl;
-    std::cout << std::endl;
-
-    std::cout << "ushort min: " << kvs::Value<unsigned short>::Min() << std::endl;
-    std::cout << "ushort max: " << kvs::Value<unsigned short>::Max() << std::endl;
-    std::cout << "ushort epsilon: " << kvs::Value<unsigned short>::Epsilon() << std::endl;
-    std::cout << std::endl;
-
+    // Examples for 'int'
     std::cout << "int min: " << kvs::Value<int>::Min() << std::endl;
     std::cout << "int max: " << kvs::Value<int>::Max() << std::endl;
     std::cout << "int epsilon: " << kvs::Value<int>::Epsilon() << std::endl;
+    kvs::Value<int>::SetSeed( kvs::UInt32( time(0) ) * 1 );
+    std::cout << "int rand in [INT_MIN,INT_MAX]: ";
+    for ( int i = 0; i < 5; ++i ) std::cout << kvs::Value<int>::Random() << ", ";
+    std::cout << std::endl;
+    std::cout << "int rand in [0,9]: ";
+    for ( int i = 0; i < 5; ++i ) std::cout << kvs::Value<int>::Random( 0, 9 ) << ", ";
+    std::cout << std::endl;
     std::cout << std::endl;
 
-    std::cout << "uint min: " << kvs::Value<unsigned int>::Min() << std::endl;
-    std::cout << "uint max: " << kvs::Value<unsigned int>::Max() << std::endl;
-    std::cout << "uint epsilon: " << kvs::Value<unsigned int>::Epsilon() << std::endl;
-    std::cout << std::endl;
-
-    std::cout << "long min: " << kvs::Value<long>::Min() << std::endl;
-    std::cout << "long max: " << kvs::Value<long>::Max() << std::endl;
-    std::cout << "long epsilon: " << kvs::Value<long>::Epsilon() << std::endl;
-    std::cout << std::endl;
-
-    std::cout << "ulong min: " << kvs::Value<unsigned long>::Min() << std::endl;
-    std::cout << "ulong max: " << kvs::Value<unsigned long>::Max() << std::endl;
-    std::cout << "ulong epsilon: " << kvs::Value<unsigned long>::Epsilon() << std::endl;
-    std::cout << std::endl;
-
+    // Examples for 'float'
     std::cout << "float min: " << kvs::Value<float>::Min() << std::endl;
     std::cout << "float max: " << kvs::Value<float>::Max() << std::endl;
     std::cout << "float epsilon: " << kvs::Value<float>::Epsilon() << std::endl;
+    kvs::Value<float>::SetSeed( kvs::UInt32( time(0) ) * 2 );
+    std::cout << "float rand in [0,1]: ";
+    for ( int i = 0; i < 5; ++i ) std::cout << kvs::Value<float>::Random() << ", ";
     std::cout << std::endl;
-
-    std::cout << "double min: " << kvs::Value<double>::Min() << std::endl;
-    std::cout << "double max: " << kvs::Value<double>::Max() << std::endl;
-    std::cout << "double epsilon: " << kvs::Value<double>::Epsilon() << std::endl;
+    std::cout << "int rand in [-1,1]: ";
+    for ( int i = 0; i < 5; ++i ) std::cout << kvs::Value<float>::Random( -1, 1 ) << ", ";
     std::cout << std::endl;
 
     return 0;

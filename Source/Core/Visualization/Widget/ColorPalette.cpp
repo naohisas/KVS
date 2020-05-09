@@ -224,10 +224,11 @@ void ColorPalette::mouseReleaseEvent( kvs::MouseEvent* event )
 
 void ColorPalette::draw_SV_palette()
 {
-    const int x0 = m_SV_palette.x0();
-    const int y0 = m_SV_palette.y0();
-    const int x1 = m_SV_palette.x1();
-    const int y1 = m_SV_palette.y1();
+    const float dpr = screen()->devicePixelRatio();
+    const int x0 = m_SV_palette.x0() * dpr;
+    const int y0 = m_SV_palette.y0() * dpr;
+    const int x1 = m_SV_palette.x1() * dpr;
+    const int y1 = m_SV_palette.y1() * dpr;
 
     const float h = this->get_H_value();
     const kvs::RGBColor c0( kvs::HSVColor( h, 1, 1 ) ); // top-right
@@ -260,7 +261,7 @@ void ColorPalette::draw_SV_palette()
         const float r = margin;
 
         kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-        engine->beginFrame( screen()->width(), screen()->height() );
+        engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
         {
             engine->beginPath();
             engine->setStrokeWidth( 4 );
@@ -283,27 +284,37 @@ void ColorPalette::draw_H_palette()
     const int x1 = m_H_palette.x1();
     const int y1 = m_H_palette.y1();
 
-    const int stride = ( y1 - y0 ) / 6;
-    const int dx = m_H_palette.width() / 2;
-
     // Draw H palette.
-    kvs::OpenGL::SetLineWidth( static_cast<GLfloat>( m_H_palette.width() ) );
-    kvs::OpenGL::Begin( GL_LINE_STRIP );
-    kvs::OpenGL::Color( kvs::RGBColor::Red()     ); kvs::OpenGL::Vertex( x0 + dx, y1 );
-    kvs::OpenGL::Color( kvs::RGBColor::Yellow()  ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 5 );
-    kvs::OpenGL::Color( kvs::RGBColor::Green()   ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 4 );
-    kvs::OpenGL::Color( kvs::RGBColor::Cyan()    ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 3 );
-    kvs::OpenGL::Color( kvs::RGBColor::Blue()    ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 2 );
-    kvs::OpenGL::Color( kvs::RGBColor::Magenta() ); kvs::OpenGL::Vertex( x0 + dx, y0 + stride * 1 );
-    kvs::OpenGL::Color( kvs::RGBColor::Red()     ); kvs::OpenGL::Vertex( x0 + dx, y0 );
-    kvs::OpenGL::End();
+    const float dpr = screen()->devicePixelRatio();
+    const int stride = ( ( y1 - y0 ) / 6 );
+    const int dx = ( m_H_palette.width() / 2 );
+    const kvs::Vec2 p0 = kvs::Vec2( x0, y0 + stride * 6 ) * dpr + kvs::Vec2( dx, 0 );
+    const kvs::Vec2 p1 = kvs::Vec2( x0, y0 + stride * 5 ) * dpr + kvs::Vec2( dx, 0 );
+    const kvs::Vec2 p2 = kvs::Vec2( x0, y0 + stride * 4 ) * dpr + kvs::Vec2( dx, 0 );
+    const kvs::Vec2 p3 = kvs::Vec2( x0, y0 + stride * 3 ) * dpr + kvs::Vec2( dx, 0 );
+    const kvs::Vec2 p4 = kvs::Vec2( x0, y0 + stride * 2 ) * dpr + kvs::Vec2( dx, 0 );
+    const kvs::Vec2 p5 = kvs::Vec2( x0, y0 + stride * 1 ) * dpr + kvs::Vec2( dx, 0 );
+    const kvs::Vec2 p6 = kvs::Vec2( x0, y0 + stride * 0 ) * dpr + kvs::Vec2( dx, 0 );
+    for ( size_t i = 0; i < (int)dpr; i++ )
+    {
+        kvs::OpenGL::SetLineWidth( static_cast<GLfloat>( m_H_palette.width() ) );
+        kvs::OpenGL::Begin( GL_LINE_STRIP );
+        kvs::OpenGL::Color( kvs::RGBColor::Red()     ); kvs::OpenGL::Vertex( p0 + kvs::Vec2( m_H_palette.width() * i, 0 ) );
+        kvs::OpenGL::Color( kvs::RGBColor::Yellow()  ); kvs::OpenGL::Vertex( p1 + kvs::Vec2( m_H_palette.width() * i, 0 ) );
+        kvs::OpenGL::Color( kvs::RGBColor::Green()   ); kvs::OpenGL::Vertex( p2 + kvs::Vec2( m_H_palette.width() * i, 0 ) );
+        kvs::OpenGL::Color( kvs::RGBColor::Cyan()    ); kvs::OpenGL::Vertex( p3 + kvs::Vec2( m_H_palette.width() * i, 0 ) );
+        kvs::OpenGL::Color( kvs::RGBColor::Blue()    ); kvs::OpenGL::Vertex( p4 + kvs::Vec2( m_H_palette.width() * i, 0 ) );
+        kvs::OpenGL::Color( kvs::RGBColor::Magenta() ); kvs::OpenGL::Vertex( p5 + kvs::Vec2( m_H_palette.width() * i, 0 ) );
+        kvs::OpenGL::Color( kvs::RGBColor::Red()     ); kvs::OpenGL::Vertex( p6 + kvs::Vec2( m_H_palette.width() * i, 0 ) );
+        kvs::OpenGL::End();
+    }
 
     // Draw border.
     this->draw_border( m_H_palette );
 
     // Draw indicator.
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
     {
         engine->beginPath();
         engine->setStrokeWidth( 4 );
@@ -320,10 +331,11 @@ void ColorPalette::draw_H_palette()
 
 void ColorPalette::draw_selected_color_box()
 {
-    const int x0 = m_selected_color_box.x0();
-    const int y0 = m_selected_color_box.y0();
-    const int x1 = m_selected_color_box.x1();
-    const int y1 = m_selected_color_box.y1();
+    const float dpr = screen()->devicePixelRatio();
+    const int x0 = m_selected_color_box.x0() * dpr;
+    const int y0 = m_selected_color_box.y0() * dpr;
+    const int x1 = m_selected_color_box.x1() * dpr;
+    const int y1 = m_selected_color_box.y1() * dpr;
 
     kvs::OpenGL::Begin( GL_QUADS );
     kvs::OpenGL::Color( this->color() );
@@ -369,8 +381,7 @@ void ColorPalette::draw_border( const kvs::Rectangle& rect )
     const kvs::RGBColor border_color = kvs::RGBColor::Black();
 
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     engine->beginPath();
     engine->setStrokeWidth( border_width );

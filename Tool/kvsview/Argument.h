@@ -46,7 +46,6 @@ class Argument::Common : public kvs::CommandLine
 public:
     Common( int argc, char** argv );
     Common( int argc, char** argv, const std::string& command );
-
     bool verboseMode();
     void applyTo( kvs::glut::Screen& screen );
     void applyTo( kvs::glut::Screen& screen, kvs::VisualizationPipeline& pipe );

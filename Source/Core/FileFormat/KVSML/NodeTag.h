@@ -12,9 +12,7 @@
  *  $Id: NodeTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__NODE_TAG_H_INCLUDE
-#define KVS__KVSML__NODE_TAG_H_INCLUDE
-
+#pragma once
 #include <kvs/XMLNode>
 #include "TagBase.h"
 
@@ -33,15 +31,12 @@ namespace kvsml
 class NodeTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     kvs::kvsml::TagAttribute<size_t> m_nnodes; ///< number of nodes
 
 public:
-
     NodeTag();
 
     bool hasNNodes() const { return m_nnodes.hasValue(); }
@@ -55,5 +50,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__NODE_TAG_H_INCLUDE

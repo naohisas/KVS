@@ -57,7 +57,6 @@ PointRenderer::~PointRenderer()
 void PointRenderer::exec( ObjectBase* object, Camera* camera, Light* light )
 {
     kvs::IgnoreUnusedVariable( light );
-    kvs::IgnoreUnusedVariable( camera );
 
     kvs::PointObject* point = kvs::PointObject::DownCast( object );
 
@@ -74,7 +73,7 @@ void PointRenderer::exec( ObjectBase* object, Camera* camera, Light* light )
 #endif
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    ::PointRenderingFunction( point );
+    ::PointRenderingFunction( point, camera->devicePixelRatio() );
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
 
     BaseClass::stopTimer();
@@ -155,7 +154,7 @@ void PointRenderer::initialize()
             kvs::OpenGL::Enable( GL_POINT_SMOOTH );
             kvs::OpenGL::Enable( GL_BLEND );
             kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            KVS_GL_CALL( glHint( GL_POINT_SMOOTH_HINT, GL_NICEST ) );
+            kvs::OpenGL::Hint( GL_POINT_SMOOTH_HINT, GL_NICEST );
         }
     }
 

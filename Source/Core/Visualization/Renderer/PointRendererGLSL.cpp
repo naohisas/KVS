@@ -140,7 +140,8 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
         m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
         m_shader_program.setUniform( "NormalMatrix", N );
 
-        kvs::OpenGL::SetPointSize( point->size() );
+        const float dpr = camera->devicePixelRatio();
+        kvs::OpenGL::SetPointSize( point->size() * dpr );
 
         const size_t nvertices = point->numberOfVertices();
         m_vbo_manager.drawArrays( GL_POINTS, 0, nvertices );
@@ -180,6 +181,7 @@ void PointRenderer::create_shader_program()
     m_shader_program.setUniform( "shading.Kd", m_shader->Kd );
     m_shader_program.setUniform( "shading.Ks", m_shader->Ks );
     m_shader_program.setUniform( "shading.S",  m_shader->S );
+    m_shader_program.setUniform( "offset", 0 );
     m_shader_program.unbind();
 }
 

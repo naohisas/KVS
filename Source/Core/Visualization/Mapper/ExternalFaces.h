@@ -12,9 +12,7 @@
  *  $Id: ExternalFaces.h 1761 2014-05-07 04:18:15Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__EXTERNAL_FACES_H_INCLUDE
-#define KVS__EXTERNAL_FACES_H_INCLUDE
-
+#pragma once
 #include <kvs/Module>
 #include <kvs/MapperBase>
 #include <kvs/PolygonObject>
@@ -40,7 +38,6 @@ class ExternalFaces : public kvs::MapperBase, public kvs::PolygonObject
     kvsModuleSuperClass( kvs::PolygonObject );
 
 public:
-
     ExternalFaces();
     ExternalFaces( const kvs::VolumeObjectBase* volume );
     ExternalFaces( const kvs::VolumeObjectBase* volume, const kvs::TransferFunction& transfer_function );
@@ -49,7 +46,6 @@ public:
     SuperClass* exec( const kvs::ObjectBase* object );
 
 private:
-
     void mapping( const kvs::StructuredVolumeObject* volume );
     void calculate_coords( const kvs::StructuredVolumeObject* volume );
     void calculate_uniform_coords( const kvs::StructuredVolumeObject* volume );
@@ -65,5 +61,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__EXTERNAL_FACES_H_INCLUDE

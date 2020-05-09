@@ -15,10 +15,14 @@
 /*****************************************************************************/
 #include <iostream>
 #include <kvs/EigenDecomposer>
-#include <kvs/Vector3>
-#include <kvs/Matrix33>
+#include <kvs/Vector>
 #include <kvs/Matrix>
+#include <kvs/Timer>
+#include <kvs/Indent>
 
+
+namespace
+{
 
 /*===========================================================================*/
 /**
@@ -27,30 +31,52 @@
  *  @param  eigen [in] eigen decomposer
  */
 /*===========================================================================*/
-void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& eigen )
+void PrintResult( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& eigen )
 {
+    const kvs::Indent indent(4);
     const kvs::Vector<double>& L = eigen.eigenValues();
     const kvs::Matrix<double>& E = eigen.eigenVectors();
 
     std::cout.precision(3);
     std::cout.setf( std::ios::right );
     std::cout.setf( std::ios::fixed, std::ios::floatfield );
-    std::cout << "> matrix (M)" << std::endl << M << std::endl;
-    std::cout << "> eigen values (L)" << std::endl;
-    std::cout << "L0 = " << L[0] << std::endl;
-    std::cout << "L1 = " << L[1] << std::endl;
-    std::cout << "L2 = " << L[2] << std::endl;
-    std::cout << "> eigen vectors (E)" << std::endl;
-    std::cout << "E0 = (" << E[0] << ")" << std::endl;
-    std::cout << "E1 = (" << E[1] << ")" << std::endl;
-    std::cout << "E2 = (" << E[2] << ")" << std::endl;
-    std::cout << "> M * E0 == L0 * E0" << std::endl;
-    std::cout << "(" << M * E[0] << ") == (" << L[0] * E[0] << ")" << std::endl;
-    std::cout << "> M * E1 == L1 * E1" << std::endl;
-    std::cout << "(" << M * E[1] << ") == (" << L[1] * E[1] << ")" << std::endl;
-    std::cout << "> M * E2 == L2 * E2" << std::endl;
-    std::cout << "(" << M * E[2] << ") == (" << L[2] * E[2] << ")" << std::endl;
-    std::cout << std::endl;
+    std::cout << "Input matrix" << std::endl;
+    std::cout << indent << "M = " << M << std::endl;
+    std::cout << "Eigen values" << std::endl;
+    std::cout << indent << "L0 = " << L[0] << std::endl;
+    std::cout << indent << "L1 = " << L[1] << std::endl;
+    std::cout << indent << "L2 = " << L[2] << std::endl;
+    std::cout << "Eigen vectors" << std::endl;
+    std::cout << indent << "E0 = " << E[0] << std::endl;
+    std::cout << indent << "E1 = " << E[1] << std::endl;
+    std::cout << indent << "E2 = " << E[2] << std::endl;
+    std::cout << "Check" << std::endl;
+    std::cout << indent << "M  * E0 = " << M * E[0] << std::endl;
+    std::cout << indent << "L0 * E0 = " << L[0] * E[0] << std::endl;
+    std::cout << indent << "M  * E1 = " << M * E[1] << std::endl;
+    std::cout << indent << "L1 * E1 = " << L[1] * E[1] << std::endl;
+    std::cout << indent << "M  * E2 = " << M * E[2] << std::endl;
+    std::cout << indent << "L2 * E2 = " << L[2] * E[2] << std::endl;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Perfomance test of the eigen decompsition..
+ *  @param  M [in] input matrix
+ *  @param  n [in] number of trials
+ */
+/*===========================================================================*/
+void PerfTest( const kvs::Matrix<double>& M, const size_t nloops )
+{
+    const kvs::Indent indent(4);
+
+    std::cout << "Performance Test" << std::endl;
+    kvs::Timer timer( kvs::Timer::Start );
+    for ( size_t i = 0; i < nloops; i++ ) { kvs::EigenDecomposer<double> e( M ); }
+    timer.stop();
+    std::cout << indent << "Calculation (" << nloops << " times): " << timer.sec() << " [sec]" << std::endl;
+}
+
 }
 
 /*===========================================================================*/
@@ -58,7 +84,7 @@ void Print( const kvs::Matrix<double>& M, const kvs::EigenDecomposer<double>& ei
  *  @brief  Main function.
  */
 /*===========================================================================*/
-int main( void )
+int main()
 {
     /* The maximum number of interations and the tolerance can be set for the
      * eigen value decompostion (QR method or Power method) by using the
@@ -70,9 +96,9 @@ int main( void )
 
     // Case 1: Symmetric matrix
     {
-        /* For symmetric matrix, the QR method is used for the calculation
-         * of the eigen values and vectors. The matrix M has three
-         * eigenvalues (Li) and three eigenvectors (Ei for Li).
+        /* For symmetric matrix, the tridiagonal QR method is used for
+         * the calculation of the eigen values and vectors. The matrix
+         * M has three eigenvalues (Li) and three eigenvectors (Ei for Li).
          *
          *   L0 = 1.944, E0 = (0.519,  0.637,  0.570)
          *   L1 = 0.707, E1 = (0.787, -0.096, -0.609)
@@ -84,15 +110,19 @@ int main( void )
         M[2][0] = 0.3; M[2][1] = 0.6; M[2][2] = 1.0;
 
         kvs::EigenDecomposer<double> eigen( M );
+        ::PrintResult( M, eigen );
 
-        Print( M, eigen );
+        const size_t nloops = 100000;
+        ::PerfTest( M, nloops );
     }
+
+    std::cout << std::endl;
 
     // Case 2: Asymmetric matrix
     {
-        /* For asymmetric matrix, the Power method is used for the calculation
-         * of the eigen values and vectors. The matrix M has three
-         * eigenvalues (Li) and three eigenvectors (Ei for Li).
+        /* For asymmetric matrix, the hessenberg QR method is used for
+         * the calculation of the eigen values and vectors. The matrix
+         * M has three  eigenvalues (Li) and three eigenvectors (Ei for Li).
          *
          *   L0 = 11.464, E0 = (0.146, -0.509,  0.848)
          *   L1 =  4.536, E1 = (0.658, -0.681, -0.322)
@@ -104,7 +134,9 @@ int main( void )
         M[2][0] = 5.0; M[2][1] = -6.0; M[2][2] =  7.0;
 
         kvs::EigenDecomposer<double> eigen( M );
+        ::PrintResult( M, eigen );
 
-        Print( M, eigen );
+        const size_t nloops = 100000;
+        ::PerfTest( M, nloops );
     }
 }

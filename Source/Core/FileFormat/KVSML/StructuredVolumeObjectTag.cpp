@@ -16,7 +16,20 @@
 #include <kvs/XMLElement>
 #include <kvs/Tokenizer>
 #include <kvs/String>
+#include <sstream>
 
+
+namespace
+{
+
+std::string Vec3ToString( const kvs::Vec3u& v )
+{
+    std::ostringstream s;
+    s << v[0] << " " << v[1] << " " << v[2];
+    return s.str();
+}
+
+}
 
 namespace kvs
 {
@@ -148,7 +161,7 @@ bool StructuredVolumeObjectTag::read( const kvs::XMLNode::SuperClass* parent )
         }
 
         m_has_resolution = true;
-        m_resolution = kvs::Vector3ui( values[0], values[1], values[2] );
+        m_resolution = kvs::Vec3u( values[0], values[1], values[2] );
     }
 
     return true;
@@ -177,7 +190,8 @@ bool StructuredVolumeObjectTag::write( kvs::XMLNode::SuperClass* parent )
 
     if ( m_has_resolution )
     {
-        element.setAttribute( "resolution", m_resolution );
+        const std::string resolution = ::Vec3ToString( m_resolution );
+        element.setAttribute( "resolution", resolution );
     }
     else
     {

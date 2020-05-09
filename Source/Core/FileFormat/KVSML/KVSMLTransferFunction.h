@@ -12,9 +12,7 @@
  *  $Id: KVSMLTransferFunction.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__KVSML_TRANSFER_FUNCTION_H_INCLUDE
-#define KVS__KVSML_TRANSFER_FUNCTION_H_INCLUDE
-
+#pragma once
 #include <list>
 #include <iostream>
 #include <kvs/FileFormatBase>
@@ -36,7 +34,6 @@ namespace kvs
 class KVSMLTransferFunction : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
     typedef std::pair<float,kvs::Real32> OpacityPoint;
     typedef std::list<OpacityPoint> OpacityPointList;
@@ -51,7 +48,6 @@ public:
     };
 
 private:
-
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     WritingDataType m_writing_type; ///< writing data type
     size_t m_resolution; ///< resolution
@@ -63,12 +59,10 @@ private:
     kvs::ValueArray<kvs::UInt8> m_colors; ///< color (r,g,b) array
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLTransferFunction();
     KVSMLTransferFunction( const std::string& filename );
     virtual ~KVSMLTransferFunction();
@@ -85,6 +79,9 @@ public:
     void setResolution( const size_t resolution ) { m_resolution = resolution; }
     void setRange( const float min_value, const float max_value ) { m_min_value = min_value; m_max_value = max_value; }
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
+    void setWritingDataTypeToAscii() { this->setWritingDataType( Ascii ); }
+    void setWritingDataTypeToExternalAscii() { this->setWritingDataType( ExternalAscii ); }
+    void setWritingDataTypeToExternalBinary() { this->setWritingDataType( ExternalBinary ); }
     void setOpacities( const kvs::ValueArray<kvs::Real32>& opacities ) { m_opacities = opacities; }
     void setColors( const kvs::ValueArray<kvs::UInt8>& colors ) { m_colors = colors; }
     void addOpacityPoint( const float value, const float opacity );
@@ -96,5 +93,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__KVSML_TRANSFER_FUNCTION_H_INCLUDE

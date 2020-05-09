@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::ImageRenderer class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 641 2010-10-17 02:15:17Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include <kvs/Message>
 #include <kvs/ImageObject>
@@ -39,17 +31,17 @@ int main( int argc, char** argv )
     kvs::ImageObject* object = new kvs::ImageImporter( filename );
     if ( !object )
     {
-        kvsMessageError("Cannot creat an image object.");
-        return( false );
+        kvsMessageError() << "Cannot creat an image object." << std::endl;
+        return ( false );
     }
 
     // Create an image renderer.
     kvs::ImageRenderer* renderer = new kvs::ImageRenderer();
     if ( !renderer )
     {
-        kvsMessageError("Cannot create an image renderer.");
+        kvsMessageError() << "Cannot create an image renderer." << std::endl;
         delete object;
-        return( false );
+        return ( false );
     }
 
     // Screen.
@@ -59,5 +51,5 @@ int main( int argc, char** argv )
     screen.setTitle( "kvs::ImageRenderer" );
     screen.show();
 
-    return( app.run() );
+    return app.run();
 }

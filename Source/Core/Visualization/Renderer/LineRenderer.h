@@ -12,9 +12,7 @@
  *  $Id: LineRenderer.h 1784 2014-06-05 10:12:54Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__LINE_RENDERER_H_INCLUDE
-#define KVS__LINE_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/RendererBase>
 #include <kvs/Module>
 
@@ -37,12 +35,10 @@ class LineRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
-
     mutable bool m_enable_anti_aliasing; ///< flag for anti-aliasing (AA)
     mutable bool m_enable_multisample_anti_aliasing; ///< flag for multisample anti-aliasing (MSAA)
 
 public:
-
     LineRenderer();
     virtual ~LineRenderer();
 
@@ -52,12 +48,9 @@ public:
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 private:
-
     void initialize();
 };
 
 } // end of namespace kvs
 
 #include "LineRendererGLSL.h"
-
-#endif // KVS__LINE_RENDERER_H_INCLUDE

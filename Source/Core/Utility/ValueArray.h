@@ -11,39 +11,25 @@
  *  $Id: ValueArray.h 1422 2013-03-02 06:32:39Z s.yamada0808@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__VALUE_ARRAY_H_INCLUDE
-#define KVS__VALUE_ARRAY_H_INCLUDE
-
+#pragma once
 #include <algorithm>
+#include <numeric>
+#include <functional>
 #include <iterator>
 #include <utility>
 #include <vector>
-#if KVS_ENABLE_DEPRECATED
-#include <cstring>
-#endif
+#include <iostream>
+#include <sstream>
+#include <initializer_list>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
+#include <kvs/Value>
 #include <kvs/SharedPointer>
-#if KVS_ENABLE_DEPRECATED
-#include <kvs/Endian>
-#endif
+#include <kvs/Deleter>
+
 
 namespace kvs
 {
-
-namespace temporal
-{
-
-template <typename T>
-struct ArrayDeleter
-{
-    void operator ()( T* ptr )
-    {
-        delete [] ptr;
-    }
-};
-
-}
 
 /*==========================================================================*/
 /**
@@ -54,20 +40,53 @@ template<typename T>
 class ValueArray
 {
 public:
-    typedef ValueArray<T>                         this_type;
-    typedef T                                     value_type;
-    typedef T*                                    iterator;
-    typedef const T*                              const_iterator;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
-    typedef std::size_t                           size_type;
-    typedef std::ptrdiff_t                        difference_type;
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
+    typedef ValueArray<T> this_type;
+    typedef T value_type;
+    typedef T* iterator;
+    typedef const T* const_iterator;
+    typedef T& reference;
+    typedef const T& const_reference;
+    typedef std::size_t size_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 private:
-    kvs::SharedPointer<value_type>  m_values;
-    size_t                          m_size; ///< Number of values.
+    kvs::SharedPointer<value_type> m_values; ///< values
+    size_t m_size; ///< number of values.
+
+public:
+    static ValueArray Random( const size_t size, const unsigned int seed = 0 )
+    {
+        if ( size == 0 ) { return ValueArray(); }
+        if ( seed == 0 ) { static bool flag = true; if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; } }
+        else { kvs::Value<T>::SetSeed( seed ); }
+        this_type v( size );
+        const_iterator last = v.end();
+        for ( iterator i = v.begin(); i != last; ++i ) { *i = kvs::Value<T>::Random(); }
+        return v;
+    }
+
+    static ValueArray Random( const size_t size, const T min, const T max, const unsigned int seed = 0 )
+    {
+        if ( size == 0 ) { return ValueArray(); }
+        if ( seed == 0 ) { static bool flag = true; if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; } }
+        else { kvs::Value<T>::SetSeed( seed ); }
+        this_type v( size );
+        const_iterator last = v.end();
+        for ( iterator i = v.begin(); i != last; ++i ) { *i = kvs::Value<T>::Random( min, max ); }
+        return v;
+    }
+
+    static ValueArray Linear( const size_t size, const T start = T(0), const T step = T(1) )
+    {
+        if ( size == 0 ) { return ValueArray(); }
+        this_type v( size );
+        const_iterator last = v.end();
+        T value = start;
+        for ( iterator i = v.begin(); i != last; ++i ) { *i = value; value += step; }
+        return v;
+    }
 
 public:
     ValueArray()
@@ -99,6 +118,12 @@ public:
         std::copy( first, last, this->begin() );
     }
 
+    ValueArray( std::initializer_list<T> list )
+    {
+        this->allocate( std::distance( list.begin(), list.end() ) );
+        std::copy( list.begin(), list.end(), this->begin() );
+    }
+
     ValueArray( const kvs::SharedPointer<T>& sp, size_t size ):
         m_values( sp )
     {
@@ -115,6 +140,36 @@ public:
     void assign( InIter first, InIter last )
     {
         *this = ValueArray( first, last );
+    }
+
+public:
+    std::string format(
+        const std::string delim = ", " ) const
+    {
+        return this->format( delim, "{", "}" );
+    }
+
+    std::string format(
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        return this->format( ", ", bracket_l, bracket_r );
+    }
+
+    std::string format(
+        const std::string delim,
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        std::ostringstream os;
+        if ( this->empty() ) { os << bracket_l << " " << bracket_r; }
+        else
+        {
+            os << bracket_l << this->front();
+            for ( const_iterator i = this->begin() + 1; i != this->end(); i++ ) { os << delim << *i; }
+            os << bracket_r;
+        }
+        return os.str();
     }
 
 public:
@@ -210,6 +265,15 @@ public:
         return !( lhs < rhs );
     }
 
+    friend std::ostream& operator <<( std::ostream& os, const this_type& rhs )
+    {
+//        if ( rhs.empty() ) { return os << "{ }"; }
+//        os << "{" << rhs.front();
+//        for ( const_iterator i = rhs.begin() + 1; i != rhs.end(); i++ ) { os << ", " << *i; }
+//        return os << "}";
+        return os << rhs.format( " ", "", "" );
+    }
+
 public:
     reference front()
     {
@@ -297,52 +361,12 @@ public:
     }
 
 public:
-#if KVS_ENABLE_DEPRECATED
-    value_type* allocate( const size_t size )
-    {
-        this->release();
-        m_values.reset( new value_type[ size ], kvs::temporal::ArrayDeleter<value_type>() );
-        m_size = size;
-        return this->data();
-    }
-
-    void shallowCopy( const this_type& other )
-    {
-        *this = other;
-    }
-
-    void deepCopy( const this_type& other )
-    {
-        *this = other.clone();
-    }
-
-    void deepCopy( const value_type* values, const size_t nvalues )
-    {
-        *this = ValueArray( values, nvalues );
-    }
-
-    bool isEmpty() const
-    {
-        return this->empty();
-    }
-
-    void swapByte()
-    {
-        kvs::Endian::Swap( this->data(), this->size() );
-    }
-
-    void deallocate()
-    {
-        this->release();
-    }
-
-#else
     void allocate( const size_t size )
     {
-        m_values.reset( new value_type[ size ], kvs::temporal::ArrayDeleter<value_type>() );
+//        m_values.reset( new value_type[ size ], kvs::temporal::ArrayDeleter<value_type>() );
+        m_values.reset( new value_type[ size ], kvs::Deleter<value_type[]>() );
         m_size = size;
     }
-#endif
 
     void fill( const T& value )
     {
@@ -359,6 +383,90 @@ public:
     {
         return m_values.unique();
     }
+
+    T min() const
+    {
+        return *std::min_element( this->begin(), this->end() );
+    }
+
+    T max() const
+    {
+        return *std::max_element( this->begin(), this->end() );
+    }
+
+    T sum() const
+    {
+        return std::accumulate( this->begin(), this->end(), T(0) );
+    }
+
+    size_t argmin() const
+    {
+        return std::distance( this->begin(), std::min_element( this->begin(), this->end() ) );
+    }
+
+    size_t argmax() const
+    {
+        return std::distance( this->begin(), std::max_element( this->begin(), this->end() ) );
+    }
+
+    void sort( const bool ascending = true )
+    {
+        if ( ascending ) { std::sort( this->begin(), this->end() ); } // 0, 1, 2, 3
+        else { std::sort( this->begin(), this->end(), std::greater<T>() ); } // 3, 2, 1, 0
+    }
+
+    void shuffle()
+    {
+        // if ( C++11 )
+        // {
+        //     std::random_device seed;
+        //     std::mt19937 rand( seed );
+        //     std::shuffle( this->begin(), this->end(), rand );
+        // }
+        iterator first = this->begin();
+        iterator last = this->end();
+        difference_type n = last - first;
+        kvs::Value<size_t>::SetRandomSeed();
+        for ( difference_type i = n - 1; i > 0; --i )
+        {
+            const size_t j = kvs::Value<size_t>::Random( 0, i );
+            std::swap( first[i], first[j] );
+        }
+    }
+
+    ValueArray<size_t> argsort( const bool ascending = true )
+    {
+        // if ( C++11 )
+        // {
+        //     // in case of ascending order
+        //     this_type& array = *this;
+        //     std::sort( indices.begin(), indices.end(),
+        //                [&array]( size_t i, size_t j ) { return array[i] < array[j]; } );
+        // }
+        ValueArray<size_t> indices = ValueArray<size_t>::Linear( this->size() );
+        if ( ascending )
+        {
+            std::sort( indices.begin(), indices.end(), argsort_less( this->begin() ) );
+        }
+        else
+        {
+            std::sort( indices.begin(), indices.end(), argsort_greater( this->begin() ) );
+        }
+        return indices;
+    }
+
+private:
+    struct argsort_less
+    {
+        const_iterator m_begin; argsort_less( const_iterator begin ): m_begin( begin ) {}
+        bool operator () ( size_t i, size_t j ) const { return m_begin[i] < m_begin[j]; }
+    };
+
+    struct argsort_greater
+    {
+        const_iterator m_begin; argsort_greater( const_iterator begin ): m_begin( begin ) {}
+        bool operator () ( size_t i, size_t j ) const { return m_begin[i] > m_begin[j]; }
+    };
 };
 
 } // end of namespace kvs
@@ -372,6 +480,4 @@ inline void swap( kvs::ValueArray<T>& lhs, kvs::ValueArray<T>& rhs )
     lhs.swap( rhs );
 }
 
-} // std
-
-#endif // KVS__VALUE_ARRAY_H_INCLUDE
+} // end of namespace std

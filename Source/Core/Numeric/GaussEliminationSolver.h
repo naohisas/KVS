@@ -31,10 +31,9 @@ template <typename T>
 class GaussEliminationSolver : public kvs::Vector<T>
 {
 public:
-
-    GaussEliminationSolver();
-    GaussEliminationSolver( const kvs::Matrix<T>& A, const kvs::Vector<T>& b );
-    virtual ~GaussEliminationSolver();
+    GaussEliminationSolver() {}
+    GaussEliminationSolver( const kvs::Matrix<T>& A, const kvs::Vector<T>& b ) { this->solve( A, b ); }
+    virtual ~GaussEliminationSolver() {}
 
     GaussEliminationSolver<T>& operator = ( const kvs::Vector<T>& v );
 

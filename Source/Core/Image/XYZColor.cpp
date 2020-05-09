@@ -22,23 +22,30 @@
 namespace
 {
 
-kvs::Real32 ToStandard( const kvs::Real32 C )
+inline kvs::Real32 ToStandard( const kvs::Real32 C )
 {
     kvs::Real32 Cs = 0;
-    if ( C <= 0.0031308 ) { Cs = 12.92 * C; }
-    else { Cs = 1.055 * std::pow( C, 1.0f / 2.4f ) - 0.055; }
+    if ( C <= 0.0031308f ) { Cs = 12.92f * C; }
+    else { Cs = 1.055f * std::pow( C, 1.0f / 2.4f ) - 0.055f; }
     return kvs::Math::Clamp( Cs, 0.0f, 1.0f );
 }
 
-kvs::Real32 ToLinear( const kvs::Real32 C )
+inline kvs::Real32 ToLinear( const kvs::Real32 C )
 {
     kvs::Real32 Cl = 0;
-    if ( C <= 0.04045 ) { Cl = C / 12.92; }
-    else { Cl = std::pow( ( C + 0.055f ) / 1.055, 2.4 ); }
+    if ( C <= 0.04045f ) { Cl = C / 12.92f; }
+    else { Cl = std::pow( ( C + 0.055f ) / 1.055f, 2.4f ); }
     return kvs::Math::Clamp( Cl, 0.0f, 1.0f );
 }
 
-kvs::Vec3 sRGB2PhysicallyLinearRGB( const kvs::Vec3 sRGB )
+/*===========================================================================*/
+/**
+ *  @brief  Converts color values from sRGB to linear sRGB.
+ *  @param  sRGB [in] standard RGB
+ *  @return lineared sRGB
+ */
+/*===========================================================================*/
+inline kvs::Vec3 sRGB2RGB( const kvs::Vec3 sRGB )
 {
     const kvs::Real32 R = ToLinear( sRGB[0] );
     const kvs::Real32 G = ToLinear( sRGB[1] );
@@ -46,7 +53,14 @@ kvs::Vec3 sRGB2PhysicallyLinearRGB( const kvs::Vec3 sRGB )
     return kvs::Vec3( R, G, B );
 }
 
-kvs::Vec3 PhysicallyLinearRGB2sRGB( const kvs::Vec3 RGB )
+/*===========================================================================*/
+/**
+ *  @brief  Converts color values from linear sRGB to sRGB.
+ *  @param  RGB [in] lineared sRGB
+ *  @return standard RGB
+ */
+/*===========================================================================*/
+inline kvs::Vec3 RGB2sRGB( const kvs::Vec3 RGB )
 {
     const kvs::Real32 sR = ToStandard( RGB[0] );
     const kvs::Real32 sG = ToStandard( RGB[1] );
@@ -54,30 +68,31 @@ kvs::Vec3 PhysicallyLinearRGB2sRGB( const kvs::Vec3 RGB )
     return kvs::Vec3( sR, sG, sB );
 }
 
-kvs::XYZColor RGB2XYZ( const kvs::RGBColor& rgb )
+inline kvs::XYZColor RGB2XYZ( const kvs::RGBColor& rgb )
 {
     const kvs::Vec3 sRGB = rgb.toVec3();
-    const kvs::Vec3 RGB = sRGB2PhysicallyLinearRGB( sRGB );
+    const kvs::Vec3 RGB = sRGB2RGB( sRGB );
     const kvs::Mat3 M(
-        0.412391, 0.357584, 0.180481,
-        0.212639, 0.715169, 0.072192,
-        0.019331, 0.119195, 0.950532 );
+        0.412391f, 0.357584f, 0.180481f,
+        0.212639f, 0.715169f, 0.072192f,
+        0.019331f, 0.119195f, 0.950532f );
     const kvs::Vec3 XYZ = M * RGB;
     return kvs::XYZColor( XYZ[0], XYZ[1], XYZ[2] );
 }
 
-kvs::RGBColor XYZ2RGB( const kvs::XYZColor& xyz )
+inline kvs::RGBColor XYZ2RGB( const kvs::XYZColor& xyz )
 {
     const kvs::Mat3 Minv(
-         3.240970, -1.537383, -0.498611,
-        -0.969244,  1.875968,  0.041555,
-         0.055630, -0.203977,  1.056972 );
+         3.240970f, -1.537383f, -0.498611f,
+        -0.969244f,  1.875968f,  0.041555f,
+         0.055630f, -0.203977f,  1.056972f );
     const kvs::Vec3 RGB = Minv * xyz.toVec3();
-    const kvs::Vec3 sRGB = PhysicallyLinearRGB2sRGB( RGB );
+    const kvs::Vec3 sRGB = RGB2sRGB( RGB );
     return kvs::RGBColor( sRGB );
 }
 
 }
+
 
 namespace kvs
 {

@@ -45,10 +45,10 @@ MarchingTetrahedra::MarchingTetrahedra():
 /*==========================================================================*/
 MarchingTetrahedra::MarchingTetrahedra(
     const kvs::UnstructuredVolumeObject* volume,
-    const double                         isolevel,
-    const NormalType                     normal_type,
-    const bool                           duplication,
-    const kvs::TransferFunction&         transfer_function ):
+    const double isolevel,
+    const NormalType normal_type,
+    const bool duplication,
+    const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
     kvs::PolygonObject(),
     m_isolevel( isolevel ),
@@ -131,6 +131,10 @@ void MarchingTetrahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
+
+    const kvs::Real64 min_value = BaseClass::volume()->minValue();
+    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
     const std::type_info& type = volume->values().typeInfo()->type();
@@ -220,23 +224,23 @@ void MarchingTetrahedra::extract_surfaces_with_duplication(
 
             // Calculate coordinates of the vertices which are composed
             // of the triangle polygon.
-            const kvs::Vector3f vertex0( this->interpolate_vertex<T>( v0, v1 ) );
+            const kvs::Vec3 vertex0( this->interpolate_vertex<T>( v0, v1 ) );
             coords.push_back( vertex0.x() );
             coords.push_back( vertex0.y() );
             coords.push_back( vertex0.z() );
 
-            const kvs::Vector3f vertex1( this->interpolate_vertex<T>( v2, v3 ) );
+            const kvs::Vec3 vertex1( this->interpolate_vertex<T>( v2, v3 ) );
             coords.push_back( vertex1.x() );
             coords.push_back( vertex1.y() );
             coords.push_back( vertex1.z() );
 
-            const kvs::Vector3f vertex2( this->interpolate_vertex<T>( v4, v5 ) );
+            const kvs::Vec3 vertex2( this->interpolate_vertex<T>( v4, v5 ) );
             coords.push_back( vertex2.x() );
             coords.push_back( vertex2.y() );
             coords.push_back( vertex2.z() );
 
             // Calculate a normal vector for the triangle polygon.
-            const kvs::Vector3f normal( ( vertex1 - vertex0 ).cross( vertex2 - vertex0 ) );
+            const kvs::Vec3 normal( ( vertex1 - vertex0 ).cross( vertex2 - vertex0 ) );
             normals.push_back( normal.x() );
             normals.push_back( normal.y() );
             normals.push_back( normal.z() );
@@ -340,7 +344,7 @@ size_t MarchingTetrahedra::calculate_table_index( const size_t* local_index ) co
  */
 /*==========================================================================*/
 template <typename T>
-const kvs::Vector3f MarchingTetrahedra::interpolate_vertex(
+const kvs::Vec3 MarchingTetrahedra::interpolate_vertex(
     const int vertex0,
     const int vertex1 ) const
 {
@@ -358,7 +362,7 @@ const kvs::Vector3f MarchingTetrahedra::interpolate_vertex(
     const float y = coords[coord0_index+1] + ratio * ( coords[coord1_index+1] - coords[coord0_index+1] );
     const float z = coords[coord0_index+2] + ratio * ( coords[coord1_index+2] - coords[coord0_index+2] );
 
-    return kvs::Vector3f( x, y, z );
+    return kvs::Vec3( x, y, z );
 }
 
 /*==========================================================================*/
@@ -412,7 +416,7 @@ void MarchingTetrahedra::calculate_isopoints(
 
         if ( ( values[ vertex0 ] > isolevel ) == ( values[ vertex1 ] > isolevel ) ) { continue; }
 
-        const kvs::Vector3f isopoint( this->interpolate_vertex( vertex0, vertex1 ) );
+        const kvs::Vec3 isopoint( this->interpolate_vertex( vertex0, vertex1 ) );
 
         coords.push_back( isopoint.x() );
         coords.push_back( isopoint.y() );
@@ -510,11 +514,11 @@ void MarchingTetrahedra::calculate_normals_on_polygon(
         const kvs::UInt32 coord1_index = 3 * connections[ index + 1 ];
         const kvs::UInt32 coord2_index = 3 * connections[ index + 2 ];
 
-        const kvs::Vector3f v0( coords_ptr + coord0_index );
-        const kvs::Vector3f v1( coords_ptr + coord1_index );
-        const kvs::Vector3f v2( coords_ptr + coord2_index );
+        const kvs::Vec3 v0( coords_ptr + coord0_index );
+        const kvs::Vec3 v1( coords_ptr + coord1_index );
+        const kvs::Vec3 v2( coords_ptr + coord2_index );
 
-        const kvs::Vector3f normal( ( v1 - v0 ).cross( v2 - v0 ) );
+        const kvs::Vec3 normal( ( v1 - v0 ).cross( v2 - v0 ) );
 
         normals[ index     ] = normal.x();
         normals[ index + 1 ] = normal.y();
@@ -551,11 +555,11 @@ void MarchingTetrahedra::calculate_normals_on_vertex(
         const kvs::UInt32 coord1_index = 3 * connections[ index + 1 ];
         const kvs::UInt32 coord2_index = 3 * connections[ index + 2 ];
 
-        const kvs::Vector3f v0( coords_ptr + coord0_index );
-        const kvs::Vector3f v1( coords_ptr + coord1_index );
-        const kvs::Vector3f v2( coords_ptr + coord2_index );
+        const kvs::Vec3 v0( coords_ptr + coord0_index );
+        const kvs::Vec3 v1( coords_ptr + coord1_index );
+        const kvs::Vec3 v2( coords_ptr + coord2_index );
 
-        const kvs::Vector3f normal( ( v1 - v0 ).cross( v2 - v0 ) );
+        const kvs::Vec3 normal( ( v1 - v0 ).cross( v2 - v0 ) );
 
         normals[ coord0_index     ] += normal.x();
         normals[ coord0_index + 1 ] += normal.y();

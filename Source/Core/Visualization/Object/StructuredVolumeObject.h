@@ -34,7 +34,6 @@ class StructuredVolumeObject : public kvs::VolumeObjectBase
     kvsModuleBaseClass( kvs::VolumeObjectBase );
 
 public:
-
     enum GridType
     {
         UnknownGridType = 0, ///< Unknown grid type.
@@ -44,12 +43,10 @@ public:
     };
 
 private:
-
     GridType m_grid_type; ///< grid type
     kvs::Vec3ui m_resolution; ///< Node resolution.
 
 public:
-
     StructuredVolumeObject();
 
     void shallowCopy( const StructuredVolumeObject& object );

@@ -36,8 +36,8 @@ class StochasticRenderingCompositor : public kvs::PaintEventListener
 private:
     kvs::Timer m_timer;
     kvs::Scene* m_scene; ///< pointer to the scene
-    size_t m_width; ///< window width
-    size_t m_height; ///< window height
+    size_t m_window_width; ///< window width
+    size_t m_window_height; ///< window height
     size_t m_repetition_level; ///< repetition level
     size_t m_coarse_level; ///< repetition level for the coarse rendering (LOD)
     bool m_enable_lod; ///< flag for LOD rendering

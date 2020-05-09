@@ -12,12 +12,11 @@
  *  $Id: ViewingMatrix44.h 1421 2013-02-27 17:31:12Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__VIEWING_MATRIX44_H_INCLUDE
-#define KVS__VIEWING_MATRIX44_H_INCLUDE
-
+#pragma once
 #include <cmath>
 #include <kvs/Matrix44>
 #include <kvs/Vector3>
+
 
 namespace kvs
 {
@@ -57,5 +56,3 @@ inline kvs::Matrix44<T> ViewingMatrix44(
 }
 
 } // end of namespace kvs
-
-#endif // KVS__VIEWING_MATRIX44_H_INCLUDE

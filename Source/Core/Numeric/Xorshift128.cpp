@@ -23,9 +23,22 @@ namespace kvs
  *  @brief  Constructs a new Xorshift128.
  */
 /*==========================================================================*/
-Xorshift128::Xorshift128()
+Xorshift128::Xorshift128():
+    m_x(123456789),
+    m_y(362436069),
+    m_z(521288629),
+    m_w(88675123)
 {
     const kvs::UInt32 seed = static_cast<kvs::UInt32>( time( 0 ) );
+    this->setSeed( seed );
+}
+
+Xorshift128::Xorshift128( const kvs::UInt32 seed ):
+    m_x(123456789),
+    m_y(362436069),
+    m_z(521288629),
+    m_w(88675123)
+{
     this->setSeed( seed );
 }
 

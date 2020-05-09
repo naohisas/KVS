@@ -12,9 +12,7 @@
  *  $Id: PointRenderingFunction.h 1418 2013-02-21 07:02:46Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__POINT_RENDERING_FUNCTION_H_INCLUDE
-#define KVS__POINT_RENDERING_FUNCTION_H_INCLUDE
-
+#pragma once
 #include <kvs/PointObject>
 #include <kvs/RGBColor>
 #include <kvs/OpenGL>
@@ -33,282 +31,221 @@ namespace
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with S, C and Ns.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_S_C_Ns( const kvs::PointObject* point )
+void Rendering_S_C_Ns( const kvs::PointObject* point, const float dpr )
 {
-    glEnable( GL_NORMALIZE );
+    kvs::OpenGL::Enable( GL_NORMALIZE );
+    kvs::OpenGL::SetPointSize( point->size() * dpr );
+    kvs::OpenGL::Color( point->color() );
+    kvs::OpenGL::Begin( GL_POINTS );
+    {
+        const size_t nvertices = point->numberOfVertices();
+        for ( size_t i = 0; i < nvertices; i++ )
+        {
+            kvs::OpenGL::Normal3( point->normals().data() + 3 * i );
+            kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
+        }
+    }
+    kvs::OpenGL::End();
+};
 
-    const float         size  = point->size();
-    const kvs::RGBColor color = point->color();
+/*==========================================================================*/
+/**
+ *  Rendering points with S and C.
+ *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_S_C( const kvs::PointObject* point, const float dpr )
+{
+    kvs::OpenGL::SetPointSize( point->size() * dpr );
+    kvs::OpenGL::Color( point->color() );
+    kvs::OpenGL::Begin( GL_POINTS );
+    {
+        const size_t nvertices = point->numberOfVertices();
+        for ( size_t i = 0; i < nvertices; i++ )
+        {
+            kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
+        }
+    }
+    kvs::OpenGL::End();
+};
 
-    glPointSize( size );
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    const float* vertex = point->coords().data();
-    const float* normal = point->normals().data();
-
-    glBegin( GL_POINTS );
+/*==========================================================================*/
+/**
+ *  Rendering points with S, Cs and Ns.
+ *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
+ */
+/*==========================================================================*/
+void Rendering_S_Cs_Ns( const kvs::PointObject* point, const float dpr )
+{
+    kvs::OpenGL::Enable( GL_NORMALIZE );
+    kvs::OpenGL::SetPointSize( point->size() * dpr );
+    kvs::OpenGL::Begin( GL_POINTS );
     {
         const size_t nvertices = point->numberOfVertices();
         for( size_t i = 0; i < nvertices; i++ )
         {
-            const size_t i3 = i * 3;
-            glNormal3f( normal[i3], normal[i3+1], normal[i3+2] );
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
+            kvs::OpenGL::Normal3( point->normals().data() + 3 * i );
+            kvs::OpenGL::Color3( point->colors().data() + 3 * i );
+            kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 };
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with S and Cs.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_S_C( const kvs::PointObject* point )
+void Rendering_S_Cs( const kvs::PointObject* point, const float dpr )
 {
-    const float         size  = point->size();
-    const kvs::RGBColor color = point->color();
-
-    glPointSize( size );
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    const float* vertex = point->coords().data();
-    glBegin( GL_POINTS );
+    kvs::OpenGL::SetPointSize( point->size() * dpr );
+    kvs::OpenGL::Begin( GL_POINTS );
     {
         const size_t nvertices = point->numberOfVertices();
-        for( size_t i = 0; i < nvertices; i++ )
+        for ( size_t i = 0; i < nvertices; i++ )
         {
-            size_t i3 = i * 3;
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
+            kvs::OpenGL::Color3( point->colors().data() + 3 * i );
+            kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 };
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with S.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_S_Cs_Ns( const kvs::PointObject* point )
+void Rendering_S( const kvs::PointObject* point, const float dpr )
 {
-    glEnable( GL_NORMALIZE );
-
-    const float size = point->size();
-    glPointSize( size );
-
-    const float*         vertex = point->coords().data();
-    const float*         normal = point->normals().data();
-    const unsigned char* color  = point->colors().data();
-    glBegin( GL_POINTS );
+    kvs::OpenGL::SetPointSize( point->size() * dpr );
+    kvs::OpenGL::Begin( GL_POINTS );
     {
         const size_t nvertices = point->numberOfVertices();
-        for( size_t i = 0; i < nvertices; i++ )
+        for ( size_t i = 0; i < nvertices; i++ )
         {
-            size_t i3 = i * 3;
-            glNormal3f( normal[i3], normal[i3+1], normal[i3+2] );
-            glColor3ub( color[i3],  color[i3+1],  color[i3+2]  );
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
+            kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
         }
     }
-    glEnd();
+    kvs::OpenGL::End();
 };
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with Ss, C and Ns.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_S_Cs( const kvs::PointObject* point )
+void Rendering_Ss_C_Ns( const kvs::PointObject* point, const float dpr )
 {
-    const float size = point->size();
-    glPointSize( size );
-
-    const float*         vertex = point->coords().data();
-    const unsigned char* color = point->colors().data();
-    glBegin( GL_POINTS );
-    {
-        const size_t nvertices = point->numberOfVertices();
-        for( size_t i = 0; i < nvertices; i++ )
-        {
-            const size_t i3 = i * 3;
-            glColor3ub( color[i3],  color[i3+1],  color[i3+2]  );
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
-        }
-    }
-    glEnd();
-};
-
-/*==========================================================================*/
-/**
- *  
- *  @param point [in] pointer to the point object
- */
-/*==========================================================================*/
-void Rendering_S( const kvs::PointObject* point )
-{
-    const float size = point->size();
-    glPointSize( size );
-
-    const float* vertex = point->coords().data();
-    glBegin( GL_POINTS );
-    {
-        const size_t nvertices = point->numberOfVertices();
-        for( size_t i = 0; i < nvertices; i++ )
-        {
-            const size_t i3 = i * 3;
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
-        }
-    }
-    glEnd();
-};
-
-/*==========================================================================*/
-/**
- *  
- *  @param point [in] pointer to the point object
- */
-/*==========================================================================*/
-void Rendering_Ss_C_Ns( const kvs::PointObject* point )
-{
-    glEnable( GL_NORMALIZE );
-
-    const kvs::RGBColor color = point->color();
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    const float* size   = point->sizes().data();
-    const float* vertex = point->coords().data();
-    const float* normal = point->normals().data();
-
+    kvs::OpenGL::Enable( GL_NORMALIZE );
+    kvs::OpenGL::Color( point->color() );
     const size_t nvertices = point->numberOfVertices();
-    for( size_t i = 0; i < nvertices; i++ )
+    for ( size_t i = 0; i < nvertices; i++ )
     {
-        const size_t i3 = i * 3;
-        glPointSize( size[i] );
-        glBegin( GL_POINTS );
-        {
-            glNormal3f( normal[i3], normal[i3+1], normal[i3+2] );
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
-        }
-        glEnd();
+        kvs::OpenGL::SetPointSize( point->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_POINTS );
+        kvs::OpenGL::Normal3( point->normals().data() + 3 * i );
+        kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
+        kvs::OpenGL::End();
     }
 };
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with Ss and C.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Ss_C( const kvs::PointObject* point )
+void Rendering_Ss_C( const kvs::PointObject* point, const float dpr )
 {
-    const kvs::RGBColor color = point->color();
-    glColor3ub( color.r(), color.g(), color.b() );
-
-    const float* size   = point->sizes().data();
-    const float* vertex = point->coords().data();
-
+    kvs::OpenGL::Color( point->color() );
     const size_t nvertices = point->numberOfVertices();
-    for( size_t i = 0; i < nvertices; i++ )
+    for ( size_t i = 0; i < nvertices; i++ )
     {
-        const size_t i3 = i * 3;
-        glPointSize( size[i] );
-        glBegin( GL_POINTS );
-        {
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
-        }
-        glEnd();
+        kvs::OpenGL::SetPointSize( point->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_POINTS );
+        kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
+        kvs::OpenGL::End();
     }
 };
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with Ssm Cs and Ns.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Ss_Cs_Ns( const kvs::PointObject* point )
+void Rendering_Ss_Cs_Ns( const kvs::PointObject* point, const float dpr )
 {
-    glEnable( GL_NORMALIZE );
-
-    const float*         size   = point->sizes().data();
-    const float*         vertex = point->coords().data();
-    const float*         normal = point->normals().data();
-    const unsigned char* color  = point->colors().data();
-
+    kvs::OpenGL::Enable( GL_NORMALIZE );
     const size_t nvertices = point->numberOfVertices();
-    for( size_t i = 0; i < nvertices; i++ )
+    for ( size_t i = 0; i < nvertices; i++ )
     {
-        const size_t i3 = i * 3;
-        glPointSize( size[i] );
-        glBegin( GL_POINTS );
-        {
-            glNormal3f( normal[i3], normal[i3+1], normal[i3+2] );
-            glColor3ub( color[i3],  color[i3+1],  color[i3+2]  );
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
-        }
-        glEnd();
+        kvs::OpenGL::SetPointSize( point->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_POINTS );
+        kvs::OpenGL::Normal3( point->normals().data() + 3 * i );
+        kvs::OpenGL::Color3( point->colors().data() + 3 * i );
+        kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
+        kvs::OpenGL::End();
     }
 };
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with Ss and Cs.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Ss_Cs( const kvs::PointObject* point )
+void Rendering_Ss_Cs( const kvs::PointObject* point, const float dpr )
 {
-    const float*         size   = point->sizes().data();
-    const float*         vertex = point->coords().data();
-    const unsigned char* color  = point->colors().data();
-
     const size_t nvertices = point->numberOfVertices();
-    for( size_t i = 0; i < nvertices; i++ )
+    for ( size_t i = 0; i < nvertices; i++ )
     {
-        const size_t i3 = i * 3;
-        glPointSize( size[i] );
-        glBegin( GL_POINTS );
-        {
-            glColor3ub( color[i3],  color[i3+1],  color[i3+2]  );
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
-        }
-        glEnd();
+        kvs::OpenGL::SetPointSize( point->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_POINTS );
+        kvs::OpenGL::Color3( point->colors().data() + 3 * i );
+        kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
+        kvs::OpenGL::End();
     }
 };
 
 /*==========================================================================*/
 /**
- *  
+ *  Rendering points with Ss.
  *  @param point [in] pointer to the point object
+ *  @param dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Rendering_Ss( const kvs::PointObject* point )
+void Rendering_Ss( const kvs::PointObject* point, const float dpr )
 {
-    const float* size   = point->sizes().data();
-    const float* vertex = point->coords().data();
-
     const size_t nvertices = point->numberOfVertices();
-    for( size_t i = 0; i < nvertices; i++ )
+    for ( size_t i = 0; i < nvertices; i++ )
     {
-        size_t i3 = i * 3;
-        glPointSize( size[i] );
-        glBegin( GL_POINTS );
-        {
-            glVertex3f( vertex[i3], vertex[i3+1], vertex[i3+2] );
-        }
-        glEnd();
+        kvs::OpenGL::SetPointSize( point->size(i) * dpr );
+        kvs::OpenGL::Begin( GL_POINTS );
+        kvs::OpenGL::Vertex3( point->coords().data() + 3 * i );
+        kvs::OpenGL::End();
     }
 };
 
-typedef void (*PointRenderingFunctionType)( const kvs::PointObject* point );
+typedef void (*PointRenderingFunctionType)( const kvs::PointObject* point, const float dpr );
 
 enum PointRenderingType
 {
@@ -341,36 +278,35 @@ PointRenderingFunctionType Rendering[NumberOfRenderingTypes] =
 
 PointRenderingType GetPointRenderingType( const kvs::PointObject* point )
 {
-    const size_t nsizes    = point->numberOfSizes();
-    const size_t ncolors   = point->numberOfColors();
-    const size_t nnormals  = point->numberOfNormals();
-
-    if( nsizes == 1 )
+    const size_t nsizes = point->numberOfSizes();
+    const size_t ncolors = point->numberOfColors();
+    const size_t nnormals = point->numberOfNormals();
+    if ( nsizes == 1 )
     {
-        if( ncolors == 1 )
-            return( ( nnormals > 0 ) ? Type_S_C_Ns : Type_S_C );
-        else if( ncolors > 1 )
-            return( ( nnormals > 0 ) ? Type_S_Cs_Ns : Type_S_Cs );
+        if ( ncolors == 1 )
+            return ( nnormals > 0 ) ? Type_S_C_Ns : Type_S_C;
+        else if ( ncolors > 1 )
+            return ( nnormals > 0 ) ? Type_S_Cs_Ns : Type_S_Cs;
         else
-            return( Type_S );
+            return Type_S;
     }
     else
     {
-        if( ncolors == 1 )
-            return( ( nnormals > 0 ) ? Type_Ss_C_Ns : Type_Ss_C );
-        else if( ncolors > 1 )
-            return( ( nnormals > 0 ) ? Type_Ss_Cs_Ns : Type_Ss_Cs );
+        if ( ncolors == 1 )
+            return ( nnormals > 0 ) ? Type_Ss_C_Ns : Type_Ss_C;
+        else if ( ncolors > 1 )
+            return ( nnormals > 0 ) ? Type_Ss_Cs_Ns : Type_Ss_Cs;
         else
-            return( Type_Ss );
+            return Type_Ss;
     }
 };
 
-void PointRenderingFunction( const kvs::PointObject* point )
+void PointRenderingFunction( const kvs::PointObject* point, const float dpr = 1.0f )
 {
     if( point->numberOfVertices() > 0 )
     {
         PointRenderingType type = GetPointRenderingType( point );
-        Rendering[type]( point );
+        Rendering[type]( point, dpr );
     }
 };
 
@@ -383,5 +319,3 @@ void PointRenderingFunction( const kvs::PointObject* )
 #endif // KVS_ENABLE_OPENGL
 
 } // end of namespace
-
-#endif // KVS__POINT_RENDERING_FUNCTION_H_INCLUDE

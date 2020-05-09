@@ -11,9 +11,7 @@
  *  $Id: DataValueTag.h 1344 2012-11-07 14:59:01Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__DATA_VALUE_H_INCLUDE
-#define KVS__KVSML__DATA_VALUE_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/ValueArray>
 #include <kvs/Tokenizer>
@@ -38,14 +36,10 @@ namespace kvsml
 class DataValueTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 public:
-
     DataValueTag();
-
-public:
 
     template <typename T>
     bool read( const kvs::XMLNode::SuperClass* parent, const size_t nelements, kvs::ValueArray<T>* data );
@@ -53,7 +47,6 @@ public:
     bool write( kvs::XMLNode::SuperClass* parent, const kvs::ValueArray<T>& data );
 
 private:
-
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );
 };
@@ -69,7 +62,7 @@ inline bool DataValueTag::read(
     BaseClass::m_node = kvs::XMLNode::FindChildNode( parent, tag_name );
     if ( !BaseClass::m_node )
     {
-        kvsMessageError( "Cannot find <%s>.", tag_name.c_str() );
+        kvsMessageError( "Cannot find <%s> in <%s>.", tag_name.c_str(), parent->Value().c_str() );
         return false;
     }
 
@@ -123,5 +116,3 @@ inline bool DataValueTag::write(
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__DATA_VALUE_H_INCLUDE

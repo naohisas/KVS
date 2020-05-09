@@ -718,11 +718,14 @@ void Scene::paintFunction()
 /*==========================================================================*/
 void Scene::resizeFunction( int width, int height )
 {
-    // Update the viewport for OpenGL.
-    kvs::OpenGL::SetViewport( 0, 0, width, height );
-
-    // Update the window size for camera and mouse.
+    // Update the window size for camera.
     m_camera->setWindowSize( width, height );
+
+    // Update the viewport for OpenGL.
+    const float dpr = m_camera->devicePixelRatio();
+    const int framebuffer_width = width * dpr;
+    const int framebuffer_height = height * dpr;
+    kvs::OpenGL::SetViewport( 0, 0, framebuffer_width, framebuffer_height );
 }
 
 /*==========================================================================*/

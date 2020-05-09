@@ -158,10 +158,11 @@ void RayCastingRenderer::exec(
     if ( BaseClass::windowWidth() == 0 && BaseClass::windowHeight() == 0 )
     {
         BaseClass::setWindowSize( camera->windowWidth(), camera->windowHeight() );
+        BaseClass::setDevicePixelRatio( camera->devicePixelRatio() );
         this->initialize_shader( volume );
         this->initialize_jittering_texture();
         this->initialize_bounding_cube_buffer( volume );
-        this->initialize_framebuffer( camera->windowWidth(), camera->windowHeight() );
+        this->initialize_framebuffer( BaseClass::framebufferWidth(), BaseClass::framebufferHeight() );
     }
 
     // Following processes are executed when the window size is changed.
@@ -169,8 +170,11 @@ void RayCastingRenderer::exec(
          ( BaseClass::windowHeight() != camera->windowHeight() ) )
     {
         BaseClass::setWindowSize( camera->windowWidth(), camera->windowHeight() );
-        this->update_framebuffer( camera->windowWidth(), camera->windowHeight() );
+        this->update_framebuffer( BaseClass::framebufferWidth(), BaseClass::framebufferHeight() );
     }
+
+    const int framebuffer_width = BaseClass::framebufferWidth();
+    const int framebuffer_height = BaseClass::framebufferHeight();
 
     // Download the transfer function data to the 1D texture on the GPU.
     if ( !m_transfer_function_texture.isValid() )
@@ -190,14 +194,11 @@ void RayCastingRenderer::exec(
 
     // Copy the depth and color buffer to each corresponding textures.
     {
-        const GLsizei width = BaseClass::windowWidth();
-        const GLsizei height = BaseClass::windowHeight();
-
         kvs::Texture::Binder unit6( m_depth_texture, 5 );
-        m_depth_texture.loadFromFrameBuffer( 0, 0, width, height );
+        m_depth_texture.loadFromFrameBuffer( 0, 0, framebuffer_width, framebuffer_height );
 
         kvs::Texture::Binder unit7( m_color_texture, 6 );
-        m_color_texture.loadFromFrameBuffer( 0, 0, width, height );
+        m_color_texture.loadFromFrameBuffer( 0, 0, framebuffer_width, framebuffer_height );
     }
 
     // OpenGL variables.
@@ -208,6 +209,7 @@ void RayCastingRenderer::exec(
     m_bounding_cube_shader.bind();
     m_bounding_cube_shader.setUniform( "ModelViewProjectionMatrix", PM );
     m_entry_exit_framebuffer.bind();
+
     if ( m_draw_back_face )
     {
         // Draw the back face of the bounding cube for the entry points.
@@ -669,8 +671,8 @@ void RayCastingRenderer::initialize_volume_texture( const kvs::StructuredVolumeO
 /*===========================================================================*/
 /**
  *  @brief  Initializes the framebuffer-related resources.
- *  @param  width [in] window width
- *  @param  height [in] window height
+ *  @param  width [in] framebuffer width
+ *  @param  height [in] framebuffer height
  */
 /*===========================================================================*/
 void RayCastingRenderer::initialize_framebuffer( const size_t width, const size_t height )
@@ -716,8 +718,8 @@ void RayCastingRenderer::initialize_framebuffer( const size_t width, const size_
 /*===========================================================================*/
 /**
  *  @brief  Updates the framebuffer-related resources.
- *  @param  width [in] window width
- *  @param  height [in] window height
+ *  @param  width [in] framebuffer width
+ *  @param  height [in] framebuffer height
  */
 /*===========================================================================*/
 void RayCastingRenderer::update_framebuffer( const size_t width, const size_t height )

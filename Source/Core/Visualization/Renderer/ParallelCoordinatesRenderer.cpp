@@ -116,6 +116,7 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
         const kvs::AnyValueArray& color_axis_values = table->column( m_active_axis );
         m_color_map.setRange( color_axis_min_value, color_axis_max_value );
 
+        const float dpr = camera->devicePixelRatio();
         const int x0 = m_left_margin;
         const int x1 = camera->windowWidth() - m_right_margin;
         const int y0 = m_top_margin;
@@ -128,7 +129,7 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
         {
             if ( !table->insideRange( i ) ) continue;
 
-            kvs::OpenGL::SetLineWidth( m_line_width );
+            kvs::OpenGL::SetLineWidth( m_line_width * dpr );
             kvs::OpenGL::Begin( GL_LINE_STRIP );
             {
                 const kvs::Real64 color_value = color_axis_values[i].to<kvs::Real64>();
@@ -142,7 +143,7 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
 
                     const kvs::Real64 x = m_left_margin + stride * j;
                     const kvs::Real64 y = y1 - ( y1 - y0 ) * ( value - min_value ) / ( max_value - min_value );
-                    kvs::OpenGL::Vertex( x, y );
+                    kvs::OpenGL::Vertex( kvs::Vec2( x, y ) * dpr );
                 }
             }
             kvs::OpenGL::End();

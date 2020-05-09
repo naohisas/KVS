@@ -12,9 +12,7 @@
  *  $Id: ParticleBuffer.h 1643 2013-09-17 08:23:01Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__PARTICLE_BUFFER_H_INCLUDE
-#define KVS__PARTICLE_BUFFER_H_INCLUDE
-
+#pragma once
 #include <kvs/ValueArray>
 #include <kvs/Type>
 #include <kvs/Shader>
@@ -34,15 +32,15 @@ class PointObject;
 class ParticleBuffer
 {
 protected:
-
-    size_t m_width; ///< width
-    size_t m_height; ///< height
+    size_t m_width; ///< window width
+    size_t m_height; ///< window height
     size_t m_size; ///< pixel data size [byte]
     size_t m_num_of_projected_particles; ///< total number of projected points
     size_t m_num_of_stored_particles; ///< total number of stored points
     size_t m_subpixel_level; ///< subpixel level
     bool m_enable_shading; ///< shading flag
     size_t m_extended_width; ///< m_width * m_subpixel_level
+    size_t m_device_pixel_ratio; ///< device pixel ratio
     kvs::ValueArray<kvs::UInt32> m_index_buffer; ///< index buffer
     kvs::ValueArray<kvs::Real32> m_depth_buffer; ///< depth buffer
 
@@ -51,9 +49,8 @@ protected:
     const kvs::PointObject* m_ref_point_object;
 
 public:
-
     ParticleBuffer();
-    ParticleBuffer( const size_t width, const size_t height, const size_t subpixel_level );
+    ParticleBuffer( const size_t width, const size_t height, const size_t subpixel_level, const size_t device_pixel_ratio = 1.0f );
     virtual ~ParticleBuffer();
 
     size_t width() const { return m_width; }
@@ -74,18 +71,16 @@ public:
     void disableShading() { m_enable_shading = false; }
 
     void add( const float x, const float y, const kvs::Real32 depth, const kvs::UInt32 index );
-    bool create( const size_t width, const size_t height, const size_t subpixel_level );
+    bool create( const size_t width, const size_t height, const size_t subpixel_level, const size_t device_pixel_ratio = 1.0f );
     void clean();
     void clear();
     void createImage( kvs::ValueArray<kvs::UInt8>* color, kvs::ValueArray<kvs::Real32>* depth );
 
 protected:
-
     kvs::ValueArray<kvs::UInt32>& indexBuffer() { return m_index_buffer; }
     kvs::ValueArray<kvs::Real32>& depthBuffer() { return m_depth_buffer; }
 
 private:
-
     void create_image_with_shading( kvs::ValueArray<kvs::UInt8>* color, kvs::ValueArray<kvs::Real32>* depth );
     void create_image_without_shading( kvs::ValueArray<kvs::UInt8>* color, kvs::ValueArray<kvs::Real32>* depth );
 
@@ -133,5 +128,3 @@ inline void ParticleBuffer::add(
 }
 
 } // end of namespace kvs
-
-#endif // KVS__PARTICLE_BUFFER_H_INCLUDE

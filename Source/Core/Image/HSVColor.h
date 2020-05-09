@@ -12,9 +12,7 @@
  *  $Id: HSVColor.h 1316 2012-09-24 10:40:16Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__HSV_COLOR_H_INCLUDE
-#define KVS__HSV_COLOR_H_INCLUDE
-
+#pragma once
 #include <kvs/Math>
 #include <kvs/Vector3>
 #include <kvs/Type>
@@ -34,17 +32,14 @@ class RGBColor;
 class HSVColor
 {
 private:
-
     kvs::Real32 m_h; ///< hue angle [0-1]
     kvs::Real32 m_s; ///< saturation [0-1]
     kvs::Real32 m_v; ///< value (intensity) [0-1]
 
 public:
-
     static kvs::HSVColor Mix( const kvs::HSVColor& hsv1, const kvs::HSVColor& hsv2, const kvs::Real32 t );
 
 public:
-
     HSVColor( kvs::Real32 h = 0.0f, kvs::Real32 s = 0.0f, kvs::Real32 v = 0.0f );
     HSVColor( const kvs::Vec3& hsv );
     HSVColor( const kvs::HSVColor& hsv );
@@ -72,5 +67,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__HSV_COLOR_H_INCLUDE

@@ -555,7 +555,7 @@ void StochasticPolygonRenderer::Engine::create_buffer_object( const kvs::Polygon
 {
     if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
     {
-        kvsMessageError( "Not supported polygon type." );
+        kvsMessageError() << "Not supported polygon type." << std::endl;
         return;
     }
 

@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::LineRenderer class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 641 2010-10-17 02:15:17Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include <kvs/Message>
 #include <kvs/KVSMLObjectLine>
@@ -25,8 +17,9 @@
 /*===========================================================================*/
 /**
  *  @brief  Main function.
- *  @param  argc [i] argument counter
+ *  @param  argc [i] argument count
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )

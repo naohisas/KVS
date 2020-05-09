@@ -25,16 +25,19 @@ private:
     bool m_enable_auto_play; ///< enabled auto-play mode
     bool m_enable_loop_play; ///< enabled loop-play mode
     bool m_enable_reverse_play; ///< enabled reverse-play mode
-    int m_frame_index; ///< frame index
+    int m_frame_index; ///< frame index will be rendered in next frame
+    int m_current_frame_index; ///< current frame index
 
 public:
     MovieRenderer();
 
     int frameIndex() const { return m_frame_index; }
+    int currentFrameIndex() const { return m_current_frame_index; }
     bool isEnabledAutoPlay() const { return m_enable_auto_play; }
     bool isEnabledLoopPlay() const { return m_enable_loop_play; }
     bool isEnabledReversePlay() const { return m_enable_reverse_play; }
 
+    void setFrameIndex( const int index ) { m_frame_index = index; m_current_frame_index = index; }
     void setEnabledAutoPlay( const bool enable ) { m_enable_auto_play = enable; }
     void setEnabledLoopPlay( const bool enable ) { m_enable_loop_play = enable; }
     void setEnabledReversePlay( const bool enable ) { m_enable_reverse_play = enable; }

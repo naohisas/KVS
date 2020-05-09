@@ -47,7 +47,7 @@ kvs::Real32 GetMahalanobisDistance(
 
     // Covariance matrix (identity matrix)
     kvs::Matrix<kvs::Real32> S( dim, dim );
-    S.identity();
+    S.setIdentity();
 
     // In this function, the Mahalanobis distance reduces to the Euclidean
     // distance since the covariance matrix is the identity matrix.
@@ -89,7 +89,7 @@ namespace kvs
 AdaptiveKMeans::AdaptiveKMeans():
     m_nclusters( 0 ),
     m_max_iterations( 100 ),
-    m_tolerance( 1.e-6 ),
+    m_tolerance( float( 1.e-6 ) ),
     m_max_nclusters( 10 ),
     m_cluster_centers( NULL )
 {

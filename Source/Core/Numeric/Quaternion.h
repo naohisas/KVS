@@ -92,7 +92,7 @@ public:
 
     double dot( const Quaternion& q ) const { return m_elements.dot( q.m_elements ); }
     double length() const { return m_elements.length(); }
-    double length2() const { return m_elements.length2(); }
+    double squaredLength() const { return m_elements.squaredLength(); }
 
     void toMatrix( kvs::Mat3& m ) const;
     void toMatrix( kvs::Mat4& m ) const;
@@ -102,7 +102,6 @@ public:
     float angle() const;
 
 public:
-
     float& operator [] ( size_t index )
     {
         return m_elements[ index ];
@@ -288,6 +287,8 @@ public:
     {
         return Quaternion::Spline( qnm1, qn, qnp1 );
     }
+
+    KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
 };
 
 /*===========================================================================*/
@@ -419,7 +420,7 @@ inline void Quaternion::normalize()
 /*===========================================================================*/
 inline void Quaternion::invert()
 {
-    float n = static_cast<float>( this->length2() );
+    float n = static_cast<float>( this->squaredLength() );
     if ( n > 0 ) { this->conjugate(); m_elements /= n; }
 }
 
@@ -502,7 +503,7 @@ inline Quaternion Quaternion::exp() const
 {
     Quaternion result( *this );
 
-    double theta2 = m_elements.xyz().length2();
+    double theta2 = m_elements.xyz().squaredLength();
     double theta = std::sqrt( theta2 );
     double cos_theta = std::cos( theta );
     if ( theta > 0 )
@@ -532,7 +533,7 @@ inline Quaternion Quaternion::exp() const
 /*===========================================================================*/
 inline void Quaternion::toMatrix( kvs::Mat3& m ) const
 {
-    float length_2 = static_cast<float>( this->length2() );
+    float length_2 = static_cast<float>( this->squaredLength() );
     float s = ( length_2 > 0 ) ? float(2) / length_2 : 0;
 
     float xx = this->x() * this->x() * s;
@@ -566,7 +567,7 @@ inline void Quaternion::toMatrix( kvs::Mat3& m ) const
 /*===========================================================================*/
 inline void Quaternion::toMatrix( kvs::Mat4& m ) const
 {
-    float length_2 = static_cast<float>( this->length2() );
+    float length_2 = static_cast<float>( this->squaredLength() );
     float s = ( length_2 > float(0) ) ? float(2) / length_2 : float(0);
 
     float xx = this->x() * this->x() * s;
@@ -608,7 +609,7 @@ inline void Quaternion::toMatrix( kvs::Mat4& m ) const
 /*===========================================================================*/
 inline void Quaternion::toMatrix( float m[16] ) const
 {
-    float length_2 = static_cast<float>( this->length2() );
+    float length_2 = static_cast<float>( this->squaredLength() );
     float s = ( length_2 > 0 ) ? float(2) / length_2 : float(0);
 
     float xx = this->x() * this->x() * s;

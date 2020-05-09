@@ -11,9 +11,7 @@
  *  $Id: CellTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__CELL_TAG_H_INCLUDE
-#define KVS__KVSML__CELL_TAG_H_INCLUDE
-
+#pragma once
 #include <kvs/XMLNode>
 #include "TagBase.h"
 
@@ -32,15 +30,12 @@ namespace kvsml
 class CellTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     kvs::kvsml::TagAttribute<size_t> m_ncells; ///< number of cells
 
 public:
-
     CellTag();
 
     bool hasNCells() const { return m_ncells.hasValue(); }
@@ -54,5 +49,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__CELL_TAG_H_INCLUDE

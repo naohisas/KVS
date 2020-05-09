@@ -187,6 +187,9 @@ void StochasticUniformGridRenderer::Engine::release()
 void StochasticUniformGridRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
     kvs::StructuredVolumeObject* volume = kvs::StructuredVolumeObject::DownCast( object );
+    const float dpr = camera->devicePixelRatio();
+    const size_t framebuffer_width = static_cast<size_t>( camera->windowWidth() * dpr );
+    const size_t framebuffer_height = static_cast<size_t>( camera->windowHeight() * dpr );
 
     attachObject( object );
     createRandomTexture();
@@ -194,7 +197,7 @@ void StochasticUniformGridRenderer::Engine::create( kvs::ObjectBase* object, kvs
     this->create_volume_texture( volume );
     this->create_transfer_function_texture();
     this->create_bounding_cube_buffer( volume );
-    this->create_framebuffer( camera->windowWidth(), camera->windowHeight() );
+    this->create_framebuffer( framebuffer_width, framebuffer_width );
 }
 
 /*===========================================================================*/
@@ -207,7 +210,10 @@ void StochasticUniformGridRenderer::Engine::create( kvs::ObjectBase* object, kvs
 /*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    this->update_framebuffer( camera->windowWidth(), camera->windowHeight() );
+    const float dpr = camera->devicePixelRatio();
+    const size_t framebuffer_width = static_cast<size_t>( camera->windowWidth() * dpr );
+    const size_t framebuffer_height = static_cast<size_t>( camera->windowHeight() * dpr );
+    this->update_framebuffer( framebuffer_width, framebuffer_height );
 }
 
 /*===========================================================================*/
@@ -641,8 +647,8 @@ void StochasticUniformGridRenderer::Engine::create_bounding_cube_buffer( const k
 /*===========================================================================*/
 /**
  *  @brief  Creates framebuffer.
- *  @param  width [in] window width
- *  @param  height [in] window height
+ *  @param  width [in] framebuffer width
+ *  @param  height [in] framebuffer height
  */
 /*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::create_framebuffer( const size_t width, const size_t height )
@@ -674,8 +680,8 @@ void StochasticUniformGridRenderer::Engine::create_framebuffer( const size_t wid
 /*===========================================================================*/
 /**
  *  @brief  Updates framebuffer
- *  @param  width [in] window width
- *  @param  height [in] window height
+ *  @param  width [in] framebuffer width
+ *  @param  height [in] framebuffer height
  */
 /*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::update_framebuffer( const size_t width, const size_t height )
@@ -721,7 +727,6 @@ void StochasticUniformGridRenderer::Engine::draw_quad()
         kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
         p2.loadIdentity();
         {
-            kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
             kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
             kvs::OpenGL::Begin( GL_QUADS );
             kvs::OpenGL::Color( kvs::Vec3( 1.0, 1.0, 1.0 ) );

@@ -52,16 +52,12 @@ Label::Label( kvs::ScreenBase* screen ):
 /*==========================================================================*/
 void Label::setText( const char* text, ... )
 {
-    m_text.clear();
-
     char buffer[ ::MaxLineLength ];
-
     va_list args;
     va_start( args, text );
     vsprintf( buffer, text, args );
     va_end( args );
-
-    m_text.push_back( std::string( buffer ) );
+    this->setText( std::string( buffer ) );
 }
 
 /*==========================================================================*/
@@ -73,13 +69,11 @@ void Label::setText( const char* text, ... )
 void Label::addText( const char* text, ... )
 {
     char buffer[ ::MaxLineLength ];
-
     va_list args;
     va_start( args, text );
     vsprintf( buffer, text, args );
     va_end( args );
-
-    m_text.push_back( std::string( buffer ) );
+    this->addText( std::string( buffer ) );
 }
 
 /*===========================================================================*/

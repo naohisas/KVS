@@ -11,9 +11,7 @@
  *  $Id: ColorMapTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__COLOR_MAP_TAG_H_INCLUDE
-#define KVS__KVSML__COLOR_MAP_TAG_H_INCLUDE
-
+#pragma once
 #include <kvs/XMLNode>
 #include <kvs/XMLElement>
 #include <kvs/RGBColor>
@@ -34,11 +32,9 @@ namespace kvsml
 class ColorMapTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 public:
-
     ColorMapTag();
 };
 
@@ -50,16 +46,13 @@ public:
 class ColorMapValueTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     float m_scalar; ///< scalr value
     kvs::RGBColor m_color; ///< color value
 
 public:
-
     ColorMapValueTag();
 
     float scalar() const { return m_scalar; }
@@ -75,5 +68,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__COLOR_MAP_TAG_H_INCLUDE

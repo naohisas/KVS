@@ -107,7 +107,7 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
             const kvs::Real64 y_ratio = kvs::Real64( y1 - y0 ) / ( y_max_value - y_min_value );
             const size_t nrows = table->numberOfRows();
 
-            engine->beginFrame( screen()->width(), screen()->height() );
+            engine->beginFrame( screen()->width(), screen()->height(), camera->devicePixelRatio() );
 
             if ( m_enable_polyline )
             {
@@ -169,7 +169,7 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
             const kvs::Real64 y_ratio = kvs::Real64( y1 - y0 ) / ( y_max_value - y_min_value );
             const size_t nrows = table->numberOfRows();
 
-            engine->beginFrame( screen()->width(), screen()->height() );
+            engine->beginFrame( screen()->width(), screen()->height(), camera->devicePixelRatio() );
 
             if ( m_enable_polyline )
             {

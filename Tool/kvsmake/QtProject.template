@@ -132,6 +132,32 @@ equals( KVS_ENABLE_OPENMP, "1" ) {
 
 INCLUDEPATH += $$OPENMP_INCLUDE_PATH
 
+# OpenCV environment variables
+KVS_OPENCV_DIR = $$(KVS_OPENCV_DIR)
+
+OPENCV_INCLUDE_PATH = 
+OPENCV_LIBRARY_PATH = 
+OPENCV_LINK_LIBRARY =
+equals( KVS_SUPPORT_OPENCV, "1" ) {
+    !isEmpty( KVS_OPENCV_DIR ) {
+        OPENCV_INCLUDE_PATH = $$KVS_OPENCV_DIR/include
+        OPENCV_LIBRARY_PATH = $$KVS_OPENCV_DIR/lib
+    } else {
+        contains( $$system( "pkg-config --list-all" ), "opencv4" ) {
+            OPENCV_INCLUDE_PATH = $$system( "pkg-config --cflags opencv4 | sed -e 's/-I//g'")
+            OPENCV_LIBRARY_PATH = $$system( "pkg-config --libs-only-L opencv4" )
+            OPENCV_LINK_LIBRARY = $$system( "pkg-config --libs opencv4" )
+	    DEFINES += KVS_OPENCV4
+        } else {
+            OPENCV_INCLUDE_PATH = $$system( "pkg-config --cflags opencv | sed -e 's/-I//g'")
+            OPENCV_LIBRARY_PATH = $$system( "pkg-config --libs-only-L opencv" )
+            OPENCV_LINK_LIBRARY = $$system( "pkg-config --libs opencv" )
+        }
+    }
+}
+
+INCLUDEPATH += $$OPENCV_INCLUDE_PATH
+
 # Python environment variables
 KVS_PYTHON_DIR = $$(KVS_PYTHON_DIR)
 KVS_NUMPY_DIR = $$(KVS_NUMPY_DIR)
@@ -180,6 +206,7 @@ macx {
     equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
     equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp }
     equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -framework GLUT }
+    equals( KVS_SUPPORT_OPENCV, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportOpenCV.a $$OPENCV_LIBRARY_PATH $$OPENCV_LINK_LIBRARY }
     equals( KVS_SUPPORT_PYTHON, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH }
 }
 
@@ -190,6 +217,7 @@ unix:!macx {
     equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
     equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp }
     equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -lglut }
+    equals( KVS_SUPPORT_OPENCV, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportOpenCV.a $$OPENCV_LIBRARY_PATH $$OPENCV_LINK_LIBRARY }
     equals( KVS_SUPPORT_PYTHON, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH }
 }
 

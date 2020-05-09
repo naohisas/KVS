@@ -11,9 +11,7 @@
  *  $Id: UnstructuredVolumeObjectTag.h 1344 2012-11-07 14:59:01Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__UNSTRUCTURED_VOLUME_OBJECT_H_INCLUDE
-#define KVS__KVSML__UNSTRUCTURED_VOLUME_OBJECT_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/XMLNode>
 #include <kvs/Vector3>
@@ -34,15 +32,12 @@ namespace kvsml
 class UnstructuredVolumeObjectTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     kvs::kvsml::TagAttribute<std::string> m_cell_type; ///< cell type
 
 public:
-
     UnstructuredVolumeObjectTag();
 
     bool hasCellType() const { return m_cell_type.hasValue(); }
@@ -56,5 +51,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__UNSTRUCTURED_VOLUME_OBJECT_H_INCLUDE

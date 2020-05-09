@@ -101,7 +101,7 @@ inline void Dithering(
     const size_t height = image.height();
     const size_t bpl = ( width + 7 ) >> 3;
     const double r = 1.0 / 15.0;
-    const kvs::Matrix44d dmask = ( mask - kvs::Matrix44d::All( 8.0 ) ) * r;
+    const kvs::Matrix44d dmask = ( mask - kvs::Matrix44d::Constant( 8.0 ) ) * r;
 
     for ( size_t j = 0; j < width; j++ )
     {

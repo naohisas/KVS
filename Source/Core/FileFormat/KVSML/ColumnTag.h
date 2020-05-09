@@ -12,9 +12,7 @@
  *  $Id: ColumnTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__COLUMN_TAG_H_INCLUDE
-#define KVS__KVSML__COLUMN_TAG_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/XMLNode>
 #include <kvs/XMLElement>
@@ -35,11 +33,9 @@ namespace kvsml
 class ColumnTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_label; ///< flag to check whether the label is spcified or not
     bool m_has_min_value; ///< flag to check whether the min_value is spcified or not
     bool m_has_max_value; ///< flag to check whether the max_value is spcified or not
@@ -52,7 +48,6 @@ private:
     double m_max_range; ///< max. range
 
 public:
-
     ColumnTag();
 
     bool hasLabel() const { return m_has_label; }
@@ -80,5 +75,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__COLUMN_TAG_H_INCLUDE

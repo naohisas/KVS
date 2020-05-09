@@ -1,0 +1,340 @@
+#*****************************************************************************
+#  Makefile.kvs
+#*****************************************************************************
+
+#=============================================================================
+#  KVS_DIR.
+#=============================================================================
+ifndef KVS_DIR
+$(error KVS_DIR is not defined.)
+endif
+
+
+#=============================================================================
+#  SOURCES, OBJECTS, INCLUDE_PATH, LIBRARY_PATH, LINK_LIBRARY, INSTALL_DIR.
+#=============================================================================
+SOURCES :=
+OBJECTS :=
+MODULES :=
+TEMP_FILES :=
+
+INCLUDE_PATH :=
+LIBRARY_PATH :=
+LINK_LIBRARY :=
+INSTALL_DIR  :=
+
+
+#=============================================================================
+#  Include.
+#=============================================================================
+include $(KVS_DIR)/kvs.conf
+
+-include kvsmake.conf
+
+include $(KVS_DIR)/Makefile.def
+
+
+#=============================================================================
+#  Project name.
+#=============================================================================
+PROJECT_NAME := ArrowGlyph
+
+ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
+TARGET_EXE := $(PROJECT_NAME).exe
+else
+TARGET_EXE := $(PROJECT_NAME)
+endif
+
+TARGET_LIB := lib$(PROJECT_NAME).a
+
+TARGET_DYLIB := lib$(PROJECT_NAME).so
+
+TARGET_OCL := $(PROJECT_NAME).so
+
+
+#=============================================================================
+#  Source.
+#=============================================================================
+SOURCES += $(wildcard *.cpp)
+
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+CUDA_SOURCES := $(wildcard *.cu)
+endif
+
+
+#=============================================================================
+#  Object.
+#=============================================================================
+OBJECTS += $(SOURCES:.cpp=.o)
+
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+CUDA_OBJECTS := $(CUDA_SOURCES:.cu=.o)
+
+OBJECTS += $(CUDA_OBJECTS)
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+PYTHON_OBJECTS := $(wildcard *.pyc)
+
+OBJECTS += $(PYTHON_OBJECTS)
+endif
+
+
+#=============================================================================
+#  Module (Fortran).
+#=============================================================================
+MODULES += $(wildcard *.mod)
+
+
+#=============================================================================
+#  Include path.
+#=============================================================================
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+INCLUDE_PATH += $(CUDA_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_GLUT)" "1"
+INCLUDE_PATH += $(GLUT_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_OPENCV)" "1"
+INCLUDE_PATH += $(OPENCV_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+INCLUDE_PATH += $(PYTHON_INCLUDE_PATH)
+INCLUDE_PATH += $(NUMPY_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+INCLUDE_PATH += $(EGL_INCLUDE_PATH)
+endif
+
+INCLUDE_PATH += -I$(KVS_DIR)/include
+INCLUDE_PATH += $(OPENMP_INCLUDE_PATH)
+INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
+INCLUDE_PATH += $(GL_INCLUDE_PATH)
+
+
+#=============================================================================
+#  Library path.
+#=============================================================================
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+LIBRARY_PATH += $(CUDA_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_GLUT)" "1"
+LIBRARY_PATH += $(GLUT_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_OPENCV)" "1"
+LIBRARY_PATH += $(OPENCV_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+LIBRARY_PATH += $(PYTHON_LIBRARY_PATH)
+LIBRARY_PATH += $(NUMPY_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LIBRARY_PATH += $(EGL_LIBRARY_PATH)
+endif
+
+LIBRARY_PATH += -L$(KVS_DIR)/lib
+LIBRARY_PATH += $(OPENMP_LIBRARY_PATH)
+LIBRARY_PATH += $(GLEW_LIBRARY_PATH)
+LIBRARY_PATH += $(GL_LIBRARY_PATH)
+
+
+#=============================================================================
+#  Link library.
+#=============================================================================
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+LINK_LIBRARY += -lkvsSupportCUDA $(CUDA_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_GLUT)" "1"
+LINK_LIBRARY += -lkvsSupportGLUT $(GLUT_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_OPENCV)" "1"
+LINK_LIBRARY += -lkvsSupportOpenCV $(OPENCV_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+LINK_LIBRARY += -lkvsSupportPython $(PYTHON_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LINK_LIBRARY += -lkvsSupportEGL $(EGL_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+LINK_LIBRARY += -lkvsSupportOSMesa
+endif
+
+LINK_LIBRARY += -lkvsCore
+LINK_LIBRARY += $(OPENMP_LINK_LIBRARY)
+LINK_LIBRARY += $(GLEW_LINK_LIBRARY)
+LINK_LIBRARY += $(GL_LINK_LIBRARY)
+
+
+#=============================================================================
+#  Build rule.
+#=============================================================================
+$(TARGET_EXE): $(OBJECTS)
+	$(LD) $(LDFLAGS) $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY)
+
+$(TARGET_LIB): $(OBJECTS)
+	$(AR) $@ $^
+	$(RANLIB) $@
+
+$(TARGET_DYLIB): $(OBJECTS)
+	$(LD) $(LDFLAGS) -shared -rdynamic $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY)
+
+$(TARGET_OCL): $(OBJECTS)
+	$(LD) $(LDFLAGS) -shared -rdynamic $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY) $(OPENCABIN_LINK_LIBRARY)
+
+%.o: %.cpp %.h
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.cpp
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.f
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.f90
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.f95
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.f03
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F90
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F95
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F03
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.f %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.f90 %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.f95 %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.f03 %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F90 %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F95 %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.o: %.F03 %.mod
+	$(FC) -c $< $(INCLUDE_PATH)
+
+%.mod: %.f %.o
+	@:
+
+%.mod: %.f90 %.o
+	@:
+
+%.mod: %.f95 %.o
+	@:
+
+%.mod: %.f03 %.o
+	@:
+
+%.mod: %.F %.o
+	@:
+
+%.mod: %.F90 %.o
+	@:
+
+%.mod: %.F95 %.o
+	@:
+
+%.mod: %.F03 %.o
+	@:
+
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+%.o: %.cu %.cuh
+	$(NVCC) -c $(NVCCFLAGS) $(DEFINITION) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.cu
+	$(NVCC) -c $(NVCCFLAGS) $(DEFINITION) $(INCLUDE_PATH) -o $@ $<
+endif
+
+
+#=============================================================================
+#  build.
+#=============================================================================
+build: $(TARGET_EXE)
+
+
+#=============================================================================
+#  lib.
+#=============================================================================
+lib: $(TARGET_LIB)
+
+
+#=============================================================================
+#  dynamic lib.
+#=============================================================================
+dylib: $(TARGET_DYLIB)
+
+
+#=============================================================================
+#  dynamic lib for OpenCABIN.
+#=============================================================================
+ocl: $(TARGET_OCL)
+
+
+#=============================================================================
+#  clean.
+#=============================================================================
+clean:
+	$(RM) $(TARGET_EXE) $(TARGET_LIB) $(OBJECTS) $(MODULES) $(TEMP_FILES)
+
+
+#=============================================================================
+#  distclean.
+#=============================================================================
+distclean: clean
+	$(RM) Makefile.kvs
+
+
+#=============================================================================
+#  install.
+#=============================================================================
+ifneq "$(INSTALL_DIR)" ""
+install:
+	$(MKDIR) $(INSTALL_DIR)/include
+	$(INSTALL) *.h $(INSTALL_DIR)/include
+	$(MKDIR) $(INSTALL_DIR)/lib
+	$(INSTALL) $(TARGET_LIB) $(INSTALL_DIR)/lib
+	$(RANLIB) $(INSTALL_DIR)/lib/$(TARGET_LIB)
+endif
+

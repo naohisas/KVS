@@ -20,6 +20,7 @@ class Painter
 {
 private:
     kvs::PaintDevice* m_device; ///< paint device (not allocated, just reference)
+    float m_device_pixel_ratio; ///< device pixel ratio set from the screen
     kvs::Font m_font; ///< font
     GLdouble m_model[16]; ///< modelview matrix
     GLdouble m_proj[16]; ///< projection matrix

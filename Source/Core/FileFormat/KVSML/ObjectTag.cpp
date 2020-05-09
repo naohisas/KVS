@@ -17,7 +17,20 @@
 #include <kvs/XMLNode>
 #include <kvs/XMLElement>
 #include <kvs/String>
+#include <sstream>
 
+
+namespace
+{
+
+std::string Vec3ToString( const kvs::Vec3& v )
+{
+    std::ostringstream s;
+    s << v[0] << " " << v[1] << " " << v[2];
+    return s.str();
+}
+
+}
 
 namespace kvs
 {
@@ -254,16 +267,16 @@ bool ObjectTag::write( kvs::XMLNode::SuperClass* parent )
 
     if ( m_has_external_coord )
     {
-        const std::string min_coord = kvs::String::ToString( m_min_external_coord );
-        const std::string max_coord = kvs::String::ToString( m_max_external_coord );
+        const std::string min_coord = ::Vec3ToString( m_min_external_coord );
+        const std::string max_coord = ::Vec3ToString( m_max_external_coord );
         const std::string value = min_coord + " " + max_coord;
         element.setAttribute( "external_coord", value );
     }
 
     if ( m_has_object_coord )
     {
-        const std::string min_coord = kvs::String::ToString( m_min_object_coord );
-        const std::string max_coord = kvs::String::ToString( m_max_object_coord );
+        const std::string min_coord = ::Vec3ToString( m_min_object_coord );
+        const std::string max_coord = ::Vec3ToString( m_max_object_coord );
         const std::string value = min_coord + " " + max_coord;
         element.setAttribute( "object_coord", value );
     }

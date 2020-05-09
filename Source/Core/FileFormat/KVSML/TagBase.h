@@ -11,9 +11,7 @@
  *  $Id: TagBase.h 1348 2012-11-13 07:05:59Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__TAG_BASE_H_INCLUDE
-#define KVS__KVSML__TAG_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/XMLNode>
 #include <kvs/XMLElement>
 #include <string>
@@ -115,16 +113,13 @@ public:
 class TagBase
 {
 protected:
-
     std::string m_name; ///< tag name
     kvs::XMLNode::SuperClass* m_node; ///< pointer to the node of the XML tree
 
 protected:
-
     explicit TagBase( const std::string& name );
 
 public:
-
     kvs::XMLNode::SuperClass* node();
     const kvs::XMLNode::SuperClass* node() const;
     const std::string& name() const;
@@ -132,21 +127,16 @@ public:
     bool exists() const;
 
 public:
-
     bool read( const kvs::XMLNode::SuperClass* parent );
     bool write( kvs::XMLNode::SuperClass* parent );
 
 protected:
-
     bool write_with_element( kvs::XMLNode::SuperClass* parent, const kvs::XMLElement& element );
 
 private:
-
     TagBase();
 };
 
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__TAG_BASE_H_INCLUDE

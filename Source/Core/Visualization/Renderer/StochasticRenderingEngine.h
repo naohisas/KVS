@@ -12,9 +12,7 @@
  *  $Id$
  */
 /*****************************************************************************/
-#ifndef KVS__STOCHASTIC_RENDERING_ENGINE_H_INCLUDE
-#define KVS__STOCHASTIC_RENDERING_ENGINE_H_INCLUDE
-
+#pragma once
 #include <kvs/Shader>
 #include <kvs/Texture2D>
 
@@ -38,7 +36,6 @@ class StochasticRenderingEngine
     /*DEPRECATED*/ friend class StochasticMultipleTetrahedraCompositor;
 
 private:
-
     const kvs::ObjectBase* m_object; ///< pointer to the object
     const kvs::Shader::ShadingModel* m_shader; ///< pointer to the shader
     bool m_enable_shading; ///< shading flag
@@ -49,7 +46,6 @@ private:
     kvs::Texture2D m_depth_texture; ///< depth texture
 
 public:
-
     StochasticRenderingEngine();
     virtual ~StochasticRenderingEngine(){}
 
@@ -73,7 +69,6 @@ public:
     virtual void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
 
 protected:
-
     const kvs::Shader::ShadingModel& shader() const { return *m_shader; }
     void resetRepetitions() { m_repetition_count = 0; }
     void countRepetitions() { m_repetition_count++; }
@@ -83,5 +78,3 @@ protected:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__STOCHASTIC_RENDERING_ENGINE_H_INCLUDE

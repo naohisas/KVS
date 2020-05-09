@@ -265,6 +265,7 @@ void OpacityMapPalette::draw_palette()
     attrib.enable( GL_TEXTURE_2D );
     attrib.disable( GL_TEXTURE_3D );
 
+    const float dpr = screen()->devicePixelRatio();
     const int x0 = m_palette.x0();
     const int x1 = m_palette.x1();
     const int y0 = m_palette.y0();
@@ -275,10 +276,10 @@ void OpacityMapPalette::draw_palette()
     m_checkerboard.bind();
     kvs::OpenGL::Begin( GL_QUADS );
     {
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    0.0f ), kvs::Vec2( x1, y0 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    h    ), kvs::Vec2( x1, y1 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, h    ), kvs::Vec2( x0, y1 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    0.0f ), kvs::Vec2( x1, y0 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( w,    h    ), kvs::Vec2( x1, y1 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, h    ), kvs::Vec2( x0, y1 ) * dpr );
     }
     kvs::OpenGL::End();
     m_checkerboard.unbind();
@@ -292,10 +293,10 @@ void OpacityMapPalette::draw_palette()
     m_texture.bind();
     kvs::OpenGL::Begin( GL_QUADS );
     {
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y0 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y1 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y1 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y0 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y0 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y1 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y1 ) * dpr );
     }
     kvs::OpenGL::End();
     m_texture.unbind();
@@ -312,14 +313,14 @@ void OpacityMapPalette::draw_palette()
     attrib.enable( GL_LINE_SMOOTH );
     kvs::OpenGL::Hint( GL_LINE_SMOOTH_HINT, GL_NICEST );
 
-    kvs::OpenGL::SetLineWidth( 1.5 );
+    kvs::OpenGL::SetLineWidth( 1.5 * dpr );
     kvs::OpenGL::Begin( GL_LINE_STRIP );
     kvs::OpenGL::Color( kvs::RGBColor::Black() );
     for ( int i = 0; i < resolution; i++ )
     {
         const float x = kvs::Math::Clamp( x0 + i * stride_x,     range_min.x(), range_max.x() );
         const float y = kvs::Math::Clamp( y1 - height * data[i], range_min.y(), range_max.y() );
-        kvs::OpenGL::Vertex( x, y );
+        kvs::OpenGL::Vertex( kvs::Vec2( x, y ) * dpr );
     }
     kvs::OpenGL::End();
 
@@ -472,8 +473,7 @@ void OpacityMapPalette::draw_border( const kvs::Rectangle& rect )
     const kvs::RGBColor border_color = kvs::RGBColor::Black();
 
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     engine->beginPath();
     engine->setStrokeWidth( border_width );

@@ -26,9 +26,7 @@
  * downloaded at http://havs.sourceforge.net/
  */
 /*****************************************************************************/
-#ifndef KVS__HAVS_VOLUME_RENDERER_H_INCLUDE
-#define KVS__HAVS_VOLUME_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/Module>
 #include <kvs/VolumeRendererBase>
 #include <kvs/UnstructuredVolumeObject>
@@ -145,62 +143,45 @@ private:
     size_t m_nfaces;
 
 public:
-    Histogram();
-    ~Histogram();
-    void defineBuckets( const size_t nbuckets );
-    void addFace( const float scalar, const size_t f );
-    size_t maxBucketSize() const;
-    void cleanup();
+    Histogram() { this->defineBuckets( 128 ); }
+    ~Histogram() { this->cleanup(); }
 
     kvs::UInt32 face( const size_t index, const size_t f ) const { return m_scalar_table[index].face(f); }
     size_t bucketSize( const size_t index ) const { return m_scalar_table[index].size(); }
     size_t nbuckets() const { return m_nbuckets; }
     size_t nfaces() const { return m_nfaces; }
-};
 
-inline HAVSVolumeRenderer::Histogram::Histogram()
-{
-    m_nbuckets = 128;
-    m_scalar_table = new HAVSVolumeRenderer::Interval [ m_nbuckets ];
-    m_nfaces = 0;
-}
-
-inline HAVSVolumeRenderer::Histogram::~Histogram()
-{
-    this->cleanup();
-}
-
-inline void HAVSVolumeRenderer::Histogram::defineBuckets( const size_t nbuckets )
-{
-    m_nbuckets = nbuckets;
-    m_scalar_table = new HAVSVolumeRenderer::Interval[ nbuckets ];
-    m_nfaces = 0;
-}
-
-inline void HAVSVolumeRenderer::Histogram::addFace( const float scalar, const size_t f )
-{
-    size_t i = static_cast<size_t>( scalar * m_nbuckets );
-    if ( i > m_nbuckets - 1 ) { i = m_nbuckets - 1; }
-    m_scalar_table[i].addFace(f);
-    m_nfaces++;
-}
-
-inline size_t HAVSVolumeRenderer::Histogram::maxBucketSize() const
-{
-    size_t max = 0;
-    for ( size_t i = 0; i < m_nbuckets; i++ )
+    void defineBuckets( const size_t nbuckets )
     {
-        max = kvs::Math::Max( max, m_scalar_table[i].size() );
+        m_nbuckets = nbuckets;
+        m_scalar_table = new HAVSVolumeRenderer::Interval[ nbuckets ];
+        m_nfaces = 0;
     }
 
-    return max;
-}
+    void addFace( const float scalar, const size_t f )
+    {
+        size_t i = static_cast<size_t>( scalar * m_nbuckets );
+        if ( i > m_nbuckets - 1 ) { i = m_nbuckets - 1; }
+        m_scalar_table[i].addFace(f);
+        m_nfaces++;
+    }
 
-inline void HAVSVolumeRenderer::Histogram::cleanup()
-{
-    if ( m_scalar_table ) delete [] m_scalar_table;
-    m_scalar_table = NULL;
-}
+    size_t maxBucketSize() const
+    {
+        size_t max = 0;
+        for ( size_t i = 0; i < m_nbuckets; i++ )
+        {
+            max = kvs::Math::Max( max, m_scalar_table[i].size() );
+        }
+        return max;
+    }
+
+    void cleanup()
+    {
+        if ( m_scalar_table ) delete [] m_scalar_table;
+        m_scalar_table = NULL;
+    }
+};
 
 /*===========================================================================*/
 /**
@@ -210,16 +191,42 @@ inline void HAVSVolumeRenderer::Histogram::cleanup()
 class HAVSVolumeRenderer::Vertex
 {
 private:
-
     float m_coord[3];
     float m_scalar;
 
 public:
+    Vertex()
+    {
+        m_coord[0] = 0.0f;
+        m_coord[1] = 0.0f;
+        m_coord[2] = 0.0f;
+        m_scalar = 0.0f;
+    }
 
-    Vertex();
-    Vertex( const kvs::Vector3f v );
-    Vertex( const float x, const float y, const float z, const float s = 0.0f );
-    Vertex operator - ( const Vertex& v ) const;
+    Vertex( const kvs::Vec3& v )
+    {
+        m_coord[0] = v.x();
+        m_coord[1] = v.y();
+        m_coord[2] = v.z();
+        m_scalar = 0.0f;
+    }
+
+    Vertex( const float x, const float y, const float z, const float s = 0.0f )
+    {
+        m_coord[0] = x;
+        m_coord[1] = y;
+        m_coord[2] = z;
+        m_scalar = s;
+    }
+
+    Vertex operator - ( const Vertex& v ) const
+    {
+        return HAVSVolumeRenderer::Vertex(
+            m_coord[0] - v.m_coord[0],
+            m_coord[1] - v.m_coord[1],
+            m_coord[2] - v.m_coord[2],
+            m_scalar - v.m_scalar );
+    }
 
     void setScalar( const float s ) { m_scalar = s; }
     float x() const { return m_coord[0]; }
@@ -230,40 +237,6 @@ public:
     float norm2() const { return m_coord[0] * m_coord[0] + m_coord[1] * m_coord[1] + m_coord[2] * m_coord[2]; }
 };
 
-inline HAVSVolumeRenderer::Vertex::Vertex()
-{
-    m_coord[0] = 0.0f;
-    m_coord[1] = 0.0f;
-    m_coord[2] = 0.0f;
-    m_scalar = 0.0f;
-}
-
-inline HAVSVolumeRenderer::Vertex::Vertex( const kvs::Vector3f v )
-{
-    m_coord[0] = v.x();
-    m_coord[1] = v.y();
-    m_coord[2] = v.z();
-    m_scalar = 0.0f;
-}
-
-inline HAVSVolumeRenderer::Vertex::Vertex( const float x, const float y, const float z, const float s )
-{
-    m_coord[0] = x;
-    m_coord[1] = y;
-    m_coord[2] = z;
-    m_scalar = s;
-}
-
-inline HAVSVolumeRenderer::Vertex HAVSVolumeRenderer::Vertex::operator - (
-    const HAVSVolumeRenderer::Vertex& v ) const
-{
-    return HAVSVolumeRenderer::Vertex(
-        m_coord[0] - v.m_coord[0],
-        m_coord[1] - v.m_coord[1],
-        m_coord[2] - v.m_coord[2],
-        m_scalar   - v.m_scalar );
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Face class for HAVS.
@@ -272,36 +245,30 @@ inline HAVSVolumeRenderer::Vertex HAVSVolumeRenderer::Vertex::operator - (
 class HAVSVolumeRenderer::Face
 {
 private:
-    kvs::UInt32  m_index[3]; ///< indices of the triangle face
+    kvs::UInt32 m_index[3]; ///< indices of the triangle face
     mutable bool m_boundary; ///< check flag for the boundary face
 
 public:
-    Face();
-    Face( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 );
+    Face()
+    {
+        m_index[0] = 0;
+        m_index[1] = 0;
+        m_index[2] = 0;
+        m_boundary = true;
+    }
+
+    Face( const kvs::UInt32 id0, const kvs::UInt32 id1, const kvs::UInt32 id2 )
+    {
+        m_index[0] = id0;
+        m_index[1] = id1;
+        m_index[2] = id2;
+        m_boundary = true;
+    }
 
     void setBoundary( const bool boundary ) const { m_boundary = boundary; }
     kvs::UInt32 index( const size_t i ) const { return m_index[i]; }
     bool isBoundary() const { return m_boundary; }
 };
-
-inline HAVSVolumeRenderer::Face::Face()
-{
-    m_index[0] = 0;
-    m_index[1] = 0;
-    m_index[2] = 0;
-    m_boundary = true;
-}
-
-inline HAVSVolumeRenderer::Face::Face(
-    const kvs::UInt32 id0,
-    const kvs::UInt32 id1,
-    const kvs::UInt32 id2 )
-{
-    m_index[0] = id0;
-    m_index[1] = id1;
-    m_index[2] = id2;
-    m_boundary = true;
-}
 
 /*===========================================================================*/
 /**
@@ -315,8 +282,11 @@ private:
     kvs::UInt32 m_distance; ///< distance
 
 public:
-    SortedFace();
-    SortedFace( const kvs::UInt32 face, const kvs::UInt32 distance );
+    SortedFace() {}
+
+    SortedFace( const kvs::UInt32 face, const kvs::UInt32 distance ):
+        m_face( face ),
+        m_distance( distance ^ ( ( -( distance >> 31 ) ) | 0x80000000 ) ) {}
 
     bool operator < ( const SortedFace& face ) const { return m_distance < face.m_distance; }
     bool operator <= ( const SortedFace& face ) const { return m_distance <= face.m_distance; }
@@ -324,18 +294,6 @@ public:
     kvs::UInt32 face() const { return m_face; }
     kvs::UInt32 distance() const { return m_distance; }
 };
-
-inline HAVSVolumeRenderer::SortedFace::SortedFace()
-{
-}
-
-inline HAVSVolumeRenderer::SortedFace::SortedFace(
-    const kvs::UInt32 face,
-    const kvs::UInt32 distance ):
-    m_face( face ),
-    m_distance( distance ^ ( ( -( distance >> 31 ) ) | 0x80000000 ) )
-{
-}
 
 /*===========================================================================*/
 /**
@@ -391,5 +349,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__HAVS_VOLUME_RENDERER_H_INCLUDE

@@ -12,9 +12,7 @@
  *  $Id: ColorMap.h 1756 2014-05-02 02:28:45Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__COLOR_MAP_H_INCLUDE
-#define KVS__COLOR_MAP_H_INCLUDE
-
+#pragma once
 #include <list>
 #include <utility>
 #include <kvs/ValueArray>
@@ -34,7 +32,18 @@ namespace kvs
 class ColorMap
 {
 public:
+    static kvs::ColorMap CoolWarm( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerBrBG( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerPiYG( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerPRGn( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerPuOr( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerRdBu( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerRdGy( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerRdYlBu( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerRdYlGn( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerSpectral( const size_t resolution = 256 );
 
+public:
     typedef kvs::ValueArray<kvs::UInt8> Table;
     typedef std::pair<float,kvs::RGBColor> Point;
     typedef std::list<Point> Points;
@@ -42,11 +51,12 @@ public:
     enum ColorSpace
     {
         RGBSpace,
-        HSVSpace
+        HSVSpace,
+        LabSpace,
+        MshSpace
     };
 
 private:
-
     ColorSpace m_color_space; ///< color space for interpolation
     size_t m_resolution; ///< table resolution
     float m_min_value; ///< min. value
@@ -55,7 +65,6 @@ private:
     Table m_table; ///< value table
 
 public:
-
     ColorMap();
     explicit ColorMap( const size_t resolution );
     explicit ColorMap( const Table& table );
@@ -75,11 +84,15 @@ public:
     void setColorSpace( const ColorSpace space ) { m_color_space = space; }
     void setColorSpaceToRGB() { this->setColorSpace( RGBSpace ); }
     void setColorSpaceToHSV() { this->setColorSpace( HSVSpace ); }
+    void setColorSpaceToLab() { this->setColorSpace( LabSpace ); }
+    void setColorSpaceToMsh() { this->setColorSpace( MshSpace ); }
     void setRange( const float min_value, const float max_value ) { m_min_value = min_value; m_max_value = max_value; }
     void setResolution( const size_t resolution ) { m_resolution = resolution; }
     void addPoint( const float value, const kvs::RGBColor color );
     void addPoint( const float value, const kvs::HSVColor color );
     void removePoint( const float value );
+    void clearPoints();
+    void reversePoints();
     void create();
 
     const kvs::RGBColor operator []( const size_t index ) const;
@@ -88,5 +101,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__COLOR_MAP_H_INCLUDE

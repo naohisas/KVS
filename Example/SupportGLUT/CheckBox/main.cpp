@@ -4,14 +4,6 @@
  *  @brief  Example program for the CheckBox widget.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1518 2013-04-10 01:13:11Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
@@ -19,6 +11,7 @@
 #include <kvs/glut/Screen>
 #include <kvs/glut/CheckBox>
 #include <kvs/glut/CheckBoxGroup>
+
 
 namespace
 {
@@ -28,7 +21,7 @@ bool PlaneFlag = true;
 
 class PaintEvent : public kvs::PaintEventListener
 {
-    void update( void )
+    void update()
     {
         glEnable( GL_DEPTH_TEST );
 
@@ -73,27 +66,15 @@ class PaintEvent : public kvs::PaintEventListener
 class EdgeBox : public kvs::glut::CheckBox
 {
 public:
-
-    EdgeBox( kvs::glut::Screen* screen ):
-        kvs::glut::CheckBox( screen ){};
-
-    void stateChanged( void )
-    {
-        ::EdgeFlag = this->state();
-    }
+    EdgeBox( kvs::glut::Screen* screen ): kvs::glut::CheckBox( screen ){};
+    void stateChanged() { ::EdgeFlag = this->state(); }
 };
 
 class PlaneBox : public kvs::glut::CheckBox
 {
 public:
-
-    PlaneBox( kvs::glut::Screen* screen ):
-        kvs::glut::CheckBox( screen ){};
-
-    void stateChanged( void )
-    {
-        ::PlaneFlag = this->state();
-    }
+    PlaneBox( kvs::glut::Screen* screen ): kvs::glut::CheckBox( screen ){};
+    void stateChanged() { ::PlaneFlag = this->state(); }
 };
 
 int main( int argc, char** argv )

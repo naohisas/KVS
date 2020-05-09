@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   main.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,10 +9,11 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: main.h 602 2010-08-19 02:43:34Z naohisa.sakamoto $
+ *  $Id$
  */
 /*****************************************************************************/
 #pragma once
+
 
 namespace kvsconv
 {

@@ -531,7 +531,8 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
 
     const kvs::Vec3 diff( max_coord - min_coord );
     const kvs::Real32 length = kvs::Math::Max( diff.x(), diff.y(), diff.z() );
-    const kvs::Real32 label_offset = length * 0.4f;
+//    const kvs::Real32 label_offset = length * 0.4f;
+    const kvs::Real32 label_offset = length * 0.25f;
     const kvs::Real32 value_offset = length * 0.05f;
 
     m_painter.begin( screen() );
@@ -560,7 +561,9 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
             }
 
             m_painter.font().setColor( m_label_color );
+            m_painter.font().setStyleToBold();
             m_painter.drawText( position + offset, m_x_label );
+            m_painter.font().setStyleToRegular();
         }
 
         // Values.
@@ -612,7 +615,9 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
             }
 
             m_painter.font().setColor( m_label_color );
+            m_painter.font().setStyleToBold();
             m_painter.drawText( position + offset, m_y_label );
+            m_painter.font().setStyleToRegular();
         }
 
         // Values.
@@ -662,7 +667,9 @@ void Axis3D::draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord
             }
 
             m_painter.font().setColor( m_label_color );
+            m_painter.font().setStyleToBold();
             m_painter.drawText( position + offset, m_z_label );
+            m_painter.font().setStyleToRegular();
         }
 
         // Values.

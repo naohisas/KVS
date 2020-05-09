@@ -44,10 +44,10 @@ MarchingPrism::MarchingPrism():
 /*==========================================================================*/
 MarchingPrism::MarchingPrism(
     const kvs::UnstructuredVolumeObject* volume,
-    const double                       isolevel,
-    const NormalType                   normal_type,
-    const bool                         duplication,
-    const kvs::TransferFunction&       transfer_function ):
+    const double isolevel,
+    const NormalType normal_type,
+    const bool duplication,
+    const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
     kvs::PolygonObject(),
     m_duplication( duplication )
@@ -67,17 +67,6 @@ MarchingPrism::MarchingPrism(
 /*==========================================================================*/
 MarchingPrism::~MarchingPrism()
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a isolevel.
- *  @param  isolevel [in] isolevel
- */
-/*===========================================================================*/
-void MarchingPrism::setIsolevel( const double isolevel )
-{
-    m_isolevel = isolevel;
 }
 
 /*===========================================================================*/
@@ -136,6 +125,10 @@ void MarchingPrism::mapping( const kvs::UnstructuredVolumeObject* volume )
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
+
+    const kvs::Real64 min_value = BaseClass::volume()->minValue();
+    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
     const std::type_info& type = volume->values().typeInfo()->type();
@@ -326,12 +319,6 @@ const kvs::Vector3f MarchingPrism::interpolate_vertex(
 template <typename T>
 const kvs::RGBColor MarchingPrism::calculate_color()
 {
-    // Calculate the min/max values of the node data.
-    if ( !BaseClass::volume()->hasMinMaxValues() )
-    {
-        BaseClass::volume()->updateMinMaxValues();
-    }
-
     const kvs::Real64 min_value = BaseClass::volume()->minValue();
     const kvs::Real64 max_value = BaseClass::volume()->maxValue();
     const kvs::Real64 normalize_factor = 255.0 / ( max_value - min_value );

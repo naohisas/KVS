@@ -54,6 +54,7 @@ public:
     virtual ~WidgetBase();
 
 public:
+    const kvs::Font& font() const { return m_painter.font(); }
     int margin() const { return m_margin; }
     bool isShown() const { return m_is_shown; }
     const kvs::RGBAColor& backgroundColor() const { return m_background_color; }

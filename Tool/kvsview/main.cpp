@@ -51,10 +51,10 @@ namespace kvsview
  *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-bool Main::exec( int argc, char** argv )
+int32_t Main::exec( int argc, char** argv )
 {
     Argument arg( argc, argv );
-    if ( !arg.read() ) { return false; }
+    if ( !arg.read() ) { return 1; }
 
     // Output help messsage for the specified visualization method.
     if ( arg.hasOption("help") )
@@ -75,7 +75,7 @@ bool Main::exec( int argc, char** argv )
         KVSVIEW_HELP( ParticleBasedRenderer );
         KVSVIEW_HELP( Histogram );
         kvsMessageError( "Unknown visualization method '%s'.", help.c_str() );
-        return false;
+        return 1;
     }
 
     // Execute the specified visualization method.

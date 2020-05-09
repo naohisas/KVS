@@ -32,7 +32,8 @@ ScreenBase::ScreenBase():
     m_height( 512 ),
     m_title(""),
     m_event_handler( new kvs::EventHandler() ),
-    m_paint_device( new kvs::PaintDevice() )
+    m_paint_device( new kvs::PaintDevice() ),
+    m_device_pixel_ratio( 1.0f )
 {
 }
 
@@ -43,8 +44,8 @@ ScreenBase::ScreenBase():
 /*===========================================================================*/
 ScreenBase::~ScreenBase()
 {
-    if ( m_event_handler ) delete m_event_handler;
-    if ( m_paint_device ) delete m_paint_device;
+    if ( m_event_handler ) { delete m_event_handler; }
+    if ( m_paint_device ) { delete m_paint_device; }
 }
 
 /*===========================================================================*/
@@ -57,7 +58,7 @@ ScreenBase::~ScreenBase()
 void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
 {
     event->setScreen( this );
-    if ( name != "" ) event->setName( event->name() );
+    if ( name != "" ) { event->setName( event->name() ); }
     m_event_handler->attach( event );
 }
 
@@ -82,21 +83,5 @@ void ScreenBase::removeEvent( const std::string& name )
 {
     m_event_handler->detach( name );
 }
-
-/*
-void ScreenBase::create(){}
-void ScreenBase::show(){}
-void ScreenBase::showFullScreen(){}
-void ScreenBase::showNormal(){}
-void ScreenBase::hide(){}
-void ScreenBase::popUp(){}
-void ScreenBase::pushDown(){}
-void ScreenBase::redraw(){}
-void ScreenBase::resize( int, int ){}
-bool ScreenBase::isFullScreen() const { return false; }
-void ScreenBase::enable(){}
-void ScreenBase::disable(){}
-void ScreenBase::reset(){}
-*/
 
 } // end of namespace kvs

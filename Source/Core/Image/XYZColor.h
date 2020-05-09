@@ -13,7 +13,6 @@
  */
 /*****************************************************************************/
 #pragma once
-
 #include <kvs/Type>
 #include <kvs/Vector3>
 
@@ -32,13 +31,11 @@ class LabColor;
 class XYZColor
 {
 private:
-
     kvs::Real32 m_x; ///< [0-1]
     kvs::Real32 m_y; ///< [0-1]
     kvs::Real32 m_z; ///< [0-1]
 
 public:
-
     XYZColor( kvs::Real32 x, kvs::Real32 y, kvs::Real32 z );
     XYZColor( const kvs::Vec3& xyz );
     XYZColor( const kvs::XYZColor& xyz );

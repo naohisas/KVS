@@ -12,9 +12,7 @@
  *  $Id: RGBColor.h 1798 2014-08-04 05:25:10Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__RGB_COLOR_H_INCLUDE
-#define KVS__RGB_COLOR_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <iomanip>
 #include <kvs/Math>
@@ -29,6 +27,7 @@ namespace kvs
 class RGBAColor;
 class HSVColor;
 class XYZColor;
+class MshColor;
 
 /*==========================================================================*/
 /**
@@ -38,13 +37,11 @@ class XYZColor;
 class RGBColor
 {
 private:
-
     kvs::UInt8 m_r; ///< red [0-255]
     kvs::UInt8 m_g; ///< green [0-255]
     kvs::UInt8 m_b; ///< blue [0-255]
 
 public:
-
     static RGBColor Black() { return kvs::RGBColor( 0, 0, 0 ); }
     static RGBColor White() { return kvs::RGBColor( 255, 255, 255 ); }
     static RGBColor Red() { return kvs::RGBColor( 255, 0, 0 ); }
@@ -56,12 +53,12 @@ public:
     static RGBColor Mix( const kvs::RGBColor& rgb1, const kvs::RGBColor& rgb2, const kvs::Real32 t );
 
 public:
-
     RGBColor();
     RGBColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b );
     RGBColor( const kvs::UInt8 rgb[3] );
     RGBColor( const kvs::RGBColor& rgb );
     RGBColor( const kvs::HSVColor& hsv );
+    RGBColor( const kvs::MshColor& msh );
     RGBColor( const kvs::Vec3& rgb );
     RGBColor( const kvs::Vec3i& rgb );
 
@@ -73,12 +70,14 @@ public:
     kvs::Vec3i toVec3i() const;
     kvs::HSVColor toHSVColor() const;
     kvs::XYZColor toXYZColor() const;
+    kvs::MshColor toMshColor() const;
 
     kvs::RGBColor& operator += ( const kvs::RGBColor& rgb );
     kvs::RGBColor& operator -= ( const kvs::RGBColor& rgb );
     kvs::RGBColor& operator = ( const kvs::RGBColor& rgb );
     kvs::RGBColor& operator = ( const kvs::RGBAColor& rgba );
     kvs::RGBColor& operator = ( const kvs::HSVColor& hsv );
+    kvs::RGBColor& operator = ( const kvs::MshColor& hsv );
     kvs::RGBColor& operator = ( const kvs::Vec3& rgb );
     kvs::RGBColor& operator = ( const kvs::Vec3i& rgb );
     friend bool operator == ( const kvs::RGBColor& a, const kvs::RGBColor& b );
@@ -120,5 +119,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__RGB_COLOR_H_INCLUDE

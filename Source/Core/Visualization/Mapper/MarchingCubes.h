@@ -12,9 +12,7 @@
  *  $Id: MarchingCubes.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__MARCHING_CUBES_H_INCLUDE
-#define KVS__MARCHING_CUBES_H_INCLUDE
-
+#pragma once
 #include <kvs/PolygonObject>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/MapperBase>
@@ -36,12 +34,10 @@ class MarchingCubes : public kvs::MapperBase, public kvs::PolygonObject
     kvsModuleSuperClass( kvs::PolygonObject );
 
 private:
-
     double m_isolevel; ///< isosurface level
     bool m_duplication; ///< duplication flag
 
 public:
-
     MarchingCubes();
     MarchingCubes(
         const kvs::StructuredVolumeObject* volume,
@@ -51,18 +47,17 @@ public:
         const kvs::TransferFunction& transfer_function );
     virtual ~MarchingCubes();
 
-    void setIsolevel( const double isolevel );
+    void setIsolevel( const double isolevel ) { m_isolevel = isolevel; }
 
     SuperClass* exec( const kvs::ObjectBase* object );
 
 private:
-
     void mapping( const kvs::StructuredVolumeObject* volume );
     template <typename T> void extract_surfaces( const kvs::StructuredVolumeObject* volume );
     template <typename T> void extract_surfaces_with_duplication( const kvs::StructuredVolumeObject* volume );
     template <typename T> void extract_surfaces_without_duplication( const kvs::StructuredVolumeObject* volume );
     template <typename T> size_t calculate_table_index( const size_t* local_index ) const;
-    template <typename T> const kvs::Vector3f interpolate_vertex( const kvs::Vector3f& vertex0, const kvs::Vector3f& vertex1 ) const;
+    template <typename T> const kvs::Vec3 interpolate_vertex( const kvs::Vec3& vertex0, const kvs::Vec3& vertex1 ) const;
     template <typename T> const kvs::RGBColor calculate_color();
     template <typename T> void calculate_isopoints( kvs::UInt32*& vertex_map, std::vector<kvs::Real32>& coords );
     template <typename T> void connect_isopoints( kvs::UInt32*& vertex_map, std::vector<kvs::UInt32>& connections );
@@ -77,5 +72,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__MARCHING_CUBES_H_INCLUDE

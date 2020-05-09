@@ -13,6 +13,11 @@ namespace kvs
 namespace python
 {
 
+std::string Description()
+{
+    return "Python - Python Extension Modules in C/C++";
+}
+
 std::string Version()
 {
     const std::string version = kvs::String::ToString( PY_VERSION );

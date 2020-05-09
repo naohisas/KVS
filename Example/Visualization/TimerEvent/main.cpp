@@ -26,12 +26,16 @@
 #include <kvs/ObjectManager>
 
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined key press event.
+ */
+/*===========================================================================*/
 class KeyPressEvent : public kvs::KeyPressEventListener
 {
     kvs::glut::Timer* m_timer;
 
 public:
-
     KeyPressEvent( kvs::glut::Timer* timer ): m_timer( timer ) {}
 
     void update( kvs::KeyEvent* event )
@@ -48,6 +52,11 @@ public:
     }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  User-defined timer event.
+ */
+/*===========================================================================*/
 class TimerEvent : public kvs::TimerEventListener
 {
     void update( kvs::TimeEvent* event )
@@ -66,6 +75,14 @@ class TimerEvent : public kvs::TimerEventListener
     }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Main function.
+ *  @param  argc [i] argument counter
+ *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
+ */
+/*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );

@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   fld2kvsml.cpp
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,7 +9,7 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: fld2kvsml.cpp 1191 2012-06-12 01:31:49Z naohisa.sakamoto $
+ *  $Id$
  */
 /*****************************************************************************/
 #include "fld2kvsml.h"

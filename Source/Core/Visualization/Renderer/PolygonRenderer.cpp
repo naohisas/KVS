@@ -33,7 +33,8 @@ namespace kvs
 PolygonRenderer::PolygonRenderer():
     m_enable_anti_aliasing( false ),
     m_enable_multisample_anti_aliasing( false ),
-    m_enable_two_side_lighting( true )
+    m_enable_two_side_lighting( true ),
+    m_polygon_offset( 0.0f )
 {
 }
 
@@ -59,7 +60,7 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     kvs::IgnoreUnusedVariable( light );
     kvs::IgnoreUnusedVariable( camera );
 
-    kvs::PolygonObject* polygon = reinterpret_cast<kvs::PolygonObject*>( object );
+    kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
 
     BaseClass::startTimer();
 
@@ -98,7 +99,7 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
             kvs::OpenGL::Enable( GL_POLYGON_SMOOTH );
             kvs::OpenGL::Enable( GL_BLEND );
             kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-            KVS_GL_CALL( glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST ) );
+            kvs::OpenGL::Hint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
         }
     }
 
@@ -164,6 +165,10 @@ void PolygonRenderer::initialize()
 
     kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
+
+    // Polygon offset.
+    kvs::OpenGL::SetPolygonOffset( m_polygon_offset, 0.0 );
+    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
     if( !this->isEnabledShading() )
     {

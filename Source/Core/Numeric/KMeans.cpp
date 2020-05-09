@@ -194,7 +194,7 @@ KMeans::KMeans():
     m_seeding_method( KMeans::SmartSeeding ),
     m_nclusters( 1 ),
     m_max_iterations( 100 ),
-    m_tolerance( 1.e-6 ),
+    m_tolerance( float(1.e-6) ),
     m_cluster_centers( NULL )
 {
 }

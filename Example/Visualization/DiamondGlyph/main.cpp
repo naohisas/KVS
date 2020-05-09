@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::DiamondGlyph class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1379 2012-12-03 06:54:05Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
@@ -38,25 +30,24 @@ int main( int argc, char** argv )
      */
     kvs::StructuredVolumeObject* object = NULL;
     if ( argc > 1 ) object = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else            object = new kvs::TornadoVolumeData( kvs::Vector3ui( 8, 8, 8 ) );
-
+    else object = new kvs::TornadoVolumeData( kvs::Vec3u( 8, 8, 8 ) );
     if ( !object )
     {
-        kvsMessageError( "Cannot create a structured volume object." );
-        return false;
+        kvsMessageError() << "Cannot create a structured volume object." << std::endl;
+        return ( false );
     }
 
     // Create a diamond glyph renderer.
     kvs::DiamondGlyph* glyph = new kvs::DiamondGlyph();
     if ( !glyph )
     {
-        kvsMessageError( "Cannot creat an diamond glyph.");
-        return false;
+        kvsMessageError() << "Cannot creat an diamond glyph." << std::endl;
+        return ( false );
     }
 
     // Set properties.
-    const kvs::TransferFunction transfer_function( 256 );
-    glyph->setTransferFunction( transfer_function );
+    const kvs::TransferFunction tfunc( 256 );
+    glyph->setTransferFunction( tfunc );
 
     kvs::glut::Screen screen( &app );
     screen.registerObject( object, glyph );

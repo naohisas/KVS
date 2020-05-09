@@ -498,8 +498,8 @@ bool Ply::write( const std::string& filename )
 
 void Ply::calculate_min_max_coord()
 {
-    m_min_coord = kvs::Vector3f::All( std::numeric_limits<float>::max() );
-    m_max_coord = kvs::Vector3f::All( std::numeric_limits<float>::min() );
+    m_min_coord = kvs::Vector3f::Constant( std::numeric_limits<float>::max() );
+    m_max_coord = kvs::Vector3f::Constant( std::numeric_limits<float>::min() );
     const kvs::Real32* pcoords = m_coords.data();
     for ( size_t i = 0; i < m_nverts; i++ )
     {

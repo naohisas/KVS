@@ -35,7 +35,6 @@ namespace kvs
 class KVSMLTableObject : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
 
     enum WritingDataType
@@ -46,7 +45,6 @@ public:
     };
 
 private:
-
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     kvs::kvsml::ObjectTag m_object_tag; ///< Object tag information
     WritingDataType m_writing_type; ///< writing data type
@@ -64,12 +62,10 @@ private:
     std::vector<double> m_max_ranges; ///< max. range list
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLTableObject();
     KVSMLTableObject( const std::string& filename );
 
@@ -89,6 +85,9 @@ public:
     const std::vector<double>& maxRangeList() const { return m_max_ranges; }
 
     void setWritingDataType( const WritingDataType type ) { m_writing_type = type; }
+    void setWritingDataTypeToAscii() { this->setWritingDataType( Ascii ); }
+    void setWritingDataTypeToExternalAscii() { this->setWritingDataType( ExternalAscii ); }
+    void setWritingDataTypeToExternalBinary() { this->setWritingDataType( ExternalBinary ); }
     void setMinValue( const size_t column_index, const double value );
     void setMaxValue( const size_t column_index, const double value );
     void setMinRange( const size_t column_index, const double range );

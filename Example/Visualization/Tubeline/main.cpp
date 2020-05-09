@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::Tubeline class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1221 2012-06-18 10:51:25Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
@@ -31,6 +23,7 @@
  *  @brief  Main function.
  *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
@@ -43,11 +36,11 @@ int main( int argc, char** argv )
      */
     kvs::StructuredVolumeObject* volume = NULL;
     if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else            volume = new kvs::TornadoVolumeData( kvs::Vector3ui( 16, 16, 16 ) );
+    else volume = new kvs::TornadoVolumeData( kvs::Vec3u( 16, 16, 16 ) );
 
     std::vector<kvs::Real32> v;
-    kvs::Vector3i min_coord( 7, 7,  0 );
-    kvs::Vector3i max_coord( 10, 10, 15 );
+    kvs::Vec3i min_coord( 7, 7,  0 );
+    kvs::Vec3i max_coord( 10, 10, 15 );
     for ( int k = min_coord.z(); k < max_coord.z(); k++ )
     {
         for ( int j = min_coord.y(); j < max_coord.y(); j++ )

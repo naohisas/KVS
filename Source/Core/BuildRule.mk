@@ -61,6 +61,9 @@ $(OUTDIR)/./FileFormat/GrADS/Vars.o \
 $(OUTDIR)/./FileFormat/GrADS/XYZDef.o \
 $(OUTDIR)/./FileFormat/IPLab/IPLab.o \
 $(OUTDIR)/./FileFormat/IPLab/IPLabList.o \
+$(OUTDIR)/./FileFormat/JSON/Array.o \
+$(OUTDIR)/./FileFormat/JSON/Json.o \
+$(OUTDIR)/./FileFormat/JSON/Object.o \
 $(OUTDIR)/./FileFormat/KVSML/CellTag.o \
 $(OUTDIR)/./FileFormat/KVSML/ColorMapTag.o \
 $(OUTDIR)/./FileFormat/KVSML/ColorTag.o \
@@ -166,19 +169,29 @@ $(OUTDIR)/./Network/TCPServer.o \
 $(OUTDIR)/./Network/TCPSocket.o \
 $(OUTDIR)/./Network/Url.o \
 $(OUTDIR)/./Numeric/AdaptiveKMeans.o \
+$(OUTDIR)/./Numeric/BetaFunction.o \
+$(OUTDIR)/./Numeric/ChiSquaredDistribution.o \
 $(OUTDIR)/./Numeric/EigenDecomposer.o \
+$(OUTDIR)/./Numeric/ExponentialDistribution.o \
 $(OUTDIR)/./Numeric/FastKMeans.o \
+$(OUTDIR)/./Numeric/FisherFDistribution.o \
+$(OUTDIR)/./Numeric/GammaFunction.o \
+$(OUTDIR)/./Numeric/GaussDistribution.o \
 $(OUTDIR)/./Numeric/GaussEliminationSolver.o \
 $(OUTDIR)/./Numeric/KMeans.o \
 $(OUTDIR)/./Numeric/LUDecomposer.o \
 $(OUTDIR)/./Numeric/LUSolver.o \
+$(OUTDIR)/./Numeric/LassoRegression.o \
+$(OUTDIR)/./Numeric/LinearRegression.o \
 $(OUTDIR)/./Numeric/MersenneTwister.o \
 $(OUTDIR)/./Numeric/QRDecomposer.o \
 $(OUTDIR)/./Numeric/QRSolver.o \
 $(OUTDIR)/./Numeric/Quaternion.o \
 $(OUTDIR)/./Numeric/ResponseSurface.o \
+$(OUTDIR)/./Numeric/RidgeRegression.o \
 $(OUTDIR)/./Numeric/SVDecomposer.o \
 $(OUTDIR)/./Numeric/SVSolver.o \
+$(OUTDIR)/./Numeric/StudentTDistribution.o \
 $(OUTDIR)/./Numeric/Xorshift128.o \
 $(OUTDIR)/./OpenGL/BufferObject.o \
 $(OUTDIR)/./OpenGL/DisplayList.o \
@@ -269,6 +282,8 @@ $(OUTDIR)/./Visualization/Exporter/UnstructuredVolumeExporter.o \
 $(OUTDIR)/./Visualization/Filter/InverseDistanceWeighting.o \
 $(OUTDIR)/./Visualization/Filter/KMeansClustering.o \
 $(OUTDIR)/./Visualization/Filter/LineIntegralConvolution.o \
+$(OUTDIR)/./Visualization/Filter/PolygonToPolygon.o \
+$(OUTDIR)/./Visualization/Filter/StructuredExtractScalar.o \
 $(OUTDIR)/./Visualization/Filter/StructuredVectorToScalar.o \
 $(OUTDIR)/./Visualization/Filter/TetrahedraToTetrahedra.o \
 $(OUTDIR)/./Visualization/Filter/Tubeline.o \
@@ -541,6 +556,10 @@ $(OUTDIR)/./FileFormat/KVSML/%.o: ./FileFormat/KVSML/%.cpp ./FileFormat/KVSML/%.
 	$(MKDIR) $(OUTDIR)/./FileFormat/KVSML
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/JSON/%.o: ./FileFormat/JSON/%.cpp ./FileFormat/JSON/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/JSON
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/IPLab/%.o: ./FileFormat/IPLab/%.cpp ./FileFormat/IPLab/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/IPLab
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -617,6 +636,8 @@ install::
 	$(INSTALL) ./FileFormat/GrADS/*.h $(INSTALL_DIR)/include/Core/./FileFormat/GrADS
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
 	$(INSTALL) ./FileFormat/IPLab/*.h $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/JSON
+	$(INSTALL) ./FileFormat/JSON/*.h $(INSTALL_DIR)/include/Core/./FileFormat/JSON
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(INSTALL) ./FileFormat/KVSML/*.h $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PLY

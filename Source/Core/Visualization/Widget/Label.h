@@ -41,6 +41,8 @@ public:
     virtual void screenUpdated(){};
     virtual void screenResized(){};
 
+    void setText( const std::string& text ) { m_text.clear(); this->addText( text ); }
+    void addText( const std::string& text ) { m_text.push_back( text ); }
     void setText( const char* text, ... );
     void addText( const char* text, ... );
 

@@ -11,9 +11,7 @@
  *  $Id: CoordTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__COORD_TAG_H_INCLUDE
-#define KVS__KVSML__COORD_TAG_H_INCLUDE
-
+#pragma once
 #include "TagBase.h"
 
 
@@ -31,16 +29,12 @@ namespace kvsml
 class CoordTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 public:
-
     CoordTag();
 };
 
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__COORD_TAG_H_INCLUDE

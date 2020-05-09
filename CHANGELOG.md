@@ -1,4 +1,248 @@
-### Version 2.8.0 Released (2018.8.4)
+### Version 2.9.0 Released (2020.5.10)
+**Added new classes and functions**
++ kvs::Stat::Sum
++ kvs::Stat::Mean
++ kvs::Stat::Var
++ kvs::Stat::VarP
++ kvs::Stat::Cov
++ kvs::Stat::CovP
++ kvs::Stat::StdDev
++ kvs::Stat::StdDevP
++ kvs::Stat::Corr
++ kvs::Stat::AutoCorr
++ kvs::Stat::CrossCorr
++ kvs::Stat::Standardize
++ kvs::StudentTDistributiion
++ kvs::FisherFDistribution
++ kvs::ChiSquaredDistribution
++ kvs::GaussDistribution
++ kvs::ExponentialDistribution
++ kvs::BetaFunction
++ kvs::GammaFunction
++ kvs::LinearRegression
++ kvs::LassoRegression
++ kvs::RidgeRegression
++ kvs::StructuredExtractScalar
++ kvs::PolygonToPolygon
++ kvs::Deleter
++ kvs::Json
+
+**Added new methods**
++ kvs::PolygonRenderer::setPolygonOffset
++ kvs::glsl::PolygonRenderer::setPolygonOffset
++ kvs::Vector{n}::Zero
++ kvs::Vector{2,3,4,n}::Ones
++ kvs::Vector{2,3,4}::UnitX
++ kvs::Vector{2,3,4}::UnitY
++ kvs::Vector{3,4}::UnitZ
++ kvs::Vector{4}::UnitW
++ kvs::Vector{n}::Unit
++ kvs::Vector{2,3,4,n}::Constant
++ kvs::Vector{2,3,4,n}::Identity
++ kvs::Vector{2,3,4,n}::Random
++ kvs::Vector{2,3,4,n}::setZero
++ kvs::Vector{2,3,4,n}::setOnes
++ kvs::Vector{2,3,4}::setUnitX
++ kvs::Vector{2,3,4}::setUnitY
++ kvs::Vector{3,4}::setUnitZ
++ kvs::Vector{4}::setUnitW
++ kvs::Vector{n}::setUnit
++ kvs::Vector{2,3,4,n}::setConstant
++ kvs::Vector{2,3,4,n}::setIdentity
++ kvs::Vector{2,3,4,n}::setRandom
++ kvs::Vector{2,3,4,n}::format
++ kvs::Vector{n}::Vector( InIter first, InIter last )
++ kvs::Vector{n}::Vector( Vector&& ) // move constructor
++ kvs::Vector{n}::operator =( Vector&& ) // move assignment operator
++ kvs::Vector{n}::opeator =/
++ kvs::Vector{n}::begin
++ kvs::Vector{n}::end
++ kvs::Vector{n}::resize
++ kvs::Matrix{22,33,44,nm}::Zero
++ kvs::Matrix{22,33,44,nm}::Ones
++ kvs::Matrix{22,33,44,nm}::Identity
++ kvs::Matrix{22,33,44,nm}::Constant
++ kvs::Matrix{22,33,44,nm}::Random
++ kvs::Matrix{22,33,44,nm}::setZero
++ kvs::Matrix{22,33,44,nm}::setOnes
++ kvs::Matrix{22,33,44,nm}::setIdentity
++ kvs::Matrix{22,33,44,nm}::setConstant
++ kvs::Matrix{22,33,44,nm}::setDiagonal
++ kvs::Matrix{22,33,44,nm}::setRandom
++ kvs::Matrix{22,33,44,nm}::isSymmetric
++ kvs::Matrix{22,33,44,nm}::isDiagonal
++ kvs::Matrix{22,33,44,nm}::format
++ kvs::Matrix{nm}::isSquare
++ kvs::Matrix{nm}::Matrix( Matrix&& ) // move constructor
++ kvs::Matrix{nm}::operator =( Matrix&& ) // move assignment operator
++ kvs::Matrix{nm}::size
++ kvs::Matrix{nm}::beginRows
++ kvs::Matrix{nm}::begin
++ kvs::Matrix{nm}::beginInRowOrder
++ kvs::Matrix{nm}::beginInColumnOrder
++ kvs::Matrix{nm}::beginRow
++ kvs::Matrix{nm}::beginColumn
++ kvs::Matrix{nm}::endRows
++ kvs::Matrix{nm}::end
++ kvs::Matrix{nm}::endInRowOrder
++ kvs::Matrix{nm}::endInColumnOrder
++ kvs::Matrix{nm}::endRow
++ kvs::Matrix{nm}::endColumn
++ kvs::Matrix{nm}::rbegin
++ kvs::Matrix{nm}::rbeginInRowOrder
++ kvs::Matrix{nm}::rbeginInColumnOrder
++ kvs::Matrix{nm}::rend
++ kvs::Matrix{nm}::rendInRowOrder
++ kvs::Matrix{nm}::rendInColumnOrder
++ kvs::Matrix{nm}::resize
++ kvs::Value::Random
++ kvs::Value::RandomSeed
++ kvs::Value::SetSeed
++ kvs::Value::SetRandomSeed
++ kvs::ValueArray::Random
++ kvs::ValueArray::Linear
++ kvs::ValueArray::min
++ kvs::ValueArray::max
++ kvs::ValueArray::sum
++ kvs::ValueArray::argmin
++ kvs::ValueArray::argmax
++ kvs::ValueArray::argsort
++ kvs::ValueArray::sort
++ kvs::ValueArray::shuffle
++ kvs::ValueTable::Random
++ kvs::ValueTable::Linear
++ kvs::ValueTable::begin
++ kvs::ValueTable::end
++ kvs::ValueTable::rbegin
++ kvs::ValueTable::rend
++ kvs::ValueTable::beginInColumnOrder
++ kvs::ValueTable::endInColumnOrder
++ kvs::ValueTable::rbeginInColumnOrder
++ kvs::ValueTable::rendInColumnOrder
++ kvs::ValueTable::beginInRowOrder
++ kvs::ValueTable::endInRowOrder
++ kvs::ValueTable::rbeginInRowOrder
++ kvs::ValueTable::rendInRowOrder
++ kvs::ValueTable::beginColumn
++ kvs::ValueTable::endColumn
++ kvs::ValueTable::beginRow
++ kvs::ValueTable::endRow
++ kvs::ValueTable::clone
++ kvs::Camera::devicePixelRatio
++ kvs::OrientationAxis::setAxisTypeToCornered
++ kvs::OrientationAxis::setAxisTypeToCentered
++ kvs::OrientationAxis::setBoxTypeToWired
++ kvs::OrientationAxis::setBoxTypeToSolid
++ kvs::OrientationAxis::setProjectionTypeToPerspective
++ kvs::OrientationAxis::setProjectionTypeToOrthogonal
++ kvs::Label::setText for std::string
++ kvs::Label::addText for std::string
++ kvs::WidgetBase::font
++ kvs::opencv::MovieRenderer::currentFrameIndex
++ kvs::opencv::MovieRenderer::setFrameIndex
++ kvs::KVSMLLineObject::setWritingDataTypeToAscii
++ kvs::KVSMLLineObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLLineObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLPointObject::setWritingDataTypeToAscii
++ kvs::KVSMLPointObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLPointObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLPolygonObject::setWritingDataTypeToAscii
++ kvs::KVSMLPolygonObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLPolygonObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLStructuredVolumeObject::setWritingDataTypeToAscii
++ kvs::KVSMLStructuredVolumeObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLStructuredVolumeObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLTableObject::setWritingDataTypeToAscii
++ kvs::KVSMLTableObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLTableObject::setWritingDataTypeToExternalBinary
++ kvs::KVSMLUnstructuredVolumeObject::setWritingDataTypeToAscii
++ kvs::KVSMLUnstructuredVolumeObject::setWritingDataTypeToExternalAscii
++ kvs::KVSMLUnstructuredVolumeObject::setWritingDataTypeToExternalBinary
++ kvs::ColorMap::CoolWarm
++ kvs::ColorMap::BrewerBrBG
++ kvs::ColorMap::BrewerPiYG
++ kvs::ColorMap::BrewerPRGn
++ kvs::ColorMap::BrewerPuOr
++ kvs::ColorMap::BrewerRdBu
++ kvs::ColorMap::BrewerRdGy
++ kvs::ColorMap::BrewerRdYlBu
++ kvs::ColorMap::BrewerRdYlGn
++ kvs::ColorMap::BrewerSpectral
++ kvs::LabColor::Mix
++ kvs::LabColor::toRGBColor
++ kvs::MshColor::toRGBColor
++ kvs::RGBColor::toMshColor
++ kvs::ValueArray::format
++ kvs::ValueTable::format
+
+**Added new examples**
++ Example/Utility/Stat
++ Example/Utility/ValueArray
++ Example/Utility/ValueTable
++ Example/Numeric/DistributionFunctions
++ Example/Numeric/LinearRegression
++ Example/Matrix/Matrix
++ Example/Matrix/Matrix22
++ Example/Matrix/Matrix33
++ Example/Matrix/Matrix44
++ Example/Matrix/Vector
++ Example/Matrix/Vector2
++ Example/Matrix/Vector3
++ Example/Matrix/Vector4
++ Example/Visualization/CheckBox
++ Example/Visualization/ColorMapBar
++ Example/Visualization/Label
++ Example/Visualization/OrientationAxis
++ Example/Visualization/PushButton
++ Example/Visualization/RadioButton
++ Example/Visualization/Slider
++ Example/Visualization/ScatterPlot
++ Example/Visualization/RGBFormulae
++ Example/Visualization/DivergingColorMap
++ Example/Visualization/ParallelCoordinates
+
+**Added new macros**
++ KVS_COMPILER_SUPPORT_CXX98
++ KVS_COMPILER_SUPPORT_CXX11
++ KVS_COMPILER_SUPPORT_CXX14
++ KVS_COMPILER_SUPPORT_CXX17
++ KVS_COMPILER_SUPPORT_CXX20
+
+**Deprecated methods**
++ kvs::Vector2::All (use kvs::Vector2::Constant)
++ kvs::Vector2::zero (use kvs::Vector2::setZero)
++ kvs::Vector3::All (use kvs::Vector3::Constant)
++ kvs::Vector3::zero (use kvs::Vector3::setZero)
++ kvs::Vector4::All (use kvs::Vector4::Constant)
++ kvs::Vector4::zero (use kvs::Vector4::setZero)
++ kvs::Vector::zero (use kvs::Vector::setZero)
++ kvs::Vector{2,3,4,n}::length2 (use kvs::Vector{2,3,4,n}::squaredLength)
++ kvs::Vector{n}::setSize (use kvs::Vector{n}::resize)
++ kvs::Matrix2::zero (use kvs::Matrix2::setZero)
++ kvs::Matrix2::identity (use kvs::Matrix2::setIdentity)
++ kvs::Matrix3::zero (use kvs::Matrix3::setZero)
++ kvs::Matrix3::identity (use kvs::Matrix3::setIdentity)
++ kvs::Matrix4::zero (use kvs::Matrix4::setZero)
++ kvs::Matrix4::identity (use kvs::Matrix4::setIdentity)
++ kvs::Matrix::zero (use kvs::Matrix::setZero)
++ kvs::Matrix::identity (use kvs::Matrix::setIdentity)
++ kvs::Matrix{mn}::setSize (use kvs::Matrix{mn}::resize)
++ kvs::Quaternion::length2 (use kvs::QUaternion::squaredLength)
++ kvs::ValueTable::clear (use kvs::ValueTable::release )
+
+**Fixed problem**
++ kvs::EigenDecomposer
+
+**Removed classes**
++ kvs::KVSMLObjectImage (use kvs::KVSMLImageObject)
++ kvs::KVSMLObjectLine (use kvs::KVSMLLineObject)
++ kvs::KVSMLObjectPoint (use kvs::KVSMLPointObject)
++ kvs::KVSMLObjectPolygon (use kvs::KVSMLPolygonObject)
++ kvs::KVSMLObjectStructuredVolume (use kvs::KVSMLStructuredVolumeObject)
++ kvs::KVSMLObjectTable (use kvs::KVSMLTableObject)
++ kvs::KVSMLObjectUnstructuredVolume (use kvs::KVSMLUnstructuredVolumeObject)
+
+### Version 2.8.0 Released (2019.6.7)
 **Added new classes and functions**
 + kvs::ColorStream
 + kvs::NullStream
@@ -17,6 +261,14 @@
 + kvs::OpenGL::DisableVertexAttribArray
 + kvs::OpenGL::VertexAttribPointer
 + kvs::VertexBufferObjectManager
++ kvs::CubicImage
++ kvs::SphericalImage
++ kvs::SphericalImageRenderer
++ kvs::opencv::MovieObject
++ kvs::opencv::MovieRenderer
++ kvs::opencv::SphericalMovieRenderer
+
+**Add new methods**
 + kvs::StochasticRenderingCompositor::update
 + kvs::StochasticTetrahedraRenderer::transferFunction
 + kvs::StochasticTetrahedraRenderer::samplingStep
@@ -31,20 +283,14 @@
 + kvs::Directory::CurrentPath
 + kvs::Directory::Absolute
 + kvs::File::Exists
-+ kvs::CubicImage
-+ kvs::SphericalImage
-+ kvs::SphericalImageRenderer
-+ kvs::opencv::MovieObject
-+ kvs::opencv::MovieRenderer
-+ kvs::opencv::SphericalMovieRenderer
 
-**Added SupportOSMesa
+**Added SupportOSMesa**
 + kvs::osmesa::Context
 + kvs::osmesa::Screen
 + kvs::osmesa::ScreenBase
 + kvs::osmesa::Surface
 
-**Added SupportEGL
+**Added SupportEGL**
 + kvs::egl::Config
 + kvs::egl::Context
 + kvs::egl::Display
@@ -52,11 +298,11 @@
 + kvs::egl::ScreenBase
 + kvs::egl::Surface
 
-**Added new example
+**Added new example**
 + Example/SupportOSMesa/Hello
 + Example/SupportEGL/Hello
 
-**Added new envrionmental variables for compiling KVS
+**Added new envrionmental variables for compiling KVS**
 + KVS_GL_DIR
 + KVS_GL_INCLUDE_PATH
 + KVS_GL_LIBRARY_PATH
@@ -82,10 +328,10 @@
 + KVS_OPENMP_LIBRARY_PATH
 + KVS_OPENMP_LINK_LIBRARY
 
-**Added new support in kvsmake
+**Added new support in kvsmake**
 + Fortran codes can be compiled with kvsmake
 
-**Fixed problem
+**Fixed problem**
 + kvs::EnsembleAverageBuffer
 + kvs::StochasticPointRenderer
 + kvs::StochasticPolygonRenderer
@@ -95,40 +341,40 @@
 + kvs::CellByCellMetropolisSampling
 + kvs::glsl::PolygonRenderer
 
-**Modified message format in kvs::Message
+**Modified message format in kvs::Message**
 + kvsMessageError()
 + kvsMessageWarning()
 + kvsMessageDebug()
 + kvsMessageAssert()
 
-**Modified shader log message
+**Modified shader log message**
 + kvs::ProgramObject
 + kvs::ProgramObject
 
-**Modified for Spark64
+**Modified for Spark64**
 + KVS_BREAKPOINT
 + KVS_PLATFORM_CPU_SPARK64
 + KVS_PLATFORM_CPU_NAME
 
-**Modified for VS2017 compiler
+**Modified for VS2017 compiler**
 + KVS_COMPILER_VERSION
 
-**Modified for Intel C++ compiler
+**Modified for Intel C++ compiler**
 
-**Reimplemented with VBO
+**Reimplemented with VBO**
 + kvs::StylizedLineRenderer
 
-**Duprecated in kvs::Mouse
+**Duprecated in kvs::Mouse**
 + attachCamera (use trackball().attacheCamera instead)
 + setRotationCenter( use trackball().setRotationCenter instead)
 + scaling (use trackball().scaling instead)
 + rotation (use trackball().rotation instead)
 
-**Duprecated in kvs::Directory
+**Duprecated in kvs::Directory**
 + directoryPath (use path instead)
 + directoryName (use name instead)
 
-**Removed method
+**Removed method**
 + kvs::Directory::sort
 + kvs::Directory::find
 

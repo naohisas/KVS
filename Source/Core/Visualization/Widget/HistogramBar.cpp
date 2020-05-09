@@ -283,16 +283,18 @@ void HistogramBar::draw_palette()
     attrib.enable( GL_TEXTURE_2D );
     attrib.disable( GL_TEXTURE_3D );
 
+    const float dpr = screen()->devicePixelRatio();
     const int x0 = m_palette.x0();
     const int x1 = m_palette.x1();
     const int y0 = m_palette.y0();
     const int y1 = m_palette.y1();
+
     kvs::OpenGL::Begin( GL_QUADS );
     kvs::OpenGL::Color( kvs::RGBColor( 230, 230, 230 ) );
-    kvs::OpenGL::Vertex( x0, y0 );
-    kvs::OpenGL::Vertex( x1, y0 );
-    kvs::OpenGL::Vertex( x1, y1 );
-    kvs::OpenGL::Vertex( x0, y1 );
+    kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) * dpr );
+    kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) * dpr );
+    kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) * dpr );
+    kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) * dpr );
     kvs::OpenGL::End();
 
     kvs::OpenGL::Enable( GL_BLEND );
@@ -301,10 +303,10 @@ void HistogramBar::draw_palette()
     {
         kvs::Texture::Binder binder( m_texture );
         kvs::OpenGL::Begin( GL_QUADS );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y1 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y1 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y0 ) );
-        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y0 ) );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 0.0f ), kvs::Vec2( x0, y1 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 0.0f ), kvs::Vec2( x1, y1 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1.0f, 1.0f ), kvs::Vec2( x1, y0 ) * dpr );
+        kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0.0f, 1.0f ), kvs::Vec2( x0, y0 ) * dpr );
         kvs::OpenGL::End();
     }
     kvs::OpenGL::Disable( GL_BLEND );
@@ -315,7 +317,7 @@ void HistogramBar::draw_palette()
     const float width = x1 - x0;
     const float height = y1 - y0;
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
-    engine->beginFrame( screen()->width(), screen()->height() );
+    engine->beginFrame( screen()->width(), screen()->height(), screen()->devicePixelRatio() );
 
     engine->beginPath();
     engine->setStrokeWidth( 1.0f );

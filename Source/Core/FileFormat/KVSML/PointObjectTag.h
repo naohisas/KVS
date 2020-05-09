@@ -11,9 +11,7 @@
  *  $Id: PointObjectTag.h 1344 2012-11-07 14:59:01Z s.yamada0808@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__POINT_OBJECT_H_INCLUDE
-#define KVS__KVSML__POINT_OBJECT_H_INCLUDE
-
+#pragma once
 #include "TagBase.h"
 
 
@@ -31,11 +29,9 @@ namespace kvsml
 class PointObjectTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 public:
-
     PointObjectTag();
 
 };
@@ -43,5 +39,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__POINT_OBJECT_H_INCLUDE

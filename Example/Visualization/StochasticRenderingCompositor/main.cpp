@@ -4,20 +4,12 @@
  *  @author Naohisa Sakamoto
  *  @brief  Example program for kvs::StochasticTetrahedraRenderer class.
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
 #include <kvs/glut/TransferFunctionEditor>
-#include <kvs/glut/Slider>
-#include <kvs/glut/CheckBox>
+#include <kvs/Slider>
+#include <kvs/CheckBox>
 #include <kvs/PolygonObject>
 #include <kvs/ExternalFaces>
 #include <kvs/UnstructuredVolumeObject>
@@ -58,14 +50,14 @@ public:
  *  @brief  LOD check box.
  */
 /*===========================================================================*/
-class LODCheckBox : public kvs::glut::CheckBox
+class LODCheckBox : public kvs::CheckBox
 {
     kvs::StochasticRenderingCompositor* m_compositor;
 
 public:
 
     LODCheckBox( kvs::glut::Screen* screen, kvs::StochasticRenderingCompositor* compositor ):
-        kvs::glut::CheckBox( screen ),
+        kvs::CheckBox( screen ),
         m_compositor( compositor )
     {
         setMargin( 10 );
@@ -84,12 +76,12 @@ public:
  *  @brief  Opacity slider.
  */
 /*===========================================================================*/
-class OpacitySlider : public kvs::glut::Slider
+class OpacitySlider : public kvs::Slider
 {
 public:
 
     OpacitySlider( kvs::glut::Screen* screen ):
-        kvs::glut::Slider( screen )
+        kvs::Slider( screen )
     {
         setWidth( 150 );
         setMargin( 10 );
@@ -114,14 +106,14 @@ public:
  *  @brief  Repetition slider.
  */
 /*===========================================================================*/
-class RepetitionSlider : public kvs::glut::Slider
+class RepetitionSlider : public kvs::Slider
 {
     kvs::StochasticRenderingCompositor* m_compositor;
 
 public:
 
     RepetitionSlider( kvs::glut::Screen* screen, kvs::StochasticRenderingCompositor* compositor ):
-        kvs::glut::Slider( screen ),
+        kvs::Slider( screen ),
         m_compositor( compositor )
     {
         setWidth( 150 );
@@ -139,8 +131,9 @@ public:
 /*===========================================================================*/
 /**
  *  @brief  Main function.
- *  @param  argc [i] argument count
+ *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )

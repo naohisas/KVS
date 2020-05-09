@@ -86,6 +86,7 @@ public:
     float top() const { return m_top; }
     size_t windowWidth() const { return m_window_width; }
     size_t windowHeight() const { return m_window_height; }
+    float devicePixelRatio() const;
     const kvs::Vec3 position() const;
     const kvs::Vec3 upVector() const;
     const kvs::Vec3 lookAt() const;

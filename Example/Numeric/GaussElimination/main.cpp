@@ -14,10 +14,12 @@
  */
 /*****************************************************************************/
 #include <iostream>
-#include <iomanip>
 #include <kvs/GaussEliminationSolver>
 #include <kvs/Vector>
 #include <kvs/Matrix>
+#include <kvs/Indent>
+#include <kvs/Timer>
+
 
 /*===========================================================================*/
 /**
@@ -27,21 +29,32 @@
  *  @param  x [in] solution vector
  */
 /*===========================================================================*/
-void Print( const kvs::Matrix<double>& A, const kvs::Vector<double>& b, const kvs::Vector<double>&x )
+void PrintResult(
+    const kvs::Matrix<double>& A,
+    const kvs::Vector<double>& b,
+    const kvs::Vector<double>&x )
 {
-    std::cout << "> Linear simultaneous equation" << std::endl;
-    std::cout.setf( std::ios::showpos );
-    for ( size_t i = 0; i < 4; i++ )
-    {
-        for ( size_t j = 0; j < 3; j++ )
-        {
-            std::cout << "(" << A[i][j] << ") * X" << j << " + ";
-        }
-        std::cout << "(" << A[i][3] << ") * X3 = " << b[i] << std::endl;
-    }
-    std::cout.unsetf( std::ios::showpos );
-    std::cout << "> Solution" << std::endl;
-    std::cout << "(X0 X1 X2 X3) = (" << x << ")" << std::endl;
+    const kvs::Indent indent(4);
+    std::cout << "Linear equation: A * x = b" << std::endl;
+    std::cout << indent << "A = " << A << std::endl;
+    std::cout << indent << "b = " << b << std::endl;
+    std::cout << "Solution" << std::endl;
+    std::cout << indent << "x = " << x << std::endl;
+    std::cout << "Check" << std::endl;
+    std::cout << indent << "b     = " << b << std::endl;
+    std::cout << indent << "A * x = " << A * x << std::endl;
+}
+
+void PerfTest( const kvs::Matrix<double>& A, const kvs::Vector<double>& b, const size_t nloops )
+{
+    const kvs::Indent indent(4);
+
+    std::cout << "Performance Test" << std::endl;
+    kvs::Vector<double> x;
+    kvs::Timer timer( kvs::Timer::Start );
+    for ( size_t i = 0; i < nloops; i++ ) { x = kvs::GaussEliminationSolver<double>( A, b ); }
+    timer.stop();
+    std::cout << indent << "Calculation (" << nloops << " times): " << timer.sec() << " [sec]" << std::endl;
 }
 
 /*===========================================================================*/
@@ -74,9 +87,10 @@ int main( void )
     b[2] =  -2.0;
     b[3] =   4.0;
 
-    // Solution vector x = (-7, 3, 2, 3)
+    // Solution vector x = (-7, 3, 2, 2)
     const kvs::Vector<double> x = kvs::GaussEliminationSolver<double>( A, b );
+    PrintResult( A, b, x );
 
-    // Print the equation and the solution.
-    Print( A, b, x );
+    const size_t nloops = 100000;
+    PerfTest( A, b, nloops );
 }

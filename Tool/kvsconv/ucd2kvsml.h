@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   ucd2kvsml.h
+ *  @author Naohisa Sakamoto
  */
 /*----------------------------------------------------------------------------
  *
@@ -8,7 +9,7 @@
  *  All rights reserved.
  *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
  *
- *  $Id: ucd2kvsml.h 602 2010-08-19 02:43:34Z naohisa.sakamoto $
+ *  $Id$
  */
 /*****************************************************************************/
 #pragma once
@@ -36,8 +37,6 @@ class Argument : public kvsconv::Argument::Common
 {
 public:
     Argument( int argc, char** argv );
-
-public:
     const std::string inputFilename();
     const std::string outputFilename( const std::string& filename );
     kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();

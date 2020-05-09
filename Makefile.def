@@ -442,6 +442,7 @@ CPPFLAGS :=
 
 # For Fujitsu C++ compiler (FCCpx/mpiFCCpx)
 ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+  CPPFLAGS += -std=c++11
   ifdef DEBUG
     CPPFLAGS += -O0 -g
   else
@@ -450,6 +451,17 @@ ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
 
 # For Intel C++ compiler (icpc/mpiicpc)
 else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
+  CPPFLAGS += -std=c++11
+  CPPFLAGS += -Wall
+  ifdef DEBUG
+    CPPFLAGS += -O0 -g
+  else
+    CPPFLAGS += -O3
+  endif
+
+# For Clang compiler (clang++)
+else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),clang++))
+  CPPFLAGS += -std=c++11
   CPPFLAGS += -Wall
   ifdef DEBUG
     CPPFLAGS += -O0 -g
@@ -459,6 +471,7 @@ else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
 
 # For g++
 else
+  CPPFLAGS += -std=c++11
   CPPFLAGS += -Wall
   ifdef DEBUG
     CPPFLAGS += -O0 -ggdb3

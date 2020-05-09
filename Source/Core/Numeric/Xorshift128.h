@@ -11,9 +11,7 @@
  *  $Id: Xorshift128.h 1421 2013-02-27 17:31:12Z s.yamada0808@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__XORSHIFT_128_H_INCLUDE
-#define KVS__XORSHIFT_128_H_INCLUDE
-
+#pragma once
 #include <kvs/Type>
 
 
@@ -35,32 +33,31 @@ private:
 
 public:
     Xorshift128();
+    Xorshift128( const kvs::UInt32 seed );
 
     void setSeed( kvs::UInt32 seed );
-
     float rand();
     kvs::UInt32 randInteger();
-
     float operator ()();
 };
 
 /*==========================================================================*/
 /**
  *  @brief  Returns uniform random number.
- *  @return uniform random number
+ *  @return uniform random number in [0,1)
  */
 /*==========================================================================*/
 inline float Xorshift128::rand()
 {
     const float t24 = 1.0 / 16777216.0; /* 0.5**24 */
     // Convert to int for fast conversion to float.
-    return t24 * int( this->randInteger() >> 8 );
+    return t24 * int( this->randInteger() >> 8 ); // [0,1)
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Returns uniform random number (32-bit precision).
- *  @return uniform random number
+ *  @return uniform random number in [0,0xffffffff] = [0,UINT_MAX]
  */
 /*===========================================================================*/
 inline kvs::UInt32 Xorshift128::randInteger()
@@ -72,7 +69,7 @@ inline kvs::UInt32 Xorshift128::randInteger()
     m_z = m_w;
     m_w = ( m_w ^ ( m_w >> 19 ) ) ^ ( t ^ ( t >> 8 ) );
 
-    return m_w;
+    return m_w; // [0,UINT_MAX]
 }
 
 /*==========================================================================*/
@@ -87,5 +84,3 @@ inline float Xorshift128::operator ()()
 }
 
 } // end of namespace kvs
-
-#endif // KVS__XORSHIFT_128_H_INCLUDE

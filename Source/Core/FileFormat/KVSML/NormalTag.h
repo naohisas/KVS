@@ -12,9 +12,7 @@
  *  $Id: NormalTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__NORMAL_TAG_H_INCLUDE
-#define KVS__KVSML__NORMAL_TAG_H_INCLUDE
-
+#pragma once
 #include "TagBase.h"
 
 
@@ -32,11 +30,9 @@ namespace kvsml
 class NormalTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 public:
-
     NormalTag();
 
 };
@@ -44,5 +40,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__NORMAL_TAG_H_INCLUDE

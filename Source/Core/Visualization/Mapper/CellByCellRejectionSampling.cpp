@@ -205,7 +205,7 @@ void CellByCellRejectionSampling::generate_particles( const kvs::StructuredVolum
     density_map.attachObject( volume );
     density_map.create( BaseClass::transferFunction().opacityMap() );
 
-    const kvs::Vec3ui ncells( volume->resolution() - kvs::Vec3u::All(1) );
+    const kvs::Vec3ui ncells( volume->resolution() - kvs::Vec3u::Constant(1) );
     const kvs::ColorMap color_map( BaseClass::transferFunction().colorMap() );
 
     // Calculate number of particles.

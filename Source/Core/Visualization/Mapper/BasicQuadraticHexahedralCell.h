@@ -166,7 +166,7 @@ public:
         const T sampling_length = 1 / static_cast<T>( resolution );
         const T adjustment = sampling_length * T( 0.5 );
 
-        kvs::Vector3<T> sampling_position = kvs::Vector3<T>::All( adjustment );
+        kvs::Vector3<T> sampling_position = kvs::Vector3<T>::Constant( adjustment );
 
         T  sum_metric = 0;
 

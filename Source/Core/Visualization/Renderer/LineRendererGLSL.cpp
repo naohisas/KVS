@@ -129,6 +129,8 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
         m_object = object;
         this->create_shader_program();
         this->create_buffer_object( line );
+
+        kvs::OpenGL::GetFloatv( GL_LINE_WIDTH_RANGE, &m_line_width_range[0] );
     }
 
     const bool window_resized = m_width != width || m_height != height;
@@ -158,16 +160,18 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
         m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
         m_shader_program.setUniform( "NormalMatrix", N );
 
+        const float dpr = camera->devicePixelRatio();
         const float line_width = kvs::Math::Min( line->size() + m_outline_width * 2.0f, m_line_width_range[1] );
         const float outline_width = kvs::Math::Min( m_outline_width, m_line_width_range[1] * 0.5f );
         const kvs::Vec3 outline_color = ::NormalizedColor( m_outline_color );
-        m_shader_program.setUniform( "screen_width", float( m_width ) );
-        m_shader_program.setUniform( "screen_height", float( m_height ) );
-        m_shader_program.setUniform( "line_width", line_width );
-        m_shader_program.setUniform( "outline_width", outline_width );
+        m_shader_program.setUniform( "screen_width", float( m_width ) * dpr );
+        m_shader_program.setUniform( "screen_height",  float( m_height ) * dpr );
+        m_shader_program.setUniform( "line_width_range", m_line_width_range * dpr );
+        m_shader_program.setUniform( "line_width", line_width * dpr );
+        m_shader_program.setUniform( "outline_width", outline_width * dpr );
         m_shader_program.setUniform( "outline_color", outline_color );
 
-        kvs::OpenGL::SetLineWidth( line_width );
+        kvs::OpenGL::SetLineWidth( line_width * dpr );
 
         // Draw lines.
         if ( m_has_connection )
@@ -224,15 +228,12 @@ void LineRenderer::create_shader_program()
         }
     }
 
-    kvs::OpenGL::GetFloatv( GL_LINE_WIDTH_RANGE, &m_line_width_range[0] );
-
     m_shader_program.build( vert, frag );
     m_shader_program.bind();
     m_shader_program.setUniform( "shading.Ka", m_shader->Ka );
     m_shader_program.setUniform( "shading.Kd", m_shader->Kd );
     m_shader_program.setUniform( "shading.Ks", m_shader->Ks );
     m_shader_program.setUniform( "shading.S",  m_shader->S );
-    m_shader_program.setUniform( "line_width_range", m_line_width_range );
     m_shader_program.unbind();
 }
 

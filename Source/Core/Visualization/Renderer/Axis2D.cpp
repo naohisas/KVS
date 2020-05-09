@@ -49,6 +49,7 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
     m_painter.begin( screen() );
     {
+        const float dpr = camera->devicePixelRatio();
         const int x0 = m_left_margin;
         const int x1 = camera->windowWidth() - m_right_margin;
         const int y0 = m_top_margin;
@@ -60,22 +61,22 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
         {
             kvs::OpenGL::Begin( GL_QUADS );
             kvs::OpenGL::Color( m_background_color );
-            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) * dpr );
             kvs::OpenGL::End();
         }
 
         // Draw axes.
         const int d = int( m_axis_width * 0.5 );
-        kvs::OpenGL::SetLineWidth( m_axis_width );
+        kvs::OpenGL::SetLineWidth( m_axis_width * dpr );
         kvs::OpenGL::Begin( GL_LINES );
         kvs::OpenGL::Color( m_axis_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y1 ), kvs::Vec2( x1 + d, y1 ) ); // X axis (bottom)
-        kvs::OpenGL::Vertices( kvs::Vec2( x0, y1 + d ), kvs::Vec2( x0, y0 - d ) ); // Y axis (left)
-        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y0 ), kvs::Vec2( x1 + d, y0 ) ); // X axis (top)
-        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 + d ), kvs::Vec2( x1, y0 - d ) ); // Y axis (right)
+        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y1 ) * dpr, kvs::Vec2( x1 + d, y1 ) * dpr ); // X axis (bottom)
+        kvs::OpenGL::Vertices( kvs::Vec2( x0, y1 + d ) * dpr, kvs::Vec2( x0, y0 - d ) * dpr ); // Y axis (left)
+        kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y0 ) * dpr, kvs::Vec2( x1 + d, y0 ) * dpr ); // X axis (top)
+        kvs::OpenGL::Vertices( kvs::Vec2( x1, y1 + d ) * dpr, kvs::Vec2( x1, y0 - d ) * dpr ); // Y axis (right)
         kvs::OpenGL::End();
 
         // Draw min/max values.
@@ -108,9 +109,11 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
         const std::string y_label = m_y_label.empty() ? table->label(1) : m_y_label;
         if ( y_label.size() > 0 )
         {
-            kvs::OpenGL::PushMatrix();
             const float y_value_position = kvs::Math::Min( y_min_position.x(), y_max_position.x() );
-            kvs::OpenGL::Translate( y_value_position - 5.0f, ( y0 + y1 + metrics.width( y_label ) ) * 0.5f, 0.0f );
+            const float y_label_position_x = y_value_position - 5.0f;
+            const float y_label_position_y = ( y0 + y1 + metrics.width( y_label ) ) * 0.5f;
+            kvs::OpenGL::PushMatrix();
+            kvs::OpenGL::Translate( y_label_position_x * dpr, y_label_position_y * dpr, 0.0f );
             kvs::OpenGL::Rotate( -90.0, 0, 0, 1 );
             m_painter.drawText( kvs::Vec2( 0, 0 ), y_label );
             kvs::OpenGL::PopMatrix();

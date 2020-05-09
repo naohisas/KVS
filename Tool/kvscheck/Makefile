@@ -33,6 +33,14 @@ ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 INCLUDE_PATH += $(OPENCV_INCLUDE_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+INCLUDE_PATH += $(PYTHON_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+INCLUDE_PATH += $(EGL_INCLUDE_PATH)
+endif
+
 INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
 INCLUDE_PATH += $(GL_INCLUDE_PATH)
 
@@ -52,6 +60,18 @@ ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 LIBRARY_PATH += -L../../Source/SupportOpenCV/$(OUTDIR) $(OPENCV_LIBRARY_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+LIBRARY_PATH += -L../../Source/SupportPython/$(OUTDIR) $(PYTHON_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LIBRARY_PATH += -L../../Source/SupportEGL/$(OUTDIR) $(EGL_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+LIBRARY_PATH += -L../../Source/SupportOSMesa/$(OUTDIR)
+endif
+
 LIBRARY_PATH += $(GLEW_LIBRARY_PATH)
 LIBRARY_PATH += $(GL_LIBRARY_PATH)
 
@@ -69,6 +89,18 @@ endif
 
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 LINK_LIBRARY += -lkvsSupportOpenCV $(OPENCV_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+LINK_LIBRARY += -lkvsSupportPython $(PYTHON_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LINK_LIBRARY += -lkvsSupportEGL $(EGL_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+LINK_LIBRARY += -lkvsSupportOSMesa
 endif
 
 LINK_LIBRARY += $(GLEW_LINK_LIBRARY)
@@ -91,16 +123,6 @@ endif
 #  Object.
 #=============================================================================
 OBJECTS := \
-$(OUTDIR)/Argument.o \
-$(OUTDIR)/CompilerChecker.o \
-$(OUTDIR)/FileChecker.o \
-$(OUTDIR)/OpenGLChecker.o \
-$(OUTDIR)/ExtensionChecker.o \
-$(OUTDIR)/PlatformChecker.o \
-$(OUTDIR)/SizeofChecker.o \
-$(OUTDIR)/SupportChecker.o \
-$(OUTDIR)/MinMaxChecker.o \
-$(OUTDIR)/VersionChecker.o \
 $(OUTDIR)/main.o \
 
 

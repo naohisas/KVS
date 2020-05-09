@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::OrthoSlice class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
@@ -26,8 +18,9 @@
 /*===========================================================================*/
 /**
  *  @brief  Main function.
- *  @param  argc [i] argument counter
+ *  @param  argc [i] argument count
  *  @param  argv [i] argument values
+ *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )

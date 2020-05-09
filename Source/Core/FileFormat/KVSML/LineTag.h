@@ -12,9 +12,7 @@
  *  $Id: LineTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__LINE_TAG_H_INCLUDE
-#define KVS__KVSML__LINE_TAG_H_INCLUDE
-
+#pragma once
 #include <kvs/XMLNode>
 #include "TagBase.h"
 
@@ -33,16 +31,13 @@ namespace kvsml
 class LineTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     bool m_has_nlines; ///< flag to check whether 'nlines' is specified or not
     size_t m_nlines; ///< number of lines
 
 public:
-
     LineTag();
 
     bool hasNLines() const { return m_has_nlines; }
@@ -57,5 +52,3 @@ public:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__LINE_TAG_H_INCLUDE

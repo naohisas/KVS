@@ -38,7 +38,8 @@ namespace kvs
 {
 
 Painter::Painter():
-    m_device( NULL )
+    m_device( NULL ),
+    m_device_pixel_ratio( 1.0f )
 {
     memset( m_model, 0, sizeof( GLdouble ) * 16 );
     memset( m_proj, 0, sizeof( GLdouble ) * 16 );
@@ -57,9 +58,11 @@ Painter::~Painter()
 
 bool Painter::begin( kvs::ScreenBase* screen )
 {
-    if ( this->isActive() ) return false;
+    if ( this->isActive() ) { return false; }
 
     m_device = screen->paintDevice();
+    m_device_pixel_ratio = screen->devicePixelRatio();
+
     kvs::OpenGL::GetModelViewMatrix( m_model );
     kvs::OpenGL::GetProjectionMatrix( m_proj );
     kvs::OpenGL::GetViewport( m_view );
@@ -74,11 +77,15 @@ bool Painter::begin( kvs::ScreenBase* screen )
     kvs::OpenGL::PushMatrix();
     kvs::OpenGL::LoadIdentity();
 
-    GLint view[4]; kvs::OpenGL::GetViewport( view );
-    const GLint left = view[0];
-    const GLint top = view[1];
-    const GLint right = view[0] + view[2];
-    const GLint bottom = view[1] + view[3];
+//    GLint view[4]; kvs::OpenGL::GetViewport( view );
+//    const GLint left = view[0];
+//    const GLint top = view[1];
+//    const GLint right = view[0] + view[2];
+//    const GLint bottom = view[1] + view[3];
+    const GLint left = m_view[0];
+    const GLint top = m_view[1];
+    const GLint right = m_view[0] + m_view[2];
+    const GLint bottom = m_view[1] + m_view[3];
     kvs::OpenGL::SetOrtho( left, right, bottom, top, 0, 1 );
 
     return true;
@@ -154,9 +161,10 @@ void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
                 const GLint top = m_view[1];
                 const GLint right = m_view[0] + m_view[2];
                 const GLint bottom = m_view[1] + m_view[3];
+                const float dpr = m_device_pixel_ratio;
                 kvs::OpenGL::SetOrtho( left, right, bottom, top, 0, 1 );
                 kvs::OpenGL::Translate( 0, 0, -winz );
-                this->draw_text( kvs::Vec2( winx, top - ( winy - bottom ) ), text );
+                this->draw_text( kvs::Vec2( winx, top - ( winy - bottom ) ) / dpr, text );
             }
         }
     }
@@ -178,13 +186,14 @@ void Painter::drawIcon( const kvs::Vec2& p, const kvs::Font::Icon& icon, const f
     engine->clearState();
 
     const int font_id = engine->fontID( "Icon" );
-    const kvs::Vec2 d( 0.0f, engine->descender() );
-
     engine->setFont( font_id );
+
+    const kvs::Vec2 d( 0.0f, engine->descender() );
+    const float dpr = m_device_pixel_ratio;
     engine->setAlign( m_font.horizontalAlign() | m_font.verticalAlign() );
     engine->setColor( engine->colorID( m_font.color() ) );
-    engine->setSize( size );
-    engine->draw( p + d, ::ToUTF8( icon ) );
+    engine->setSize( size * dpr );
+    engine->draw( ( p + d ) * dpr, ::ToUTF8( icon ) );
 }
 
 void Painter::draw_text( const kvs::Vec2& p, const std::string& text ) const
@@ -196,6 +205,7 @@ void Painter::draw_text( const kvs::Vec2& p, const std::string& text ) const
     const int font_id = engine->fontID( name );
     engine->setFont( font_id );
 
+    const float dpr = m_device_pixel_ratio;
     const kvs::Vec2 d( 0.0f, engine->descender() );
     const kvs::Mat2 r( kvs::Mat2::Rotation( m_font.shadowAngle() ) );
     const kvs::Vec2 v( m_font.shadowDistance(), 0.0f );
@@ -205,16 +215,16 @@ void Painter::draw_text( const kvs::Vec2& p, const std::string& text ) const
         engine->setAlign( m_font.horizontalAlign() | m_font.verticalAlign() );
         engine->setBlur( m_font.shadowBlur() );
         engine->setColor( engine->colorID( m_font.shadowColor() ) );
-        engine->setSize( m_font.size() * m_font.shadowSizeRatio() );
-        engine->draw( p + d + r * v, text );
+        engine->setSize( m_font.size() * m_font.shadowSizeRatio() * dpr );
+        engine->draw( ( p + d + r * v ) * dpr, text );
         engine->popState();
     }
 
     engine->setAlign( m_font.horizontalAlign() | m_font.verticalAlign() );
     engine->setBlur( 0.0f );
     engine->setColor( engine->colorID( m_font.color() ) );
-    engine->setSize( m_font.size() );
-    engine->draw( p + d, text );
+    engine->setSize( m_font.size() * dpr );
+    engine->draw( ( p + d ) * dpr, text );
 }
 
 } // end of namespace kvs

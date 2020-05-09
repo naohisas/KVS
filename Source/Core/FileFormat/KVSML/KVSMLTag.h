@@ -11,9 +11,7 @@
  *  $Id: KVSMLTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__KVSML_TAG_H_INCLUDE
-#define KVS__KVSML__KVSML_TAG_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/XMLDocument>
 #include <kvs/XMLNode>
@@ -34,15 +32,12 @@ namespace kvsml
 class KVSMLTag : public kvs::kvsml::TagBase
 {
 public:
-
     typedef kvs::kvsml::TagBase BaseClass;
 
 private:
-
     TagAttribute<std::string> m_version; ///< KVSML version
 
 public:
-
     KVSMLTag();
 
     bool hasVersion() const { return m_version.hasValue(); }
@@ -62,5 +57,3 @@ private:
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__KVSML_TAG_H_INCLUDE

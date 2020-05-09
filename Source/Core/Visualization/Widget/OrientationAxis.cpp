@@ -118,6 +118,7 @@ void OrientationAxis::paintEvent()
 
     if ( !BaseClass::isShown() ) return;
 
+    const float dpr = screen()->devicePixelRatio();
     const kvs::Vec4 vp = kvs::OpenGL::Viewport();
 
     BaseClass::drawBackground();
@@ -167,7 +168,8 @@ void OrientationAxis::paintEvent()
                 const int y = screen()->height() - BaseClass::y0() - BaseClass::height() + BaseClass::margin();
                 const int width = BaseClass::width() - BaseClass::margin();
                 const int height = BaseClass::height() - BaseClass::margin();
-                kvs::OpenGL::SetViewport( x, y, width, height );
+//                kvs::OpenGL::SetViewport( x, y, width, height );
+                kvs::OpenGL::SetViewport( x * dpr, y * dpr, width * dpr, height * dpr );
 
                 kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );
                 p2.loadIdentity();
@@ -305,6 +307,7 @@ void OrientationAxis::draw_centered_axis( const float length )
 /*===========================================================================*/
 void OrientationAxis::draw_cornered_axis( const float length )
 {
+    const float dpr = screen()->devicePixelRatio();
     const float x = -length/2.0f;
     const float y = -length/2.0f;
     const float z = -length/2.0f;
@@ -318,7 +321,7 @@ void OrientationAxis::draw_cornered_axis( const float length )
     const kvs::Vec3 offsety( offset, 0.0f, offset );
     const kvs::Vec3 offsetz( offset, offset, 0.0f );
 
-    kvs::OpenGL::SetLineWidth( m_axis_line_width );
+    kvs::OpenGL::SetLineWidth( m_axis_line_width * dpr );
 
     // X-axis.
     kvs::OpenGL::Begin( GL_LINES );

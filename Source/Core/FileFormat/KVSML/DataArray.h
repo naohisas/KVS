@@ -11,9 +11,7 @@
  *  $Id: DataArray.h 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__KVSML__DATA_ARRAY_H_INCLUDE
-#define KVS__KVSML__DATA_ARRAY_H_INCLUDE
-
+#pragma once
 #include <kvs/File>
 #include <kvs/Tokenizer>
 #include <kvs/ValueArray>
@@ -518,5 +516,3 @@ inline bool WriteExternalData(
 } // end of namespace kvsml
 
 } // end of namespace kvs
-
-#endif // KVS__KVSML__DATA_ARRAY_H_INCLUDE

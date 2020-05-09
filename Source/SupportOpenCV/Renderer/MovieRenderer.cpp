@@ -16,7 +16,8 @@ MovieRenderer::MovieRenderer():
     m_enable_auto_play( false ),
     m_enable_loop_play( false ),
     m_enable_reverse_play( false ),
-    m_frame_index( 0 )
+    m_frame_index( 0 ),
+    m_current_frame_index( 0 )
 {
     BaseClass::setEnabledCentering( true );
     BaseClass::setEnabledMirroring( false );
@@ -57,6 +58,7 @@ void MovieRenderer::updateFrameIndex( kvs::opencv::VideoObject* video )
 {
     if ( m_enable_auto_play )
     {
+        m_current_frame_index = m_frame_index;
         if ( m_enable_reverse_play )
         {
             this->decrement_frame_index( video );

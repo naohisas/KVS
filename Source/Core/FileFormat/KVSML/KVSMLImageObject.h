@@ -34,7 +34,6 @@ namespace kvs
 class KVSMLImageObject : public kvs::FileFormatBase
 {
 public:
-
     typedef kvs::FileFormatBase BaseClass;
 
     enum WritingDataType
@@ -45,7 +44,6 @@ public:
     };
 
 private:
-
     kvs::kvsml::KVSMLTag m_kvsml_tag; ///< KVSML tag information
     kvs::kvsml::ObjectTag m_object_tag; ///< Object tag information
     size_t m_width; ///< image width
@@ -55,12 +53,10 @@ private:
     kvs::ValueArray<kvs::UInt8> m_pixels; ///< color(r,g,b) array
 
 public:
-
     static bool CheckExtension( const std::string& filename );
     static bool CheckFormat( const std::string& filename );
 
 public:
-
     KVSMLImageObject();
     KVSMLImageObject( const std::string& filename );
 
