@@ -122,17 +122,22 @@ public:
     T dot( const Vector& other ) const;
     const Vector normalized() const;
 
-    std::string format(
-        const std::string delim = ", " ) const
+    std::string format() const
     {
-        return this->format( delim, "[", "]" );
+        return this->format( ", ", "[", "]" );
+    }
+
+    std::string format(
+        const std::string delim ) const
+    {
+        return this->format( delim, "", "" );
     }
 
     std::string format(
         const std::string bracket_l,
         const std::string bracket_r ) const
     {
-        return this->format( ", ", bracket_l, bracket_r );
+        return this->format( " ", bracket_l, bracket_r );
     }
 
     std::string format(
@@ -635,7 +640,7 @@ inline std::string Vector<T>::format(
     const std::string bracket_r ) const
 {
     std::ostringstream os;
-    if ( m_size == 0 ) { os << bracket_l << delim << bracket_r; }
+    if ( m_size == 0 ) { os << bracket_l << " " << bracket_r; }
     else
     {
         os << bracket_l;

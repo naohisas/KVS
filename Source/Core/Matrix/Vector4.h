@@ -97,17 +97,22 @@ public:
     T dot( const Vector4& other ) const;
     const Vector4 normalized() const;
 
-    std::string format(
-        const std::string delim = ", " ) const
+    std::string format() const
     {
-        return this->format( delim, "[", "]" );
+        return this->format( ", ", "[", "]" );
+    }
+
+    std::string format(
+        const std::string delim ) const
+    {
+        return this->format( delim, "", "" );
     }
 
     std::string format(
         const std::string bracket_l,
         const std::string bracket_r ) const
     {
-        return this->format( ", ", bracket_l, bracket_r );
+        return this->format( " ", bracket_l, bracket_r );
     }
 
     std::string format(

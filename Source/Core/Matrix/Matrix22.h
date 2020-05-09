@@ -101,7 +101,7 @@ public:
         const bool newline = false,
         const kvs::Indent& indent = kvs::Indent(0) ) const
     {
-        return this->format( delim, "[", "]", newline, indent );
+        return this->format( delim, "", "", newline, indent );
     }
 
     std::string format(
@@ -110,7 +110,7 @@ public:
         const bool newline = false,
         const kvs::Indent& indent = kvs::Indent(0) ) const
     {
-        return this->format( ", ", bracket_l, bracket_r, newline, indent );
+        return this->format( " ", bracket_l, bracket_r, newline, indent );
     }
 
     std::string format(

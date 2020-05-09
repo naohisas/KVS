@@ -241,7 +241,7 @@ public:
         const bool newline = false,
         const kvs::Indent& indent = kvs::Indent(0) ) const
     {
-        return this->format( delim, "[", "]", newline, indent );
+        return this->format( delim, "", "", newline, indent );
     }
 
     std::string format(
@@ -250,7 +250,7 @@ public:
         const bool newline = false,
         const kvs::Indent& indent = kvs::Indent(0) ) const
     {
-        return this->format( ", ", bracket_l, bracket_r, newline, indent );
+        return this->format( " ", bracket_l, bracket_r, newline, indent );
     }
 
     std::string format(
@@ -885,7 +885,7 @@ inline std::string Matrix<T>::format(
     os << indent << bracket_l;
     {
         const std::string offset( bracket_l.size(), ' ' );
-        if ( m_nrows == 0 ) { os << indent << bracket_l << delim << bracket_r; }
+        if ( m_nrows == 0 ) { os << indent << bracket_l << " " << bracket_r; }
         else
         {
             os << m_data[0].format( delim, bracket_l, bracket_r );
