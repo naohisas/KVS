@@ -106,7 +106,7 @@ int main()
         v1[0][1] = 2.0f; v1[1][1] = 4.0f; v1[2][1] = 7.0f; v1[3][1] = 9.0f;
         v1[0][2] = 3.0f; v1[1][2] = 6.0f; v1[2][2] = 5.0f; v1[3][2] = 3.0f;
         std::cout << "kvs::ValueTable<float> v( 3, 4 );" << std::endl;
-        std::cout << indent << "v = " << v1 << std::endl;
+        std::cout << indent << "v = " << v1.format() << std::endl;
 
         const float c0[nrows] = { 1.0f, 1.0f, 1.0f };
         const float c1[nrows] = { 2.0f, 2.0f, 2.0f };
@@ -121,9 +121,9 @@ int main()
         std::cout << "v[0] = kvs::ValueArray<float>( c0, nrows );" << std::endl;
         std::cout << "v[1] = kvs::ValueArray<float>( c1, nrows );" << std::endl;
         std::cout << "..." << std::endl;
-        std::cout << indent << "v = " << v2 << std::endl;
-        std::cout << indent << "c0 = " << v2.column(0) << std::endl;
-        std::cout << indent << "r0 = " << v2.row(0) << std::endl;
+        std::cout << indent << "v = " << v2.format() << std::endl;
+        std::cout << indent << "c0 = " << v2.column(0).format() << std::endl;
+        std::cout << indent << "r0 = " << v2.row(0).format() << std::endl;
 
         kvs::ValueTable<int> v3;
         for ( size_t col = 0; col < ncols; ++col )
@@ -133,10 +133,10 @@ int main()
         std::cout << "kvs::ValueTable<int> v;" << std::endl;
         std::cout << "v.pushBackColumn( kvs::ValueArray<int>::Random( nrows, 1, 9 ) );" << std::endl;
         std::cout << "..." << std::endl;
-        std::cout << indent << "v = " << v3 << std::endl;
+        std::cout << indent << "v = " << v3.format() << std::endl;
         for ( size_t row = 0; row < nrows; ++row )
         {
-            std::cout << indent << "r" << row << " = " << v3.row(row) << std::endl;
+            std::cout << indent << "r" << row << " = " << v3.row(row).format() << std::endl;
         }
 
         kvs::ValueTable<float> v4 = {
@@ -144,7 +144,7 @@ int main()
             {4, 5, 6},   // column 1
             {7, 8, 9} }; // column 2
         std::cout << "kvs::ValueTable<float> v4 = { {...}, {...}, {...} };" << std::endl;
-        std::cout << indent << "v = " << v4 << std::endl;
+        std::cout << indent << "v = " << v4.format() << std::endl;
         std::cout << std::endl;
     }
 
@@ -155,16 +155,16 @@ int main()
         kvs::ValueTable<float> a( nrows, ncols );
         a[0][0] = 1.0f; a[1][0] = 3.0f;
         a[0][1] = 2.0f; a[1][1] = 4.0f;
-        std::cout << indent << "a = " << a << std::endl;
+        std::cout << indent << "a = " << a.format() << std::endl;
 
         kvs::ValueTable<float> b = a; // shallow copy
         std::cout << "kvs::ValueTable<float> b = a;" << std::endl;
-        std::cout << indent << "b = " << b << std::endl;
+        std::cout << indent << "b = " << b.format() << std::endl;
 
         a[0][0] = 0.0f;
         std::cout << "a[0][0] = 0.0f;" << std::endl;
-        std::cout << indent << "a = " << a << std::endl;
-        std::cout << indent << "b = " << b << std::endl;
+        std::cout << indent << "a = " << a.format() << std::endl;
+        std::cout << indent << "b = " << b.format() << std::endl;
         std::cout << std::endl;
     }
 
@@ -175,16 +175,16 @@ int main()
         kvs::ValueTable<float> a( nrows, ncols );
         a[0][0] = 1.0f; a[1][0] = 3.0f;
         a[0][1] = 2.0f; a[1][1] = 4.0f;
-        std::cout << indent << "a = " << a << std::endl;
+        std::cout << indent << "a = " << a.format() << std::endl;
 
         kvs::ValueTable<float> b = a.clone(); // deep copy
         std::cout << "kvs::ValueTable<float> b = a.clone();" << std::endl;
-        std::cout << indent << "b = " << b << std::endl;
+        std::cout << indent << "b = " << b.format() << std::endl;
 
         a[0][0] = 0.0f;
         std::cout << "a[0][0] = 0.0f;" << std::endl;
-        std::cout << indent << "a = " << a << std::endl;
-        std::cout << indent << "b = " << b << std::endl;
+        std::cout << indent << "a = " << a.format() << std::endl;
+        std::cout << indent << "b = " << b.format() << std::endl;
         std::cout << std::endl;
     }
 
@@ -192,22 +192,22 @@ int main()
     {
         kvs::ValueTable<int> v = kvs::ValueTable<int>::Random( 3, 4 );
         std::cout << "kvs::ValueTable<int>::Random( 3, 4 );" << std::endl;
-        std::cout << indent << "v = " << v << std::endl;
+        std::cout << indent << "v = " << v.format() << std::endl;
 
         const kvs::UInt32 seed = 1;
         v = kvs::ValueTable<int>::Random( 3, 4, seed );
         std::cout << "kvs::ValueTable<int>::Random( 3, 4, seed );" << std::endl;
-        std::cout << indent << "v = " << v << std::endl;
+        std::cout << indent << "v = " << v.format() << std::endl;
 
         const int min = 0;
         const int max = 9;
         v = kvs::ValueTable<int>::Random( 3, 4, min, max );
         std::cout << "kvs::ValueTable<int>::Random( 3, 4, min, max );" << std::endl;
-        std::cout << indent << "v = " << v << std::endl;
+        std::cout << indent << "v = " << v.format() << std::endl;
 
         v = kvs::ValueTable<int>::Random( 3, 4, min, max, seed );
         std::cout << "kvs::ValueTable<int>::Random( 3, 4, min, max, seed );" << std::endl;
-        std::cout << indent << "v = " << v << std::endl;
+        std::cout << indent << "v = " << v.format() << std::endl;
         std::cout << std::endl;
     }
 
@@ -215,27 +215,27 @@ int main()
     {
         kvs::ValueTable<int> v1 = kvs::ValueTable<int>::Linear( 3, 4 );
         std::cout << "kvs::ValueTable<int> v = kvs::ValueTable<int>::Linear( 3, 4 );" << std::endl;
-        std::cout << indent << "v = " << v1 << std::endl;
+        std::cout << indent << "v = " << v1.format() << std::endl;
 
         v1 = kvs::ValueTable<int>::Linear( 3, 4, 10 );
         std::cout << "kvs::ValueTable<int> v = kvs::ValueTable<int>::Linear( 3, 4, 10 );" << std::endl;
-        std::cout << indent << "v = " << v1 << std::endl;
+        std::cout << indent << "v = " << v1.format() << std::endl;
 
         v1 = kvs::ValueTable<int>::Linear( 3, 4, 5, 3 );
         std::cout << "kvs::ValueTable<int> v = kvs::ValueTable<int>::Linear( 3, 4, 5, 3 );" << std::endl;
-        std::cout << indent << "v = " << v1 << std::endl;
+        std::cout << indent << "v = " << v1.format() << std::endl;
 
         kvs::ValueTable<float> v2 = kvs::ValueTable<float>::Linear( 3, 4, 5.1f );
         std::cout << "kvs::ValueTable<float> v = kvs::ValueTable<float>::Linear( 3, 4, 5.1 );" << std::endl;
-        std::cout << indent << "v = " << v2 << std::endl;
+        std::cout << indent << "v = " << v2.format() << std::endl;
 
         v2 = kvs::ValueTable<float>::Linear( 3, 4, 4.9f, 0.1f );
         std::cout << "kvs::ValueTable<float> v = kvs::ValueTable<float>::Linear( 3, 4, 2.9, 0.1 );" << std::endl;
-        std::cout << indent << "v = " << v2 << std::endl;
+        std::cout << indent << "v = " << v2.format() << std::endl;
 
         v2 = kvs::ValueTable<float>::Linear( 3, 4, 0.1f, -4.9f );
         std::cout << "kvs::ValueTable<float> v = kvs::ValueTable<float>::Linear( 3, 4, 0.1, -2.3 );" << std::endl;
-        std::cout << indent << "v = " << v2 << std::endl;
+        std::cout << indent << "v = " << v2.format() << std::endl;
         std::cout << std::endl;
     }
 
@@ -243,7 +243,7 @@ int main()
     std::cout << "Iterator" << std::endl;
     {
         kvs::ValueTable<int> v = kvs::ValueTable<int>::Linear( 3, 4 );
-        std::cout << "v = " << v << std::endl;
+        std::cout << "v = " << v.format() << std::endl;
 
         {
             std::cout << "kvs::ValueTable<int>::iterator ";
@@ -332,27 +332,27 @@ int main()
     std::cout << "Slicing" << std::endl;
     {
         kvs::ValueTable<int> v = kvs::ValueTable<int>::Random( 3, 3, 0, 9 );
-        std::cout << "v = " << v << std::endl;
+        std::cout << "v = " << v.format() << std::endl;
 
         std::cout << "Column-major order slicing" << std::endl;
         for ( size_t i = 0; i < 3; ++i )
         {
             std::cout << indent << "c" << i << " = "
-                      << kvs::ValueArray<int>( v.beginColumn(i), v.endColumn(i) ) << std::endl;
+                      << kvs::ValueArray<int>( v.beginColumn(i), v.endColumn(i) ).format() << std::endl;
         }
 
         std::cout << "Column-major order array" << std::endl;
-        std::cout << indent << "c = " << kvs::ValueArray<int>( v.beginColumn(0), v.endColumn(2) ) << std::endl;
+        std::cout << indent << "c = " << kvs::ValueArray<int>( v.beginColumn(0), v.endColumn(2) ).format() << std::endl;
 
         std::cout << "Row-major order slicing" << std::endl;
         for ( size_t i = 0; i < 3; ++i )
         {
             std::cout << indent << "r" << i << " = "
-                      << kvs::ValueArray<int>( v.beginRow(i), v.endRow(i) ) << std::endl;
+                      << kvs::ValueArray<int>( v.beginRow(i), v.endRow(i) ).format() << std::endl;
         }
 
         std::cout << "Row-major order array" << std::endl;
-        std::cout << indent << "r = " << kvs::ValueArray<int>( v.beginRow(0), v.endRow(2) ) << std::endl;
+        std::cout << indent << "r = " << kvs::ValueArray<int>( v.beginRow(0), v.endRow(2) ).format() << std::endl;
 
         std::cout << std::endl;
     }

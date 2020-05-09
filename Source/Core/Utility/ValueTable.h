@@ -125,6 +125,43 @@ public:
         std::copy( list.begin(), list.end(), m_columns.begin() );
     }
 
+    std::string format(
+        const std::string delim = ", " ) const
+    {
+        return this->format( delim, "{", "}" );
+    }
+
+    std::string format(
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        return this->format( ", ", bracket_l, bracket_r );
+    }
+
+    std::string format(
+        const std::string delim,
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        const std::string tab = ( bracket_l.empty() && bracket_r.empty() ) ? "\t" : "";
+        std::ostringstream os;
+        os << bracket_l;
+        {
+            const size_t ncols = this->columnSize();
+            if ( ncols == 0 ) { os << bracket_l << " " << bracket_r; }
+            else
+            {
+                os  << m_columns[0].format( delim, bracket_l, bracket_r );
+                for ( size_t i = 1; i < ncols; ++i )
+                {
+                    os << delim << tab << m_columns[i].format( delim, bracket_l, bracket_r );
+                }
+            }
+        }
+        os << bracket_r;
+        return os.str();
+    }
+
     column_reference operator []( const size_t column_index )
     {
         KVS_ASSERT( column_index < m_columns.size() );
@@ -179,11 +216,12 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const this_type& rhs )
     {
-        const size_t ncols = rhs.columnSize();
-        if ( ncols == 0 ) { return os << "{{ }}"; }
-        os << "{" << rhs[0];
-        for ( size_t i = 1; i < ncols; ++i ) { os << ", " << rhs[i]; }
-        return os << "}";
+//        const size_t ncols = rhs.columnSize();
+//        if ( ncols == 0 ) { return os << "{{ }}"; }
+//        os << "{" << rhs[0];
+//        for ( size_t i = 1; i < ncols; ++i ) { os << ", " << rhs[i]; }
+//        return os << "}";
+        return os << rhs.format( " ", "", "" );
     }
 
     iterator begin()

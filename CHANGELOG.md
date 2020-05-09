@@ -172,6 +172,8 @@
 + kvs::LabColor::toRGBColor
 + kvs::MshColor::toRGBColor
 + kvs::RGBColor::toMshColor
++ kvs::ValueArray::format
++ kvs::ValueTable::format
 
 **Added new examples**
 + Example/Utility/Stat

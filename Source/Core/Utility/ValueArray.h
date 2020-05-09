@@ -19,6 +19,7 @@
 #include <utility>
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include <initializer_list>
 #include <kvs/DebugNew>
 #include <kvs/Assert>
@@ -142,6 +143,36 @@ public:
     }
 
 public:
+    std::string format(
+        const std::string delim = ", " ) const
+    {
+        return this->format( delim, "{", "}" );
+    }
+
+    std::string format(
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        return this->format( ", ", bracket_l, bracket_r );
+    }
+
+    std::string format(
+        const std::string delim,
+        const std::string bracket_l,
+        const std::string bracket_r ) const
+    {
+        std::ostringstream os;
+        if ( this->empty() ) { os << bracket_l << " " << bracket_r; }
+        else
+        {
+            os << bracket_l << this->front();
+            for ( const_iterator i = this->begin() + 1; i != this->end(); i++ ) { os << delim << *i; }
+            os << bracket_r;
+        }
+        return os.str();
+    }
+
+public:
     iterator begin()
     {
         return this->data();
@@ -236,10 +267,11 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const this_type& rhs )
     {
-        if ( rhs.empty() ) { return os << "{ }"; }
-        os << "{" << rhs.front();
-        for ( const_iterator i = rhs.begin() + 1; i != rhs.end(); i++ ) { os << ", " << *i; }
-        return os << "}";
+//        if ( rhs.empty() ) { return os << "{ }"; }
+//        os << "{" << rhs.front();
+//        for ( const_iterator i = rhs.begin() + 1; i != rhs.end(); i++ ) { os << ", " << *i; }
+//        return os << "}";
+        return os << rhs.format( " ", "", "" );
     }
 
 public:
