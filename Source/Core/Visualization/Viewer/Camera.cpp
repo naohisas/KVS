@@ -312,14 +312,19 @@ kvs::ColorImage Camera::snapshot()
 {
     const int width = static_cast<int>( m_window_width );
     const int height = static_cast<int>( m_window_height );
-    const int size = height * width * 3;
-    kvs::ValueArray<kvs::UInt8> buffer( size );
+    const float dpr = this->devicePixelRatio();
+    const int buffer_width = static_cast<int>( width * dpr );
+    const int buffer_height = static_cast<int>( height * dpr );
+    const int buffer_size = buffer_width * buffer_height * 3;
+    kvs::ValueArray<kvs::UInt8> buffer( buffer_size );
 
     kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
     kvs::OpenGL::SetReadBuffer( GL_FRONT );
-    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
+    kvs::OpenGL::ReadPixels(
+        0, 0, buffer_width, buffer_height,
+        GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
 
-    kvs::ColorImage ret( width, height, buffer );
+    kvs::ColorImage ret( buffer_width, buffer_height, buffer );
     ret.flip();
     return ret;
 }
