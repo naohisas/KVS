@@ -197,7 +197,7 @@ void StochasticUniformGridRenderer::Engine::create( kvs::ObjectBase* object, kvs
     this->create_volume_texture( volume );
     this->create_transfer_function_texture();
     this->create_bounding_cube_buffer( volume );
-    this->create_framebuffer( framebuffer_width, framebuffer_width );
+    this->create_framebuffer( framebuffer_width, framebuffer_height );
 }
 
 /*===========================================================================*/
