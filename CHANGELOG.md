@@ -1,3 +1,8 @@
+### Version 2.x.x Released (202x.xx.xx)
+**Added new methods**
++ kvs::Matrix{22,33,44,nm}::rank
++ kvs::BitArray::BitArray( size, flag )
+
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**
 + kvs::Stat::Sum

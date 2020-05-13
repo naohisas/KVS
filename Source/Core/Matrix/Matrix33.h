@@ -18,6 +18,7 @@
 #include <sstream>
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <kvs/BitArray>
 #include <kvs/Indent>
 #include <kvs/Vector3>
 #include <kvs/Deprecated>
@@ -93,6 +94,7 @@ public:
     T determinant() const;
     const Matrix33 transposed() const;
     const Matrix33 inverted( T* determinant = 0 ) const;
+    size_t rank() const;
     bool isSymmetric() const;
     bool isDiagonal() const;
 
@@ -629,6 +631,53 @@ inline const Matrix33<T> Matrix33<T>::inverted( T* determinant ) const
     Matrix33 result( *this );
     result.invert( determinant );
     return result;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the rank of this matrix.
+ *  @return rank of this matrix
+ */
+/*===========================================================================*/
+template<typename T>
+inline size_t Matrix33<T>::rank() const
+{
+    const size_t nrows = 3;
+    const size_t ncols = 4;
+
+    kvs::Matrix33<T> tmp = *this;
+    kvs::BitArray flags( nrows, false );
+
+    size_t r = 0;
+    for ( size_t i = 0; i < ncols; ++i )
+    {
+        size_t j = 0;
+        for ( j = 0; j < nrows; ++j )
+        {
+            if ( !flags[j] && !kvs::Math::IsZero( tmp[j][i] ) ) { break; }
+        }
+
+        if ( j != nrows )
+        {
+            ++r;
+            flags.set(j);
+            for ( size_t s = i + 1; s < ncols; ++s )
+            {
+                tmp[j][s] /= tmp[j][i];
+            }
+            for ( size_t s = 0; s < nrows; ++s )
+            {
+                if ( s != j && !kvs::Math::IsZero( tmp[s][i] ) )
+                {
+                    for ( size_t t = i + 1; t < ncols; ++t )
+                    {
+                        tmp[s][t] -= tmp[j][t] * tmp[s][i];
+                    }
+                }
+            }
+        }
+    }
+    return r;
 }
 
 template<typename T>

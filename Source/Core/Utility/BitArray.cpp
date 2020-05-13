@@ -128,6 +128,13 @@ BitArray::BitArray( size_t size )
     this->allocate( size );
 }
 
+BitArray::BitArray( const size_t size, const bool flag )
+{
+    this->allocate( size );
+    if ( flag ) this->set();
+    else this->reset();
+}
+
 BitArray::BitArray( const kvs::UInt8* values, const size_t size )
 {
     m_size = size;
