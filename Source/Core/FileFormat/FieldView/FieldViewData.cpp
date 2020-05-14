@@ -662,10 +662,29 @@ void FieldViewData::read_constants( FILE* fp )
     {
         if ( kvs::String::ToUpper( std::string( buffer ) ) == "CONSTANTS" )
         {
-            float time; fscanf( fp, "%f ", &time );
-            float mach; fscanf( fp, "%f ", &mach );
-            float alpha; fscanf( fp, "%f ", &alpha );
-            float re; fscanf( fp, "%f ", &re );
+            float time;
+            if ( fscanf( fp, "%f ", &time ) == -1 )
+            {
+                kvsMessageError() << "Cannot read time in CONSTANTS." << std::endl;
+            }
+
+            float mach;
+            if ( fscanf( fp, "%f ", &mach ) == -1 )
+            {
+                kvsMessageError() << "Cannot read mach in CONSTANTS." << std::endl;
+            }
+
+            float alpha;
+            if ( fscanf( fp, "%f ", &alpha ) == -1 )
+            {
+                kvsMessageError() << "Cannot read alph in CONSTANTS." << std::endl;
+            }
+
+            float re;
+            if ( fscanf( fp, "%f ", &re ) == -1 )
+            {
+                kvsMessageError() << "Cannot read re in CONSTANTS." << std::endl;
+            }
 
             m_constant.time = time;
             m_constant.mach = mach;
@@ -691,7 +710,12 @@ void FieldViewData::read_grids( FILE* fp )
     {
         if ( kvs::String::ToUpper( std::string( buffer ) ) == "GRIDS" )
         {
-            int ngrids; fscanf( fp, "%d ", &ngrids );
+            int ngrids;
+            if ( fscanf( fp, "%d ", &ngrids ) == -1 )
+            {
+                kvsMessageError() << "Cannot read ngrids in GRIDS." << std::endl;
+            }
+
             m_ngrids = static_cast<size_t>( ngrids );
             break;
         }
@@ -713,15 +737,27 @@ void FieldViewData::read_variable_names( FILE* fp )
     {
         if ( kvs::String::ToUpper( std::string( buffer ) ) == "VARIABLE" )
         {
-            fscanf( fp, "%s", buffer );
+            if ( fscanf( fp, "%s", buffer ) == -1 )
+            {
+                kvsMessageError() << "Cannot read NAMES." << std::endl;
+            }
+
             if ( kvs::String::ToUpper( std::string( buffer ) ) == "NAMES" )
             {
-                int nvariables; fscanf( fp, "%d ", &nvariables );
+                int nvariables;
+                if ( fscanf( fp, "%d ", &nvariables ) == -1 )
+                {
+                    kvsMessageError() << "Cannot read nvariables in NAMES." << std::endl;
+                }
 
                 m_nvariables = static_cast<size_t>( nvariables );
                 for ( size_t i = 0; i < m_nvariables; i++ )
                 {
-                    fgets( buffer, MaxLineLength, fp );
+                    if ( fgets( buffer, MaxLineLength, fp ) == NULL )
+                    {
+                        kvsMessageError() << "Cannot read buffer." << std::endl;
+                    }
+
                     sscanf( buffer, "%s", buffer ); // remove '\n'
                     m_variable_names.push_back( std::string( buffer ) );
                 }
@@ -750,14 +786,29 @@ void FieldViewData::read_nodes( FILE* fp, size_t gindex )
     {
         if ( kvs::String::ToUpper( std::string( buffer ) ) == "NODES" )
         {
-            int nnodes; fscanf( fp, "%d ", &nnodes );
+            int nnodes;
+            if ( fscanf( fp, "%d ", &nnodes ) == -1 )
+            {
+                kvsMessageError() << "Cannot read nnodes in NODES." << std::endl;
+            }
 
             for ( int i = 0; i < nnodes; i++ )
             {
                 Node node;
-                fscanf( fp, "%f", &node.x );
-                fscanf( fp, "%f", &node.y );
-                fscanf( fp, "%f", &node.z );
+                if ( fscanf( fp, "%f", &node.x ) == -1 )
+                {
+                    kvsMessageError() << "Cannot read node.x in NODES." << std::endl;
+                }
+
+                if ( fscanf( fp, "%f", &node.y ) == -1 )
+                {
+                    kvsMessageError() << "Cannot read node.y in NODES." << std::endl;
+                }
+
+                if ( fscanf( fp, "%f", &node.z ) == -1 )
+                {
+                    kvsMessageError() << "Cannot read node.z in NODES." << std::endl;
+                }
 
                 grid.nodes.push_back( node );
             }
@@ -790,19 +841,33 @@ void FieldViewData::read_elements( FILE* fp, size_t gindex )
             for ( ; ; )
             {
                 fpos_t p; fgetpos( fp, &p );
-                fscanf( fp, "%s", buffer );
+                if ( fscanf( fp, "%s", buffer ) == -1 )
+                {
+                    kvsMessageError() << "Cannot read buffer in ELEMENTS." << std::endl;
+                }
+
                 if ( isdigit( buffer[0] ) )
                 {
                     Element element;
 
                     int type = atoi( buffer );
-                    int subtype; fscanf( fp, "%d", &subtype );
+                    int subtype;
+                    if ( fscanf( fp, "%d", &subtype ) == -1 )
+                    {
+                        kvsMessageError() << "Cannot read subtype in ELEMENTS." << std::endl;
+                    }
+
                     int nnodes = NumberOfNodesPerElement[type];
                     element.type = type;
                     element.id.allocate( nnodes );
                     for ( int i = 0; i < nnodes; i++ )
                     {
-                        int id; fscanf( fp, "%d", &id );
+                        int id;
+                        if ( fscanf( fp, "%d", &id ) == -1 )
+                        {
+                            kvsMessageError() << "Cannot read id in ELEMENTS." << std::endl;
+                        }
+
                         element.id[i] = id;
                     }
 
