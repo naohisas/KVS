@@ -1,18 +1,10 @@
 /*****************************************************************************/
 /**
- *  @file   SVDecomposer.cpp
+ *  @file   SVDecomposition.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: SVDecomposer.cpp 1385 2012-12-04 03:25:29Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#include "SVDecomposer.h"
+#include "SVDecomposition.h"
 #include <cmath>
 #include <kvs/Macro>
 #include <kvs/Math>
@@ -21,7 +13,7 @@
 namespace kvs
 {
 
-template <typename T> size_t SVDecomposer<T>::m_max_iterations = 30;
+template <typename T> size_t SVDecomposition<T>::m_max_iterations = 30;
 
 /*===========================================================================*/
 /**
@@ -30,29 +22,29 @@ template <typename T> size_t SVDecomposer<T>::m_max_iterations = 30;
  */
 /*===========================================================================*/
 template <typename T>
-void SVDecomposer<T>::SetMaxIterations( const size_t max_iterations )
+void SVDecomposition<T>::SetMaxIterations( const size_t max_iterations )
 {
     m_max_iterations = max_iterations;
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new SVDecomposer class.
+ *  @brief  Constructs a new SVDecomposition class.
  */
 /*===========================================================================*/
 template <typename T>
-SVDecomposer<T>::SVDecomposer()
+SVDecomposition<T>::SVDecomposition()
 {
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new SVDecomposer class.
+ *  @brief  Constructs a new SVDecomposition class.
  *  @param  m [in] 3x3 matrix
  */
 /*===========================================================================*/
 template <typename T>
-SVDecomposer<T>::SVDecomposer( const kvs::Matrix33<T>& m )
+SVDecomposition<T>::SVDecomposition( const kvs::Matrix33<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -60,12 +52,12 @@ SVDecomposer<T>::SVDecomposer( const kvs::Matrix33<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new SVDecomposer class.
+ *  @brief  Constructs a new SVDecomposition class.
  *  @param  m [in] 4x4 matrix
  */
 /*===========================================================================*/
 template <typename T>
-SVDecomposer<T>::SVDecomposer( const kvs::Matrix44<T>& m )
+SVDecomposition<T>::SVDecomposition( const kvs::Matrix44<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -73,12 +65,12 @@ SVDecomposer<T>::SVDecomposer( const kvs::Matrix44<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new SVDecomposer class.
+ *  @brief  Constructs a new SVDecomposition class.
  *  @param  m [in] MxM matrix
  */
 /*===========================================================================*/
 template <typename T>
-SVDecomposer<T>::SVDecomposer( const Matrix<T>& m )
+SVDecomposition<T>::SVDecomposition( const Matrix<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -86,12 +78,12 @@ SVDecomposer<T>::SVDecomposer( const Matrix<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  '=' operator for the SVDecomposer class.
- *  @param  s [in] SVDecomposer
+ *  @brief  '=' operator for the SVDecomposition class.
+ *  @param  s [in] SVDecomposition
  */
 /*===========================================================================*/
 template <typename T>
-SVDecomposer<T>& SVDecomposer<T>::operator = ( const SVDecomposer<T>& s )
+SVDecomposition<T>& SVDecomposition<T>::operator = ( const SVDecomposition<T>& s )
 {
     m_u = s.m_u;
     m_w = s.m_w;
@@ -107,7 +99,7 @@ SVDecomposer<T>& SVDecomposer<T>::operator = ( const SVDecomposer<T>& s )
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Matrix<T>& SVDecomposer<T>::U() const
+const kvs::Matrix<T>& SVDecomposition<T>::U() const
 {
     return( m_u );
 }
@@ -119,7 +111,7 @@ const kvs::Matrix<T>& SVDecomposer<T>::U() const
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Vector<T>& SVDecomposer<T>::W() const
+const kvs::Vector<T>& SVDecomposition<T>::W() const
 {
     return( m_w );
 }
@@ -131,7 +123,7 @@ const kvs::Vector<T>& SVDecomposer<T>::W() const
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Matrix<T>& SVDecomposer<T>::V() const
+const kvs::Matrix<T>& SVDecomposition<T>::V() const
 {
     return( m_v );
 }
@@ -143,7 +135,7 @@ const kvs::Matrix<T>& SVDecomposer<T>::V() const
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Matrix<T>& SVDecomposer<T>::leftSingularMatrix() const
+const kvs::Matrix<T>& SVDecomposition<T>::leftSingularMatrix() const
 {
     return( m_u );
 }
@@ -155,7 +147,7 @@ const kvs::Matrix<T>& SVDecomposer<T>::leftSingularMatrix() const
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Vector<T>& SVDecomposer<T>::singularValues() const
+const kvs::Vector<T>& SVDecomposition<T>::singularValues() const
 {
     return( m_w );
 }
@@ -167,7 +159,7 @@ const kvs::Vector<T>& SVDecomposer<T>::singularValues() const
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Matrix<T>& SVDecomposer<T>::rightSingularMatrix() const
+const kvs::Matrix<T>& SVDecomposition<T>::rightSingularMatrix() const
 {
     return( m_v );
 }
@@ -179,7 +171,7 @@ const kvs::Matrix<T>& SVDecomposer<T>::rightSingularMatrix() const
  */
 /*===========================================================================*/
 template <typename T>
-void SVDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
+void SVDecomposition<T>::setMatrix( const kvs::Matrix33<T>& m )
 {
     m_w.resize( 3 );
     m_v.resize( 3, 3 );
@@ -200,7 +192,7 @@ void SVDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void SVDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
+void SVDecomposition<T>::setMatrix( const kvs::Matrix44<T>& m )
 {
     m_w.resize( 4 );
     m_v.resize( 4, 4 );
@@ -221,7 +213,7 @@ void SVDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void SVDecomposer<T>::setMatrix( const Matrix<T>& m )
+void SVDecomposition<T>::setMatrix( const Matrix<T>& m )
 {
     m_u = m;
     m_w.resize( m.columnSize() );
@@ -234,7 +226,7 @@ void SVDecomposer<T>::setMatrix( const Matrix<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void SVDecomposer<T>::decompose()
+void SVDecomposition<T>::decompose()
 {
     int row    = m_u.rowSize();
     int column = m_u.columnSize();
@@ -507,7 +499,7 @@ void SVDecomposer<T>::decompose()
         } // for its
     } // for k
 
-    SVDecomposer<T>::sort( &m_u, &m_v, &m_w );
+    SVDecomposition<T>::sort( &m_u, &m_v, &m_w );
 }
 
 /*===========================================================================*/
@@ -519,7 +511,7 @@ void SVDecomposer<T>::decompose()
  */
 /*===========================================================================*/
 template <typename T>
-void SVDecomposer<T>::sort( kvs::Matrix<T>* umat, kvs::Matrix<T>* vmat, kvs::Vector<T>* wvec )
+void SVDecomposition<T>::sort( kvs::Matrix<T>* umat, kvs::Matrix<T>* vmat, kvs::Vector<T>* wvec )
 {
     int dim = umat->rowSize();
 
@@ -557,7 +549,7 @@ void SVDecomposer<T>::sort( kvs::Matrix<T>* umat, kvs::Matrix<T>* vmat, kvs::Vec
 }
 
 template <typename T>
-void SVDecomposer<T>::correctSingularValues()
+void SVDecomposition<T>::correctSingularValues()
 {
     int column = m_u.columnSize();
 
@@ -571,7 +563,7 @@ void SVDecomposer<T>::correctSingularValues()
 }
 
 // template instantiation
-template class SVDecomposer<float>;
-template class SVDecomposer<double>;
+template class SVDecomposition<float>;
+template class SVDecomposition<double>;
 
 } // end of namespace kvs

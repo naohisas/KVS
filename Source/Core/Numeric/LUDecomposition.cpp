@@ -1,18 +1,10 @@
 /*****************************************************************************/
 /**
- *  @file   LUDecomposer.cpp
+ *  @file   LUDecomposition.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LUDecomposer.cpp 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#include "LUDecomposer.h"
+#include "LUDecomposition.h"
 #include <kvs/Macro>
 #include <kvs/Math>
 
@@ -20,7 +12,7 @@
 namespace kvs
 {
 
-template <typename T> size_t LUDecomposer<T>::m_max_iterations = 30;
+template <typename T> size_t LUDecomposition<T>::m_max_iterations = 30;
 
 /*===========================================================================*/
 /**
@@ -29,29 +21,29 @@ template <typename T> size_t LUDecomposer<T>::m_max_iterations = 30;
  */
 /*===========================================================================*/
 template <typename T>
-void LUDecomposer<T>::SetMaxIterations( const size_t max_iterations )
+void LUDecomposition<T>::SetMaxIterations( const size_t max_iterations )
 {
     m_max_iterations = max_iterations;
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new LUDecomposer class.
+ *  @brief  Constructs a new LUDecomposition class.
  */
 /*===========================================================================*/
 template <typename T>
-LUDecomposer<T>::LUDecomposer()
+LUDecomposition<T>::LUDecomposition()
 {
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new LUDecomposer class.
+ *  @brief  Constructs a new LUDecomposition class.
  *  @param  m [in] input matrix (3x3)
  */
 /*===========================================================================*/
 template <typename T>
-LUDecomposer<T>::LUDecomposer( const Matrix33<T>& m )
+LUDecomposition<T>::LUDecomposition( const Matrix33<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -59,12 +51,12 @@ LUDecomposer<T>::LUDecomposer( const Matrix33<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new LUDecomposer class.
+ *  @brief  Constructs a new LUDecomposition class.
  *  @param  m [in] input matrix (4x4)
  */
 /*===========================================================================*/
 template <typename T>
-LUDecomposer<T>::LUDecomposer( const Matrix44<T>& m )
+LUDecomposition<T>::LUDecomposition( const Matrix44<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -72,12 +64,12 @@ LUDecomposer<T>::LUDecomposer( const Matrix44<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new LUDecomposer class.
+ *  @brief  Constructs a new LUDecomposition class.
  *  @param  m [in] input matrix (MxM)
  */
 /*===========================================================================*/
 template <typename T>
-LUDecomposer<T>::LUDecomposer( const Matrix<T>& m )
+LUDecomposition<T>::LUDecomposition( const Matrix<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -85,67 +77,18 @@ LUDecomposer<T>::LUDecomposer( const Matrix<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  '=' operator for the LUDecomposer class.
- *  @param  l [in] LUDecomposer
+ *  @brief  '=' operator for the LUDecomposition class.
+ *  @param  lud [in] LUDecomposition
  */
 /*===========================================================================*/
 template <typename T>
-LUDecomposer<T>& LUDecomposer<T>::operator = ( const LUDecomposer<T>& l )
+LUDecomposition<T>& LUDecomposition<T>::operator = ( const LUDecomposition<T>& lud )
 {
-    m_l = l.m_l;
-    m_u = l.m_u;
-    m_lu = l.m_lu;
-    m_pivots = l.m_pivots;
-
+    m_l = lud.m_l;
+    m_u = lud.m_u;
+    m_lu = lud.m_lu;
+    m_pivots = lud.m_pivots;
     return *this;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the L matrix.
- *  @return L matrix
- */
-/*===========================================================================*/
-template <typename T>
-const kvs::Matrix<T>& LUDecomposer<T>::L() const
-{
-    return m_l;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the U matrix.
- *  @return U matrix
- */
-/*===========================================================================*/
-template <typename T>
-const kvs::Matrix<T>& LUDecomposer<T>::U() const
-{
-    return m_u;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the LU matrix.
- *  @return LU matrix
- */
-/*===========================================================================*/
-template <typename T>
-const kvs::Matrix<T>& LUDecomposer<T>::LU() const
-{
-    return m_lu;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the pivot vector.
- *  @return pivot vector
- */
-/*===========================================================================*/
-template <typename T>
-const kvs::Vector<int>& LUDecomposer<T>::pivots() const
-{
-    return m_pivots;
 }
 
 /*===========================================================================*/
@@ -155,7 +98,7 @@ const kvs::Vector<int>& LUDecomposer<T>::pivots() const
  */
 /*===========================================================================*/
 template <typename T>
-void LUDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
+void LUDecomposition<T>::setMatrix( const kvs::Matrix33<T>& m )
 {
     m_l.resize( 3, 3 );
     m_u.resize( 3, 3 );
@@ -177,7 +120,7 @@ void LUDecomposer<T>::setMatrix( const kvs::Matrix33<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void LUDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
+void LUDecomposition<T>::setMatrix( const kvs::Matrix44<T>& m )
 {
     m_l.resize( 4, 4 );
     m_u.resize( 4, 4 );
@@ -199,7 +142,7 @@ void LUDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void LUDecomposer<T>::setMatrix( const Matrix<T>& m )
+void LUDecomposition<T>::setMatrix( const Matrix<T>& m )
 {
     m_l.resize( m.rowSize(), m.columnSize() );
     m_u.resize( m.rowSize(), m.columnSize() );
@@ -213,7 +156,7 @@ void LUDecomposer<T>::setMatrix( const Matrix<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void LUDecomposer<T>::decompose()
+void LUDecomposition<T>::decompose()
 {
     KVS_ASSERT( m_lu.rowSize() == m_lu.columnSize() );
 
@@ -309,7 +252,7 @@ void LUDecomposer<T>::decompose()
 }
 
 // template instantiation
-template class LUDecomposer<float>;
-template class LUDecomposer<double>;
+template class LUDecomposition<float>;
+template class LUDecomposition<double>;
 
 } // end of namespace kvs

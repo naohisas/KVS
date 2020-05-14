@@ -3,14 +3,6 @@
  *  @file   LUSolver.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LUSolver.cpp 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "LUSolver.h"
 #include <kvs/Assert>
@@ -32,13 +24,13 @@ LUSolver<T>::LUSolver()
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new LUSolver class.
- *  @param  decomposer [in] LU decomposer
+ *  @param  decomp [in] LU decomposition
  */
 /*===========================================================================*/
 template <typename T>
-LUSolver<T>::LUSolver( const kvs::LUDecomposer<T>& decomposer )
+LUSolver<T>::LUSolver( const kvs::LUDecomposition<T>& decomp )
 {
-    m_decomposer = decomposer;
+    m_decomp = decomp;
 }
 
 /*===========================================================================*/
@@ -75,8 +67,7 @@ LUSolver<T>& LUSolver<T>::operator = ( const kvs::Vector<T>& v )
 {
     this->resize( v.size() );
     for( size_t i = 0; i < this->size(); i++ ){ (*this)[i] = v[i]; }
-
-    return( *this );
+    return ( *this );
 }
 
 /*===========================================================================*/
@@ -93,18 +84,18 @@ const kvs::Vector<T>& LUSolver<T>::solve( const kvs::Vector<T>& b )
     kvs::Vector<T> x = b;
 
     // Forward substitution.
-    int row = m_decomposer.LU().rowSize();
+    int row = m_decomp.LU().rowSize();
     int ii  = -1;
     for( int i = 0; i < row; i++ )
     {
-        int pivot = m_decomposer.pivots()[i];
+        int pivot = m_decomp.pivots()[i];
         T   sum   = x[pivot];
         x[pivot]  = x[i];
         if( ii >= 0 )
         {
             for( int j = ii; j <= i - 1; j++ )
             {
-                sum -= m_decomposer.LU()[i][j] * x[j];
+                sum -= m_decomp.LU()[i][j] * x[j];
             }
         }
         else if( sum )
@@ -120,12 +111,12 @@ const kvs::Vector<T>& LUSolver<T>::solve( const kvs::Vector<T>& b )
         T sum = x[i];
         for( int j = i + 1; j < row; j++ )
         {
-            sum -= m_decomposer.LU()[i][j] * x[j];
+            sum -= m_decomp.LU()[i][j] * x[j];
         }
-        x[i] = sum / m_decomposer.LU()[i][i];
+        x[i] = sum / m_decomp.LU()[i][i];
     }
 
-    return( *this = x );
+    return ( *this = x );
 }
 
 /*===========================================================================*/
@@ -143,10 +134,10 @@ const kvs::Vector<T>& LUSolver<T>::solve( const kvs::Matrix<T>& A, const kvs::Ve
     KVS_ASSERT( A.columnSize() == b.size() );
 
     // LU decomposition.
-    m_decomposer.setMatrix( A );
-    m_decomposer.decompose();
+    m_decomp.setMatrix( A );
+    m_decomp.decompose();
 
-    return( this->solve( b ) );
+    return this->solve( b );
 }
 
 // template instantiation

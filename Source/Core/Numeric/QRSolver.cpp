@@ -3,14 +3,6 @@
  *  @file   QRSolver.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: QRSolver.cpp 1403 2012-12-07 07:35:18Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "QRSolver.h"
 #include <kvs/Assert>
@@ -32,13 +24,13 @@ QRSolver<T>::QRSolver()
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new QRSolver class.
- *  @param  decomposer [in] QR decomposer
+ *  @param  decomp [in] QR decomposition
  */
 /*===========================================================================*/
 template <typename T>
-QRSolver<T>::QRSolver( const kvs::QRDecomposer<T>& decomposer )
+QRSolver<T>::QRSolver( const kvs::QRDecomposition<T>& decomp )
 {
-    m_decomposer = decomposer;
+    m_decomp = decomp;
 }
 
 /*===========================================================================*/
@@ -77,7 +69,7 @@ QRSolver<T>& QRSolver<T>::operator = ( const kvs::Vector<T>& v )
     for( size_t i = 0; i < this->size(); i++ ){ (*this)[i] = v[i]; }
 
     return *this;
-};
+}
 
 /*===========================================================================*/
 /**
@@ -89,20 +81,20 @@ QRSolver<T>& QRSolver<T>::operator = ( const kvs::Vector<T>& v )
 template <typename T>
 const kvs::Vector<T>& QRSolver<T>::solve( const kvs::Vector<T>& b )
 {
-    int column = m_decomposer.R().columnSize();
+    int column = m_decomp.R().columnSize();
     kvs::Vector<T> x( b.size() );
 
     // From Q^t * b.
-    kvs::Vector<T> v = m_decomposer.Qt() * b;
+    kvs::Vector<T> v = m_decomp.Qt() * b;
 
     // Solve R * x = Q^t * b
     for( int i = column - 1; i >= 0; i-- )
     {
         for( int j = i + 1; j < column; j++ )
         {
-            v[i] -= x[j] * m_decomposer.R()[i][j];
+            v[i] -= x[j] * m_decomp.R()[i][j];
         }
-        x[i] = v[i] / m_decomposer.R()[i][i];
+        x[i] = v[i] / m_decomp.R()[i][i];
     }
 
     return *this = x;
@@ -122,8 +114,8 @@ const kvs::Vector<T>& QRSolver<T>::solve( const kvs::Matrix<T>& A, const kvs::Ve
     KVS_ASSERT( A.columnSize() == b.size() );
 
     // QR decomposition.
-    m_decomposer.setMatrix( A );
-    m_decomposer.decompose();
+    m_decomp.setMatrix( A );
+    m_decomp.decompose();
 
     return this->solve( b );
 }

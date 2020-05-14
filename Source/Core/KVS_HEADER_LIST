@@ -83,6 +83,7 @@ Numeric/BetaFunction
 Numeric/BoxMuller
 Numeric/ChiSquaredDistribution
 Numeric/EigenDecomposer
+Numeric/EigenDecomposition
 Numeric/ExponentialDistribution
 Numeric/FastKMeans
 Numeric/FisherFDistribution
@@ -91,16 +92,19 @@ Numeric/GaussDistribution
 Numeric/GaussEliminationSolver
 Numeric/KMeans
 Numeric/LUDecomposer
+Numeric/LUDecomposition
 Numeric/LUSolver
 Numeric/LassoRegression
 Numeric/LinearRegression
 Numeric/MersenneTwister
 Numeric/QRDecomposer
+Numeric/QRDecomposition
 Numeric/QRSolver
 Numeric/Quaternion
 Numeric/ResponseSurface
 Numeric/RidgeRegression
 Numeric/SVDecomposer
+Numeric/SVDecomposition
 Numeric/SVSolver
 Numeric/StudentTDistributiion
 Numeric/StudentTDistribution

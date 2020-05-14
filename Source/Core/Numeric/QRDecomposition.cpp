@@ -1,18 +1,10 @@
 /*****************************************************************************/
 /**
- *  @file   QRDecomposer.cpp
+ *  @file   QRDecomposition.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: QRDecomposer.cpp 1385 2012-12-04 03:25:29Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#include "QRDecomposer.h"
+#include "QRDecomposition.h"
 #include <cmath>
 
 
@@ -21,22 +13,22 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new QRDecomposer class.
+ *  @brief  Constructs a new QRDecomposition class.
  */
 /*===========================================================================*/
 template <typename T>
-QRDecomposer<T>::QRDecomposer()
+QRDecomposition<T>::QRDecomposition()
 {
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new QRDecomposer class.
+ *  @brief  Constructs a new QRDecomposition class.
  *  @param  m [in] 3x3 matrix
  */
 /*===========================================================================*/
 template <typename T>
-QRDecomposer<T>::QRDecomposer( const kvs::Matrix33<T>& m )
+QRDecomposition<T>::QRDecomposition( const kvs::Matrix33<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -44,12 +36,12 @@ QRDecomposer<T>::QRDecomposer( const kvs::Matrix33<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new QRDecomposer class.
+ *  @brief  Constructs a new QRDecomposition class.
  *  @param  m [in] 4x4 matrix
  */
 /*===========================================================================*/
 template <typename T>
-QRDecomposer<T>::QRDecomposer( const kvs::Matrix44<T>& m )
+QRDecomposition<T>::QRDecomposition( const kvs::Matrix44<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -57,12 +49,12 @@ QRDecomposer<T>::QRDecomposer( const kvs::Matrix44<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new QRDecomposer class.
+ *  @brief  Constructs a new QRDecomposition class.
  *  @param  m [in] MxM matrix
  */
 /*===========================================================================*/
 template <typename T>
-QRDecomposer<T>::QRDecomposer( const kvs::Matrix<T>& m )
+QRDecomposition<T>::QRDecomposition( const kvs::Matrix<T>& m )
 {
     this->setMatrix( m );
     this->decompose();
@@ -70,12 +62,12 @@ QRDecomposer<T>::QRDecomposer( const kvs::Matrix<T>& m )
 
 /*===========================================================================*/
 /**
- *  @brief  '=' operator for the QRDecomposer class.
- *  @param  q [in] QRDecomposer
+ *  @brief  '=' operator for the QRDecomposition class.
+ *  @param  q [in] QRDecomposition
  */
 /*===========================================================================*/
 template <typename T>
-QRDecomposer<T>& QRDecomposer<T>::operator = ( const QRDecomposer<T>& q )
+QRDecomposition<T>& QRDecomposition<T>::operator = ( const QRDecomposition<T>& q )
 {
     m_m = q.m_m;
     m_qt = q.m_qt;
@@ -91,7 +83,7 @@ QRDecomposer<T>& QRDecomposer<T>::operator = ( const QRDecomposer<T>& q )
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Matrix<T> QRDecomposer<T>::Q() const
+const kvs::Matrix<T> QRDecomposition<T>::Q() const
 {
     return m_qt.transposed();
 }
@@ -103,7 +95,7 @@ const kvs::Matrix<T> QRDecomposer<T>::Q() const
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Matrix<T>& QRDecomposer<T>::R() const
+const kvs::Matrix<T>& QRDecomposition<T>::R() const
 {
     return m_r;
 }
@@ -115,7 +107,7 @@ const kvs::Matrix<T>& QRDecomposer<T>::R() const
  */
 /*===========================================================================*/
 template <typename T>
-const kvs::Matrix<T>& QRDecomposer<T>::Qt() const
+const kvs::Matrix<T>& QRDecomposition<T>::Qt() const
 {
     return m_qt;
 }
@@ -127,7 +119,7 @@ const kvs::Matrix<T>& QRDecomposer<T>::Qt() const
  */
 /*===========================================================================*/
 template <typename T>
-void QRDecomposer<T>::setMatrix( const Matrix33<T>& m )
+void QRDecomposition<T>::setMatrix( const Matrix33<T>& m )
 {
     m_qt.resize( 3, 3 ); m_qt.setIdentity();
     m_r.resize( 3, 3 );
@@ -149,7 +141,7 @@ void QRDecomposer<T>::setMatrix( const Matrix33<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void QRDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
+void QRDecomposition<T>::setMatrix( const kvs::Matrix44<T>& m )
 {
     m_qt.resize( 4, 4 ); m_qt.setIdentity();
     m_r.resize( 4, 4 );
@@ -171,7 +163,7 @@ void QRDecomposer<T>::setMatrix( const kvs::Matrix44<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void QRDecomposer<T>::setMatrix( const kvs::Matrix<T>& m )
+void QRDecomposition<T>::setMatrix( const kvs::Matrix<T>& m )
 {
     m_qt.resize( m.rowSize(), m.columnSize() ); m_qt.setIdentity();
     m_r = m;
@@ -184,7 +176,7 @@ void QRDecomposer<T>::setMatrix( const kvs::Matrix<T>& m )
  */
 /*===========================================================================*/
 template <typename T>
-void QRDecomposer<T>::decompose()
+void QRDecomposition<T>::decompose()
 {
     int row = m_m.rowSize();
     int column = m_m.columnSize();
@@ -253,7 +245,7 @@ void QRDecomposer<T>::decompose()
 }
 
 // template instantiation
-template class QRDecomposer<float>;
-template class QRDecomposer<double>;
+template class QRDecomposition<float>;
+template class QRDecomposition<double>;
 
 } // end of namespace kvs
