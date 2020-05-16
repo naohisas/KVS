@@ -12,10 +12,9 @@
  *  $Id: Texture.h 1555 2013-04-21 02:31:38Z naohisa.sakamoto@gmail.com $
  */
 /****************************************************************************/
-#ifndef KVS__TEXTURE_H_INCLUDE
-#define KVS__TEXTURE_H_INCLUDE
-
+#pragma once
 #include <cctype>
+#include <cstdlib>
 #include <kvs/GL>
 #include <kvs/Deprecated>
 
@@ -31,7 +30,6 @@ namespace kvs
 class Texture
 {
 private:
-
     GLenum m_target; ///< target
     GLenum m_target_binding; ///< target binding
     GLuint m_id; ///< texture ID
@@ -48,7 +46,6 @@ private:
     size_t m_depth; ///< texture depth
 
 public:
-
     class Binder;
     class GuardedBinder;
 
@@ -62,7 +59,6 @@ public:
     static void SetEnv( GLenum pname, const GLint* params );
 
 public:
-
     Texture( const GLenum target, const GLenum target_binding );
 
     GLenum target() const;
@@ -96,7 +92,6 @@ public:
     bool isBound() const;
 
 protected:
-
     void createID();
     void deleteID();
     void setImage1D( GLsizei width, const GLvoid* data );
@@ -121,7 +116,6 @@ protected:
     void setPixelStorageMode( GLenum pname, GLint param );
 
 private:
-
     size_t get_nchannels( const GLenum external_format ) const;
     size_t get_channel_size( const GLenum external_type ) const;
     void estimate_pixel_format( const size_t nchannels, const size_t bytes_per_channel );
@@ -131,24 +125,20 @@ private:
     void determine_pixel_format_for_4_channel( const size_t bytes_per_channel );
 
 public:
-
     KVS_DEPRECATED( bool isTexture() const ) { return this->isValid(); }
 };
 
 class Texture::Binder
 {
 private:
-
     const Texture& m_texture;
     GLint m_unit;
 
 public:
-
     Binder( const Texture& texture, const GLint unit = 0 );
     ~Binder();
 
 private:
-
     Binder( const Binder& );
     Binder& operator =( const Binder& );
 };
@@ -156,22 +146,17 @@ private:
 class Texture::GuardedBinder
 {
 private:
-
     const Texture& m_texture;
     GLint m_id;
 
 public:
-
     GuardedBinder( const kvs::Texture& texture );
     ~GuardedBinder();
 
 private:
-
     GuardedBinder( const GuardedBinder& );
     GuardedBinder& operator =( const GuardedBinder& );
 };
 
 
 } // end of namespace kvs
-
-#endif // KVS__TEXTURE_H_INCLUDE
