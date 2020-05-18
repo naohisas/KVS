@@ -102,6 +102,8 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         const kvs::Real32 size = m_point_size;
         if ( m_has_point_color )
         {
+            std::cout << "has_point_color" << std::endl;
+
             const kvs::RGBColor color = m_point_color;
             const kvs::Real64 x_ratio = kvs::Real64( x1 - x0 ) / ( x_max_value - x_min_value );
             const kvs::Real64 y_ratio = kvs::Real64( y1 - y0 ) / ( y_max_value - y_min_value );
@@ -160,6 +162,8 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         }
         else
         {
+            std::cout << "has_no_point_color" << std::endl;
+
             const float color_axis_min_value = static_cast<float>( table->minValue(2) );
             const float color_axis_max_value = static_cast<float>( table->maxValue(2) );
             const kvs::AnyValueArray& color_axis_values = table->column(2);
@@ -204,7 +208,6 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
 
             engine->setStrokeWidth( m_edge_width );
             engine->setStrokeColor( kvs::RGBAColor( m_edge_color, m_edge_opacity ) );
-            engine->beginPath();
             for ( size_t i = 0; i < nrows; i++ )
             {
                 if ( !table->insideRange( i ) ) continue;
@@ -217,6 +220,7 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
                 const kvs::Real64 y_value = y_values[i].to<kvs::Real64>();
                 const double x = x0 + ( x_value - x_min_value ) * x_ratio;
                 const double y = y1 - ( y_value - y_min_value ) * y_ratio;
+                engine->beginPath();
                 engine->circle( x, y, size );
                 engine->fill();
                 engine->stroke();
