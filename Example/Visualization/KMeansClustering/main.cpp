@@ -5,15 +5,15 @@
  *  @brief  Example program for kvs::KMeansClustering class.
  */
 /*****************************************************************************/
+#include <kvs/glut/Application>
+#include <kvs/glut/Screen>
 #include <kvs/ValueTable>
 #include <kvs/ValueArray>
 #include <kvs/MersenneTwister>
 #include <kvs/KMeansClustering>
 #include <kvs/TableObject>
 #include <kvs/ScatterPlotRenderer>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
-#include <kvs/glut/Axis2D>
+#include <kvs/Axis2D>
 
 
 /*===========================================================================*/
@@ -80,12 +80,16 @@ void RandomSeeding( kvs::glut::Screen& screen, kvs::TableObject* table, size_t n
     kmeans->setNumberOfClusters( nclusters );
 
     kvs::TableObject* object = kmeans->exec( table );
+    object->setMinValue( 0, -7 );
+    object->setMaxValue( 0,  7 );
+    object->setMinValue( 1, -7 );
+    object->setMaxValue( 1,  7 );
+
     kvs::ScatterPlotRenderer* renderer = new kvs::ScatterPlotRenderer();
-    renderer->setPointSize( 15.0 );
+    renderer->setPointSize( 5.0 );
 
     screen.setTitle( "k-means (random seeding)" );
-    screen.setBackgroundColor( kvs::RGBColor( 255, 255, 255 ) );
-    screen.registerObject( object, new kvs::glut::Axis2D() );
+    screen.registerObject( object, new kvs::Axis2D() );
     screen.registerObject( object, renderer );
     screen.show();
 }
@@ -106,12 +110,16 @@ void SmartSeeding( kvs::glut::Screen& screen, kvs::TableObject* table, size_t nc
     kmeans->setNumberOfClusters( nclusters );
 
     kvs::TableObject* object = kmeans->exec( table );
+    object->setMinValue( 0, -7 );
+    object->setMaxValue( 0,  7 );
+    object->setMinValue( 1, -7 );
+    object->setMaxValue( 1,  7 );
+
     kvs::ScatterPlotRenderer* renderer = new kvs::ScatterPlotRenderer();
-    renderer->setPointSize( 15.0 );
+    renderer->setPointSize( 5.0 );
 
     screen.setTitle( "k-means (smart seeding)" );
-    screen.setBackgroundColor( kvs::RGBColor( 255, 255, 255 ) );
-    screen.registerObject( object, new kvs::glut::Axis2D() );
+    screen.registerObject( object, new kvs::Axis2D() );
     screen.registerObject( object, renderer );
     screen.show();
 }
@@ -131,12 +139,16 @@ void KAutoEstimation( kvs::glut::Screen& screen, kvs::TableObject* table, size_t
     kmeans->setNumberOfClusters( max_nclusters );
 
     kvs::TableObject* object = kmeans->exec( table );
+    object->setMinValue( 0, -7 );
+    object->setMaxValue( 0,  7 );
+    object->setMinValue( 1, -7 );
+    object->setMaxValue( 1,  7 );
+
     kvs::ScatterPlotRenderer* renderer = new kvs::ScatterPlotRenderer();
-    renderer->setPointSize( 15.0 );
+    renderer->setPointSize( 5.0 );
 
     screen.setTitle( "k-means (k auto-estimation)" );
-    screen.setBackgroundColor( kvs::RGBColor( 255, 255, 255 ) );
-    screen.registerObject( object, new kvs::glut::Axis2D() );
+    screen.registerObject( object, new kvs::Axis2D() );
     screen.registerObject( object, renderer );
     screen.show();
 }
@@ -155,9 +167,13 @@ int main( int argc, char** argv )
     kvs::glut::Screen screen2( &app );
     kvs::glut::Screen screen3( &app );
 
-    screen1.setPosition(   0, 0 );
-    screen2.setPosition(  50, 0 );
-    screen3.setPosition( 100, 0 );
+    screen1.setSize( 400, 400 );
+    screen2.setSize( 400, 400 );
+    screen3.setSize( 400, 400 );
+
+    screen1.setPosition( 0, 0 );
+    screen2.setPosition( screen1.x() + screen1.width(), 0 );
+    screen3.setPosition( screen2.x() + screen2.width(), 0 );
 
     size_t nrows = 1000;
     kvs::ValueTable<kvs::Real32> data = CreateValueTable( nrows );
