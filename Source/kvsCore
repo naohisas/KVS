@@ -313,6 +313,7 @@
 #include <Core/Visualization/Renderer/Axis2DMatrix.h>
 #include <Core/Visualization/Renderer/Axis3D.h>
 #include <Core/Visualization/Renderer/Bounds.h>
+#include <Core/Visualization/Renderer/DateAxis.h>
 #include <Core/Visualization/Renderer/DiamondGlyph.h>
 #include <Core/Visualization/Renderer/EnsembleAverageBuffer.h>
 #include <Core/Visualization/Renderer/GlyphBase.h>
@@ -351,6 +352,7 @@
 #include <Core/Visualization/Renderer/StochasticTetrahedraRenderer.h>
 #include <Core/Visualization/Renderer/StochasticUniformGridRenderer.h>
 #include <Core/Visualization/Renderer/StylizedLineRenderer.h>
+#include <Core/Visualization/Renderer/ValueAxis.h>
 #include <Core/Visualization/Renderer/VertexBufferObjectManager.h>
 #include <Core/Visualization/Renderer/VolumeRayIntersector.h>
 #include <Core/Visualization/Renderer/VolumeRendererBase.h>

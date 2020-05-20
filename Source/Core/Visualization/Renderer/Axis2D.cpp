@@ -7,6 +7,7 @@
 #include <kvs/RGBColor>
 #include <kvs/RGBAColor>
 #include <kvs/TableObject>
+#include "ValueAxis.h"
 
 
 namespace kvs
@@ -28,8 +29,16 @@ Axis2D::Axis2D():
     m_label_color( 0, 0, 0 ),
     m_background_color( kvs::RGBAColor::White() ),
     m_x_label( "" ),
-    m_y_label( "" )
+    m_y_label( "" ),
+    m_x_axis( new kvs::ValueAxis( kvs::ValueAxis::Bottom ) ),
+    m_y_axis( new kvs::ValueAxis( kvs::ValueAxis::Left ) )
 {
+}
+
+Axis2D::~Axis2D()
+{
+    if ( m_x_axis ) { delete m_x_axis; }
+    if ( m_y_axis ) { delete m_y_axis; }
 }
 
 /*===========================================================================*/
@@ -49,6 +58,19 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
     m_painter.begin( screen() );
     {
+        //        x0                 x1
+        //    +--------------------------+
+        //    |   |                  |   |
+        // y0 |---+------------------+---|
+        //    |   |                  |   |
+        //    |   |                  |   |
+        //    |   |                  |   |
+        //    |   |                  |   |
+        //    |   |                  |   |
+        // y1 |---+------------------+---|
+        //    |   |                  |   |
+        //    +--------------------------+
+        //
         const float dpr = camera->devicePixelRatio();
         const int x0 = m_left_margin;
         const int x1 = camera->windowWidth() - m_right_margin;
@@ -80,40 +102,33 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
         kvs::OpenGL::End();
 
         // Draw min/max values.
-        const std::string x_min_value = kvs::String::ToString( table->minValue(0) );
-        const std::string x_max_value = kvs::String::ToString( table->maxValue(0) );
-        const kvs::Vec2 x_min_position( x0, y1 + metrics.height() + 5 );
-        const kvs::Vec2 x_max_position( x1 - metrics.width( x_max_value ), y1 + metrics.height() + 5 );
+        m_x_axis->setRect( kvs::Vec4i( x0, x1, y0, y1 ) );
+        m_x_axis->setRange( table->minValue(0), table->maxValue(0) );
+        const int x_offset = 5;
+        const int x_margin = m_x_axis->draw( m_painter, x_offset );
 
-        m_painter.drawText( x_min_position, x_min_value );
-        m_painter.drawText( x_max_position, x_max_value );
-
-        const std::string y_min_value = kvs::String::ToString( table->minValue(1) );
-        const std::string y_max_value = kvs::String::ToString( table->maxValue(1) );
-        const kvs::Vec2 y_min_position( x0 - metrics.width( y_min_value ) - 5, y1 );
-        const kvs::Vec2 y_max_position( x0 - metrics.width( y_max_value ) - 5, y0 + metrics.height() );
-
-        m_painter.drawText( y_min_position, y_min_value );
-        m_painter.drawText( y_max_position, y_max_value );
+        m_y_axis->setRect( kvs::Vec4i( x0, x1, y0, y1 ) );
+        m_y_axis->setRange( table->minValue(1), table->maxValue(1) );
+        const int y_offset = 5;
+        const int y_margin = m_y_axis->draw( m_painter, y_offset );
 
         // Draw x label.
         const std::string x_label = m_x_label.empty() ? table->label(0) : m_x_label;
         if ( x_label.size() > 0 )
         {
-            const float x_label_position_x = ( x0 + x1 - metrics.width( x_label ) ) * 0.5f;
-            const float x_label_position_y = y1 + metrics.height() * 2.0f + 5.0f;
-            m_painter.drawText( kvs::Vec2( x_label_position_x, x_label_position_y ), x_label );
+            const float px = ( x0 + x1 - metrics.width( x_label ) ) * 0.5f;
+            const float py = y1 + x_offset + x_margin + metrics.height();
+            m_painter.drawText( kvs::Vec2( px, py ), x_label );
         }
 
         // Draw y label.
         const std::string y_label = m_y_label.empty() ? table->label(1) : m_y_label;
         if ( y_label.size() > 0 )
         {
-            const float y_value_position = kvs::Math::Min( y_min_position.x(), y_max_position.x() );
-            const float y_label_position_x = y_value_position - 5.0f;
-            const float y_label_position_y = ( y0 + y1 + metrics.width( y_label ) ) * 0.5f;
+            const float px = x0 - y_offset - y_margin - y_offset;
+            const float py = ( y0 + y1 + metrics.width( y_label ) ) * 0.5f;
             kvs::OpenGL::PushMatrix();
-            kvs::OpenGL::Translate( y_label_position_x * dpr, y_label_position_y * dpr, 0.0f );
+            kvs::OpenGL::Translate( px * dpr, py * dpr, 0.0f );
             kvs::OpenGL::Rotate( -90.0, 0, 0, 1 );
             m_painter.drawText( kvs::Vec2( 0, 0 ), y_label );
             kvs::OpenGL::PopMatrix();

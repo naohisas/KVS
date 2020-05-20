@@ -363,6 +363,7 @@ $(OUTDIR)\.\Visualization\Renderer\Axis2D.obj \
 $(OUTDIR)\.\Visualization\Renderer\Axis2DMatrix.obj \
 $(OUTDIR)\.\Visualization\Renderer\Axis3D.obj \
 $(OUTDIR)\.\Visualization\Renderer\Bounds.obj \
+$(OUTDIR)\.\Visualization\Renderer\DateAxis.obj \
 $(OUTDIR)\.\Visualization\Renderer\DiamondGlyph.obj \
 $(OUTDIR)\.\Visualization\Renderer\EnsembleAverageBuffer.obj \
 $(OUTDIR)\.\Visualization\Renderer\GlyphBase.obj \
@@ -406,6 +407,7 @@ $(OUTDIR)\.\Visualization\Renderer\StochasticRenderingEngine.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticTetrahedraRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticUniformGridRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StylizedLineRenderer.obj \
+$(OUTDIR)\.\Visualization\Renderer\ValueAxis.obj \
 $(OUTDIR)\.\Visualization\Renderer\VertexBufferObjectManager.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRayIntersector.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRendererBase.obj \

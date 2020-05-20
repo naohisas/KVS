@@ -35,7 +35,7 @@ ScatterPlotRenderer::ScatterPlotRenderer():
     m_bottom_margin( 30 ),
     m_left_margin( 30 ),
     m_right_margin( 30 ),
-    m_has_point_color( false ),
+//    m_has_point_color( false ),
     m_point_color( kvs::RGBColor( 0, 0, 0 ) ),
     m_point_opacity( 1.0f ),
     m_point_size( 1.0f ),
@@ -65,13 +65,15 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
     kvs::IgnoreUnusedVariable( light );
 
     kvs::TableObject* table = kvs::TableObject::DownCast( object );
-    if ( !m_has_point_color ) if ( table->numberOfColumns() < 3 ) m_has_point_color = true;
+//    if ( !m_has_point_color ) if ( table->numberOfColumns() < 3 ) m_has_point_color = true;
+    const bool has_values = ( table->numberOfColumns() < 3 ) ? false : true;
 
     BaseClass::startTimer();
 
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
     m_painter.begin( screen() );
     {
+        const float dpr = camera->devicePixelRatio();
         const int x0 = m_left_margin;
         const int x1 = camera->windowWidth() - m_right_margin;
         const int y0 = m_top_margin;
@@ -82,10 +84,10 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         {
             kvs::OpenGL::Begin( GL_QUADS );
             kvs::OpenGL::Color( m_background_color );
-            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) * dpr );
             kvs::OpenGL::End();
         }
 
@@ -100,7 +102,8 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         kvs::NanoVG* engine = m_painter.device()->renderEngine();
         const kvs::Real32 opacity = m_point_opacity;
         const kvs::Real32 size = m_point_size;
-        if ( m_has_point_color )
+//        if ( m_has_point_color )
+        if ( !has_values )
         {
             const kvs::RGBColor color = m_point_color;
             const kvs::Real64 x_ratio = kvs::Real64( x1 - x0 ) / ( x_max_value - x_min_value );

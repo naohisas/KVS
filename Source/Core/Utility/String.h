@@ -16,6 +16,8 @@
 
 #include <string>
 #include <sstream>
+#include <iomanip>
+#include <cstdio>
 #include <kvs/Type>
 #if KVS_ENABLE_DEPRECATED
 #include <cstdarg>
@@ -49,6 +51,31 @@ public:
     {
         std::ostringstream ss;
         ss << src;
+        return ss.str();
+    }
+
+    template <typename T>
+    static std::string ToString( const T& src, const std::string& format )
+    {
+        char buffer[100];
+        if ( std::sprintf( buffer, format.c_str(), src ) >= 0 )
+        {
+            return std::string( buffer );
+        }
+        return std::string("");
+    }
+
+    template <typename T>
+    static std::string ToString(
+        const T& src,
+        const int precision,
+        const bool fixed = false,
+        const bool scientific = false )
+    {
+        std::ostringstream ss;
+        if ( scientific ) { ss.setf( std::ios_base::scientific ); }
+        else { if ( fixed ) { ss.setf( std::ios_base::fixed ); } }
+        ss << std::setprecision( precision ) << src;
         return ss.str();
     }
 

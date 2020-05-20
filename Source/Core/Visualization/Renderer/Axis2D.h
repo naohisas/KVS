@@ -5,6 +5,7 @@
 #include <kvs/RGBAColor>
 #include <kvs/Painter>
 #include <string>
+#include "ValueAxis.h"
 
 
 namespace kvs
@@ -37,9 +38,12 @@ private:
     std::string m_x_label; ///< label for x axis
     std::string m_y_label; ///< label for y axis
     kvs::Painter m_painter; ///< painter
+    kvs::ValueAxis* m_x_axis; ///< x axis
+    kvs::ValueAxis* m_y_axis; ///< y axis
 
 public:
     Axis2D();
+    virtual ~Axis2D();
 
     void setTopMargin( const int margin ){ m_top_margin = margin; }
     void setBottomMargin( const int margin ) { m_bottom_margin = margin; }
@@ -52,6 +56,20 @@ public:
     void setBackgroundColor( const kvs::RGBAColor color ) { m_background_color = color; }
     void setXLabel( const std::string& label ) { m_x_label = label; }
     void setYLabel( const std::string& label ) { m_y_label = label; }
+
+    template <typename Axis>
+    void setXAxis( const Axis& axis )
+    {
+        if ( m_x_axis ) { delete m_x_axis; }
+        m_x_axis = new Axis( axis );
+    }
+
+    template <typename Axis>
+    void setYAxis( const Axis& axis )
+    {
+        if ( m_y_axis ) { delete m_y_axis; }
+        m_y_axis = new Axis( axis );
+    }
 
     int topMargin() const { return m_top_margin; }
     int bottomMargin() const { return m_bottom_margin; }

@@ -313,6 +313,7 @@ Visualization/Renderer/Axis2D
 Visualization/Renderer/Axis2DMatrix
 Visualization/Renderer/Axis3D
 Visualization/Renderer/Bounds
+Visualization/Renderer/DateAxis
 Visualization/Renderer/DiamondGlyph
 Visualization/Renderer/EnsembleAverageBuffer
 Visualization/Renderer/GlyphBase
@@ -351,6 +352,7 @@ Visualization/Renderer/StochasticRenderingEngine
 Visualization/Renderer/StochasticTetrahedraRenderer
 Visualization/Renderer/StochasticUniformGridRenderer
 Visualization/Renderer/StylizedLineRenderer
+Visualization/Renderer/ValueAxis
 Visualization/Renderer/VertexBufferObjectManager
 Visualization/Renderer/VolumeRayIntersector
 Visualization/Renderer/VolumeRendererBase
