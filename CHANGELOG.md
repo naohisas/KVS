@@ -8,6 +8,7 @@
 + kvs::BitArray::BitArray( size, flag )
 + kvs::String::ToString( src, format )
 + kvs::String::ToString( src, precision, fixed, scientific )
++ kvs::Painter::devicePixelRatio()
 
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**

@@ -32,6 +32,7 @@ public:
     virtual ~Painter();
 
     kvs::PaintDevice* device() const { return m_device; }
+    float devicePixelRatio() const { return m_device_pixel_ratio; }
     kvs::Font& font() { return m_font; }
     const kvs::Font& font() const { return m_font; }
     void setFont( const kvs::Font& font ) { m_font = font; }
