@@ -87,7 +87,7 @@ public:
     float tickMarkLength() const { return m_tick_mark_length; }
     int tickMakrkOffset() const { return m_tick_label_offset; }
     size_t numberOfTicks() const { return m_nticks; }
-    const kvs::Vec4i rect() const { return m_rect; }
+    const kvs::Vec4i& rect() const { return m_rect; }
     Align align() const { return m_align; }
     kvs::Real64 min() const { return m_min; }
     kvs::Real64 max() const { return m_max; }

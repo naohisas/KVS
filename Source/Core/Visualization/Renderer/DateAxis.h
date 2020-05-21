@@ -48,6 +48,12 @@ public:
     }
 
     virtual void draw( kvs::Painter& painter );
+
+protected:
+    int drawTickLabelsOnTop( kvs::Painter& painter );
+    int drawTickLabelsOnBottom( kvs::Painter& painter );
+    int drawTickLabelsOnLeft( kvs::Painter& painter );
+    int drawTickLabelsOnRight( kvs::Painter& painter );
 };
 
 } // end of namespace kvs

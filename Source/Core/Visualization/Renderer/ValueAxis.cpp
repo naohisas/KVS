@@ -60,6 +60,13 @@ void ValueAxis::draw( kvs::Painter& painter )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick labels on the top axis.
+ *  @param  painter [in] painter
+ *  @return margin between the top axis and the axis label
+ */
+/*===========================================================================*/
 int ValueAxis::drawTickLabelsOnTop( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -85,6 +92,13 @@ int ValueAxis::drawTickLabelsOnTop( kvs::Painter& painter )
     return metrics.height();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick labels on the bottom axis.
+ *  @param  painter [in] painter
+ *  @return margin between the bottom axis and the axis label
+ */
+/*===========================================================================*/
 int ValueAxis::drawTickLabelsOnBottom( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -110,6 +124,13 @@ int ValueAxis::drawTickLabelsOnBottom( kvs::Painter& painter )
     return metrics.height();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick labels on the left axis.
+ *  @param  painter [in] painter
+ *  @return margin between the left axis and the axis label
+ */
+/*===========================================================================*/
 int ValueAxis::drawTickLabelsOnLeft( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -138,6 +159,13 @@ int ValueAxis::drawTickLabelsOnLeft( kvs::Painter& painter )
     return margin + offset;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick labels on the right axis.
+ *  @param  painter [in] painter
+ *  @return margin between the right axis and the axis label
+ */
+/*===========================================================================*/
 int ValueAxis::drawTickLabelsOnRight( kvs::Painter& painter )
 {
     const float x1 = m_rect[1];
@@ -166,6 +194,12 @@ int ValueAxis::drawTickLabelsOnRight( kvs::Painter& painter )
     return margin + offset;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick marks on the top axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawTickMarksOnTop( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -187,6 +221,12 @@ void ValueAxis::drawTickMarksOnTop( kvs::Painter& painter )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick marks on the bottom axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawTickMarksOnBottom( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -208,6 +248,12 @@ void ValueAxis::drawTickMarksOnBottom( kvs::Painter& painter )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick marks on the left axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawTickMarksOnLeft( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -229,6 +275,12 @@ void ValueAxis::drawTickMarksOnLeft( kvs::Painter& painter )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the tick marks on the right axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawTickMarksOnRight( kvs::Painter& painter )
 {
     const float x1 = m_rect[1];
@@ -250,6 +302,12 @@ void ValueAxis::drawTickMarksOnRight( kvs::Painter& painter )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the top axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawAxisOnTop( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -264,6 +322,12 @@ void ValueAxis::drawAxisOnTop( kvs::Painter& painter )
     kvs::OpenGL::End();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the bottom axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawAxisOnBottom( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -278,6 +342,12 @@ void ValueAxis::drawAxisOnBottom( kvs::Painter& painter )
     kvs::OpenGL::End();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the left axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawAxisOnLeft( kvs::Painter& painter )
 {
     const float x0 = m_rect[0];
@@ -292,6 +362,12 @@ void ValueAxis::drawAxisOnLeft( kvs::Painter& painter )
     kvs::OpenGL::End();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the right axis.
+ *  @param  painter [in] painter
+ */
+/*===========================================================================*/
 void ValueAxis::drawAxisOnRight( kvs::Painter& painter )
 {
     const float x1 = m_rect[1];
@@ -306,6 +382,13 @@ void ValueAxis::drawAxisOnRight( kvs::Painter& painter )
     kvs::OpenGL::End();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the axis label on the top axis.
+ *  @param  painter [in] painter
+ *  @param  margin [in] margin between the top axis and the axis label
+ */
+/*===========================================================================*/
 void ValueAxis::drawLabelOnTop( kvs::Painter& painter, const int margin )
 {
     const int x0 = m_rect[0];
@@ -320,6 +403,13 @@ void ValueAxis::drawLabelOnTop( kvs::Painter& painter, const int margin )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the axis label on the bottom axis.
+ *  @param  painter [in] painter
+ *  @param  margin [in] margin between the bottom axis and the axis label
+ */
+/*===========================================================================*/
 void ValueAxis::drawLabelOnBottom( kvs::Painter& painter, const int margin )
 {
     const int x0 = m_rect[0];
@@ -334,6 +424,13 @@ void ValueAxis::drawLabelOnBottom( kvs::Painter& painter, const int margin )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the axis label on the left axis.
+ *  @param  painter [in] painter
+ *  @param  margin [in] margin between the left axis and the axis label
+ */
+/*===========================================================================*/
 void ValueAxis::drawLabelOnLeft( kvs::Painter& painter,  const int margin )
 {
     const int x0 = m_rect[0];
@@ -353,6 +450,13 @@ void ValueAxis::drawLabelOnLeft( kvs::Painter& painter,  const int margin )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the axis label on the right axis.
+ *  @param  painter [in] painter
+ *  @param  margin [in] margin between the right axis and the axis label
+ */
+/*===========================================================================*/
 void ValueAxis::drawLabelOnRight( kvs::Painter& painter, const int margin )
 {
     const int x1 = m_rect[1];
