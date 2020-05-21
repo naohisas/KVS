@@ -47,7 +47,7 @@ public:
         this->setMaxDate( max_date );
     }
 
-    virtual int draw( kvs::Painter& painter, const int offset = 5 );
+    virtual void draw( kvs::Painter& painter );
 };
 
 } // end of namespace kvs

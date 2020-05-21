@@ -30,16 +30,20 @@ private:
     int m_bottom_margin; ///< bottom margin
     int m_left_margin; ///< left margin
     int m_right_margin; ///< right margin
+    kvs::RGBAColor m_background_color; ///< background color
+    kvs::RGBAColor m_borderline_color; ///< borderline color
+    float m_borderline_width; /// borderline width
+    kvs::Painter m_painter; ///< painter
+    kvs::ValueAxis* m_x_axis; ///< x axis
+    kvs::ValueAxis* m_y_axis; ///< y axis
+
+    // The following member variables will be removed.
     kvs::Real32 m_axis_width; ///< axis width
     kvs::RGBColor m_axis_color; ///< axis color
     kvs::RGBColor m_value_color; ///< value color
     kvs::RGBColor m_label_color; ///< label color
-    kvs::RGBAColor m_background_color; ///< background color
     std::string m_x_label; ///< label for x axis
     std::string m_y_label; ///< label for y axis
-    kvs::Painter m_painter; ///< painter
-    kvs::ValueAxis* m_x_axis; ///< x axis
-    kvs::ValueAxis* m_y_axis; ///< y axis
 
 public:
     Axis2D();
@@ -49,13 +53,9 @@ public:
     void setBottomMargin( const int margin ) { m_bottom_margin = margin; }
     void setLeftMargin( const int margin ) { m_left_margin = margin; }
     void setRightMargin( const int margin ) { m_right_margin = margin; }
-    void setAxisWidth( const kvs::Real32 width ) { m_axis_width = width; }
-    void setAxisColor( const kvs::RGBColor color ) { m_axis_color = color; }
-    void setValueColor( const kvs::RGBColor color ) { m_value_color = color; }
-    void setLabelColor( const kvs::RGBColor color ) { m_label_color = color; }
-    void setBackgroundColor( const kvs::RGBAColor color ) { m_background_color = color; }
-    void setXLabel( const std::string& label ) { m_x_label = label; }
-    void setYLabel( const std::string& label ) { m_y_label = label; }
+    void setBackgroundColor( const kvs::RGBAColor& color ) { m_background_color = color; }
+    void setBorderlineColor( const kvs::RGBAColor& color ) { m_borderline_color = color; }
+    void setBorderlineWidth( const float width ) { m_borderline_width = width; }
 
     template <typename Axis>
     void setXAxis( const Axis& axis )
@@ -75,15 +75,26 @@ public:
     int bottomMargin() const { return m_bottom_margin; }
     int leftMargin() const { return m_left_margin; }
     int rightMargin() const { return m_right_margin; }
+    const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
+    const kvs::RGBAColor& borderlineColor() const { return m_borderline_color; }
+    float borderlineWidth() const { return m_borderline_width; }
+
+    void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+
+
+    void setAxisWidth( const kvs::Real32 width ) { m_axis_width = width; }
+    void setAxisColor( const kvs::RGBColor color ) { m_axis_color = color; }
+    void setValueColor( const kvs::RGBColor color ) { m_value_color = color; }
+    void setLabelColor( const kvs::RGBColor color ) { m_label_color = color; }
+    void setXLabel( const std::string& label ) { m_x_label = label; }
+    void setYLabel( const std::string& label ) { m_y_label = label; }
+
     kvs::Real32 axisWidth() const { return m_axis_width; }
     const kvs::RGBColor& axisColor() const { return m_axis_color; }
     const kvs::RGBColor& valueColor() const { return m_value_color; }
     const kvs::RGBColor& labelColor() const { return m_label_color; }
-    const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
     const std::string& xLabel() const { return m_x_label; }
     const std::string& yLabel() const { return m_y_label; }
-
-    void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 };
 
 } // end of namespace kvs
