@@ -10,6 +10,20 @@
 + kvs::String::ToString( src, precision, fixed, scientific )
 + kvs::Painter::devicePixelRatio()
 
+**Deprecated methods**
++ kvs::Axis2D::setAxisWidth (use kvs::Axis2D::{xAxis,yAxis}().setWidth)
++ kvs::Axis2D::setAxisColor (use kvs::Axis2D::{xAxis,yAxis}().setColor)
++ kvs::Axis2D::setValueColor (use kvs::Axis2D::{xAxis,yAxis}().setTickLabelFont)
++ kvs::Axis2D::setLabelColor (use kvs::Axis2D::{xAxis,yAxis}().setLabelFont)
++ kvs::Axis2D::setXLabel (use kvs::Axis2D::xAxis().setLabel)
++ kvs::Axis2D::setYLabel (use kvs::Axis2D::yAxis().setLabel)
++ kvs::Axis2D::axisWidth (use kvs::Axis2D::xAxis().width)
++ kvs::Axis2D::axisColor (use kvs::Axis2D::xAxis().color)
++ kvs::Axis2D::valueColor (use kvs::Axis2D::xAxis().tickLabelFont().color)
++ kvs::Axis2D::labelColor (use kvs::Axis2D::xAxis().labelFont().color)
++ kvs::Axis2D::xLabel (use kvs::Axis2D::xAxis().label)
++ kvs::Axis2D::yLabel (use kvs::Axis2D::yAxis().label)
+
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**
 + kvs::Stat::Sum
