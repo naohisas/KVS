@@ -70,52 +70,8 @@ private:
     bool m_scientific; ///< scientific notation
 
 public:
-    ValueAxis( Align align = Bottom ):
-        m_visible( true ),
-        m_align( align ),
-        m_width( 2 ),
-        m_color( kvs::UIColor::Label() ),
-        m_label_visible( true ),
-        m_label( "" ),
-        m_label_font(),
-        m_label_offset( 5 ),
-        m_tick_mark_visible( true ),
-        m_tick_mark_width( 2 ),
-        m_tick_mark_length( 5 ),
-        m_tick_label_visible( true ),
-        m_tick_label_font(),
-        m_tick_label_offset( 5 ),
-        m_tick_direction( Inside ),
-        m_nticks( 5 ),
-        m_rect( 0, 0, 0, 0 ),
-        m_min( 0.0 ),
-        m_max( 0.0 ),
-        m_precision( 0 ),
-        m_scientific( false ) {}
-
-    ValueAxis( const ValueAxis& axis ):
-        m_visible( axis.m_visible ),
-        m_align( axis.m_align ),
-        m_width( axis.m_width ),
-        m_color( axis.m_color ),
-        m_label_visible( axis.m_label_visible ),
-        m_label( axis.m_label ),
-        m_label_font( axis.m_label_font ),
-        m_label_offset( axis.m_label_offset ),
-        m_tick_mark_visible( axis.m_tick_mark_visible ),
-        m_tick_mark_width( axis.m_tick_mark_width ),
-        m_tick_mark_length( axis.m_tick_mark_length ),
-        m_tick_label_visible( axis.m_tick_label_visible ),
-        m_tick_label_font( axis.m_tick_label_font ),
-        m_tick_label_offset( axis.m_tick_label_offset ),
-        m_tick_direction( axis.m_tick_direction ),
-        m_nticks( axis.m_nticks ),
-        m_rect( axis.m_rect ),
-        m_min( axis.m_min ),
-        m_max( axis.m_max ),
-        m_precision( axis.m_precision ),
-        m_scientific( axis.m_scientific ) {}
-
+    ValueAxis( Align align = Bottom );
+    ValueAxis( const ValueAxis& axis );
     virtual ~ValueAxis() {}
 
     void setVisible( const bool visible = true ) { m_visible = visible; }
