@@ -47,7 +47,7 @@ Axis2D::Axis2D():
     m_title( "" ),
     m_title_font( kvs::Font::Sans, kvs::Font::Bold, 22.0f ),
     m_title_offset( 5 ),
-    m_background_color( kvs::UIColor::SecondaryBackground() ),
+    m_background_color( kvs::UIColor::Fill() ),
     m_background_visible( true ),
     m_borderline_color( kvs::UIColor::Label() ),
     m_borderline_width( 2 ),
@@ -173,6 +173,10 @@ void Axis2D::draw_background( const kvs::Vec4& rect, const float dpr )
 
     if ( m_background_color.a() > 0.0f )
     {
+        kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
+        kvs::OpenGL::Enable( GL_BLEND );
+        kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
         const float x0 = rect[0];
         const float x1 = rect[1];
         const float y0 = rect[2];
