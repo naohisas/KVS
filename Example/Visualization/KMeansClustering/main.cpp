@@ -88,11 +88,18 @@ int main( int argc, char** argv )
     table->setMinValue( 1, -7 );
     table->setMaxValue( 1,  7 );
 
+    kvs::ColorMap cmap( 4 );
+    cmap.addPoint( 0, kvs::UIColor::Red() );
+    cmap.addPoint( 1, kvs::UIColor::Green() );
+    cmap.addPoint( 2, kvs::UIColor::Yellow() );
+    cmap.addPoint( 3, kvs::UIColor::Indigo() );
+    cmap.create();
+
     // Original
     {
         auto* renderer = new kvs::ScatterPlotRenderer();
         renderer->setPointSize( 4.0 );
-        renderer->setEdgeColor( kvs::RGBColor::White() );
+        renderer->setPointColor( kvs::UIColor::Gray() );
 
         auto* axis = new kvs::Axis2D();
         axis->setTitle( "Original" );
@@ -126,6 +133,7 @@ int main( int argc, char** argv )
 
         auto* renderer = new kvs::ScatterPlotRenderer();
         renderer->setPointSize( 4.0 );
+        renderer->setColorMap( cmap );
 
         auto* axis = new kvs::Axis2D();
         axis->setTitle( "Random Seeding" );
@@ -159,6 +167,7 @@ int main( int argc, char** argv )
 
         auto* renderer = new kvs::ScatterPlotRenderer();
         renderer->setPointSize( 4.0 );
+        renderer->setColorMap( cmap );
 
         auto* axis = new kvs::Axis2D();
         axis->setTitle( "Smart Seeding" );
@@ -191,6 +200,7 @@ int main( int argc, char** argv )
 
         auto* renderer = new kvs::ScatterPlotRenderer();
         renderer->setPointSize( 4.0 );
+        renderer->setColorMap( cmap );
 
         auto* axis = new kvs::Axis2D();
         axis->setTitle( "Auto-estimation" );
