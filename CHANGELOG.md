@@ -2,13 +2,17 @@
 **Added new classes and functions**
 + kvs::ValueAxis
 + kvs::DateAxis
++ kvs::UIColor
 
 **Added new methods**
-+ kvs::Matrix{22,33,44,nm}::rank
++ kvs::Matrix{22,33,44,nm}::rank()
 + kvs::BitArray::BitArray( size, flag )
 + kvs::String::ToString( src, format )
 + kvs::String::ToString( src, precision, fixed, scientific )
 + kvs::Painter::devicePixelRatio()
++ kvs::ApplicationBase::setColorMode( mode )
++ kvs::ApplicationBase::setColorModeToDark()
++ kvs::ApplicationBase::setColorModeToLight()
 
 **Deprecated methods**
 + kvs::Axis2D::setAxisWidth (use kvs::Axis2D::{xAxis,yAxis}().setWidth)
@@ -23,6 +27,21 @@
 + kvs::Axis2D::labelColor (use kvs::Axis2D::xAxis().labelFont().color)
 + kvs::Axis2D::xLabel (use kvs::Axis2D::xAxis().label)
 + kvs::Axis2D::yLabel (use kvs::Axis2D::yAxis().label)
+
+**Added new methods**
++ kvs::Axis2D::setXAxis
++ kvs::Axis2D::setYAxis
++ kvs::Axis2D::setTitle
++ kvs::Axis2D::setTitleFont
++ kvs::Axis2D::setBorderlineColor
++ kvs::Axis2D::setBorderlineWidth
++ kvs::Axis2D::xAxis
++ kvs::Axis2D::yAxis
++ kvs::Axis2D::title
++ kvs::Axis2D::titleFont
++ kvs::Axis2D::titleOffset
++ kvs::Axis2D::borderlineColor
++ kvs::Axis2D::borderlineWidth
 
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**

@@ -375,6 +375,7 @@
 #include <Core/Visualization/Viewer/Scene.h>
 #include <Core/Visualization/Viewer/ScreenBase.h>
 #include <Core/Visualization/Viewer/Trackball.h>
+#include <Core/Visualization/Viewer/UIColor.h>
 #include <Core/Visualization/Viewer/Xform.h>
 #include <Core/Visualization/Viewer/XformControl.h>
 #include <Core/Visualization/Widget/CheckBox.h>

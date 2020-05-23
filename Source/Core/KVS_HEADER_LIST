@@ -375,6 +375,7 @@ Visualization/Viewer/RendererManager
 Visualization/Viewer/Scene
 Visualization/Viewer/ScreenBase
 Visualization/Viewer/Trackball
+Visualization/Viewer/UIColor
 Visualization/Viewer/Xform
 Visualization/Viewer/XformControl
 Visualization/Widget/CheckBox

@@ -13,6 +13,7 @@
  */
 /*****************************************************************************/
 #include "Font.h"
+#include <kvs/UIColor>
 /*
 // NanoVG related headers
 // {
@@ -362,9 +363,9 @@ Font::Font()
     this->setHorizontalAlign( Left );
     this->setVerticalAlign( Baseline );
     this->setSize( 18.0f );
-    this->setColor( kvs::RGBColor::Black() );
+    this->setColor( kvs::UIColor::Label() );
     this->setEnabledShadow( false );
-    this->setShadowColor( kvs::RGBColor::Black() );
+    this->setShadowColor( kvs::UIColor::Label() );
     this->setShadowSizeRatio( 1.0f );
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
@@ -379,9 +380,9 @@ Font::Font( const Family& family, const float size )
     this->setHorizontalAlign( Left );
     this->setVerticalAlign( Baseline );
     this->setSize( size );
-    this->setColor( kvs::RGBColor::Black() );
+    this->setColor( kvs::UIColor::Label() );
     this->setEnabledShadow( false );
-    this->setShadowColor( kvs::RGBColor::Black() );
+    this->setShadowColor( kvs::UIColor::Label() );
     this->setShadowSizeRatio( 1.0f );
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
@@ -398,7 +399,7 @@ Font::Font( const Family& family, const float size, const kvs::RGBAColor& color 
     this->setSize( size );
     this->setColor( color );
     this->setEnabledShadow( false );
-    this->setShadowColor( kvs::RGBColor::Black() );
+    this->setShadowColor( kvs::UIColor::Label() );
     this->setShadowSizeRatio( 1.0f );
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
@@ -413,9 +414,9 @@ Font::Font( const Family& family, const Style& style, const float size )
     this->setHorizontalAlign( Left );
     this->setVerticalAlign( Baseline );
     this->setSize( size );
-    this->setColor( kvs::RGBColor::Black() );
+    this->setColor( kvs::UIColor::Label() );
     this->setEnabledShadow( false );
-    this->setShadowColor( kvs::RGBColor::Black() );
+    this->setShadowColor( kvs::UIColor::Label() );
     this->setShadowSizeRatio( 1.0f );
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );
@@ -432,7 +433,7 @@ Font::Font( const Family& family, const Style& style, const float size, const kv
     this->setSize( size );
     this->setColor( color );
     this->setEnabledShadow( false );
-    this->setShadowColor( kvs::RGBColor::Black() );
+    this->setShadowColor( kvs::UIColor::Label() );
     this->setShadowSizeRatio( 1.0f );
     this->setShadowDistance( 6.0f );
     this->setShadowAngle( 45.0f );

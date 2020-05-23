@@ -7,6 +7,7 @@
 #pragma once
 #include <kvs/Painter>
 #include <kvs/Type>
+#include <kvs/UIColor>
 
 
 namespace kvs
@@ -73,7 +74,7 @@ public:
         m_visible( true ),
         m_align( align ),
         m_width( 2 ),
-        m_color( kvs::RGBColor::Black() ),
+        m_color( kvs::UIColor::Label() ),
         m_label_visible( true ),
         m_label( "" ),
         m_label_font(),

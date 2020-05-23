@@ -14,6 +14,7 @@
 #include <kvs/RGBColor>
 #include <kvs/RGBAColor>
 #include <kvs/TableObject>
+#include <kvs/UIColor>
 
 
 namespace kvs
@@ -32,7 +33,7 @@ Axis2D::Axis2D():
     m_title( "" ),
     m_title_font(),
     m_title_offset( 5 ),
-    m_background_color( kvs::RGBColor::White() ),
+    m_background_color( kvs::UIColor::SecondaryBackground() ),
     m_borderline_color( 0, 0, 0, 0.0f ),
     m_borderline_width( 0.0f ),
     m_x_axis( new kvs::ValueAxis( kvs::ValueAxis::Bottom ) ),

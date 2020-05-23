@@ -20,6 +20,20 @@ namespace kvs
 
 /*===========================================================================*/
 /**
+ *  @brief  Constructs a ApplicationBase class.
+ *  @param  argc [in] arugment count
+ *  @param  argv [in] argument values
+ */
+/*===========================================================================*/
+ApplicationBase::ApplicationBase( int argc, char** argv ):
+    m_argc( argc ),
+    m_argv( argv ),
+    m_color( kvs::UIColor::Instance() )
+{
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Attaches a pointer to the screeen.
  *  @param  screen [in] pointer to the screen
  */

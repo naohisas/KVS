@@ -26,6 +26,7 @@
 #include <kvs/RendererBase>
 #include <kvs/VisualizationPipeline>
 #include <kvs/Coordinate>
+#include <kvs/UIColor>
 
 
 namespace
@@ -65,7 +66,8 @@ Scene::Scene( kvs::ScreenBase* screen ):
     m_camera = new kvs::Camera();
     m_light = new kvs::Light();
     m_mouse = new kvs::Mouse();
-    m_background = new kvs::Background( kvs::RGBColor( 212, 221, 229 ) );
+//    m_background = new kvs::Background( kvs::RGBColor( 212, 221, 229 ) );
+    m_background = new kvs::Background( kvs::UIColor::Background() );
     m_object_manager = new kvs::ObjectManager();
     m_renderer_manager = new kvs::RendererManager();
     m_id_manager = new kvs::IDManager();

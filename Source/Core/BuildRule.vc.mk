@@ -430,6 +430,7 @@ $(OUTDIR)\.\Visualization\Viewer\RendererManager.obj \
 $(OUTDIR)\.\Visualization\Viewer\Scene.obj \
 $(OUTDIR)\.\Visualization\Viewer\ScreenBase.obj \
 $(OUTDIR)\.\Visualization\Viewer\Trackball.obj \
+$(OUTDIR)\.\Visualization\Viewer\UIColor.obj \
 $(OUTDIR)\.\Visualization\Viewer\WindowCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\WorldCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\Xform.obj \
