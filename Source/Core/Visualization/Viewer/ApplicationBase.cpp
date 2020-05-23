@@ -13,6 +13,8 @@
  */
 /*****************************************************************************/
 #include "ApplicationBase.h"
+#include <cstdlib>
+#include <string>
 
 
 namespace kvs
@@ -30,6 +32,13 @@ ApplicationBase::ApplicationBase( int argc, char** argv ):
     m_argv( argv ),
     m_color( kvs::UIColor::Instance() )
 {
+    const char* kvs_color_mode = std::getenv( "KVS_COLOR_MODE" );
+    if ( kvs_color_mode != NULL )
+    {
+        auto mode = std::string( kvs_color_mode );
+        if ( mode == "Dark" ) { this->setColorModeToDark(); }
+        else if ( mode == "Light" ) { this->setColorModeToLight(); }
+    }
 }
 
 /*===========================================================================*/
