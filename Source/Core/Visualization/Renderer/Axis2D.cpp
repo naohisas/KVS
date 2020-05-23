@@ -47,7 +47,7 @@ Axis2D::Axis2D():
     m_title( "" ),
     m_title_font( kvs::Font::Sans, kvs::Font::Bold, 22.0f ),
     m_title_offset( 5 ),
-    m_background_color( kvs::UIColor::Fill() ),
+    m_background_color( kvs::UIColor::Gray5() ),
     m_background_visible( true ),
     m_borderline_color( kvs::UIColor::Label() ),
     m_borderline_width( 2 ),
