@@ -43,6 +43,9 @@
 + kvs::Axis2D::borderlineColor
 + kvs::Axis2D::borderlineWidth
 
+**Added new option in KVS**
++ Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)
+
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**
 + kvs::Stat::Sum
