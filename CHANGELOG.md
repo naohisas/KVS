@@ -5,14 +5,60 @@
 + kvs::UIColor
 
 **Added new methods**
-+ kvs::Matrix{22,33,44,nm}::rank()
++ kvs::Matrix{22,33,44,nm}::rank
 + kvs::BitArray::BitArray( size, flag )
 + kvs::String::ToString( src, format )
 + kvs::String::ToString( src, precision, fixed, scientific )
-+ kvs::Painter::devicePixelRatio()
-+ kvs::ApplicationBase::setColorMode( mode )
-+ kvs::ApplicationBase::setColorModeToDark()
-+ kvs::ApplicationBase::setColorModeToLight()
++ kvs::Painter::devicePixelRatio
++ kvs::ApplicationBase::setColorMode
++ kvs::ApplicationBase::setColorModeToDark
++ kvs::ApplicationBase::setColorModeToLight
++ kvs::Axis2D::setXAxis
++ kvs::Axis2D::setYAxis
++ kvs::Axis2D::setTitle
++ kvs::Axis2D::setTitleFont
++ kvs::Axis2D::setBackgroundVisible
++ kvs::Axis2D::setBorderlineColor
++ kvs::Axis2D::setBorderlineWidth
++ kvs::Axis2D::setBorderlineVisible
++ kvs::Axis2D::setNumberOfGridlines
++ kvs::Axis2D::setNumberOfXGridlines
++ kvs::Axis2D::setNumberOfYGridlines
++ kvs::Axis2D::setGridlinePattern
++ kvs::Axis2D::setGridlinePatternToSolid
++ kvs::Axis2D::setGridlinePatternToDash
++ kvs::Axis2D::setGridlinePatternToDot
++ kvs::Axis2D::setGridlinePatternToDashDot
++ kvs::Axis2D::setGridlineColor
++ kvs::Axis2D::setGridlineWidth
++ kvs::Axis2D::setGridlineVisible
++ kvs::Axis2D::xAxis
++ kvs::Axis2D::yAxis
++ kvs::Axis2D::title
++ kvs::Axis2D::titleFont
++ kvs::Axis2D::titleOffset
++ kvs::Axis2D::isBackgroundVisible
++ kvs::Axis2D::borderlineColor
++ kvs::Axis2D::borderlineWidth
++ kvs::Axis2D::isBorderlineVisible
++ kvs::Axis2D::numberOfGridlines
++ kvs::Axis2D::numberOfXGridlines
++ kvs::Axis2D::numberOfYGridlines
++ kvs::Axis2D::gridlinePattern
++ kvs::Axis2D::gridlineColor
++ kvs::Axis2D::gridlineWidth
++ kvs::Axis2D::isGridlineVisible
++ kvs::ScatterPlotRenderer::setBackgroundVisible
++ kvs::ScatterPlotRenderer::setPolylineVisible
++ kvs::ScatterPlotRenderer::pointColor
++ kvs::ScatterPlotRenderer::edgeColor
++ kvs::ScatterPlotRenderer::edgeOpacity
++ kvs::ScatterPlotRenderer::edgeWidth
++ kvs::ScatterPlotRenderer::polylineColor
++ kvs::ScatterPlotRenderer::polylineOpacity
++ kvs::ScatterPlotRenderer::polylineWidth
++ kvs::ScatterPlotRenderer::isPolylineVisible
++ kvs::ScatterPlotRenderer::isBackgroundVisible
 
 **Deprecated methods**
 + kvs::Axis2D::setAxisWidth (use kvs::Axis2D::{xAxis,yAxis}().setWidth)
@@ -27,21 +73,7 @@
 + kvs::Axis2D::labelColor (use kvs::Axis2D::xAxis().labelFont().color)
 + kvs::Axis2D::xLabel (use kvs::Axis2D::xAxis().label)
 + kvs::Axis2D::yLabel (use kvs::Axis2D::yAxis().label)
-
-**Added new methods**
-+ kvs::Axis2D::setXAxis
-+ kvs::Axis2D::setYAxis
-+ kvs::Axis2D::setTitle
-+ kvs::Axis2D::setTitleFont
-+ kvs::Axis2D::setBorderlineColor
-+ kvs::Axis2D::setBorderlineWidth
-+ kvs::Axis2D::xAxis
-+ kvs::Axis2D::yAxis
-+ kvs::Axis2D::title
-+ kvs::Axis2D::titleFont
-+ kvs::Axis2D::titleOffset
-+ kvs::Axis2D::borderlineColor
-+ kvs::Axis2D::borderlineWidth
++ kvs::ScatterPlotRenderer::setEnabledPolyline (use kvs::ScatterPlotRenderer::setPolylineVisible)
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)

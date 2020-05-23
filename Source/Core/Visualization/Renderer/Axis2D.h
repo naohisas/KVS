@@ -89,6 +89,8 @@ public:
     void setGridlinePattern( const GridlinePattern pattern ) { m_gridline_pattern = pattern; }
     void setGridlinePatternToSolid() { this->setGridlinePattern( Solid ); }
     void setGridlinePatternToDash() { this->setGridlinePattern( Dash ); }
+    void setGridlinePatternToDot() { this->setGridlinePattern( Dash ); }
+    void setGridlinePatternToDashDot() { this->setGridlinePattern( Dash ); }
     void setGridlineColor( const kvs::RGBColor& color ) { m_gridline_color = color; }
     void setGridlineWidth( const float width ) { m_gridline_width = width; }
     void setGridlineVisible( const bool visible = true ) { m_gridline_visible = visible; }

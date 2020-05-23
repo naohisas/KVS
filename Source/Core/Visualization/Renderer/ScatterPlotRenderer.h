@@ -11,6 +11,7 @@
 #include <kvs/RGBAColor>
 #include <kvs/ColorMap>
 #include <kvs/Painter>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -19,6 +20,7 @@ namespace kvs
 class ObjectBase;
 class Camera;
 class Light;
+class TableObject;
 
 /*===========================================================================*/
 /**
@@ -31,22 +33,33 @@ class ScatterPlotRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
+    // Margin
     int m_top_margin; ///< top margin
     int m_bottom_margin; ///< bottom margin
     int m_left_margin; ///< left margin
     int m_right_margin; ///< right margin
+
+    // Point
     kvs::RGBColor m_point_color; ///< point color
     kvs::Real32 m_point_opacity; ///< point opacity
     kvs::Real32 m_point_size; ///< point size
+
+    // Edge
     kvs::RGBColor m_edge_color; ///< edge color
     kvs::Real32 m_edge_opacity; ///< edge opacity
     kvs::Real32 m_edge_width; ///< edge width
+
+    // Polyline
     kvs::RGBColor m_polyline_color; ///< polyline color
     kvs::Real32 m_polyline_opacity; ///< polyline opacity
     kvs::Real32 m_polyline_width; ///< polyline width
-    kvs::ColorMap m_color_map; ///< color map
+    bool m_polyline_visible; ///< visibility of the polyline
+
+    // Background
     kvs::RGBAColor m_background_color; ///< background color
-    bool m_enable_polyline; ///< flag for drawing polyline
+    bool m_background_visible; ///< visibility of the background
+
+    kvs::ColorMap m_color_map; ///< color map
     kvs::Painter m_painter; ///< painter
 
 public:
@@ -65,20 +78,38 @@ public:
     void setPolylineColor( const kvs::RGBColor color ) { m_polyline_color = color; }
     void setPolylineOpacity( const kvs::Real32 opacity ) { m_polyline_opacity = opacity; }
     void setPolylineWidth( const kvs::Real32 width ) { m_polyline_width = width; }
-    void setColorMap( const kvs::ColorMap& color_map ) { m_color_map = color_map; }
+    void setPolylineVisible( const bool visible = true ) { m_polyline_visible = visible; }
     void setBackgroundColor( const kvs::RGBAColor color ) { m_background_color = color; }
-    void setEnabledPolyline( const bool enabled ) { m_enable_polyline = enabled; }
+    void setBackgroundVisible( const bool visible = true ) { m_background_visible = visible; }
+    void setColorMap( const kvs::ColorMap& color_map ) { m_color_map = color_map; }
 
     int topMargin() const { return m_top_margin; }
     int bottomMargin() const { return m_bottom_margin; }
     int leftMargin() const { return m_left_margin; }
     int rightMargin() const { return m_right_margin; }
+    const kvs::RGBColor& pointColor() const { return m_point_color; }
     kvs::Real32 pointOpacity() const { return m_point_opacity; }
     kvs::Real32 pointSize() const { return m_point_size; }
-    const kvs::ColorMap& colorMap() const { return m_color_map; }
+    const kvs::RGBColor& edgeColor() const { return m_edge_color; }
+    kvs::Real32 edgeOpacity() const { return m_edge_opacity; }
+    kvs::Real32 edgeWidth() const { return m_edge_width; }
+    const kvs::RGBColor& polylineColor() const { return m_polyline_color; }
+    kvs::Real32 polylineOpacity() const { return m_polyline_opacity; }
+    kvs::Real32 polylineWidth() const { return m_polyline_width; }
+    bool isPolylineVisible() const { return m_polyline_visible; }
     const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
+    bool isBackgroundVisible() const { return m_background_visible; }
+    const kvs::ColorMap& colorMap() const { return m_color_map; }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+
+private:
+    void draw_background( const kvs::Vec4& rect, const float dpr );
+    void draw_polyline( const kvs::Vec4& rect, kvs::TableObject* table );
+    void draw_point( const kvs::Vec4& rect, kvs::TableObject* table, const bool has_values );
+
+public:
+    KVS_DEPRECATED( void setEnabledPolyline( const bool enabled ) ) { m_polyline_visible = enabled; }
 };
 
 } // end of namespace kvs
