@@ -13,6 +13,7 @@
 #include <kvs/KMeansClustering>
 #include <kvs/TableObject>
 #include <kvs/ScatterPlotRenderer>
+#include <kvs/ResizeEventListener>
 #include <kvs/Axis2D>
 
 
@@ -66,6 +67,81 @@ kvs::ValueTable<kvs::Real32> CreateValueTable( const size_t nrows )
 
 /*===========================================================================*/
 /**
+ *  @brief  Layout event class.
+ */
+/*===========================================================================*/
+class LayoutEvent : public kvs::ResizeEventListener
+{
+private:
+    int m_margin;
+
+public:
+    LayoutEvent( const int margin ): m_margin( margin ) {}
+
+    void update( int width, int height )
+    {
+        this->update_margin_original( width, height );
+        this->update_margin_random( width, height );
+        this->update_margin_smart( width, height );
+        this->update_margin_auto( width, height );
+    }
+
+private:
+    void update_margin_original( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Original" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "OriginalAxis" ) );
+
+        const int right_margin = width / 2 + m_margin;
+        const int bottom_margin = height / 2 + m_margin;
+        renderer->setRightMargin( right_margin );
+        renderer->setBottomMargin( bottom_margin );
+        axis->setRightMargin( right_margin );
+        axis->setBottomMargin( bottom_margin );
+    }
+
+    void update_margin_random( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Random" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "RandomAxis" ) );
+
+        const int left_margin = width / 2 + m_margin;
+        const int bottom_margin = height / 2 + m_margin;
+        renderer->setLeftMargin( left_margin );
+        renderer->setBottomMargin( bottom_margin );
+        axis->setLeftMargin( left_margin );
+        axis->setBottomMargin( bottom_margin );
+    }
+
+    void update_margin_smart( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Smart" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "SmartAxis" ) );
+
+        const int right_margin = width / 2 + m_margin;
+        const int top_margin = height / 2 + m_margin;
+        renderer->setRightMargin( right_margin );
+        renderer->setTopMargin( top_margin );
+        axis->setRightMargin( right_margin );
+        axis->setTopMargin( top_margin );
+    }
+
+    void update_margin_auto( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Auto" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "AutoAxis" ) );
+
+        const int left_margin = width / 2 + m_margin;
+        const int top_margin = height / 2 + m_margin;
+        renderer->setLeftMargin( left_margin );
+        renderer->setTopMargin( top_margin );
+        axis->setLeftMargin( left_margin );
+        axis->setTopMargin( top_margin );
+    }
+};
+
+/*===========================================================================*/
+/**
  *  @brief  Main function.
  *  @param  argc [i] argument count
  *  @param  argv [i] argument values
@@ -98,20 +174,15 @@ int main( int argc, char** argv )
     // Original
     {
         auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Original" );
         renderer->setPointSize( 4.0 );
         renderer->setPointColor( kvs::UIColor::Gray() );
 
         auto* axis = new kvs::Axis2D();
+        axis->setName( "OriginalAxis" );
         axis->setTitle( "Original" );
         axis->xAxis().setNumberOfTicks( 3 );
         axis->yAxis().setNumberOfTicks( 3 );
-
-        const int right_margin = screen.width() / 2 + axis->rightMargin();
-        const int bottom_margin = screen.height() / 2 + axis->bottomMargin();
-        renderer->setRightMargin( right_margin );
-        renderer->setBottomMargin( bottom_margin );
-        axis->setRightMargin( right_margin );
-        axis->setBottomMargin( bottom_margin );
 
         screen.registerObject( table, axis );
         screen.registerObject( table, renderer );
@@ -132,20 +203,15 @@ int main( int argc, char** argv )
         object->setMaxValue( 1,  7 );
 
         auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Random" );
         renderer->setPointSize( 4.0 );
         renderer->setColorMap( cmap );
 
         auto* axis = new kvs::Axis2D();
+        axis->setName( "RandomAxis" );
         axis->setTitle( "Random Seeding" );
         axis->xAxis().setNumberOfTicks( 3 );
         axis->yAxis().setNumberOfTicks( 3 );
-
-        const int left_margin = screen.width() / 2 + axis->leftMargin();
-        const int bottom_margin = screen.height() / 2 + axis->bottomMargin();
-        renderer->setLeftMargin( left_margin );
-        renderer->setBottomMargin( bottom_margin );
-        axis->setLeftMargin( left_margin );
-        axis->setBottomMargin( bottom_margin );
 
         screen.registerObject( object, axis );
         screen.registerObject( object, renderer );
@@ -166,20 +232,15 @@ int main( int argc, char** argv )
         object->setMaxValue( 1,  7 );
 
         auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Smart" );
         renderer->setPointSize( 4.0 );
         renderer->setColorMap( cmap );
 
         auto* axis = new kvs::Axis2D();
+        axis->setName( "SmartAxis" );
         axis->setTitle( "Smart Seeding" );
         axis->xAxis().setNumberOfTicks( 3 );
         axis->yAxis().setNumberOfTicks( 3 );
-
-        const int right_margin = screen.width() / 2 + axis->rightMargin();
-        const int top_margin = screen.height() / 2 + axis->topMargin();
-        renderer->setRightMargin( right_margin );
-        renderer->setTopMargin( top_margin );
-        axis->setRightMargin( right_margin );
-        axis->setTopMargin( top_margin );
 
         screen.registerObject( object, axis );
         screen.registerObject( object, renderer );
@@ -199,24 +260,23 @@ int main( int argc, char** argv )
         object->setMaxValue( 1,  7 );
 
         auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Auto" );
         renderer->setPointSize( 4.0 );
         renderer->setColorMap( cmap );
 
         auto* axis = new kvs::Axis2D();
+        axis->setName( "AutoAxis" );
         axis->setTitle( "Auto-estimation" );
         axis->xAxis().setNumberOfTicks( 3 );
         axis->yAxis().setNumberOfTicks( 3 );
 
-        const int left_margin = screen.width() / 2 + axis->leftMargin();
-        const int top_margin = screen.height() / 2 + axis->topMargin();
-        renderer->setLeftMargin( left_margin );
-        renderer->setTopMargin( top_margin );
-        axis->setLeftMargin( left_margin );
-        axis->setTopMargin( top_margin );
-
         screen.registerObject( object, axis );
         screen.registerObject( object, renderer );
     }
+
+    const int global_margin = 30;
+    LayoutEvent layout( global_margin );
+    screen.addEvent( &layout );
 
     return app.run();
 }

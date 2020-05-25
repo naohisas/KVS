@@ -24,6 +24,7 @@ int main( int argc, char** argv )
 {
     kvs::glut::Application app( argc, argv );
     kvs::glut::Screen screen( &app );
+    screen.setTitle( "kvs::ScatterPlotRenderer" );
 
     const size_t nsamples = 100;
     const float min_value = 0.0f;
@@ -32,7 +33,7 @@ int main( int argc, char** argv )
     const auto random_y = kvs::ValueArray<float>::Random( nsamples, min_value, max_value );
 
     auto* object = new kvs::TableObject();
-    object->addColumn( kvs::AnyValueArray( random_x ), "Ramdom X" );
+    object->addColumn( kvs::AnyValueArray( random_x ), "Random X" );
     object->addColumn( kvs::AnyValueArray( random_y ), "Random Y" );
 
     object->setMinValue( 0, min_value );
@@ -41,19 +42,23 @@ int main( int argc, char** argv )
     object->setMinValue( 1, min_value );
     object->setMaxValue( 1, max_value );
 
-    const int left_margin = 60;
+    const int top_margin = 35;
+    const int left_margin = 65;
     const int bottom_margin = 50;
 
     auto* renderer = new kvs::ScatterPlotRenderer();
-    renderer->setPointSize( 5.0f );
-    renderer->setPointColor( kvs::RGBColor( 200, 200, 255 ) );
-    renderer->setEdgeWidth( 1.0f );
+    renderer->setTopMargin( top_margin );
     renderer->setLeftMargin( left_margin );
     renderer->setBottomMargin( bottom_margin );
+    renderer->setPointSize( 5.0f );
 
     auto* axis = new kvs::Axis2D();
+    axis->setTopMargin( top_margin );
     axis->setLeftMargin( left_margin );
     axis->setBottomMargin( bottom_margin );
+    axis->setTitle( "Title" );
+    axis->xAxis().setLabel( "X axis" );
+    axis->yAxis().setLabel( "Y axis" );
 
     screen.registerObject( object, axis );
     screen.registerObject( object, renderer );
