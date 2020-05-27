@@ -60,6 +60,9 @@
 + kvs::ScatterPlotRenderer::isPolylineVisible
 + kvs::ScatterPlotRenderer::isBackgroundVisible
 
+**Added new examples**
++ Example/Visualization/ScatterPlotMatrixRenderer
+
 **Deprecated methods**
 + kvs::Axis2D::setAxisWidth (use kvs::Axis2D::{xAxis,yAxis}().setWidth)
 + kvs::Axis2D::setAxisColor (use kvs::Axis2D::{xAxis,yAxis}().setColor)
