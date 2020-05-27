@@ -66,7 +66,7 @@ private:
     kvs::Vec2u m_ngridlines; ///< number of grid lines for each axis
 
     // Axes
-    std::vector<kvs::ValueAxis*> m_axes; ///< axes (x and y axes)
+    std::vector<kvs::ValueAxis*> m_axes; ///< axes ([0]: x-axis, [1]: y-axis)
 
     kvs::Painter m_painter; ///< painter
 
@@ -138,17 +138,20 @@ public:
     float gridlineWidth() const { return m_gridline_width; }
     bool isGridlineVisible() const { return m_gridline_visible; }
 
-    kvs::ValueAxis& xAxis() { return *m_axes[ kvs::ValueAxis::Bottom ]; }
-    kvs::ValueAxis& yAxis() { return *m_axes[ kvs::ValueAxis::Left ]; }
+    kvs::ValueAxis& xAxis() { return *m_axes[0]; }
+    kvs::ValueAxis& yAxis() { return *m_axes[1]; }
     kvs::ValueAxis& axis( const size_t index ) { return *m_axes[ index ]; }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 protected:
+    kvs::Painter& painter() { return m_painter; }
+    std::vector<kvs::ValueAxis*>& axes() { return m_axes; }
     void drawTitle( const kvs::Vec4& rect );
     void drawBackground( const kvs::Vec4& rect, const float dpr );
     void drawBorder( const kvs::Vec4& rect, const float dpr );
     void drawGridlines( const kvs::Vec4& rect, const float dpr );
+    void drawAxis( const kvs::Vec4& rect, kvs::ValueAxis* axis );
     void drawAxes( const kvs::Vec4& rect );
     void updateAxes( const kvs::TableObject* table );
 

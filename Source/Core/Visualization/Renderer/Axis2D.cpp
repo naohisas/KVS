@@ -257,6 +257,22 @@ void Axis2D::drawGridlines( const kvs::Vec4& rect, const float dpr )
 
 /*===========================================================================*/
 /**
+ *  @brief  Draw axis.
+ *  @param  rect [in] plot region
+ *  @param  axis [in] pointer to the axis
+ */
+/*===========================================================================*/
+void Axis2D::drawAxis( const kvs::Vec4& rect, kvs::ValueAxis* axis )
+{
+    if ( axis->isVisible() )
+    {
+        axis->setRect( rect );
+        axis->draw( m_painter );
+    }
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Draw axes.
  *  @param  rect [in] plot region
  */
@@ -264,15 +280,7 @@ void Axis2D::drawGridlines( const kvs::Vec4& rect, const float dpr )
 void Axis2D::drawAxes( const kvs::Vec4& rect )
 {
     const size_t naxes = m_axes.size();
-    for ( size_t i = 0; i < naxes; ++i )
-    {
-        auto axis = m_axes[i];
-        if ( axis->isVisible() )
-        {
-            axis->setRect( rect );
-            axis->draw( m_painter );
-        }
-    }
+    for ( auto axis : m_axes ) { this->drawAxis( rect, axis ); }
 }
 
 /*===========================================================================*/
