@@ -6,6 +6,7 @@
 #include <kvs/Painter>
 #include <kvs/Deprecated>
 #include <string>
+#include <vector>
 #include "ValueAxis.h"
 
 
@@ -15,6 +16,7 @@ namespace kvs
 class ObjectBase;
 class Camera;
 class Light;
+class TableObject;
 
 /*===========================================================================*/
 /**
@@ -47,23 +49,24 @@ private:
     kvs::Font m_title_font; ///< title font
     int m_title_offset; ///< offset between the title and top axis
 
-    // Background and borderline
-    kvs::RGBAColor m_background_color; ///< background color
+    // Background
     bool m_background_visible; ///< visibility of the background
-    kvs::RGBAColor m_borderline_color; ///< borderline color
-    float m_borderline_width; ///< borderline width
-    bool m_borderline_visible; ///< visibility of the borderline
+    kvs::RGBAColor m_background_color; ///< background color
+
+    // Border
+    bool m_border_visible; ///< visibility of the border
+    kvs::RGBAColor m_border_color; ///< border color
+    float m_border_width; ///< border width
 
     // Grid lines
-    kvs::Vec2u m_ngridlines; ///< number of grid lines for each axis
+    bool m_gridline_visible; ///< visibility of the grid lines
     GridlinePattern m_gridline_pattern; ///< grid line pattern
     kvs::RGBColor m_gridline_color; ///< grid line color
     float m_gridline_width; ///< grid line width
-    bool m_gridline_visible; ///< visibility of the grid lines
+    kvs::Vec2u m_ngridlines; ///< number of grid lines for each axis
 
     // Axes
-    kvs::ValueAxis* m_x_axis; ///< x axis
-    kvs::ValueAxis* m_y_axis; ///< y axis
+    std::vector<kvs::ValueAxis*> m_axes; ///< axes (x and y axes)
 
     kvs::Painter m_painter; ///< painter
 
@@ -71,21 +74,28 @@ public:
     Axis2D();
     virtual ~Axis2D();
 
+    // Title
     void setTitle( const std::string& title ) { m_title = title; }
     void setTitleFont( const kvs::Font& font ) { m_title_font = font; }
     void setTitleOffset( const int offset ) { m_title_offset = offset; }
+
+    // Margin
     void setTopMargin( const int margin ){ m_top_margin = margin; }
     void setBottomMargin( const int margin ) { m_bottom_margin = margin; }
     void setLeftMargin( const int margin ) { m_left_margin = margin; }
     void setRightMargin( const int margin ) { m_right_margin = margin; }
-    void setBackgroundColor( const kvs::RGBAColor& color ) { m_background_color = color; }
+
+    // Background
     void setBackgroundVisible( const bool visible = true ) { m_background_visible = visible; }
-    void setBorderlineColor( const kvs::RGBAColor& color ) { m_borderline_color = color; }
-    void setBorderlineWidth( const float width ) { m_borderline_width = width; }
-    void setBorderlineVisible( const bool visible = true ) { m_borderline_visible = visible; }
-    void setNumberOfGridlines( const kvs::Vec2u& ngrids ) { m_ngridlines = ngrids; }
-    void setNumberOfXGridlines( const size_t ngrids ) { m_ngridlines[0] = ngrids; }
-    void setNumberOfYGridlines( const size_t ngrids ) { m_ngridlines[1] = ngrids; }
+    void setBackgroundColor( const kvs::RGBAColor& color ) { m_background_color = color; }
+
+    // Border
+    void setBorderVisible( const bool visible = true ) { m_border_visible = visible; }
+    void setBorderColor( const kvs::RGBAColor& color ) { m_border_color = color; }
+    void setBorderWidth( const float width ) { m_border_width = width; }
+
+    // Gridline
+    void setGridlineVisible( const bool visible = true ) { m_gridline_visible = visible; }
     void setGridlinePattern( const GridlinePattern pattern ) { m_gridline_pattern = pattern; }
     void setGridlinePatternToSolid() { this->setGridlinePattern( Solid ); }
     void setGridlinePatternToDash() { this->setGridlinePattern( Dash ); }
@@ -93,22 +103,21 @@ public:
     void setGridlinePatternToDashDot() { this->setGridlinePattern( Dash ); }
     void setGridlineColor( const kvs::RGBColor& color ) { m_gridline_color = color; }
     void setGridlineWidth( const float width ) { m_gridline_width = width; }
-    void setGridlineVisible( const bool visible = true ) { m_gridline_visible = visible; }
+    void setNumberOfGridlines( const kvs::Vec2u& ngrids ) { m_ngridlines = ngrids; }
+    void setNumberOfXGridlines( const size_t ngrids ) { m_ngridlines[0] = ngrids; }
+    void setNumberOfYGridlines( const size_t ngrids ) { m_ngridlines[1] = ngrids; }
 
-    template <typename Axis>
-    void setXAxis( const Axis& axis )
+    // Axis
+    template <typename Axis> void setXAxis( const Axis& axis ) { this->setAxis( axis, 0 ); }
+    template <typename Axis> void setYAxis( const Axis& axis ) { this->setAxis( axis, 1 ); }
+    template <typename Axis> void setAxis( const Axis& axis, const size_t index )
     {
-        if ( m_x_axis ) { delete m_x_axis; }
-        m_x_axis = new Axis( axis );
+        KVS_ASSERT( index < m_axes.size() );
+        if ( m_axes[ index ] ) { delete m_axes[ index ]; }
+        m_axes[ index ] = new Axis( axis );
     }
 
-    template <typename Axis>
-    void setYAxis( const Axis& axis )
-    {
-        if ( m_y_axis ) { delete m_y_axis; }
-        m_y_axis = new Axis( axis );
-    }
-
+    // Get methods.
     const std::string& title() const { return m_title; }
     const kvs::Font& titleFont() const { return m_title_font; }
     int titleOffset() const { return m_title_offset; }
@@ -118,9 +127,9 @@ public:
     int rightMargin() const { return m_right_margin; }
     const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
     bool isBackgroundVisible() const { return m_background_visible; }
-    const kvs::RGBAColor& borderlineColor() const { return m_borderline_color; }
-    bool isBorderlineVisible() const { return m_borderline_visible; }
-    float borderlineWidth() const { return m_borderline_width; }
+    const kvs::RGBAColor& borderColor() const { return m_border_color; }
+    bool isBorderVisible() const { return m_border_visible; }
+    float borderWidth() const { return m_border_width; }
     const kvs::Vec2u& numberOfGridlines() const { return m_ngridlines; }
     size_t numberOfXGridlines() const { return m_ngridlines[0]; }
     size_t numberOfYGridlines() const { return m_ngridlines[1]; }
@@ -129,62 +138,65 @@ public:
     float gridlineWidth() const { return m_gridline_width; }
     bool isGridlineVisible() const { return m_gridline_visible; }
 
-    kvs::ValueAxis& xAxis() { return *m_x_axis; }
-    kvs::ValueAxis& yAxis() { return *m_y_axis; }
+    kvs::ValueAxis& xAxis() { return *m_axes[ kvs::ValueAxis::Bottom ]; }
+    kvs::ValueAxis& yAxis() { return *m_axes[ kvs::ValueAxis::Left ]; }
+    kvs::ValueAxis& axis( const size_t index ) { return *m_axes[ index ]; }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-private:
-    void draw_title( const kvs::Vec4& rect );
-    void draw_background( const kvs::Vec4& rect, const float dpr );
-    void draw_borderline( const kvs::Vec4& rect, const float dpr );
-    void draw_gridlines( const kvs::Vec4& rect, const float dpr );
+protected:
+    void drawTitle( const kvs::Vec4& rect );
+    void drawBackground( const kvs::Vec4& rect, const float dpr );
+    void drawBorder( const kvs::Vec4& rect, const float dpr );
+    void drawGridlines( const kvs::Vec4& rect, const float dpr );
+    void drawAxes( const kvs::Vec4& rect );
+    void updateAxes( const kvs::TableObject* table );
 
 public:
     KVS_DEPRECATED( void setAxisWidth( const kvs::Real32 width ) )
     {
-        m_x_axis->setWidth( width );
-        m_y_axis->setWidth( width );
+        m_axes[0]->setWidth( width );
+        m_axes[1]->setWidth( width );
     }
 
     KVS_DEPRECATED( void setAxisColor( const kvs::RGBColor color ) )
     {
-        m_x_axis->setColor( color );
-        m_y_axis->setColor( color );
+        m_axes[0]->setColor( color );
+        m_axes[1]->setColor( color );
     }
 
     KVS_DEPRECATED( void setValueColor( const kvs::RGBColor color ) )
     {
-        kvs::Font font = m_x_axis->tickLabelFont();
+        kvs::Font font = m_axes[0]->tickLabelFont();
         font.setColor( color );
-        m_x_axis->setTickLabelFont( font );
-        m_y_axis->setTickLabelFont( font );
+        m_axes[0]->setTickLabelFont( font );
+        m_axes[1]->setTickLabelFont( font );
     }
 
     KVS_DEPRECATED( void setLabelColor( const kvs::RGBColor color ) )
     {
-        kvs::Font font = m_x_axis->labelFont();
+        kvs::Font font = m_axes[0]->labelFont();
         font.setColor( color );
-        m_x_axis->setLabelFont( font );
-        m_y_axis->setLabelFont( font );
+        m_axes[0]->setLabelFont( font );
+        m_axes[1]->setLabelFont( font );
     }
 
     KVS_DEPRECATED( void setXLabel( const std::string& label ) )
     {
-        m_x_axis->setLabel( label );
+        m_axes[0]->setLabel( label );
     }
 
     KVS_DEPRECATED( void setYLabel( const std::string& label ) )
     {
-        m_y_axis->setLabel( label );
+        m_axes[1]->setLabel( label );
     }
 
-    KVS_DEPRECATED( kvs::Real32 axisWidth() const ) { return m_x_axis->width(); }
-    KVS_DEPRECATED( const kvs::RGBColor& axisColor() const ) { return m_x_axis->color(); }
-    KVS_DEPRECATED( const kvs::RGBColor& valueColor() const ) { return m_x_axis->tickLabelFont().color(); }
-    KVS_DEPRECATED( const kvs::RGBColor& labelColor() const ) { return m_x_axis->labelFont().color(); }
-    KVS_DEPRECATED( const std::string& xLabel() const ) { return m_x_axis->label(); }
-    KVS_DEPRECATED( const std::string& yLabel() const ) { return m_y_axis->label(); }
+    KVS_DEPRECATED( kvs::Real32 axisWidth() const ) { return m_axes[0]->width(); }
+    KVS_DEPRECATED( const kvs::RGBColor& axisColor() const ) { return m_axes[0]->color(); }
+    KVS_DEPRECATED( const kvs::RGBColor& valueColor() const ) { return m_axes[0]->tickLabelFont().color(); }
+    KVS_DEPRECATED( const kvs::RGBColor& labelColor() const ) { return m_axes[0]->labelFont().color(); }
+    KVS_DEPRECATED( const std::string& xLabel() const ) { return m_axes[0]->label(); }
+    KVS_DEPRECATED( const std::string& yLabel() const ) { return m_axes[1]->label(); }
 };
 
 } // end of namespace kvs

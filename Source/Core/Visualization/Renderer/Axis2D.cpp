@@ -47,19 +47,19 @@ Axis2D::Axis2D():
     m_title( "" ),
     m_title_font( kvs::Font::Sans, kvs::Font::Bold, 22.0f ),
     m_title_offset( 5 ),
-    m_background_color( kvs::UIColor::Gray5() ),
     m_background_visible( true ),
-    m_borderline_color( kvs::UIColor::Label() ),
-    m_borderline_width( 2 ),
-    m_borderline_visible( true ),
-    m_ngridlines( 5, 5 ),
+    m_background_color( kvs::UIColor::Gray5() ),
+    m_border_visible( true ),
+    m_border_color( kvs::UIColor::Label() ),
+    m_border_width( 2 ),
+    m_gridline_visible( false ),
     m_gridline_pattern( Solid ),
     m_gridline_color( kvs::UIColor::Background() ),
     m_gridline_width( 2 ),
-    m_gridline_visible( false ),
-    m_x_axis( new kvs::ValueAxis( kvs::ValueAxis::Bottom ) ),
-    m_y_axis( new kvs::ValueAxis( kvs::ValueAxis::Left ) )
+    m_ngridlines( 5, 5 )
 {
+    m_axes.push_back( new kvs::ValueAxis( kvs::ValueAxis::Bottom ) ); // default x-axis
+    m_axes.push_back( new kvs::ValueAxis( kvs::ValueAxis::Left ) ); // default y-axis
 }
 
 /*===========================================================================*/
@@ -69,8 +69,7 @@ Axis2D::Axis2D():
 /*===========================================================================*/
 Axis2D::~Axis2D()
 {
-    if ( m_x_axis ) { delete m_x_axis; }
-    if ( m_y_axis ) { delete m_y_axis; }
+    for ( auto axis : m_axes ) { if ( axis ) delete axis; }
 }
 
 /*===========================================================================*/
@@ -110,25 +109,12 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
         const float y1 = camera->windowHeight() - m_bottom_margin;
         const kvs::Vec4 rect( x0, x1, y0, y1 );
 
-        // Draw background, borderlines and grid lines.
-        this->draw_background( rect, dpr );
-        this->draw_gridlines( rect, dpr );
-        this->draw_borderline( rect, dpr );
-
-        // Draw x-axis.
-        if ( m_x_axis->label().empty() ) { m_x_axis->setLabel( table->label(0) ); }
-        m_x_axis->setRect( rect );
-        m_x_axis->setRange( table->minValue(0), table->maxValue(0) );
-        m_x_axis->draw( m_painter );
-
-        // Draw y-axis.
-        if ( m_y_axis->label().empty() ) { m_y_axis->setLabel( table->label(1) ); }
-        m_y_axis->setRect( rect );
-        m_y_axis->setRange( table->minValue(1), table->maxValue(1) );
-        m_y_axis->draw( m_painter );
-
-        // Draw title.
-        this->draw_title( rect );
+        this->updateAxes( table );
+        this->drawBackground( rect, dpr );
+        this->drawGridlines( rect, dpr );
+        this->drawBorder( rect, dpr );
+        this->drawAxes( rect );
+        this->drawTitle( rect );
     }
     m_painter.end();
 
@@ -141,7 +127,7 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
  *  @param  rect [in] plot region
  */
 /*===========================================================================*/
-void Axis2D::draw_title( const kvs::Vec4& rect )
+void Axis2D::drawTitle( const kvs::Vec4& rect )
 {
     if ( m_title.size() > 0 )
     {
@@ -167,7 +153,7 @@ void Axis2D::draw_title( const kvs::Vec4& rect )
  *  @param  dpr [in] device pixel ratio
  */
 /*===========================================================================*/
-void Axis2D::draw_background( const kvs::Vec4& rect, const float dpr )
+void Axis2D::drawBackground( const kvs::Vec4& rect, const float dpr )
 {
     if ( !m_background_visible ) { return; } // invisible
 
@@ -193,25 +179,25 @@ void Axis2D::draw_background( const kvs::Vec4& rect, const float dpr )
 
 /*===========================================================================*/
 /**
- *  @brief  Draw borderline of the plot region.
+ *  @brief  Draw border of the plot region.
  *  @param  rect [in] plot region
  *  @param  dpr [in] device pixel ratio
  */
 /*===========================================================================*/
-void Axis2D::draw_borderline( const kvs::Vec4& rect, const float dpr )
+void Axis2D::drawBorder( const kvs::Vec4& rect, const float dpr )
 {
-    if ( !m_borderline_visible ) { return; } // invisible
+    if ( !m_border_visible ) { return; } // invisible
 
-    if ( m_borderline_color.a() > 0.0f )
+    if ( m_border_color.a() > 0.0f )
     {
         const float x0 = rect[0];
         const float x1 = rect[1];
         const float y0 = rect[2];
         const float y1 = rect[3];
-        const int d = int( m_borderline_width * 0.5 );
-        kvs::OpenGL::SetLineWidth( m_borderline_width * dpr );
+        const int d = int( m_border_width * 0.5 );
+        kvs::OpenGL::SetLineWidth( m_border_width * dpr );
         kvs::OpenGL::Begin( GL_LINES );
-        kvs::OpenGL::Color( m_borderline_color );
+        kvs::OpenGL::Color( m_border_color );
         kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y1 ) * dpr, kvs::Vec2( x1 + d, y1 ) * dpr ); // bottom
         kvs::OpenGL::Vertices( kvs::Vec2( x0, y1 + d ) * dpr, kvs::Vec2( x0, y0 - d ) * dpr ); // left
         kvs::OpenGL::Vertices( kvs::Vec2( x0 - d, y0 ) * dpr, kvs::Vec2( x1 + d, y0 ) * dpr ); // top
@@ -227,7 +213,7 @@ void Axis2D::draw_borderline( const kvs::Vec4& rect, const float dpr )
  *  @param  dpr [in] device pixel ratio
  */
 /*===========================================================================*/
-void Axis2D::draw_gridlines( const kvs::Vec4& rect, const float dpr )
+void Axis2D::drawGridlines( const kvs::Vec4& rect, const float dpr )
 {
     if ( !m_gridline_visible ) { return; } // invisible
 
@@ -266,6 +252,43 @@ void Axis2D::draw_gridlines( const kvs::Vec4& rect, const float dpr )
         }
 
         kvs::OpenGL::End();
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Draw axes.
+ *  @param  rect [in] plot region
+ */
+/*===========================================================================*/
+void Axis2D::drawAxes( const kvs::Vec4& rect )
+{
+    const size_t naxes = m_axes.size();
+    for ( size_t i = 0; i < naxes; ++i )
+    {
+        auto axis = m_axes[i];
+        if ( axis->isVisible() )
+        {
+            axis->setRect( rect );
+            axis->draw( m_painter );
+        }
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Update axes.
+ *  @param  table [in] pointer to the table object
+ */
+/*===========================================================================*/
+void Axis2D::updateAxes( const kvs::TableObject* table )
+{
+    const size_t naxes = m_axes.size();
+    for ( size_t i = 0; i < naxes; ++i )
+    {
+        auto axis = m_axes[i];
+        if ( axis->label().empty() ) { axis->setLabel( table->label(i) ); }
+        if ( !axis->hasRange() ) { axis->setRange( table->minValue(i), table->maxValue(i) ); }
     }
 }
 

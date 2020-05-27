@@ -103,10 +103,11 @@ public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-private:
-    void draw_background( const kvs::Vec4& rect, const float dpr );
-    void draw_polyline( const kvs::Vec4& rect, kvs::TableObject* table );
-    void draw_point( const kvs::Vec4& rect, kvs::TableObject* table, const bool has_values );
+protected:
+    kvs::Painter& painter() { return m_painter; }
+    void drawBackground( const kvs::Vec4& rect, const float dpr );
+    void drawPolyline( const kvs::Vec4& rect, kvs::TableObject* table, const size_t x_index, const size_t y_index );
+    void drawPoint( const kvs::Vec4& rect, kvs::TableObject* table, const size_t x_index, const size_t y_index, const bool has_values );
 
 public:
     KVS_DEPRECATED( void setEnabledPolyline( const bool enabled ) ) { m_polyline_visible = enabled; }

@@ -81,13 +81,13 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
         const kvs::Vec4 rect( x0, x1, y0, y1 );
 
         // Draw background.
-        this->draw_background( rect, dpr );
+        this->drawBackground( rect, dpr );
 
         kvs::NanoVG* engine = m_painter.device()->renderEngine();
-        engine->beginFrame( screen()->width(), screen()->height(), camera->devicePixelRatio() );
+        engine->beginFrame( screen()->width(), screen()->height(), dpr );
         {
-            this->draw_polyline( rect, table );
-            this->draw_point( rect, table, has_values );
+            this->drawPolyline( rect, table, 0, 1 );
+            this->drawPoint( rect, table, 0, 1, has_values );
         }
         engine->endFrame();
     }
@@ -96,7 +96,7 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
     BaseClass::stopTimer();
 }
 
-void ScatterPlotRenderer::draw_background( const kvs::Vec4& rect, const float dpr )
+void ScatterPlotRenderer::drawBackground( const kvs::Vec4& rect, const float dpr )
 {
     if ( !m_background_visible ) { return; } // invisible
 
@@ -120,16 +120,20 @@ void ScatterPlotRenderer::draw_background( const kvs::Vec4& rect, const float dp
     }
 }
 
-void ScatterPlotRenderer::draw_polyline( const kvs::Vec4& rect, kvs::TableObject* table )
+void ScatterPlotRenderer::drawPolyline(
+    const kvs::Vec4& rect,
+    kvs::TableObject* table,
+    const size_t x_index,
+    const size_t y_index )
 {
     if ( !m_polyline_visible ) { return; } // invisible
 
-    const auto& x_values = table->column(0);
-    const auto& y_values = table->column(1);
-    const auto x_min_value = table->minValue(0);
-    const auto x_max_value = table->maxValue(0);
-    const auto y_min_value = table->minValue(1);
-    const auto y_max_value = table->maxValue(1);
+    const auto& x_values = table->column( x_index );
+    const auto& y_values = table->column( y_index );
+    const auto x_min_value = table->minValue( x_index );
+    const auto x_max_value = table->maxValue( x_index );
+    const auto y_min_value = table->minValue( y_index );
+    const auto y_max_value = table->maxValue( y_index );
 
     const auto x0 = rect[0];
     const auto x1 = rect[1];
@@ -172,17 +176,19 @@ void ScatterPlotRenderer::draw_polyline( const kvs::Vec4& rect, kvs::TableObject
     engine->stroke();
 }
 
-void ScatterPlotRenderer::draw_point(
+void ScatterPlotRenderer::drawPoint(
     const kvs::Vec4& rect,
     kvs::TableObject* table,
+    const size_t x_index,
+    const size_t y_index,
     const bool has_values )
 {
-    const auto& x_values = table->column(0);
-    const auto& y_values = table->column(1);
-    const auto x_min_value = table->minValue(0);
-    const auto x_max_value = table->maxValue(0);
-    const auto y_min_value = table->minValue(1);
-    const auto y_max_value = table->maxValue(1);
+    const auto& x_values = table->column( x_index );
+    const auto& y_values = table->column( y_index );
+    const auto x_min_value = table->minValue( x_index );
+    const auto x_max_value = table->maxValue( x_index );
+    const auto y_min_value = table->minValue( y_index );
+    const auto y_max_value = table->maxValue( y_index );
 
     const auto x0 = rect[0];
     const auto x1 = rect[1];

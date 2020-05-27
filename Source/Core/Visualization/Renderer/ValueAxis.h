@@ -23,9 +23,9 @@ class ValueAxis
 public:
     enum Align
     {
-        Top,
-        Bottom,
+        Bottom = 0,
         Left,
+        Top,
         Right
     };
 
@@ -119,6 +119,7 @@ public:
     const kvs::Vec4& rect() const { return m_rect; }
     kvs::Real64 min() const { return m_min; }
     kvs::Real64 max() const { return m_max; }
+    bool hasRange() const { return !kvs::Math::Equal( m_min, m_max ); }
 
     virtual void draw( kvs::Painter& painter );
 
