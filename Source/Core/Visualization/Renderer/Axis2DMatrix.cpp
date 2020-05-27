@@ -1,11 +1,14 @@
+/*****************************************************************************/
+/**
+ *  @file   Axis2DMatrix.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "Axis2DMatrix.h"
-#include <kvs/OpenGL>
+#include <kvs/IgnoreUnusedVariable>
+#include <kvs/ObjectBase>
 #include <kvs/Camera>
 #include <kvs/Light>
-#include <kvs/ObjectBase>
-#include <kvs/String>
-#include <kvs/RGBColor>
-#include <kvs/RGBAColor>
 #include <kvs/TableObject>
 
 
@@ -14,128 +17,102 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Axis2DMatrix class.
- */
-/*===========================================================================*/
-Axis2DMatrix::Axis2DMatrix():
-    m_top_margin( 30 ),
-    m_bottom_margin( 30 ),
-    m_left_margin( 30 ),
-    m_right_margin( 30 ),
-    m_margin( 1 ),
-    m_axis_width( 2.0f ),
-    m_axis_color( 0, 0, 0 ),
-    m_value_color( 0, 0, 0 ),
-    m_label_color( 0, 0, 0 )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Render 2D axis matrix.
- *  @param  object [in] pointer to object
- *  @param  camera [in] pointer to camera
- *  @param  light [in] pointer ot light
+ *  @brief  Executes rendering process.
+ *  @param  object [in] pointer to the object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
 void Axis2DMatrix::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    kvs::TableObject* table = kvs::TableObject::DownCast( object );
-
+    kvs::IgnoreUnusedVariable( light );
     BaseClass::startTimer();
 
+    kvs::TableObject* table = kvs::TableObject::DownCast( object );
+    this->setup_axes( table );
+
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
-    m_painter.begin( screen() );
+    BaseClass::painter().begin( screen() );
     {
-        const int X0 = m_left_margin;
-        const int X1 = camera->windowWidth() - m_right_margin;
-        const int Y0 = m_top_margin;
-        const int Y1 = camera->windowHeight() - m_bottom_margin;
+        BaseClass::updateAxes( table );
 
-        const int ncolumns = table->numberOfColumns();
-        const float X_stride = float( X1 - X0 - m_margin * ( ncolumns - 1 ) ) / ncolumns;
-        const float Y_stride = float( Y1 - Y0 - m_margin * ( ncolumns - 1 ) ) / ncolumns;
+        const float dpr = camera->devicePixelRatio();
+        const float X0 = BaseClass::leftMargin();
+        const float X1 = camera->windowWidth() - BaseClass::rightMargin();
+        const float Y0 = BaseClass::topMargin();
+        const float Y1 = camera->windowHeight() - BaseClass::bottomMargin();
 
-        for ( int i = 0; i < ncolumns; i++ )
+        const size_t M = table->numberOfColumns(); // number of dimensions
+        const float Lx = float( X1 - X0 - m_padding * ( M - 1 ) ) / M; // length for each x axis
+        const float Ly = float( Y1 - Y0 - m_padding * ( M - 1 ) ) / M; // length for each y axis
+
+        for ( size_t j = 0; j < M; ++j )
         {
-            for ( int j = 0; j < ncolumns; j++ )
+            for ( size_t i = 0; i < M; ++i )
             {
-                const float x0 = X0 + ( X_stride + m_margin ) * j;
-                const float y0 = Y0 + ( Y_stride + m_margin ) * i;
-                const float x1 = x0 + X_stride;
-                const float y1 = y0 + Y_stride;
-                const int d0 = int( m_axis_width * 0.5 );
-                const int d1 = int( m_axis_width * 0.5 - 0.5 );
-                const kvs::FontMetrics metrics = m_painter.fontMetrics();
+                const float x0 = X0 + ( Lx + m_padding ) * i;
+                const float x1 = x0 + Lx;
+                const float y0 = Y0 + ( Ly + m_padding ) * j;
+                const float y1 = y0 + Ly;
+                const kvs::Vec4 rect( x0, x1, y0, y1 );
 
-                // Draw axes.
-                kvs::OpenGL::SetLineWidth( m_axis_width );
-                kvs::OpenGL::Begin( GL_LINES );
-                kvs::OpenGL::Color( m_axis_color );
-                kvs::OpenGL::Vertices( kvs::Vec2( x0 - d0, y1 ), kvs::Vec2( x1, y1 ) ); // X axis
-                kvs::OpenGL::Vertices( kvs::Vec2( x0, y1 + d1 ), kvs::Vec2( x0, y0 ) ); // Y axis
-                kvs::OpenGL::End();
-
-                // Draw min/max values.
-                const size_t x_index = j;
-                const size_t y_index = ncolumns - i - 1;
-
-                if ( y_index == 0 )
-                {
-                    const std::string x_min_value = kvs::String::ToString( table->minValue( x_index ) );
-                    const std::string x_max_value = kvs::String::ToString( table->maxValue( x_index ) );
-
-                    const kvs::Vec2 x_min_position( x0 - metrics.width( x_min_value ) * 0.5, y1 + metrics.height() + 5 );
-                    m_painter.font().setColor( m_value_color );
-                    m_painter.drawText( x_min_position, x_min_value );
-
-                    const kvs::Vec2 x_max_position( x1 - metrics.width( x_max_value ) * 0.5, y1 + metrics.height() + 5 );
-                    m_painter.font().setColor( m_value_color );
-                    m_painter.drawText( x_max_position, x_max_value );
-                }
-
-                if ( x_index == 0 )
-                {
-                    const std::string y_min_value = kvs::String::ToString( table->minValue( y_index ) );
-                    const std::string y_max_value = kvs::String::ToString( table->maxValue( y_index ) );
-
-                    const kvs::Vec2 y_min_position( x0 - metrics.width( y_min_value ) - 5, y1 + metrics.height() * 0.5 );
-                    m_painter.font().setColor( m_value_color );
-                    m_painter.drawText( y_min_position, y_min_value );
-
-                    const kvs::Vec2 y_max_position( x0 - metrics.width( y_max_value ) - 5, y0 + metrics.height() * 0.5 );
-                    m_painter.font().setColor( m_value_color );
-                    m_painter.drawText( y_max_position, y_max_value );
-                }
-
-                // Draw labels.
-                if ( x_index != y_index )
-                {
-                    const std::string x_label( table->label(x_index) );
-                    const std::string y_label( table->label(y_index) );
-                    const size_t x_label_width = metrics.width( x_label );
-
-                    const kvs::Vec2 x_label_position( x1 - x_label_width - 5, y1 - 5 );
-                    m_painter.font().setColor( m_label_color );
-                    m_painter.drawText( x_label_position, x_label );
-
-                    const kvs::Vec2 y_label_position( x0 + 5, y0 + metrics.width("x") + 5 );
-                    m_painter.font().setColor( m_label_color );
-                    m_painter.drawText( y_label_position, y_label );
-                }
-                else
-                {
-                    const std::string label( table->label(x_index) );
-                    const size_t label_width = metrics.width( label );
-                    const kvs::Vec2 label_position( ( x1 + x0 ) * 0.5f - label_width * 0.5f, ( y1 + y0 ) * 0.5f + metrics.height() * 0.5f );
-                }
+                BaseClass::drawBackground( rect, dpr );
+                BaseClass::drawGridlines( rect, dpr );
+                BaseClass::drawBorder( rect, dpr );
+                this->draw_axes( rect, M, i, j );
             }
         }
     }
-
-    m_painter.end();
+    BaseClass::painter().end();
 
     BaseClass::stopTimer();
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Setups the axes.
+ *  @param  table [in] pointer to the table object
+ */
+/*===========================================================================*/
+void Axis2DMatrix::setup_axes( const kvs::TableObject* table )
+{
+    if ( BaseClass::axes().size() < table->numberOfColumns() )
+    {
+        const size_t n = table->numberOfColumns() - BaseClass::axes().size();
+        for ( size_t i = 0; i < n; ++i )
+        {
+            BaseClass::axes().push_back( new kvs::ValueAxis() );
+        }
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Draws the axes.
+ *  @param  rect [in] plotting region rectangle
+ *  @param  dim [in] dimensions of the data
+ *  @param  x_index [in] x index of the plotting region
+ *  @param  y_index [in] y index of the plotting region
+ */
+/*===========================================================================*/
+void Axis2DMatrix::draw_axes(
+    const kvs::Vec4& rect,
+    const size_t dim,
+    const size_t x_index,
+    const size_t y_index )
+{
+    auto x_axis = BaseClass::axis( x_index );
+    x_axis.setAlignToBottom();
+    x_axis.setLabelVisible( y_index == dim - 1 );
+    x_axis.setTickLabelVisible( y_index == dim - 1 );
+
+    auto y_axis = BaseClass::axis( y_index );
+    y_axis.setAlignToLeft();
+    y_axis.setLabelVisible( x_index == 0 );
+    y_axis.setTickLabelVisible( x_index == 0 );
+
+    BaseClass::drawAxis( rect, &x_axis );
+    BaseClass::drawAxis( rect, &y_axis );
 }
 
 } // end of namespace kvs

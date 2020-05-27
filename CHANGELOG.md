@@ -73,7 +73,15 @@
 + kvs::Axis2D::labelColor (use kvs::Axis2D::xAxis().labelFont().color)
 + kvs::Axis2D::xLabel (use kvs::Axis2D::xAxis().label)
 + kvs::Axis2D::yLabel (use kvs::Axis2D::yAxis().label)
++ kvs::Axis2DMatrix::setAxisWidth (use kvs::Axis2DMatrix::axis(i).setWidth)
++ kvs::Axis2DMatrix::setAxisColor (use kvs::Axis2DMatrix::axis(i).setColor)
++ kvs::Axis2DMatrix::setValueColor (use kvs::Axis2DMatrix::axis(i).setTickLabelFont)
++ kvs::Axis2DMatrix::setLabelColor (use kvs::Axis2DMatrix::axis(i).setLabelFont)
++ kvs::Axis2DMatrix::setMargin (use kvs::Axis2DMatrix::setPadding)
++ kvs::Axis2DMatrix::margin (use kvs::Axis2DMatrix::padding)
 + kvs::ScatterPlotRenderer::setEnabledPolyline (use kvs::ScatterPlotRenderer::setPolylineVisible)
++ kvs::ScatterPlotMatrixRenderer::setMargin (use kvs::ScatterPlotMatrixRenderer::setPadding)
++ kvs::ScatterPlotMatrixRenderer::margin (use kvs::ScatterPlotMatrixRenderer::padding)
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)

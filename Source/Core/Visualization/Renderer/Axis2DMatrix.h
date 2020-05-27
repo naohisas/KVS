@@ -1,63 +1,45 @@
+/*****************************************************************************/
+/**
+ *  @file   Axis2DMatrix.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
-#include <kvs/RendererBase>
 #include <kvs/Module>
-#include <kvs/RGBColor>
-#include <kvs/RGBAColor>
-#include <kvs/Painter>
+#include "Axis2D.h"
 
 
 namespace kvs
 {
 
-class ObjectBase;
-class Camera;
-class Light;
-
 /*===========================================================================*/
 /**
- *  @brief  Axis2DMatrix class.
+ *  @brief  Axis 2D matrix renderer class.
  */
 /*===========================================================================*/
-class Axis2DMatrix : public kvs::RendererBase
+class Axis2DMatrix : public kvs::Axis2D
 {
     kvsModule( kvs::Axis2DMatrix, Renderer );
-    kvsModuleBaseClass( kvs::RendererBase );
+    kvsModuleBaseClass( kvs::Axis2D );
 
 private:
-    int m_top_margin; ///< top margin
-    int m_bottom_margin; ///< bottom margin
-    int m_left_margin; ///< left margin
-    int m_right_margin; ///< right margin
-    int m_margin; ///< margin
-    kvs::Real32 m_axis_width; ///< axis width
-    kvs::RGBColor m_axis_color; ///< axis color
-    kvs::RGBColor m_value_color; ///< value color
-    kvs::RGBColor m_label_color; ///< label color
-    kvs::Painter m_painter; ///< painter
+    int m_padding; ///< padding in pixels between each rectangle
 
 public:
-    Axis2DMatrix();
+    Axis2DMatrix(): m_padding( 20 ) {}
 
-    void setTopMargin( const int margin ) { m_top_margin = margin; }
-    void setBottomMargin( const int margin ) { m_bottom_margin = margin; }
-    void setLeftMargin( const int margin ) { m_left_margin = margin; }
-    void setRightMargin( const int margin ) { m_right_margin = margin; }
-    void setMargin( const int margin ) { m_margin = margin; }
-    void setAxisWidth( const kvs::Real32 width ) { m_axis_width = width; }
-    void setAxisColor( const kvs::RGBColor color ) { m_axis_color = color; }
-    void setValueColor( const kvs::RGBColor color ) { m_value_color = color; }
-    void setLabelColor( const kvs::RGBColor color ) { m_label_color = color; }
-
-    int topMargin() const { return m_top_margin; }
-    int bottomMargin() const { return m_bottom_margin; }
-    int leftMargin() const { return m_left_margin; }
-    int rightMargin() const { return m_right_margin; }
-    kvs::Real32 axisWidth() const { return m_axis_width; }
-    const kvs::RGBColor& axisColor() const { return m_axis_color; }
-    const kvs::RGBColor& valueColor() const { return m_value_color; }
-    const kvs::RGBColor& labelColor() const { return m_label_color; }
+    void setPadding( const int padding ) { m_padding = padding; }
+    int padding() const { return m_padding; }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+
+private:
+    void setup_axes( const kvs::TableObject* table );
+    void draw_axes( const kvs::Vec4& rect, const size_t dim, const size_t x_index, const size_t y_index );
+
+public:
+    KVS_DEPRECATED( void setMargin( const int margin ) ) { this->setPadding( margin ); }
+    KVS_DEPRECATED( int margin() const ) { return this->padding(); }
 };
 
 } // end of namespace kvs
