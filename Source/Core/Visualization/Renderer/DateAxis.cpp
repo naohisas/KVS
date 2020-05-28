@@ -62,9 +62,9 @@ void DateAxis::draw( kvs::Painter& painter )
 /*===========================================================================*/
 int DateAxis::drawTickLabelsOnTop( kvs::Painter& painter )
 {
-    const float x0 = rect()[0];
-    const float x1 = rect()[1];
-    const float y0 = rect()[2];
+    const float x0 = rect().x0();
+    const float x1 = rect().x1();
+    const float y0 = rect().y0();
     const kvs::FontMetrics& metrics = painter.fontMetrics();
     const size_t nticks = ValueAxis::numberOfTicks();
     const float stride = ( x1 - x0 ) / ( nticks - 1 );
@@ -94,9 +94,9 @@ int DateAxis::drawTickLabelsOnTop( kvs::Painter& painter )
 /*===========================================================================*/
 int DateAxis::drawTickLabelsOnBottom( kvs::Painter& painter )
 {
-    const float x0 = rect()[0];
-    const float x1 = rect()[1];
-    const float y1 = rect()[3];
+    const float x0 = rect().x0();
+    const float x1 = rect().x1();
+    const float y1 = rect().y1();
     const kvs::FontMetrics& metrics = painter.fontMetrics();
     const size_t nticks = ValueAxis::numberOfTicks();
     const double stride = double( x1 - x0 ) / ( nticks - 1 );
@@ -126,9 +126,9 @@ int DateAxis::drawTickLabelsOnBottom( kvs::Painter& painter )
 /*===========================================================================*/
 int DateAxis::drawTickLabelsOnLeft( kvs::Painter& painter )
 {
-    const float x0 = rect()[0];
-    const float y0 = rect()[2];
-    const float y1 = rect()[3];
+    const float x0 = rect().x0();
+    const float y0 = rect().y0();
+    const float y1 = rect().y1();
     const kvs::FontMetrics& metrics = painter.fontMetrics();
     const size_t nticks = ValueAxis::numberOfTicks();
     const float stride = ( y1 - y0 ) / ( nticks - 1 );
@@ -161,9 +161,9 @@ int DateAxis::drawTickLabelsOnLeft( kvs::Painter& painter )
 /*===========================================================================*/
 int DateAxis::drawTickLabelsOnRight( kvs::Painter& painter )
 {
-    const float x1 = rect()[1];
-    const float y0 = rect()[2];
-    const float y1 = rect()[3];
+    const float x1 = rect().x1();
+    const float y0 = rect().y0();
+    const float y1 = rect().y1();
     const kvs::FontMetrics& metrics = painter.fontMetrics();
     const size_t nticks = ValueAxis::numberOfTicks();
     const float stride = ( y1 - y0 ) / ( nticks - 1 );

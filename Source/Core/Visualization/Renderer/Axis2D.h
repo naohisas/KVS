@@ -4,6 +4,7 @@
 #include <kvs/RGBColor>
 #include <kvs/RGBAColor>
 #include <kvs/Painter>
+#include <kvs/Margins>
 #include <kvs/Deprecated>
 #include <string>
 #include <vector>
@@ -39,10 +40,7 @@ public:
 
 private:
     // Margin
-    int m_top_margin; ///< top margin
-    int m_bottom_margin; ///< bottom margin
-    int m_left_margin; ///< left margin
-    int m_right_margin; ///< right margin
+    kvs::Margins m_margins;
 
     // Title
     std::string m_title; ///< title
@@ -80,10 +78,7 @@ public:
     void setTitleOffset( const int offset ) { m_title_offset = offset; }
 
     // Margin
-    void setTopMargin( const int margin ){ m_top_margin = margin; }
-    void setBottomMargin( const int margin ) { m_bottom_margin = margin; }
-    void setLeftMargin( const int margin ) { m_left_margin = margin; }
-    void setRightMargin( const int margin ) { m_right_margin = margin; }
+    void setMargins( const kvs::Margins& margins ) { m_margins = margins; }
 
     // Background
     void setBackgroundVisible( const bool visible = true ) { m_background_visible = visible; }
@@ -121,10 +116,7 @@ public:
     const std::string& title() const { return m_title; }
     const kvs::Font& titleFont() const { return m_title_font; }
     int titleOffset() const { return m_title_offset; }
-    int topMargin() const { return m_top_margin; }
-    int bottomMargin() const { return m_bottom_margin; }
-    int leftMargin() const { return m_left_margin; }
-    int rightMargin() const { return m_right_margin; }
+    const kvs::Margins& margins() const { return m_margins; }
     const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
     bool isBackgroundVisible() const { return m_background_visible; }
     const kvs::RGBAColor& borderColor() const { return m_border_color; }
@@ -147,15 +139,20 @@ public:
 protected:
     kvs::Painter& painter() { return m_painter; }
     std::vector<kvs::ValueAxis*>& axes() { return m_axes; }
-    void drawTitle( const kvs::Vec4& rect );
-    void drawBackground( const kvs::Vec4& rect, const float dpr );
-    void drawBorder( const kvs::Vec4& rect, const float dpr );
-    void drawGridlines( const kvs::Vec4& rect, const float dpr );
-    void drawAxis( const kvs::Vec4& rect, kvs::ValueAxis* axis );
-    void drawAxes( const kvs::Vec4& rect );
+    void drawTitle( const kvs::Rectangle& rect );
+    void drawBackground( const kvs::Rectangle& rect, const float dpr );
+    void drawBorder( const kvs::Rectangle& rect, const float dpr );
+    void drawGridlines( const kvs::Rectangle& rect, const float dpr );
+    void drawAxis( const kvs::Rectangle& rect, kvs::ValueAxis* axis );
+    void drawAxes( const kvs::Rectangle& rect );
     void updateAxes( const kvs::TableObject* table );
 
 public:
+    KVS_DEPRECATED( void setTopMargin( const int margin ) ) { m_margins.setTop( margin ); }
+    KVS_DEPRECATED( void setBottomMargin( const int margin ) ) { m_margins.setBottom( margin ); }
+    KVS_DEPRECATED( void setLeftMargin( const int margin ) ) { m_margins.setLeft( margin ); }
+    KVS_DEPRECATED( void setRightMargin( const int margin ) ) { m_margins.setRight( margin ); }
+
     KVS_DEPRECATED( void setAxisWidth( const kvs::Real32 width ) )
     {
         m_axes[0]->setWidth( width );
@@ -194,6 +191,10 @@ public:
         m_axes[1]->setLabel( label );
     }
 
+    KVS_DEPRECATED( int topMargin() const ) { return m_margins.top(); }
+    KVS_DEPRECATED( int bottomMargin() const ) { return m_margins.bottom(); }
+    KVS_DEPRECATED( int leftMargin() const ) { return m_margins.left(); }
+    KVS_DEPRECATED( int rightMargin() const ) { return m_margins.right(); }
     KVS_DEPRECATED( kvs::Real32 axisWidth() const ) { return m_axes[0]->width(); }
     KVS_DEPRECATED( const kvs::RGBColor& axisColor() const ) { return m_axes[0]->color(); }
     KVS_DEPRECATED( const kvs::RGBColor& valueColor() const ) { return m_axes[0]->tickLabelFont().color(); }

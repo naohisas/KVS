@@ -92,12 +92,13 @@ private:
         auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Original" ) );
         auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "OriginalAxis" ) );
 
-        const int right_margin = width / 2 + m_margin;
-        const int bottom_margin = height / 2 + m_margin;
-        renderer->setRightMargin( right_margin );
-        renderer->setBottomMargin( bottom_margin );
-        axis->setRightMargin( right_margin );
-        axis->setBottomMargin( bottom_margin );
+        const int left = m_margin;
+        const int top = m_margin;
+        const int right = width / 2 + m_margin;
+        const int bottom = height / 2 + m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
     }
 
     void update_margin_random( int width, int height )
@@ -105,12 +106,13 @@ private:
         auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Random" ) );
         auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "RandomAxis" ) );
 
-        const int left_margin = width / 2 + m_margin;
-        const int bottom_margin = height / 2 + m_margin;
-        renderer->setLeftMargin( left_margin );
-        renderer->setBottomMargin( bottom_margin );
-        axis->setLeftMargin( left_margin );
-        axis->setBottomMargin( bottom_margin );
+        const int left = width / 2 + m_margin;
+        const int top = m_margin;
+        const int right = m_margin;
+        const int bottom = height / 2 + m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
     }
 
     void update_margin_smart( int width, int height )
@@ -118,12 +120,13 @@ private:
         auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Smart" ) );
         auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "SmartAxis" ) );
 
-        const int right_margin = width / 2 + m_margin;
-        const int top_margin = height / 2 + m_margin;
-        renderer->setRightMargin( right_margin );
-        renderer->setTopMargin( top_margin );
-        axis->setRightMargin( right_margin );
-        axis->setTopMargin( top_margin );
+        const int left = m_margin;
+        const int top = height / 2 + m_margin;
+        const int right = width / 2 + m_margin;
+        const int bottom = m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
     }
 
     void update_margin_auto( int width, int height )
@@ -131,12 +134,13 @@ private:
         auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Auto" ) );
         auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "AutoAxis" ) );
 
-        const int left_margin = width / 2 + m_margin;
-        const int top_margin = height / 2 + m_margin;
-        renderer->setLeftMargin( left_margin );
-        renderer->setTopMargin( top_margin );
-        axis->setLeftMargin( left_margin );
-        axis->setTopMargin( top_margin );
+        const int left = width / 2 + m_margin;
+        const int top = height / 2 + m_margin;
+        const int right = m_margin;
+        const int bottom = m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
     }
 };
 

@@ -32,10 +32,7 @@ namespace kvs
  */
 /*===========================================================================*/
 ScatterPlotRenderer::ScatterPlotRenderer():
-    m_top_margin( 30 ),
-    m_bottom_margin( 30 ),
-    m_left_margin( 30 ),
-    m_right_margin( 30 ),
+    m_margins( 30 ),
     m_point_color( kvs::UIColor::Blue() ),
     m_point_opacity( 1.0f ),
     m_point_size( 1.0f ),
@@ -74,11 +71,9 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
     m_painter.begin( screen() );
     {
         const float dpr = camera->devicePixelRatio();
-        const float x0 = m_left_margin;
-        const float x1 = camera->windowWidth() - m_right_margin;
-        const float y0 = m_top_margin;
-        const float y1 = camera->windowHeight() - m_bottom_margin;
-        const kvs::Vec4 rect( x0, x1, y0, y1 );
+        const int width = camera->windowWidth();
+        const int height = camera->windowHeight();
+        const kvs::Rectangle rect = m_margins.content( width, height );
 
         // Draw background.
         this->drawBackground( rect, dpr );
@@ -96,7 +91,7 @@ void ScatterPlotRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kv
     BaseClass::stopTimer();
 }
 
-void ScatterPlotRenderer::drawBackground( const kvs::Vec4& rect, const float dpr )
+void ScatterPlotRenderer::drawBackground( const kvs::Rectangle& rect, const float dpr )
 {
     if ( !m_background_visible ) { return; } // invisible
 
@@ -106,10 +101,10 @@ void ScatterPlotRenderer::drawBackground( const kvs::Vec4& rect, const float dpr
         kvs::OpenGL::Enable( GL_BLEND );
         kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        const float x0 = rect[0];
-        const float x1 = rect[1];
-        const float y0 = rect[2];
-        const float y1 = rect[3];
+        const float x0 = rect.x0();
+        const float x1 = rect.x1();
+        const float y0 = rect.y0();
+        const float y1 = rect.y1();
         kvs::OpenGL::Begin( GL_QUADS );
         kvs::OpenGL::Color( m_background_color );
         kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) * dpr );
@@ -121,7 +116,7 @@ void ScatterPlotRenderer::drawBackground( const kvs::Vec4& rect, const float dpr
 }
 
 void ScatterPlotRenderer::drawPolyline(
-    const kvs::Vec4& rect,
+    const kvs::Rectangle& rect,
     kvs::TableObject* table,
     const size_t x_index,
     const size_t y_index )
@@ -135,10 +130,10 @@ void ScatterPlotRenderer::drawPolyline(
     const auto y_min_value = table->minValue( y_index );
     const auto y_max_value = table->maxValue( y_index );
 
-    const auto x0 = rect[0];
-    const auto x1 = rect[1];
-    const auto y0 = rect[2];
-    const auto y1 = rect[3];
+    const auto x0 = rect.x0();
+    const auto x1 = rect.x1();
+    const auto y0 = rect.y0();
+    const auto y1 = rect.y1();
     const auto x_ratio = ( x1 - x0 ) / ( x_max_value - x_min_value );
     const auto y_ratio = ( y1 - y0 ) / ( y_max_value - y_min_value );
     const auto nrows = table->numberOfRows();
@@ -177,7 +172,7 @@ void ScatterPlotRenderer::drawPolyline(
 }
 
 void ScatterPlotRenderer::drawPoint(
-    const kvs::Vec4& rect,
+    const kvs::Rectangle& rect,
     kvs::TableObject* table,
     const size_t x_index,
     const size_t y_index,
@@ -190,10 +185,10 @@ void ScatterPlotRenderer::drawPoint(
     const auto y_min_value = table->minValue( y_index );
     const auto y_max_value = table->maxValue( y_index );
 
-    const auto x0 = rect[0];
-    const auto x1 = rect[1];
-    const auto y0 = rect[2];
-    const auto y1 = rect[3];
+    const auto x0 = rect.x0();
+    const auto x1 = rect.x1();
+    const auto y0 = rect.y0();
+    const auto y1 = rect.y1();
     const auto x_ratio = ( x1 - x0 ) / ( x_max_value - x_min_value );
     const auto y_ratio = ( y1 - y0 ) / ( y_max_value - y_min_value );
     const auto nrows = table->numberOfRows();

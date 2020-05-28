@@ -35,7 +35,7 @@ public:
 
 private:
     void setup_axes( const kvs::TableObject* table );
-    void draw_axes( const kvs::Vec4& rect, const size_t dim, const size_t x_index, const size_t y_index );
+    void draw_axes( const kvs::Rectangle& rect, const size_t dim, const size_t x_index, const size_t y_index );
 
 public:
     KVS_DEPRECATED( void setMargin( const int margin ) ) { this->setPadding( margin ); }

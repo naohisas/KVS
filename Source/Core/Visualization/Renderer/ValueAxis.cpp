@@ -121,9 +121,9 @@ int ValueAxis::drawTickLabelsOnTop( kvs::Painter& painter )
 {
     if ( !m_tick_label_visible ) { return 0; } // invisible
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
 
     // Format
     const int precision = ( m_precision == 0 ) ? 6 : m_precision;
@@ -162,9 +162,9 @@ int ValueAxis::drawTickLabelsOnBottom( kvs::Painter& painter )
 {
     if ( !m_tick_label_visible ) { return 0; } // invisible
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y1 = m_rect.y1();
 
     // Format
     const int precision = ( m_precision == 0 ) ? 6 : m_precision;
@@ -203,9 +203,9 @@ int ValueAxis::drawTickLabelsOnLeft( kvs::Painter& painter )
 {
     if ( !m_tick_label_visible ) { return 0; } // invisible
 
-    const float x0 = m_rect[0];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const int offset = 3; // additional offset between the axis and tick label
 
     // Format
@@ -246,9 +246,9 @@ int ValueAxis::drawTickLabelsOnRight( kvs::Painter& painter )
 {
     if ( !m_tick_label_visible ) { return 0; } // invisible
 
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const int offset = 3; // additional offset between the axis and tick label
 
     // Format
@@ -288,9 +288,9 @@ void ValueAxis::drawTickMarksOnTop( kvs::Painter& painter )
 {
     if ( !m_tick_mark_visible ) { return; } // invisible
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
     const float dpr = painter.devicePixelRatio();
 
     float x = x0 * dpr;
@@ -317,9 +317,9 @@ void ValueAxis::drawTickMarksOnBottom( kvs::Painter& painter )
 {
     if ( !m_tick_mark_visible ) { return; } // invisible
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
 
     float x = x0 * dpr;
@@ -346,9 +346,9 @@ void ValueAxis::drawTickMarksOnLeft( kvs::Painter& painter )
 {
     if ( !m_tick_mark_visible ) { return; } // invisible
 
-    const float x0 = m_rect[0];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
 
     float y = y1 * dpr;
@@ -375,9 +375,9 @@ void ValueAxis::drawTickMarksOnRight( kvs::Painter& painter )
 {
     if ( !m_tick_mark_visible ) { return; } // invisible
 
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
 
     float y = y1 * dpr;
@@ -404,9 +404,9 @@ void ValueAxis::drawAxisOnTop( kvs::Painter& painter )
 {
     if ( !m_visible ) { return; } // invisible
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
     const float dpr = painter.devicePixelRatio();
     const float d = m_width * 0.5f;
     kvs::OpenGL::SetLineWidth( m_width );
@@ -426,9 +426,9 @@ void ValueAxis::drawAxisOnBottom( kvs::Painter& painter )
 {
     if ( !m_visible ) { return; } // invisible
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
     const float d = m_width * 0.5f;
     kvs::OpenGL::SetLineWidth( m_width );
@@ -448,9 +448,9 @@ void ValueAxis::drawAxisOnLeft( kvs::Painter& painter )
 {
     if ( !m_visible ) { return; } // invisible
 
-    const float x0 = m_rect[0];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
     const float d = m_width * 0.5f;
     kvs::OpenGL::SetLineWidth( m_width );
@@ -470,9 +470,9 @@ void ValueAxis::drawAxisOnRight( kvs::Painter& painter )
 {
     if ( !m_visible ) { return; } // invisible
 
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
     const float d = m_width * 0.5f;
     kvs::OpenGL::SetLineWidth( m_width );
@@ -494,9 +494,9 @@ void ValueAxis::drawLabelOnTop( kvs::Painter& painter, const int margin )
     if ( !m_label_visible ) { return; } // invisible
     if ( m_label.size() == 0 ) { return; } // empty
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
 
     const kvs::Font font = painter.font();
     painter.setFont( m_label_font );
@@ -521,9 +521,9 @@ void ValueAxis::drawLabelOnBottom( kvs::Painter& painter, const int margin )
     if ( !m_label_visible ) { return; } // invisible
     if ( m_label.size() == 0 ) { return; } // empty
 
-    const float x0 = m_rect[0];
-    const float x1 = m_rect[1];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float x1 = m_rect.x1();
+    const float y1 = m_rect.y1();
 
     const kvs::Font font = painter.font();
     painter.setFont( m_label_font );
@@ -548,9 +548,9 @@ void ValueAxis::drawLabelOnLeft( kvs::Painter& painter,  const int margin )
     if ( !m_label_visible ) { return; } // invisible
     if ( m_label.size() == 0 ) { return; } // empty
 
-    const float x0 = m_rect[0];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x0 = m_rect.x0();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
 
     const kvs::Font font = painter.font();
@@ -580,9 +580,9 @@ void ValueAxis::drawLabelOnRight( kvs::Painter& painter, const int margin )
     if ( !m_label_visible ) { return; } // invisible
     if ( m_label.size() == 0 ) { return; } // empty
 
-    const float x1 = m_rect[1];
-    const float y0 = m_rect[2];
-    const float y1 = m_rect[3];
+    const float x1 = m_rect.x1();
+    const float y0 = m_rect.y0();
+    const float y1 = m_rect.y1();
     const float dpr = painter.devicePixelRatio();
 
     const kvs::Font font = painter.font();

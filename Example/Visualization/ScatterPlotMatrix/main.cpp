@@ -47,21 +47,19 @@ int main( int argc, char** argv )
     object->setMinValue( 2, min_value );
     object->setMaxValue( 2, max_value );
 
-    const int top_margin = 35;
-    const int left_margin = 65;
-    const int bottom_margin = 50;
+    const int left = 65;
+    const int top = 35;
+    const int right = 30;
+    const int bottom = 50;
+    const kvs::Margins margins( left, top, right, bottom );
 
     auto* renderer = new kvs::ScatterPlotMatrixRenderer();
-    renderer->setTopMargin( top_margin );
-    renderer->setLeftMargin( left_margin );
-    renderer->setBottomMargin( bottom_margin );
+    renderer->setMargins( margins );
     renderer->setPointSize( 4.0f );
 
     auto* axis = new kvs::Axis2DMatrix();
     axis->setTitle( "Title" );
-    axis->setTopMargin( top_margin );
-    axis->setLeftMargin( left_margin );
-    axis->setBottomMargin( bottom_margin );
+    axis->setMargins( margins );
 
     screen.registerObject( object, axis );
     screen.registerObject( object, renderer );

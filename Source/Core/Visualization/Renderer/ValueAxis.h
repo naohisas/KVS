@@ -8,6 +8,7 @@
 #include <kvs/Painter>
 #include <kvs/Type>
 #include <kvs/UIColor>
+#include <kvs/Rectangle>
 
 
 namespace kvs
@@ -61,7 +62,7 @@ private:
     size_t m_nticks; ///< number of ticks
 
     // Region
-    kvs::Vec4 m_rect; ///< drawing region (x0, x1, y0, y1 )
+    kvs::Rectangle m_rect; ///< drawing region (x0, x1, y0, y1 )
     kvs::Real64 m_min; ///< min value
     kvs::Real64 m_max; ///< max value
 
@@ -94,7 +95,7 @@ public:
     void setTickDirectionToInside() { this->setTickDirection( Inside ); }
     void setTickDirectionToOutside() { this->setTickDirection( Outside ); }
     void setNumberOfTicks( const size_t nticks ) { m_nticks = nticks; }
-    void setRect( const kvs::Vec4& rect ) { m_rect = rect; }
+    void setRect( const kvs::Rectangle& rect ) { m_rect = rect; }
     void setMin( const kvs::Real64 min ) { m_min = min; }
     void setMax( const kvs::Real64 max ) { m_max = max; }
     void setRange( const kvs::Real64 min, const kvs::Real64 max ) { this->setMin( min ); this->setMax( max ); }
@@ -116,7 +117,7 @@ public:
     int tickLabelOffset() const { return m_tick_label_offset; }
     TickDirection tickDirection() const { return m_tick_direction; }
     size_t numberOfTicks() const { return m_nticks; }
-    const kvs::Vec4& rect() const { return m_rect; }
+    const kvs::Rectangle& rect() const { return m_rect; }
     kvs::Real64 min() const { return m_min; }
     kvs::Real64 max() const { return m_max; }
     bool hasRange() const { return !kvs::Math::Equal( m_min, m_max ); }

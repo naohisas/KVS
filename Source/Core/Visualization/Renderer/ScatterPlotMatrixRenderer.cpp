@@ -34,24 +34,20 @@ void ScatterPlotMatrixRenderer::exec( kvs::ObjectBase* object, kvs::Camera* came
     BaseClass::painter().begin( screen() );
     {
         const float dpr = camera->devicePixelRatio();
-        const float X0 = BaseClass::leftMargin();
-        const float X1 = camera->windowWidth() - BaseClass::rightMargin();
-        const float Y0 = BaseClass::topMargin();
-        const float Y1 = camera->windowHeight() - BaseClass::bottomMargin();
-
+        const int width = camera->windowWidth();
+        const int height = camera->windowHeight();
+        const kvs::Rectangle content = BaseClass::margins().content( width, height );
         const size_t M = table->numberOfColumns(); // number of dimensions
-        const float Lx = float( X1 - X0 - m_padding * ( M - 1 ) ) / M; // length for each x axis
-        const float Ly = float( Y1 - Y0 - m_padding * ( M - 1 ) ) / M; // length for each y axis
+        const float Lx = float( content.width() - m_padding * ( M - 1 ) ) / M; // length for each x axis
+        const float Ly = float( content.height() - m_padding * ( M - 1 ) ) / M; // length for each y axis
 
         for ( size_t j = 0; j < M; ++j )
         {
             for ( size_t i = 0; i < M; ++i )
             {
-                const float x0 = X0 + ( Lx + m_padding ) * i;
-                const float x1 = x0 + Lx;
-                const float y0 = Y0 + ( Ly + m_padding ) * j;
-                const float y1 = y0 + Ly;
-                const kvs::Vec4 rect( x0, x1, y0, y1 );
+                const int x0 = content.x0() + ( Lx + m_padding ) * i;
+                const int y0 = content.y0() + ( Ly + m_padding ) * j;
+                const kvs::Rectangle rect( x0, y0, Lx, Ly );
 
                 BaseClass::drawBackground( rect, dpr );
 

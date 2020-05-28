@@ -40,10 +40,7 @@ namespace kvs
  */
 /*===========================================================================*/
 Axis2D::Axis2D():
-    m_top_margin( 30 ),
-    m_bottom_margin( 30 ),
-    m_left_margin( 30 ),
-    m_right_margin( 30 ),
+    m_margins( 30 ),
     m_title( "" ),
     m_title_font( kvs::Font::Sans, kvs::Font::Bold, 22.0f ),
     m_title_offset( 5 ),
@@ -89,25 +86,10 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
     m_painter.begin( screen() );
     {
-        //        x0                 x1
-        //    +--------------------------+
-        //    |   |                  |   |
-        // y0 |---+------------------+---|
-        //    |   |                  |   |
-        //    |   |                  |   |
-        //    |   |                  |   |
-        //    |   |                  |   |
-        //    |   |                  |   |
-        // y1 |---+------------------+---|
-        //    |   |                  |   |
-        //    +--------------------------+
-        //
         const float dpr = camera->devicePixelRatio();
-        const float x0 = m_left_margin;
-        const float x1 = camera->windowWidth() - m_right_margin;
-        const float y0 = m_top_margin;
-        const float y1 = camera->windowHeight() - m_bottom_margin;
-        const kvs::Vec4 rect( x0, x1, y0, y1 );
+        const int width = camera->windowWidth();
+        const int height = camera->windowHeight();
+        const kvs::Rectangle rect = m_margins.content( width, height );
 
         this->updateAxes( table );
         this->drawBackground( rect, dpr );
@@ -127,13 +109,13 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
  *  @param  rect [in] plot region
  */
 /*===========================================================================*/
-void Axis2D::drawTitle( const kvs::Vec4& rect )
+void Axis2D::drawTitle( const kvs::Rectangle& rect )
 {
     if ( m_title.size() > 0 )
     {
-        const float x0 = rect[0];
-        const float x1 = rect[1];
-        const float y0 = rect[2];
+        const float x0 = rect.x0();
+        const float x1 = rect.x1();
+        const float y0 = rect.y0();
         const kvs::FontMetrics& metrics = m_painter.fontMetrics();
         const kvs::Font font = m_painter.font();
         {
@@ -153,7 +135,7 @@ void Axis2D::drawTitle( const kvs::Vec4& rect )
  *  @param  dpr [in] device pixel ratio
  */
 /*===========================================================================*/
-void Axis2D::drawBackground( const kvs::Vec4& rect, const float dpr )
+void Axis2D::drawBackground( const kvs::Rectangle& rect, const float dpr )
 {
     if ( !m_background_visible ) { return; } // invisible
 
@@ -163,10 +145,10 @@ void Axis2D::drawBackground( const kvs::Vec4& rect, const float dpr )
         kvs::OpenGL::Enable( GL_BLEND );
         kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        const float x0 = rect[0];
-        const float x1 = rect[1];
-        const float y0 = rect[2];
-        const float y1 = rect[3];
+        const float x0 = rect.x0();
+        const float x1 = rect.x1();
+        const float y0 = rect.y0();
+        const float y1 = rect.y1();
         kvs::OpenGL::Begin( GL_QUADS );
         kvs::OpenGL::Color( m_background_color );
         kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) * dpr );
@@ -184,16 +166,16 @@ void Axis2D::drawBackground( const kvs::Vec4& rect, const float dpr )
  *  @param  dpr [in] device pixel ratio
  */
 /*===========================================================================*/
-void Axis2D::drawBorder( const kvs::Vec4& rect, const float dpr )
+void Axis2D::drawBorder( const kvs::Rectangle& rect, const float dpr )
 {
     if ( !m_border_visible ) { return; } // invisible
 
     if ( m_border_color.a() > 0.0f )
     {
-        const float x0 = rect[0];
-        const float x1 = rect[1];
-        const float y0 = rect[2];
-        const float y1 = rect[3];
+        const float x0 = rect.x0();
+        const float x1 = rect.x1();
+        const float y0 = rect.y0();
+        const float y1 = rect.y1();
         const int d = int( m_border_width * 0.5 );
         kvs::OpenGL::SetLineWidth( m_border_width * dpr );
         kvs::OpenGL::Begin( GL_LINES );
@@ -213,16 +195,16 @@ void Axis2D::drawBorder( const kvs::Vec4& rect, const float dpr )
  *  @param  dpr [in] device pixel ratio
  */
 /*===========================================================================*/
-void Axis2D::drawGridlines( const kvs::Vec4& rect, const float dpr )
+void Axis2D::drawGridlines( const kvs::Rectangle& rect, const float dpr )
 {
     if ( !m_gridline_visible ) { return; } // invisible
 
     if ( m_gridline_width > 0.0f )
     {
-        const float x0 = rect[0];
-        const float x1 = rect[1];
-        const float y0 = rect[2];
-        const float y1 = rect[3];
+        const float x0 = rect.x0();
+        const float x1 = rect.x1();
+        const float y0 = rect.y0();
+        const float y1 = rect.y1();
         const GLint stipple_factor = ::StripplePatterns[m_gridline_pattern].first;
         const GLint stipple_pattern = ::StripplePatterns[m_gridline_pattern].second;
 
@@ -262,7 +244,7 @@ void Axis2D::drawGridlines( const kvs::Vec4& rect, const float dpr )
  *  @param  axis [in] pointer to the axis
  */
 /*===========================================================================*/
-void Axis2D::drawAxis( const kvs::Vec4& rect, kvs::ValueAxis* axis )
+void Axis2D::drawAxis( const kvs::Rectangle& rect, kvs::ValueAxis* axis )
 {
     if ( axis->isVisible() )
     {
@@ -277,9 +259,8 @@ void Axis2D::drawAxis( const kvs::Vec4& rect, kvs::ValueAxis* axis )
  *  @param  rect [in] plot region
  */
 /*===========================================================================*/
-void Axis2D::drawAxes( const kvs::Vec4& rect )
+void Axis2D::drawAxes( const kvs::Rectangle& rect )
 {
-    const size_t naxes = m_axes.size();
     for ( auto axis : m_axes ) { this->drawAxis( rect, axis ); }
 }
 

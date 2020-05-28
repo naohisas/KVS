@@ -11,6 +11,7 @@
 #include <kvs/RGBAColor>
 #include <kvs/ColorMap>
 #include <kvs/Painter>
+#include <kvs/Margins>
 #include <kvs/Deprecated>
 
 
@@ -33,11 +34,14 @@ class ScatterPlotRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
-    // Margin
+    // Margins
+    kvs::Margins m_margins;
+    /*
     int m_top_margin; ///< top margin
     int m_bottom_margin; ///< bottom margin
     int m_left_margin; ///< left margin
     int m_right_margin; ///< right margin
+    */
 
     // Point
     kvs::RGBColor m_point_color; ///< point color
@@ -65,10 +69,7 @@ private:
 public:
     ScatterPlotRenderer();
 
-    void setTopMargin( const int margin ) { m_top_margin = margin; }
-    void setBottomMargin( const int margin ) { m_bottom_margin = margin; }
-    void setLeftMargin( const int margin ) { m_left_margin = margin; }
-    void setRightMargin( const int margin ) { m_right_margin = margin; }
+    void setMargins( const kvs::Margins& margins ) { m_margins = margins; }
     void setPointColor( const kvs::RGBColor color ) { m_point_color = color; }
     void setPointOpacity( const kvs::Real32 opacity ) { m_point_opacity = opacity; }
     void setPointSize( const kvs::Real32 size ) { m_point_size = size; }
@@ -83,10 +84,7 @@ public:
     void setBackgroundVisible( const bool visible = true ) { m_background_visible = visible; }
     void setColorMap( const kvs::ColorMap& color_map ) { m_color_map = color_map; }
 
-    int topMargin() const { return m_top_margin; }
-    int bottomMargin() const { return m_bottom_margin; }
-    int leftMargin() const { return m_left_margin; }
-    int rightMargin() const { return m_right_margin; }
+    const kvs::Margins& margins() const { return m_margins; }
     const kvs::RGBColor& pointColor() const { return m_point_color; }
     kvs::Real32 pointOpacity() const { return m_point_opacity; }
     kvs::Real32 pointSize() const { return m_point_size; }
@@ -105,12 +103,20 @@ public:
 
 protected:
     kvs::Painter& painter() { return m_painter; }
-    void drawBackground( const kvs::Vec4& rect, const float dpr );
-    void drawPolyline( const kvs::Vec4& rect, kvs::TableObject* table, const size_t x_index, const size_t y_index );
-    void drawPoint( const kvs::Vec4& rect, kvs::TableObject* table, const size_t x_index, const size_t y_index, const bool has_values );
+    void drawBackground( const kvs::Rectangle& rect, const float dpr );
+    void drawPolyline( const kvs::Rectangle& rect, kvs::TableObject* table, const size_t x_index, const size_t y_index );
+    void drawPoint( const kvs::Rectangle& rect, kvs::TableObject* table, const size_t x_index, const size_t y_index, const bool has_values );
 
 public:
+    KVS_DEPRECATED( void setTopMargin( const int margin ) ) { m_margins.setTop( margin ); }
+    KVS_DEPRECATED( void setBottomMargin( const int margin ) ) { m_margins.setBottom( margin ); }
+    KVS_DEPRECATED( void setLeftMargin( const int margin ) ) { m_margins.setLeft( margin ); }
+    KVS_DEPRECATED( void setRightMargin( const int margin ) ) { m_margins.setRight( margin ); }
     KVS_DEPRECATED( void setEnabledPolyline( const bool enabled ) ) { m_polyline_visible = enabled; }
+    KVS_DEPRECATED( int topMargin() const ) { return m_margins.top(); }
+    KVS_DEPRECATED( int bottomMargin() const ) { return m_margins.bottom(); }
+    KVS_DEPRECATED( int leftMargin() const ) { return m_margins.left(); }
+    KVS_DEPRECATED( int rightMargin() const ) { return m_margins.right(); }
 };
 
 } // end of namespace kvs
