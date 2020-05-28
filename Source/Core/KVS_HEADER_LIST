@@ -386,6 +386,7 @@ Visualization/Widget/ColorPalette
 Visualization/Widget/Font
 Visualization/Widget/HistogramBar
 Visualization/Widget/Label
+Visualization/Widget/Margins
 Visualization/Widget/OpacityMapBar
 Visualization/Widget/OpacityMapPalette
 Visualization/Widget/OrientationAxis

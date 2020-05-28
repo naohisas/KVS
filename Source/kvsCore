@@ -386,6 +386,7 @@
 #include <Core/Visualization/Widget/Font.h>
 #include <Core/Visualization/Widget/HistogramBar.h>
 #include <Core/Visualization/Widget/Label.h>
+#include <Core/Visualization/Widget/Margins.h>
 #include <Core/Visualization/Widget/OpacityMapBar.h>
 #include <Core/Visualization/Widget/OpacityMapPalette.h>
 #include <Core/Visualization/Widget/OrientationAxis.h>

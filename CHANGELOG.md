@@ -3,6 +3,7 @@
 + kvs::ValueAxis
 + kvs::DateAxis
 + kvs::UIColor
++ kvs::Margins
 
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank
