@@ -160,13 +160,13 @@ int main( int argc, char** argv )
     screen.show();
 
     const size_t nrows = 1000;
+    const float min_value = -7.0f;
+    const float max_value =  7.0f;
     auto data = CreateValueTable( nrows );
     auto* table = new kvs::TableObject();
     table->setTable( data );
-    table->setMinValue( 0, -7 );
-    table->setMaxValue( 0,  7 );
-    table->setMinValue( 1, -7 );
-    table->setMaxValue( 1,  7 );
+    table->setMinMaxValues( 0, min_value, max_value );
+    table->setMinMaxValues( 1, min_value, max_value );
 
     kvs::ColorMap cmap( 4 );
     cmap.addPoint( 0, kvs::UIColor::Red() );
@@ -201,11 +201,6 @@ int main( int argc, char** argv )
         kmeans->setNumberOfClusters( nclusters );
 
         auto* object = kmeans->exec( table );
-        object->setMinValue( 0, -7 );
-        object->setMaxValue( 0,  7 );
-        object->setMinValue( 1, -7 );
-        object->setMaxValue( 1,  7 );
-
         auto* renderer = new kvs::ScatterPlotRenderer();
         renderer->setName( "Random" );
         renderer->setPointSize( 4.0 );
@@ -230,11 +225,6 @@ int main( int argc, char** argv )
         kmeans->setNumberOfClusters( nclusters );
 
         auto* object = kmeans->exec( table );
-        object->setMinValue( 0, -7 );
-        object->setMaxValue( 0,  7 );
-        object->setMinValue( 1, -7 );
-        object->setMaxValue( 1,  7 );
-
         auto* renderer = new kvs::ScatterPlotRenderer();
         renderer->setName( "Smart" );
         renderer->setPointSize( 4.0 );
@@ -258,11 +248,6 @@ int main( int argc, char** argv )
         kmeans->setNumberOfClusters( max_nclusters );
 
         auto* object = kmeans->exec( table );
-        object->setMinValue( 0, -7 );
-        object->setMaxValue( 0,  7 );
-        object->setMinValue( 1, -7 );
-        object->setMaxValue( 1,  7 );
-
         auto* renderer = new kvs::ScatterPlotRenderer();
         renderer->setName( "Auto" );
         renderer->setPointSize( 4.0 );

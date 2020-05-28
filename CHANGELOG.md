@@ -60,6 +60,8 @@
 + kvs::ScatterPlotRenderer::polylineWidth
 + kvs::ScatterPlotRenderer::isPolylineVisible
 + kvs::ScatterPlotRenderer::isBackgroundVisible
++ kvs::TableObject::setMinMaxValues
++ kvs::TableObject::addColumn( array, min_value, max_value, label )
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer

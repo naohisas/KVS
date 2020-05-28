@@ -3,19 +3,12 @@
  *  @file   TableObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TableObject.cpp 1822 2014-10-24 09:01:51Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "TableObject.h"
 #include <kvs/Value>
 #include <kvs/Math>
 #include <kvs/KVSMLTableObject>
+#include <utility>
 
 
 namespace
@@ -40,6 +33,116 @@ kvs::KVSMLTableObject::WritingDataType GetWritingDataType( const bool ascii, con
     {
         return kvs::KVSMLTableObject::ExternalBinary;
     }
+}
+
+std::pair<kvs::Real64,kvs::Real64> GetMinMaxValues( const kvs::AnyValueArray& array )
+{
+    kvs::Real64 min_value = kvs::Value<kvs::Real64>::Max();
+    kvs::Real64 max_value = kvs::Value<kvs::Real64>::Min();
+    const std::type_info& type = array.typeInfo()->type();
+    if ( type == typeid( kvs::Int8 ) )
+    {
+        const kvs::Int8* value = static_cast<const kvs::Int8*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::UInt8 ) )
+    {
+        const kvs::UInt8* value = static_cast<const kvs::UInt8*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::Int16 ) )
+    {
+        const kvs::Int16* value = static_cast<const kvs::Int16*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::UInt16 ) )
+    {
+        const kvs::UInt16* value = static_cast<const kvs::UInt16*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::Int32 ) )
+    {
+        const kvs::Int32* value = static_cast<const kvs::Int32*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::UInt32 ) )
+    {
+        const kvs::UInt32* value = static_cast<const kvs::UInt32*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::Int64 ) )
+    {
+        const kvs::Int64* value = static_cast<const kvs::Int64*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::UInt64 ) )
+    {
+        const kvs::UInt64* value = static_cast<const kvs::UInt64*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::Real32 ) )
+    {
+        const kvs::Real32* value = static_cast<const kvs::Real32*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( kvs::Real64 ) )
+    {
+        const kvs::Real64* value = static_cast<const kvs::Real64*>( array.data() );
+        for( size_t i = 0; i < array.size(); i++ )
+        {
+            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
+            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
+        }
+    }
+    else if ( type == typeid( std::string ) )
+    {
+        min_value = 0.0;
+        max_value = 0.0;
+    }
+
+    return std::pair<kvs::Real64,kvs::Real64>( min_value, max_value );
+}
+
+template <typename T>
+void Clear( T& values )
+{
+    if ( values.size() > 0 ) { values.clear(); T().swap( values ); }
 }
 
 } // end of namespace
@@ -88,13 +191,13 @@ void TableObject::shallowCopy( const TableObject& other )
 /*===========================================================================*/
 void TableObject::deepCopy( const TableObject& other )
 {
-    { m_table.clear(); kvs::AnyValueTable().swap( m_table ); }
-    { m_labels.clear(); Labels().swap( m_labels ); }
-    { m_min_values.clear(); Values().swap( m_min_values ); }
-    { m_max_values.clear(); Values().swap( m_max_values ); }
-    { m_min_ranges.clear(); Values().swap( m_min_ranges ); }
-    { m_max_ranges.clear(); Values().swap( m_max_ranges ); }
-    { m_inside_range_flags.clear(); InsideRangeFlags().swap( m_inside_range_flags ); }
+    ::Clear( m_table );
+    ::Clear( m_labels );
+    ::Clear( m_min_values );
+    ::Clear( m_max_values );
+    ::Clear( m_min_ranges );
+    ::Clear( m_max_ranges );
+    ::Clear( m_inside_range_flags );
 
     BaseClass::operator=( other );
     this->m_nrows = other.numberOfRows();
@@ -200,111 +303,31 @@ bool TableObject::write( const std::string& filename, const bool ascii, const bo
 /*===========================================================================*/
 void TableObject::addColumn( const kvs::AnyValueArray& array, const std::string& label )
 {
+    const auto min_max_values = ::GetMinMaxValues( array );
+    const auto min_value = min_max_values.first;
+    const auto max_value = min_max_values.second;
+    this->addColumn( array, min_value, max_value, label );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Adds a column.
+ *  @param  array [in] column array
+ *  @param  min_value [in] min. value
+ *  @param  max_value [in] max. value
+ *  @param  label [in] column label
+ */
+/*===========================================================================*/
+void TableObject::addColumn(
+    const kvs::AnyValueArray& array,
+    const kvs::Real64 min_value,
+    const kvs::Real64 max_value,
+    const std::string& label )
+{
     m_ncolumns++;
     m_nrows = kvs::Math::Max( m_nrows, array.size() );
-
     m_table.pushBackColumn( array );
     m_labels.push_back( label );
-
-    kvs::Real64 min_value = kvs::Value<kvs::Real64>::Max();
-    kvs::Real64 max_value = kvs::Value<kvs::Real64>::Min();
-    const std::type_info& type = array.typeInfo()->type();
-    if ( type == typeid( kvs::Int8 ) )
-    {
-        const kvs::Int8* value = static_cast<const kvs::Int8*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::UInt8 ) )
-    {
-        const kvs::UInt8* value = static_cast<const kvs::UInt8*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::Int16 ) )
-    {
-        const kvs::Int16* value = static_cast<const kvs::Int16*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::UInt16 ) )
-    {
-        const kvs::UInt16* value = static_cast<const kvs::UInt16*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::Int32 ) )
-    {
-        const kvs::Int32* value = static_cast<const kvs::Int32*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::UInt32 ) )
-    {
-        const kvs::UInt32* value = static_cast<const kvs::UInt32*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::Int64 ) )
-    {
-        const kvs::Int64* value = static_cast<const kvs::Int64*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::UInt64 ) )
-    {
-        const kvs::UInt64* value = static_cast<const kvs::UInt64*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::Real32 ) )
-    {
-        const kvs::Real32* value = static_cast<const kvs::Real32*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( kvs::Real64 ) )
-    {
-        const kvs::Real64* value = static_cast<const kvs::Real64*>( array.data() );
-        for( size_t i = 0; i < array.size(); i++ )
-        {
-            min_value = kvs::Math::Min( min_value, kvs::Real64( value[i] ) );
-            max_value = kvs::Math::Max( max_value, kvs::Real64( value[i] ) );
-        }
-    }
-    else if ( type == typeid( std::string ) )
-    {
-        min_value = 0.0;
-        max_value = 0.0;
-    }
-
     m_min_values.push_back( min_value );
     m_max_values.push_back( max_value );
     m_min_ranges.push_back( min_value );
@@ -321,13 +344,13 @@ void TableObject::addColumn( const kvs::AnyValueArray& array, const std::string&
 /*===========================================================================*/
 void TableObject::setTable( const kvs::AnyValueTable& table, const Labels& labels )
 {
-    { m_table.clear(); kvs::AnyValueTable().swap( m_table ); }
-    { m_labels.clear(); Labels().swap( m_labels ); }
-    { m_min_values.clear(); Values().swap( m_min_values ); }
-    { m_max_values.clear(); Values().swap( m_max_values ); }
-    { m_min_ranges.clear(); Values().swap( m_min_ranges ); }
-    { m_max_ranges.clear(); Values().swap( m_max_ranges ); }
-    { m_inside_range_flags.clear(); InsideRangeFlags().swap( m_inside_range_flags ); }
+    ::Clear( m_table );
+    ::Clear( m_labels );
+    ::Clear( m_min_values );
+    ::Clear( m_max_values );
+    ::Clear( m_min_ranges );
+    ::Clear( m_max_ranges );
+    ::Clear( m_inside_range_flags );
 
     for ( size_t i = 0; i < table.columnSize(); i++ )
     {
@@ -360,6 +383,23 @@ void TableObject::setMaxValue( const size_t column_index, const kvs::Real64 valu
 {
     if ( value < m_max_ranges[column_index] ) { this->setMaxRange( column_index, value ); }
     m_max_values[column_index] = value;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets minimum and maximum values to the specified column.
+ *  @param  column_index [in] column index
+ *  @param  min_value [in] minimum value
+ *  @param  max_value [in] maximum value
+ */
+/*===========================================================================*/
+void TableObject::setMinMaxValues(
+    const size_t column_index,
+    const kvs::Real64 min_value,
+    const kvs::Real64 max_value )
+{
+    this->setMinValue( column_index, min_value );
+    this->setMaxValue( column_index, max_value );
 }
 
 /*===========================================================================*/
@@ -592,30 +632,6 @@ void TableObject::resetRange()
 
     std::fill( m_inside_range_flags.begin(), m_inside_range_flags.end(), 1 );
 }
-
-template<> void TableObject::addColumn<kvs::Int8>( const kvs::ValueArray<kvs::Int8>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt8>( const kvs::ValueArray<kvs::UInt8>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Int16>( const kvs::ValueArray<kvs::Int16>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt16>( const kvs::ValueArray<kvs::UInt16>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Int32>( const kvs::ValueArray<kvs::Int32>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt32>( const kvs::ValueArray<kvs::UInt32>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Int64>( const kvs::ValueArray<kvs::Int64>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt64>( const kvs::ValueArray<kvs::UInt64>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Real32>( const kvs::ValueArray<kvs::Real32>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Real64>( const kvs::ValueArray<kvs::Real64>& array, const std::string& label );
-template<> void TableObject::addColumn<std::string>( const kvs::ValueArray<std::string>& array, const std::string& label );
-
-template<> void TableObject::addColumn<kvs::Int8>( const std::vector<kvs::Int8>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt8>( const std::vector<kvs::UInt8>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Int16>( const std::vector<kvs::Int16>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt16>( const std::vector<kvs::UInt16>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Int32>( const std::vector<kvs::Int32>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt32>( const std::vector<kvs::UInt32>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Int64>( const std::vector<kvs::Int64>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::UInt64>( const std::vector<kvs::UInt64>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Real32>( const std::vector<kvs::Real32>& array, const std::string& label );
-template<> void TableObject::addColumn<kvs::Real64>( const std::vector<kvs::Real64>& array, const std::string& label );
-template<> void TableObject::addColumn<std::string>( const std::vector<std::string>& array, const std::string& label );
 
 template<> const kvs::Int8& TableObject::at<kvs::Int8>( const size_t row, const size_t column ) const;
 template<> const kvs::UInt8& TableObject::at<kvs::UInt8>( const size_t row, const size_t column ) const;

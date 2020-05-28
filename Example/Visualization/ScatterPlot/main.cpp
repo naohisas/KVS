@@ -33,14 +33,8 @@ int main( int argc, char** argv )
     const auto random_y = kvs::ValueArray<float>::Random( nsamples, min_value, max_value );
 
     auto* object = new kvs::TableObject();
-    object->addColumn( kvs::AnyValueArray( random_x ), "Random X" );
-    object->addColumn( kvs::AnyValueArray( random_y ), "Random Y" );
-
-    object->setMinValue( 0, min_value );
-    object->setMaxValue( 0, max_value );
-
-    object->setMinValue( 1, min_value );
-    object->setMaxValue( 1, max_value );
+    object->addColumn( random_x, min_value, max_value, "Random X" );
+    object->addColumn( random_y, min_value, max_value, "Random Y" );
 
     const int left = 65;
     const int top = 35;
