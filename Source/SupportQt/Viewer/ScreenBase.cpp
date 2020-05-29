@@ -407,8 +407,8 @@ void ScreenBase::wheelEvent( QWheelEvent* event )
 void ScreenBase::keyPressEvent( QKeyEvent* event )
 {
     m_key_event->setPosition( 0, 0 );
-    m_key_event->setKey( kvs::qt::KVSKey::Code( event->key() ) );
-
+    m_key_event->setKey( kvs::qt::KVSKey::Code( event->key(), event->modifiers() ) );
+    m_key_event->setModifiers( kvs::qt::KVSKey::Modifier( event->modifiers() ) );
     this->keyPressEvent( m_key_event );
 }
 

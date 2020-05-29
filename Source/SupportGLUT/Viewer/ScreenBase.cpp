@@ -164,8 +164,10 @@ void KeyPressFunction( unsigned char key, int x, int y )
 {
     const int id = glutGetWindow();
     const int code = kvs::glut::KVSKey::ASCIICode( key );
+    const int mods = kvs::glut::KVSKey::Modifier( glutGetModifiers() );
     ::Context[id]->m_key_event->setKey( code );
     ::Context[id]->m_key_event->setPosition( x, y );
+    ::Context[id]->m_key_event->setModifiers( mods );
     ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
 }
 
@@ -335,7 +337,6 @@ void ScreenBase::showNormal()
 
     glutReshapeWindow( BaseClass::width(), BaseClass::height() );
     glutPositionWindow( BaseClass::x(), BaseClass::y() );
-    glutPopWindow();
 }
 
 /*===========================================================================*/

@@ -62,6 +62,8 @@
 + kvs::ScatterPlotRenderer::isBackgroundVisible
 + kvs::TableObject::setMinMaxValues
 + kvs::TableObject::addColumn( array, min_value, max_value, label )
++ kvs::KeyEvent::modifiers
++ kvs::KeyEvent::setModifiers
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer

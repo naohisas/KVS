@@ -22,7 +22,11 @@ namespace kvs
  *  @brief  Constructs a new KeyEvent class.
  */
 /*===========================================================================*/
-KeyEvent::KeyEvent()
+KeyEvent::KeyEvent():
+    m_key( 0 ),
+    m_x( 0 ),
+    m_y( 0 ),
+    m_modifiers( 0 )
 {
 }
 
@@ -35,7 +39,8 @@ KeyEvent::KeyEvent()
 KeyEvent::KeyEvent( const KeyEvent& event ):
     m_key( event.m_key ),
     m_x( event.m_x ),
-    m_y( event.m_y )
+    m_y( event.m_y ),
+    m_modifiers( event.m_modifiers )
 {
 }
 
@@ -98,6 +103,17 @@ int KeyEvent::y() const
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns the modifier key code.
+ *  @return modifier key code
+ */
+/*===========================================================================*/
+int KeyEvent::modifiers() const
+{
+    return m_modifiers;
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Returns key type.
  *  @return key type
  */
@@ -129,6 +145,17 @@ void KeyEvent::setPosition( int x, int y )
 {
     m_x = x;
     m_y = y;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets a modifier key code.
+ *  @param  modifiers [in] modifier key code
+ */
+/*===========================================================================*/
+void KeyEvent::setModifiers( int modifiers )
+{
+    m_modifiers = modifiers;
 }
 
 } // end of namespace kvs
