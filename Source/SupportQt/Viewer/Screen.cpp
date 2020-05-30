@@ -579,8 +579,8 @@ void Screen::defaultWheelEvent( kvs::WheelEvent* event )
     BaseClass::eventHandler()->notify( event );
     if ( !m_scene->isActiveMove( event->x(), event->y() ) ) return;
 
-    if ( event->direction() > 0 ) { m_scene->wheelFunction( 10 ); }
-    else { m_scene->wheelFunction( -10 ); }
+    if ( event->direction() > 0 ) { m_scene->wheelFunction( 50 ); }
+    else { m_scene->wheelFunction( -50 ); }
 
     m_scene->updateXform();
     BaseClass::redraw();
