@@ -63,6 +63,9 @@ public:
     typedef kvs::qt::ScreenBase BaseClass;
     typedef kvs::Scene::ControlTarget ControlTarget;
 
+    static Screen* DownCast( kvs::ScreenBase* screen );
+    static const Screen* DownCast( const kvs::ScreenBase* screen );
+
 private:
 
     bool m_enable_default_paint_event; ///< flag for default paint event

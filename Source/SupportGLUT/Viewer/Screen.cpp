@@ -76,6 +76,30 @@ namespace glut
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns the pointer to the glut screen downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return pointer to the glut screen
+ */
+/*===========================================================================*/
+Screen* Screen::DownCast( kvs::ScreenBase* screen )
+{
+    return dynamic_cast<Screen*>( screen );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the const pointer to the glut screen downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return const pointer to the glut screen
+ */
+/*===========================================================================*/
+const Screen* Screen::DownCast( const kvs::ScreenBase* screen )
+{
+    return dynamic_cast<Screen*>( const_cast<kvs::ScreenBase*>( screen ) );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Constructs a new Screen class.
  */
 /*===========================================================================*/

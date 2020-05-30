@@ -35,6 +35,30 @@ namespace qt
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns the pointer to the qt screen base downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return pointer to the qt screen base
+ */
+/*===========================================================================*/
+ScreenBase* ScreenBase::DownCast( kvs::ScreenBase* screen )
+{
+    return dynamic_cast<ScreenBase*>( screen );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the const pointer to the qt screen base downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return const pointer to the qt screen base
+ */
+/*===========================================================================*/
+const ScreenBase* ScreenBase::DownCast( const kvs::ScreenBase* screen )
+{
+    return dynamic_cast<ScreenBase*>( const_cast<kvs::ScreenBase*>( screen ) );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Constructs a new ScreenBase class.
  *  @param  application [in] pointer to the application
  *  @param  parent [in] parent widget

@@ -41,6 +41,10 @@ class ScreenBase : public kvs::ScreenBase
 {
     typedef kvs::ScreenBase BaseClass;
 
+public:
+    static ScreenBase* DownCast( kvs::ScreenBase* screen );
+    static const ScreenBase* DownCast( const kvs::ScreenBase* screen );
+
 private:
     int m_id; ///< window ID
     kvs::MouseEvent* m_mouse_event; ///< mouse event
