@@ -3,14 +3,6 @@
  *  @file   Isosurface.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Isosurface.cpp 1823 2014-12-12 08:44:28Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "Isosurface.h"
 #include <kvs/DebugNew>
@@ -35,6 +27,35 @@ Isosurface::Isosurface():
     m_isolevel( 0 ),
     m_duplication( true )
 {
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new Isosurface class.
+ *  @param  volume [in] input volume object
+ *  @param  normal_type [in] normal vector type
+ */
+/*===========================================================================*/
+Isosurface::Isosurface(
+    const kvs::VolumeObjectBase* volume,
+    const SuperClass::NormalType normal_type ):
+    kvs::MapperBase(),
+    kvs::PolygonObject(),
+    m_duplication( true )
+{
+    SuperClass::setNormalType( normal_type );
+
+    if ( !volume->hasMinMaxValues() ) { volume->updateMinMaxValues(); }
+    this->setIsolevel( ( volume->maxValue() + volume->minValue() ) * 0.5 );
+
+    // In the case of VertexNormal-type, the duplicated vertices are forcibly deleted.
+    if ( normal_type == kvs::PolygonObject::VertexNormal )
+    {
+        m_duplication = false;
+    }
+
+    // Extract the surfaces.
+    this->exec( volume );
 }
 
 /*===========================================================================*/
@@ -106,17 +127,6 @@ Isosurface::Isosurface(
 /*==========================================================================*/
 Isosurface::~Isosurface()
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets a isolevel.
- *  @param  isolevel [in] isolevel
- */
-/*===========================================================================*/
-void Isosurface::setIsolevel( const double isolevel )
-{
-    m_isolevel = isolevel;
 }
 
 /*===========================================================================*/

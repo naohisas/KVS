@@ -74,6 +74,7 @@
 + kvs::glut::Screen::DownCast
 + kvs::qt::ScreenBase::DownCast
 + kvs::qt::Screen::DownCast
++ kvs::Isosurface::Isosurface( volume, normal_type )
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
