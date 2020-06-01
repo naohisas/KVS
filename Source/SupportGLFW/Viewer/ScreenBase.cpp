@@ -201,7 +201,14 @@ void KeyCallback( GLFWwindow* handler, int key, int scancode, int action, int mo
     this_screen->m_key_event->setPosition( int( x ), int( y ) );
     this_screen->m_key_event->setModifiers( kvs::glfw::KVSKey::Modifier( mods ) );
     this_screen->m_key_event->setKey( kvs::glfw::KVSKey::Code( key, mods ) );
-    this_screen->keyPressEvent( this_screen->m_key_event );
+    switch ( action )
+    {
+    case GLFW_PRESS:
+        this_screen->keyPressEvent( this_screen->m_key_event );
+        break;
+    default:
+        break;
+    }
 
     this_screen->releaseContext();
 }

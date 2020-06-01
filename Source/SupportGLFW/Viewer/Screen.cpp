@@ -328,7 +328,9 @@ const std::pair<int,int> Screen::registerObject( kvs::VisualizationPipeline* pip
 void Screen::create()
 {
     BaseClass::create();
+    BaseClass::aquireContext();
     m_scene->initializeFunction();
+    BaseClass::releaseContext();
 }
 
 /*===========================================================================*/
