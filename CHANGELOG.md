@@ -5,6 +5,12 @@
 + kvs::UIColor
 + kvs::Margins
 
+**Added SupportGLFW**
++ kvs::glfw::Application
++ kvs::glfw::Screen
++ kvs::glfw::ScreenBase
++ kvs::glfw::Timer
+
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank
 + kvs::BitArray::BitArray( size, flag )

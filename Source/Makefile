@@ -27,6 +27,10 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
 SUBDIRS += SupportGLUT
 endif
+
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+SUBDIRS += SupportGLFW
+endif
 endif
 
 ifeq "$(KVS_SUPPORT_QT)" "1"
@@ -89,6 +93,11 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/glut
 	$(INSTALL) kvsSupportGLUT $(INSTALL_DIR)/include
 	$(INSTALL) $(shell find kvs/glut -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/glut
+endif
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/glfw
+	$(INSTALL) kvsSupportGLFW $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/glfw -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/glfw
 endif
 ifeq "$(KVS_SUPPORT_QT)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/qt

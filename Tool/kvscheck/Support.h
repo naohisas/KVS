@@ -23,6 +23,9 @@
 #if defined( KVS_SUPPORT_GLUT )
 #include <kvs/glut/GLUT>
 #endif
+#if defined( KVS_SUPPORT_GLFW )
+#include <kvs/glfw/GLFW>
+#endif
 #if defined( KVS_SUPPORT_OPENCV )
 #include <kvs/opencv/OpenCV>
 #endif
@@ -72,6 +75,14 @@ inline int Support::exec( int argc, char** argv )
         libraries.push_back( "KVS_SUPPORT_GLUT" );
         descriptions.push_back( kvs::glut::Description() );
         versions.push_back( kvs::glut::Version() );
+    }
+#endif
+
+#if defined( KVS_SUPPORT_GLFW )
+    {
+        libraries.push_back( "KVS_SUPPORT_GLFW" );
+        descriptions.push_back( kvs::glfw::Description() );
+        versions.push_back( kvs::glfw::Version() );
     }
 #endif
 

@@ -27,6 +27,10 @@ SUBDIRS = Core
 !IF "$(KVS_SUPPORT_GLUT)" == "1"
 SUBDIRS = $(SUBDIRS) SupportGLUT
 !ENDIF
+
+!IF "$(KVS_SUPPORT_GLFW)" == "1"
+SUBDIRS = $(SUBDIRS) SupportGLFW
+!ENDIF
 !ENDIF
 
 !IF "$(KVS_SUPPORT_QT)" == "1"
@@ -85,6 +89,11 @@ install:
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\glut" $(MKDIR) "$(INSTALL_DIR)\include\kvs\glut"
 	$(INSTALL) kvsSupportGLUT "$(INSTALL_DIR)\include"
 	$(INSTALL) kvs\glut\* "$(INSTALL_DIR)\include\kvs\glut"
+!ENDIF
+!IF "$(KVS_SUPPORT_GLFW)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\glfw" $(MKDIR) "$(INSTALL_DIR)\include\kvs\glfw"
+	$(INSTALL) kvsSupportGLFW "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\glfw\* "$(INSTALL_DIR)\include\kvs\glfw"
 !ENDIF
 !IF "$(KVS_SUPPORT_QT)" == "1"
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\qt" $(MKDIR) "$(INSTALL_DIR)\include\kvs\qt"

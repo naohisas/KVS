@@ -87,6 +87,7 @@ LIB_KVS_CORE := libkvsCore.a
 LIB_KVS_SUPPORT_CAVE      := libkvsSupportCAVE.a
 LIB_KVS_SUPPORT_CUDA      := libkvsSupportCUDA.a
 LIB_KVS_SUPPORT_GLUT      := libkvsSupportGLUT.a
+LIB_KVS_SUPPORT_GLFW      := libkvsSupportGLFW.a
 LIB_KVS_SUPPORT_OPENCV    := libkvsSupportOpenCV.a
 LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
 LIB_KVS_SUPPORT_PYTHON    := libkvsSupportPython.a
@@ -325,6 +326,32 @@ endif
 
 
 #=============================================================================
+#  GLFW_INCLUDE_PATH, GLFW_LIBRARY_PATH, GLFW_LINK_LIBRARY
+#=============================================================================
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+  GLFW_INCLUDE_PATH :=
+  GLFW_LIBRARY_PATH :=
+  GLFW_LINK_LIBRARY :=
+  ifdef KVS_GLFW_DIR
+    GLFW_INCLUDE_PATH += -I$(KVS_GLFW_DIR)/include
+    GLFW_LIBRARY_PATH += -L$(KVS_GLFW_DIR)/lib
+  else
+    ifdef KVS_GLFW_INCLUDE_PATH
+      GLFW_INCLUDE_PATH += -I$(KVS_GLFW_INCLUDE_PATH)
+    endif
+    ifdef KVS_GLFW_LIBRARY_PATH
+      GLFW_LIBRARY_PATH += -L$(KVS_GLFW_LIBRARY_PATH)
+    endif
+  endif
+  ifdef KVS_GLFW_LINK_LIBRARY
+    GLFW_LINK_LIBRARY += $(KVS_GLFW_LINK_LIBRARY)
+  else
+    GLFW_LINK_LIBRARY += -lglfw
+  endif
+endif
+
+
+#=============================================================================
 #  CUDA_INCLUDE_PATH, CUDA_LIBRARY_PATH, CUDA_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_CUDA)" "1"
@@ -544,6 +571,10 @@ DEFINITIONS += $(GLEW_INCLUDE_PATH)
 ifeq "$(KVS_ENABLE_OPENGL)" "1"
   ifeq "$(KVS_SUPPORT_GLUT)" "1"
     DEFINITIONS += -DKVS_SUPPORT_GLUT
+  endif
+
+  ifeq "$(KVS_SUPPORT_GLFW)" "1"
+    DEFINITIONS += -DKVS_SUPPORT_GLFW
   endif
 endif
 
