@@ -3,18 +3,11 @@
  *  @file   ArrowGlyph.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ArrowGlyph.cpp 1797 2014-08-04 01:36:37Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ArrowGlyph.h"
 #include <kvs/OpenGL>
 #include <kvs/IgnoreUnusedVariable>
+
 
 namespace
 {
@@ -26,6 +19,7 @@ const kvs::Real32 LineVertices[12] =
     -0.2f, 0.8f, 0.0f,
      0.2f, 0.8f, 0.0f
 };
+
 const kvs::UInt32 LineConnections[6] =
 {
     0, 1,
@@ -70,7 +64,7 @@ namespace kvs
 /*===========================================================================*/
 ArrowGlyph::ArrowGlyph():
     kvs::GlyphBase(),
-    m_type( ArrowGlyph::LineArrow ),
+    m_arrow_type( ArrowGlyph::LineArrow ),
     m_volume( NULL )
 {
 }
@@ -83,7 +77,7 @@ ArrowGlyph::ArrowGlyph():
 /*===========================================================================*/
 ArrowGlyph::ArrowGlyph( const kvs::VolumeObjectBase* volume ):
     kvs::GlyphBase(),
-    m_type( ArrowGlyph::LineArrow ),
+    m_arrow_type( ArrowGlyph::LineArrow ),
     m_volume( NULL )
 {
     this->attach_volume( volume );
@@ -100,7 +94,7 @@ ArrowGlyph::ArrowGlyph(
     const kvs::VolumeObjectBase* volume,
     const kvs::TransferFunction& transfer_function ):
     kvs::GlyphBase(),
-    m_type( ArrowGlyph::LineArrow )
+    m_arrow_type( ArrowGlyph::LineArrow )
 {
     BaseClass::setTransferFunction( transfer_function );
     this->attach_volume( volume );
@@ -125,8 +119,8 @@ void ArrowGlyph::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light*
 
     BaseClass::startTimer();
 
-    kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
+    attrib.enable( GL_DEPTH_TEST );
     this->initialize();
     this->draw();
 
@@ -225,7 +219,7 @@ void ArrowGlyph::attach_volume( const kvs::VolumeObjectBase* volume )
 /*===========================================================================*/
 void ArrowGlyph::draw()
 {
-    switch ( m_type )
+    switch ( m_arrow_type )
     {
     case LineArrow: this->draw_lines(); break;
     case TubeArrow: this->draw_tubes(); break;
@@ -250,7 +244,7 @@ void ArrowGlyph::draw_lines()
     {
         for ( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
         {
-            const kvs::Vector3f position( coords.data() + index );
+            const kvs::Vec3 position( coords.data() + index );
             const kvs::Real32 size = sizes[i];
             const kvs::RGBColor color( colors.data() + index );
             const kvs::UInt8 opacity = opacities[i];
@@ -264,10 +258,10 @@ void ArrowGlyph::draw_lines()
     }
     else
     {
-        for( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
+        for ( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
         {
-            const kvs::Vector3f position( coords.data() + index );
-            const kvs::Vector3f direction( BaseClass::directions().data() + index );
+            const kvs::Vec3 position( coords.data() + index );
+            const kvs::Vec3 direction( BaseClass::directions().data() + index );
             const kvs::Real32 size = sizes[i];
             const kvs::RGBColor color( colors.data() + index );
             const kvs::UInt8 opacity = opacities[i];
@@ -301,7 +295,7 @@ void ArrowGlyph::draw_tubes()
     {
         for ( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
         {
-            const kvs::Vector3f position( coords.data() + index );
+            const kvs::Vec3 position( coords.data() + index );
             const kvs::Real32 size = sizes[i];
             const kvs::RGBColor color( colors.data() + index );
             const kvs::UInt8 opacity = opacities[i];
@@ -315,10 +309,10 @@ void ArrowGlyph::draw_tubes()
     }
     else
     {
-        for( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
+        for ( size_t i = 0, index = 0; i < npoints; i++, index += 3 )
         {
-            const kvs::Vector3f position( coords.data() + index );
-            const kvs::Vector3f direction( BaseClass::directions().data() + index );
+            const kvs::Vec3 position( coords.data() + index );
+            const kvs::Vec3 direction( BaseClass::directions().data() + index );
             const kvs::Real32 size = sizes[i];
             const kvs::RGBColor color( colors.data() + index );
             const kvs::UInt8 opacity = opacities[i];
@@ -401,7 +395,7 @@ void ArrowGlyph::initialize()
     kvs::OpenGL::Disable( GL_LINE_SMOOTH );
     kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
-    if ( m_type == ArrowGlyph::LineArrow )
+    if ( m_arrow_type == ArrowGlyph::LineArrow )
     {
         kvs::OpenGL::Disable( GL_NORMALIZE );
         kvs::OpenGL::Disable( GL_LIGHTING );

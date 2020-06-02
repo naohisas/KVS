@@ -79,6 +79,10 @@
 + kvs::Mouse::setOperationModeToRotation
 + kvs::Mouse::setOperationModeToTranslation
 + kvs::Mouse::setOperationModeToScaling
++ kvs::ArrowGlyph::setArrowType
++ kvs::ArrowGlyph::setArrowTypeToLine
++ kvs::ArrowGlyph::setArrowTypeToTube
++ kvs::ArrowGlyph::arrowType
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
@@ -121,6 +125,8 @@
 + kvs::ScatterPlotMatrixRenderer::setRightMargin (use kvs::ScatterMatrixPlotRenderer::setMargins)
 + kvs::ScatterPlotMatrixRenderer::setMargin (use kvs::ScatterPlotMatrixRenderer::setPadding)
 + kvs::ScatterPlotMatrixRenderer::margin (use kvs::ScatterPlotMatrixRenderer::padding)
++ kvs::ArrowGlyph::setType (use kvs::ArrowGlyph::setArrowType)
++ kvs::ArrowGlyph::type (use kvs::ArrowGlyph::arrowType)
 
 **Removed deprecated class and method**
 + kvs::Material
