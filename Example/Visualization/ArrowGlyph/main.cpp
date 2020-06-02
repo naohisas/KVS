@@ -5,13 +5,22 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#if defined( KVS_SUPPORT_GLFW )
+#include <kvs/glfw/Application>
+#include <kvs/glfw/Screen>
+using Application = kvs::glfw::Application;
+using Screen = kvs::glfw::Screen;
+#else
+#include <kvs/glut/Application>
+#include <kvs/glut/Screen>
+using Application = kvs::glut::Application;
+using Screen = kvs::glut::Screen;
+#endif
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/ArrowGlyph>
 #include <kvs/TornadoVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -23,11 +32,13 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    Application app( argc, argv );
+    Screen screen( &app );
+    screen.setTitle( "kvs::ArrowGlyph" );
+    screen.setGeometry( 0, 0, 512, 512 );
 
-    /* Read volume data from the specified data file. If the data file is not
-     * specified, tornado volume data is created by using kvs::TornadoVolumeData class.
-     */
+    // Read volume data from the specified data file. If the data file is not
+    // specified, tornado volume data is created by using kvs::TornadoVolumeData class.
     kvs::StructuredVolumeObject* object = NULL;
     if ( argc > 1 ) object = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
     else object = new kvs::TornadoVolumeData( kvs::Vec3u( 8, 8, 8 ) );
@@ -47,15 +58,11 @@ int main( int argc, char** argv )
 
     // Set properties.
     const kvs::TransferFunction tfunc( 256 );
-    const kvs::ArrowGlyph::ArrowType type = kvs::ArrowGlyph::TubeArrow;
     glyph->setTransferFunction( tfunc );
-    glyph->setType( type );
+    glyph->setArrowTypeToTube();
 
-    kvs::glut::Screen screen( &app );
     screen.registerObject( object, glyph );
-    screen.setGeometry( 0, 0, 512, 512 );
-    screen.setTitle( "kvs::ArrowGlyph" );
-    screen.show();
+    screen.create();
 
     return app.run();
 }

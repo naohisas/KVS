@@ -5,12 +5,22 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include <kvs/PaintEventListener>
-#include <kvs/OpenGL>
+#if defined( KVS_SUPPORT_GLFW )
+#include <kvs/glfw/Application>
+#include <kvs/glfw/Screen>
+using Application = kvs::glfw::Application;
+using Screen = kvs::glfw::Screen;
+#else
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
+using Application = kvs::glut::Application;
+using Screen = kvs::glut::Screen;
+#endif
+#include <kvs/PaintEventListener>
+#include <kvs/OpenGL>
 #include <kvs/CheckBox>
 #include <kvs/CheckBoxGroup>
+#include <kvs/UIColor>
 
 
 namespace
@@ -32,14 +42,14 @@ class PaintEvent : public kvs::PaintEventListener
 
         if ( ::EdgeFlag )
         {
+            const auto c = kvs::UIColor::Label();
             glEnable( GL_LINE_SMOOTH );
             glEnable( GL_BLEND );
             glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
             glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-
             glLineWidth( 2 );
             glBegin( GL_LINE_STRIP );
-            glColor3ub( 0, 0, 0 );
+            glColor3ub( c.r(), c.g(), c.b() );
             glVertex3d(  0.0,  3.0, 0.0 );
             glVertex3d(  3.0, -3.0, 0.0 );
             glVertex3d( -3.0, -3.0, 0.0 );
@@ -76,15 +86,14 @@ class PaintEvent : public kvs::PaintEventListener
 class EdgeBox : public kvs::CheckBox
 {
 public:
-
-    EdgeBox( kvs::glut::Screen* screen ): kvs::CheckBox( screen ){};
+    EdgeBox( Screen* screen ): kvs::CheckBox( screen ){};
     void stateChanged() { ::EdgeFlag = this->state(); }
 };
 
 class PlaneBox : public kvs::CheckBox
 {
 public:
-    PlaneBox( kvs::glut::Screen* screen ): kvs::CheckBox( screen ){};
+    PlaneBox( Screen* screen ): kvs::CheckBox( screen ){};
     void stateChanged() { ::PlaneFlag = this->state(); }
 };
 
@@ -97,17 +106,14 @@ public:
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-
-    PaintEvent paint_event;
-
-    kvs::glut::Screen screen( &app );
-    screen.addEvent( &paint_event );
+    Application app( argc, argv );
+    Screen screen( &app );
     screen.setTitle( "CheckBox" );
     screen.setGeometry( 0, 0, 512, 512 );
-    screen.show();
 
-    kvs::CheckBoxGroup group;
+    PaintEvent paint_event;
+    screen.addEvent( &paint_event );
+    screen.create();
 
     EdgeBox edge( &screen );
     edge.setX( 10 );
@@ -123,6 +129,7 @@ int main( int argc, char** argv )
     plane.setCaption("Plane");
     plane.setState( ::PlaneFlag );
 
+    kvs::CheckBoxGroup group;
     group.add( &edge );
     group.add( &plane );
     group.show();
