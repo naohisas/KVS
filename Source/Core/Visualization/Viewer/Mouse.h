@@ -3,17 +3,8 @@
  *  @file   Mouse.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Mouse.h 1713 2014-02-04 05:46:24Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
-
 #include <kvs/Trackball>
 #include <kvs/Timer>
 #include <kvs/Vector2>
@@ -61,22 +52,20 @@ public:
     bool idle();
     void reset();
 
+    void setTrackball( const kvs::Trackball& trackball ) { m_trackball = trackball; }
     void setOperationMode( const OperationMode mode ) { m_operation_mode = mode; }
-    OperationMode operationMode() const { return m_operation_mode; }
+    void setOperationModeToRotation() { setOperationMode( Rotation ); }
+    void setOperationModeToTranslation() { setOperationMode( Translation ); }
+    void setOperationModeToScaling() { setOperationMode( Scaling ); }
 
     kvs::Trackball& trackball() { return m_trackball; }
+    OperationMode operationMode() const { return m_operation_mode; }
 
     void setEnabledAutoUpdating( const bool enable ) { m_enable_auto_updating = enable; }
     void enableAutoUpdating() { this->setEnabledAutoUpdating( true ); }
     void disableAutoUpdating() { this->setEnabledAutoUpdating( false ); }
     bool isEnabledAutoUpdating() const { return m_enable_auto_updating; }
     bool isUpdating() { return m_is_updating; }
-
-    KVS_DEPRECATED( void attachCamera( kvs::Camera* camera ) ) { m_trackball.attachCamera( camera ); }
-    KVS_DEPRECATED( void setRotationCenter( const kvs::Vec2& center ) ) { m_trackball.setRotationCenter( center ); }
-    KVS_DEPRECATED( const kvs::Vec3& scaling() const ) { return m_trackball.scaling(); }
-    KVS_DEPRECATED( const kvs::Vec3& translation() const ) { return m_trackball.translation(); }
-    KVS_DEPRECATED( const kvs::Quaternion& rotation() const ) { return m_trackball.rotation(); }
 };
 
 } // end of namespace kvs

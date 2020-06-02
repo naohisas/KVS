@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Xform.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Xform.cpp 1539 2013-04-16 11:52:28Z naohisa.sakamoto@gmail.com $
+ *  @file   Xform.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Xform.h"
@@ -35,10 +28,11 @@ Xform::Xform(): m_matrix( kvs::Mat4::Identity() )
  */
 /*==========================================================================*/
 Xform::Xform( const kvs::Vec3& t, const kvs::Vec3& s, const kvs::Mat3& r ):
-    m_matrix( s[0] * r[0][0], s[1] * r[0][1], s[2] * r[0][2], t[0],
-              s[0] * r[1][0], s[1] * r[1][1], s[2] * r[1][2], t[1],
-              s[0] * r[2][0], s[1] * r[2][1], s[2] * r[2][2], t[2],
-              0, 0, 0, 1 )
+    m_matrix(
+        s[0] * r[0][0], s[1] * r[0][1], s[2] * r[0][2], t[0],
+        s[0] * r[1][0], s[1] * r[1][1], s[2] * r[1][2], t[1],
+        s[0] * r[2][0], s[1] * r[2][1], s[2] * r[2][2], t[2],
+        0, 0, 0, 1 )
 {
 }
 
@@ -73,9 +67,10 @@ const kvs::Vec3 Xform::translation() const
 const kvs::Mat3 Xform::rotation() const
 {
     kvs::Vec3 s = this->scaling();
-    return kvs::Mat3( m_matrix[0][0] / s.x(), m_matrix[0][1] / s.y(), m_matrix[0][2] / s.z(),
-                      m_matrix[1][0] / s.x(), m_matrix[1][1] / s.y(), m_matrix[1][2] / s.z(),
-                      m_matrix[2][0] / s.x(), m_matrix[2][1] / s.y(), m_matrix[2][2] / s.z() );
+    return kvs::Mat3(
+        m_matrix[0][0] / s.x(), m_matrix[0][1] / s.y(), m_matrix[0][2] / s.z(),
+        m_matrix[1][0] / s.x(), m_matrix[1][1] / s.y(), m_matrix[1][2] / s.z(),
+        m_matrix[2][0] / s.x(), m_matrix[2][1] / s.y(), m_matrix[2][2] / s.z() );
 }
 
 /*==========================================================================*/
@@ -86,9 +81,10 @@ const kvs::Mat3 Xform::rotation() const
 /*==========================================================================*/
 const kvs::Mat3 Xform::scaledRotation() const
 {
-    return kvs::Mat3( m_matrix[0][0], m_matrix[0][1], m_matrix[0][2],
-                      m_matrix[1][0], m_matrix[1][1], m_matrix[1][2],
-                      m_matrix[2][0], m_matrix[2][1], m_matrix[2][2] );
+    return kvs::Mat3(
+        m_matrix[0][0], m_matrix[0][1], m_matrix[0][2],
+        m_matrix[1][0], m_matrix[1][1], m_matrix[1][2],
+        m_matrix[2][0], m_matrix[2][1], m_matrix[2][2] );
 }
 
 /*==========================================================================*/
@@ -97,7 +93,7 @@ const kvs::Mat3 Xform::scaledRotation() const
  *  @return rotation matrix
  */
 /*==========================================================================*/
-const kvs::Vector3f Xform::scaling() const
+const kvs::Vec3 Xform::scaling() const
 {
     const float sx = (float)kvs::Vec3( m_matrix[0][0], m_matrix[1][0], m_matrix[2][0] ).length();
     const float sy = (float)kvs::Vec3( m_matrix[0][1], m_matrix[1][1], m_matrix[2][1] ).length();
@@ -209,10 +205,11 @@ const kvs::Xform Xform::FromArray( const float ary[16] )
 /*===========================================================================*/
 const kvs::Xform Xform::Translation( const kvs::Vec3& t )
 {
-    kvs::Mat4 m( 1, 0, 0, t[0],
-                 0, 1, 0, t[1],
-                 0, 0, 1, t[2],
-                 0, 0, 0, 1 );
+    kvs::Mat4 m(
+        1, 0, 0, t[0],
+        0, 1, 0, t[1],
+        0, 0, 1, t[2],
+        0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 
@@ -225,10 +222,11 @@ const kvs::Xform Xform::Translation( const kvs::Vec3& t )
 /*===========================================================================*/
 const kvs::Xform Xform::Rotation( const kvs::Mat3& r )
 {
-    kvs::Mat4 m( r[0][0], r[0][1], r[0][2], 0,
-                 r[1][0], r[1][1], r[1][2], 0,
-                 r[2][0], r[2][1], r[2][2], 0,
-                 0, 0, 0, 1 );
+    kvs::Mat4 m(
+        r[0][0], r[0][1], r[0][2], 0,
+        r[1][0], r[1][1], r[1][2], 0,
+        r[2][0], r[2][1], r[2][2], 0,
+        0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 
@@ -241,10 +239,11 @@ const kvs::Xform Xform::Rotation( const kvs::Mat3& r )
 /*===========================================================================*/
 const kvs::Xform Xform::Scaling( const kvs::Vec3& s )
 {
-    kvs::Mat4 m( s[0], 0, 0, 0,
-                 0, s[1], 0, 0,
-                 0, 0, s[2], 0,
-                 0, 0, 0, 1 );
+    kvs::Mat4 m(
+        s[0], 0, 0, 0,
+        0, s[1], 0, 0,
+        0, 0, s[2], 0,
+        0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 
@@ -257,10 +256,11 @@ const kvs::Xform Xform::Scaling( const kvs::Vec3& s )
 /*===========================================================================*/
 const kvs::Xform Xform::Scaling( float s )
 {
-    kvs::Mat4 m( s, 0, 0, 0,
-                 0, s, 0, 0,
-                 0, 0, s, 0,
-                 0, 0, 0, 1 );
+    kvs::Mat4 m(
+        s, 0, 0, 0,
+        0, s, 0, 0,
+        0, 0, s, 0,
+        0, 0, 0, 1 );
     return kvs::Xform( m );
 }
 

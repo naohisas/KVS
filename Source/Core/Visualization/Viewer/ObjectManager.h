@@ -3,17 +3,8 @@
  *  @file   ObjectManager.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ObjectManager.h 1802 2014-08-07 09:22:11Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
-
 #include <string>
 #include <map>
 #include <kvs/ObjectBase>
@@ -46,7 +37,6 @@ private:
     ObjectTree m_object_tree; ///< object tree
 
 public:
-
     ObjectManager();
     virtual ~ObjectManager();
 
@@ -88,7 +78,6 @@ public:
     void updateExternalCoords();
 
 private:
-
     void insert_root();
     void update_normalize_parameters( const kvs::Vec3& min_ext, const kvs::Vec3& max_ext );
     void update_normalize_parameters();
@@ -103,10 +92,6 @@ private:
 private:
     ObjectManager( const ObjectManager& );
     ObjectManager& operator =( const ObjectManager& );
-
-public:
-    KVS_DEPRECATED( int nobjects() const ) { return numberOfObjects(); }
-    KVS_DEPRECATED( bool setActiveObjectID( int id ) ) { return setActiveObject( id ); }
 };
 
 } // end of namespace kvs

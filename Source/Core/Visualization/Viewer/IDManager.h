@@ -3,17 +3,8 @@
  *  @file   IDManager.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: IDManager.h 1699 2014-01-17 06:31:38Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
-
 #include <list>
 #include <vector>
 #include <utility>
@@ -69,12 +60,8 @@ public:
 private:
     void update_flip_table();
 
-private:
     IDManager( const IDManager& );
     IDManager& operator =( const IDManager& );
-
-public:
-    KVS_DEPRECATED( IDPair operator [] ( size_t index ) const ) { return this->id( index ); }
 };
 
 } // end of namespace kvs

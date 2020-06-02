@@ -13,7 +13,6 @@
  */
 /*****************************************************************************/
 #pragma once
-
 #include "ObjectCoordinate.h"
 #include "WorldCoordinate.h"
 #include "CameraCoordinate.h"

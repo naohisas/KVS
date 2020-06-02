@@ -3,14 +3,6 @@
  *  @file   XformControl.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: XformControl.cpp 1539 2013-04-16 11:52:28Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "XformControl.h"
 
@@ -80,9 +72,10 @@ const kvs::Xform XformControl::xform() const
 void XformControl::rotate( const kvs::Mat3& rotation )
 {
     const kvs::Vec3 t = this->xform().translation();
-    const kvs::Xform x = kvs::Xform::Translation( t )
-                       * kvs::Xform::Rotation( rotation )
-                       * kvs::Xform::Translation( -t );
+    const kvs::Xform x =
+        kvs::Xform::Translation( t ) *
+        kvs::Xform::Rotation( rotation ) *
+        kvs::Xform::Translation( -t );
     this->multiplyXform( x );
 }
 

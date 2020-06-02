@@ -415,11 +415,9 @@ $(OUTDIR)\.\Visualization\Viewer\ApplicationBase.obj \
 $(OUTDIR)\.\Visualization\Viewer\Background.obj \
 $(OUTDIR)\.\Visualization\Viewer\Camera.obj \
 $(OUTDIR)\.\Visualization\Viewer\CameraCoordinate.obj \
-$(OUTDIR)\.\Visualization\Viewer\DisplayFormat.obj \
 $(OUTDIR)\.\Visualization\Viewer\FontMetrics.obj \
 $(OUTDIR)\.\Visualization\Viewer\IDManager.obj \
 $(OUTDIR)\.\Visualization\Viewer\Light.obj \
-$(OUTDIR)\.\Visualization\Viewer\Material.obj \
 $(OUTDIR)\.\Visualization\Viewer\Mouse.obj \
 $(OUTDIR)\.\Visualization\Viewer\NormalizedDeviceCoordinate.obj \
 $(OUTDIR)\.\Visualization\Viewer\ObjectCoordinate.obj \

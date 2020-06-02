@@ -3,14 +3,6 @@
  *  @file   ObjectCoordinate.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "ObjectCoordinate.h"
 #include "WorldCoordinate.h"
@@ -43,7 +35,6 @@ ObjectCoordinate::ObjectCoordinate( const kvs::Vec3& position, const kvs::Object
 const WorldCoordinate ObjectCoordinate::toWorldCoordinate() const
 {
     KVS_ASSERT( m_object != NULL );
-
     const kvs::Vec3 position = m_object->xform().transform( m_position );
     return WorldCoordinate( position );
 }

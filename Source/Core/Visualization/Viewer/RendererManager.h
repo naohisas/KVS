@@ -3,17 +3,8 @@
  *  @file   RendererManager.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RendererManager.h 1703 2014-01-23 10:52:11Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
-
 #include <string>
 #include <utility>
 #include <vector>
@@ -67,9 +58,6 @@ public:
     void change( int id, const kvs::SharedPointer<kvs::RendererBase>& renderer );
     void change( std::string name, const kvs::SharedPointer<kvs::RendererBase>& renderer );
 
-    //const kvs::SharedPointer<kvs::RendererBase>& renderer( int id );
-    //const kvs::SharedPointer<kvs::RendererBase>& renderer( std::string name );
-
 private:
     RendererIterator find_renderer( int id );
     RendererIterator find_renderer( std::string name );
@@ -77,9 +65,6 @@ private:
 private:
     RendererManager( const RendererManager& );
     RendererManager& operator =( const RendererManager& );
-
-public:
-    KVS_DEPRECATED( int nrenderers() const ) { return numberOfRenderers(); }
 };
 
 } // end of namespace kvs

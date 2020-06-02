@@ -3,14 +3,6 @@
  *  @file   RendererManager.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RendererManager.cpp 1703 2014-01-23 10:52:11Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "RendererManager.h"
 #include <kvs/RendererBase>

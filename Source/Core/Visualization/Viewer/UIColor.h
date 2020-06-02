@@ -11,6 +11,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  UIColor class.
+ */
+/*===========================================================================*/
 class UIColor
 {
 public:
@@ -54,12 +59,12 @@ public:
 public:
     enum Mode
     {
-        Dark,
-        Light
+        Dark, // dark color mode
+        Light // light color mode
     };
 
 private:
-    static Mode m_mode;
+    static Mode m_mode; ///< color mode (Dark or Light)
 
 public:
     void setMode( const Mode mode ) { m_mode = mode; }

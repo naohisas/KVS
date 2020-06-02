@@ -7,6 +7,10 @@
 #pragma once
 #include <kvs/ScreenBase>
 #include <kvs/Timer>
+#include <kvs/MouseEvent>
+#include <kvs/WheelEvent>
+#include <kvs/KeyEvent>
+#include <kvs/TimerEventListener>
 #include <list>
 #include "../GLFW.h"
 #include "Timer.h"
@@ -14,11 +18,6 @@
 
 namespace kvs
 {
-
-class MouseEvent;
-class WheelEvent;
-class KeyEvent;
-class TimerEventListener;
 
 namespace glfw
 {

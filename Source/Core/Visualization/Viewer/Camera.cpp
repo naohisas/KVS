@@ -3,14 +3,6 @@
  *  @file   Camera.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Camera.cpp 1791 2014-07-24 06:51:25Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "Camera.h"
 #include <utility>
@@ -142,6 +134,12 @@ void Camera::setLookAt( const kvs::Vec3& look_at )
     this->setPosition( this->position(), look_at, this->upVector() );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns the device pixel ratio.
+ *  @return device pixel ratio
+ */
+/*===========================================================================*/
 float Camera::devicePixelRatio() const
 {
     const kvs::Vec4 vp = kvs::OpenGL::Viewport();
@@ -349,9 +347,10 @@ void Camera::resetXform()
 void Camera::rotate( const kvs::Mat3& rotation )
 {
     const kvs::Vec3 t = m_transform_center;
-    const kvs::Xform x = kvs::Xform::Translation( t )
-                       * kvs::Xform::Rotation( rotation )
-                       * kvs::Xform::Translation( -t );
+    const kvs::Xform x =
+        kvs::Xform::Translation( t ) *
+        kvs::Xform::Rotation( rotation ) *
+        kvs::Xform::Translation( -t );
     this->multiplyXform( x );
 }
 
@@ -376,321 +375,6 @@ void Camera::translate( const kvs::Vec3& translation )
 void Camera::scale( const kvs::Vec3& scaling )
 {
     this->multiplyXform( kvs::Xform::Scaling( scaling ) );
-}
-
-
-
-
-const kvs::Mat4 Camera::modelViewMatrix() const
-{
-//    float m[16];
-//    this->getModelViewMatrix( &m );
-//    return kvs::Xform::FromArray( m ).toMatrix();
-    return kvs::OpenGL::ModelViewMatrix();
-}
-
-const kvs::Mat4 Camera::projectionModelViewMatrix() const
-{
-//    return this->projectionMatrix() * this->modelViewMatrix();
-    return this->projectionMatrix() * kvs::OpenGL::ModelViewMatrix();
-}
-
-void Camera::getProjectionModelViewMatrix( float (*projection_modelview)[16] ) const
-{
-//    kvs::Mat4 M = this->modelViewMatrix();
-    kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    kvs::Mat4 P = this->projectionMatrix();
-    kvs::Xform x( P * M );
-    x.toArray( *projection_modelview );
-}
-
-void Camera::getProjectionModelViewMatrix(
-    const float projection[16],
-    const float modelview[16],
-    float (*projection_modelview)[16] ) const
-{
-    kvs::Xform M = kvs::Xform::FromArray( modelview );
-    kvs::Xform P = kvs::Xform::FromArray( projection );
-    kvs::Xform x = P * M;
-    x.toArray( *projection_modelview );
-}
-
-/*==========================================================================*/
-/**
- *  Get a projection matrix.
- *  @param  projection [out] projection matrix
- */
-/*==========================================================================*/
-void Camera::getProjectionMatrix( float (*projection)[16] ) const
-{
-    KVS_GL_CALL( glGetFloatv( GL_PROJECTION_MATRIX, (GLfloat*)*projection ) );
-}
-
-/*==========================================================================*/
-/**
- *  Get a modelview matrix.
- *  @param  modelview [out] modelview matrix
- */
-/*==========================================================================*/
-void Camera::getModelViewMatrix( float (*modelview)[16] ) const
-{
-    KVS_GL_CALL( glGetFloatv( GL_MODELVIEW_MATRIX, (GLfloat*)*modelview ) );
-}
-
-/*==========================================================================*/
-/**
- *  Get a combined matrix (<projection matrix> x <modelview matrix>).
- *  @param  combined [out] combined matrix
- */
-/*==========================================================================*/
-void Camera::getCombinedMatrix( float (*combined)[16] ) const
-{
-//    this->getProjectionModelViewMatrix( combined );
-    kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    kvs::Mat4 P = this->projectionMatrix();
-    kvs::Xform x( P * M );
-    x.toArray( *combined );
-}
-
-/*==========================================================================*/
-/**
- *  Get a combined matrix (<projection matrix> x <modelview matrix>).
- *  @param projection [in] projection matrix
- *  @param modelview [in] modelview matrix
- *  @param  combined   [out] combined matrix
- */
-/*==========================================================================*/
-void Camera::getCombinedMatrix(
-    const float projection[16],
-    const float modelview[16],
-    float (*combined)[16] ) const
-{
-//    this->getProjectionModelViewMatrix( projection, modelview, combined );
-    kvs::Xform M = kvs::Xform::FromArray( modelview );
-    kvs::Xform P = kvs::Xform::FromArray( projection );
-    kvs::Xform x = P * M;
-    x.toArray( *combined );
-}
-
-/*==========================================================================*/
-/**
- *  Get a coordinate value in the window coordinate system.
- *  @param p_obj_x [in] x coordinate value in the object coordinate system
- *  @param p_obj_y [in] y coordinate value in the object coordinate system
- *  @param p_obj_z [in] z coordinate value in the object coordinate system
- *  @param  depth   [out] depth value of projected point
- *  @return projected coordinate value in the window coordinate system
- *
- *  Same as gluProject() in OpenGL.
- */
-/*==========================================================================*/
-const kvs::Vec2 Camera::projectObjectToWindow(
-    float  p_obj_x,
-    float  p_obj_y,
-    float  p_obj_z,
-    float* depth ) const
-{
-//    return this->projectObjectToWindow( kvs::Vec3( p_obj_x, p_obj_y, p_obj_z ), depth );
-    const kvs::Vec3 p_obj( p_obj_x, p_obj_y, p_obj_z );
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 P = this->projectionMatrix();
-    const kvs::Xform pvm( P * M );
-    const kvs::Vec3 p = pvm.project( p_obj );
-
-    if ( depth ) *depth = ( 1.0f + p[2] ) * 0.5f;
-
-    return kvs::Vec2( ( 1.0f + p[0] ) * m_window_width * 0.5f,
-                      ( 1.0f + p[1] ) * m_window_height * 0.5f );
-}
-
-/*==========================================================================*/
-/**
- *  Get a coordinate value in the window coordinate system.
- *  @param p_obj [in] coordinate value in the object coordinate system
- *  @param  depth [out] depth value of projected point
- *  @return projected coordinate value in the window coordinate system
- *
- *  Same as gluProject() in OpenGL.
- */
-/*==========================================================================*/
-const kvs::Vec2 Camera::projectObjectToWindow( const kvs::Vec3& p_obj, float* depth ) const
-{
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 P = this->projectionMatrix();
-    const kvs::Xform pvm( P * M );
-    const kvs::Vec3 p = pvm.project( p_obj );
-
-    if ( depth ) *depth = ( 1.0f + p[2] ) * 0.5f;
-
-    return kvs::Vec2( ( 1.0f + p[0] ) * m_window_width * 0.5f,
-                      ( 1.0f + p[1] ) * m_window_height * 0.5f );
-}
-
-/*==========================================================================*/
-/**
- *  Get a coordinate value in the object coordinate system.
- *  @param p_win [in] point in the window coordinate system
- *  @param depth [in] depth value
- *  @return point in the object coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectWindowToObject( const kvs::Vec2& p_win, float depth ) const
-{
-//    return this->projectCameraToObject( this->projectWindowToCamera( p_win, depth ) );
-    GLdouble m[16] = { 1.0, 0.0, 0.0, 0.0,
-                       0.0, 1.0, 0.0, 0.0,
-                       0.0, 0.0, 1.0, 0.0,
-                       0.0, 0.0, 0.0, 1.0 };
-
-    GLdouble p[16]; KVS_GL_CALL( glGetDoublev(  GL_PROJECTION_MATRIX, p ) );
-    GLint    v[4];  KVS_GL_CALL( glGetIntegerv( GL_VIEWPORT,          v ) );
-
-    double x = 0;
-    double y = 0;
-    double z = 0;
-//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
-    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
-
-    const kvs::Vec3 p_cam( (float)x, (float)y, (float)z );
-    const kvs::Xform modelview( kvs::OpenGL::ModelViewMatrix() );
-    return modelview.inverse().transform( p_cam );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the camera coordinate system.
- *  @param p_win [in] a point in the window coordinate system.
- *  @param depth [in] depth value
- *  @return point in the object coordinate system.
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectWindowToCamera( const kvs::Vec2& p_win, float depth ) const
-{
-    GLdouble m[16] = { 1.0, 0.0, 0.0, 0.0,
-                       0.0, 1.0, 0.0, 0.0,
-                       0.0, 0.0, 1.0, 0.0,
-                       0.0, 0.0, 0.0, 1.0 };
-
-    GLdouble p[16]; KVS_GL_CALL( glGetDoublev(  GL_PROJECTION_MATRIX, p ) );
-    GLint    v[4];  KVS_GL_CALL( glGetIntegerv( GL_VIEWPORT,          v ) );
-
-    double x = 0;
-    double y = 0;
-    double z = 0;
-//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
-    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
-
-    return kvs::Vec3( (float)x, (float)y, (float)z );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the world coordinate system.
- *  @param win [in] point in the window coordinate system
- *  @param depth [in] depth value
- *  @return a point in the world coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectWindowToWorld( const kvs::Vec2& p_win, float depth ) const
-{
-//    return this->projectCameraToWorld( this->projectWindowToCamera( p_win, depth ) );
-    GLdouble m[16] = { 1.0, 0.0, 0.0, 0.0,
-                       0.0, 1.0, 0.0, 0.0,
-                       0.0, 0.0, 1.0, 0.0,
-                       0.0, 0.0, 0.0, 1.0 };
-
-    GLdouble p[16]; KVS_GL_CALL( glGetDoublev(  GL_PROJECTION_MATRIX, p ) );
-    GLint    v[4];  KVS_GL_CALL( glGetIntegerv( GL_VIEWPORT,          v ) );
-
-    double x = 0;
-    double y = 0;
-    double z = 0;
-//    KVS_GL_CALL( gluUnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z ) );
-    kvs::OpenGL::UnProject( p_win.x(), p_win.y(), depth, m, p, v, &x, &y, &z );
-
-    const kvs::Vec3 p_cam( (float)x, (float)y, (float)z );
-    const kvs::Xform inv_viewing( this->xform() );
-    return inv_viewing.transform( p_cam );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the camera coodinate system.
- *  @param p_obj [in] point in the object coordinate system
- *  @return point in the object coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectObjectToCamera( const kvs::Vec3& p_obj ) const
-{
-    const kvs::Xform modelview( kvs::OpenGL::ModelViewMatrix() );
-    return modelview.transform( p_obj );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the object coordinate system.
- *  @param p_cam [in] point in the camera coordinate system
- *  @return point in the object coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectCameraToObject(
-    const kvs::Vec3& p_cam ) const
-{
-    const kvs::Xform modelview( kvs::OpenGL::ModelViewMatrix() );
-    return modelview.inverse().transform( p_cam );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the camera coordinate system.
- *  @param p_wld [in] point in the world coordinate system
- *  @return point in the camera coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectWorldToCamera( const kvs::Vec3& p_wld ) const
-{
-    const kvs::Xform viewing( this->viewingMatrix() );
-    return viewing.transform( p_wld );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the world coordinate system.
- *  @param p_cam [in] point in the camera coordinate system
- *  @return point in the world coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectCameraToWorld( const kvs::Vec3& p_cam ) const
-{
-    const kvs::Xform inv_viewing( this->xform() );
-    return inv_viewing.transform( p_cam );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the object coordinate system.
- *  @param p_wld [in] point in the world coordinate system
- *  @return point in the object coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectWorldToObject( const kvs::Vec3& p_wld ) const
-{
-    const kvs::Xform inv_modeling( kvs::OpenGL::ModelViewMatrix().inverted() * this->viewingMatrix() );
-    return inv_modeling.transform( p_wld );
-}
-
-/*==========================================================================*/
-/**
- *  Get a point in the world coordinate system.
- *  @param p_obj [in] point in the object coordinate system
- *  @return point in the world coordinate system
- */
-/*==========================================================================*/
-const kvs::Vec3 Camera::projectObjectToWorld( const kvs::Vec3& p_obj ) const
-{
-//    const kvs::Xform modeling( this->xform().toMatrix() * this->modelViewMatrix() );
-    const kvs::Xform modeling( this->xform().toMatrix() * kvs::OpenGL::ModelViewMatrix() );
-    return modeling.transform( p_obj );
 }
 
 } // end of namespace kvs

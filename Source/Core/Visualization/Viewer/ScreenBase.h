@@ -3,34 +3,14 @@
  *  @file   ScreenBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ScreenBase.h 1570 2013-05-09 08:32:56Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
-
 #include <string>
 #include <kvs/DisplayFormat>
 #include <kvs/Deprecated>
 #include <kvs/EventHandler>
 #include <kvs/PaintDevice>
 #include <kvs/ColorImage>
-
-/*KVS_DEPRECATED*/
-#include <kvs/InitializeEventListener>
-#include <kvs/PaintEventListener>
-#include <kvs/ResizeEventListener>
-#include <kvs/MousePressEventListener>
-#include <kvs/MouseMoveEventListener>
-#include <kvs/MouseReleaseEventListener>
-#include <kvs/MouseDoubleClickEventListener>
-#include <kvs/WheelEventListener>
-#include <kvs/KeyPressEventListener>
 
 
 namespace kvs
@@ -93,16 +73,6 @@ public:
     virtual void enable() {}
     virtual void disable() {}
     virtual void reset() {}
-
-    KVS_DEPRECATED( void addInitializeEvent( kvs::InitializeEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addPaintEvent( kvs::PaintEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addResizeEvent( kvs::ResizeEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMousePressEvent( kvs::MousePressEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMouseMoveEvent( kvs::MouseMoveEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMouseReleaseEvent( kvs::MouseReleaseEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMouseDoubleClickEvent( kvs::MouseDoubleClickEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addWheelEvent( kvs::WheelEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addKeyPressEvent( kvs::KeyPressEventListener* event ) ) { this->addEvent( event ); }
 
 protected:
     void setDevicePixelRatio( const float ratio ) { m_device_pixel_ratio = ratio; }

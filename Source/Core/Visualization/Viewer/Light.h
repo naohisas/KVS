@@ -3,17 +3,8 @@
  *  @file   Light.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Light.h 1799 2014-08-04 05:36:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
-
 #include <kvs/XformControl>
 #include <kvs/Vector3>
 #include <kvs/Camera>
@@ -40,13 +31,11 @@ private:
     kvs::Vec3 m_specular; ///< specular color
 
 public:
-
     static void SetModelLocalViewer( bool flag );
     static void SetModelTwoSide( bool flag );
     static void SetModelAmbient( float ambient[4] );
 
 public:
-
     Light();
     virtual ~Light();
 
@@ -78,12 +67,6 @@ public:
     void rotate( const kvs::Mat3& rotation );
     void translate( const kvs::Vec3& translation );
     void scale( const kvs::Vec3& scaling );
-
-public:
-
-    KVS_DEPRECATED( static void setModelLocalViewer( bool flag ) ) { SetModelLocalViewer( flag ); }
-    KVS_DEPRECATED( static void setModelTwoSide( bool flag ) ) { SetModelTwoSide( flag ); }
-    KVS_DEPRECATED( static void setModelAmbient( float ambient[4] ) ) { SetModelAmbient( ambient ); }
 };
 
 } // end of namespace kvs

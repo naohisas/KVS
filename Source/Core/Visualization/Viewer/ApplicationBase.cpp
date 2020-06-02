@@ -3,14 +3,6 @@
  *  @file   ApplicationBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ApplicationBase.cpp 1514 2013-04-09 07:14:05Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ApplicationBase.h"
 #include <cstdlib>

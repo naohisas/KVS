@@ -3,14 +3,6 @@
  *  @file   Trackball.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Trackball.cpp 1717 2014-02-06 09:38:58Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "Trackball.h"
 #include <kvs/Camera>
@@ -54,7 +46,6 @@ void Trackball::scale( const kvs::Vec2i& start, const kvs::Vec2i& end )
 
     const float h = static_cast<float>( m_ref_camera->windowHeight() );
     const float s = 1.0f + m_scaling_factor * ( n_old.y() - n_new.y() ) / h;
-
     m_scaling = kvs::Vec3::Constant( s );
 }
 

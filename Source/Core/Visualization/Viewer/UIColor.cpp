@@ -12,6 +12,12 @@ namespace kvs
 
 UIColor::Mode UIColor::m_mode = UIColor::Light;
 
+/*===========================================================================*/
+/**
+ *  @brief  Instance a new UIColor.
+ *  @return UIColor
+ */
+/*===========================================================================*/
 UIColor& UIColor::Instance()
 {
     static UIColor instance;

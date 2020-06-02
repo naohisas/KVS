@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   Painter.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "Painter.h"
 #include <kvs/OpenGL>
 #include <kvs/Vector2>
@@ -32,11 +38,16 @@ inline std::string ToUTF8( int cp )
     return std::string( str );
 }
 
-}
+} // end of namespace
 
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new Painter class.
+ */
+/*===========================================================================*/
 Painter::Painter():
     m_device( NULL ),
     m_device_pixel_ratio( 1.0f )
@@ -46,16 +57,34 @@ Painter::Painter():
     memset( m_view, 0, sizeof( GLint ) * 4 );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new Painter class.
+ *  @param  screen [in] rendering screen
+ */
+/*===========================================================================*/
 Painter::Painter( kvs::ScreenBase* screen )
 {
     this->begin( screen );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Destructs the Painter class.
+ */
+/*===========================================================================*/
 Painter::~Painter()
 {
     this->end();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Begins painting to the specified screen
+ *  @param  screen [in] rendering screen
+ *  @return true if successful
+ */
+/*===========================================================================*/
 bool Painter::begin( kvs::ScreenBase* screen )
 {
     if ( this->isActive() ) { return false; }
@@ -77,11 +106,6 @@ bool Painter::begin( kvs::ScreenBase* screen )
     kvs::OpenGL::PushMatrix();
     kvs::OpenGL::LoadIdentity();
 
-//    GLint view[4]; kvs::OpenGL::GetViewport( view );
-//    const GLint left = view[0];
-//    const GLint top = view[1];
-//    const GLint right = view[0] + view[2];
-//    const GLint bottom = view[1] + view[3];
     const GLint left = m_view[0];
     const GLint top = m_view[1];
     const GLint right = m_view[0] + m_view[2];
@@ -91,6 +115,12 @@ bool Painter::begin( kvs::ScreenBase* screen )
     return true;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Ends painting.
+ *  @return true if successful
+ */
+/*===========================================================================*/
 bool Painter::end()
 {
     if ( !this->isActive() ) return false;
@@ -108,18 +138,38 @@ bool Painter::end()
     return true;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns the font metrics.
+ *  @return font metrics
+ */
+/*===========================================================================*/
 kvs::FontMetrics Painter::fontMetrics() const
 {
     KVS_ASSERT( this->isActive() );
     return kvs::FontMetrics( m_font, m_device );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws the text at the specified position.
+ *  @param  p [in] text position
+ *  @param  text [in] text
+ */
+/*===========================================================================*/
 void Painter::drawText( const kvs::Vec2i& p, const std::string& text ) const
 {
     KVS_ASSERT( this->isActive() );
     this->drawText( kvs::Vec2( p ), text );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws the text at the specified position.
+ *  @param  p [in] text position in window coordinates
+ *  @param  text [in] text
+ */
+/*===========================================================================*/
 void Painter::drawText( const kvs::Vec2& p, const std::string& text ) const
 {
     KVS_ASSERT( this->isActive() );
@@ -134,6 +184,13 @@ void Painter::drawText( const kvs::Vec2& p, const std::string& text ) const
     this->draw_text( p, text );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws the text at the specified position.
+ *  @param  p [in] text position in object coordinates
+ *  @param  text [in] text
+ */
+/*===========================================================================*/
 void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
 {
     KVS_ASSERT( this->isActive() );
@@ -170,6 +227,14 @@ void Painter::drawText( const kvs::Vec3& p, const std::string& text ) const
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the icon.
+ *  @param  p [in] text position in window coordinates
+ *  @param  icon [in] icon
+ *  @param  size [in] icon size
+ */
+/*===========================================================================*/
 void Painter::drawIcon( const kvs::Vec2& p, const kvs::Font::Icon& icon, const float size ) const
 {
     KVS_ASSERT( this->isActive() );
@@ -196,6 +261,13 @@ void Painter::drawIcon( const kvs::Vec2& p, const kvs::Font::Icon& icon, const f
     engine->draw( ( p + d ) * dpr, ::ToUTF8( icon ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draw the text at the specified position in window coordinates.
+ *  @param  p [in] position in window coordinates
+ *  @param  text [in] text
+ */
+/*===========================================================================*/
 void Painter::draw_text( const kvs::Vec2& p, const std::string& text ) const
 {
     kvs::FontStash* engine = m_device->textEngine();

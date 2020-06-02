@@ -3,14 +3,6 @@
  *  @file   ScreenBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ScreenBase.cpp 1570 2013-05-09 08:32:56Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/EventHandler>

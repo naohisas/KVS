@@ -3,14 +3,6 @@
  *  @file   Scene.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "Scene.h"
 #include <kvs/OpenGL>
@@ -32,12 +24,27 @@
 namespace
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns the position in camera coordinates for the given point in world coordinates
+ *  @param  p [in] point in world coordinates
+ *  @param  camera [in] camera
+ *  @return position in camera coordinates
+ */
+/*===========================================================================*/
 inline kvs::Vec3 World2Camera( const kvs::Vec3& p, const kvs::Camera* camera )
 {
-    return kvs::WorldCoordinate( p ).
-        toCameraCoordinate( camera ).position();
+    return kvs::WorldCoordinate( p ).toCameraCoordinate( camera ).position();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns the position in window coordinates for the given point in object coordinates
+ *  @param  p [in] point in object coordinates
+ *  @param  camera [in] camera
+ *  @return position in window coordinates
+ */
+/*===========================================================================*/
 inline kvs::Vec2 Object2Window( const kvs::Vec3& p, const kvs::Camera* camera )
 {
     const float w = camera->windowWidth();
@@ -66,7 +73,6 @@ Scene::Scene( kvs::ScreenBase* screen ):
     m_camera = new kvs::Camera();
     m_light = new kvs::Light();
     m_mouse = new kvs::Mouse();
-//    m_background = new kvs::Background( kvs::RGBColor( 212, 221, 229 ) );
     m_background = new kvs::Background( kvs::UIColor::Background() );
     m_object_manager = new kvs::ObjectManager();
     m_renderer_manager = new kvs::RendererManager();

@@ -75,6 +75,10 @@
 + kvs::qt::ScreenBase::DownCast
 + kvs::qt::Screen::DownCast
 + kvs::Isosurface::Isosurface( volume, normal_type )
++ kvs::Mouse::setTrackball
++ kvs::Mouse::setOperationModeToRotation
++ kvs::Mouse::setOperationModeToTranslation
++ kvs::Mouse::setOperationModeToScaling
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
@@ -117,6 +121,36 @@
 + kvs::ScatterPlotMatrixRenderer::setRightMargin (use kvs::ScatterMatrixPlotRenderer::setMargins)
 + kvs::ScatterPlotMatrixRenderer::setMargin (use kvs::ScatterPlotMatrixRenderer::setPadding)
 + kvs::ScatterPlotMatrixRenderer::margin (use kvs::ScatterPlotMatrixRenderer::padding)
+
+**Removed deprecated class and method**
++ kvs::Material
++ kvs::Camera::modelViewMatrix
++ kvs::Camera::projectionModelViewMatrix
++ kvs::Camera::getProjectionMatrix
++ kvs::Camera::getModelViewMatrix
++ kvs::Camera::getProjectionModelViewMatrix
++ kvs::Camera::getCombinedMatrix
++ kvs::Camera::projectObjectToWindow
++ kvs::Camera::projectWindowToObject
++ kvs::Camera::projectWindowToCamera
++ kvs::Camera::projectWindowToWorld
++ kvs::Camera::projectObjectToCamera
++ kvs::Camera::projectCameraToObject
++ kvs::Camera::projectWorldToCamera
++ kvs::Camera::projectCameraToWorld
++ kvs::Camera::projectWorldToObject
++ kvs::Camera::projectObjectToWorld
++ kvs::IDManager::operator []
++ kvs::Light::setModelLocalViewer
++ kvs::Light::setModelTwoSide
++ kvs::Light::setModelAmbient
++ kvs::Mouse::attachCamera
++ kvs::Mouse::setRotationCenter
++ kvs::Mouse::scaling
++ kvs::Mouse::translation
++ kvs::Mouse::rotation
++ kvs::ObjectManager::nobjects
++ kvs::ObjectManager::setActiveObjectID
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)

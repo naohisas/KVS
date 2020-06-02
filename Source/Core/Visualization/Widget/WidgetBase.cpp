@@ -16,6 +16,7 @@
 #include <kvs/OpenGL>
 #include <kvs/HSVColor>
 #include <kvs/RGBColor>
+#include <kvs/EventBase>
 #include <kvs/EventHandler>
 #include <kvs/ScreenBase>
 
