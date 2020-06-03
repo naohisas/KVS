@@ -85,6 +85,7 @@ int Application::run()
             auto* screen = kvs::glfw::ScreenBase::DownCast( s );
             screen->aquireContext();
             screen->initializeEvent();
+            screen->paintEvent();
             screen->releaseContext();
         }
 
@@ -119,7 +120,7 @@ void Application::main_loop()
         {
             auto* screen = kvs::glfw::ScreenBase::DownCast( s );
             screen->aquireContext();
-            screen->paintEvent();
+//            screen->paintEvent();
 
             for ( auto& t : screen->timerEventHandler() )
             {
