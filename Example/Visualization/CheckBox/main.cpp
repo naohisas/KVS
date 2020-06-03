@@ -5,17 +5,8 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#if defined( KVS_SUPPORT_GLFW )
-#include <kvs/glfw/Application>
-#include <kvs/glfw/Screen>
-using Application = kvs::glfw::Application;
-using Screen = kvs::glfw::Screen;
-#else
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
-using Application = kvs::glut::Application;
-using Screen = kvs::glut::Screen;
-#endif
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
 #include <kvs/CheckBox>
@@ -86,14 +77,14 @@ class PaintEvent : public kvs::PaintEventListener
 class EdgeBox : public kvs::CheckBox
 {
 public:
-    EdgeBox( Screen* screen ): kvs::CheckBox( screen ){};
+    EdgeBox( kvs::Screen* screen ): kvs::CheckBox( screen ){};
     void stateChanged() { ::EdgeFlag = this->state(); }
 };
 
 class PlaneBox : public kvs::CheckBox
 {
 public:
-    PlaneBox( Screen* screen ): kvs::CheckBox( screen ){};
+    PlaneBox( kvs::Screen* screen ): kvs::CheckBox( screen ){};
     void stateChanged() { ::PlaneFlag = this->state(); }
 };
 
@@ -106,8 +97,8 @@ public:
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    Application app( argc, argv );
-    Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setTitle( "CheckBox" );
     screen.setGeometry( 0, 0, 512, 512 );
 

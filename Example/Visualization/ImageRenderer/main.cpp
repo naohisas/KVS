@@ -9,8 +9,8 @@
 #include <kvs/ImageObject>
 #include <kvs/ImageImporter>
 #include <kvs/ImageRenderer>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 
 
 /*===========================================================================*/
@@ -23,8 +23,9 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::ImageRenderer" );
 
     // Create an image object.
     const std::string filename( argc > 1 ? argv[1] : "" );
@@ -45,11 +46,9 @@ int main( int argc, char** argv )
     }
 
     // Screen.
-    kvs::glut::Screen screen( &app );
-    screen.registerObject( object, renderer );
     screen.setSize( object->width(), object->height() );
-    screen.setTitle( "kvs::ImageRenderer" );
-    screen.show();
+    screen.registerObject( object, renderer );
+    screen.create();
 
     return app.run();
 }

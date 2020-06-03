@@ -5,8 +5,8 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/ColorMapBar>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/StructuredVolumeObject>
@@ -22,7 +22,9 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "LegendBar" );
 
     // Color map.
     auto cmap = kvs::ColorMap::BrewerSpectral( 256 );
@@ -33,10 +35,8 @@ int main( int argc, char** argv )
     renderer->setTransferFunction( kvs::TransferFunction( cmap ) );
 
     // Screen.
-    kvs::glut::Screen screen( &app );
-    screen.setTitle( "LegendBar" );
     screen.registerObject( object, renderer );
-    screen.show();
+    screen.create();
 
     // Colormap bar.
     kvs::ColorMapBar cmap_bar( &screen );

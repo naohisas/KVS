@@ -5,17 +5,8 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#if defined( KVS_SUPPORT_GLFW )
-#include <kvs/glfw/Application>
-#include <kvs/glfw/Screen>
-using Application = kvs::glfw::Application;
-using Screen = kvs::glfw::Screen;
-#else
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
-using Application = kvs::glut::Application;
-using Screen = kvs::glut::Screen;
-#endif
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
@@ -32,8 +23,8 @@ using Screen = kvs::glut::Screen;
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    Application app( argc, argv );
-    Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setTitle( "kvs::ArrowGlyph" );
     screen.setGeometry( 0, 0, 512, 512 );
 
