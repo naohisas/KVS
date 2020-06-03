@@ -356,6 +356,7 @@
 #include <Core/Visualization/Renderer/VertexBufferObjectManager.h>
 #include <Core/Visualization/Renderer/VolumeRayIntersector.h>
 #include <Core/Visualization/Renderer/VolumeRendererBase.h>
+#include <Core/Visualization/Viewer/Application.h>
 #include <Core/Visualization/Viewer/ApplicationBase.h>
 #include <Core/Visualization/Viewer/Background.h>
 #include <Core/Visualization/Viewer/Camera.h>
@@ -373,6 +374,7 @@
 #include <Core/Visualization/Viewer/Painter.h>
 #include <Core/Visualization/Viewer/RendererManager.h>
 #include <Core/Visualization/Viewer/Scene.h>
+#include <Core/Visualization/Viewer/Screen.h>
 #include <Core/Visualization/Viewer/ScreenBase.h>
 #include <Core/Visualization/Viewer/Trackball.h>
 #include <Core/Visualization/Viewer/UIColor.h>

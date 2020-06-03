@@ -356,6 +356,7 @@ Visualization/Renderer/ValueAxis
 Visualization/Renderer/VertexBufferObjectManager
 Visualization/Renderer/VolumeRayIntersector
 Visualization/Renderer/VolumeRendererBase
+Visualization/Viewer/Application
 Visualization/Viewer/ApplicationBase
 Visualization/Viewer/Background
 Visualization/Viewer/Camera
@@ -373,6 +374,7 @@ Visualization/Viewer/PaintDevice
 Visualization/Viewer/Painter
 Visualization/Viewer/RendererManager
 Visualization/Viewer/Scene
+Visualization/Viewer/Screen
 Visualization/Viewer/ScreenBase
 Visualization/Viewer/Trackball
 Visualization/Viewer/UIColor

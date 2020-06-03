@@ -4,6 +4,8 @@
 + kvs::DateAxis
 + kvs::UIColor
 + kvs::Margins
++ kvs::Application
++ kvs::Screen
 
 **Added SupportGLFW**
 + kvs::glfw::Application
