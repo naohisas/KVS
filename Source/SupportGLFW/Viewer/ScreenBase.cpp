@@ -71,14 +71,7 @@ void WindowSizeCallback( GLFWwindow* handler, int width, int height )
 {
     auto* this_screen = ::ThisScreen( handler );
     this_screen->aquireContext();
-
-    const auto vp = kvs::OpenGL::Viewport();
     this_screen->resizeEvent( width, height );
-    if ( this_screen->width() != ( vp[2] - vp[0] ) ) // device_pixel_ratio != 1.0
-    {
-        kvs::OpenGL::SetViewport( vp );
-    }
-
     this_screen->releaseContext();
     this_screen->redraw();
 }
@@ -293,6 +286,10 @@ void ScreenBase::create()
 
     // Create paint device.
     BaseClass::paintDevice()->create();
+
+    // Set device pixel ratio.
+    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
+    BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
 
     // Generate window ID.
     static int counter = 0;
