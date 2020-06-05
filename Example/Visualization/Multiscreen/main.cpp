@@ -5,10 +5,10 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -18,7 +18,7 @@
 /*===========================================================================*/
 class TrianglePaintEvent : public kvs::PaintEventListener
 {
-    void update( void )
+    void update()
     {
         glBegin( GL_TRIANGLES );
         glColor3ub( 255,   0,   0 ); glVertex3d(  0.0,  3.0, 0.0 );
@@ -35,7 +35,7 @@ class TrianglePaintEvent : public kvs::PaintEventListener
 /*===========================================================================*/
 class RectanglePaintEvent : public kvs::PaintEventListener
 {
-    void update( void )
+    void update()
     {
         glBegin( GL_QUADS );
         glColor3ub( 255,   0,   0 ); glVertex3d(  3.0,  3.0, 0.0 );
@@ -56,25 +56,25 @@ class RectanglePaintEvent : public kvs::PaintEventListener
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     // User specified events.
     TrianglePaintEvent  triangle_paint_event;
     RectanglePaintEvent rectangle_paint_event;
 
     // Screen for drawing a triangle.
-    kvs::glut::Screen screen1( &app );
+    kvs::Screen screen1( &app );
     screen1.addEvent( &triangle_paint_event );
     screen1.setTitle( "Triangle" );
     screen1.setGeometry( 0, 0, 512, 512 );
-    screen1.show();
+    screen1.create();
 
     // Screen for drawing a rectangle.
-    kvs::glut::Screen screen2( &app );
+    kvs::Screen screen2( &app );
     screen2.addEvent( &rectangle_paint_event );
     screen2.setTitle( "Rectangle" );
     screen2.setGeometry( 520, 0, 512, 512 );
-    screen2.show();
+    screen2.create();
 
-    return( app.run() );
+    return app.run();
 }

@@ -5,13 +5,13 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/SphereGlyph>
 #include <kvs/TornadoVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -24,7 +24,7 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     /* Read volume data from the specified data file. If the data file is not
      * specified, tornado volume data is created by using kvs::TornadoVolumeData class.
@@ -52,11 +52,11 @@ int main( int argc, char** argv )
     glyph->setNumberOfSlices( 20 );
     glyph->setNumberOfStacks( 20 );
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.registerObject( object, glyph );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::SphereGlyph" );
-    screen.show();
+    screen.create();
 
     return app.run();
 }

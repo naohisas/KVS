@@ -5,14 +5,14 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/LineIntegralConvolution>
 #include <kvs/RayCastingRenderer>
 #include <kvs/TornadoVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -25,7 +25,7 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     /* Read volume data from the specified data file. If the data file is not
      * specified, scalar hydrogen volume data is created by using
@@ -38,7 +38,7 @@ int main( int argc, char** argv )
     if ( !volume )
     {
         kvsMessageError( "Cannot create a structured volume object." );
-        return( false );
+        return ( false );
     }
 
     kvs::StructuredVolumeObject* object = new kvs::LineIntegralConvolution( volume , 0.2 );
@@ -46,7 +46,7 @@ int main( int argc, char** argv )
     {
         kvsMessageError( "Cannot create LIC structured volume object.");
         delete volume;
-        return( false );
+        return ( false );
     }
 
     delete volume;
@@ -56,14 +56,14 @@ int main( int argc, char** argv )
     {
         kvsMessageError( "Cannot create a ray-casting renderer." );
         delete object;
-        return( false );
+        return ( false );
     }
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.registerObject( object, renderer );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::LineIntegralConvolution" );
-    screen.show();
+    screen.create();
 
-    return( app.run() );
+    return app.run();
 }

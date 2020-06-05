@@ -5,11 +5,11 @@
  *  @brief  Example program for kvs::SphericalImageRenderer class.
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/ImageObject>
 #include <kvs/ImageImporter>
 #include <kvs/SphericalImageRenderer>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -22,8 +22,8 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setTitle( "kvs::SphericalImageRenderer" );
 
     const std::string filename( argc > 1 ? argv[1] : "" );
@@ -31,7 +31,7 @@ int main( int argc, char** argv )
     kvs::SphericalImageRenderer* renderer = new kvs::SphericalImageRenderer();
 
     screen.registerObject( object, renderer );
-    screen.show();
+    screen.create();
 
     return app.run();
 }

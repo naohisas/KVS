@@ -5,8 +5,8 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/OrientationAxis>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/StructuredVolumeObject>
@@ -24,7 +24,7 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     // Color map.
     kvs::ColorMap cmap( 256 );
@@ -39,10 +39,10 @@ int main( int argc, char** argv )
     delete volume;
 
     // Screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.setTitle( "OrientationAxis" );
     screen.registerObject( object );
-    screen.show();
+    screen.create();
 
     // Orientation axis.
     kvs::OrientationAxis orientation_axis( &screen, screen.scene() );

@@ -5,14 +5,14 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/PolygonObject>
 #include <kvs/Isosurface>
 #include <kvs/HydrogenVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -24,8 +24,8 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::Isosurface" );
 
@@ -64,7 +64,7 @@ int main( int argc, char** argv )
     delete volume;
 
     screen.registerObject( object );
-    screen.show();
+    screen.create();
 
     return app.run();
 }

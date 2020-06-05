@@ -5,8 +5,8 @@
  *  @brief  Example program for kvs::ScatterPlotRenderer class.
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/TableObject>
 #include <kvs/ScatterPlotMatrixRenderer>
 #include <kvs/Axis2DMatrix>
@@ -22,8 +22,8 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setTitle( "kvs::ScatterPlotMatrixRenderer" );
 
     const size_t nsamples = 50;
@@ -54,7 +54,7 @@ int main( int argc, char** argv )
 
     screen.registerObject( object, axis );
     screen.registerObject( object, renderer );
-    screen.show();
+    screen.create();
 
     return app.run();
 }

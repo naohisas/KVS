@@ -5,12 +5,12 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/RGBColor>
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
 #include <kvs/PushButton>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 namespace
@@ -53,7 +53,7 @@ class PaintEvent : public kvs::PaintEventListener
 class RedButton : public kvs::PushButton
 {
 public:
-    RedButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
+    RedButton( kvs::Screen* screen ): kvs::PushButton( screen ){};
     void pressed() { ::Color = ::Red; }
 };
 
@@ -65,7 +65,7 @@ public:
 class GreenButton : public kvs::PushButton
 {
 public:
-    GreenButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
+    GreenButton( kvs::Screen* screen ): kvs::PushButton( screen ){};
     void pressed() { ::Color = ::Green; }
 };
 
@@ -77,7 +77,7 @@ public:
 class BlueButton : public kvs::PushButton
 {
 public:
-    BlueButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
+    BlueButton( kvs::Screen* screen ): kvs::PushButton( screen ){};
     void pressed() { ::Color = ::Blue; }
 };
 
@@ -89,7 +89,7 @@ public:
 class ResetButton : public kvs::PushButton
 {
 public:
-    ResetButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
+    ResetButton( kvs::Screen* screen ): kvs::PushButton( screen ){};
     void pressed() { ::Color = ::Gray; screen()->reset(); }
 };
 
@@ -101,7 +101,7 @@ public:
 class QuitButton : public kvs::PushButton
 {
 public:
-    QuitButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
+    QuitButton( kvs::Screen* screen ): kvs::PushButton( screen ){};
     void pressed() { exit( EXIT_SUCCESS ); }
 };
 
@@ -115,15 +115,15 @@ public:
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     PaintEvent paint_event;
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.addEvent( &paint_event );
     screen.setTitle( "PushButton" );
     screen.setGeometry( 0, 0, 512, 512 );
-    screen.show();
+    screen.create();
 
     RedButton red( &screen );
     red.setButtonColor( ::Red );

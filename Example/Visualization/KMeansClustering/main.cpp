@@ -5,8 +5,8 @@
  *  @brief  Example program for kvs::KMeansClustering class.
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/ValueTable>
 #include <kvs/ValueArray>
 #include <kvs/MersenneTwister>
@@ -153,11 +153,11 @@ private:
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setTitle( "k-means clsutering" );
     screen.setSize( 600, 600 );
-    screen.show();
+    screen.create();
 
     const size_t nrows = 1000;
     const float min_value = -7.0f;
@@ -266,6 +266,7 @@ int main( int argc, char** argv )
     const int global_margin = 30;
     LayoutEvent layout( global_margin );
     screen.addEvent( &layout );
+    layout.update( screen.width(), screen.height() );
 
     return app.run();
 }

@@ -5,11 +5,11 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/RGBColor>
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 #include <kvs/RadioButton>
 #include <kvs/RadioButtonGroup>
 
@@ -53,7 +53,7 @@ class PaintEvent : public kvs::PaintEventListener
 class GrayButton : public kvs::RadioButton
 {
 public:
-    GrayButton( kvs::glut::Screen* screen ): kvs::RadioButton( screen ){};
+    GrayButton( kvs::Screen* screen ): kvs::RadioButton( screen ){};
     void stateChanged() { if ( this->state() ) ::Color = ::Gray; }
 };
 
@@ -65,7 +65,7 @@ public:
 class RedButton : public kvs::RadioButton
 {
 public:
-    RedButton( kvs::glut::Screen* screen ): kvs::RadioButton( screen ){};
+    RedButton( kvs::Screen* screen ): kvs::RadioButton( screen ){};
     void stateChanged() { if ( this->state() ) ::Color = ::Red; }
 };
 
@@ -77,7 +77,7 @@ public:
 class GreenButton : public kvs::RadioButton
 {
 public:
-    GreenButton( kvs::glut::Screen* screen ): kvs::RadioButton( screen ){};
+    GreenButton( kvs::Screen* screen ): kvs::RadioButton( screen ){};
     void stateChanged() { if ( this->state() ) ::Color = ::Green; }
 };
 
@@ -89,7 +89,7 @@ public:
 class BlueButton : public kvs::RadioButton
 {
 public:
-    BlueButton( kvs::glut::Screen* screen ): kvs::RadioButton( screen ){};
+    BlueButton( kvs::Screen* screen ): kvs::RadioButton( screen ){};
     void stateChanged() { if ( this->state() ) ::Color = ::Blue; }
 };
 
@@ -103,15 +103,15 @@ public:
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     PaintEvent paint_event;
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.addEvent( &paint_event );
     screen.setTitle( "RadioButton" );
     screen.setGeometry( 0, 0, 512, 512 );
-    screen.show();
+    screen.create();
 
     kvs::RadioButtonGroup group;
 

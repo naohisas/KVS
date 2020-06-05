@@ -5,8 +5,8 @@
  *  @brief  Example program for kvs::ParallelCoordinatesRenderer class.
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/TableObject>
 #include <kvs/ParallelCoordinatesRenderer>
 #include <kvs/ParallelAxis>
@@ -22,8 +22,8 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
 
     const size_t nsamples = 100;
     const auto random_x = kvs::ValueArray<float>::Random( nsamples );
@@ -55,7 +55,7 @@ int main( int argc, char** argv )
 
     screen.registerObject( object, renderer );
     screen.registerObject( object, axis );
-    screen.show();
+    screen.create();
 
     return app.run();
 }

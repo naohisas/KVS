@@ -5,10 +5,10 @@
  *  @brief  Example program for label widget
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 #include <kvs/Label>
 #include <kvs/Font>
 #include <kvs/FontMetrics>
@@ -41,13 +41,13 @@ class PaintEvent : public kvs::PaintEventListener
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     PaintEvent paint_event;
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.addEvent( &paint_event );
-    screen.show();
+    screen.create();
 
     std::string text1( "Label1" );
     kvs::Label label1( &screen );

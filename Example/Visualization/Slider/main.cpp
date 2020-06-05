@@ -5,12 +5,12 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/RGBColor>
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
 #include <kvs/Math>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 #include <kvs/Slider>
 
 
@@ -52,7 +52,7 @@ class PaintEvent : public kvs::PaintEventListener
 class RedSlider : public kvs::Slider
 {
 public:
-    RedSlider( kvs::glut::Screen* screen ): kvs::Slider( screen ){};
+    RedSlider( kvs::Screen* screen ): kvs::Slider( screen ){};
     void sliderMoved() { ::ChangeR( kvs::Math::Round( this->value() ) ); }
 };
 
@@ -64,7 +64,7 @@ public:
 class GreenSlider : public kvs::Slider
 {
 public:
-    GreenSlider( kvs::glut::Screen* screen ): kvs::Slider( screen ){};
+    GreenSlider( kvs::Screen* screen ): kvs::Slider( screen ){};
     void sliderMoved() { ::ChangeG( kvs::Math::Round( this->value() ) ); }
 };
 
@@ -76,7 +76,7 @@ public:
 class BlueSlider : public kvs::Slider
 {
 public:
-    BlueSlider( kvs::glut::Screen* screen ): kvs::Slider( screen ){};
+    BlueSlider( kvs::Screen* screen ): kvs::Slider( screen ){};
     void sliderMoved() { ::ChangeB( kvs::Math::Round( this->value() ) ); }
 };
 
@@ -88,7 +88,7 @@ public:
 class OpacitySlider : public kvs::Slider
 {
 public:
-    OpacitySlider( kvs::glut::Screen* screen ): kvs::Slider( screen ){};
+    OpacitySlider( kvs::Screen* screen ): kvs::Slider( screen ){};
     void valueChanged() { ::Opacity = this->value(); }
 };
 
@@ -102,15 +102,15 @@ public:
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     PaintEvent paint_event;
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.addEvent( &paint_event );
     screen.setTitle( "Slider" );
     screen.setGeometry( 0, 0, 512, 512 );
-    screen.show();
+    screen.create();
 
     RedSlider red( &screen );
     red.setSliderColor( kvs::RGBColor( 255, 0, 0 ) );

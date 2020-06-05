@@ -5,6 +5,8 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
@@ -12,8 +14,6 @@
 #include <kvs/LineRenderer>
 #include <kvs/Streamline>
 #include <kvs/TornadoVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -26,7 +26,7 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     /* Read volume data from the specified data file. If the data file is not
      * specified, scalar hydrogen volume data is created by using
@@ -60,11 +60,11 @@ int main( int argc, char** argv )
     delete volume;
     delete point;
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.registerObject( object );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::Streamline" );
-    screen.show();
+    screen.create();
 
     return app.run();
 }

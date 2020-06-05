@@ -5,13 +5,13 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/RayCastingRenderer>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/TransferFunction>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 #include <iostream>
 
 
@@ -25,11 +25,11 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "RayCastingRenderer" );
-    screen.show();
+    screen.create();
 
     // Read volume data from the specified data file. If the data file is not
     // specified, scalar hydrogen volume data will be created by using

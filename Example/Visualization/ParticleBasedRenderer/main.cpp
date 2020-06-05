@@ -5,8 +5,8 @@
  *  @brief  Example program for kvs::ParticleBasedRenderer class.
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
@@ -54,7 +54,7 @@ kvs::StructuredVolumeObject* Import( int argc, char** argv )
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     kvs::StructuredVolumeObject* volume = Import( argc, argv );
     volume->print( std::cout );
@@ -80,10 +80,10 @@ int main( int argc, char** argv )
     renderer->setRepetitionLevel( repetitions );
     renderer->enableLODControl();
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.setTitle("kvs::ParticleBasedRenderer");
     screen.registerObject( object, renderer );
-    screen.show();
+    screen.create();
 
     return app.run();
 }
