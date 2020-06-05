@@ -91,6 +91,8 @@ public:
     virtual void mouseDoubleClickEvent( kvs::MouseEvent* event );
     virtual void wheelEvent( kvs::WheelEvent* event );
     virtual void keyPressEvent( kvs::KeyEvent* event );
+    virtual void keyRepeatEvent( kvs::KeyEvent* event );
+    virtual void keyReleaseEvent( kvs::KeyEvent* event );
 
 private:
 
@@ -104,6 +106,7 @@ private:
     void mouseDoubleClickEvent( QMouseEvent* event );
     void wheelEvent( QWheelEvent* event );
     void keyPressEvent( QKeyEvent* event );
+    void keyReleaseEvent( QKeyEvent* event );
 
 #if 1 // KVS_ENABLE_DEPRECATED
 public:

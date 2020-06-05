@@ -153,6 +153,14 @@ struct Key
         ControlModifier = 0x04000000,
         AltModifier     = 0x08000000
     };
+
+    enum Action
+    {
+        NoAction = 0x00000000,
+        Pressed  = 0x00000001,
+        Repeated = 0x00000002,
+        Released = 0x00000003
+    };
 };
 
 } // end of namespace kvs

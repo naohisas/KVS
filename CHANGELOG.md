@@ -6,6 +6,8 @@
 + kvs::Margins
 + kvs::Application
 + kvs::Screen
++ kvs::KeyRepeatEventListener
++ kvs::KeyReleaseEventListener
 
 **Added SupportGLFW**
 + kvs::glfw::Application
@@ -85,6 +87,12 @@
 + kvs::ArrowGlyph::setArrowTypeToLine
 + kvs::ArrowGlyph::setArrowTypeToTube
 + kvs::ArrowGlyph::arrowType
++ kvs::EventHandler::keyRepeatEvent
++ kvs::EventHandler::keyReleaseEvent
++ kvs::glut::ScreenBase::keyRepeatEvent
++ kvs::glut::ScreenBase::keyReleaseEvent
++ kvs::qt::ScreenBase::keyRepeatEvent
++ kvs::qt::ScreenBase::keyReleaseEvent
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer

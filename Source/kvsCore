@@ -203,6 +203,8 @@
 #include <Core/Visualization/Event/InitializeEventListener.h>
 #include <Core/Visualization/Event/KeyEvent.h>
 #include <Core/Visualization/Event/KeyPressEventListener.h>
+#include <Core/Visualization/Event/KeyReleaseEventListener.h>
+#include <Core/Visualization/Event/KeyRepeatEventListener.h>
 #include <Core/Visualization/Event/MouseDoubleClickEventListener.h>
 #include <Core/Visualization/Event/MouseEvent.h>
 #include <Core/Visualization/Event/MouseMoveEventListener.h>

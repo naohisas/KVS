@@ -85,6 +85,8 @@ public:
     virtual void mouseDoubleClickEvent( kvs::MouseEvent* event );
     virtual void wheelEvent( kvs::WheelEvent* event );
     virtual void keyPressEvent( kvs::KeyEvent* event );
+    virtual void keyRepeatEvent( kvs::KeyEvent* event );
+    virtual void keyReleaseEvent( kvs::KeyEvent* event );
 
 private:
     // Callback functions for GLUT.
@@ -94,6 +96,8 @@ private:
     friend void MouseMoveFunction( int x, int y );
     friend void KeyPressFunction( unsigned char key, int x, int y );
     friend void SpecialKeyPressFunction( int key, int x, int y );
+    friend void KeyReleaseFunction( unsigned char key, int x, int y );
+    friend void SpecialKeyReleaseFunction( int key, int x, int y );
 
 #if 1 // KVS_ENABLE_DEPRECATED
 public:

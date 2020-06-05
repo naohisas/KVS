@@ -120,6 +120,8 @@ void ScreenBase::create()
     // Create window.
     static int counter = 0;
     m_id = counter++;
+
+    QWidget::show();
 }
 
 /*===========================================================================*/
@@ -131,7 +133,7 @@ void ScreenBase::create()
 void ScreenBase::show()
 {
 #if 1 // KVS_ENABLE_DEPRECATED
-    if ( m_id == -1 ) { this->create(); QWidget::show(); }
+    if ( m_id == -1 ) { this->create(); }
     else {
 #endif
 
@@ -255,6 +257,8 @@ void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ){}
 void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ){}
 void ScreenBase::wheelEvent( kvs::WheelEvent* ){}
 void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
+void ScreenBase::keyRepeatEvent( kvs::KeyEvent* ){}
+void ScreenBase::keyReleaseEvent( kvs::KeyEvent* ){}
 
 /*===========================================================================*/
 /**
@@ -433,7 +437,25 @@ void ScreenBase::keyPressEvent( QKeyEvent* event )
     m_key_event->setPosition( 0, 0 );
     m_key_event->setKey( kvs::qt::KVSKey::Code( event->key(), event->modifiers() ) );
     m_key_event->setModifiers( kvs::qt::KVSKey::Modifier( event->modifiers() ) );
-    this->keyPressEvent( m_key_event );
+    if ( event->isAutoRepeat() )
+    {
+        m_key_event->setAction( kvs::Key::Repeated );
+        this->keyRepeatEvent( m_key_event );
+    }
+    else
+    {
+        m_key_event->setAction( kvs::Key::Pressed );
+        this->keyPressEvent( m_key_event );
+    }
+}
+
+void ScreenBase::keyReleaseEvent( QKeyEvent* event )
+{
+    m_key_event->setPosition( 0, 0 );
+    m_key_event->setKey( kvs::qt::KVSKey::Code( event->key(), event->modifiers() ) );
+    m_key_event->setModifiers( kvs::qt::KVSKey::Modifier( event->modifiers() ) );
+    m_key_event->setAction( kvs::Key::Released );
+    this->keyReleaseEvent( m_key_event );
 }
 
 std::list<kvs::qt::Timer*>& ScreenBase::timerEventHandler()

@@ -1,12 +1,10 @@
 /*****************************************************************************/
 /**
- *  @file   IdleEventListener.cpp
+ *  @file   KeyRepeatEventListener.cpp
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include "IdleEventListener.h"
-#include <kvs/IgnoreUnusedVariable>
-#include <kvs/Binary>
+#include "KeyRepeatEventListener.h"
 
 
 namespace kvs
@@ -14,20 +12,20 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new IdleEventListener class.
+ *  @brief  Constructs a new KeyRepeatEventListener class.
  */
 /*===========================================================================*/
-IdleEventListener::IdleEventListener()
+KeyRepeatEventListener::KeyRepeatEventListener()
 {
-    kvs::EventListener::setEventType( kvsBinary12( 1111, 1111, 1111 ) );
+    kvs::EventListener::setEventType( kvs::EventBase::KeyRepeatEvent );
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Destructs the IdleEventListener class.
+ *  @brief  Destructs the KeyRepeatEventListener class.
  */
 /*===========================================================================*/
-IdleEventListener::~IdleEventListener()
+KeyRepeatEventListener::~KeyRepeatEventListener()
 {
 }
 
@@ -37,10 +35,9 @@ IdleEventListener::~IdleEventListener()
  *  @param  event [in] pointer to the event
  */
 /*===========================================================================*/
-void IdleEventListener::onEvent( kvs::EventBase* event )
+void KeyRepeatEventListener::onEvent( kvs::EventBase* event )
 {
-    kvs::IgnoreUnusedVariable( event );
-    this->update();
+    this->update( static_cast<kvs::KeyEvent*>(event) );
 }
 
 } // end of namespace kvs

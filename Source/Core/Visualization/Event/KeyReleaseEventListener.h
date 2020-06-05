@@ -1,11 +1,12 @@
 /*****************************************************************************/
 /**
- *  @file   InitializeEvent.h
+ *  @file   KeyReleaseEventListener.h
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #pragma once
-#include <kvs/EventBase>
+#include <kvs/EventListener>
+#include <kvs/KeyEvent>
 
 
 namespace kvs
@@ -13,16 +14,19 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  InitializeEvent class.
+ *  @brief  KeyReleaseEventListener class.
  */
 /*===========================================================================*/
-class InitializeEvent : public kvs::EventBase
+class KeyReleaseEventListener : public kvs::EventListener
 {
 public:
-    InitializeEvent();
-    virtual ~InitializeEvent();
+    KeyReleaseEventListener();
+    virtual ~KeyReleaseEventListener();
 
-    int type() const;
+    virtual void update( kvs::KeyEvent* event ) = 0;
+
+private:
+    void onEvent( kvs::EventBase* event );
 };
 
 } // end of namespace kvs

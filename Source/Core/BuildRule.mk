@@ -251,7 +251,6 @@ $(OUTDIR)/./Utility/ValueArray.o \
 $(OUTDIR)/./Utility/ValueTable.o \
 $(OUTDIR)/./Visualization/Data/HydrogenVolumeData.o \
 $(OUTDIR)/./Visualization/Data/TornadoVolumeData.o \
-$(OUTDIR)/./Visualization/Event/EventBase.o \
 $(OUTDIR)/./Visualization/Event/EventHandler.o \
 $(OUTDIR)/./Visualization/Event/EventListener.o \
 $(OUTDIR)/./Visualization/Event/IdleEventListener.o \
@@ -259,6 +258,8 @@ $(OUTDIR)/./Visualization/Event/InitializeEvent.o \
 $(OUTDIR)/./Visualization/Event/InitializeEventListener.o \
 $(OUTDIR)/./Visualization/Event/KeyEvent.o \
 $(OUTDIR)/./Visualization/Event/KeyPressEventListener.o \
+$(OUTDIR)/./Visualization/Event/KeyReleaseEventListener.o \
+$(OUTDIR)/./Visualization/Event/KeyRepeatEventListener.o \
 $(OUTDIR)/./Visualization/Event/MouseDoubleClickEventListener.o \
 $(OUTDIR)/./Visualization/Event/MouseEvent.o \
 $(OUTDIR)/./Visualization/Event/MouseMoveEventListener.o \

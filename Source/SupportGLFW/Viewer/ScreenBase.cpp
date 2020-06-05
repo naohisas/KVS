@@ -197,7 +197,16 @@ void KeyCallback( GLFWwindow* handler, int key, int scancode, int action, int mo
     switch ( action )
     {
     case GLFW_PRESS:
+        this_screen->m_key_event->setAction( kvs::Key::Pressed );
         this_screen->keyPressEvent( this_screen->m_key_event );
+        break;
+    case GLFW_REPEAT:
+        this_screen->m_key_event->setAction( kvs::Key::Repeated );
+        this_screen->keyRepeatEvent( this_screen->m_key_event );
+        break;
+    case GLFW_RELEASE:
+        this_screen->m_key_event->setAction( kvs::Key::Released );
+        this_screen->keyReleaseEvent( this_screen->m_key_event );
         break;
     default:
         break;
@@ -425,6 +434,8 @@ void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ){}
 void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ){}
 void ScreenBase::wheelEvent( kvs::WheelEvent* ){}
 void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
+void ScreenBase::keyRepeatEvent( kvs::KeyEvent* ){}
+void ScreenBase::keyReleaseEvent( kvs::KeyEvent* ){}
 
 std::list<kvs::glfw::Timer*>& ScreenBase::timerEventHandler()
 {

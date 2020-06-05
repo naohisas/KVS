@@ -192,7 +192,21 @@ void KeyPressFunction( unsigned char key, int x, int y )
     ::Context[id]->m_key_event->setKey( code );
     ::Context[id]->m_key_event->setPosition( x, y );
     ::Context[id]->m_key_event->setModifiers( mods );
-    ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+    switch ( ::Context[id]->m_key_event->action() )
+    {
+    case kvs::Key::NoAction:
+    case kvs::Key::Released:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Pressed );
+        ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+        break;
+    case kvs::Key::Pressed:
+    case kvs::Key::Repeated:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Repeated );
+        ::Context[id]->keyRepeatEvent( ::Context[id]->m_key_event );
+        break;
+    default:
+        break;
+    }
 }
 
 /*===========================================================================*/
@@ -209,7 +223,43 @@ void SpecialKeyPressFunction( int key, int x, int y )
     const int code = kvs::glut::KVSKey::SpecialCode( key );
     ::Context[id]->m_key_event->setKey( code );
     ::Context[id]->m_key_event->setPosition( x, y );
-    ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+    switch ( ::Context[id]->m_key_event->action() )
+    {
+    case kvs::Key::NoAction:
+    case kvs::Key::Released:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Pressed );
+        ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+        break;
+    case kvs::Key::Pressed:
+    case kvs::Key::Repeated:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Repeated );
+        ::Context[id]->keyRepeatEvent( ::Context[id]->m_key_event );
+        break;
+    default:
+        break;
+    }
+}
+
+void KeyReleaseFunction( unsigned char key, int x, int y )
+{
+    const int id = glutGetWindow();
+    const int code = kvs::glut::KVSKey::ASCIICode( key );
+    const int mods = kvs::glut::KVSKey::Modifier( glutGetModifiers() );
+    ::Context[id]->m_key_event->setKey( code );
+    ::Context[id]->m_key_event->setPosition( x, y );
+    ::Context[id]->m_key_event->setModifiers( mods );
+    ::Context[id]->m_key_event->setAction( kvs::Key::Released );
+    ::Context[id]->keyReleaseEvent( ::Context[id]->m_key_event );
+}
+
+void SpecialKeyReleaseFunction( int key, int x, int y )
+{
+    const int id = glutGetWindow();
+    const int code = kvs::glut::KVSKey::SpecialCode( key );
+    ::Context[id]->m_key_event->setKey( code );
+    ::Context[id]->m_key_event->setPosition( x, y );
+    ::Context[id]->m_key_event->setAction( kvs::Key::Released );
+    ::Context[id]->keyReleaseEvent( ::Context[id]->m_key_event );
 }
 
 /*===========================================================================*/
@@ -307,6 +357,8 @@ void ScreenBase::create()
     glutMotionFunc( MouseMoveFunction );
     glutKeyboardFunc( KeyPressFunction );
     glutSpecialFunc( SpecialKeyPressFunction );
+    glutKeyboardUpFunc( KeyReleaseFunction );
+    glutSpecialUpFunc( SpecialKeyReleaseFunction );
     glutDisplayFunc( DisplayFunction );
     glutReshapeFunc( ResizeFunction );
 }
@@ -463,15 +515,17 @@ void ScreenBase::enable(){}
 void ScreenBase::disable(){}
 void ScreenBase::reset(){}
 
-void ScreenBase::initializeEvent(){}
-void ScreenBase::paintEvent(){}
-void ScreenBase::resizeEvent( int, int ){}
-void ScreenBase::mousePressEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseMoveEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ){}
-void ScreenBase::wheelEvent( kvs::WheelEvent* ){}
-void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
+void ScreenBase::initializeEvent() {}
+void ScreenBase::paintEvent() {}
+void ScreenBase::resizeEvent( int, int ) {}
+void ScreenBase::mousePressEvent( kvs::MouseEvent* ) {}
+void ScreenBase::mouseMoveEvent( kvs::MouseEvent* ) {}
+void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ) {}
+void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ) {}
+void ScreenBase::wheelEvent( kvs::WheelEvent* ) {}
+void ScreenBase::keyPressEvent( kvs::KeyEvent* ) {}
+void ScreenBase::keyRepeatEvent( kvs::KeyEvent* ) {}
+void ScreenBase::keyReleaseEvent( kvs::KeyEvent* ) {}
 
 std::list<kvs::glut::Timer*>& ScreenBase::timerEventHandler()
 {

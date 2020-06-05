@@ -203,6 +203,8 @@ Visualization/Event/InitializeEvent
 Visualization/Event/InitializeEventListener
 Visualization/Event/KeyEvent
 Visualization/Event/KeyPressEventListener
+Visualization/Event/KeyReleaseEventListener
+Visualization/Event/KeyRepeatEventListener
 Visualization/Event/MouseDoubleClickEventListener
 Visualization/Event/MouseEvent
 Visualization/Event/MouseMoveEventListener

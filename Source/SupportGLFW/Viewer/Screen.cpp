@@ -482,6 +482,28 @@ void Screen::keyPressEvent( kvs::KeyEvent* event )
 
 /*===========================================================================*/
 /**
+ *  @brief  Key repeat event.
+ *  @param  event [in] pointer to the key event information
+ */
+/*===========================================================================*/
+void Screen::keyRepeatEvent( kvs::KeyEvent* event )
+{
+    BaseClass::eventHandler()->notify( event );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Key release event.
+ *  @param  event [in] pointer to the key event information
+ */
+/*===========================================================================*/
+void Screen::keyReleaseEvent( kvs::KeyEvent* event )
+{
+    BaseClass::eventHandler()->notify( event );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Default idle mouse event.
  */
 /*===========================================================================*/

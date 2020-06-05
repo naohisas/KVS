@@ -251,7 +251,6 @@ $(OUTDIR)\.\Utility\ValueArray.obj \
 $(OUTDIR)\.\Utility\ValueTable.obj \
 $(OUTDIR)\.\Visualization\Data\HydrogenVolumeData.obj \
 $(OUTDIR)\.\Visualization\Data\TornadoVolumeData.obj \
-$(OUTDIR)\.\Visualization\Event\EventBase.obj \
 $(OUTDIR)\.\Visualization\Event\EventHandler.obj \
 $(OUTDIR)\.\Visualization\Event\EventListener.obj \
 $(OUTDIR)\.\Visualization\Event\IdleEventListener.obj \
@@ -259,6 +258,8 @@ $(OUTDIR)\.\Visualization\Event\InitializeEvent.obj \
 $(OUTDIR)\.\Visualization\Event\InitializeEventListener.obj \
 $(OUTDIR)\.\Visualization\Event\KeyEvent.obj \
 $(OUTDIR)\.\Visualization\Event\KeyPressEventListener.obj \
+$(OUTDIR)\.\Visualization\Event\KeyReleaseEventListener.obj \
+$(OUTDIR)\.\Visualization\Event\KeyRepeatEventListener.obj \
 $(OUTDIR)\.\Visualization\Event\MouseDoubleClickEventListener.obj \
 $(OUTDIR)\.\Visualization\Event\MouseEvent.obj \
 $(OUTDIR)\.\Visualization\Event\MouseMoveEventListener.obj \

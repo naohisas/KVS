@@ -111,6 +111,8 @@ public:
     virtual void mouseDoubleClickEvent( kvs::MouseEvent* event );
     virtual void wheelEvent( kvs::WheelEvent* event );
     virtual void keyPressEvent( kvs::KeyEvent* event );
+    virtual void keyRepeatEvent( kvs::KeyEvent* event );
+    virtual void keyReleaseEvent( kvs::KeyEvent* event );
     virtual void idleMouseEvent();
 
 protected:

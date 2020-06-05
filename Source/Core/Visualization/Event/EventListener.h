@@ -3,18 +3,8 @@
  *  @file   EventListener.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: EventListener.h 1574 2013-05-21 10:28:12Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__EVENT_LISTENER_H_INCLUDE
-#define KVS__EVENT_LISTENER_H_INCLUDE
-
+#pragma once
 #include <string>
 
 
@@ -37,14 +27,12 @@ class TimeEvent;
 class EventListener
 {
 private:
-
     int m_event_type; ///< event type
     std::string m_name; ///< name
     kvs::ScreenBase* m_screen; ///< pointer to the screen
     kvs::Scene* m_scene; ///< pointer to the scene
 
 public:
-
     EventListener();
     virtual ~EventListener();
 
@@ -69,9 +57,9 @@ public:
     virtual void mouseDoubleClickEvent( kvs::MouseEvent* ) {}
     virtual void wheelEvent( kvs::WheelEvent* ) {}
     virtual void keyPressEvent( kvs::KeyEvent* ) {}
+    virtual void keyRepeatEvent( kvs::KeyEvent* ) {}
+    virtual void keyReleaseEvent( kvs::KeyEvent* ) {}
     virtual void timerEvent( kvs::TimeEvent* ) {}
 };
 
 } // end of namespace kvs
-
-#endif // KVS__EVENT_LISTENER_H_INCLUDE

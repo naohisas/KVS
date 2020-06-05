@@ -12,6 +12,7 @@
  */
 /****************************************************************************/
 #include "KeyEvent.h"
+#include <kvs/Key>
 
 
 namespace kvs
@@ -26,7 +27,8 @@ KeyEvent::KeyEvent():
     m_key( 0 ),
     m_x( 0 ),
     m_y( 0 ),
-    m_modifiers( 0 )
+    m_modifiers( 0 ),
+    m_action( kvs::Key::NoAction )
 {
 }
 
@@ -40,7 +42,8 @@ KeyEvent::KeyEvent( const KeyEvent& event ):
     m_key( event.m_key ),
     m_x( event.m_x ),
     m_y( event.m_y ),
-    m_modifiers( event.m_modifiers )
+    m_modifiers( event.m_modifiers ),
+    m_action( event.m_action )
 {
 }
 
@@ -120,7 +123,11 @@ int KeyEvent::modifiers() const
 /*===========================================================================*/
 int KeyEvent::type() const
 {
-    return EventBase::KeyPressEvent;
+//    return EventBase::KeyPressEvent;
+    return
+        m_action == kvs::Key::Pressed ? EventBase::KeyPressEvent :
+        m_action == kvs::Key::Repeated ? EventBase::KeyRepeatEvent :
+        m_action == kvs::Key::Released ? EventBase::KeyReleaseEvent : 0;
 }
 
 /*===========================================================================*/
