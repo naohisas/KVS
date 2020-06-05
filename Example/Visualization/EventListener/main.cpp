@@ -15,6 +15,8 @@
 #include <kvs/MouseReleaseEventListener>
 #include <kvs/MouseDoubleClickEventListener>
 #include <kvs/KeyPressEventListener>
+#include <kvs/KeyRepeatEventListener>
+#include <kvs/KeyReleaseEventListener>
 #include <kvs/OpenGL>
 
 
@@ -128,6 +130,22 @@ class KeyPressEvent : public kvs::KeyPressEventListener
     }
 };
 
+class KeyRepeatEvent : public kvs::KeyRepeatEventListener
+{
+    void update( kvs::KeyEvent* event )
+    {
+        std::cout << "KeyRepeatEvent::update( " << char( event->key() ) << " )" << std::endl;
+    }
+};
+
+class KeyReleaseEvent : public kvs::KeyReleaseEventListener
+{
+    void update( kvs::KeyEvent* event )
+    {
+        std::cout << "KeyReleaseEvent::update( " << char( event->key() ) << " )" << std::endl;
+    }
+};
+
 /*===========================================================================*/
 /**
  *  @brief  Main function.
@@ -150,6 +168,8 @@ int main( int argc, char** argv )
     MouseReleaseEvent mouse_release_event;
     MouseDoubleClickEvent mouse_double_click_event;
     KeyPressEvent key_press_event;
+    KeyRepeatEvent key_repeat_event;
+    KeyReleaseEvent key_release_event;
 
     screen.addEvent( &initialize_event );
     screen.addEvent( &paint_event );
@@ -159,6 +179,8 @@ int main( int argc, char** argv )
     screen.addEvent( &mouse_release_event );
     screen.addEvent( &mouse_double_click_event );
     screen.addEvent( &key_press_event );
+    screen.addEvent( &key_repeat_event );
+    screen.addEvent( &key_release_event );
     screen.create();
 
     return app.run();
