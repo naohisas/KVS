@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file KeyEvent.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: KeyEvent.cpp 1373 2012-11-30 03:26:51Z naohisa.sakamoto@gmail.com $
+ *  @file   KeyEvent.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "KeyEvent.h"
@@ -123,7 +116,6 @@ int KeyEvent::modifiers() const
 /*===========================================================================*/
 int KeyEvent::type() const
 {
-//    return EventBase::KeyPressEvent;
     return
         m_action == kvs::Key::Pressed ? EventBase::KeyPressEvent :
         m_action == kvs::Key::Repeated ? EventBase::KeyRepeatEvent :

@@ -22,7 +22,6 @@ class KeyReleaseEventListener : public kvs::EventListener
 public:
     KeyReleaseEventListener();
     virtual ~KeyReleaseEventListener();
-
     virtual void update( kvs::KeyEvent* event ) = 0;
 
 private:

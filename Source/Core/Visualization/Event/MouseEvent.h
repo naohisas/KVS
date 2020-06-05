@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file MouseEvent.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MouseEvent.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
+ *  @file   MouseEvent.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__MOUSE_EVENT_H_INCLUDE
-#define KVS__MOUSE_EVENT_H_INCLUDE
-
+#pragma once
 #include <kvs/EventBase>
 
 
@@ -27,8 +18,7 @@ namespace kvs
 /*==========================================================================*/
 class MouseEvent : public kvs::EventBase
 {
-protected:
-
+private:
     int m_button; ///< mouse button
     int m_state; ///< mouse button state
     int m_x; ///< mouse cursol position x
@@ -37,7 +27,6 @@ protected:
     int m_action; ///< mouse action
 
 public:
-
     MouseEvent();
     MouseEvent( const MouseEvent& event );
     MouseEvent( int button, int state, int x, int y, int modifiers = 0 );
@@ -59,5 +48,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__MOUSE_EVENT_H_INCLUDE

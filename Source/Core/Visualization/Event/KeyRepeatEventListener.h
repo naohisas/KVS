@@ -22,7 +22,6 @@ class KeyRepeatEventListener : public kvs::EventListener
 public:
     KeyRepeatEventListener();
     virtual ~KeyRepeatEventListener();
-
     virtual void update( kvs::KeyEvent* event ) = 0;
 
 private:

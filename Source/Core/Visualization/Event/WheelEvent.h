@@ -3,18 +3,8 @@
  *  @file   WheelEvent.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: WheelEvent.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__WHEEL_EVENT_H_INCLUDE
-#define KVS__WHEEL_EVENT_H_INCLUDE
-
+#pragma once
 #include <kvs/EventBase>
 
 
@@ -28,14 +18,12 @@ namespace kvs
 /*===========================================================================*/
 class WheelEvent : public kvs::EventBase
 {
-protected:
-
+private:
     int m_x; ///< x coordinate value of mouse cursor position
     int m_y; ///< y coordinate value of mouse cursor position
     int m_direction; ///< scroll direction
 
 public:
-
     WheelEvent();
     virtual ~WheelEvent();
 
@@ -49,5 +37,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__WHEEL_EVENT_H_INCLUDE
