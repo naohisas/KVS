@@ -321,8 +321,25 @@ void ScreenBase::create()
     glutInitDisplayMode( mode );
 
     // Set screen geometry.
-    glutInitWindowPosition( BaseClass::x(), BaseClass::y() );
-    glutInitWindowSize( BaseClass::width(), BaseClass::height() );
+    if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
+    {
+        // Centering
+        const int desk_width = glutGet( GLUT_SCREEN_WIDTH );
+        const int desk_height = glutGet( GLUT_SCREEN_HEIGHT );
+        const int px = ( desk_width - BaseClass::width() ) / 2;
+        const int py = ( desk_height - BaseClass::height() ) / 2;
+        const int offset = 20;
+        static int counter = 0;
+        glutInitWindowPosition( px + offset * counter, py + offset * counter );
+        glutInitWindowSize( BaseClass::width(), BaseClass::height() );
+        counter++;
+    }
+    else
+    {
+        // User specified geometry
+        glutInitWindowPosition( BaseClass::x(), BaseClass::y() );
+        glutInitWindowSize( BaseClass::width(), BaseClass::height() );
+    }
 
     // Create window.
     glutCreateWindow( BaseClass::title().c_str() );

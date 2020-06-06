@@ -259,6 +259,8 @@ ScreenBase::~ScreenBase()
 void ScreenBase::create()
 {
     KVS_ASSERT( m_id == -1 );
+    static int id = 0;
+    m_id = id++;
 
     // Create window.
     m_handler = glfwCreateWindow(
@@ -274,6 +276,24 @@ void ScreenBase::create()
 
     glfwMakeContextCurrent( m_handler );
     glfwSwapInterval(1);
+
+    // Set screen position.
+    if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
+    {
+        // Centering
+        const GLFWvidmode* mode = glfwGetVideoMode( glfwGetPrimaryMonitor() );
+        const int px = ( mode->width - BaseClass::width() ) / 2;
+        const int py = ( mode->height - BaseClass::height() ) / 2;
+        const int offset = 20;
+        static int counter = 0;
+        glfwSetWindowPos( m_handler, px + offset * counter, py + offset * counter );
+        counter++;
+    }
+    else
+    {
+        // User specified position
+        glfwSetWindowPos( m_handler, BaseClass::x(), BaseClass::y() );
+    }
 
     // Set callback functions.
     glfwSetWindowUserPointer( m_handler, this );
@@ -299,10 +319,6 @@ void ScreenBase::create()
     // Set device pixel ratio.
     const kvs::Vec4 vp = kvs::OpenGL::Viewport();
     BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
-
-    // Generate window ID.
-    static int counter = 0;
-    m_id = counter++;
 
     glfwMakeContextCurrent( NULL );
 }

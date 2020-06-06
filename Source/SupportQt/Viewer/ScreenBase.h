@@ -3,18 +3,8 @@
  *  @file   ScreenBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS__QT__SCREEN_BASE_H_INCLUDE
-#define KVS__QT__SCREEN_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/ScreenBase>
 #include <kvs/qt/Qt>
 
@@ -49,7 +39,6 @@ public:
     static const ScreenBase* DownCast( const kvs::ScreenBase* screen );
 
 private:
-
     int m_id; ///< window ID
     kvs::MouseEvent* m_mouse_event; ///< mouse event
     kvs::KeyEvent* m_key_event; ///< key event
@@ -58,7 +47,6 @@ private:
     std::list<kvs::qt::Timer*> m_timer_event_handler; ///< timer list for timer events
 
 public:
-
     ScreenBase( kvs::qt::Application* application = 0, QWidget* parent = 0 );
     virtual ~ScreenBase();
 
@@ -95,7 +83,6 @@ public:
     virtual void keyReleaseEvent( kvs::KeyEvent* event );
 
 private:
-
     // Callback functions for Qt.
     void initializeGL();
     void paintGL();
@@ -118,5 +105,3 @@ public:
 } // end of namespace qt
 
 } // end of namespace kvs
-
-#endif // KVS__QT__SCREEN_BASE_H_INCLUDE

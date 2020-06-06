@@ -3,14 +3,6 @@
  *  @file   ScreenBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/Assert>
@@ -99,6 +91,8 @@ ScreenBase::~ScreenBase()
 void ScreenBase::create()
 {
     KVS_ASSERT( m_id == -1 );
+    static int id = 0;
+    m_id = id++;
 
     // Initialize display mode.
     QGLFormat f = QGLFormat::defaultFormat();
@@ -113,14 +107,22 @@ void ScreenBase::create()
     QGLFormat::setDefaultFormat( f );
 
     // Set screen geometry.
-    QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
+    if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
+    {
+        // Centering
+        const QRect desk = QApplication::desktop()->screenGeometry();
+        const int px = ( desk.width() - BaseClass::width() ) / 2;
+        const int py = ( desk.height() - BaseClass::height() ) / 2;
+        const int offset = 20;
+        QWidget::setGeometry( px + offset * m_id, py + offset * m_id, BaseClass::width(), BaseClass::height() );
+    }
+    else
+    {
+        // User specified geometry.
+        QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
+    }
 
     QGLWidget::makeCurrent();
-
-    // Create window.
-    static int counter = 0;
-    m_id = counter++;
-
     QWidget::show();
 }
 
