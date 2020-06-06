@@ -170,6 +170,7 @@
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)
++ Environment parameters KVS_APP_USE_GLUT, KVS_APP_USE_GLFW, and KVS_APP_USE_QT for specifying Application and Screen class APIs.
 
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**

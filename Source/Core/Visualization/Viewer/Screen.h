@@ -13,13 +13,17 @@
  */
 /*===========================================================================*/
 
-#if defined( KVS_APP_GLUT ) && defined( KVS_SUPPORT_GLUT )
+#if defined( KVS_SUPPORT_GLUT ) && defined( KVS_APP_USE_GLUT )
 #include <kvs/glut/Screen>
 namespace kvs { using Screen = kvs::glut::Screen; }
 
-#elif defined( KVS_APP_GLFW ) && defined( KVS_SUPPORT_GLFW )
+#elif defined( KVS_SUPPORT_GLFW ) && defined( KVS_APP_USE_GLFW )
 #include <kvs/glfw/Screen>
 namespace kvs { using Screen = kvs::glfw::Screen; }
+
+#elif defined( KVS_SUPPORT_QT ) && defined( KVS_APP_USE_QT )
+#include <kvs/qt/Screen>
+namespace kvs { using Screen = kvs::qt::Screen; }
 
 #else
 
@@ -30,6 +34,10 @@ namespace kvs { using Screen = kvs::glfw::Screen; }
 #elif defined( KVS_SUPPORT_GLUT )
 #include <kvs/glut/Screen>
 namespace kvs { using Screen = kvs::glut::Screen; }
+
+#elif defined( KVS_SUPPORT_QT )
+#include <kvs/qt/Screen>
+namespace kvs { using Screen = kvs::qt::Screen; }
 
 #else
 #include "ScreenBase.h"
