@@ -308,8 +308,8 @@ void ScreenBase::create()
     GLenum result = glewInit();
     if ( result != GLEW_OK )
     {
-        const std::string error( glewGetErrorString( result ) );
-        kvsMessageError() << "GLEW initialization failed: " << error << "." << std::endl;
+        const GLubyte* message = glewGetErrorString( result );
+        kvsMessageError( "GLEW initialization failed: %s.", message );
     }
 #endif
 
