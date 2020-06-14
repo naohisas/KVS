@@ -26,7 +26,6 @@ int main( int argc, char** argv )
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
     screen.setTitle( "kvs::ArrowGlyph" );
-    screen.setGeometry( 0, 0, 512, 512 );
 
     // Read volume data from the specified data file. If the data file is not
     // specified, tornado volume data is created by using kvs::TornadoVolumeData class.
