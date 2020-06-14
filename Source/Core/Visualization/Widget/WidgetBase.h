@@ -3,14 +3,6 @@
  *  @file   WidgetBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/ClassName>
@@ -18,12 +10,6 @@
 #include <kvs/EventListener>
 #include <kvs/Rectangle>
 #include <kvs/Painter>
-
-/**/
-#include <kvs/OpenGL>
-#include <kvs/NanoVG>
-#include "TextEngine.h"
-/**/
 
 
 namespace kvs
@@ -82,9 +68,6 @@ protected:
     virtual int adjustedWidth() { return 0; }
     virtual int adjustedHeight() { return 0; }
     virtual void initializeEvent();
-
-private:
-//    WidgetBase(){}
 };
 
 } // end of namespace kvs

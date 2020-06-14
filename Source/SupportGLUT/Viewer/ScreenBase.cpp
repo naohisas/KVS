@@ -3,14 +3,6 @@
  *  @file   ScreenBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/Message>
@@ -240,6 +232,14 @@ void SpecialKeyPressFunction( int key, int x, int y )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Key release function for glutKeyboardUpFunc.
+ *  @param  key [in] key code
+ *  @param  x [in] x coordinate value of the mouse cursor on the window coordinate
+ *  @param  y [in] y coordinate value of the mouse cursor on the window coordinate
+ */
+/*===========================================================================*/
 void KeyReleaseFunction( unsigned char key, int x, int y )
 {
     const int id = glutGetWindow();
@@ -252,6 +252,14 @@ void KeyReleaseFunction( unsigned char key, int x, int y )
     ::Context[id]->keyReleaseEvent( ::Context[id]->m_key_event );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Key release function for glutSpecialUpFunc.
+ *  @param  key [in] key code
+ *  @param  x [in] x coordinate value of the mouse cursor on the window coordinate
+ *  @param  y [in] y coordinate value of the mouse cursor on the window coordinate
+ */
+/*===========================================================================*/
 void SpecialKeyReleaseFunction( int key, int x, int y )
 {
     const int id = glutGetWindow();

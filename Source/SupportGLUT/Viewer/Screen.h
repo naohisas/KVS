@@ -3,14 +3,6 @@
  *  @file   Screen.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Screen.h 1768 2014-05-12 09:36:31Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include "ScreenBase.h"

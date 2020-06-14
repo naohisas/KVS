@@ -3,14 +3,6 @@
  *  @file   Application.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Application.cpp 1595 2013-06-12 03:27:28Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Application.h"
 #include <kvs/glut/GLUT>
@@ -64,13 +56,10 @@ int Application::run()
     if ( flag )
     {
         // Call initialize event function for each screen.
-        std::list<kvs::ScreenBase*>::iterator screen = screens().begin();
-        std::list<kvs::ScreenBase*>::iterator end = screens().end();
-        while ( screen != end )
+        for ( auto& s : BaseClass::screens() )
         {
-            kvs::glut::ScreenBase* this_screen = static_cast<kvs::glut::ScreenBase*>(*screen);
-            this_screen->initializeEvent();
-            screen++;
+            auto* screen = kvs::glut::ScreenBase::DownCast( s );
+            screen->initializeEvent();
         }
 
         // Run GLUT main loop.
