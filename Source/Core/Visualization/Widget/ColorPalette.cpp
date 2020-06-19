@@ -95,7 +95,7 @@ void ColorPalette::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -155,29 +155,31 @@ void ColorPalette::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
 
 void ColorPalette::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
 
         if ( m_SV_palette.contains( event->x(), event->y(), true ) )
         {
-            m_SV_palette.activate();
+            m_SV_palette.setActive( true );
             m_S_indicator = kvs::Math::Clamp( event->x(), m_SV_palette.x0(), m_SV_palette.x1() );
             m_V_indicator = kvs::Math::Clamp( event->y(), m_SV_palette.y0(), m_SV_palette.y1() );
         }
 
         if ( m_H_palette.contains( event->x(), event->y(), true ) )
         {
-            m_H_palette.activate();
+            m_H_palette.setActive( true );
             m_H_indicator = kvs::Math::Clamp( event->y(), m_H_palette.y0(), m_H_palette.y1() );
         }
 
@@ -187,7 +189,7 @@ void ColorPalette::mousePressEvent( kvs::MouseEvent* event )
 
 void ColorPalette::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -210,14 +212,14 @@ void ColorPalette::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
-        if ( m_SV_palette.isActive() ) m_SV_palette.deactivate();
-        if ( m_H_palette.isActive() ) m_H_palette.deactivate();
+        if ( m_SV_palette.isActive() ) m_SV_palette.setActive( false );
+        if ( m_H_palette.isActive() ) m_H_palette.setActive( false );
 
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

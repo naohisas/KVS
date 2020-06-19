@@ -5,19 +5,17 @@
  */
 /*****************************************************************************/
 #pragma once
-#include <string>
+#include <kvs/Scene>
+#include <kvs/ScreenBase>
+#include <kvs/EventBase>
+#include <kvs/MouseEvent>
+#include <kvs/KeyEvent>
+#include <kvs/WheelEvent>
+#include <kvs/TimeEvent>
 
 
 namespace kvs
 {
-
-class Scene;
-class ScreenBase;
-class EventBase;
-class MouseEvent;
-class KeyEvent;
-class WheelEvent;
-class TimeEvent;
 
 /*===========================================================================*/
 /**

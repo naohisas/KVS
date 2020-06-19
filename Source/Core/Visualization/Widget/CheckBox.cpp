@@ -178,7 +178,7 @@ void CheckBox::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -206,6 +206,8 @@ void CheckBox::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -218,12 +220,12 @@ void CheckBox::resizeEvent( int width, int height )
 /*===========================================================================*/
 void CheckBox::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( this->contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
         this->pressed();
         BaseClass::screen()->redraw();
     }
@@ -237,7 +239,7 @@ void CheckBox::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void CheckBox::mouseReleaseEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -248,7 +250,7 @@ void CheckBox::mouseReleaseEvent( kvs::MouseEvent* event )
         }
 
         this->released();
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

@@ -398,5 +398,4 @@
 #include <Core/Visualization/Widget/RadioButton.h>
 #include <Core/Visualization/Widget/RadioButtonGroup.h>
 #include <Core/Visualization/Widget/Slider.h>
-#include <Core/Visualization/Widget/TextEngine.h>
 #include <Core/Visualization/Widget/WidgetBase.h>

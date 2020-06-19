@@ -190,7 +190,7 @@ void RadioButton::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -216,6 +216,8 @@ void RadioButton::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -228,12 +230,12 @@ void RadioButton::resizeEvent( int width, int height )
 /*===========================================================================*/
 void RadioButton::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( this->contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
         this->pressed();
         BaseClass::screen()->redraw();
     }
@@ -247,7 +249,7 @@ void RadioButton::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void RadioButton::mouseReleaseEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -276,7 +278,7 @@ void RadioButton::mouseReleaseEvent( kvs::MouseEvent* event )
         }
 
         this->released();
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

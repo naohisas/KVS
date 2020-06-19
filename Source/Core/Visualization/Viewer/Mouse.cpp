@@ -93,10 +93,12 @@ void Mouse::move( const int x, const int y )
 /*==========================================================================*/
 void Mouse::wheel( const float value )
 {
-    m_trackball.setScaling( kvs::Vec3::Constant( value ) );
-
-    // Update the mouse cursor position.
-    m_old = m_new;
+    m_old = kvs::Vec2i( 0, 0 );
+    m_new = m_old;
+    m_start = m_old;
+    const auto d = kvs::Vec2i( 0, int( value ) );
+    this->move( d.x(), d.y() );
+    m_stop = d;
 }
 
 /*==========================================================================*/

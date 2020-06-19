@@ -111,6 +111,8 @@ void CheckBoxGroup::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -123,7 +125,7 @@ void CheckBoxGroup::resizeEvent( int width, int height )
 /*===========================================================================*/
 void CheckBoxGroup::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     int id = 0;
     std::list<kvs::CheckBox*>::iterator box = m_boxes.begin();
@@ -132,7 +134,7 @@ void CheckBoxGroup::mousePressEvent( kvs::MouseEvent* event )
     {
         if ( (*box)->contains( event->x(), event->y() ) )
         {
-            BaseClass::activate();
+            BaseClass::setActive( true );
             this->pressed( *box );
             this->pressed( id );
         }
@@ -150,7 +152,7 @@ void CheckBoxGroup::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void CheckBoxGroup::mouseReleaseEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -163,7 +165,7 @@ void CheckBoxGroup::mouseReleaseEvent( kvs::MouseEvent* event )
             {
                 this->released( *box );
                 this->released( id );
-                BaseClass::deactivate();
+                BaseClass::setActive( false );
             }
 
             box++;

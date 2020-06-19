@@ -117,6 +117,8 @@ void RadioButtonGroup::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -129,7 +131,7 @@ void RadioButtonGroup::resizeEvent( int width, int height )
 /*===========================================================================*/
 void RadioButtonGroup::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     int id = 0;
     std::list<kvs::RadioButton*>::iterator button = m_buttons.begin();
@@ -138,7 +140,7 @@ void RadioButtonGroup::mousePressEvent( kvs::MouseEvent* event )
     {
         if ( (*button)->contains( event->x(), event->y() ) )
         {
-            BaseClass::activate();
+            BaseClass::setActive( true );
             this->pressed( *button );
             this->pressed( id );
         }
@@ -156,7 +158,7 @@ void RadioButtonGroup::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void RadioButtonGroup::mouseReleaseEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -169,7 +171,7 @@ void RadioButtonGroup::mouseReleaseEvent( kvs::MouseEvent* event )
             {
                 this->released( *button );
                 this->released( id );
-                BaseClass::deactivate();
+                BaseClass::setActive( false );
             }
 
             button++;

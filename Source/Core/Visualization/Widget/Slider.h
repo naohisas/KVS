@@ -3,14 +3,6 @@
  *  @file   Slider.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/RGBColor>
@@ -29,7 +21,7 @@ namespace kvs
 class Slider : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
 
 private:
     std::string m_caption; ///< caption

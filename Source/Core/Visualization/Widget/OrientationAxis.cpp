@@ -116,7 +116,7 @@ void OrientationAxis::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     const float dpr = screen()->devicePixelRatio();
     const kvs::Vec4 vp = kvs::OpenGL::Viewport();
@@ -220,6 +220,8 @@ void OrientationAxis::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
     this->screenResized();
 }
 

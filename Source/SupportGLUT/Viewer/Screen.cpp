@@ -663,7 +663,7 @@ void Screen::defaultWheelEvent( kvs::WheelEvent* event )
     if ( event->direction() > 0 ) { m_scene->wheelFunction( 50 ); }
     else { m_scene->wheelFunction( -50 ); }
 
-    m_scene->updateXform();
+//    m_scene->updateXform();
     BaseClass::redraw();
 }
 

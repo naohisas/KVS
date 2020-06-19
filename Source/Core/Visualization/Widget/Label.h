@@ -3,14 +3,6 @@
  *  @file   Label.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -30,10 +22,11 @@ namespace kvs
 class Label : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using TextList = std::vector<std::string>;
 
 private:
-    std::vector<std::string> m_text; ///< text list
+    TextList m_text_list; ///< text list
 
 public:
     Label( kvs::ScreenBase* screen = 0 );
@@ -41,8 +34,11 @@ public:
     virtual void screenUpdated(){};
     virtual void screenResized(){};
 
-    void setText( const std::string& text ) { m_text.clear(); this->addText( text ); }
-    void addText( const std::string& text ) { m_text.push_back( text ); }
+    const TextList& textList() const { return m_text_list; }
+    const std::string& text( const size_t index ) { return m_text_list[ index ]; }
+
+    void setText( const std::string& text ) { m_text_list.clear(); this->addText( text ); }
+    void addText( const std::string& text ) { m_text_list.push_back( text ); }
     void setText( const char* text, ... );
     void addText( const char* text, ... );
 

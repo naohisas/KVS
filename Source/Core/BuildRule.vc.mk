@@ -449,7 +449,6 @@ $(OUTDIR)\.\Visualization\Widget\PushButton.obj \
 $(OUTDIR)\.\Visualization\Widget\RadioButton.obj \
 $(OUTDIR)\.\Visualization\Widget\RadioButtonGroup.obj \
 $(OUTDIR)\.\Visualization\Widget\Slider.obj \
-$(OUTDIR)\.\Visualization\Widget\TextEngine.obj \
 $(OUTDIR)\.\Visualization\Widget\WidgetBase.obj \
 
 

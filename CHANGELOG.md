@@ -93,6 +93,44 @@
 + kvs::glut::ScreenBase::keyReleaseEvent
 + kvs::qt::ScreenBase::keyRepeatEvent
 + kvs::qt::ScreenBase::keyReleaseEvent
++ kvs::WidgetBase::isVisible
++ kvs::WidgetBase::isActive
++ kvs::WidgetBase::anchor
++ kvs::WidgetBase::anchorTo
++ kvs::WidgetBase::anchorToTopLeft
++ kvs::WidgetBase::anchorToTopCenter
++ kvs::WidgetBase::anchorToTopRight
++ kvs::WidgetBase::anchorToBottomLeft
++ kvs::WidgetBase::anchorToBottomCenter
++ kvs::WidgetBase::anchorToBottomRight
++ kvs::WidgetBase::anchorToLeftCenter
++ kvs::WidgetBase::anchorToCenter
++ kvs::WidgetBase::anchorToRightCenter
++ kvs::WidgetBase::anchorTo( parent )
++ kvs::WidgetBase::anchorToTopLeft( parent )
++ kvs::WidgetBase::anchorToTopRight( parent )
++ kvs::WidgetBase::anchorToBottomLeft( parent )
++ kvs::WidgetBase::anchorToBottomRight( parent )
++ kvs::WidgetBase::anchorTopLeftTo( parent )
++ kvs::WidgetBase::anchorTopLeftToTopRight( parent )
++ kvs::WidgetBase::anchorTopLeftToBottomRight( parent )
++ kvs::WidgetBase::anchorTopLeftToBottomLeft( parent )
++ kvs::WidgetBase::anchorTopRightTo( parent )
++ kvs::WidgetBase::anchorTopRightToTopLeft( parent )
++ kvs::WidgetBase::anchorTopRightToBottomLeft( parent )
++ kvs::WidgetBase::anchorTopRightToBottomRight( parent )
++ kvs::WidgetBase::anchorBottomLeftTo( parent )
++ kvs::WidgetBase::anchorBottomLeftToTopLeft( parent )
++ kvs::WidgetBase::anchorBottomLeftToTopRight( parent )
++ kvs::WidgetBase::anchorBottomLeftToBottomRight( parent )
++ kvs::WidgetBase::anchorBottomRightTo( parent )
++ kvs::WidgetBase::anchorBottomRightToTopLeft( parent )
++ kvs::WidgetBase::anchorBottomRightToTopRight( parent )
++ kvs::WidgetBase::anchorBottomRightToBottomLeft( parent )
++ kvs::WidgetBase::anchorToTop( parent )
++ kvs::WidgetBase::anchorToBottom( parent )
++ kvs::WidgetBase::anchorToLeft( parent )
++ kvs::WidgetBase::anchorToRight( parent )
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
@@ -137,6 +175,9 @@
 + kvs::ScatterPlotMatrixRenderer::margin (use kvs::ScatterPlotMatrixRenderer::padding)
 + kvs::ArrowGlyph::setType (use kvs::ArrowGlyph::setArrowType)
 + kvs::ArrowGlyph::type (use kvs::ArrowGlyph::arrowType)
++ kvs::WidgetBase::isShown (use kvs::WidgetBase::isVisible)
++ kvs::WidgetBase::activate (use kvs::WidgetBase::setActive(true))
++ kvs::WidgetBase::deactivate (use kvs::WidgetBase::setActive(false))
 
 **Removed deprecated class and method**
 + kvs::Material
@@ -167,6 +208,9 @@
 + kvs::Mouse::rotation
 + kvs::ObjectManager::nobjects
 + kvs::ObjectManager::setActiveObjectID
+
+**Removed classes**
++ kvs::TextEngine (use kvs::Painter)
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)

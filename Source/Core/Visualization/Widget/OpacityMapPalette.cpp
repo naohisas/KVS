@@ -62,7 +62,7 @@ void OpacityMapPalette::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( !m_texture.isValid() ) this->initialize_texture( m_opacity_map );
     if ( !m_checkerboard.isValid() ) this->initialize_checkerboard();
@@ -100,22 +100,24 @@ void OpacityMapPalette::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
 
 void OpacityMapPalette::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
 
         if ( m_palette.contains( event->x(), event->y(), true ) )
         {
-            m_palette.activate();
+            m_palette.setActive( true );
 
             // Opacity map palette geometry.
             const int x0 = m_palette.x0();
@@ -153,7 +155,7 @@ void OpacityMapPalette::mousePressEvent( kvs::MouseEvent* event )
 
 void OpacityMapPalette::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -177,13 +179,13 @@ void OpacityMapPalette::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
-        if ( m_palette.isActive() ) m_palette.deactivate();
+        if ( m_palette.isActive() ) m_palette.setActive( false );
 
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

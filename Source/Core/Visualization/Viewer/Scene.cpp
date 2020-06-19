@@ -801,8 +801,8 @@ void Scene::wheelFunction( int value )
     {
         this->updateControllingObject();
         m_mouse->setOperationMode( kvs::Mouse::Scaling );
-        m_mouse->press( 0, 0 );
-        m_mouse->move( 0, value );
+        m_mouse->wheel( value );
+        this->updateXform();
     }
 }
 

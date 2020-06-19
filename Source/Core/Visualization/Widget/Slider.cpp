@@ -342,7 +342,7 @@ void Slider::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -405,6 +405,8 @@ void Slider::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -417,13 +419,13 @@ void Slider::resizeEvent( int width, int height )
 /*===========================================================================*/
 void Slider::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( this->is_in_cursor( event->x(), event->y() ) )
     {
         m_pushed = true;
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
         this->sliderPressed();
         BaseClass::screen()->redraw();
     }
@@ -443,7 +445,7 @@ void Slider::mousePressEvent( kvs::MouseEvent* event )
              * called here.
              */
             BaseClass::screen()->disable();
-            BaseClass::activate();
+            BaseClass::setActive( true );
             this->sliderMoved();
             BaseClass::screen()->redraw();
         }
@@ -458,7 +460,7 @@ void Slider::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void Slider::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -483,7 +485,7 @@ void Slider::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -496,7 +498,7 @@ void Slider::mouseReleaseEvent( kvs::MouseEvent* event )
             m_change_value = false;
         }
 
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

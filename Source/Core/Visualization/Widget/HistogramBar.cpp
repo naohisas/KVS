@@ -116,7 +116,7 @@ void HistogramBar::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -157,6 +157,8 @@ void HistogramBar::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -169,16 +171,16 @@ void HistogramBar::resizeEvent( int width, int height )
 /*===========================================================================*/
 void HistogramBar::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
 
         if ( m_palette.contains( event->x(), event->y(), true ) )
         {
-            m_palette.activate();
+            m_palette.setActive( true );
 
             // Current mouse cursor position.
             const int x = event->x();
@@ -198,7 +200,7 @@ void HistogramBar::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void HistogramBar::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -230,13 +232,13 @@ void HistogramBar::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
-        if ( m_palette.isActive() ) m_palette.deactivate();
+        if ( m_palette.isActive() ) m_palette.setActive( false );
 
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

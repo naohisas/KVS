@@ -95,7 +95,7 @@ void OpacityMapBar::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) { return; }
+    if ( !BaseClass::isVisible() ) { return; }
     if ( !m_texture.isValid() ) { this->create_texture(); }
     if ( !m_checkerboard.isValid() ) { this->create_checkerboard(); }
 
@@ -188,6 +188,8 @@ void OpacityMapBar::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
     this->screenResized();
 }
 
