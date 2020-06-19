@@ -37,6 +37,10 @@
 #    define KVS_BREAKPOINT { __asm__( "unimp 0" ); }
 #  elif defined ( KVS_PLATFORM_CPU_SPARC64 )
 #    define KVS_BREAKPOINT { __asm__( "illtrap 0" ); }
+#  elif defined ( KVS_PLATFORM_CPU_ARM )
+#    define KVS_BREAKPOINT { __asm__( "bkpt #0" ); }
+#  elif defined ( KVS_PLATFORM_CPU_ARM64 )
+#    define KVS_BREAKPOINT { __asm__( "brk #0" ); }
 #  else
 #    pragma message("Breakpoint.h: Unknown breakpoint code for the CPU architecture.")
 #    define KVS_BREAKPOINT { }
