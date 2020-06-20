@@ -20,11 +20,24 @@ namespace kvs
  *  @brief  Constructs a new EventListener class.
  */
 /*===========================================================================*/
-EventListener::EventListener():
-    m_event_type( 0 ),
+EventListener::EventListener( const int event_type ):
+//    m_event_type( 0 ),
+    m_event_type( event_type ),
     m_name( "" ),
-    m_screen( NULL ),
-    m_scene( NULL )
+    m_screen( nullptr ),
+    m_scene( nullptr ),
+    m_initialize_event( nullptr ),
+    m_paint_event( nullptr ),
+    m_resize_event( nullptr ),
+    m_mouse_press_event( nullptr ),
+    m_mouse_move_event( nullptr ),
+    m_mouse_release_event( nullptr ),
+    m_mouse_double_click_event( nullptr ),
+    m_wheel_event( nullptr ),
+    m_key_press_event( nullptr ),
+    m_key_repeat_event( nullptr ),
+    m_key_release_event( nullptr ),
+    m_timer_event( nullptr )
 {
 }
 

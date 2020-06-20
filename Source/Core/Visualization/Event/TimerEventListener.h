@@ -21,8 +21,11 @@ class TimerEventListener : public kvs::EventListener
 {
 public:
     TimerEventListener();
+    TimerEventListener( TimerEvent e ) { this->update( e ); }
     virtual ~TimerEventListener();
-    virtual void update( kvs::TimeEvent* event ) = 0;
+
+    void update( TimerEvent e ) { timerEvent( e ); }
+    virtual void update( kvs::TimeEvent* event ) { timerEvent( event ); }
 
 private:
     void onEvent( kvs::EventBase* event );

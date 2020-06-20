@@ -21,8 +21,11 @@ class MouseReleaseEventListener : public kvs::EventListener
 {
 public:
     MouseReleaseEventListener();
+    MouseReleaseEventListener( MouseReleaseEvent e ) { this->update( e ); }
     virtual ~MouseReleaseEventListener();
-    virtual void update( kvs::MouseEvent* event ) = 0;
+
+    void update( MouseReleaseEvent e ) { mouseReleaseEvent( e ); }
+    virtual void update( kvs::MouseEvent* event ) { mouseReleaseEvent( event ); }
 
 private:
     void onEvent( kvs::EventBase* event );

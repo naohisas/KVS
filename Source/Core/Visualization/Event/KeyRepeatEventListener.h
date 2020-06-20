@@ -21,8 +21,11 @@ class KeyRepeatEventListener : public kvs::EventListener
 {
 public:
     KeyRepeatEventListener();
+    KeyRepeatEventListener( KeyRepeatEvent e ) { this->update( e ); }
     virtual ~KeyRepeatEventListener();
-    virtual void update( kvs::KeyEvent* event ) = 0;
+
+    void update( KeyRepeatEvent e ) { keyRepeatEvent( e ); }
+    virtual void update( kvs::KeyEvent* event ) { keyRepeatEvent( event ); }
 
 private:
     void onEvent( kvs::EventBase* event );

@@ -21,8 +21,11 @@ class PaintEventListener : public kvs::EventListener
 {
 public:
     PaintEventListener();
+    PaintEventListener( PaintEvent e ) { this->update( e ); }
     virtual ~PaintEventListener();
-    virtual void update() = 0;
+
+    void update( PaintEvent e ) { paintEvent( e ); }
+    virtual void update() { paintEvent(); }
 
 private:
     void onEvent( kvs::EventBase* event = 0 );

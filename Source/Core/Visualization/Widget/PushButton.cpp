@@ -49,7 +49,11 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
     m_grad_top_color( kvs::RGBColor::White() ),
     m_grad_bottom_color( kvs::RGBColor::Black() ),
     m_border_light_color( kvs::RGBColor( 250, 250, 250 ) ),
-    m_border_dark_color( kvs::RGBColor( 0, 0, 0 ) )
+    m_border_dark_color( kvs::RGBColor( 0, 0, 0 ) ),
+    m_pressed( nullptr ),
+    m_released( nullptr ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

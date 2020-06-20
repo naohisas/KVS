@@ -25,9 +25,10 @@ namespace kvs
  *  @brief  Constructs a new InitializeEventListener class.
  */
 /*===========================================================================*/
-InitializeEventListener::InitializeEventListener()
+InitializeEventListener::InitializeEventListener():
+    kvs::EventListener( kvs::EventBase::InitializeEvent )
 {
-    kvs::EventListener::setEventType( kvs::EventBase::InitializeEvent );
+//    kvs::EventListener::setEventType( kvs::EventBase::InitializeEvent );
 }
 
 /*===========================================================================*/

@@ -21,8 +21,11 @@ class KeyPressEventListener : public kvs::EventListener
 {
 public:
     KeyPressEventListener();
+    KeyPressEventListener( KeyPressEvent e ) { this->update( e ); }
     virtual ~KeyPressEventListener();
-    virtual void update( kvs::KeyEvent* event ) = 0;
+
+    void update( KeyPressEvent e ) { keyPressEvent( e ); }
+    virtual void update( kvs::KeyEvent* event ) { keyPressEvent( event ); }
 
 private:
     void onEvent( kvs::EventBase* event );

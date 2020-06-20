@@ -16,9 +16,9 @@ namespace kvs
  *  @brief  Constructs a new PaintEventListener class.
  */
 /*===========================================================================*/
-PaintEventListener::PaintEventListener()
+PaintEventListener::PaintEventListener():
+    kvs::EventListener( kvs::EventBase::PaintEvent )
 {
-    kvs::EventListener::setEventType( kvs::EventBase::PaintEvent );
 }
 
 /*===========================================================================*/

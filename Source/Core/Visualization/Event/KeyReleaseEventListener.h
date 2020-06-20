@@ -21,8 +21,11 @@ class KeyReleaseEventListener : public kvs::EventListener
 {
 public:
     KeyReleaseEventListener();
+    KeyReleaseEventListener( KeyReleaseEvent e ) { this->update( e ); }
     virtual ~KeyReleaseEventListener();
-    virtual void update( kvs::KeyEvent* event ) = 0;
+
+    void update( KeyReleaseEvent e ) { keyReleaseEvent( e ); }
+    virtual void update( kvs::KeyEvent* event ) { keyReleaseEvent( event ); }
 
 private:
     void onEvent( kvs::EventBase* event );

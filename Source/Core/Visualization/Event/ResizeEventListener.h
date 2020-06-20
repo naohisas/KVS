@@ -20,8 +20,11 @@ class ResizeEventListener : public kvs::EventListener
 {
 public:
     ResizeEventListener();
+    ResizeEventListener( ResizeEvent e ) { this->update( e ); }
     virtual ~ResizeEventListener();
-    virtual void update( int width, int height ) = 0;
+
+    void update( ResizeEvent e ) { resizeEvent( e ); }
+    virtual void update( int width, int height ) { resizeEvent( width, height ); }
 
 private:
     void onEvent( kvs::EventBase* event );
