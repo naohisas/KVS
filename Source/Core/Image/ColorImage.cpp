@@ -332,7 +332,7 @@ bool ColorImage::read( const std::string& filename )
  *  @return true, if the writing process is done successfully
  */
 /*==========================================================================*/
-bool ColorImage::write( const std::string& filename )
+bool ColorImage::write( const std::string& filename ) const
 {
     // KVSML image.
     if ( kvs::KVSMLImageObject::CheckExtension( filename ) )

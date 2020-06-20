@@ -21,10 +21,10 @@ class KeyRepeatEventListener : public kvs::EventListener
 {
 public:
     KeyRepeatEventListener(): kvs::EventListener( kvs::EventBase::KeyRepeatEvent ) {}
-    KeyRepeatEventListener( KeyRepeatEvent e ) { this->update( e ); }
+    KeyRepeatEventListener( KeyRepeatEventFunc func ) { this->update( func ); }
     virtual ~KeyRepeatEventListener() {}
 
-    void update( KeyRepeatEvent e ) { keyRepeatEvent( e ); }
+    void update( KeyRepeatEventFunc func ) { keyRepeatEvent( func ); }
     virtual void update( kvs::KeyEvent* event ) { keyRepeatEvent( event ); }
 
 private:

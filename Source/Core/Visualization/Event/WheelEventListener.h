@@ -21,10 +21,10 @@ class WheelEventListener : public kvs::EventListener
 {
 public:
     WheelEventListener(): kvs::EventListener( kvs::EventBase::WheelEvent ) {}
-    WheelEventListener( WheelEvent e ) { this->update( e ); }
+    WheelEventListener( WheelEventFunc func ) { this->update( func ); }
     virtual ~WheelEventListener() {}
 
-    void update( WheelEvent e ) { wheelEvent( e ); }
+    void update( WheelEventFunc func ) { wheelEvent( func ); }
     virtual void update( kvs::WheelEvent* event ) { wheelEvent( event ); }
 
 private:

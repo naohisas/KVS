@@ -21,10 +21,10 @@ class MousePressEventListener : public kvs::EventListener
 {
 public:
     MousePressEventListener(): kvs::EventListener( kvs::EventBase::MousePressEvent ) {}
-    MousePressEventListener( MousePressEvent e ) { this->update( e ); }
+    MousePressEventListener( MousePressEventFunc func ) { this->update( func ); }
     virtual ~MousePressEventListener() {}
 
-    void update( MousePressEvent e ) { mousePressEvent( e ); }
+    void update( MousePressEventFunc func ) { mousePressEvent( func ); }
     virtual void update( kvs::MouseEvent* event ) { mousePressEvent( event ); }
 
 private:

@@ -32,10 +32,10 @@ class PushButton : public kvs::WidgetBase
 {
 public:
     using BaseClass = kvs::WidgetBase;
-    using Pressed = std::function<void()>;
-    using Released = std::function<void()>;
-    using ScreenUpdated = std::function<void()>;
-    using ScreenResized = std::function<void()>;
+    using PressedFunc = std::function<void()>;
+    using ReleasedFunc = std::function<void()>;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     std::string m_caption; ///< caption
@@ -46,10 +46,10 @@ private:
     kvs::RGBColor m_grad_bottom_color;
     kvs::RGBColor m_border_light_color;
     kvs::RGBColor m_border_dark_color;
-    Pressed m_pressed;
-    Released m_released;
-    ScreenUpdated m_screen_updated;
-    ScreenResized m_screen_resized;
+    PressedFunc m_pressed;
+    ReleasedFunc m_released;
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     PushButton( kvs::ScreenBase* screen = 0 );
@@ -60,10 +60,10 @@ public:
     void setTextMargin( const int margin ) { m_text_margin = margin; }
     void setButtonColor( const kvs::RGBColor& color ) { m_button_color = color; }
 
-    void pressed( Pressed p ) { m_pressed = p; }
-    void released( Released r ) { m_released = r; }
-    void screenUpdated( ScreenUpdated su ) { m_screen_updated = su; }
-    void screenResized( ScreenResized sr ) { m_screen_resized = sr; }
+    void pressed( PressedFunc func ) { m_pressed = func; }
+    void released( ReleasedFunc func ) { m_released = func; }
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
 
     virtual void pressed() { if ( m_pressed ) m_pressed(); }
     virtual void released() { if ( m_released ) m_released(); }

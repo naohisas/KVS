@@ -21,10 +21,10 @@ class InitializeEventListener : public kvs::EventListener
 {
 public:
     InitializeEventListener(): kvs::EventListener( kvs::EventBase::InitializeEvent ) {}
-    InitializeEventListener( InitializeEvent e ) { this->update( e ); }
+    InitializeEventListener( InitializeEventFunc func ) { this->update( func ); }
     virtual ~InitializeEventListener() {}
 
-    void update( InitializeEvent e ) { initializeEvent( e ); }
+    void update( InitializeEventFunc func ) { initializeEvent( func ); }
     virtual void update() { initializeEvent(); }
 
 private:

@@ -170,6 +170,8 @@
 + kvs::KeyReleaseEventListener::update( lambda )
 + kvs::TimerEventListener::TimerEventListener( lambda )
 + kvs::TimerEventListener::update( lambda )
++ kvs::ScreenCaptureEvent::ScreenCaptureEvent( lambda, key )
++ kvs::ScreenCaptureEvent::update( lambda )
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer

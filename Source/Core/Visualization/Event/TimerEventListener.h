@@ -21,10 +21,10 @@ class TimerEventListener : public kvs::EventListener
 {
 public:
     TimerEventListener(): kvs::EventListener( kvs::EventBase::TimerEvent ) {}
-    TimerEventListener( TimerEvent e ) { this->update( e ); }
+    TimerEventListener( TimerEventFunc func ) { this->update( func ); }
     virtual ~TimerEventListener() {}
 
-    void update( TimerEvent e ) { timerEvent( e ); }
+    void update( TimerEventFunc func ) { timerEvent( func ); }
     virtual void update( kvs::TimeEvent* event ) { timerEvent( event ); }
 
 private:

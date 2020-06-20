@@ -21,10 +21,10 @@ class MouseMoveEventListener : public kvs::EventListener
 {
 public:
     MouseMoveEventListener(): kvs::EventListener( kvs::EventBase::MouseMoveEvent ) {}
-    MouseMoveEventListener( MouseMoveEvent e ) { this->update( e ); }
+    MouseMoveEventListener( MouseMoveEventFunc func ) { this->update( func ); }
     virtual ~MouseMoveEventListener() {}
 
-    void update( MouseMoveEvent e ) { mouseMoveEvent( e ); }
+    void update( MouseMoveEventFunc func ) { mouseMoveEvent( func ); }
     virtual void update( kvs::MouseEvent* event ) { mouseMoveEvent( event ); }
 
 private:

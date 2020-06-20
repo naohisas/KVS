@@ -21,10 +21,10 @@ class KeyReleaseEventListener : public kvs::EventListener
 {
 public:
     KeyReleaseEventListener(): kvs::EventListener( kvs::EventBase::KeyReleaseEvent ) {}
-    KeyReleaseEventListener( KeyReleaseEvent e ) { this->update( e ); }
+    KeyReleaseEventListener( KeyReleaseEventFunc func ) { this->update( func ); }
     virtual ~KeyReleaseEventListener() {}
 
-    void update( KeyReleaseEvent e ) { keyReleaseEvent( e ); }
+    void update( KeyReleaseEventFunc func ) { keyReleaseEvent( func ); }
     virtual void update( kvs::KeyEvent* event ) { keyReleaseEvent( event ); }
 
 private:

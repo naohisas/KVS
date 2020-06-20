@@ -93,7 +93,7 @@ public:
     template <typename InterpolationMethod>
     void resize( const size_t width, const size_t height, InterpolationMethod method );
     bool read( const std::string& filename );
-    bool write( const std::string& filename );
+    bool write( const std::string& filename ) const;
 
 private:
 

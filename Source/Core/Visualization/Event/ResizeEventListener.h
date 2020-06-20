@@ -21,10 +21,10 @@ class ResizeEventListener : public kvs::EventListener
 {
 public:
     ResizeEventListener(): kvs::EventListener( kvs::EventBase::ResizeEvent ) {}
-    ResizeEventListener( ResizeEvent e ) { this->update( e ); }
+    ResizeEventListener( ResizeEventFunc func ) { this->update( func ); }
     virtual ~ResizeEventListener() {}
 
-    void update( ResizeEvent e ) { resizeEvent( e ); }
+    void update( ResizeEventFunc func ) { resizeEvent( func ); }
     virtual void update( int width, int height ) { resizeEvent( width, height ); }
 
 private:

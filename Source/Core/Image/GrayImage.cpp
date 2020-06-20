@@ -502,7 +502,7 @@ bool GrayImage::read( const std::string& filename )
  *  @return true, if the writing process is done successfully
  */
 /*==========================================================================*/
-bool GrayImage::write( const std::string& filename )
+bool GrayImage::write( const std::string& filename ) const
 {
     // KVSML image.
     if ( kvs::KVSMLImageObject::CheckExtension( filename ) )
