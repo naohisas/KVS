@@ -20,15 +20,15 @@ namespace kvs
 class KeyPressEventListener : public kvs::EventListener
 {
 public:
-    KeyPressEventListener();
+    KeyPressEventListener(): kvs::EventListener( kvs::EventBase::KeyPressEvent ) {}
     KeyPressEventListener( KeyPressEvent e ) { this->update( e ); }
-    virtual ~KeyPressEventListener();
+    virtual ~KeyPressEventListener() {}
 
     void update( KeyPressEvent e ) { keyPressEvent( e ); }
     virtual void update( kvs::KeyEvent* event ) { keyPressEvent( event ); }
 
 private:
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* event ) { this->update( static_cast<kvs::KeyEvent*>(event) ); }
 };
 
 } // end of namespace kvs

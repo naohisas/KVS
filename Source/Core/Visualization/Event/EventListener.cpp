@@ -21,7 +21,6 @@ namespace kvs
  */
 /*===========================================================================*/
 EventListener::EventListener( const int event_type ):
-//    m_event_type( 0 ),
     m_event_type( event_type ),
     m_name( "" ),
     m_screen( nullptr ),
@@ -38,15 +37,6 @@ EventListener::EventListener( const int event_type ):
     m_key_repeat_event( nullptr ),
     m_key_release_event( nullptr ),
     m_timer_event( nullptr )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the EventListener class.
- */
-/*===========================================================================*/
-EventListener::~EventListener()
 {
 }
 

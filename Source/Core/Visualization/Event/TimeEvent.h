@@ -19,9 +19,9 @@ namespace kvs
 class TimeEvent : public kvs::EventBase
 {
 public:
-    TimeEvent();
-    virtual ~TimeEvent();
-    int type() const;
+    TimeEvent() {}
+    virtual ~TimeEvent() {}
+    int type() const { return kvs::EventBase::TimerEvent; }
 };
 
 } // end of namespace kvs

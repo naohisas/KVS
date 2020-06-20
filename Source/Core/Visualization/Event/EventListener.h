@@ -59,7 +59,7 @@ private:
 
 public:
     EventListener( const int event_type = kvs::EventBase::AllEvents );
-    virtual ~EventListener();
+    virtual ~EventListener() {}
 
     int eventType() const { return m_event_type; }
     const std::string& name() const { return m_name; }

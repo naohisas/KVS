@@ -20,15 +20,15 @@ namespace kvs
 class MouseReleaseEventListener : public kvs::EventListener
 {
 public:
-    MouseReleaseEventListener();
+    MouseReleaseEventListener(): kvs::EventListener( kvs::EventBase::MouseReleaseEvent ) {}
     MouseReleaseEventListener( MouseReleaseEvent e ) { this->update( e ); }
-    virtual ~MouseReleaseEventListener();
+    virtual ~MouseReleaseEventListener() {}
 
     void update( MouseReleaseEvent e ) { mouseReleaseEvent( e ); }
     virtual void update( kvs::MouseEvent* event ) { mouseReleaseEvent( event ); }
 
 private:
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* event ) { this->update( static_cast<kvs::MouseEvent*>(event) ); }
 };
 
 } // end of namespace kvs

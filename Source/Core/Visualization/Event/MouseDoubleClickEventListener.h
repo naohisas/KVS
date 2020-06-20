@@ -20,15 +20,15 @@ namespace kvs
 class MouseDoubleClickEventListener : public kvs::EventListener
 {
 public:
-    MouseDoubleClickEventListener();
+    MouseDoubleClickEventListener(): kvs::EventListener( kvs::EventBase::MouseDoubleClickEvent ) {}
     MouseDoubleClickEventListener( MouseDoubleClickEvent e ) { this->update( e ); }
-    virtual ~MouseDoubleClickEventListener();
+    virtual ~MouseDoubleClickEventListener() {}
 
     void update( MouseDoubleClickEvent e ) { mouseDoubleClickEvent( e ); }
     virtual void update( kvs::MouseEvent* event ) { mouseDoubleClickEvent( event ); }
 
 private:
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* event ) { this->update( static_cast<kvs::MouseEvent*>(event) ); }
 };
 
 } // end of namespace kvs

@@ -6,6 +6,7 @@
 /****************************************************************************/
 #pragma once
 #include <kvs/EventBase>
+#include <kvs/MouseButton>
 
 
 namespace kvs
@@ -27,24 +28,51 @@ private:
     int m_action; ///< mouse action
 
 public:
-    MouseEvent();
-    MouseEvent( const MouseEvent& event );
-    MouseEvent( int button, int state, int x, int y, int modifiers = 0 );
-    virtual ~MouseEvent();
+    MouseEvent():
+        m_button( kvs::MouseButton::Left ),
+        m_state( kvs::MouseButton::Up ),
+        m_x( 0 ),
+        m_y( 0 ),
+        m_modifiers( 0 ),
+        m_action( kvs::MouseButton::NoAction ) {}
+    MouseEvent( const MouseEvent& e ):
+        m_button( e.m_button ),
+        m_state( e.m_state ),
+        m_x( e.m_x ),
+        m_y( e.m_y ),
+        m_modifiers( e.m_modifiers ),
+        m_action( e.m_action ) {}
+    MouseEvent( int button, int state, int x, int y, int modifiers = 0 ):
+        m_button( button ),
+        m_state( state ),
+        m_x( x ),
+        m_y( y ),
+        m_modifiers( modifiers ),
+        m_action( kvs::MouseButton::NoAction ) {}
+    virtual ~MouseEvent() {}
 
-    int button() const;
-    int state() const;
-    int x() const;
-    int y() const;
-    int modifiers() const;
-    int action() const;
-    int type() const;
+    int button() const { return m_button; }
+    int state() const { return m_state; }
+    int x() const { return m_x; }
+    int y() const { return m_y; }
+    int modifiers() const { return m_modifiers; }
+    int action() const { return m_action; }
 
-    void setButton( int button );
-    void setState( int state );
-    void setPosition( int x, int y );
-    void setModifiers( int modifiers );
-    void setAction( int action );
+    void setButton( int button ) { m_button = button; }
+    void setState( int state ) { m_state = state; }
+    void setPosition( int x, int y ) { m_x = x; m_y = y; }
+    void setModifiers( int modifiers ) { m_modifiers = modifiers; }
+    void setAction( int action ) { m_action = action; }
+
+    int type() const
+    {
+        return
+            m_action == kvs::MouseButton::Pressed ? EventBase::MousePressEvent :
+            m_action == kvs::MouseButton::Moved ? EventBase::MouseMoveEvent :
+            m_action == kvs::MouseButton::Released ? EventBase::MouseReleaseEvent :
+            m_action == kvs::MouseButton::DoubleClicked ? EventBase::MouseDoubleClickEvent :
+            m_action == kvs::MouseButton::Wheeled ? EventBase::WheelEvent : 0;
+    }
 };
 
 } // end of namespace kvs

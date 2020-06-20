@@ -20,15 +20,15 @@ namespace kvs
 class KeyRepeatEventListener : public kvs::EventListener
 {
 public:
-    KeyRepeatEventListener();
+    KeyRepeatEventListener(): kvs::EventListener( kvs::EventBase::KeyRepeatEvent ) {}
     KeyRepeatEventListener( KeyRepeatEvent e ) { this->update( e ); }
-    virtual ~KeyRepeatEventListener();
+    virtual ~KeyRepeatEventListener() {}
 
     void update( KeyRepeatEvent e ) { keyRepeatEvent( e ); }
     virtual void update( kvs::KeyEvent* event ) { keyRepeatEvent( event ); }
 
 private:
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* event ) { this->update( static_cast<kvs::KeyEvent*>(event) ); }
 };
 
 } // end of namespace kvs

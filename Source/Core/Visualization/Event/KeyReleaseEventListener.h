@@ -20,15 +20,15 @@ namespace kvs
 class KeyReleaseEventListener : public kvs::EventListener
 {
 public:
-    KeyReleaseEventListener();
+    KeyReleaseEventListener(): kvs::EventListener( kvs::EventBase::KeyReleaseEvent ) {}
     KeyReleaseEventListener( KeyReleaseEvent e ) { this->update( e ); }
-    virtual ~KeyReleaseEventListener();
+    virtual ~KeyReleaseEventListener() {}
 
     void update( KeyReleaseEvent e ) { keyReleaseEvent( e ); }
     virtual void update( kvs::KeyEvent* event ) { keyReleaseEvent( event ); }
 
 private:
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* event ) { this->update( static_cast<kvs::KeyEvent*>(event) ); }
 };
 
 } // end of namespace kvs

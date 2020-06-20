@@ -27,22 +27,42 @@ private:
     int m_action; ///< key action (pressed, released, or repeated)
 
 public:
-    KeyEvent();
-    KeyEvent( const KeyEvent& event );
-    KeyEvent( int key, int x, int y );
-    virtual ~KeyEvent();
+    KeyEvent():
+        m_key( 0 ),
+        m_x( 0 ),
+        m_y( 0 ),
+        m_modifiers( 0 ),
+        m_action( kvs::Key::NoAction ) {}
+    KeyEvent( const KeyEvent& e ):
+        m_key( e.m_key ),
+        m_x( e.m_x ),
+        m_y( e.m_y ),
+        m_modifiers( e.m_modifiers ),
+        m_action( e.m_action ) {}
+    KeyEvent( int key, int x, int y ):
+        m_key( key ),
+        m_x( x ),
+        m_y( y ) {}
+    virtual ~KeyEvent() {}
 
-    int key() const;
-    int x() const;
-    int y() const;
-    int modifiers() const;
+    int key() const { return m_key; }
+    int x() const { return m_x; }
+    int y() const { return m_y; }
+    int modifiers() const { return m_modifiers; }
     int action() const { return m_action; }
-    int type() const;
 
-    void setKey( int key );
-    void setPosition( int x, int y );
-    void setModifiers( int modifiers );
+    void setKey( int key ) { m_key = key; }
+    void setPosition( int x, int y ) { m_x = x; m_y = y; }
+    void setModifiers( int modifiers ) { m_modifiers = modifiers; }
     void setAction( int action ) { m_action = action; }
+
+    int type() const
+    {
+        return
+            m_action == kvs::Key::Pressed ? EventBase::KeyPressEvent :
+            m_action == kvs::Key::Repeated ? EventBase::KeyRepeatEvent :
+            m_action == kvs::Key::Released ? EventBase::KeyReleaseEvent : 0;
+    }
 };
 
 } // end of namespace kvs

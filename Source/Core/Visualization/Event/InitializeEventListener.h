@@ -20,15 +20,15 @@ namespace kvs
 class InitializeEventListener : public kvs::EventListener
 {
 public:
-    InitializeEventListener();
+    InitializeEventListener(): kvs::EventListener( kvs::EventBase::InitializeEvent ) {}
     InitializeEventListener( InitializeEvent e ) { this->update( e ); }
-    virtual ~InitializeEventListener();
+    virtual ~InitializeEventListener() {}
 
     void update( InitializeEvent e ) { initializeEvent( e ); }
     virtual void update() { initializeEvent(); }
 
 private:
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* /* event */ ) { this->update(); }
 };
 
 } // end of namespace kvs

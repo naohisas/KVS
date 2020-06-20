@@ -23,16 +23,20 @@ private:
     int m_height; ///< window height
 
 public:
-    ResizeEvent();
-    ResizeEvent( const ResizeEvent& event );
-    ResizeEvent( int width, int height );
-    virtual ~ResizeEvent();
+    ResizeEvent( const ResizeEvent& e ):
+        m_width( e.width() ),
+        m_height( e.height() ) {}
+    ResizeEvent( int width, int height ):
+        m_width( width ),
+        m_height( height ) {}
+    ResizeEvent() {}
+    virtual ~ResizeEvent() {}
 
-    int width() const;
-    int height() const;
-    int type() const;
+    int width() const { return m_width; }
+    int height() const { return m_height; }
+    void setSize( int width, int height ) { m_width = width; m_height = height; }
 
-    void setSize( int width, int height );
+    int type() const { return kvs::EventBase::ResizeEvent; }
 };
 
 } // end of namespace kvs

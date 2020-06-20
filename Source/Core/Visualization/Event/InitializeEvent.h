@@ -19,10 +19,9 @@ namespace kvs
 class InitializeEvent : public kvs::EventBase
 {
 public:
-    InitializeEvent();
-    virtual ~InitializeEvent();
-
-    int type() const;
+    InitializeEvent() {}
+    virtual ~InitializeEvent() {}
+    int type() const { return kvs::EventBase::InitializeEvent; }
 };
 
 } // end of namespace kvs

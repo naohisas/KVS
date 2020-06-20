@@ -20,15 +20,15 @@ namespace kvs
 class TimerEventListener : public kvs::EventListener
 {
 public:
-    TimerEventListener();
+    TimerEventListener(): kvs::EventListener( kvs::EventBase::TimerEvent ) {}
     TimerEventListener( TimerEvent e ) { this->update( e ); }
-    virtual ~TimerEventListener();
+    virtual ~TimerEventListener() {}
 
     void update( TimerEvent e ) { timerEvent( e ); }
     virtual void update( kvs::TimeEvent* event ) { timerEvent( event ); }
 
 private:
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* event ) { this->update( static_cast<kvs::TimeEvent*>(event) ); }
 };
 
 } // end of namespace kvs

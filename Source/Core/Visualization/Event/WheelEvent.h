@@ -24,16 +24,16 @@ private:
     int m_direction; ///< scroll direction
 
 public:
-    WheelEvent();
-    virtual ~WheelEvent();
+    WheelEvent() {}
+    virtual ~WheelEvent() {}
 
-    int x() const;
-    int y() const;
-    int direction() const;
-    int type() const;
+    int x() const { return m_x; }
+    int y() const { return m_y; }
+    int direction() const { return m_direction; }
+    int type() const { return kvs::EventBase::WheelEvent; }
 
-    void setPosition( int x, int y );
-    void setDirection( int direction );
+    void setPosition( int x, int y ) { m_x = x; m_y = y; }
+    void setDirection( int direction ) { m_direction = direction; }
 };
 
 } // end of namespace kvs
