@@ -75,6 +75,7 @@ void EventHandler::notify( kvs::EventBase* event )
 void EventHandler::clear()
 {
     m_listeners.clear();
+    m_listeners.shrink_to_fit();
 }
 
 } // end of namespace kvs

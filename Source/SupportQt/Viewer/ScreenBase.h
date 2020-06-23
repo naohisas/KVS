@@ -15,7 +15,6 @@ namespace kvs
 class MouseEvent;
 class WheelEvent;
 class KeyEvent;
-class TimerEventListener;
 
 namespace qt
 {
@@ -32,7 +31,7 @@ class ScreenBase : public QGLWidget, public kvs::ScreenBase
 {
     Q_OBJECT
 
-    typedef kvs::ScreenBase BaseClass;
+    using BaseClass = kvs::ScreenBase;
 
 public:
     static ScreenBase* DownCast( kvs::ScreenBase* screen );
@@ -44,7 +43,6 @@ private:
     kvs::KeyEvent* m_key_event; ///< key event
     kvs::WheelEvent* m_wheel_event; ///< wheel event
     bool m_is_fullscreen; ///< check flag whether the window is fullscreen
-    std::list<kvs::qt::Timer*> m_timer_event_handler; ///< timer list for timer events
 
 public:
     ScreenBase( kvs::qt::Application* application = 0, QWidget* parent = 0 );
@@ -55,6 +53,9 @@ public:
     int y() const { return BaseClass::y(); }
     int width() const { return BaseClass::width(); }
     int height() const { return BaseClass::height(); }
+
+    virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
 
     virtual void create();
     virtual void show();
@@ -94,12 +95,6 @@ private:
     void wheelEvent( QWheelEvent* event );
     void keyPressEvent( QKeyEvent* event );
     void keyReleaseEvent( QKeyEvent* event );
-
-#if 1 // KVS_ENABLE_DEPRECATED
-public:
-    std::list<kvs::qt::Timer*>& timerEventHandler();
-    void addTimerEvent( kvs::TimerEventListener* event, kvs::qt::Timer* timer );
-#endif
 };
 
 } // end of namespace qt

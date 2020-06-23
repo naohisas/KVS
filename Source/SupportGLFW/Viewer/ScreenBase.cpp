@@ -9,7 +9,7 @@
 #include "KVSMouseButton.h"
 #include "KVSKey.h"
 #include <kvs/Message>
-#include <kvs/TimerEventListener>
+#include <kvs/EventListener>
 
 
 namespace
@@ -25,6 +25,52 @@ namespace
 kvs::glfw::ScreenBase* ThisScreen( GLFWwindow* handler )
 {
     return static_cast<kvs::glfw::ScreenBase*>( glfwGetWindowUserPointer( handler ) );
+}
+
+class EventTimer : public kvs::EventTimer
+{
+private:
+    double m_now_time;
+    double m_last_time;
+    double m_elapse_time;
+
+public:
+    EventTimer( kvs::EventListener* listener ): kvs::EventTimer( listener ) {}
+    virtual ~EventTimer() {}
+    void start( int msec );
+    void nortify();
+};
+
+void EventTimer::start( int msec )
+{
+    if ( msec < 0 ) { return; }
+    if ( this->isStopped() )
+    {
+        this->setInterval( msec );
+        this->setStopped( false );
+        m_now_time = glfwGetTime();
+        m_last_time = m_now_time;
+        m_elapse_time = 0.0;
+    }
+}
+
+void EventTimer::nortify()
+{
+    if ( !this->isStopped() )
+    {
+        m_now_time = glfwGetTime();
+        m_elapse_time += ( m_now_time - m_last_time );
+        m_last_time = m_now_time;
+
+        if ( m_elapse_time * 1000.0 > this->interval() )
+        {
+            if ( this->eventListener() )
+            {
+                this->eventListener()->onEvent( this->timeEvent() );
+            }
+            m_elapse_time = 0.0;
+        }
+    }
 }
 
 }
@@ -251,6 +297,24 @@ ScreenBase::~ScreenBase()
     if ( m_handler ) { glfwDestroyWindow( m_handler ); }
 }
 
+void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::setEvent( event, name );
+}
+
+void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::addEvent( event, name );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Creates a screen.
@@ -452,18 +516,6 @@ void ScreenBase::wheelEvent( kvs::WheelEvent* ){}
 void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
 void ScreenBase::keyRepeatEvent( kvs::KeyEvent* ){}
 void ScreenBase::keyReleaseEvent( kvs::KeyEvent* ){}
-
-std::list<kvs::glfw::Timer*>& ScreenBase::timerEventHandler()
-{
-    return m_timer_event_handler;
-}
-
-void ScreenBase::addTimerEvent( kvs::TimerEventListener* event, kvs::glfw::Timer* timer )
-{
-    event->setScreen( this );
-    timer->setEventListener( event );
-    m_timer_event_handler.push_back( timer );
-}
 
 } // end of namespace glfw
 

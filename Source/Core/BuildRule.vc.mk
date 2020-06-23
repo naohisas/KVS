@@ -253,6 +253,7 @@ $(OUTDIR)\.\Visualization\Data\HydrogenVolumeData.obj \
 $(OUTDIR)\.\Visualization\Data\TornadoVolumeData.obj \
 $(OUTDIR)\.\Visualization\Event\EventHandler.obj \
 $(OUTDIR)\.\Visualization\Event\EventListener.obj \
+$(OUTDIR)\.\Visualization\Event\EventTimer.obj \
 $(OUTDIR)\.\Visualization\Event\ScreenCaptureEvent.obj \
 $(OUTDIR)\.\Visualization\Event\TargetChangeEvent.obj \
 $(OUTDIR)\.\Visualization\Exporter\LineExporter.obj \
@@ -278,6 +279,8 @@ $(OUTDIR)\.\Visualization\Importer\PolygonImporter.obj \
 $(OUTDIR)\.\Visualization\Importer\StructuredVolumeImporter.obj \
 $(OUTDIR)\.\Visualization\Importer\TableImporter.obj \
 $(OUTDIR)\.\Visualization\Importer\UnstructuredVolumeImporter.obj \
+$(OUTDIR)\.\Visualization\Interactor\InteractorBase.obj \
+$(OUTDIR)\.\Visualization\Interactor\TrackballInteractor.obj \
 $(OUTDIR)\.\Visualization\Mapper\Cell.obj \
 $(OUTDIR)\.\Visualization\Mapper\CellAdjacencyGraph.obj \
 $(OUTDIR)\.\Visualization\Mapper\CellAdjacencyGraphLocator.obj \
@@ -466,6 +469,12 @@ $<
 {.\Visualization\Mapper\}.cpp{$(OUTDIR)\.\Visualization\Mapper\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\Visualization\Mapper $(MKDIR) $(OUTDIR)\.\Visualization\Mapper
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\Visualization\Mapper\ @<<
+$<
+<<
+
+{.\Visualization\Interactor\}.cpp{$(OUTDIR)\.\Visualization\Interactor\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\Visualization\Interactor $(MKDIR) $(OUTDIR)\.\Visualization\Interactor
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\Visualization\Interactor\ @<<
 $<
 <<
 
@@ -739,6 +748,8 @@ install::
 	$(INSTALL) .\Visualization\Filter\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Filter
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Importer $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Importer
 	$(INSTALL) .\Visualization\Importer\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Importer
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Interactor $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Interactor
+	$(INSTALL) .\Visualization\Interactor\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Interactor
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Mapper $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Mapper
 	$(INSTALL) .\Visualization\Mapper\*.h $(INSTALL_DIR)\include\Core\.\Visualization\Mapper
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\Visualization\Object $(MKDIR) $(INSTALL_DIR)\include\Core\.\Visualization\Object

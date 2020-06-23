@@ -54,9 +54,10 @@ public:
     void setTitle( const std::string& title ) { m_title = title; }
     void setDisplayFormat( const kvs::DisplayFormat& display_format ) { m_display_format = display_format; }
 
-    void addEvent( kvs::EventListener* event, const std::string& name = "" );
-    void removeEvent( const kvs::EventListener* event );
-    void removeEvent( const std::string& name );
+    virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void removeEvent( const kvs::EventListener* event );
+    virtual void removeEvent( const std::string& name );
 
     virtual void create() {}
     virtual void show() {}

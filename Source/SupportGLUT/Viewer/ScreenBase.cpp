@@ -10,13 +10,16 @@
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
 #include <kvs/WheelEvent>
-#include <kvs/TimerEventListener>
+//#include <kvs/TimerEventListener>
+#include <kvs/EventListener>
 #include <kvs/glut/GLUT>
 #include <kvs/glut/Application>
-#include <kvs/glut/Timer>
+//#include <kvs/glut/Timer>
 #include <SupportGLUT/Viewer/KVSMouseButton.h>
 #include <SupportGLUT/Viewer/KVSKey.h>
 #include <cstdlib>
+#include <kvs/EventTimer>
+#include <map>
 
 
 namespace
@@ -35,6 +38,67 @@ void ExitFunction()
     for ( size_t i = 0; i < MaxNumberOfScreens; i++)
     {
         if ( Context[i] ) Context[i]->~ScreenBase();
+    }
+}
+
+class EventTimer : public kvs::EventTimer
+{
+private:
+    static int m_counter;
+    static std::map<int,EventTimer*> m_timers;
+    friend void TimerFunc( int id );
+
+public:
+    EventTimer( kvs::EventListener* listener );
+    virtual ~EventTimer();
+    void start( int msec );
+    void nortify();
+};
+
+int EventTimer::m_counter = 0;
+std::map<int,EventTimer*> EventTimer::m_timers;
+
+void TimerFunc( int id )
+{
+    auto* t = EventTimer::m_timers.find( id )->second;
+    if ( t )
+    {
+        t->nortify();
+        glutTimerFunc( t->interval(), TimerFunc, t->id() );
+    }
+}
+
+EventTimer::EventTimer( kvs::EventListener* listener ):
+    kvs::EventTimer( listener )
+{
+    this->setID( EventTimer::m_counter++ );
+    EventTimer::m_timers.insert( std::make_pair( this->id(), this ) );
+}
+
+EventTimer::~EventTimer()
+{
+    EventTimer::m_timers.erase( this->id() );
+}
+
+void EventTimer::start( int msec )
+{
+    if ( msec < 0 ) { return; }
+    if ( this->isStopped() )
+    {
+        this->setInterval( msec );
+        this->setStopped( false );
+        glutTimerFunc( this->interval(), TimerFunc, this->id() );
+    }
+}
+
+void EventTimer::nortify()
+{
+    if ( !this->isStopped() )
+    {
+        if ( this->eventListener() )
+        {
+            this->eventListener()->onEvent( this->timeEvent() );
+        }
     }
 }
 
@@ -307,6 +371,24 @@ ScreenBase::~ScreenBase()
     glutDestroyWindow( m_id );
 }
 
+void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::setEvent( event, name );
+}
+
+void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::addEvent( event, name );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Creates the screen.
@@ -551,25 +633,6 @@ void ScreenBase::wheelEvent( kvs::WheelEvent* ) {}
 void ScreenBase::keyPressEvent( kvs::KeyEvent* ) {}
 void ScreenBase::keyRepeatEvent( kvs::KeyEvent* ) {}
 void ScreenBase::keyReleaseEvent( kvs::KeyEvent* ) {}
-
-std::list<kvs::glut::Timer*>& ScreenBase::timerEventHandler()
-{
-    return m_timer_event_handler;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Adds a timer event listener.
- *  @param  event [in] pointer to a timer event listener
- *  @param  timer [in] pointer to timer
- */
-/*===========================================================================*/
-void ScreenBase::addTimerEvent( kvs::TimerEventListener* event, kvs::glut::Timer* timer )
-{
-    event->setScreen( this );
-    timer->setEventListener( event );
-    m_timer_event_handler.push_back( timer );
-}
 
 } // end of namespace glut
 

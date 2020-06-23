@@ -18,6 +18,7 @@
 #include <kvs/PaintEventListener>
 #include <kvs/Matrix44>
 #include <kvs/Vector3>
+#include <kvs/TrackballInteractor>
 #include "EnsembleAverageBuffer.h"
 
 
@@ -32,7 +33,7 @@ class StochasticMultipleTetrahedraRenderer;
  *  @brief  Stochastic multiple tetrahedra compositor class.
  */
 /*===========================================================================*/
-class StochasticMultipleTetrahedraCompositor : public kvs::PaintEventListener
+class StochasticMultipleTetrahedraCompositor : public kvs::TrackballInteractor
 {
 private:
 
@@ -71,7 +72,6 @@ public:
     void disableShading() { this->setEnabledShading( false ); }
 
 private:
-
     StochasticMultipleTetrahedraCompositor();
     void update();
     void draw();
@@ -84,6 +84,9 @@ private:
     void engine_setup();
     void engine_draw();
     void create_extra_texture( const size_t width, const size_t height );
+
+private:
+    void paintEvent() { this->update(); }
 };
 
 } // end of namespace kvs

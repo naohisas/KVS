@@ -19,44 +19,15 @@
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
 #include <kvs/WheelEvent>
-#include <kvs/EventHandler>
-#include <kvs/TimerEventListener>
-#include <kvs/PaintEventListener>
-#include <kvs/ResizeEventListener>
-#include <kvs/MousePressEventListener>
-#include <kvs/MouseMoveEventListener>
-#include <kvs/MouseReleaseEventListener>
-#include <kvs/MouseDoubleClickEventListener>
-#include <kvs/WheelEventListener>
-#include <kvs/KeyPressEventListener>
 #include <kvs/ObjectManager>
 #include <kvs/RendererManager>
 #include <kvs/IDManager>
 #include <kvs/ObjectBase>
 #include <kvs/RendererBase>
 #include <kvs/VisualizationPipeline>
-#include "Application.h"
-#include "Timer.h"
-
-
-namespace
-{
-
-/*===========================================================================*/
-/**
- *  @brief  Listener class for idle mouse event.
- */
-/*===========================================================================*/
-class IdleMouseEvent : public kvs::TimerEventListener
-{
-    kvs::glfw::Screen* m_screen; ///< pointer to the screen (reference only)
-
-public:
-    IdleMouseEvent( kvs::glfw::Screen* screen ): m_screen( screen ) {}
-    void update( kvs::TimeEvent* ) { m_screen->idleMouseEvent(); }
-};
-
-}
+#include <kvs/TrackballInteractor>
+#include <kvs/glfw/GLFW>
+#include <kvs/glfw/Application>
 
 
 namespace kvs
@@ -95,19 +66,11 @@ const Screen* Screen::DownCast( const kvs::ScreenBase* screen )
  */
 /*===========================================================================*/
 Screen::Screen( kvs::glfw::Application* application ):
-    kvs::glfw::ScreenBase( application ),
-    m_enable_default_paint_event( true ),
-    m_enable_default_resize_event( true ),
-    m_enable_default_mouse_press_event( true ),
-    m_enable_default_mouse_move_event( true ),
-    m_enable_default_mouse_release_event( true ),
-    m_enable_default_wheel_event( true ),
-    m_enable_default_key_press_event( true )
+    kvs::glfw::ScreenBase( application )
 {
     m_scene = new kvs::Scene( this );
-    m_idle_mouse_event_listener = new ::IdleMouseEvent( this );
-    m_idle_mouse_timer = new kvs::glfw::Timer( 10 );
-    BaseClass::addTimerEvent( m_idle_mouse_event_listener, m_idle_mouse_timer );
+    m_interactor = new kvs::TrackballInteractor();
+    BaseClass::setEvent( m_interactor, "DefaultInteractor" );
 }
 
 /*===========================================================================*/
@@ -117,9 +80,8 @@ Screen::Screen( kvs::glfw::Application* application ):
 /*===========================================================================*/
 Screen::~Screen()
 {
-    delete m_scene;
-    delete m_idle_mouse_event_listener;
-    delete m_idle_mouse_timer;
+    if ( m_scene ) { delete m_scene; }
+    if ( m_interactor ) { delete m_interactor; }
 }
 
 /*===========================================================================*/
@@ -156,7 +118,8 @@ void Screen::setSize( const int width, const int height )
 {
     BaseClass::setSize( width, height );
 
-    if ( m_scene->camera() ) m_scene->camera()->setWindowSize( width, height );
+    auto* c = m_scene->camera();
+    if ( c ) { c->setWindowSize( width, height ); }
 }
 
 /*===========================================================================*/
@@ -188,8 +151,8 @@ void Screen::setBackgroundColor( const kvs::RGBColor& color )
 /*===========================================================================*/
 /**
  *  @brief  Sets background colors
- *  @param  color1 [in] the color at the top side of the screen
- *  @param  color2 [in] the color at the bottom side of the screen
+ *  @param  color1 [in] RGB color at the top side of the screen
+ *  @param  color2 [in] RGB color at the bottom side of the screen
  */
 /*===========================================================================*/
 void Screen::setBackgroundColor( const kvs::RGBColor& color1, const kvs::RGBColor& color2 )
@@ -258,19 +221,9 @@ void Screen::setControlTargetToLight()
 /*===========================================================================*/
 void Screen::setEvent( kvs::EventListener* event, const std::string& name )
 {
-    switch ( event->eventType() )
-    {
-    case kvs::EventBase::PaintEvent: m_enable_default_paint_event =false; break;
-    case kvs::EventBase::ResizeEvent: m_enable_default_resize_event =false; break;
-    case kvs::EventBase::MousePressEvent: m_enable_default_mouse_press_event =false; break;
-    case kvs::EventBase::MouseMoveEvent: m_enable_default_mouse_move_event =false; break;
-    case kvs::EventBase::MouseReleaseEvent: m_enable_default_mouse_release_event =false; break;
-    case kvs::EventBase::WheelEvent: m_enable_default_wheel_event = false; break;
-    case kvs::EventBase::KeyPressEvent: m_enable_default_key_press_event = false; break;
-    default: break;
-    }
     event->setScene( m_scene );
-    BaseClass::addEvent( event, name );
+    BaseClass::setEvent( event, name );
+    if ( m_interactor ) { delete m_interactor; m_interactor = nullptr; }
 }
 
 /*===========================================================================*/
@@ -294,7 +247,9 @@ void Screen::addEvent( kvs::EventListener* event, const std::string& name )
  *  @return Pair of IDs (object ID and renderer ID)
  */
 /*===========================================================================*/
-const std::pair<int,int> Screen::registerObject( kvs::ObjectBase* object, kvs::RendererBase* renderer )
+const std::pair<int,int> Screen::registerObject(
+    kvs::ObjectBase* object,
+    kvs::RendererBase* renderer )
 {
     return m_scene->registerObject( object, renderer );
 }
@@ -306,7 +261,8 @@ const std::pair<int,int> Screen::registerObject( kvs::ObjectBase* object, kvs::R
  *  @return Pair of IDs (object ID and renderer ID)
  */
 /*===========================================================================*/
-const std::pair<int,int> Screen::registerObject( kvs::VisualizationPipeline* pipeline )
+const std::pair<int,int> Screen::registerObject(
+    kvs::VisualizationPipeline* pipeline )
 {
     // WARNING: It is necessary to increment the reference counter of the
     // pipeline.object() and the pipeline.renderer().
@@ -318,19 +274,6 @@ const std::pair<int,int> Screen::registerObject( kvs::VisualizationPipeline* pip
     m_scene->IDManager()->insert( object_id, renderer_id );
 
     return std::pair<int,int>( object_id, renderer_id );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates a screen.
- */
-/*===========================================================================*/
-void Screen::create()
-{
-    BaseClass::create();
-    BaseClass::aquireContext();
-    m_scene->initializeFunction();
-    BaseClass::releaseContext();
 }
 
 /*===========================================================================*/
@@ -370,7 +313,6 @@ void Screen::reset()
 /*===========================================================================*/
 void Screen::initializeEvent()
 {
-    for ( auto& timer : BaseClass::timerEventHandler() ) { timer->start(); }
     kvs::InitializeEvent event;
     BaseClass::eventHandler()->notify( &event );
 }
@@ -382,12 +324,11 @@ void Screen::initializeEvent()
 /*===========================================================================*/
 void Screen::paintEvent()
 {
-    if ( m_enable_default_paint_event ) this->defaultPaintEvent();
-    else
-    {
-        kvs::PaintEvent event;
-        BaseClass::eventHandler()->notify( &event );
-    }
+    kvs::OpenGL::WithPushedMatrix p( GL_MODELVIEW );
+    p.loadIdentity();
+
+    kvs::PaintEvent event;
+    BaseClass::eventHandler()->notify( &event );
 
     glfwSwapBuffers( BaseClass::handler() );
 }
@@ -401,12 +342,8 @@ void Screen::paintEvent()
 /*===========================================================================*/
 void Screen::resizeEvent( int width, int height )
 {
-    if ( m_enable_default_resize_event ) this->defaultResizeEvent( width, height );
-    else
-    {
-        kvs::ResizeEvent event( width, height );
-        BaseClass::eventHandler()->notify( &event );
-    }
+    kvs::ResizeEvent event( width, height );
+    BaseClass::eventHandler()->notify( &event );
 }
 
 /*===========================================================================*/
@@ -417,8 +354,7 @@ void Screen::resizeEvent( int width, int height )
 /*===========================================================================*/
 void Screen::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( m_enable_default_mouse_press_event ) this->defaultMousePressEvent( event );
-    else BaseClass::eventHandler()->notify( event );
+    BaseClass::eventHandler()->notify( event );
 }
 
 /*===========================================================================*/
@@ -429,8 +365,7 @@ void Screen::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void Screen::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( m_enable_default_mouse_move_event ) this->defaultMouseMoveEvent( event );
-    else BaseClass::eventHandler()->notify( event );
+    BaseClass::eventHandler()->notify( event );
 }
 
 /*===========================================================================*/
@@ -441,8 +376,7 @@ void Screen::mouseMoveEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void Screen::mouseReleaseEvent( kvs::MouseEvent* event )
 {
-    if ( m_enable_default_mouse_release_event ) this->defaultMouseReleaseEvent( event );
-    else BaseClass::eventHandler()->notify( event );
+    BaseClass::eventHandler()->notify( event );
 }
 
 /*===========================================================================*/
@@ -464,8 +398,7 @@ void Screen::mouseDoubleClickEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void Screen::wheelEvent( kvs::WheelEvent* event )
 {
-    if ( m_enable_default_wheel_event ) this->defaultWheelEvent( event );
-    else BaseClass::eventHandler()->notify( event );
+    BaseClass::eventHandler()->notify( event );
 }
 
 /*===========================================================================*/
@@ -476,8 +409,7 @@ void Screen::wheelEvent( kvs::WheelEvent* event )
 /*===========================================================================*/
 void Screen::keyPressEvent( kvs::KeyEvent* event )
 {
-    if ( m_enable_default_key_press_event ) this->defaultKeyPressEvent( event );
-    else BaseClass::eventHandler()->notify( event );
+    BaseClass::eventHandler()->notify( event );
 }
 
 /*===========================================================================*/
@@ -500,188 +432,6 @@ void Screen::keyRepeatEvent( kvs::KeyEvent* event )
 void Screen::keyReleaseEvent( kvs::KeyEvent* event )
 {
     BaseClass::eventHandler()->notify( event );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default idle mouse event.
- */
-/*===========================================================================*/
-void Screen::idleMouseEvent()
-{
-    if ( m_scene->mouse()->idle() )
-    {
-        if ( !( m_scene->controlTarget() == kvs::Scene::TargetObject &&
-                !m_scene->isEnabledObjectOperation() &&
-                !m_scene->objectManager()->hasActiveObject() ) )
-        {
-            m_scene->updateXform();
-            BaseClass::redraw();
-        }
-    }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default paint event.
- */
-/*===========================================================================*/
-void Screen::defaultPaintEvent()
-{
-    kvs::OpenGL::WithPushedMatrix p( GL_MODELVIEW );
-    p.loadIdentity();
-    {
-        m_scene->paintFunction();
-        kvs::PaintEvent event;
-        BaseClass::eventHandler()->notify( &event );
-    }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default resize event.
- *  @param  width [in] screen width
- *  @param  height [in] screen height
- */
-/*===========================================================================*/
-void Screen::defaultResizeEvent( int width, int height )
-{
-    if ( !BaseClass::isFullScreen() ) { BaseClass::setSize( width, height ); }
-
-    m_scene->resizeFunction( width, height );
-    kvs::ResizeEvent event( width, height );
-    BaseClass::eventHandler()->notify( &event );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default mouse press event.
- *  @param  event [in] pointer to the mouse event
- */
-/*===========================================================================*/
-void Screen::defaultMousePressEvent( kvs::MouseEvent* event )
-{
-    if ( event->button() == kvs::MouseButton::Left )
-    {
-        BaseClass::eventHandler()->notify( event );
-        if ( !m_scene->isActiveMove( event->x(), event->y() ) ) return;
-
-        kvs::Mouse::OperationMode mode;
-        switch ( event->modifiers() )
-        {
-        case kvs::Key::ShiftModifier:
-            mode = kvs::Mouse::Scaling;
-            break;
-        case kvs::Key::ControlModifier:
-            mode = kvs::Mouse::Translation;
-            break;
-        default:
-            mode = kvs::Mouse::Rotation;
-            m_scene->updateCenterOfRotation();
-            break;
-        }
-
-        m_scene->mousePressFunction( event->x(), event->y(), mode );
-    }
-
-    else if ( event->button() == kvs::MouseButton::Middle )
-    {
-        BaseClass::eventHandler()->notify( event );
-        if ( !m_scene->isActiveMove( event->x(), event->y() ) ) return;
-
-        m_scene->mousePressFunction( event->x(), event->y(), kvs::Mouse::Scaling );
-    }
-
-    else if ( event->button() == kvs::MouseButton::Right )
-    {
-        BaseClass::eventHandler()->notify( event );
-        if ( !m_scene->isActiveMove( event->x(), event->y() ) ) return;
-
-        m_scene->mousePressFunction( event->x(), event->y(), kvs::Mouse::Translation );
-    }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default mouse move event.
- *  @param  event [in] pointer to the mouse event
- */
-/*===========================================================================*/
-void Screen::defaultMouseMoveEvent( kvs::MouseEvent* event )
-{
-    BaseClass::eventHandler()->notify( event );
-    if ( m_scene->controlTarget() == kvs::Scene::TargetObject )
-    {
-        if ( !m_scene->isEnabledObjectOperation() )
-        {
-            if ( !m_scene->objectManager()->hasActiveObject() )
-            {
-                return;
-            }
-        }
-    }
-
-    m_scene->mouseMoveFunction( event->x(), event->y() );
-    BaseClass::redraw();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default mouse release event.
- *  @param  event [in] pointer to the mouse event
- */
-/*===========================================================================*/
-void Screen::defaultMouseReleaseEvent( kvs::MouseEvent* event )
-{
-    BaseClass::eventHandler()->notify( event );
-    m_scene->mouseReleaseFunction( event->x(), event->y() );
-    BaseClass::redraw();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default wheel event.
- *  @param  event [in] pointer to the wheel event
- */
-/*===========================================================================*/
-void Screen::defaultWheelEvent( kvs::WheelEvent* event )
-{
-    BaseClass::eventHandler()->notify( event );
-    if ( !m_scene->isActiveMove( event->x(), event->y() ) ) return;
-
-    if ( event->direction() > 0 ) { m_scene->wheelFunction( 50 ); }
-    else { m_scene->wheelFunction( -50 ); }
-
-//    m_scene->updateXform();
-    BaseClass::redraw();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Default key press event.
- *  @param  event [in] pointer to the key event
- */
-/*===========================================================================*/
-void Screen::defaultKeyPressEvent( kvs::KeyEvent* event )
-{
-    switch( event->key() )
-    {
-    case kvs::Key::Escape:
-    case kvs::Key::q:
-        exit( 0 );
-        break;
-    case kvs::Key::Home:
-        m_scene->reset();
-        break;
-    case kvs::Key::Tab:
-        m_scene->enableCollisionDetection();
-        break;
-    default:
-        break;
-    }
-
-    BaseClass::eventHandler()->notify( event );
-    BaseClass::redraw();
 }
 
 } // end of namespace glfw

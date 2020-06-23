@@ -7,7 +7,6 @@
 #pragma once
 #include <kvs/Timer>
 #include <kvs/ScreenBase>
-#include <list>
 
 
 namespace kvs
@@ -16,7 +15,6 @@ namespace kvs
 class MouseEvent;
 class WheelEvent;
 class KeyEvent;
-class TimerEventListener;
 
 namespace glut
 {
@@ -31,7 +29,7 @@ class Timer;
 /*===========================================================================*/
 class ScreenBase : public kvs::ScreenBase
 {
-    typedef kvs::ScreenBase BaseClass;
+    using BaseClass = kvs::ScreenBase;
 
 public:
     static ScreenBase* DownCast( kvs::ScreenBase* screen );
@@ -44,13 +42,15 @@ private:
     kvs::WheelEvent* m_wheel_event; ///< wheel event
     kvs::Timer m_elapse_time_counter; ///< elapse time counter for double click event
     bool m_is_fullscreen; ///< check flag whether the window is fullscreen
-    std::list<kvs::glut::Timer*> m_timer_event_handler; ///< timer list for timer events
 
 public:
     ScreenBase( kvs::glut::Application* application );
     virtual ~ScreenBase();
 
     int id() const { return m_id; }
+
+    virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
 
     virtual void create();
     virtual void show();
@@ -90,12 +90,6 @@ private:
     friend void SpecialKeyPressFunction( int key, int x, int y );
     friend void KeyReleaseFunction( unsigned char key, int x, int y );
     friend void SpecialKeyReleaseFunction( int key, int x, int y );
-
-#if 1 // KVS_ENABLE_DEPRECATED
-public:
-    std::list<kvs::glut::Timer*>& timerEventHandler();
-    void addTimerEvent( kvs::TimerEventListener* event, kvs::glut::Timer* timer );
-#endif
 };
 
 } // end of namespace glut

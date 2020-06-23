@@ -42,6 +42,19 @@ ScreenBase::~ScreenBase()
 
 /*===========================================================================*/
 /**
+ *  @brief  Sets an event to the event handler.
+ *  @param  event [in] pointer to an event
+ *  @param  name [in] event name
+ */
+/*===========================================================================*/
+void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
+{
+    m_event_handler->clear();
+    this->addEvent( event, name );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Adds an event to the event handler.
  *  @param  event [in] pointer to an event
  *  @param  name [in] event name

@@ -10,10 +10,7 @@
 #include <kvs/MouseEvent>
 #include <kvs/WheelEvent>
 #include <kvs/KeyEvent>
-#include <kvs/TimerEventListener>
-#include <list>
 #include "../GLFW.h"
-#include "Timer.h"
 
 
 namespace kvs
@@ -46,7 +43,6 @@ private:
     kvs::WheelEvent* m_wheel_event; ///< wheel event
     kvs::Timer m_elapse_time_counter; ///< elapse time counter for double click event
     bool m_is_fullscreen; ///< check flag whether the window is fullscreen
-    std::list<kvs::glfw::Timer*> m_timer_event_handler; ///< timer list for timer events
 
 public:
     ScreenBase( kvs::glfw::Application* application );
@@ -54,6 +50,9 @@ public:
 
     GLFWwindow* handler() { return m_handler; }
     int id() const { return m_id; }
+
+    virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
 
     virtual void create();
     virtual void show();
@@ -92,12 +91,6 @@ private:
     friend void CursorPosCallback( GLFWwindow* handler, double x, double y );
     friend void ScrollCallback( GLFWwindow* handler, double x, double y );
     friend void KeyCallback( GLFWwindow* handler, int key, int scancode, int action, int mods );
-
-#if 1 // KVS_ENABLE_DEPRECATED
-public:
-    std::list<kvs::glfw::Timer*>& timerEventHandler();
-    void addTimerEvent( kvs::TimerEventListener* event, kvs::glfw::Timer* timer );
-#endif
 };
 
 } // end of namespace glfw

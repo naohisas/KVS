@@ -198,6 +198,7 @@
 #include <Core/Visualization/Event/EventBase.h>
 #include <Core/Visualization/Event/EventHandler.h>
 #include <Core/Visualization/Event/EventListener.h>
+#include <Core/Visualization/Event/EventTimer.h>
 #include <Core/Visualization/Event/IdleEventListener.h>
 #include <Core/Visualization/Event/InitializeEvent.h>
 #include <Core/Visualization/Event/InitializeEventListener.h>
@@ -247,6 +248,8 @@
 #include <Core/Visualization/Importer/StructuredVolumeImporter.h>
 #include <Core/Visualization/Importer/TableImporter.h>
 #include <Core/Visualization/Importer/UnstructuredVolumeImporter.h>
+#include <Core/Visualization/Interactor/InteractorBase.h>
+#include <Core/Visualization/Interactor/TrackballInteractor.h>
 #include <Core/Visualization/Mapper/Cell.h>
 #include <Core/Visualization/Mapper/CellAdjacencyGraph.h>
 #include <Core/Visualization/Mapper/CellAdjacencyGraphLocator.h>

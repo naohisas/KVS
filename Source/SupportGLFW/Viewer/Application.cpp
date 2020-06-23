@@ -8,6 +8,7 @@
 #include "../GLFW.h"
 #include "ScreenBase.h"
 #include <kvs/Message>
+#include <kvs/EventListener>
 #include <cstdlib>
 
 
@@ -86,6 +87,21 @@ int Application::run()
             screen->aquireContext();
             screen->initializeEvent();
             screen->paintEvent();
+
+            // Start time events registered in the screen.
+            for ( auto& l : screen->eventHandler()->listeners() )
+            {
+                if ( l->eventType() & kvs::EventBase::TimerEvent )
+                {
+                    auto* t = l->eventTimer();
+                    if ( t )
+                    {
+                        auto i = l->timerInterval();
+                        l->eventTimer()->start( i );
+                    }
+                }
+            }
+
             screen->releaseContext();
         }
 
@@ -120,11 +136,14 @@ void Application::main_loop()
         {
             auto* screen = kvs::glfw::ScreenBase::DownCast( s );
             screen->aquireContext();
-//            screen->paintEvent();
 
-            for ( auto& t : screen->timerEventHandler() )
+            for ( auto& l : screen->eventHandler()->listeners() )
             {
-                t->timerEvent();
+                if ( l->eventType() & kvs::EventBase::TimerEvent )
+                {
+                    auto* t = l->eventTimer();
+                    if ( t ) { t->nortify(); }
+                }
             }
 
             if ( glfwGetWindowAttrib( screen->handler(), GLFW_FOCUSED ) )

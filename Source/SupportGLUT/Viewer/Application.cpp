@@ -8,6 +8,7 @@
 #include <kvs/glut/GLUT>
 #include <kvs/ScreenBase>
 #include <kvs/glut/ScreenBase>
+#include <kvs/EventListener>
 #include <cstdlib>
 
 
@@ -60,6 +61,20 @@ int Application::run()
         {
             auto* screen = kvs::glut::ScreenBase::DownCast( s );
             screen->initializeEvent();
+
+            // Start time events registered in the screen.
+            for ( auto& l : screen->eventHandler()->listeners() )
+            {
+                if ( l->eventType() & kvs::EventBase::TimerEvent )
+                {
+                    auto* t = l->eventTimer();
+                    if ( t )
+                    {
+                        auto i = l->timerInterval();
+                        l->eventTimer()->start( i );
+                    }
+                }
+            }
         }
 
         // Run GLUT main loop.

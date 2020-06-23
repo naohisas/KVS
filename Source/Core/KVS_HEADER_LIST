@@ -198,6 +198,7 @@ Visualization/Data/TornadoVolumeData
 Visualization/Event/EventBase
 Visualization/Event/EventHandler
 Visualization/Event/EventListener
+Visualization/Event/EventTimer
 Visualization/Event/IdleEventListener
 Visualization/Event/InitializeEvent
 Visualization/Event/InitializeEventListener
@@ -247,6 +248,8 @@ Visualization/Importer/PolygonImporter
 Visualization/Importer/StructuredVolumeImporter
 Visualization/Importer/TableImporter
 Visualization/Importer/UnstructuredVolumeImporter
+Visualization/Interactor/InteractorBase
+Visualization/Interactor/TrackballInteractor
 Visualization/Mapper/Cell
 Visualization/Mapper/CellAdjacencyGraph
 Visualization/Mapper/CellAdjacencyGraphLocator

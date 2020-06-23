@@ -23,13 +23,17 @@ class EventBase;
 /*===========================================================================*/
 class EventHandler
 {
+public:
+    using EventListeners = std::vector<kvs::EventListener*>;
+
 private:
-    std::vector<kvs::EventListener*> m_listeners; ///< list of the event listener
+    EventListeners m_listeners; ///< list of the event listener
 
 public:
     EventHandler() {}
     virtual ~EventHandler() {}
 
+    EventListeners& listeners() { return m_listeners; }
     void attach( kvs::EventListener* listener );
     void detach( const kvs::EventListener* listener );
     void detach( const std::string& name );

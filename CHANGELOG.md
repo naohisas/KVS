@@ -8,6 +8,9 @@
 + kvs::Screen
 + kvs::KeyRepeatEventListener
 + kvs::KeyReleaseEventListener
++ kvs::EventTimer
++ kvs::InteractorBase
++ kvs::TrackballInteractor
 
 **Added SupportGLFW**
 + kvs::glfw::Application
@@ -249,9 +252,73 @@
 + kvs::Mouse::rotation
 + kvs::ObjectManager::nobjects
 + kvs::ObjectManager::setActiveObjectID
++ kvs::glut::Screen::camera
++ kvs::glut::Screen::light
++ kvs::glut::Screen::mouse
++ kvs::glut::Screen::background
++ kvs::glut::Screen::objectManager
++ kvs::glut::Screen::rendererManager
++ kvs::glut::Screen::IDManager
++ kvs::glut::Screen::controlTarget
++ kvs::glut::Screen::setPaintEvent
++ kvs::glut::Screen::setResizeEvent
++ kvs::glut::Screen::setMousePressEvent
++ kvs::glut::Screen::setMouseMoveEvent
++ kvs::glut::Screen::setMouseReleaseEvent
++ kvs::glut::Screen::setMouseDoubleClickEvent
++ kvs::glut::Screen::setWheelEvent
++ kvs::glut::Screen::setKeyPressEvent
++ kvs::qt::Screen::camera
++ kvs::qt::Screen::light
++ kvs::qt::Screen::mouse
++ kvs::qt::Screen::background
++ kvs::qt::Screen::objectManager
++ kvs::qt::Screen::rendererManager
++ kvs::qt::Screen::IDManager
++ kvs::qt::Screen::controlTarget
++ kvs::qt::Screen::setPaintEvent
++ kvs::qt::Screen::setResizeEvent
++ kvs::qt::Screen::setMousePressEvent
++ kvs::qt::Screen::setMouseMoveEvent
++ kvs::qt::Screen::setMouseReleaseEvent
++ kvs::qt::Screen::setMouseDoubleClickEvent
++ kvs::qt::Screen::setWheelEvent
++ kvs::qt::Screen::setKeyPressEvent
 
 **Removed classes**
 + kvs::TextEngine (use kvs::Painter)
+
+**Removed methods**
++ kvs::glut::ScreenBase::timerEventHandler
++ kvs::glut::ScreenBase::addTimerEvent
++ kvs::glut::Screen::idleMouseEvent
++ kvs::glut::Screen::defaultPaintEvent
++ kvs::glut::Screen::defaultResizeEvent
++ kvs::glut::Screen::defaultMousePressEvent
++ kvs::glut::Screen::defaultMouseMoveEvent
++ kvs::glut::Screen::defaultMouseReleaseEvent
++ kvs::glut::Screen::defaultWheelEvent
++ kvs::glut::Screen::defaultKeyPressEvent
++ kvs::glfw::ScreenBase::timerEventHandler
++ kvs::glfw::ScreenBase::addTimerEvent
++ kvs::glfw::Screen::idleMouseEvent
++ kvs::glfw::Screen::defaultPaintEvent
++ kvs::glfw::Screen::defaultResizeEvent
++ kvs::glfw::Screen::defaultMousePressEvent
++ kvs::glfw::Screen::defaultMouseMoveEvent
++ kvs::glfw::Screen::defaultMouseReleaseEvent
++ kvs::glfw::Screen::defaultWheelEvent
++ kvs::glfw::Screen::defaultKeyPressEvent
++ kvs::qt::ScreenBase::timerEventHandler
++ kvs::qt::ScreenBase::addTimerEvent
++ kvs::qt::Screen::idleMouseEvent
++ kvs::qt::Screen::defaultPaintEvent
++ kvs::qt::Screen::defaultResizeEvent
++ kvs::qt::Screen::defaultMousePressEvent
++ kvs::qt::Screen::defaultMouseMoveEvent
++ kvs::qt::Screen::defaultMouseReleaseEvent
++ kvs::qt::Screen::defaultWheelEvent
++ kvs::qt::Screen::defaultKeyPressEvent
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)

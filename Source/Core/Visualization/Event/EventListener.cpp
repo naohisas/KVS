@@ -25,6 +25,8 @@ EventListener::EventListener( const int event_type ):
     m_name( "" ),
     m_screen( nullptr ),
     m_scene( nullptr ),
+    m_event_timer( nullptr ),
+    m_timer_interval( -1 ),
     m_initialize_event( nullptr ),
     m_paint_event( nullptr ),
     m_resize_event( nullptr ),
@@ -92,8 +94,8 @@ void EventListener::onEvent( kvs::EventBase* event )
     }
     case kvs::EventBase::WheelEvent:
     {
-        auto* e = static_cast<kvs::KeyEvent*>( event );
-        this->keyPressEvent( e );
+        auto* e = static_cast<kvs::WheelEvent*>( event );
+        this->wheelEvent( e );
         break;
     }
     case kvs::EventBase::KeyPressEvent:

@@ -14,7 +14,7 @@
 /*****************************************************************************/
 #pragma once
 #include <kvs/Timer>
-#include <kvs/PaintEventListener>
+#include <kvs/TrackballInteractor>
 #include <kvs/Matrix44>
 #include <kvs/Vector3>
 #include <kvs/Deprecated>
@@ -31,7 +31,7 @@ class Scene;
  *  @brief  Stochastic rendering compositor class.
  */
 /*===========================================================================*/
-class StochasticRenderingCompositor : public kvs::PaintEventListener
+class StochasticRenderingCompositor : public kvs::TrackballInteractor
 {
 private:
     kvs::Timer m_timer;
@@ -73,6 +73,9 @@ private:
     void engines_update();
     void engines_setup();
     void engines_draw();
+
+private:
+    void paintEvent() { this->update(); }
 
 public:
     KVS_DEPRECATED( bool isEnabledShading() const ) { return false; /* do not use */ }

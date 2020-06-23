@@ -7,27 +7,22 @@
 #pragma once
 #include "ScreenBase.h"
 #include <kvs/Scene>
-#include <kvs/Mouse>
 #include <kvs/RGBColor>
 #include <kvs/ColorImage>
-#include <list>
+#include <kvs/InteractorBase>
 
 
 namespace kvs
 {
 
-class RGBColor;
-class Scene;
 class ObjectBase;
 class RendererBase;
 class VisualizationPipeline;
-class EventHandler;
 
 namespace glfw
 {
 
 class Application;
-class Timer;
 
 /*===========================================================================*/
 /**
@@ -37,23 +32,15 @@ class Timer;
 class Screen : public kvs::glfw::ScreenBase
 {
 public:
-    typedef kvs::glfw::ScreenBase BaseClass;
-    typedef kvs::Scene::ControlTarget ControlTarget;
+    using BaseClass = kvs::glfw::ScreenBase;
+    using ControlTarget = kvs::Scene::ControlTarget;
 
     static Screen* DownCast( kvs::ScreenBase* screen );
     static const Screen* DownCast( const kvs::ScreenBase* screen );
 
 private:
-    bool m_enable_default_paint_event; ///< flag for default paint event
-    bool m_enable_default_resize_event; ///< flag for default resize event
-    bool m_enable_default_mouse_press_event; ///< flag for default mouse press event
-    bool m_enable_default_mouse_move_event; ///< flag for default mouse move event
-    bool m_enable_default_mouse_release_event; ///< flag for default mouse release event
-    bool m_enable_default_wheel_event; ///< flag for default wheel event
-    bool m_enable_default_key_press_event; ///< flag for default key press event
-    kvs::Scene* m_scene; ///< default scene
-    kvs::glfw::Timer* m_idle_mouse_timer; ///< timer for idle mouse event
-    kvs::TimerEventListener* m_idle_mouse_event_listener; ///< idle mouse event listener
+    kvs::Scene* m_scene; ///< scene
+    kvs::InteractorBase* m_interactor; ///< interactor
 
 public:
     Screen( kvs::glfw::Application* application = 0 );
@@ -71,13 +58,13 @@ public:
     void setControlTargetToObject();
     void setControlTargetToCamera();
     void setControlTargetToLight();
-    void setEvent( kvs::EventListener* event, const std::string& name = "" );
-    void addEvent( kvs::EventListener* event, const std::string& name = "" );
 
     const std::pair<int,int> registerObject( kvs::ObjectBase* object, kvs::RendererBase* renderer = 0 );
     const std::pair<int,int> registerObject( kvs::VisualizationPipeline* pipeline );
 
-    virtual void create();
+    virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
+
     virtual void enable();
     virtual void disable();
     virtual void reset();
@@ -93,16 +80,6 @@ public:
     virtual void keyPressEvent( kvs::KeyEvent* event );
     virtual void keyRepeatEvent( kvs::KeyEvent* event );
     virtual void keyReleaseEvent( kvs::KeyEvent* event );
-    virtual void idleMouseEvent();
-
-protected:
-    virtual void defaultPaintEvent();
-    virtual void defaultResizeEvent( int width, int height );
-    virtual void defaultMousePressEvent( kvs::MouseEvent* event );
-    virtual void defaultMouseMoveEvent( kvs::MouseEvent* event );
-    virtual void defaultMouseReleaseEvent( kvs::MouseEvent* event );
-    virtual void defaultWheelEvent( kvs::WheelEvent* event );
-    virtual void defaultKeyPressEvent( kvs::KeyEvent* event );
 };
 
 } // end of namespace glfw

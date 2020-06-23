@@ -13,6 +13,7 @@
 #include <kvs/KeyEvent>
 #include <kvs/WheelEvent>
 #include <kvs/TimeEvent>
+#include <kvs/EventTimer>
 
 
 namespace kvs
@@ -42,8 +43,12 @@ public:
 private:
     int m_event_type; ///< event type
     std::string m_name; ///< name
-    kvs::ScreenBase* m_screen; ///< pointer to the screen
-    kvs::Scene* m_scene; ///< pointer to the scene
+    kvs::ScreenBase* m_screen; ///< pointer to the screen (not allocated)
+    kvs::Scene* m_scene; ///< pointer to the scene (not allocated)
+    kvs::EventTimer* m_event_timer; ///< event timer
+    int m_timer_interval; ///< interval time in millisecond
+
+    // Event functions
     InitializeEventFunc m_initialize_event;
     PaintEventFunc m_paint_event;
     ResizeEventFunc m_resize_event;
@@ -65,11 +70,14 @@ public:
     const std::string& name() const { return m_name; }
     kvs::ScreenBase* screen() { return m_screen; }
     kvs::Scene* scene() { return m_scene; }
-
+    kvs::EventTimer* eventTimer() { return m_event_timer; }
+    int timerInterval() const { return m_timer_interval; }
     void setEventType( const int event_type ) { m_event_type = event_type; }
     void setName( const std::string& name ) { m_name = name; }
     void setScreen( kvs::ScreenBase* screen ) { m_screen = screen; }
     void setScene( kvs::Scene* scene ) { m_scene = scene; }
+    void setEventTimer( kvs::EventTimer* timer ) { m_event_timer = timer; }
+    void setTimerInterval( int msec ) { m_timer_interval = msec; }
     void addEventType( const int event_type ) { m_event_type |= event_type; }
 
     void initializeEvent( InitializeEventFunc func ) { m_initialize_event = func; }

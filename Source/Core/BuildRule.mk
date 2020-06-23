@@ -253,6 +253,7 @@ $(OUTDIR)/./Visualization/Data/HydrogenVolumeData.o \
 $(OUTDIR)/./Visualization/Data/TornadoVolumeData.o \
 $(OUTDIR)/./Visualization/Event/EventHandler.o \
 $(OUTDIR)/./Visualization/Event/EventListener.o \
+$(OUTDIR)/./Visualization/Event/EventTimer.o \
 $(OUTDIR)/./Visualization/Event/ScreenCaptureEvent.o \
 $(OUTDIR)/./Visualization/Event/TargetChangeEvent.o \
 $(OUTDIR)/./Visualization/Exporter/LineExporter.o \
@@ -278,6 +279,8 @@ $(OUTDIR)/./Visualization/Importer/PolygonImporter.o \
 $(OUTDIR)/./Visualization/Importer/StructuredVolumeImporter.o \
 $(OUTDIR)/./Visualization/Importer/TableImporter.o \
 $(OUTDIR)/./Visualization/Importer/UnstructuredVolumeImporter.o \
+$(OUTDIR)/./Visualization/Interactor/InteractorBase.o \
+$(OUTDIR)/./Visualization/Interactor/TrackballInteractor.o \
 $(OUTDIR)/./Visualization/Mapper/Cell.o \
 $(OUTDIR)/./Visualization/Mapper/CellAdjacencyGraph.o \
 $(OUTDIR)/./Visualization/Mapper/CellAdjacencyGraphLocator.o \
@@ -455,6 +458,10 @@ $(OUTDIR)/./Visualization/Object/%.o: ./Visualization/Object/%.cpp ./Visualizati
 
 $(OUTDIR)/./Visualization/Mapper/%.o: ./Visualization/Mapper/%.cpp ./Visualization/Mapper/%.h
 	$(MKDIR) $(OUTDIR)/./Visualization/Mapper
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+$(OUTDIR)/./Visualization/Interactor/%.o: ./Visualization/Interactor/%.cpp ./Visualization/Interactor/%.h
+	$(MKDIR) $(OUTDIR)/./Visualization/Interactor
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./Visualization/Importer/%.o: ./Visualization/Importer/%.cpp ./Visualization/Importer/%.h
@@ -661,6 +668,8 @@ install::
 	$(INSTALL) ./Visualization/Filter/*.h $(INSTALL_DIR)/include/Core/./Visualization/Filter
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Importer
 	$(INSTALL) ./Visualization/Importer/*.h $(INSTALL_DIR)/include/Core/./Visualization/Importer
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Interactor
+	$(INSTALL) ./Visualization/Interactor/*.h $(INSTALL_DIR)/include/Core/./Visualization/Interactor
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Mapper
 	$(INSTALL) ./Visualization/Mapper/*.h $(INSTALL_DIR)/include/Core/./Visualization/Mapper
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Object

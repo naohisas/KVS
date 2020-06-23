@@ -9,15 +9,64 @@
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
 #include <kvs/WheelEvent>
-#include <kvs/TimerEventListener>
+#include <kvs/EventTimer>
+#include <kvs/EventListener>
 #include <kvs/qt/Qt>
 #include <kvs/qt/Application>
-#include <kvs/qt/Timer>
 #include <SupportQt/Viewer/KVSMouseButton.h>
 #include <SupportQt/Viewer/KVSKey.h>
 #include <kvs/OpenGL>
 #include <kvs/Version>
 
+
+namespace
+{
+
+class EventTimer : public QObject, public kvs::EventTimer
+{
+public:
+    EventTimer( kvs::EventListener* listener ): kvs::EventTimer( listener ) {}
+    virtual ~EventTimer() {}
+    void start( int msec );
+    void stop();
+    void nortify();
+
+private:
+    void timerEvent( QTimerEvent* e ) { this->nortify(); }
+};
+
+void EventTimer::start( int msec )
+{
+    if ( msec < 0 ) { return; }
+    if ( this->isStopped() )
+    {
+        this->setInterval( msec );
+        this->setStopped( false );
+        this->setID( QObject::startTimer( msec ) );
+    }
+}
+
+void EventTimer::stop()
+{
+    if ( !this->isStopped() )
+    {
+        this->setStopped( true );
+        QObject::killTimer( this->id() );
+    }
+}
+
+void EventTimer::nortify()
+{
+    if ( !this->isStopped() )
+    {
+        if ( this->eventListener() )
+        {
+            this->eventListener()->onEvent( this->timeEvent() );
+        }
+    }
+}
+
+}
 
 namespace kvs
 {
@@ -81,6 +130,24 @@ ScreenBase::~ScreenBase()
     delete m_mouse_event;
     delete m_key_event;
     delete m_wheel_event;
+}
+
+void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::setEvent( event, name );
+}
+
+void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::addEvent( event, name );
 }
 
 /*===========================================================================*/
@@ -287,6 +354,19 @@ void ScreenBase::initializeGL()
     BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
 
     this->initializeEvent();
+
+    for ( auto& l : BaseClass::eventHandler()->listeners() )
+    {
+        if ( l->eventType() & kvs::EventBase::TimerEvent )
+        {
+            auto* t = l->eventTimer();
+            if ( t )
+            {
+                auto i = l->timerInterval();
+                l->eventTimer()->start( i );
+            }
+        }
+    }
 }
 
 /*===========================================================================*/
@@ -458,25 +538,6 @@ void ScreenBase::keyReleaseEvent( QKeyEvent* event )
     m_key_event->setModifiers( kvs::qt::KVSKey::Modifier( event->modifiers() ) );
     m_key_event->setAction( kvs::Key::Released );
     this->keyReleaseEvent( m_key_event );
-}
-
-std::list<kvs::qt::Timer*>& ScreenBase::timerEventHandler()
-{
-    return m_timer_event_handler;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Adds a timer event listener.
- *  @param  event [in] pointer to a timer event listener
- *  @param  timer [in] pointer to timer
- */
-/*===========================================================================*/
-void ScreenBase::addTimerEvent( kvs::TimerEventListener* event, kvs::qt::Timer* timer )
-{
-    event->setScreen( this );
-    timer->setEventListener( event );
-    m_timer_event_handler.push_back( timer );
 }
 
 } // end of namespace qt
