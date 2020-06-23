@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   InteractorBase.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "InteractorBase.h"
 #include <kvs/OpenGL>
 
@@ -5,6 +11,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new InteractorBase class.
+ */
+/*===========================================================================*/
 InteractorBase::InteractorBase():
     kvs::EventListener( 0 )
 {
@@ -14,6 +25,11 @@ InteractorBase::InteractorBase():
     BaseClass::addEventType( kvs::EventBase::KeyPressEvent );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Initialize event.
+ */
+/*===========================================================================*/
 void InteractorBase::initializeEvent()
 {
     auto* s = BaseClass::scene();
@@ -22,16 +38,26 @@ void InteractorBase::initializeEvent()
     s->initializeFunction();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Paint event.
+ */
+/*===========================================================================*/
 void InteractorBase::paintEvent()
 {
     auto* s = BaseClass::scene();
     if ( !s ) { return; }
 
-//    kvs::OpenGL::WithPushedMatrix p( GL_MODELVIEW );
-//    p.loadIdentity();
     s->paintFunction();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Resize event.
+ *  @param  w [in] screen width
+ *  @param  h [in] screen height
+ */
+/*===========================================================================*/
 void InteractorBase::resizeEvent( int w, int h )
 {
     if ( BaseClass::screen() )
@@ -46,6 +72,12 @@ void InteractorBase::resizeEvent( int w, int h )
     s->resizeFunction( w, h );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Key press event.
+ *  @param  e [in] key event
+ */
+/*===========================================================================*/
 void InteractorBase::keyPressEvent( kvs::KeyEvent* e )
 {
     auto* s = BaseClass::scene();

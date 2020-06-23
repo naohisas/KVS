@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   TrackballInteractor.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include "InteractorBase.h"
 
@@ -5,6 +11,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Trackball interactor class.
+ */
+/*===========================================================================*/
 class TrackballInteractor : public kvs::InteractorBase
 {
 public:

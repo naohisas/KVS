@@ -10,11 +10,9 @@
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
 #include <kvs/WheelEvent>
-//#include <kvs/TimerEventListener>
 #include <kvs/EventListener>
 #include <kvs/glut/GLUT>
 #include <kvs/glut/Application>
-//#include <kvs/glut/Timer>
 #include <SupportGLUT/Viewer/KVSMouseButton.h>
 #include <SupportGLUT/Viewer/KVSKey.h>
 #include <cstdlib>

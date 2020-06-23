@@ -314,8 +314,8 @@ void Screen::initializeEvent()
 /*===========================================================================*/
 void Screen::paintEvent()
 {
-//    kvs::OpenGL::WithPushedMatrix p( GL_MODELVIEW );
-//    p.loadIdentity();
+    kvs::OpenGL::WithPushedMatrix p( GL_MODELVIEW );
+    p.loadIdentity();
 
     kvs::PaintEvent event;
     BaseClass::eventHandler()->notify( &event );

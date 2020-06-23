@@ -20,7 +20,7 @@ namespace qt
 {
 
 class Application;
-class Timer;
+//class Timer;
 
 /*===========================================================================*/
 /**

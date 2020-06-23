@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   TrackballInteractor.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "TrackballInteractor.h"
 #include <kvs/EventBase>
 #include <kvs/Assert>
@@ -7,6 +13,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new TrackballInteractor class.
+ */
+/*===========================================================================*/
 TrackballInteractor::TrackballInteractor()
 {
     BaseClass::addEventType( kvs::EventBase::MousePressEvent );
@@ -18,6 +29,12 @@ TrackballInteractor::TrackballInteractor()
     BaseClass::setTimerInterval( 10 ); // 10 msec
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Mouse press event.
+ *  @param  e [in] mouse event
+ */
+/*===========================================================================*/
 void TrackballInteractor::mousePressEvent( kvs::MouseEvent* e )
 {
     auto* s = BaseClass::scene();
@@ -61,6 +78,12 @@ void TrackballInteractor::mousePressEvent( kvs::MouseEvent* e )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Mouse move event.
+ *  @param  e [in] mouse event
+ */
+/*===========================================================================*/
 void TrackballInteractor::mouseMoveEvent( kvs::MouseEvent* e )
 {
     auto* s = BaseClass::scene();
@@ -81,6 +104,12 @@ void TrackballInteractor::mouseMoveEvent( kvs::MouseEvent* e )
     BaseClass::screen()->redraw();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Mouse release event.
+ *  @param  e [in] mouse event
+ */
+/*===========================================================================*/
 void TrackballInteractor::mouseReleaseEvent( kvs::MouseEvent* e )
 {
     auto* s = BaseClass::scene();
@@ -90,6 +119,12 @@ void TrackballInteractor::mouseReleaseEvent( kvs::MouseEvent* e )
     BaseClass::screen()->redraw();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Wheel event.
+ *  @param  e [in] wheel event
+ */
+/*===========================================================================*/
 void TrackballInteractor::wheelEvent( kvs::WheelEvent* e )
 {
     auto* s = BaseClass::scene();
@@ -102,6 +137,12 @@ void TrackballInteractor::wheelEvent( kvs::WheelEvent* e )
     BaseClass::screen()->redraw();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Key press event.
+ *  @param  e [in] key event
+ */
+/*===========================================================================*/
 void TrackballInteractor::keyPressEvent( kvs::KeyEvent* e )
 {
     auto* s = BaseClass::scene();
@@ -120,6 +161,12 @@ void TrackballInteractor::keyPressEvent( kvs::KeyEvent* e )
     BaseClass::screen()->redraw();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Time event.
+ *  @param  e [in] time event
+ */
+/*===========================================================================*/
 void TrackballInteractor::timerEvent( kvs::TimeEvent* e )
 {
     auto* s = BaseClass::scene();
