@@ -91,7 +91,7 @@ public:
     void keyPressEvent( KeyPressEventFunc func ) { m_key_press_event = func; }
     void keyRepeatEvent( KeyRepeatEventFunc func ) { m_key_repeat_event = func; }
     void keyReleaseEvent( KeyReleaseEventFunc func ) { m_key_release_event = func; }
-    void timerEvent( TimerEventFunc func ) { m_timer_event = func; }
+    void timerEvent( TimerEventFunc func, int msec = -1 ) { m_timer_event = func; m_timer_interval = msec; }
 
     virtual void onEvent( kvs::EventBase* event );
     virtual void initializeEvent() { if ( m_initialize_event ) m_initialize_event(); }

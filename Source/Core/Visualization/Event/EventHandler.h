@@ -34,6 +34,7 @@ public:
     virtual ~EventHandler() {}
 
     EventListeners& listeners() { return m_listeners; }
+    kvs::EventListener* listener( const std::string& name );
     void attach( kvs::EventListener* listener );
     void detach( const kvs::EventListener* listener );
     void detach( const std::string& name );

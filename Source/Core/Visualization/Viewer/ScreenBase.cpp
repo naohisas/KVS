@@ -63,7 +63,7 @@ void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
 void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
 {
     event->setScreen( this );
-    if ( name != "" ) { event->setName( event->name() ); }
+    if ( name != "" ) { event->setName( name ); }
     m_event_handler->attach( event );
 }
 
