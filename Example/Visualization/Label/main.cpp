@@ -5,6 +5,7 @@
  *  @brief  Example program for label widget
  */
 /*****************************************************************************/
+//#define KVS_APP_USE_GLUT
 #include <kvs/Application>
 #include <kvs/Screen>
 #include <kvs/PaintEventListener>
@@ -12,6 +13,7 @@
 #include <kvs/Label>
 #include <kvs/Font>
 #include <kvs/FontMetrics>
+#include <kvs/UIColor>
 
 
 /*===========================================================================*/
@@ -90,8 +92,8 @@ int main( int argc, char** argv )
     label3.setText( text3 );
 
     kvs::Font font3 = label3.font();
-    font3.setSize( 25 );
-    font3.setColor( kvs::RGBColor::Blue() );
+    font3.setSize( 50 );
+    font3.setColor( kvs::UIColor::Blue() );
     font3.setFamilyToSerif();
     font3.setStyleToItalic();
     label3.setFont( font3 );
@@ -104,9 +106,41 @@ int main( int argc, char** argv )
     std::cout << "    Text height: " << font_metrics3.height() << std::endl;
     std::cout << "    Text width: " << font_metrics3.width( text1 ) << std::endl;
 
+    std::string text4( "Label4" );
+    std::string text41( "Label4-1" );
+    std::string text42( "Label4-2" );
+    std::string text43( "Label4-3" );
+    kvs::Label label4( &screen );
+    label4.setX( label3.x() );
+    label4.setY( label3.y() + font_metrics3.height() );
+    label4.setBackgroundColor( kvs::UIColor::Fill() );
+    label4.setText( text4 );
+    label4.addText( text41 );
+    label4.addText( text42 );
+    label4.addText( text43 );
+
+    kvs::Font font4 = label4.font();
+    font4.setSize( 50 );
+//    font4.setColor( kvs::UIColor::Red() );
+    font4.setStyleToBold();
+//    font4.setVerticalAlignToBottom();
+    label4.setFont( font4 );
+
+    kvs::FontMetrics font_metrics4( font4, screen.paintDevice() );
+    std::cout << text4 << std::endl;
+    std::cout << text41 << std::endl;
+    std::cout << text42 << std::endl;
+    std::cout << text43 << std::endl;
+    std::cout << "    Font family: " << font4.familyName() << std::endl;
+    std::cout << "    Font style: " << font4.styleName() << std::endl;
+    std::cout << "    Font size: " << font4.size() << std::endl;
+    std::cout << "    Text height: " << font_metrics4.height() << std::endl;
+    std::cout << "    Text width: " << font_metrics4.width( text1 ) << std::endl;
+
     label1.show();
     label2.show();
     label3.show();
+    label4.show();
 
     return app.run();
 }

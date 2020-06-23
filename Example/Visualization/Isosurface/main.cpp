@@ -26,8 +26,8 @@ int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
-    screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::Isosurface" );
+    screen.create();
 
     /* Read volume data from the specified data file. If the data file is not
      * specified, scalar hydrogen volume data is created by using
@@ -35,7 +35,7 @@ int main( int argc, char** argv )
      */
     kvs::StructuredVolumeObject* volume = NULL;
     if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else volume = new kvs::HydrogenVolumeData( kvs::Vec3u( 64, 64, 64 ) );
+    else volume = new kvs::HydrogenVolumeData( kvs::Vec3u::Constant( 64 ) );
     if ( !volume )
     {
         kvsMessageError() << "Cannot create a structured volume object." << std::endl;
@@ -53,18 +53,16 @@ int main( int argc, char** argv )
     const kvs::PolygonObject::NormalType n = kvs::PolygonObject::VertexNormal;
     const bool d = false;
     const kvs::TransferFunction t( 256 );
-    kvs::PolygonObject* object = new kvs::Isosurface( volume, i, n, d, t );
+    auto* object = new kvs::Isosurface( volume, i, n, d, t );
     if ( !object )
     {
         kvsMessageError() << "Cannot create a polygon object." << std::endl;
         delete volume;
         return ( false );
     }
-
     delete volume;
 
     screen.registerObject( object );
-    screen.create();
 
     return app.run();
 }

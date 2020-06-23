@@ -104,13 +104,12 @@ int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
 
-    PaintEvent paint_event;
-
     kvs::Screen screen( &app );
-    screen.addEvent( &paint_event );
     screen.setTitle( "Slider" );
-    screen.setGeometry( 0, 0, 512, 512 );
     screen.create();
+
+    PaintEvent paint_event;
+    screen.addEvent( &paint_event );
 
     RedSlider red( &screen );
     red.setSliderColor( kvs::RGBColor( 255, 0, 0 ) );

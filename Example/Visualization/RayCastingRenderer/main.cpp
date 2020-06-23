@@ -27,7 +27,6 @@ int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
-    screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "RayCastingRenderer" );
     screen.create();
 
@@ -42,7 +41,7 @@ int main( int argc, char** argv )
     }
     else
     {
-        object = new kvs::HydrogenVolumeData( kvs::Vector3ui( 32, 32, 32 ) );
+        object = new kvs::HydrogenVolumeData( kvs::Vec3u::Constant( 64 ) );
         object->print( std::cout );
     }
 
@@ -51,11 +50,11 @@ int main( int argc, char** argv )
     kvs::Real32 opaque_value = 0.97f;
     kvs::TransferFunction transfer_function( 256 );
 
-    bool glsl = false;
+    bool glsl = true;
     if ( glsl )
     {
         // Hardware accelerated ray casting renderer with GLSL.
-        kvs::glsl::RayCastingRenderer* renderer = new kvs::glsl::RayCastingRenderer();
+        auto* renderer = new kvs::glsl::RayCastingRenderer();
         renderer->setSamplingStep( sampling_step );
         renderer->setOpaqueValue( opaque_value );
         renderer->setTransferFunction( transfer_function );
@@ -64,7 +63,7 @@ int main( int argc, char** argv )
     else
     {
         // Software based ray casting renderer.
-        kvs::RayCastingRenderer* renderer = new kvs::RayCastingRenderer();
+        auto* renderer = new kvs::RayCastingRenderer();
         renderer->setSamplingStep( 0.5f );
         renderer->setOpaqueValue( 0.97f );
         renderer->setTransferFunction( transfer_function );

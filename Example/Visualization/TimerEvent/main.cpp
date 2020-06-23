@@ -4,18 +4,9 @@
  *  @brief  Example program for kvs::TimerEventListener.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1526 2013-04-11 03:03:42Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
-#include <kvs/glut/Timer>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/PolygonObject>
@@ -25,53 +16,44 @@
 #include <kvs/RotationMatrix33>
 #include <kvs/ObjectManager>
 
-
-/*===========================================================================*/
-/**
- *  @brief  User-defined key press event.
- */
-/*===========================================================================*/
-class KeyPressEvent : public kvs::KeyPressEventListener
+class TimerEvent : public kvs::TimerEventListener
 {
-    kvs::glut::Timer* m_timer;
-
 public:
-    KeyPressEvent( kvs::glut::Timer* timer ): m_timer( timer ) {}
-
-    void update( kvs::KeyEvent* event )
+    TimerEvent( int msec )
     {
-        switch ( event->key() )
-        {
-        case kvs::Key::s:
-            if ( m_timer->isStopped() ) m_timer->start();
-            else m_timer->stop();
-            break;
-        default:
-            break;
-        }
+        setTimerInterval( msec );
+    }
+
+    void update( kvs::TimeEvent* e )
+    {
+        const float D = 0.5f;
+        const auto R =
+            kvs::XRotationMatrix33<float>( D ) *
+            kvs::YRotationMatrix33<float>( D ) *
+            kvs::ZRotationMatrix33<float>( D );
+
+        auto* manager = scene()->objectManager();
+        manager->object()->multiplyXform( kvs::Xform::Rotation( R ) );
+        screen()->redraw();
     }
 };
 
-/*===========================================================================*/
-/**
- *  @brief  User-defined timer event.
- */
-/*===========================================================================*/
-class TimerEvent : public kvs::TimerEventListener
+class KeyPressEvent : public kvs::KeyPressEventListener
 {
-    void update( kvs::TimeEvent* event )
+    void update( kvs::KeyEvent* e )
     {
-        static float deg = 0.0f;
-        //const kvs::Vector3f center( 0, 0, 0 );
-        kvs::Matrix33f rotation = kvs::XRotationMatrix33<float>( deg );
-        rotation *= kvs::YRotationMatrix33<float>( deg );
-        rotation *= kvs::ZRotationMatrix33<float>( deg );
-
-        kvs::ObjectManager* object_manager = static_cast<kvs::glut::Screen*>(screen())->scene()->objectManager();
-        object_manager->object()->multiplyXform( kvs::Xform::Rotation( rotation ) );
-        screen()->redraw();
-
-        deg += 0.1f;
+        switch ( e->key() )
+        {
+        case kvs::Key::t:
+        {
+            auto* l = screen()->eventHandler()->listener("TimerEvent");
+            auto* t = l->eventTimer();
+            if ( t->isStopped() ) t->start();
+            else t->stop();
+            break;
+        }
+        default: break;
+        }
     }
 };
 
@@ -85,26 +67,21 @@ class TimerEvent : public kvs::TimerEventListener
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-
-    // Object.
-    kvs::StructuredVolumeObject* volume = new kvs::HydrogenVolumeData( kvs::Vector3ui( 32, 32, 32 ) );
-    kvs::PolygonObject* object = new kvs::Isosurface( volume, 100 );
-    delete volume;
-
-    // Event.
-    int msec = 200;
-    kvs::glut::Timer timer( msec );
-    TimerEvent timer_event;
-    KeyPressEvent key_press_event( &timer );
-
-    // Screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setTitle( "Timer event" );
-    screen.addEvent( &key_press_event );
-    screen.addTimerEvent( &timer_event, &timer );
+    screen.create();
+
+    auto* volume = new kvs::HydrogenVolumeData( kvs::Vec3u::Constant( 64 ) );
+    auto* object = new kvs::Isosurface( volume, 100 );
+    delete volume;
     screen.registerObject( object );
-    screen.show();
+
+    KeyPressEvent key_press_event;
+    TimerEvent timer_event( 1 );
+    timer_event.setName("TimerEvent");
+    screen.addEvent( &key_press_event );
+    screen.addEvent( &timer_event );
 
     return app.run();
 }
