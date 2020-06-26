@@ -22,6 +22,12 @@ class Slider : public kvs::WidgetBase
 {
 public:
     using BaseClass = kvs::WidgetBase;
+    using SliderPressedFunc = std::function<void()>;
+    using SliderMovedFunc = std::function<void()>;
+    using SliderReleasedFunc = std::function<void()>;
+    using ValueChangedFunc = std::function<void()>;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     std::string m_caption; ///< caption
@@ -33,16 +39,29 @@ private:
     bool m_pushed;
     kvs::RGBColor m_slider_color; ///< slider (cursor) color
     kvs::RGBColor m_cursor_color; ///< cursor color
+    SliderPressedFunc m_slider_pressed;
+    SliderMovedFunc m_slider_moved;
+    SliderReleasedFunc m_slider_released;
+    ValueChangedFunc m_value_changed;
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     Slider( kvs::ScreenBase* screen = 0 );
 
-    virtual void sliderPressed(){};
-    virtual void sliderMoved(){};
-    virtual void sliderReleased(){};
-    virtual void valueChanged(){};
-    virtual void screenUpdated(){};
-    virtual void screenResized(){};
+    void sliderPressed( SliderPressedFunc func ) { m_slider_pressed = func; }
+    void sliderMoved( SliderMovedFunc func ) { m_slider_moved = func; }
+    void sliderReleased( SliderReleasedFunc func ) { m_slider_released = func; }
+    void valueChanged( ValueChangedFunc func ) { m_value_changed = func; }
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void sliderPressed() { if ( m_slider_pressed ) m_slider_pressed(); }
+    virtual void sliderMoved() { if ( m_slider_moved ) m_slider_moved(); }
+    virtual void sliderReleased() { if ( m_slider_released ) m_slider_released(); }
+    virtual void valueChanged() { if ( m_value_changed ) m_value_changed(); }
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::string& caption() const { return m_caption; }
     float value() const { return m_value; }

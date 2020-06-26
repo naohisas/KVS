@@ -7,8 +7,13 @@ $(OUTDIR)/./Viewer/Application.o \
 $(OUTDIR)/./Viewer/Screen.o \
 $(OUTDIR)/./Viewer/ScreenBase.o \
 $(OUTDIR)/./Viewer/Timer.o \
+$(OUTDIR)/./Widget/TransferFunctionEditor.o \
 
 
+
+$(OUTDIR)/./Widget/%.o: ./Widget/%.cpp ./Widget/%.h
+	$(MKDIR) $(OUTDIR)/./Widget
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./Viewer/%.o: ./Viewer/%.cpp ./Viewer/%.h
 	$(MKDIR) $(OUTDIR)/./Viewer
@@ -20,3 +25,5 @@ install::
 	$(INSTALL) ./*.h $(INSTALL_DIR)/include/SupportGLFW/.
 	$(MKDIR) $(INSTALL_DIR)/include/SupportGLFW/./Viewer
 	$(INSTALL) ./Viewer/*.h $(INSTALL_DIR)/include/SupportGLFW/./Viewer
+	$(MKDIR) $(INSTALL_DIR)/include/SupportGLFW/./Widget
+	$(INSTALL) ./Widget/*.h $(INSTALL_DIR)/include/SupportGLFW/./Widget

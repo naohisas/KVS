@@ -401,4 +401,6 @@ Visualization/Widget/PushButton
 Visualization/Widget/RadioButton
 Visualization/Widget/RadioButtonGroup
 Visualization/Widget/Slider
+Visualization/Widget/TransferFunctionEditor
+Visualization/Widget/TransferFunctionEditorBase
 Visualization/Widget/WidgetBase

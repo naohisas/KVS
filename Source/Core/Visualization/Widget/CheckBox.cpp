@@ -3,14 +3,6 @@
  *  @file   CheckBox.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "CheckBox.h"
 #include <kvs/OpenGL>
@@ -46,7 +38,12 @@ namespace kvs
 /*===========================================================================*/
 CheckBox::CheckBox( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
-    m_group( NULL )
+    m_group( nullptr ),
+    m_pressed( nullptr ),
+    m_released( nullptr ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr ),
+    m_state_changed( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

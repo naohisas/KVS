@@ -56,7 +56,9 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* sce
     m_enable_anti_aliasing( true ),
     m_axis_type( OrientationAxis::CorneredAxis ),
     m_box_type( OrientationAxis::NoneBox ),
-    m_projection_type( kvs::Camera::Perspective )
+    m_projection_type( kvs::Camera::Perspective ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

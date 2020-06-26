@@ -3,14 +3,6 @@
  *  @file   ColorMapBar.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "ColorMapBar.h"
 #include <kvs/Type>
@@ -44,7 +36,9 @@ namespace kvs
 ColorMapBar::ColorMapBar( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_show_range_value( true ),
-    m_texture_downloaded( false )
+    m_texture_downloaded( false ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

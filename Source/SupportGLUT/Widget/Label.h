@@ -19,6 +19,7 @@
 #include <vector>
 #include <kvs/glut/Screen>
 #include "WidgetBase.h"
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -41,7 +42,7 @@ private:
     std::vector<std::string> m_text; ///< text list
 
 public:
-    Label( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( Label( kvs::ScreenBase* screen = 0 ) );
 
     virtual void screenUpdated(){};
     virtual void screenResized(){};

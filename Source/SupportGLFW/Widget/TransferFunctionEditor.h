@@ -1,15 +1,15 @@
 #pragma once
 #include <kvs/TransferFunctionEditorBase>
-#include <kvs/glut/Screen>
+#include <kvs/glfw/Screen>
 
 
 namespace kvs
 {
 
-namespace glut
+namespace glfw
 {
 
-class TransferFunctionEditor : public kvs::TransferFunctionEditorBase, public kvs::glut::Screen
+class TransferFunctionEditor : public kvs::TransferFunctionEditorBase, public kvs::glfw::Screen
 {
 public:
     TransferFunctionEditor( kvs::ScreenBase* parent = 0 );
@@ -17,9 +17,9 @@ public:
 
 protected:
     void update() { this->redraw(); }
-    void initializeEvent() { kvs::glut::ScreenBase::reset(); }
+    void initializeEvent() { kvs::glfw::Screen::reset(); }
 };
 
-} // end of namespace glut
+} // end of namespace glfw
 
 } // end of namespace kvs

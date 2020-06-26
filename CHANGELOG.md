@@ -11,6 +11,7 @@
 + kvs::EventTimer
 + kvs::InteractorBase
 + kvs::TrackballInteractor
++ kvs::TransferFunctionEditor
 
 **Added SupportGLFW**
 + kvs::glfw::Application

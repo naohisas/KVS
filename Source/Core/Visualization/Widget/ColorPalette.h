@@ -17,7 +17,9 @@ class MouseEvent;
 class ColorPalette : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     std::string m_caption; ///< caption
@@ -27,13 +29,18 @@ private:
     int m_H_indicator; ///< hue indicator
     int m_S_indicator; ///< saturation indicator
     int m_V_indicator; ///< value indicator
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     ColorPalette( kvs::ScreenBase* screen = 0 );
     virtual ~ColorPalette();
 
-    virtual void screenUpdated() {};
-    virtual void screenResized() {};
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::string& caption() const { return m_caption; }
     const kvs::RGBColor color() const;

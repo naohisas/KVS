@@ -432,6 +432,7 @@ $(OUTDIR)/./Visualization/Widget/PushButton.o \
 $(OUTDIR)/./Visualization/Widget/RadioButton.o \
 $(OUTDIR)/./Visualization/Widget/RadioButtonGroup.o \
 $(OUTDIR)/./Visualization/Widget/Slider.o \
+$(OUTDIR)/./Visualization/Widget/TransferFunctionEditorBase.o \
 $(OUTDIR)/./Visualization/Widget/WidgetBase.o \
 
 

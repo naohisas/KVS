@@ -20,6 +20,7 @@
 #include <kvs/Texture2D>
 #include <kvs/ScreenBase>
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -61,7 +62,7 @@ private:
     bool m_texture_downloaded; ///< check flag for texture
 
 public:
-    LegendBar( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( LegendBar( kvs::ScreenBase* screen = 0 ) );
     virtual ~LegendBar();
 
     virtual void screenUpdated(){};

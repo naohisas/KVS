@@ -25,7 +25,9 @@ namespace kvs
 
 OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
-    m_palette( NULL )
+    m_palette( NULL ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::setEventType(
         kvs::EventBase::PaintEvent |

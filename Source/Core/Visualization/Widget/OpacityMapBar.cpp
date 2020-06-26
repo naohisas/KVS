@@ -3,14 +3,6 @@
  *  @file   OpacityMapBar.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "OpacityMapBar.h"
 #include <kvs/Type>
@@ -43,7 +35,9 @@ namespace kvs
 /*===========================================================================*/
 OpacityMapBar::OpacityMapBar( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
-    m_show_range_value( true )
+    m_show_range_value( true ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

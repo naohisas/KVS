@@ -20,7 +20,9 @@ class ScreenBase;
 class ColorMapPalette : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     std::string m_caption; ///< caption
@@ -30,13 +32,18 @@ private:
     kvs::RGBColor m_drawing_color; ///< drawing color
     kvs::Vec2 m_pressed_position; ///< mouse pressed position
     const kvs::ColorPalette* m_color_palette; ///< pointer to the color palette
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     ColorMapPalette( kvs::ScreenBase* screen = 0 );
     virtual ~ColorMapPalette();
 
-    virtual void screenUpdated() {};
-    virtual void screenResized() {};
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::string& caption() const { return m_caption; }
     const kvs::WidgetBase& palette() const { return m_palette; }

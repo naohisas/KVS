@@ -17,6 +17,7 @@
 
 #include <kvs/glut/WidgetBase>
 #include <string>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -48,7 +49,7 @@ private:
     kvs::glut::RadioButtonGroup* m_group; ///< pointer to the radio button group
 
 public:
-    RadioButton( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( RadioButton( kvs::ScreenBase* screen = 0 ) );
 
     virtual void pressed() {};
     virtual void released() {};

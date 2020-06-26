@@ -17,6 +17,7 @@
 
 #include <string>
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -50,7 +51,7 @@ private:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-    ColorPalette( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( ColorPalette( kvs::ScreenBase* screen = 0 ) );
     virtual ~ColorPalette();
 
     virtual void screenUpdated() {};

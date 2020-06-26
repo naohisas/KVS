@@ -31,8 +31,13 @@ class RadioButtonGroup;
 class RadioButton : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
     friend class kvs::RadioButtonGroup;
+    using BaseClass = kvs::WidgetBase;
+    using PressedFunc = std::function<void()>;
+    using ReleasedFunc = std::function<void()>;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
+    using StateChangedFunc = std::function<void()>;
 
 private:
     std::string m_caption; ///< caption
@@ -40,15 +45,26 @@ private:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
     bool m_state; ///< check state
     kvs::RadioButtonGroup* m_group; ///< pointer to the radio button group
+    PressedFunc m_pressed;
+    ReleasedFunc m_released;
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
+    StateChangedFunc m_state_changed;
 
 public:
     RadioButton( kvs::ScreenBase* screen = 0 );
 
-    virtual void pressed() {};
-    virtual void released() {};
-    virtual void screenUpdated() {};
-    virtual void screenResized() {};
-    virtual void stateChanged() {};
+    void pressed( PressedFunc func ) { m_pressed = func; }
+    void released( ReleasedFunc func ) { m_released = func; }
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+    void stateChanged( StateChangedFunc func ) { m_state_changed = func; }
+
+    virtual void pressed() { if ( m_pressed ) m_pressed(); }
+    virtual void released() { if ( m_released ) m_released(); }
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
+    virtual void stateChanged() { if ( m_state_changed ) m_state_changed(); }
 
     const std::string& caption() const { return m_caption; }
     bool state() const { return m_state; }

@@ -5,7 +5,7 @@
 namespace kvs
 {
 
-namespace glut
+namespace glfw
 {
 
 TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
@@ -16,6 +16,6 @@ TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
     this->setup( this );
 }
 
-} // end of namespace glut
+} // end of namespace glfw
 
 } // end of namespace kvs

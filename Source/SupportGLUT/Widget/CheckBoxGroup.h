@@ -19,6 +19,7 @@
 #include <kvs/IgnoreUnusedVariable>
 #include <kvs/glut/WidgetBase>
 #include "CheckBox.h"
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -45,7 +46,7 @@ protected:
     std::list<kvs::glut::CheckBox*> m_boxes; ///< check box list
 
 public:
-    CheckBoxGroup( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( CheckBoxGroup( kvs::ScreenBase* screen = 0 ) );
 
     virtual void pressed( kvs::glut::CheckBox* box ) { kvs::IgnoreUnusedVariable( box ); };
     virtual void pressed( int id ) { kvs::IgnoreUnusedVariable( id ); };

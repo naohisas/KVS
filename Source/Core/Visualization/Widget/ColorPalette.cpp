@@ -58,7 +58,9 @@ ColorPalette::ColorPalette( kvs::ScreenBase* screen ):
     m_selected_color_box( NULL ),
     m_H_indicator( -1 ),
     m_S_indicator( -1 ),
-    m_V_indicator( -1 )
+    m_V_indicator( -1 ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::setEventType(
         kvs::EventBase::PaintEvent |

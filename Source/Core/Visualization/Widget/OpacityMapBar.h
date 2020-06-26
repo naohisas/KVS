@@ -3,14 +3,6 @@
  *  @file   OpacityMapBar.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -32,7 +24,9 @@ namespace kvs
 class OpacityMapBar : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
     enum OrientationType
     {
@@ -50,20 +44,23 @@ private:
     double m_max_value; ///< max. value
     float m_border_width; ///< border line width
     kvs::RGBColor m_border_color; ///< border line color
-
     kvs::OpacityMap m_opacity_map;
     kvs::Texture2D m_texture; ///< texture data
     kvs::Texture2D m_checkerboard; ///< checkerboard texture
-
     bool m_show_range_value; ///< range value showing flag
     bool m_enable_anti_aliasing; ///< check flag for anti-aliasing
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     OpacityMapBar( kvs::ScreenBase* screen = 0 );
     virtual ~OpacityMapBar();
 
-    virtual void screenUpdated(){};
-    virtual void screenResized(){};
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::string& caption() const { return m_caption; }
     double minValue() const { return m_min_value; }

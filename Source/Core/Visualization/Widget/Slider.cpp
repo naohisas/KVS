@@ -53,7 +53,13 @@ Slider::Slider( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_change_value( false ),
     m_show_range_value( true ),
-    m_pushed( false )
+    m_pushed( false ),
+    m_slider_pressed( nullptr ),
+    m_slider_moved( nullptr ),
+    m_slider_released( nullptr ),
+    m_value_changed( nullptr ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

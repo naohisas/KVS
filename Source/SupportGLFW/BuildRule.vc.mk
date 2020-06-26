@@ -7,8 +7,15 @@ $(OUTDIR)\.\Viewer\Application.obj \
 $(OUTDIR)\.\Viewer\Screen.obj \
 $(OUTDIR)\.\Viewer\ScreenBase.obj \
 $(OUTDIR)\.\Viewer\Timer.obj \
+$(OUTDIR)\.\Widget\TransferFunctionEditor.obj \
 
 
+
+{.\Widget\}.cpp{$(OUTDIR)\.\Widget\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\Widget $(MKDIR) $(OUTDIR)\.\Widget
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\Widget\ @<<
+$<
+<<
 
 {.\Viewer\}.cpp{$(OUTDIR)\.\Viewer\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\Viewer $(MKDIR) $(OUTDIR)\.\Viewer
@@ -22,3 +29,5 @@ install::
 	$(INSTALL) .\*.h $(INSTALL_DIR)\include\SupportGLFW\.
 	IF NOT EXIST $(INSTALL_DIR)\include\SupportGLFW\.\Viewer $(MKDIR) $(INSTALL_DIR)\include\SupportGLFW\.\Viewer
 	$(INSTALL) .\Viewer\*.h $(INSTALL_DIR)\include\SupportGLFW\.\Viewer
+	IF NOT EXIST $(INSTALL_DIR)\include\SupportGLFW\.\Widget $(MKDIR) $(INSTALL_DIR)\include\SupportGLFW\.\Widget
+	$(INSTALL) .\Widget\*.h $(INSTALL_DIR)\include\SupportGLFW\.\Widget

@@ -29,7 +29,9 @@ namespace kvs
  */
 /*===========================================================================*/
 Label::Label( kvs::ScreenBase* screen ):
-    kvs::WidgetBase( screen )
+    kvs::WidgetBase( screen ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

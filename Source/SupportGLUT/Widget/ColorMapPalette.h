@@ -21,6 +21,7 @@
 #include <kvs/Vector2>
 #include <kvs/glut/WidgetBase>
 #include <kvs/glut/ColorPalette>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -53,7 +54,7 @@ private:
     const kvs::glut::ColorPalette* m_color_palette; ///< pointer to the color palette
 
 public:
-    ColorMapPalette( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( ColorMapPalette( kvs::ScreenBase* screen = 0 ) );
     virtual ~ColorMapPalette();
 
     virtual void screenUpdated() {};

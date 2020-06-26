@@ -20,6 +20,7 @@
 #include <kvs/EventListener>
 #include <kvs/Rectangle>
 #include <kvs/OpenGL>
+#include <kvs/Deprecated>
 
 
 namespace kvs

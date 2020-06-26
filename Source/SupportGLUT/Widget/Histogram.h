@@ -27,6 +27,7 @@
 #include <kvs/ClassName>
 #include <kvs/Vector2>
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -62,7 +63,7 @@ private:
     kvs::Vector2i m_previous_position; ///< mouse previous position
 
 public:
-    Histogram( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( Histogram( kvs::ScreenBase* screen = 0 ) );
     virtual ~Histogram();
 
     virtual void screenUpdated() {}

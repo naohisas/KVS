@@ -123,12 +123,6 @@ public:
     std::string familyName() const;
     std::string styleName() const;
     std::string fontName() const;
-
-    // Deprecated.
-//    float width( const std::string& /*text*/ ) const { return 0; }
-//    float height() const { return 0; }
-//    void draw( const kvs::Vec2& /*p*/, const std::string& /*text*/ ) const {}
-//    void draw( const kvs::Vec2& /*p*/, const Icon& /*icon*/, const float /*size*/ ) const {}
 };
 
 } // end of namespace kvs

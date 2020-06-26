@@ -68,7 +68,7 @@ public:
     virtual void pressed() { if ( m_pressed ) m_pressed(); }
     virtual void released() { if ( m_released ) m_released(); }
     virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
-    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); };
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
 protected:
     int adjustedWidth();

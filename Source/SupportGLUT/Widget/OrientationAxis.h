@@ -24,6 +24,7 @@
 #include <kvs/glut/Screen>
 #endif
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -80,10 +81,9 @@ private:
     ProjectionType m_projection_type; ///< projection type
 
 public:
-    OrientationAxis( kvs::glut::Screen* screen );
-
-    OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene );
-    OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase* object );
+    KVS_DEPRECATED( OrientationAxis( kvs::glut::Screen* screen ) );
+    KVS_DEPRECATED( OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene ) );
+    KVS_DEPRECATED( OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase* object ) );
     virtual ~OrientationAxis();
 
 public:

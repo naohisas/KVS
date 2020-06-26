@@ -20,6 +20,7 @@
 #include <kvs/Texture2D>
 #include <kvs/OpacityMap>
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -53,7 +54,7 @@ private:
     kvs::Vec2i m_previous_position; ///< mouse previous position
 
 public:
-    OpacityMapPalette( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( OpacityMapPalette( kvs::ScreenBase* screen = 0 ) );
     virtual ~OpacityMapPalette();
 
     virtual void screenUpdated() {};

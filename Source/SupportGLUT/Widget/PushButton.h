@@ -17,6 +17,7 @@
 
 #include "WidgetBase.h"
 #include <kvs/glut/Screen>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -44,7 +45,7 @@ private:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-    PushButton( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( PushButton( kvs::ScreenBase* screen = 0 ) );
 
     virtual void pressed(){};
     virtual void released(){};

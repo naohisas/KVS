@@ -3,14 +3,6 @@
  *  @file   CheckBoxGroup.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <list>
@@ -33,20 +25,39 @@ class CheckBox;
 class CheckBoxGroup : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using PressedBoxFunc = std::function<void(kvs::CheckBox*)>;
+    using PressedIdFunc = std::function<void(int)>;
+    using ReleasedBoxFunc = std::function<void(kvs::CheckBox*)>;
+    using ReleasedIdFunc = std::function<void(int)>;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
-protected:
+private:
     std::list<kvs::CheckBox*> m_boxes; ///< check box list
+    PressedBoxFunc m_pressed_box;
+    PressedIdFunc m_pressed_id;
+    ReleasedBoxFunc m_released_box;
+    ReleasedIdFunc m_released_id;
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     CheckBoxGroup( kvs::ScreenBase* screen = 0 );
 
-    virtual void pressed( kvs::CheckBox* box ) { kvs::IgnoreUnusedVariable( box ); };
-    virtual void pressed( int id ) { kvs::IgnoreUnusedVariable( id ); };
-    virtual void released( kvs::CheckBox* box ) { kvs::IgnoreUnusedVariable( box ); };
-    virtual void released( int id ) { kvs::IgnoreUnusedVariable( id ); };
-    virtual void screenUpdated() {};
-    virtual void screenResized() {};
+    void pressed( PressedBoxFunc func ) { m_pressed_box = func; }
+    void pressed( PressedIdFunc func ) { m_pressed_id = func; }
+    void released( ReleasedBoxFunc func ) { m_released_box = func; }
+    void released( ReleasedIdFunc func ) { m_released_id = func; }
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void pressed( kvs::CheckBox* box ) { if ( m_pressed_box ) m_pressed_box( box ); };
+    virtual void pressed( int id ) { if ( m_pressed_id ) m_pressed_id( id ); };
+    virtual void released( kvs::CheckBox* box ) { if ( m_released_box ) m_released_box( box ); }
+    virtual void released( int id ) { if ( m_released_id ) m_released_id( id ); };
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::list<kvs::CheckBox*>& checkBoxes() const { return m_boxes; }
     void add( kvs::CheckBox* box );

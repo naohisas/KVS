@@ -48,7 +48,12 @@ namespace kvs
 /*===========================================================================*/
 RadioButton::RadioButton( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
-    m_group( NULL )
+    m_group( NULL ),
+    m_pressed( nullptr ),
+    m_released( nullptr ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr ),
+    m_state_changed( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |

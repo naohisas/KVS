@@ -24,15 +24,22 @@ class Label : public kvs::WidgetBase
 public:
     using BaseClass = kvs::WidgetBase;
     using TextList = std::vector<std::string>;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     TextList m_text_list; ///< text list
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     Label( kvs::ScreenBase* screen = 0 );
 
-    virtual void screenUpdated(){};
-    virtual void screenResized(){};
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const TextList& textList() const { return m_text_list; }
     const std::string& text( const size_t index ) { return m_text_list[ index ]; }

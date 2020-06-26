@@ -17,6 +17,7 @@
 
 #include "WidgetBase.h"
 #include <kvs/RGBColor>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -50,7 +51,7 @@ private:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-    Slider( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( Slider( kvs::ScreenBase* screen = 0 ) );
 
     virtual void sliderPressed(){};
     virtual void sliderMoved(){};
