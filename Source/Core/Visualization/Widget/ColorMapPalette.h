@@ -32,6 +32,7 @@ private:
     kvs::RGBColor m_drawing_color; ///< drawing color
     kvs::Vec2 m_pressed_position; ///< mouse pressed position
     const kvs::ColorPalette* m_color_palette; ///< pointer to the color palette
+    bool m_update; ///< flag for updating color palette
     ScreenUpdatedFunc m_screen_updated;
     ScreenResizedFunc m_screen_resized;
 
@@ -54,7 +55,7 @@ public:
     void setDrawingColor( const kvs::RGBColor& color ) { m_drawing_color = color; }
     void attachColorPalette( const kvs::ColorPalette* palette ) { m_color_palette = palette; }
     void detachColorPalette() { m_color_palette = NULL; }
-    void update() { this->initialize_texture( m_color_map ); }
+    void update() { m_update = true; }
 
     void paintEvent();
     void resizeEvent( int width, int height );

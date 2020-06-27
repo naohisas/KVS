@@ -17,7 +17,6 @@ public:
 
 protected:
     void update() { this->redraw(); }
-    void initializeEvent() { kvs::glut::ScreenBase::reset(); }
 };
 
 } // end of namespace glut

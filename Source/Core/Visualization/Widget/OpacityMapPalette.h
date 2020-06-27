@@ -32,6 +32,7 @@ private:
     kvs::WidgetBase m_palette; ///< palette
     kvs::Vec2i m_pressed_position; ///< mouse pressed position
     kvs::Vec2i m_previous_position; ///< mouse previous position
+    bool m_update; ///< flag for updating opacity palette
     ScreenUpdatedFunc m_screen_updated;
     ScreenResizedFunc m_screen_resized;
 
@@ -50,7 +51,7 @@ public:
     const kvs::OpacityMap opacityMap() const;
     void setCaption( const std::string& caption ) { m_caption = caption; }
     void setOpacityMap( const kvs::OpacityMap& opacity_map );
-    void update() { this->initialize_texture( m_opacity_map ); }
+    void update() { m_update = true; }
 
     void paintEvent();
     void resizeEvent( int width, int height );

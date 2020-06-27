@@ -12,6 +12,7 @@
 + kvs::InteractorBase
 + kvs::TrackballInteractor
 + kvs::TransferFunctionEditor
++ kvs::glfw::TransferFunctionEditor
 
 **Added SupportGLFW**
 + kvs::glfw::Application
@@ -176,9 +177,29 @@
 + kvs::TimerEventListener::update( lambda )
 + kvs::ScreenCaptureEvent::ScreenCaptureEvent( lambda, key )
 + kvs::ScreenCaptureEvent::update( lambda )
++ kvs::EventListener::enableEvent()
++ kvs::EventListener::enableEvent( event_type )
++ kvs::EventListener::disableEvent()
++ kvs::EventListener::disableEvent( event_type )
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
+
+**Deprecated classes**
++ kvs::glut::CheckBox (use kvs::CheckBox)
++ kvs::glut::CheckBoxGroup (use kvs::CheckBoxGroup)
++ kvs::glut::ColorMapPalette (use kvs::ColorMapPalette)
++ kvs::glut::ColorPalette (use kvs::ColorPalette)
++ kvs::glut::Histogram (use kvs::Histogram)
++ kvs::glut::Label (use kvs::Label)
++ kvs::glut::LegendBar (use kvs::LegendBar)
++ kvs::glut::OpacityMapPalette (use kvs::OpacityMapPalette)
++ kvs::glut::OrientationAxis (use kvs::OrientationAxis)
++ kvs::glut::PushButton (use kvs::PushButton)
++ kvs::glut::RadioButton (use kvs::RadioButton)
++ kvs::glut::RadioButtonGropu (use kvs::RadioButtonGropu)
++ kvs::glut::Slider (use kvs::Slider)
++ kvs::glut::WidgetBase (use kvs::WidgetBase)
 
 **Deprecated methods**
 + kvs::Axis2D::setTopMargin (use kvs::Axis2D::setMargins)

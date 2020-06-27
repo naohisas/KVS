@@ -178,7 +178,6 @@ void TransferFunctionEditorBase::setup( kvs::ScreenBase* screen )
     caption_font.setStyleToBold();
     caption_font.setColor( kvs::RGBColor( 180, 180, 180 ) );
 
-//    screen->setBackgroundColor( base_color );
     screen->setTitle( title );
     screen->setPosition( x, y );
     screen->setSize( width, height );

@@ -26,6 +26,7 @@ namespace kvs
 OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_palette( NULL ),
+    m_update( true ),
     m_screen_updated( nullptr ),
     m_screen_resized( nullptr )
 {
@@ -66,8 +67,12 @@ void OpacityMapPalette::paintEvent()
 
     if ( !BaseClass::isVisible() ) return;
 
-    if ( !m_texture.isValid() ) this->initialize_texture( m_opacity_map );
-    if ( !m_checkerboard.isValid() ) this->initialize_checkerboard();
+    if ( !m_texture.isValid() || m_update )
+    {
+        this->initialize_texture( m_opacity_map );
+        m_update = false;
+    }
+    if ( !m_checkerboard.isValid() ) { this->initialize_checkerboard(); }
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();

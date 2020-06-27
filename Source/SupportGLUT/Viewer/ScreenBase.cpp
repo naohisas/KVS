@@ -418,16 +418,11 @@ void ScreenBase::create()
         const int py = ( desk_height - BaseClass::height() ) / 2;
         const int offset = 20;
         static int counter = 0;
-        glutInitWindowPosition( px + offset * counter, py + offset * counter );
-        glutInitWindowSize( BaseClass::width(), BaseClass::height() );
+        this->setPosition( px + offset * counter, py + offset * counter );
         counter++;
     }
-    else
-    {
-        // User specified geometry
-        glutInitWindowPosition( BaseClass::x(), BaseClass::y() );
-        glutInitWindowSize( BaseClass::width(), BaseClass::height() );
-    }
+    glutInitWindowPosition( BaseClass::x(), BaseClass::y() );
+    glutInitWindowSize( BaseClass::width(), BaseClass::height() );
 
     // Create window.
     glutCreateWindow( BaseClass::title().c_str() );

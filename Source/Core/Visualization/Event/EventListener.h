@@ -72,13 +72,19 @@ public:
     kvs::Scene* scene() { return m_scene; }
     kvs::EventTimer* eventTimer() { return m_event_timer; }
     int timerInterval() const { return m_timer_interval; }
-    void setEventType( const int event_type ) { m_event_type = event_type; }
     void setName( const std::string& name ) { m_name = name; }
     void setScreen( kvs::ScreenBase* screen ) { m_screen = screen; }
     void setScene( kvs::Scene* scene ) { m_scene = scene; }
     void setEventTimer( kvs::EventTimer* timer ) { m_event_timer = timer; }
     void setTimerInterval( int msec ) { m_timer_interval = msec; }
+
+    void setEventType( const int event_type ) { m_event_type = event_type; }
     void addEventType( const int event_type ) { m_event_type |= event_type; }
+
+    void enableEvent() { m_event_type = kvs::EventBase::AllEvents; }
+    void disableEvent() { m_event_type = 0; }
+    void enableEvent( const int event_type ) { m_event_type |= event_type; }
+    void disableEvent( const int event_type ) { m_event_type &= ~event_type; }
 
     void initializeEvent( InitializeEventFunc func ) { m_initialize_event = func; }
     void paintEvent( PaintEventFunc func ) { m_paint_event = func; }

@@ -131,7 +131,6 @@ void Application::main_loop()
 {
     while ( !this->should_close() )
     {
-        bool focused = false;
         for ( auto& s : BaseClass::screens() )
         {
             auto* screen = kvs::glfw::ScreenBase::DownCast( s );
@@ -146,16 +145,10 @@ void Application::main_loop()
                 }
             }
 
-            if ( glfwGetWindowAttrib( screen->handler(), GLFW_FOCUSED ) )
-            {
-                glfwPollEvents();
-                focused = true;
-            }
-
             screen->releaseContext();
         }
 
-        if ( !focused ) { glfwPollEvents(); }
+        glfwPollEvents();
     }
 }
 

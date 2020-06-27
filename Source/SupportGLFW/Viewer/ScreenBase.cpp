@@ -350,14 +350,10 @@ void ScreenBase::create()
         const int py = ( mode->height - BaseClass::height() ) / 2;
         const int offset = 20;
         static int counter = 0;
-        glfwSetWindowPos( m_handler, px + offset * counter, py + offset * counter );
+        this->setPosition( px + offset * counter, py + offset * counter );
         counter++;
     }
-    else
-    {
-        // User specified position
-        glfwSetWindowPos( m_handler, BaseClass::x(), BaseClass::y() );
-    }
+    glfwSetWindowPos( m_handler, BaseClass::x(), BaseClass::y() );
 
     // Set callback functions.
     glfwSetWindowUserPointer( m_handler, this );

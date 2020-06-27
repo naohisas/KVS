@@ -34,6 +34,7 @@ ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_palette( NULL ),
     m_color_palette( NULL ),
+    m_update( true ),
     m_screen_updated( nullptr ),
     m_screen_resized( nullptr )
 {
@@ -95,7 +96,11 @@ void ColorMapPalette::paintEvent()
 
     if ( !BaseClass::isVisible() ) return;
 
-    if ( !m_texture.isValid() ) { this->initialize_texture( m_color_map ); }
+    if ( !m_texture.isValid() || m_update )
+    {
+        this->initialize_texture( m_color_map );
+        m_update = false;
+    }
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();

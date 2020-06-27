@@ -1,6 +1,8 @@
 #pragma once
 #include <kvs/TransferFunctionEditorBase>
 #include <kvs/glfw/Screen>
+#include <kvs/ApplicationBase>
+#include <kvs/ScreenBase>
 
 
 namespace kvs
@@ -15,9 +17,10 @@ public:
     TransferFunctionEditor( kvs::ScreenBase* parent = 0 );
     virtual ~TransferFunctionEditor() {}
 
+    void show() { kvs::glfw::Screen::show(); this->redraw(); }
+
 protected:
     void update() { this->redraw(); }
-    void initializeEvent() { kvs::glfw::Screen::reset(); }
 };
 
 } // end of namespace glfw

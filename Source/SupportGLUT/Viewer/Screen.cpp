@@ -70,7 +70,7 @@ Screen::Screen( kvs::glut::Application* application ):
 {
     m_scene = new kvs::Scene( this );
     m_interactor = new kvs::TrackballInteractor();
-    BaseClass::setEvent( m_interactor, "DefualtInteractor" );
+    BaseClass::setEvent( m_interactor, "DefaultInteractor" );
 }
 
 /*===========================================================================*/
