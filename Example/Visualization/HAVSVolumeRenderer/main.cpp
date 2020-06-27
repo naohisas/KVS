@@ -25,8 +25,8 @@ int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
     kvs::Screen screen;
-    screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::HAVSVolumeRenderer" );
+    screen.create();
 
     kvs::UnstructuredVolumeObject* object = NULL;
     if ( argc > 1 )
@@ -45,11 +45,10 @@ int main( int argc, char** argv )
         return ( false );
     }
 
-    kvs::HAVSVolumeRenderer* renderer = new kvs::HAVSVolumeRenderer();
+    auto* renderer = new kvs::HAVSVolumeRenderer();
     renderer->setKBufferSize( 2 );
 
     screen.registerObject( object, renderer );
-    screen.show();
 
     return app.run();
 }

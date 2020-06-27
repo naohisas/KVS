@@ -5,12 +5,12 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/ImageObject>
 #include <kvs/ImageImporter>
 #include <kvs/ImageRenderer>
-#include <kvs/Application>
-#include <kvs/Screen>
 
 
 /*===========================================================================*/
@@ -26,10 +26,11 @@ int main( int argc, char** argv )
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
     screen.setTitle( "kvs::ImageRenderer" );
+    screen.create();
 
     // Create an image object.
     const std::string filename( argc > 1 ? argv[1] : "" );
-    kvs::ImageObject* object = new kvs::ImageImporter( filename );
+    auto* object = new kvs::ImageImporter( filename );
     if ( !object )
     {
         kvsMessageError() << "Cannot creat an image object." << std::endl;
@@ -37,7 +38,7 @@ int main( int argc, char** argv )
     }
 
     // Create an image renderer.
-    kvs::ImageRenderer* renderer = new kvs::ImageRenderer();
+    auto* renderer = new kvs::ImageRenderer();
     if ( !renderer )
     {
         kvsMessageError() << "Cannot create an image renderer." << std::endl;
@@ -45,10 +46,8 @@ int main( int argc, char** argv )
         return ( false );
     }
 
-    // Screen.
     screen.setSize( object->width(), object->height() );
     screen.registerObject( object, renderer );
-    screen.create();
 
     return app.run();
 }

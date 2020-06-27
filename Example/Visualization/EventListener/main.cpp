@@ -158,6 +158,7 @@ int main( int argc, char** argv )
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
     screen.setTitle( "Event listener" );
+    screen.create();
 
     // User specified events.
     InitializeEvent initialize_event;
@@ -181,7 +182,6 @@ int main( int argc, char** argv )
     screen.addEvent( &key_press_event );
     screen.addEvent( &key_repeat_event );
     screen.addEvent( &key_release_event );
-    screen.create();
 
     return app.run();
 }
