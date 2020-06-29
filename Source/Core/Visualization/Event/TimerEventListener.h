@@ -20,8 +20,9 @@ namespace kvs
 class TimerEventListener : public kvs::EventListener
 {
 public:
-    TimerEventListener(): kvs::EventListener( kvs::EventBase::TimerEvent ) {}
-    TimerEventListener( TimerEventFunc func ) { this->update( func ); }
+    TimerEventListener( const int msec = -1 ): kvs::EventListener( kvs::EventBase::TimerEvent, msec ) {}
+    TimerEventListener( TimerEventFunc func, const int msec = -1 ):
+        kvs::EventListener( kvs::EventBase::TimerEvent, msec ) { this->update( func ); }
     virtual ~TimerEventListener() {}
 
     void update( TimerEventFunc func ) { timerEvent( func ); }

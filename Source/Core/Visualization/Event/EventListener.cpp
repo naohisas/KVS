@@ -18,15 +18,17 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new EventListener class.
+ *  @param  event_type [in] event types of this listener class
+ *  @param  msec [in] interval time in millisecond for timer event
  */
 /*===========================================================================*/
-EventListener::EventListener( const int event_type ):
+EventListener::EventListener( const int event_type, const int msec ):
     m_event_type( event_type ),
     m_name( "" ),
     m_screen( nullptr ),
     m_scene( nullptr ),
     m_event_timer( nullptr ),
-    m_timer_interval( -1 ),
+    m_timer_interval( msec ),
     m_initialize_event( nullptr ),
     m_paint_event( nullptr ),
     m_resize_event( nullptr ),

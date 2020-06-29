@@ -63,7 +63,7 @@ private:
     TimerEventFunc m_timer_event;
 
 public:
-    EventListener( const int event_type = kvs::EventBase::AllEvents );
+    EventListener( const int event_type = kvs::EventBase::AllEvents, const int msec = -1 );
     virtual ~EventListener() {}
 
     int eventType() const { return m_event_type; }

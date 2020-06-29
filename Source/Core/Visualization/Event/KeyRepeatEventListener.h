@@ -21,7 +21,8 @@ class KeyRepeatEventListener : public kvs::EventListener
 {
 public:
     KeyRepeatEventListener(): kvs::EventListener( kvs::EventBase::KeyRepeatEvent ) {}
-    KeyRepeatEventListener( KeyRepeatEventFunc func ) { this->update( func ); }
+    KeyRepeatEventListener( KeyRepeatEventFunc func ):
+        kvs::EventListener( kvs::EventBase::KeyRepeatEvent ) { this->update( func ); }
     virtual ~KeyRepeatEventListener() {}
 
     void update( KeyRepeatEventFunc func ) { keyRepeatEvent( func ); }

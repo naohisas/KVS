@@ -21,7 +21,8 @@ class KeyPressEventListener : public kvs::EventListener
 {
 public:
     KeyPressEventListener(): kvs::EventListener( kvs::EventBase::KeyPressEvent ) {}
-    KeyPressEventListener( KeyPressEventFunc func ) { this->update( func ); }
+    KeyPressEventListener( KeyPressEventFunc func ):
+        kvs::EventListener( kvs::EventBase::KeyPressEvent ) { this->update( func ); }
     virtual ~KeyPressEventListener() {}
 
     void update( KeyPressEventFunc func ) { keyPressEvent( func ); }
