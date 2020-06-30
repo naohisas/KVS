@@ -6,7 +6,13 @@
 /*****************************************************************************/
 #pragma once
 #include <kvs/OpenGL>
+#include <kvs/Platform>
+
+#if defined( KVS_PLATFORM_WINDOWS )
+#include <GL/glfw3.h>
+#else
 #include <GLFW/glfw3.h>
+#endif
 
 
 namespace kvs
