@@ -60,16 +60,18 @@ void InteractorBase::paintEvent()
 /*===========================================================================*/
 void InteractorBase::resizeEvent( int w, int h )
 {
+    auto dpr = 1.0f;
     if ( BaseClass::screen() )
     {
         auto* s = BaseClass::screen();
         if ( !s->isFullScreen() ) { s->setSize( w, h ); }
+        dpr = s->devicePixelRatio();
     }
 
     auto* s = BaseClass::scene();
     if ( !s ) { return; }
 
-    s->resizeFunction( w, h );
+    s->resizeFunction( w, h, dpr );
 }
 
 /*===========================================================================*/

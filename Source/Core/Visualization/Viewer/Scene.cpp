@@ -720,17 +720,17 @@ void Scene::paintFunction()
 /*==========================================================================*/
 /**
  *  @brief  Core resize event function.
- *  @param  width [in] screen width
- *  @param  height [in] screen height
+ *  @param  width [in] window width
+ *  @param  height [in] window height
+ *  @param  dpr [in] device pixel ratio
  */
 /*==========================================================================*/
-void Scene::resizeFunction( int width, int height )
+void Scene::resizeFunction( int width, int height, float dpr )
 {
     // Update the window size for camera.
     m_camera->setWindowSize( width, height );
 
     // Update the viewport for OpenGL.
-    const float dpr = m_camera->devicePixelRatio();
     const int framebuffer_width = width * dpr;
     const int framebuffer_height = height * dpr;
     kvs::OpenGL::SetViewport( 0, 0, framebuffer_width, framebuffer_height );

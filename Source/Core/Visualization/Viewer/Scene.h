@@ -121,7 +121,7 @@ public:
 
     void initializeFunction();
     void paintFunction();
-    void resizeFunction( int width, int height );
+    void resizeFunction( int width, int height, float dpr );
     void mouseReleaseFunction( int x, int y );
     void mousePressFunction( int x, int y, kvs::Mouse::OperationMode mode );
     void mouseMoveFunction( int x, int y );
