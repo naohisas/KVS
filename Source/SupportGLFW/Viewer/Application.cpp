@@ -160,8 +160,6 @@ void Application::main_loop()
 /*===========================================================================*/
 bool Application::should_close()
 {
-    if ( screens().empty() ) { return true; }
-
     std::list<kvs::ScreenBase*> screen_list;
     for ( auto& s : BaseClass::screens() )
     {
@@ -172,17 +170,12 @@ bool Application::should_close()
         }
     }
 
-    if ( !screen_list.empty() )
+    for ( auto& s : screen_list )
     {
-        for ( auto& s : BaseClass::screens() )
-        {
-            BaseClass::screens().remove( s );
-        }
+        BaseClass::screens().remove( s );
     }
 
-    if ( BaseClass::screens().empty() ) { return true; }
-
-    return false;
+    return BaseClass::screens().empty();
 }
 
 } // end of namespace glfw
