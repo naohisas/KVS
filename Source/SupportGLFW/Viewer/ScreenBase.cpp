@@ -339,7 +339,7 @@ void ScreenBase::create()
     }
 
     glfwMakeContextCurrent( m_handler );
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
 
     // Set screen position.
     if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
@@ -496,22 +496,6 @@ bool ScreenBase::isFullScreen() const
 {
     return m_is_fullscreen;
 }
-
-void ScreenBase::enable() {}
-void ScreenBase::disable() {}
-void ScreenBase::reset() {}
-
-void ScreenBase::initializeEvent(){}
-void ScreenBase::paintEvent(){}
-void ScreenBase::resizeEvent( int, int ){}
-void ScreenBase::mousePressEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseMoveEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ){}
-void ScreenBase::wheelEvent( kvs::WheelEvent* ){}
-void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
-void ScreenBase::keyRepeatEvent( kvs::KeyEvent* ){}
-void ScreenBase::keyReleaseEvent( kvs::KeyEvent* ){}
 
 } // end of namespace glfw
 

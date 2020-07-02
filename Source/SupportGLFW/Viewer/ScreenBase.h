@@ -64,21 +64,21 @@ public:
     virtual void redraw();
     virtual void resize( int width, int height );
     virtual bool isFullScreen() const;
-    virtual void enable();
-    virtual void disable();
-    virtual void reset();
+    virtual void enable() {}
+    virtual void disable() {}
+    virtual void reset() {}
 
-    virtual void initializeEvent();
-    virtual void paintEvent();
-    virtual void resizeEvent( int width, int height );
-    virtual void mousePressEvent( kvs::MouseEvent* event );
-    virtual void mouseMoveEvent( kvs::MouseEvent* event );
-    virtual void mouseReleaseEvent( kvs::MouseEvent* event );
-    virtual void mouseDoubleClickEvent( kvs::MouseEvent* event );
-    virtual void wheelEvent( kvs::WheelEvent* event );
-    virtual void keyPressEvent( kvs::KeyEvent* event );
-    virtual void keyRepeatEvent( kvs::KeyEvent* event );
-    virtual void keyReleaseEvent( kvs::KeyEvent* event );
+    virtual void initializeEvent() {}
+    virtual void paintEvent() {}
+    virtual void resizeEvent( int width, int height ) {}
+    virtual void mousePressEvent( kvs::MouseEvent* event ) {}
+    virtual void mouseMoveEvent( kvs::MouseEvent* event ) {}
+    virtual void mouseReleaseEvent( kvs::MouseEvent* event ) {}
+    virtual void mouseDoubleClickEvent( kvs::MouseEvent* event ) {}
+    virtual void wheelEvent( kvs::WheelEvent* event ) {}
+    virtual void keyPressEvent( kvs::KeyEvent* event ) {}
+    virtual void keyRepeatEvent( kvs::KeyEvent* event ) {}
+    virtual void keyReleaseEvent( kvs::KeyEvent* event ) {}
 
 protected:
     void aquireContext() { glfwMakeContextCurrent( m_handler ); }

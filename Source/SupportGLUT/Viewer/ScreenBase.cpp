@@ -369,6 +369,13 @@ ScreenBase::~ScreenBase()
     glutDestroyWindow( m_id );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets an event.
+ *  @param  event [in] event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
 void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
 {
     if ( event->eventType() & kvs::EventBase::TimerEvent )
@@ -378,6 +385,13 @@ void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
     BaseClass::setEvent( event, name );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Adds an event.
+ *  @param  event [in] event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
 void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
 {
     if ( event->eventType() & kvs::EventBase::TimerEvent )
@@ -610,22 +624,6 @@ kvs::ColorImage ScreenBase::capture() const
     kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
     return kvs::ColorImage( width, height, buffer );
 }
-
-void ScreenBase::enable(){}
-void ScreenBase::disable(){}
-void ScreenBase::reset(){}
-
-void ScreenBase::initializeEvent() {}
-void ScreenBase::paintEvent() {}
-void ScreenBase::resizeEvent( int, int ) {}
-void ScreenBase::mousePressEvent( kvs::MouseEvent* ) {}
-void ScreenBase::mouseMoveEvent( kvs::MouseEvent* ) {}
-void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ) {}
-void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ) {}
-void ScreenBase::wheelEvent( kvs::WheelEvent* ) {}
-void ScreenBase::keyPressEvent( kvs::KeyEvent* ) {}
-void ScreenBase::keyRepeatEvent( kvs::KeyEvent* ) {}
-void ScreenBase::keyReleaseEvent( kvs::KeyEvent* ) {}
 
 } // end of namespace glut
 
