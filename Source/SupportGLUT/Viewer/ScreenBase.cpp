@@ -342,8 +342,8 @@ ScreenBase::ScreenBase( kvs::glut::Application* application ):
     m_id( -1 ),
     m_mouse_event( 0 ),
     m_key_event( 0 ),
-    m_wheel_event( 0 ),
-    m_is_fullscreen( false )
+    m_wheel_event( 0 )
+//    m_is_fullscreen( false )
 {
     if ( application ) application->attach( this );
 
@@ -485,6 +485,8 @@ void ScreenBase::create()
 /*===========================================================================*/
 void ScreenBase::show()
 {
+    BaseClass::show();
+
 #if 1 // KVS_ENABLE_DEPRECATED
     if ( m_id == -1 ) this->create();
     else {
@@ -505,8 +507,11 @@ void ScreenBase::show()
 /*===========================================================================*/
 void ScreenBase::showFullScreen()
 {
-    if ( m_is_fullscreen ) return;
-    m_is_fullscreen = true;
+    if ( BaseClass::isFullScreen() ) { return; }
+    //if ( m_is_fullscreen ) return;
+
+    BaseClass::showFullScreen();
+    //m_is_fullscreen = true;
 
     const int x = glutGet( (GLenum)GLUT_WINDOW_X );
     const int y = glutGet( (GLenum)GLUT_WINDOW_Y );
@@ -522,8 +527,11 @@ void ScreenBase::showFullScreen()
 /*===========================================================================*/
 void ScreenBase::showNormal()
 {
-    if ( !m_is_fullscreen ) return;
-    m_is_fullscreen = false;
+    if ( !BaseClass::isFullScreen() ) { return; }
+    //if ( !m_is_fullscreen ) return;
+
+    BaseClass::showNormal();
+    //m_is_fullscreen = false;
 
     glutReshapeWindow( BaseClass::width(), BaseClass::height() );
     glutPositionWindow( BaseClass::x(), BaseClass::y() );
@@ -536,6 +544,8 @@ void ScreenBase::showNormal()
 /*===========================================================================*/
 void ScreenBase::hide()
 {
+    BaseClass::hide();
+
     glutSetWindow( m_id );
     glutHideWindow();
 }
@@ -603,10 +613,10 @@ void ScreenBase::draw()
  *  @return true, if the window is full-screen
  */
 /*===========================================================================*/
-bool ScreenBase::isFullScreen() const
-{
-    return m_is_fullscreen;
-}
+//bool ScreenBase::isFullScreen() const
+//{
+//    return m_is_fullscreen;
+//}
 
 /*===========================================================================*/
 /**

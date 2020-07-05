@@ -25,7 +25,9 @@ ScreenBase::ScreenBase():
     m_title(""),
     m_event_handler( new kvs::EventHandler() ),
     m_paint_device( new kvs::PaintDevice() ),
-    m_device_pixel_ratio( 1.0f )
+    m_device_pixel_ratio( 1.0f ),
+    m_visible( true ),
+    m_fullscreen( false )
 {
 }
 

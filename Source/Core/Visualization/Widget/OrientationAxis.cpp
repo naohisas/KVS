@@ -18,6 +18,7 @@
 #include <kvs/ScreenBase>
 #include <kvs/Scene>
 #include <kvs/ObjectManager>
+#include <kvs/UIColor>
 #include <kvs/OpenGL>
 #include <kvs/IgnoreUnusedVariable>
 
@@ -45,13 +46,13 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* sce
     m_x_tag( "X" ),
     m_y_tag( "Y" ),
     m_z_tag( "Z" ),
-    m_x_axis_color( kvs::RGBColor( 180, 10, 10 ) ),
-    m_y_axis_color( kvs::RGBColor( 10, 180, 10 ) ),
-    m_z_axis_color( kvs::RGBColor( 10, 10, 180 ) ),
+    m_x_axis_color( kvs::UIColor::Red() ),
+    m_y_axis_color( kvs::UIColor::Green() ),
+    m_z_axis_color( kvs::UIColor::Blue() ),
     m_axis_line_width( 2.0f ),
     m_axis_length( 4.0f ),
-    m_box_color( kvs::RGBColor( 200, 200, 200 ) ),
-    m_box_line_color( kvs::RGBColor( 10, 10, 10 ) ),
+    m_box_color( kvs::UIColor::Gray2() ),
+    m_box_line_color( kvs::UIColor::QuaternaryLabel() ),
     m_box_line_width( 1.0f ),
     m_enable_anti_aliasing( true ),
     m_axis_type( OrientationAxis::CorneredAxis ),
@@ -80,12 +81,12 @@ OrientationAxis::OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase
     m_x_tag( "X" ),
     m_y_tag( "Y" ),
     m_z_tag( "Z" ),
-    m_x_axis_color( kvs::RGBColor( 180, 10, 10 ) ),
-    m_y_axis_color( kvs::RGBColor( 10, 180, 10 ) ),
-    m_z_axis_color( kvs::RGBColor( 10, 10, 180 ) ),
+    m_x_axis_color( kvs::UIColor::Red() ),
+    m_y_axis_color( kvs::UIColor::Green() ),
+    m_z_axis_color( kvs::UIColor::Blue() ),
     m_axis_line_width( 1.0f ),
-    m_box_color( kvs::RGBColor( 200, 200, 200 ) ),
-    m_box_line_color( kvs::RGBColor( 10, 10, 10 ) ),
+    m_box_color( kvs::UIColor::Gray2() ),
+    m_box_line_color( kvs::UIColor::QuaternaryLabel() ),
     m_box_line_width( 1.0f ),
     m_enable_anti_aliasing( false ),
     m_axis_type( OrientationAxis::CorneredAxis ),
@@ -170,7 +171,6 @@ void OrientationAxis::paintEvent()
                 const int y = screen()->height() - BaseClass::y0() - BaseClass::height() + BaseClass::margin();
                 const int width = BaseClass::width() - BaseClass::margin();
                 const int height = BaseClass::height() - BaseClass::margin();
-//                kvs::OpenGL::SetViewport( x, y, width, height );
                 kvs::OpenGL::SetViewport( x * dpr, y * dpr, width * dpr, height * dpr );
 
                 kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );

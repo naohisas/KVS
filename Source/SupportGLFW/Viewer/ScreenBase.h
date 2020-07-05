@@ -29,7 +29,7 @@ class Application;
 class ScreenBase : public kvs::ScreenBase
 {
     friend class kvs::glfw::Application;
-    typedef kvs::ScreenBase BaseClass;
+    using BaseClass = kvs::ScreenBase;
 
 public:
     static ScreenBase* DownCast( kvs::ScreenBase* screen );
@@ -42,7 +42,7 @@ private:
     kvs::KeyEvent* m_key_event; ///< key event
     kvs::WheelEvent* m_wheel_event; ///< wheel event
     kvs::Timer m_elapse_time_counter; ///< elapse time counter for double click event
-    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
+//    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
 
 public:
     ScreenBase( kvs::glfw::Application* application );
@@ -63,7 +63,8 @@ public:
     virtual void pushDown();
     virtual void redraw();
     virtual void resize( int width, int height );
-    virtual bool isFullScreen() const;
+//    virtual bool isFullScreen() const;
+
     virtual void enable() {}
     virtual void disable() {}
     virtual void reset() {}

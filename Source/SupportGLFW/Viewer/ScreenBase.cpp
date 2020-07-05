@@ -268,19 +268,14 @@ void KeyCallback( GLFWwindow* handler, int key, int scancode, int action, int mo
  */
 /*===========================================================================*/
 ScreenBase::ScreenBase( kvs::glfw::Application* application ):
-    m_handler( 0 ),
+    m_handler( nullptr ),
     m_id( -1 ),
-    m_mouse_event( 0 ),
-    m_key_event( 0 ),
-    m_wheel_event( 0 ),
-    m_is_fullscreen( false )
+    m_mouse_event( new kvs::MouseEvent() ),
+    m_key_event( new kvs::KeyEvent() ),
+    m_wheel_event( new kvs::WheelEvent() )
+//    m_is_fullscreen( false )
 {
-    if ( application ) application->attach( this );
-
-    m_mouse_event = new kvs::MouseEvent();
-    m_key_event = new kvs::KeyEvent();
-    m_wheel_event = new kvs::WheelEvent();
-
+    if ( application ) { application->attach( this ); }
     m_elapse_time_counter.start();
 }
 
@@ -297,6 +292,13 @@ ScreenBase::~ScreenBase()
     if ( m_handler ) { glfwDestroyWindow( m_handler ); }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets an event.
+ *  @param  event [in] event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
 void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
 {
     if ( event->eventType() & kvs::EventBase::TimerEvent )
@@ -306,6 +308,13 @@ void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
     BaseClass::setEvent( event, name );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Adds an event.
+ *  @param  event [in] event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
 void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
 {
     if ( event->eventType() & kvs::EventBase::TimerEvent )
@@ -323,8 +332,6 @@ void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
 void ScreenBase::create()
 {
     KVS_ASSERT( m_id == -1 );
-    static int id = 0;
-    m_id = id++;
 
     // Create window.
     m_handler = glfwCreateWindow(
@@ -337,6 +344,9 @@ void ScreenBase::create()
         kvsMessageError() << "Cannot create GLFW screen." << std::endl;
         return;
     }
+
+    static int id = 0;
+    m_id = id++;
 
     glfwMakeContextCurrent( m_handler );
     glfwSwapInterval(0);
@@ -363,7 +373,7 @@ void ScreenBase::create()
     glfwSetScrollCallback( m_handler, ScrollCallback );
     glfwSetKeyCallback( m_handler, KeyCallback );
 
-    // Initialize GLEW. (Before glfwMakeContextCurrent)
+    // Initialize GLEW. (after glfwMakeContextCurrent)
 #if defined( KVS_ENABLE_GLEW )
     GLenum result = glewInit();
     if ( result != GLEW_OK )
@@ -391,8 +401,10 @@ void ScreenBase::create()
 void ScreenBase::show()
 {
 #if 1 // KVS_ENABLE_DEPRECATED
-    if ( m_id == -1 ) { this->create(); }
+//    if ( m_id == -1 ) { this->create(); }
+    if ( !m_handler ) { this->create(); }
 #endif
+    BaseClass::show();
     glfwShowWindow( m_handler );
 }
 
@@ -403,7 +415,10 @@ void ScreenBase::show()
 /*===========================================================================*/
 void ScreenBase::hide()
 {
+    BaseClass::hide();
+//    glfwMakeContextCurrent( m_handler );
     glfwHideWindow( m_handler );
+//    glfwMakeContextCurrent( nullptr );
 }
 
 /*===========================================================================*/
@@ -413,8 +428,10 @@ void ScreenBase::hide()
 /*===========================================================================*/
 void ScreenBase::showFullScreen()
 {
-    if ( m_is_fullscreen ) return;
-    m_is_fullscreen = true;
+//    if ( m_is_fullscreen ) return;
+//    m_is_fullscreen = true;
+    if ( BaseClass::isFullScreen() ) { return; }
+    BaseClass::showFullScreen();
 
     int x = 0, y = 0;
     glfwGetWindowPos( m_handler, &x, &y );
@@ -432,8 +449,10 @@ void ScreenBase::showFullScreen()
 /*===========================================================================*/
 void ScreenBase::showNormal()
 {
-    if ( !m_is_fullscreen ) return;
-    m_is_fullscreen = false;
+//    if ( !m_is_fullscreen ) return;
+//    m_is_fullscreen = false;
+    if ( !BaseClass::isFullScreen() ) { return; }
+    BaseClass::showNormal();
 
     const int x = BaseClass::x();
     const int y = BaseClass::y();
@@ -492,10 +511,10 @@ void ScreenBase::resize( int width, int height )
  *  @return true if the screen is fullscreen.
  */
 /*===========================================================================*/
-bool ScreenBase::isFullScreen() const
-{
-    return m_is_fullscreen;
-}
+//bool ScreenBase::isFullScreen() const
+//{
+//    return m_is_fullscreen;
+//}
 
 } // end of namespace glfw
 

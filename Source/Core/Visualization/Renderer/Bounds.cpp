@@ -20,6 +20,7 @@
 #include <kvs/LineObject>
 #include <kvs/IgnoreUnusedVariable>
 #include <kvs/ValueArray>
+#include <kvs/UIColor>
 #include <vector>
 
 
@@ -33,7 +34,7 @@ namespace kvs
 /*===========================================================================*/
 Bounds::Bounds():
     m_type( Bounds::Box ),
-    m_line_color( kvs::RGBColor( 0, 0, 0 ) ),
+    m_line_color( kvs::UIColor::Label() ),
     m_line_width( 1.0f ),
     m_corner_scale( 0.2f ),
     m_division( 50.0f ),

@@ -33,6 +33,8 @@ private:
     kvs::EventHandler* m_event_handler; ///< event handler
     kvs::PaintDevice* m_paint_device; ///< paint device
     float m_device_pixel_ratio; ///< device pixel ratio
+    bool m_visible; ///< visibility of the screen
+    bool m_fullscreen; ///< flag for fullscreen display mode
 
 public:
     ScreenBase();
@@ -60,17 +62,19 @@ public:
     virtual void removeEvent( const std::string& name );
 
     virtual void create() {}
-    virtual void show() {}
-    virtual void hide() {}
-    virtual void showFullScreen() {}
-    virtual void showNormal() {}
+    virtual void show() { m_visible = true; }
+    virtual void hide() { m_visible = false; }
+    virtual void showFullScreen() { m_visible = true; m_fullscreen = true; }
+    virtual void showNormal() { m_visible = true; m_fullscreen = false; }
     virtual void popUp() {}
     virtual void pushDown() {}
     virtual void redraw() {}
     virtual void resize( int, int ) {}
     virtual void draw() {}
-    virtual bool isFullScreen() const { return false; }
+    virtual bool isFullScreen() const { return m_fullscreen; }
+    virtual bool isVisible() const { return m_visible; }
     virtual kvs::ColorImage capture() const { return kvs::ColorImage( this->width(), this->height() ); }
+
     virtual void enable() {}
     virtual void disable() {}
     virtual void reset() {}

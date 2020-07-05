@@ -41,7 +41,7 @@ private:
     kvs::MouseEvent* m_mouse_event; ///< mouse event
     kvs::KeyEvent* m_key_event; ///< key event
     kvs::WheelEvent* m_wheel_event; ///< wheel event
-    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
+//    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
 
 public:
     ScreenBase( kvs::qt::Application* application = 0, QWidget* parent = 0 );
@@ -65,7 +65,8 @@ public:
     virtual void pushDown();
     virtual void redraw();
     virtual void resize( int width, int height );
-    virtual bool isFullScreen() const;
+//    virtual bool isFullScreen() const;
+
     virtual void enable() {}
     virtual void disable() {}
     virtual void reset() {}

@@ -41,7 +41,7 @@ private:
     kvs::KeyEvent* m_key_event; ///< key event
     kvs::WheelEvent* m_wheel_event; ///< wheel event
     kvs::Timer m_elapse_time_counter; ///< elapse time counter for double click event
-    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
+//    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
 
 public:
     ScreenBase( kvs::glut::Application* application );
@@ -63,7 +63,7 @@ public:
     virtual void resize( int width, int height );
     virtual void draw();
     virtual kvs::ColorImage capture() const;
-    virtual bool isFullScreen() const;
+//    virtual bool isFullScreen() const;
     virtual void enable() {}
     virtual void disable() {}
     virtual void reset() {}
