@@ -122,7 +122,6 @@ $(OUTDIR)/ExternalFaces.o \
 $(OUTDIR)/RayCastingRenderer.o \
 $(OUTDIR)/ParticleBasedRenderer.o \
 $(OUTDIR)/Histogram.o \
-$(OUTDIR)/Widget.o \
 $(OUTDIR)/main.o \
 
 

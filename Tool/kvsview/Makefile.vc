@@ -118,7 +118,6 @@ $(OUTDIR)/ExternalFaces.obj \
 $(OUTDIR)/RayCastingRenderer.obj \
 $(OUTDIR)/ParticleBasedRenderer.obj \
 $(OUTDIR)/Histogram.obj \
-$(OUTDIR)/Widget.obj \
 $(OUTDIR)/main.obj \
 
 
