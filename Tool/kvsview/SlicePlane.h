@@ -3,14 +3,6 @@
  *  @file   SlicePlane.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: SlicePlane.h 621 2010-09-30 08:04:55Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -42,9 +34,9 @@ public:
     Argument( int argc, char** argv );
 
 public:
-    const kvs::Vec4 coefficients();
-    const kvs::Vec3 point();
-    const kvs::Vec3 normal();
+    const kvs::Vec3 point() { return valueAsVec3<float>( "p", kvs::Vec3::Zero() ); }
+    const kvs::Vec3 normal() { return valueAsVec3<float>( "n", kvs::Vec3::Zero() ); }
+    const kvs::Vec4 coefficients() { return valueAsVec4<float>( "c", kvs::Vec4::Zero() ); }
     const kvs::TransferFunction transferFunction( const kvs::VolumeObjectBase* volume );
 };
 

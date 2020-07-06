@@ -3,14 +3,6 @@
  *  @file   Histogram.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Histogram.cpp 1690 2014-01-01 08:14:08Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Histogram.h"
 #include <string>

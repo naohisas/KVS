@@ -3,14 +3,6 @@
  *  @file   ExternalFaces.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ExternalFaces.h 621 2010-09-30 08:04:55Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -41,7 +33,7 @@ public:
     Argument( int argc, char** argv );
 
 public:
-    const kvs::UInt8 opacity();
+    const kvs::UInt8 opacity() { return valueAs<kvs::UInt8>( "a", kvs::UInt8(255) ); }
     const kvs::TransferFunction transferFunction( const kvs::VolumeObjectBase* volume );
 };
 

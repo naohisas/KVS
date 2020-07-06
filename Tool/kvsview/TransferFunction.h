@@ -3,14 +3,6 @@
  *  @file   TransferFunction.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TransferFunction.h 621 2010-09-30 08:04:55Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -39,7 +31,6 @@ const std::string Description("Rendering a transfer function. (optional)");
 class Argument : public kvsview::Argument::Common
 {
 public:
-
     Argument( int argc, char** argv );
     const bool hasColorMapOption();
     const bool hasOpacityMapOption();

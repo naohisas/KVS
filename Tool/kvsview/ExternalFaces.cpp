@@ -3,14 +3,6 @@
  *  @file   ExternalFaces.cpp
  *  @auhtor Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ExternalFaces.cpp 1191 2012-06-12 01:31:49Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include "ExternalFaces.h"
 #include <kvs/DebugNew>
@@ -18,11 +10,14 @@
 #include <kvs/PipelineModule>
 #include <kvs/VisualizationPipeline>
 #include <kvs/ExternalFaces>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
+#include <kvs/Label>
+#include <kvs/ColorMapBar>
+#include <kvs/OrientationAxis>
+#include <kvs/TargetChangeEvent>
 #include "CommandName.h"
 #include "FileChecker.h"
-#include "Widget.h"
 
 
 namespace kvsview
@@ -42,24 +37,10 @@ Argument::Argument( int argc, char** argv ):
     kvsview::Argument::Common( argc, argv, "ExternalFaces")
 {
     // Parameters for the ExternalFaces class.
-    addOption( kvsview::ExternalFaces::CommandName, kvsview::ExternalFaces::Description, 0 );
+    addOption( kvsview::ExternalFaces::CommandName, ExternalFaces::Description, 0 );
     addOption( "a", "Opacity (alpha value). (default: 255)", 1, false );
     addOption( "t", "Transfer function file. (optional: <filename>)", 1, false );
     addOption( "T", "Transfer function file with range adjustment. (optional: <filename>)", 1, false );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a opacity value.
- *  @return opacity value
- */
-/*===========================================================================*/
-const kvs::UInt8 Argument::opacity( void )
-{
-    const kvs::UInt8 default_value = 255;
-
-    if ( this->hasOption("a") ) return this->optionValue<kvs::UInt8>("a");
-    else return default_value;
 }
 
 /*===========================================================================*/
@@ -97,26 +78,24 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
 /*===========================================================================*/
 int Main::exec( int argc, char** argv )
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
-
     // Parse specified arguments.
     kvsview::ExternalFaces::Argument arg( argc, argv );
     if ( !arg.parse() ) return false;
 
-    // Create screen.
-    kvs::glut::Screen screen( &app );
+    // Viewer application.
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
-    screen.setTitle( kvsview::CommandName + " - " + kvsview::ExternalFaces::CommandName );
-    screen.show();
+    screen.setTitle( kvsview::CommandName + " - " + ExternalFaces::CommandName );
+    screen.create();
 
     // Check the input volume data.
     m_input_name = arg.value<std::string>();
     if ( !( kvsview::FileChecker::ImportableStructuredVolume( m_input_name ) ||
             kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
     {
-        kvsMessageError("%s is not volume data.", m_input_name.c_str());
-        return false;
+        kvsMessageError() << m_input_name << " is not volume data." << std::endl;
+        return ( false );
     }
 
     // Visualization pipeline.
@@ -124,33 +103,15 @@ int Main::exec( int argc, char** argv )
     pipe.import();
 
     // Verbose information.
+    const kvs::Indent indent(4);
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, indent );
     }
 
-    // Pointer to the volume object data.
-    const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
-
-    // Transfer function.
-    const kvs::TransferFunction tfunc = arg.transferFunction( volume );
-
-    // Colormap bar.
-    kvsview::Widget::ColorMapBar colormap_bar( &screen );
-    colormap_bar.setColorMap( tfunc.colorMap() );
-    if ( !tfunc.hasRange() )
-    {
-        const kvs::Real32 min_value = static_cast<kvs::Real32>( volume->minValue() );
-        const kvs::Real32 max_value = static_cast<kvs::Real32>( volume->maxValue() );
-        colormap_bar.setRange( min_value, max_value );
-    }
-    colormap_bar.show();
-
-    // Orientation axis.
-    kvsview::Widget::OrientationAxis orientation_axis( &screen );
-    orientation_axis.show();
-
-    // Setup ExternalFaces class.
+    // Create external faces module.
+    const auto* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
+    const auto tfunc = arg.transferFunction( volume );
     kvs::PipelineModule mapper( new kvs::ExternalFaces );
     const kvs::UInt8 opacity = arg.opacity();
     mapper.get<kvs::ExternalFaces>()->setOpacity( opacity );
@@ -160,21 +121,63 @@ int Main::exec( int argc, char** argv )
     // Construct the visualization pipeline.
     if ( !pipe.exec() )
     {
-        kvsMessageError("Cannot execute the visulization pipeline.");
-        return false;
+        kvsMessageError() << "Cannot execute the visulization pipeline." << std::endl;
+        return ( false );
     }
     screen.registerObject( &pipe );
 
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
-        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, indent );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, indent );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
+
+    // Label (fps).
+    kvs::Label label( &screen );
+    label.setMargin( 10 );
+    label.anchorToTopLeft();
+    label.screenUpdated(
+        [&]()
+        {
+            const auto* r = screen.scene()->renderer();
+            const auto f = kvs::String::ToString( r->timer().fps(), 4 );
+            label.setText( std::string( "FPS: " + f ).c_str() );
+        } );
+    label.show();
+
+    const auto min_value = static_cast<kvs::Real32>( volume->minValue() );
+    const auto max_value = static_cast<kvs::Real32>( volume->maxValue() );
+
+    // Colormap bar.
+    kvs::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setWidth( 150 );
+    colormap_bar.setHeight( 60 );
+    colormap_bar.setColorMap( tfunc.colorMap() );
+    if ( !tfunc.hasRange() )
+    {
+        colormap_bar.setRange( min_value, max_value );
+    }
+    colormap_bar.anchorToBottomRight();
+    colormap_bar.show();
+
+    // Orientation axis.
+    kvs::OrientationAxis orientation_axis( &screen, screen.scene() );
+    orientation_axis.setMargin( 0 );
+    orientation_axis.setSize( 100 );
+    orientation_axis.setAxisLength( 3.2f );
+    orientation_axis.setBoxTypeToSolid();
+    orientation_axis.enableAntiAliasing();
+    orientation_axis.anchorToBottomLeft();
+    orientation_axis.show();
+
+    // Target change event
+    kvs::TargetChangeEvent target_change_event;
+    screen.addEvent( &target_change_event );
 
     return ( arg.clear(), app.run() );
 }

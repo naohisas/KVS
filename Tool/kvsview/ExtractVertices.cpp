@@ -18,11 +18,14 @@
 #include <kvs/PipelineModule>
 #include <kvs/VisualizationPipeline>
 #include <kvs/ExtractVertices>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
+#include <kvs/Label>
+#include <kvs/ColorMapBar>
+#include <kvs/OrientationAxis>
+#include <kvs/TargetChangeEvent>
 #include "CommandName.h"
 #include "FileChecker.h"
-#include "Widget.h"
 
 
 namespace kvsview
@@ -50,19 +53,6 @@ Argument::Argument( int argc, char** argv ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns a point size.
- *  @return point size
- */
-/*===========================================================================*/
-const kvs::Real32 Argument::size()
-{
-    const kvs::Real32 default_value = 0.0;
-    if ( this->hasOption("s") ) return( this->optionValue<kvs::Real32>("s") );
-    else return( default_value );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Returns a transfer function.
  *  @param  volume [in] pointer to the volume data
  *  @return transfer function
@@ -72,12 +62,12 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
 {
     if ( this->hasOption("t") )
     {
-        const std::string filename = this->optionValue<std::string>("t");
+        const auto filename = this->optionValue<std::string>("t");
         return( kvs::TransferFunction( filename ) );
     }
     else if ( this->hasOption("T") )
     {
-        const std::string filename = this->optionValue<std::string>("T");
+        const auto filename = this->optionValue<std::string>("T");
         kvs::TransferFunction tfunc( filename );
         tfunc.adjustRange( volume );
         return( tfunc );
@@ -96,17 +86,15 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
 /*===========================================================================*/
 int Main::exec( int argc, char** argv )
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
-
     // Parse specified arguments.
     kvsview::ExtractVertices::Argument arg( argc, argv );
-    if( !arg.parse() ) return false;
+    if( !arg.parse() ) { return (false); }
 
-    // Create screen.
-    kvs::glut::Screen screen( &app );
+    // Viewer application.
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
-    screen.setTitle( kvsview::CommandName + " - " + kvsview::ExtractVertices::CommandName );
+    screen.setTitle( kvsview::CommandName + " - " + ExtractVertices::CommandName );
     screen.show();
 
     // Check the input volume data.
@@ -114,8 +102,8 @@ int Main::exec( int argc, char** argv )
     if ( !(kvsview::FileChecker::ImportableStructuredVolume( m_input_name ) ||
            kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
     {
-        kvsMessageError("%s is not volume data.", m_input_name.c_str());
-        return false;
+        kvsMessageError() << m_input_name << " is not volume data." << std::endl;
+        return (false);
     }
 
     // Visualization pipeline.
@@ -123,57 +111,81 @@ int Main::exec( int argc, char** argv )
     pipe.import();
 
     // Verbose information.
+    const kvs::Indent indent(4);
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, indent );
     }
 
-    // Pointer to the volume object data.
-    const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
-
-    // Transfer function.
-    const kvs::TransferFunction tfunc = arg.transferFunction( volume );
-
-    // Colormap bar.
-    kvsview::Widget::ColorMapBar colormap_bar( &screen );
-    colormap_bar.setColorMap( tfunc.colorMap() );
-    if ( !tfunc.hasRange() )
-    {
-        const kvs::Real32 min_value = static_cast<kvs::Real32>( volume->minValue() );
-        const kvs::Real32 max_value = static_cast<kvs::Real32>( volume->maxValue() );
-        colormap_bar.setRange( min_value, max_value );
-    }
-    colormap_bar.show();
-
-    // Orientation axis.
-    kvsview::Widget::OrientationAxis orientation_axis( &screen );
-    orientation_axis.show();
-
-    // Set up the isosurface class.
+    // Create extract vertices module.
+    const auto* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
+    const auto tfunc = arg.transferFunction( volume );
     kvs::PipelineModule mapper( new kvs::ExtractVertices );
     const kvs::Real32 size = arg.size();
     mapper.get<kvs::ExtractVertices>()->setSize( size );
     mapper.get<kvs::ExtractVertices>()->setTransferFunction( tfunc );
     pipe.connect( mapper );
 
-    // Construct the visualization pipeline.
+    // Execute the visualization pipeline.
     if ( !pipe.exec() )
     {
-        kvsMessageError("Cannot execute the visulization pipeline.");
-        return false;
+        kvsMessageError() << "Cannot execute the visulization pipeline." << std::endl;
+        return (false);
     }
     screen.registerObject( &pipe );
 
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
-        pipe.print(  std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, indent );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, indent );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
+
+    // Label (fps).
+    kvs::Label label( &screen );
+    label.setMargin( 10 );
+    label.anchorToTopLeft();
+    label.screenUpdated(
+        [&]()
+        {
+            const auto* r = screen.scene()->renderer();
+            const auto f = kvs::String::ToString( r->timer().fps(), 4 );
+            label.setText( std::string( "FPS: " + f ).c_str() );
+        } );
+    label.show();
+
+    const auto min_value = static_cast<kvs::Real32>( volume->minValue() );
+    const auto max_value = static_cast<kvs::Real32>( volume->maxValue() );
+
+    // Colormap bar.
+    kvs::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setWidth( 150 );
+    colormap_bar.setHeight( 60 );
+    colormap_bar.setColorMap( tfunc.colorMap() );
+    if ( !tfunc.hasRange() )
+    {
+        colormap_bar.setRange( min_value, max_value );
+    }
+    colormap_bar.anchorToBottomRight();
+    colormap_bar.show();
+
+    // Orientation axis.
+    kvs::OrientationAxis orientation_axis( &screen, screen.scene() );
+    orientation_axis.setMargin( 0 );
+    orientation_axis.setSize( 100 );
+    orientation_axis.setAxisLength( 3.2f );
+    orientation_axis.setBoxTypeToSolid();
+    orientation_axis.enableAntiAliasing();
+    orientation_axis.anchorToBottomLeft();
+    orientation_axis.show();
+
+    // Target change event
+    kvs::TargetChangeEvent target_change_event;
+    screen.addEvent( &target_change_event );
 
     return ( arg.clear(), app.run() );
 }

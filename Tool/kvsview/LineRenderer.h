@@ -3,14 +3,6 @@
  *  @file   LineRenderer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LineRenderer.h 621 2010-09-30 08:04:55Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #pragma once
 #include <string>

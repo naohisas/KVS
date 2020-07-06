@@ -17,7 +17,7 @@
 #include <kvs/Label>
 #include <kvs/ColorMapBar>
 #include <kvs/OrientationAxis>
-#include <kvs/glut/Screen>
+#include <kvs/Screen>
 
 
 namespace kvsview
@@ -60,7 +60,7 @@ public:
 class OrientationAxis : public kvs::OrientationAxis
 {
 public:
-    OrientationAxis( kvs::glut::Screen* screen );
+    OrientationAxis( kvs::Screen* screen );
     void screenResized();
 };
 

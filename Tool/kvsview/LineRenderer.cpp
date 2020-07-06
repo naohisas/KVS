@@ -3,14 +3,6 @@
  *  @file   LineRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LineRenderer.cpp 1191 2012-06-12 01:31:49Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include "LineRenderer.h"
 #include <kvs/DebugNew>
@@ -18,8 +10,8 @@
 #include <kvs/PipelineModule>
 #include <kvs/VisualizationPipeline>
 #include <kvs/LineRenderer>
-#include <kvs/glut/Screen>
-#include <kvs/glut/Application>
+#include <kvs/Screen>
+#include <kvs/Application>
 #include "CommandName.h"
 #include "FileChecker.h"
 
@@ -41,7 +33,7 @@ Argument::Argument( int argc, char** argv ):
     kvsview::Argument::Common( argc, argv, kvsview::LineRenderer::CommandName )
 {
     // Parameters for the line renderer class.
-    addOption( kvsview::LineRenderer::CommandName, kvsview::LineRenderer::Description, 0 );
+    addOption( kvsview::LineRenderer::CommandName, LineRenderer::Description, 0 );
 }
 
 /*===========================================================================*/
@@ -51,25 +43,23 @@ Argument::Argument( int argc, char** argv ):
 /*===========================================================================*/
 int Main::exec( int argc, char** argv )
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
-
     // Parse specified arguments.
     kvsview::LineRenderer::Argument arg( argc, argv );
-    if( !arg.parse() ) return false;
+    if ( !arg.parse() ) { return false; }
 
-    // Create screen.
-    kvs::glut::Screen screen( &app );
+    // Viewer application.
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
-    screen.setTitle( kvsview::CommandName + " - " + kvsview::LineRenderer::CommandName );
+    screen.setTitle( kvsview::CommandName + " - " + LineRenderer::CommandName );
     screen.show();
 
     // Check the input data.
     m_input_name = arg.value<std::string>();
     if ( !kvsview::FileChecker::ImportableLine( m_input_name ) )
     {
-        kvsMessageError("%s is not line data.", m_input_name.c_str());
-        return false;
+        kvsMessageError() << m_input_name << " is not line data." << std::endl;
+        return ( false );
     }
 
     // Visualization pipeline.
@@ -77,9 +67,10 @@ int Main::exec( int argc, char** argv )
     pipe.import();
 
     // Verbose information.
+    const kvs::Indent indent(4);
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, indent );
     }
 
     // Set a line renderer.
@@ -88,15 +79,15 @@ int Main::exec( int argc, char** argv )
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return false;
+        return ( false );
     }
     screen.registerObject( &pipe );
 
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
-        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, indent );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, indent );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.

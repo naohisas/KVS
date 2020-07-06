@@ -45,7 +45,7 @@ FPSLabel::FPSLabel( kvs::ScreenBase* screen, const std::string renderer_name ):
 /*===========================================================================*/
 void FPSLabel::screenUpdated()
 {
-    kvs::Scene* scene = static_cast<kvs::glut::Screen*>( screen() )->scene();
+    kvs::Scene* scene = static_cast<kvs::Screen*>( screen() )->scene();
     const kvs::RendererBase* renderer = scene->renderer( m_renderer_name );
 
     std::stringstream fps;
@@ -83,7 +83,7 @@ void ColorMapBar::screenResized()
  *  @param  screen [in] pointer to the screen
  */
 /*===========================================================================*/
-OrientationAxis::OrientationAxis( kvs::glut::Screen* screen ):
+OrientationAxis::OrientationAxis( kvs::Screen* screen ):
     kvs::OrientationAxis( screen, screen->scene() )
 {
     setMargin( 0 );

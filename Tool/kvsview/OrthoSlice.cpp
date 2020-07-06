@@ -3,14 +3,6 @@
  *  @file   OrthoSlice.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OrthoSlice.cpp 1517 2013-04-09 11:55:49Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "OrthoSlice.h"
 #include <kvs/DebugNew>
@@ -19,12 +11,15 @@
 #include <kvs/VisualizationPipeline>
 #include <kvs/OrthoSlice>
 #include <kvs/ObjectManager>
-#include <kvs/glut/Screen>
-#include <kvs/glut/Application>
+#include <kvs/Screen>
+#include <kvs/Application>
 #include <kvs/Slider>
+#include <kvs/Label>
+#include <kvs/ColorMapBar>
+#include <kvs/OrientationAxis>
+#include <kvs/TargetChangeEvent>
 #include "CommandName.h"
 #include "FileChecker.h"
-#include "Widget.h"
 
 
 namespace kvsview
@@ -32,41 +27,6 @@ namespace kvsview
 
 namespace OrthoSlice
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Plane position slider class.
- */
-/*===========================================================================*/
-class PlaneSlider : public kvs::Slider
-{
-    const kvs::VolumeObjectBase* m_volume; ///< pointer to the volume object
-    kvs::TransferFunction m_tfunc; ///< transfer function
-    kvs::OrthoSlice::AlignedAxis m_axis; ///< axis
-
-public:
-    PlaneSlider( kvs::glut::Screen* screen ):
-        kvs::Slider( screen ),
-        m_volume( NULL ),
-        m_axis( kvs::OrthoSlice::ZAxis ) {}
-
-    void setVolumeObject( const kvs::VolumeObjectBase* volume ) { m_volume = volume; }
-    void setTransferFunction( const kvs::TransferFunction& tfunc ) { m_tfunc = tfunc; }
-    void setAxis( const kvs::OrthoSlice::AlignedAxis axis ) { m_axis = axis; }
-
-    void valueChanged()
-    {
-        kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-        const float position = static_cast<float>( this->value() );
-        kvs::PolygonObject* object = new kvs::OrthoSlice( m_volume, position, m_axis, m_tfunc );
-        if ( object ) glut_screen->scene()->objectManager()->change( 1, object );
-    }
-
-    void screenResized()
-    {
-        setX( screen()->width() - width() - margin() );
-    }
-};
 
 /*===========================================================================*/
 /**
@@ -88,42 +48,23 @@ Argument::Argument( int argc, char** argv ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns a position of any point in the plane.
- *  @return position of the point
- */
-/*===========================================================================*/
-const float Argument::position()
-{
-    const float default_value( 0.0f );
-
-    if ( this->hasOption("p") )
-    {
-        const float position( this->optionValue<float>("p") );
-        return position;
-    }
-    else return default_value;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Returns a normal vector.
  *  @return normal vector
  */
 /*===========================================================================*/
 const kvs::OrthoSlice::AlignedAxis Argument::axis()
 {
-    const kvs::OrthoSlice::AlignedAxis default_value( kvs::OrthoSlice::ZAxis );
-
+    const auto default_value = kvs::OrthoSlice::ZAxis;
     if ( this->hasOption("a") )
     {
-        const int axis( this->optionValue<int>("a") );
+        const int axis = this->optionValue<int>("a");
         switch ( axis )
         {
         case 0: return kvs::OrthoSlice::XAxis;
         case 1: return kvs::OrthoSlice::YAxis;
         case 2: return kvs::OrthoSlice::ZAxis;
         default:
-            kvsMessageError("Cannot specify 0, 1, or 2 for the option 'a'.");
+            kvsMessageError() << "Cannot specify 0, 1, or 2 for the option 'a'." << std::endl;
             break;
         }
     }
@@ -142,12 +83,12 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
 {
     if ( this->hasOption("t") )
     {
-        const std::string filename = this->optionValue<std::string>("t");
+        const auto filename = this->optionValue<std::string>("t");
         return kvs::TransferFunction( filename );
     }
     else if ( this->hasOption("T") )
     {
-        const std::string filename = this->optionValue<std::string>("T");
+        const auto filename = this->optionValue<std::string>("T");
         kvs::TransferFunction tfunc( filename );
         tfunc.adjustRange( volume );
         return tfunc;
@@ -166,17 +107,16 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
 /*===========================================================================*/
 int Main::exec( int argc, char** argv )
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
 
     // Parse specified arguments.
     kvsview::OrthoSlice::Argument arg( argc, argv );
     if( !arg.parse() ) return( false );
 
-    // Create screen.
-    kvs::glut::Screen screen( &app );
+    // Viewer application.
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
-    screen.setTitle( kvsview::CommandName + " - " + kvsview::OrthoSlice::CommandName );
+    screen.setTitle( kvsview::CommandName + " - " + OrthoSlice::CommandName );
     screen.show();
 
     // Check the input point data.
@@ -184,8 +124,8 @@ int Main::exec( int argc, char** argv )
     if ( !kvsview::FileChecker::ImportableStructuredVolume( m_input_name ) &&
          !kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) )
     {
-        kvsMessageError("%s is not volume data.", m_input_name.c_str());
-        return( false );
+        kvsMessageError() << m_input_name << " is not volume data." << std::endl;
+        return ( false );
     }
 
     // Visualization pipeline.
@@ -193,34 +133,15 @@ int Main::exec( int argc, char** argv )
     pipe.import();
 
     // Verbose information.
+    const kvs::Indent indent(4);
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, indent );
     }
 
-    // Pointer to the volume object data.
+    // Create ortho-slice module
     const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
-
-    // Transfer function.
     const kvs::TransferFunction tfunc = arg.transferFunction( volume );
-
-    // Colormap bar.
-    kvsview::Widget::ColorMapBar colormap_bar( &screen );
-    colormap_bar.setColorMap( tfunc.colorMap() );
-    if ( !tfunc.hasRange() )
-    {
-        const kvs::VolumeObjectBase* object = kvs::VolumeObjectBase::DownCast( pipe.object() );
-        const kvs::Real32 min_value = static_cast<kvs::Real32>( object->minValue() );
-        const kvs::Real32 max_value = static_cast<kvs::Real32>( object->maxValue() );
-        colormap_bar.setRange( min_value, max_value );
-    }
-    colormap_bar.show();
-
-    // Orientation axis.
-    kvsview::Widget::OrientationAxis orientation_axis( &screen );
-    orientation_axis.show();
-
-    // Set up the slice plane class.
     kvs::PipelineModule mapper( new kvs::OrthoSlice );
     const float position = arg.hasOption("p") ? arg.position() : pipe.object()->objectCenter().z();
     const kvs::OrthoSlice::AlignedAxis axis( arg.axis() );
@@ -231,8 +152,8 @@ int Main::exec( int argc, char** argv )
     // Construct the visualization pipeline.
     if ( !pipe.exec() )
     {
-        kvsMessageError("Cannot execute the visulization pipeline.");
-        return false;
+        kvsMessageError() << "Cannot execute the visulization pipeline." << std::endl;
+        return ( false );
     }
 
     screen.registerObject( &pipe );
@@ -243,24 +164,73 @@ int Main::exec( int argc, char** argv )
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
-        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, indent );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, indent );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
     arg.applyTo( screen, pipe );
     arg.applyTo( screen );
 
+    // Label (fps).
+    kvs::Label label( &screen );
+    label.setMargin( 10 );
+    label.anchorToTopLeft();
+    label.screenUpdated(
+        [&]()
+        {
+            const auto* r = screen.scene()->renderer();
+            const auto f = kvs::String::ToString( r->timer().fps(), 4 );
+            label.setText( std::string( "FPS: " + f ).c_str() );
+        } );
+    label.show();
+
+    const auto min_value = static_cast<kvs::Real32>( volume->minValue() );
+    const auto max_value = static_cast<kvs::Real32>( volume->maxValue() );
+    const auto min_coord = volume->minObjectCoord()[axis];
+    const auto max_coord = volume->maxObjectCoord()[axis];
+
+    // Colormap bar.
+    kvs::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setWidth( 150 );
+    colormap_bar.setHeight( 60 );
+    colormap_bar.setColorMap( tfunc.colorMap() );
+    if ( !tfunc.hasRange() )
+    {
+        colormap_bar.setRange( min_value, max_value );
+    }
+    colormap_bar.anchorToBottomRight();
+    colormap_bar.show();
+
+    // Orientation axis.
+    kvs::OrientationAxis orientation_axis( &screen, screen.scene() );
+    orientation_axis.setMargin( 0 );
+    orientation_axis.setSize( 100 );
+    orientation_axis.setAxisLength( 3.2f );
+    orientation_axis.setBoxTypeToSolid();
+    orientation_axis.enableAntiAliasing();
+    orientation_axis.anchorToBottomLeft();
+    orientation_axis.show();
+
     // Create a plane slider.
-    kvsview::OrthoSlice::PlaneSlider slider( &screen );
+    kvs::Slider slider( &screen );
     slider.setMargin( 10 );
     slider.setCaption("Slice");
-    slider.setVolumeObject( volume );
-    slider.setTransferFunction( tfunc );
-    slider.setAxis( axis );
     slider.setValue( position );
-    slider.setRange( volume->minObjectCoord()[axis], volume->maxObjectCoord()[axis] );
+    slider.setRange( min_coord, max_coord );
+    slider.valueChanged(
+        [&]()
+        {
+            const float p = static_cast<float>( slider.value() );
+            auto* o = new kvs::OrthoSlice( volume, p, axis, tfunc );
+            if ( o ) { screen.scene()->objectManager()->change( 1, o ); }
+        } );
+    slider.anchorToTopRight();
     slider.show();
+
+    // Target change event
+    kvs::TargetChangeEvent target_change_event;
+    screen.addEvent( &target_change_event );
 
     return ( arg.clear(), app.run() );
 }

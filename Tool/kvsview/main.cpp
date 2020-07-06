@@ -3,14 +3,6 @@
  *  @file   main.cpp
  *  @author Naohisa Sakamto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1497 2013-04-04 07:17:54Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/MemoryDebugger>
 #include <kvs/Message>
@@ -53,7 +45,7 @@ namespace kvsview
 /*===========================================================================*/
 int32_t Main::exec( int argc, char** argv )
 {
-    Argument arg( argc, argv );
+    kvsview::Argument arg( argc, argv );
     if ( !arg.read() ) { return 1; }
 
     // Output help messsage for the specified visualization method.

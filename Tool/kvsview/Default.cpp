@@ -3,14 +3,6 @@
  *  @file   Default.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Default.cpp 1497 2013-04-04 07:17:54Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Default.h"
 #include <kvs/DebugNew>
@@ -19,8 +11,8 @@
 #include <kvs/KVSMLTransferFunction>
 #include <kvs/VisualizationPipeline>
 #include <kvs/ImageObject>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/RayCastingRenderer>
 #include "TransferFunction.h"
 
@@ -40,38 +32,23 @@ namespace Default
 /*===========================================================================*/
 const bool CheckTransferFunctionFormat( const std::string& filename )
 {
-    if ( kvs::KVSMLTransferFunction::CheckExtension( filename ) )
-    {
-        // Find a TransferFunction tag without error messages.
-        kvs::XMLDocument document;
-        if ( !document.read( filename ) ) return false;
+    if ( !kvs::KVSMLTransferFunction::CheckExtension( filename ) ) { return false; }
 
-        // <KVSML>
-        const std::string kvsml_tag("KVSML");
-        const kvs::XMLNode::SuperClass* kvsml_node = kvs::XMLDocument::FindNode( &document, kvsml_tag );
-        if ( !kvsml_node ) return false;
+    // Find a TransferFunction tag without error messages.
+    kvs::XMLDocument document;
+    if ( !document.read( filename ) ) { return false; }
 
-        // <TransferFunction>
-        const std::string tfunc_tag("TransferFunction");
-        const kvs::XMLNode::SuperClass* tfunc_node = kvs::XMLNode::FindChildNode( kvsml_node, tfunc_tag );
-        if ( !tfunc_node ) return false;
+    // <KVSML>
+    const std::string kvsml_tag("KVSML");
+    const auto* kvsml_node = kvs::XMLDocument::FindNode( &document, kvsml_tag );
+    if ( !kvsml_node ) { return false; }
 
-        return true;
-    }
+    // <TransferFunction>
+    const std::string tfunc_tag("TransferFunction");
+    const auto* tfunc_node = kvs::XMLNode::FindChildNode( kvsml_node, tfunc_tag );
+    if ( !tfunc_node ) { return false; }
 
-    return false;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Argument class for a default viewer.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- */
-/*===========================================================================*/
-Argument::Argument( int argc, char** argv ):
-    kvsview::Argument::Common( argc, argv )
-{
+    return true;
 }
 
 /*===========================================================================*/
@@ -83,8 +60,8 @@ Argument::Argument( int argc, char** argv ):
 /*===========================================================================*/
 int Main::exec( int argc, char** argv )
 {
-    // GLUT application.
-    kvs::glut::Application app( argc, argv );
+    // Application.
+    kvs::Application app( argc, argv );
 
     // Parse specified arguments.
     kvsview::Default::Argument arg( argc, argv );
@@ -100,9 +77,9 @@ int Main::exec( int argc, char** argv )
     }
 
     // Create a global and screen class.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
-    screen.setTitle("kvsview - Default");
+    screen.setTitle( "kvsview - Default" );
     screen.show();
 
     // Visualization pipeline.
@@ -111,14 +88,15 @@ int Main::exec( int argc, char** argv )
     pipe.import();
 
     // Verbose information.
+    const kvs::Indent indent( 4 );
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, indent );
     }
 
     if ( pipe.object()->objectType() == kvs::ObjectBase::Volume )
     {
-        const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
+        const auto* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
         if ( volume->volumeType() == kvs::VolumeObjectBase::Structured )
         {
             kvs::PipelineModule renderer( new kvs::glsl::RayCastingRenderer );
@@ -126,18 +104,19 @@ int Main::exec( int argc, char** argv )
         }
     }
 
+    // Pipeline execution.
     if ( !pipe.exec() )
     {
-        kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        kvsMessageError() << "Cannot execute the visulization pipeline." << std::endl;
+        return ( false );
     }
     screen.registerObject( &pipe );
 
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
-        pipe.print(  std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, indent );
+        pipe.print(  std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, indent );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
@@ -147,7 +126,7 @@ int Main::exec( int argc, char** argv )
     // In case of the image object, the screen size is equal to the image size.
     if ( pipe.object()->objectType() == kvs::ObjectBase::Image )
     {
-        const kvs::ImageObject* image = reinterpret_cast<const kvs::ImageObject*>( pipe.object() );
+        const auto* image = kvs::ImageObject::DownCast( pipe.object() );
         const size_t width = image->width();
         const size_t height = image->height();
         screen.setSize( width, height );
