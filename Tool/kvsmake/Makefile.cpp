@@ -68,9 +68,10 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 #endif
         if ( use_mpi )
         {
+            line = kvs::String::Replace( line, "(CPP)", "(MPICPP)" );
             line = kvs::String::Replace( line, "(CC)", "(MPICC)" );
             line = kvs::String::Replace( line, "(FC)", "(MPIFC)" );
-            line = kvs::String::Replace( line, "(CPP)", "(MPICPP)" );
+            line = kvs::String::Replace( line, "(LD)", "(MPILD)" );
         }
         out << line << std::endl;
     }

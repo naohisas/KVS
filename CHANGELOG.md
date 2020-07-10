@@ -192,6 +192,14 @@
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
++ Example/SupportMPI/AllToAll
++ Example/SupportMPI/Broadcast
++ Example/SupportMPI/Gather
++ Example/SupportMPI/HelloWorld
++ Example/SupportMPI/PutGet
++ Example/SupportMPI/Reduce
++ Example/SupportMPI/Scatter
++ Example/SupportMPI/SendRecv
 
 **Deprecated classes**
 + kvs::glut::CheckBox (use kvs::CheckBox)

@@ -53,6 +53,10 @@ ifndef KVS_MPI_FC
   KVS_MPI_FC := mpif90
 endif
 
+ifndef KVS_MPI_LD
+  KVS_MPI_LD := $(KVS_MPI_CPP)
+endif
+
 
 SHELL  := /bin/bash
 CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
@@ -63,6 +67,7 @@ LD     := $(KVS_LD)
 MPICPP := $(CCACHE) $(KVS_MPI_CPP)
 MPICC  := $(CCACHE) $(KVS_MPI_CC)
 MPIFC  := $(CCACHE) $(KVS_MPI_FC)
+MPILD  := $(KVS_MPI_LD)
 AR     := ar -ru
 RANLIB := ranlib
 MAKE   := make

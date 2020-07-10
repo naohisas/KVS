@@ -76,6 +76,9 @@ def KVSMake( dir_list, option ):
             projname = dir.replace('\\','/').rpartition('/')[2]
             command += "kvsmake -qtproj " + projname + s + " qmake" + s
             command += make_option[0]
+        elif dir.count('SupportMPI') > 0:
+            command += "kvsmake -G -use_mpi" + s
+            command += make_option[1]
         else:
             command += "kvsmake -G" + s
             command += make_option[1]
