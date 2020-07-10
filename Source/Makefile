@@ -57,6 +57,10 @@ ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 SUBDIRS += SupportPython
 endif
 
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+SUBDIRS += SupportMPI
+endif
+
 ifeq "$(KVS_SUPPORT_EGL)" "1"
 SUBDIRS += SupportEGL
 endif
@@ -128,6 +132,11 @@ ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/python
 	$(INSTALL) kvsSupportPython $(INSTALL_DIR)/include
 	$(INSTALL) $(shell find kvs/python -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/python
+endif
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/mpi
+	$(INSTALL) kvsSupportMPI $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/mpi -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/mpi
 endif
 ifeq "$(KVS_SUPPORT_EGL)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/egl

@@ -41,6 +41,18 @@ ifndef KVS_LD
   KVS_LD := $(KVS_CPP)
 endif
 
+ifndef KVS_MPI_CPP
+  KVS_MPI_CPP := mpicxx
+endif
+
+ifndef KVS_MPI_CC
+  KVS_MPI_CC := mpicc
+endif
+
+ifndef KVS_MPI_FC
+  KVS_MPI_FC := mpif90
+endif
+
 
 SHELL  := /bin/bash
 CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
@@ -48,6 +60,9 @@ CPP    := $(CCACHE) $(KVS_CPP)
 CC     := $(CCACHE) $(KVS_CC)
 FC     := $(CCACHE) $(KVS_FC)
 LD     := $(KVS_LD)
+MPICPP := $(CCACHE) $(KVS_MPI_CPP)
+MPICC  := $(CCACHE) $(KVS_MPI_CC)
+MPIFC  := $(CCACHE) $(KVS_MPI_FC)
 AR     := ar -ru
 RANLIB := ranlib
 MAKE   := make
@@ -91,6 +106,7 @@ LIB_KVS_SUPPORT_GLFW      := libkvsSupportGLFW.a
 LIB_KVS_SUPPORT_OPENCV    := libkvsSupportOpenCV.a
 LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
 LIB_KVS_SUPPORT_PYTHON    := libkvsSupportPython.a
+LIB_KVS_SUPPORT_MPI       := libkvsSupportMPI.a
 LIB_KVS_SUPPORT_EGL       := libkvsSupportEGL.a
 LIB_KVS_SUPPORT_OSMESA    := libkvsSupportOSMesa.a
 
@@ -592,6 +608,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
   DEFINITIONS += -DKVS_SUPPORT_PYTHON
+endif
+
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+  DEFINITIONS += -DKVS_SUPPORT_MPI
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"

@@ -132,7 +132,10 @@ for dirname in object_dir_list:
         print( "\t$(MKDIR) $(OUTDIR)" )
     else:
         print( "\t$(MKDIR) $(OUTDIR)/%s" % dirname )
-    print( "\t$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<" )
+    if source_path == "SupportMPI":
+        print( "\t$(MPICPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<" )
+    else:
+        print( "\t$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<" )
 
 print( "" )
 
@@ -198,7 +201,10 @@ for dirname in object_dir_list:
     print( "" )
     print( "{%s\\}.cpp{$(OUTDIR)\\%s\\}.obj::" % ( dirname, dirname ) )
     print( "\tIF NOT EXIST $(OUTDIR)\\%s $(MKDIR) $(OUTDIR)\\%s" %( dirname, dirname ) )
-    print( "\t$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\\%s\\ @<<" % dirname )
+    if source_path == "SupportMPI":
+        print( "\t$(MPICPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\\%s\\ @<<" % dirname )
+    else:
+        print( "\t$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\\%s\\ @<<" % dirname )
     print( "$<" )
     print( "<<" )
 

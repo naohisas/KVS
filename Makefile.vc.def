@@ -20,11 +20,12 @@
 #=============================================================================
 #  Command macro.
 #=============================================================================
-MAKE = nmake /nologo
-CPP  = cl /nologo
-LD   = link /nologo
-AR   = lib /nologo
-QMAKE= qmake
+MAKE   = nmake /nologo
+CPP    = cl /nologo
+MPICPP = mpicxx /nologo
+LD     = link /nologo
+AR     = lib /nologo
+QMAKE  = qmake
 
 MKDIR   = mkdir
 RM      = del /s
@@ -63,6 +64,7 @@ LIB_KVS_SUPPORT_GLFW   = kvsSupportGLFW.lib
 LIB_KVS_SUPPORT_QT     = kvsSupportQt.lib
 LIB_KVS_SUPPORT_OPENCV = kvsSupportOpenCV.lib
 LIB_KVS_SUPPORT_PYTHON = kvsSupportPython.lib
+LIB_KVS_SUPPORT_MPI    = kvsSupportMPI.lib
 LIB_KVS_SUPPORT_EGL    = kvsSupportEGL.lib
 LIB_KVS_SUPPORT_OSMESA = kvsSupportOSMesa.lib
 
@@ -306,6 +308,10 @@ DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_CUDA
 
 !IF "$(KVS_SUPPORT_PYTHON)" == "1"
 DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_PYTHON
+!ENDIF
+
+!IF "$(KVS_SUPPORT_MPI)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_MPI
 !ENDIF
 
 !IF "$(KVS_SUPPORT_EGL)" == "1"

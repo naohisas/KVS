@@ -20,6 +20,14 @@
 + kvs::glfw::ScreenBase
 + kvs::glfw::Timer
 
+**Added SupportMPI**
++ kvs::mpi::Communicator
++ kvs::mpi::DataType
++ kvs::mpi::Environment
++ kvs::mpi::Operator
++ kvs::mpi::Request
++ kvs::mpi::Window
+
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank
 + kvs::BitArray::BitArray( size, flag )
