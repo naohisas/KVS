@@ -3,14 +3,6 @@
  *  @file   OpenGL.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -18,6 +10,9 @@
 #include <kvs/OpenGL>
 #include <kvs/Message>
 #if defined( KVS_SUPPORT_GLUT )
+#include <kvs/glut/GLUT>
+#endif
+#if defined( KVS_SUPPORT_GLFW )
 #include <kvs/glut/GLUT>
 #endif
 
@@ -45,12 +40,19 @@ class OpenGL : public kvs::Program
 /*===========================================================================*/
 inline int OpenGL::exec( int argc, char** argv )
 {
-#if defined( KVS_SUPPORT_GLUT )
+#if defined( KVS_SUPPORT_GLFW )
+    glfwInit();
+    glfwMakeContextCurrent( glfwCreateWindow( 1, 1, "", nullptr, nullptr ) );
+#elif defined( KVS_SUPPORT_GLUT )
     /* Using OS-dependent Window System API, such as aglCreateContext, glXCreateContext,
      * or wglCreateContext, instead of glutInit and glutCreateWindow, GLUT is not required ???
      */
     glutInit( &argc, argv );
     glutCreateWindow("");
+#else
+    kvsMessageError() << "Cannot create OpenGL context." << std::endl;
+    return 1;
+#endif
 
     std::cout << "Vendor       : " << kvs::OpenGL::Vendor() << std::endl;
     std::cout << "Renderer     : " << kvs::OpenGL::Renderer() << std::endl;
@@ -60,13 +62,6 @@ inline int OpenGL::exec( int argc, char** argv )
     std::cout << "GLEW Version : " << kvs::OpenGL::GLEWVersion() << std::endl;
 
     return 0;
-#else
-    kvsMessageError(
-        "KVS_SUPPORT_GLUT option is disabled in the installed KVS. "
-        "GLUT is required to check OpenGL information using kvscheck.");
-    return 1;
-#endif
-
 }
 
 } // end of namespace kvscheck

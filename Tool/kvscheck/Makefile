@@ -29,6 +29,10 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
 INCLUDE_PATH += $(GLUT_INCLUDE_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+INCLUDE_PATH += $(GLFW_INCLUDE_PATH)
+endif
+
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 INCLUDE_PATH += $(OPENCV_INCLUDE_PATH)
 endif
@@ -58,6 +62,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
 LIBRARY_PATH += -L../../Source/SupportGLUT/$(OUTDIR) $(GLUT_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+LIBRARY_PATH += -L../../Source/SupportGLFW/$(OUTDIR) $(GLFW_LIBRARY_PATH)
 endif
 
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
@@ -93,6 +101,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
 LINK_LIBRARY += -lkvsSupportGLUT $(GLUT_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+LINK_LIBRARY += -lkvsSupportGLFW $(GLFW_LINK_LIBRARY)
 endif
 
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
