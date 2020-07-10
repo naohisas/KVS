@@ -37,6 +37,10 @@ ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 INCLUDE_PATH += $(PYTHON_INCLUDE_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+INCLUDE_PATH += $(MPI_INCLUDE_PATH)
+endif
+
 ifeq "$(KVS_SUPPORT_EGL)" "1"
 INCLUDE_PATH += $(EGL_INCLUDE_PATH)
 endif
@@ -62,6 +66,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 LIBRARY_PATH += -L../../Source/SupportPython/$(OUTDIR) $(PYTHON_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+LIBRARY_PATH += -L../../Source/SupportMPI/$(OUTDIR) $(MPI_LIBRARY_PATH)
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"
@@ -93,6 +101,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 LINK_LIBRARY += -lkvsSupportPython $(PYTHON_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+LINK_LIBRARY += -lkvsSupportMPI $(MPI_LINK_LIBRARY)
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"
@@ -129,6 +141,11 @@ $(OUTDIR)/main.o \
 #=============================================================================
 #  Build rule.
 #=============================================================================
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+CPP := $(MPICPP)
+LD  := $(MPILD)
+endif
+
 $(TARGET_EXE): $(OBJECTS)
 	$(LD) $(LDFLAGS) $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY)
 
