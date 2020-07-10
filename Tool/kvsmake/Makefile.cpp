@@ -33,9 +33,10 @@ namespace
  *  @param  in [in] input stream
  *  @param  out [in] output stream
  *  @param  project_name [in] project name
+ *  @param  use_mpi [in] if true, use MPI compiler
  */
 /*===========================================================================*/
-void Write( std::ifstream& in, std::ofstream& out, const std::string& project_name )
+void Write( std::ifstream& in, std::ofstream& out, const std::string& project_name, const bool use_mpi )
 {
 #if defined ( KVS_COMPILER_VC )
     // Search cpp files.
@@ -65,6 +66,12 @@ void Write( std::ifstream& in, std::ofstream& out, const std::string& project_na
 #if defined ( KVS_COMPILER_VC )
         line = kvs::String::Replace( line, "SOURCES_REPLACED_BY_KVSMAKE", sources );
 #endif
+        if ( use_mpi )
+        {
+            line = kvs::String::Replace( line, "(CC)", "(MPICC)" );
+            line = kvs::String::Replace( line, "(FC)", "(MPIFC)" );
+            line = kvs::String::Replace( line, "(CPP)", "(MPICPP)" );
+        }
         out << line << std::endl;
     }
 }
@@ -100,7 +107,7 @@ int Makefile::exec( int /* argc */, char** /* argv */ )
         return false;
     }
 
-    ::Write( in, out, m_project_name );
+    ::Write( in, out, m_project_name, m_use_mpi );
     return true;
 }
 

@@ -215,6 +215,20 @@ NUMPY_LINK_LIBRARY = $(KVS_NUMPY_LINK_LIBRARY)
 
 
 #=============================================================================
+#  MPI_INCLUDE_PATH, MPI_LIBRARY_PATH, MPI_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_MPI)" == "1"
+MPI_INCLUDE_PATH =
+MPI_LIBRARY_PATH =
+MPI_LINK_LIBRARY =
+!IFDEF KVS_MPI_DIR
+MPI_INCLUDE_PATH = $(MPI_INCLUDE_PATH) /I"$(KVS_MPI_DIR)\include"
+MPI_LIBRARY_PATH = $(MPI_LIBRARY_PATH) /LIBPATH:"$(KVS_MPI_DIR)\lib"
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
 #  EGL_INCLUDE_PATH, EGL_LIBRARY_PATH, EGL_LINK_LIBRARY
 #=============================================================================
 !IF "$(KVS_SUPPORT_EGL)" == "1"

@@ -35,6 +35,9 @@
 #if defined( KVS_SUPPORT_PYTHON )
 #include <kvs/python/Python>
 #endif
+#if defined( KVS_SUPPORT_MPI )
+#include <kvs/mpi/MPI>
+#endif
 #if defined( KVS_SUPPORT_EGL )
 #include <kvs/egl/EGL>
 #endif
@@ -115,6 +118,14 @@ inline int Support::exec( int argc, char** argv )
         libraries.push_back( "KVS_SUPPORT_PYTHON" );
         descriptions.push_back( kvs::python::Description() );
         versions.push_back( kvs::python::Version() );
+    }
+#endif
+
+#if defined( KVS_SUPPORT_MPI )
+    {
+        libraries.push_back( "KVS_SUPPORT_MPI" );
+        descriptions.push_back( kvs::mpi::Description() );
+        versions.push_back( kvs::mpi::Version() );
     }
 #endif
 

@@ -54,19 +54,20 @@ int main( int argc, char** argv )
     cl.addOption( "vcproj", "generate a MSVC project file. The target name will be set to the specified name.", 1 );
     cl.addOption( "Vcproj", "generate a MSVC project file. The target name will be automatically set to the current directory name.", 0 );
     cl.addOption( "vcproj_cuda", "generate a VC project file with CUDA option. The target name will be set to the specified name.", 1 );
+    cl.addOption( "mpi", "Use MPI compiler.", 0 );
     if ( !cl.parse() ) { exit( EXIT_FAILURE ); }
 
     if ( cl.hasOption( "g" ) )
     {
         const std::string project_name( cl.optionValue<std::string>( "g" ) );
-        return kvsmake::Makefile( project_name ).start( argc, argv );
+        return kvsmake::Makefile( project_name, cl.hasOption("mpi") ).start( argc, argv );
     }
 
     if ( cl.hasOption( "G" ) )
     {
         const kvs::Directory dir( "." );
         const std::string project_name( dir.name() );
-        return kvsmake::Makefile( project_name ).start( argc, argv );
+        return kvsmake::Makefile( project_name, cl.hasOption("mpi") ).start( argc, argv );
     }
 
     if ( cl.hasOption( "q" ) || cl.hasOption( "qtproj" ) )
