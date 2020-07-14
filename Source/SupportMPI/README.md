@@ -29,7 +29,7 @@ e.g.) Using Intel MPI compiler
 $ export KVS_MPI_CPP=mpiicpc
 ```
 
-## Example programs
+## Example Program
 Several example programs with the SupportMPI can be found in the Example/SupportMPI directory. Each of the programs can be easily compiled with kvsmake command. Note that the `-use_mpi` option need to be specified for the kvsmake to generate a Makefile with MPI comiple otions.
 
 ```
