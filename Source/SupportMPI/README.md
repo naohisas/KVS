@@ -67,7 +67,7 @@ The followings are setting examples for each HPC environment.
 
 - K computer (RIKEN)
 ```
-$ export KVS_MPI_MPI_CPP=mpiFCCpx
+$ export KVS_MPI_CPP=mpiFCCpx
 ```
 
 - Pi-computer (Kobe University)
