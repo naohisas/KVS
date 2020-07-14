@@ -12,13 +12,18 @@ The source code of KVS can be downloaded via GitHub as follows:
 $ git clone https://github.com/naohisas/KVS.git
 ```
 
-## Requirements
-Some of software are required for compiling KVS. Please install them as needed before building KVS.
+## Support library
+KVS supports the following software packages. By checking (changing '0' to '1') the enable/support flags (e.g. KVS_ENABLE_XXX/KVS_SUPPORT_XXX) corresponding to each package in kvs.conf, the functionalities provided from them can be available in KVS. Please install them as needed before building KVS.
+
 * GLUT
-* GLEW (optional but recommended)
+* GLFW (optional but recommended)
+* GLEW (optional but required for windows enviroments) 
 * Qt (optional)
-* CUDA (optional)
 * OpenCV (optional)
+* Python (optional)
+* MPI (optional)
+* EGL (optional)
+* OSMesa (optional)
 
 ## Configuration
 The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
