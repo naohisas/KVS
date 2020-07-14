@@ -4,7 +4,7 @@ SupportEGL is a support class library with the Khronos Native Platform Graphics 
 ## Prerequisite
 To compile the SupportEGL, a graphics driver supports EGL need to be installed in your developping environment. After installing the graphics driver, you need to install the EGL libgrary.
 
-### Graphics Driver Installation
+### Graphics Driver
 The graphics driver needs to be installed according the GPUs and OS before compiling the SupportEGL. We have only tested on Ubuntu OS with NVIDIA GPUs. For Ubuntu OS,
 the graphics driver can be easily installed on the terminal as follows:
 
@@ -12,7 +12,7 @@ the graphics driver can be easily installed on the terminal as follows:
 $ sudo ubuntu-drivers autoinstall
 ```
 
-### EGL Installation
+### EGL
 The EGL library can be installed on Ubuntu as follows:
 
 ```
