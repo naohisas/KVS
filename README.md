@@ -22,14 +22,14 @@ KVS supports the following software packages. By checking (changing 0:disable to
 |GLEW|KVS_ENABLE_GLEW|Flag for enabling GLEW (OpenGL Extension Wrangler Library) functionalities. Note: GLEW needs to be installed to compile KVS on Windows environments.|
 |OpenMP|KVS_ENABLE_OPENMP|Flag for enabling OpenMP functionalities. OpenMP supported compiler is required.|
 |(Deprecated functions)|KVS_ENABLE_DEPRECATED|Flag for enabling the deprecated functions and classes in KVS. Note: Although the deprecated functions and classes can be available by checking this flag, but not recommended.|
-|GLUT|KVS_SUPPORT_GLUT|Flag for adding GLUT supported classes.|
-|GLUT|KVS_SUPPORT_GLFW|Flag for adding GLFW supported classes. Note: GLUT or GLFW is required for developing viewer application with KVS.|
-|OpenCV|KVS_SUPPORT_OPENCV|Flag for adding OpenCV supported classes. Note: OpenCV4 is not supported.|
-|Qt|KVS_SUPPORT_QT|Flag for adding Qt supported classes.|
-|Python|KVS_SUPPORT_PYTHON|Flag for adding Python supported classes. By using these classes, python codes can be called in c++ codes.|
-|MPI|KVS_SUPPORT_MPI|Flag for adding MPI supported classes. Note: MPI compiler is required.|
-|EGL|KVS_ENABLE_EGL|Flag for adding EGL (OpenGL ES core functions) supported classes. By checking this flag, GPU-based off-screen classes are available.|
-|OSMesa|KVS_ENABLE_OSMESA|Flag for adding OSMesa (Software OpenGL implementation) supported classes. By checking this flag, CPU-based off-screen classes are available.|
+|GLUT|KVS_SUPPORT_GLUT|Flag for supporting GLUT functions. The screen class based on the GLUT is provided.|
+|GLUT|KVS_SUPPORT_GLFW|Flag for supporting GLFW functions. The screen class based on the GLFW is provided. Note: GLUT or GLFW is required for developing viewer application with KVS.|
+|OpenCV|KVS_SUPPORT_OPENCV|Flag for supporting OpenCV functions. Note: OpenCV4 is not supported.|
+|Qt|KVS_SUPPORT_QT|Flag for supporting Qt classes. The screen class based on the Qt.|
+|Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes.|
+|MPI|KVS_SUPPORT_MPI|Flag for supporting MPI functions. Note: MPI compiler is required.|
+|EGL|KVS_ENABLE_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided.|
+|OSMesa|KVS_ENABLE_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided.|
 
 ## Configuration
 The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
