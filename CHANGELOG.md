@@ -12,13 +12,14 @@
 + kvs::InteractorBase
 + kvs::TrackballInteractor
 + kvs::TransferFunctionEditor
-+ kvs::glfw::TransferFunctionEditor
++ kvs::OffScreen
 
 **Added SupportGLFW**
 + kvs::glfw::Application
 + kvs::glfw::Screen
 + kvs::glfw::ScreenBase
 + kvs::glfw::Timer
++ kvs::glfw::TransferFunctionEditor
 
 **Added SupportMPI**
 + kvs::mpi::Communicator
@@ -28,6 +29,7 @@
 + kvs::mpi::Request
 + kvs::mpi::Window
 + kvs::mpi::ImageCompositor
++ kvs::mpi::Logger
 
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank

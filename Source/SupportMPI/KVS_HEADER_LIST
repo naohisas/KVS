@@ -1,6 +1,7 @@
 Communicator
 DataType
 Environment
+Logger
 MPI
 Operator
 Renderer/ImageCompositor

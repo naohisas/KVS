@@ -375,6 +375,7 @@
 #include <Core/Visualization/Viewer/Mouse.h>
 #include <Core/Visualization/Viewer/MouseButton.h>
 #include <Core/Visualization/Viewer/ObjectManager.h>
+#include <Core/Visualization/Viewer/OffScreen.h>
 #include <Core/Visualization/Viewer/PaintDevice.h>
 #include <Core/Visualization/Viewer/Painter.h>
 #include <Core/Visualization/Viewer/RendererManager.h>
