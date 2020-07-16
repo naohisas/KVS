@@ -1,6 +1,8 @@
+#include <kvs/OffScreen>
 #include <kvs/mpi/Environment>
 #include <kvs/mpi/Communicator>
 #include <kvs/mpi/ImageCompositor>
+#include <kvs/mpi/Logger>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/PolygonObject>
@@ -11,18 +13,6 @@
 #include <kvs/String>
 #include <kvs/Coordinate>
 #include <kvs/Timer>
-
-#if defined( KVS_SUPPORT_OSMESA )
-#include <kvs/osmesa/Screen>
-namespace { using OffScreen = kvs::osmesa::Screen; }
-#elif defined( KVS_SUPPORT_EGL )
-#include <kvs/egl/Screen>
-namespace { using OffScreen = kvs::egl::Screen; }
-#endif
-
-
-//#define OUTPUT_ALPHA_IMAGES
-//#define OUTPUT_DEPTH_IMAGES
 
 
 namespace
@@ -67,7 +57,6 @@ inline kvs::ColorImage ColorImage(
     return kvs::ColorImage( width, height, rgb );
 }
 
-#if defined( OUTPUT_ALPHA_IMAGES )
 inline kvs::ColorImage AlphaImage(
     const size_t width,
     const size_t height,
@@ -82,9 +71,7 @@ inline kvs::ColorImage AlphaImage(
     }
     return kvs::ColorImage( width, height, rgb );
 }
-#endif
 
-#if defined( OUTPUT_DEPTH_IMAGES )
 inline kvs::ColorImage DepthImage(
     const size_t width,
     const size_t height,
@@ -99,21 +86,26 @@ inline kvs::ColorImage DepthImage(
     }
     return kvs::ColorImage( width, height, rgb );
 }
-#endif
 
 } // end of namespace
 
 
 int main( int argc, char** argv )
 {
+    // MPI related parameters.
     kvs::mpi::Environment env( argc, argv );
-    kvs::mpi::Communicator world;
+    kvs::mpi::Communicator world( MPI_COMM_WORLD );
+    kvs::mpi::Logger logger( world );
 
     const int root = 0;
     const int size = world.size();
     const int rank = world.rank();
+
+    // Input parameters.
     const int volume_size = argc > 1 ? atoi( argv[1] ) : 128;
     const int image_size = argc > 2 ? atoi( argv[2] ) : 512;
+    const bool output_alpha_images = false;
+    const bool output_depth_images = false;
 
     // Input volume data.
     auto* volume = new kvs::HydrogenVolumeData( kvs::Vec3u::Constant( volume_size ) );
@@ -121,25 +113,27 @@ int main( int argc, char** argv )
     auto* renderer = new kvs::glsl::PolygonRenderer();
 
     // Off-screen settings.
-    ::OffScreen screen;
+    kvs::OffScreen screen;
     screen.setSize( image_size, image_size );
     screen.registerObject( volume, new kvs::Bounds() );
     screen.registerObject( object, renderer );
+    {
+        // Object rotation.
+        auto R = kvs::Xform::Rotation( kvs::Mat3::RotationY( 70 ) );
+        volume->multiplyXform( R );
+        object->multiplyXform( R );
 
-    // Object rotation.
-    auto R = kvs::Xform::Rotation( kvs::Mat3::RotationY( 70 ) );
-    volume->multiplyXform( R );
-    object->multiplyXform( R );
+        // Registration for each sub-volume.
+        const size_t nslices = volume->resolution().z() / size;
+        const kvs::Vec3 offset( 0.0f, 0.0f, rank * ( nslices - 1 ) ); // in object coordinate
+        const kvs::Vec3 origin( 0, 0, 0 ); // in object coordinate
+        const kvs::Vec3 Ta = kvs::ObjectCoordinate( origin, object ).toWorldCoordinate().position();
+        const kvs::Vec3 Tb = kvs::ObjectCoordinate( offset, object ).toWorldCoordinate().position();
+        const kvs::Vec3 T = Tb - Ta; // in world coordinate
+        object->multiplyXform( kvs::Xform::Translation( T ) );
+    }
 
-    // Registration for each sub-volume.
-    const size_t nslices = volume->resolution().z() / size;
-    const kvs::Vec3 offset( 0.0f, 0.0f, rank * ( nslices - 1 ) ); // in object coordinate
-    const kvs::Vec3 origin( 0, 0, 0 ); // in object coordinate
-    const kvs::Vec3 Ta = kvs::ObjectCoordinate( origin, object ).toWorldCoordinate().position();
-    const kvs::Vec3 Tb = kvs::ObjectCoordinate( offset, object ).toWorldCoordinate().position();
-    const kvs::Vec3 T = Tb - Ta; // in world coordinate
-    object->multiplyXform( kvs::Xform::Translation( T ) );
-
+    // Timer.
     kvs::Timer timer;
 
     // Execute off-screen rendering.
@@ -150,13 +144,10 @@ int main( int argc, char** argv )
         double min_sec = 0.0; world.reduce( root, timer.sec(), min_sec, MPI_MIN );
         double max_sec = 0.0; world.reduce( root, timer.sec(), max_sec, MPI_MAX );
         double sum_sec = 0.0; world.reduce( root, timer.sec(), sum_sec, MPI_SUM );
-        if ( rank == root )
-        {
-            std::cout << "Rendering time:" << std::endl;
-            std::cout << "    Min: " << min_sec << " [sec]" << std::endl;
-            std::cout << "    Max: " << max_sec << " [sec]" << std::endl;
-            std::cout << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
-        }
+        logger( root ) << "Rendering time:" << std::endl;
+        logger( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
+        logger( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
+        logger( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
     }
 
     // Read-back the rendering image of each sub-volume.
@@ -166,24 +157,22 @@ int main( int argc, char** argv )
     auto color_buffer = screen.readbackColorBuffer();
     auto depth_buffer = screen.readbackDepthBuffer();
     timer.stop();
-    ::ColorImage( width, height, color_buffer ).write( "output_" + kvs::String::ToString( rank ) + ".bmp");
-#if defined( OUTPUT_ALPHA_IMAGES )
-    ::AlphaImage( width, height, color_buffer ).write( "output_alpha_" + kvs::String::ToString( rank ) + ".bmp");
-#endif
-#if defined( OUTPUT_DEPTH_IMAGES )
-    ::DepthImage( width, height, depth_buffer ).write( "output_depth_" + kvs::String::ToString( rank ) + ".bmp");
-#endif
     {
         double min_sec = 0.0; world.reduce( root, timer.sec(), min_sec, MPI_MIN );
         double max_sec = 0.0; world.reduce( root, timer.sec(), max_sec, MPI_MAX );
         double sum_sec = 0.0; world.reduce( root, timer.sec(), sum_sec, MPI_SUM );
-        if ( rank == root )
-        {
-            std::cout << "Read-back time:" << std::endl;
-            std::cout << "    Min: " << min_sec << " [sec]" << std::endl;
-            std::cout << "    Max: " << max_sec << " [sec]" << std::endl;
-            std::cout << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
-        }
+        logger( root ) << "Read-back time:" << std::endl;
+        logger( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
+        logger( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
+        logger( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
+    }
+
+    // Dump rendering images.
+    {
+        auto n = kvs::String::ToString( rank );
+        ::ColorImage( width, height, color_buffer ).write( "output_" + n + ".bmp");
+        if ( output_alpha_images ) { ::AlphaImage( width, height, color_buffer ).write( "output_alpha_" + n + ".bmp"); }
+        if ( output_depth_images ) { ::DepthImage( width, height, depth_buffer ).write( "output_depth_" + n + ".bmp"); }
     }
 
     // Image composition.
@@ -198,17 +187,17 @@ int main( int argc, char** argv )
         double min_sec = 0.0; world.reduce( root, timer.sec(), min_sec, MPI_MIN );
         double max_sec = 0.0; world.reduce( root, timer.sec(), max_sec, MPI_MAX );
         double sum_sec = 0.0; world.reduce( root, timer.sec(), sum_sec, MPI_SUM );
-        if ( rank == root )
-        {
-            std::cout << "Composition time: " << timer.sec() << " [sec]" << std::endl;
-            std::cout << "    Min: " << min_sec << " [sec]" << std::endl;
-            std::cout << "    Max: " << max_sec << " [sec]" << std::endl;
-            std::cout << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
-        }
+        logger( root ) << "Composition time: " << timer.sec() << " [sec]" << std::endl;
+        logger( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
+        logger( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
+        logger( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
     }
 
     // Write the merged image.
-    if ( rank == root ) { ::ColorImage( width, height, color_buffer ).write( "output.bmp" ); }
+    if ( rank == root )
+    {
+        ::ColorImage( width, height, color_buffer ).write( "output.bmp" );
+    }
 
     return 0;
 }
