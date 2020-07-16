@@ -1,2 +1,6 @@
 #!/bin/sh
-mpirun --oversubscribe -n 4 ./ImageComposition
+VOLUME_SIZE=128
+IMAGE_SIZE=1024
+NNODES=4
+
+mpirun --oversubscribe -n $NNODES ./ImageComposition $VOLUME_SIZE $IMAGE_SIZE
