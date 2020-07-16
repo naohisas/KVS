@@ -3,5 +3,6 @@
 #include <SupportMPI/Environment.h>
 #include <SupportMPI/MPI.h>
 #include <SupportMPI/Operator.h>
+#include <SupportMPI/Renderer/ImageCompositor.h>
 #include <SupportMPI/Request.h>
 #include <SupportMPI/Window.h>

@@ -27,6 +27,7 @@
 + kvs::mpi::Operator
 + kvs::mpi::Request
 + kvs::mpi::Window
++ kvs::mpi::ImageCompositor
 
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank
@@ -200,6 +201,7 @@
 + Example/SupportMPI/Reduce
 + Example/SupportMPI/Scatter
 + Example/SupportMPI/SendRecv
++ Example/SupportMPI/ImageComposition
 
 **Deprecated classes**
 + kvs::glut::CheckBox (use kvs::CheckBox)

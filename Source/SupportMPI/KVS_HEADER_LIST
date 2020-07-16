@@ -3,5 +3,6 @@ DataType
 Environment
 MPI
 Operator
+Renderer/ImageCompositor
 Request
 Window

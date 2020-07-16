@@ -29,8 +29,8 @@ public:
     ScreenBase();
     virtual ~ScreenBase();
 
-    kvs::ValueArray<kvs::UInt8> readbackColorBuffer() const;
-    kvs::ValueArray<kvs::Real32> readbackDepthBuffer() const;
+    kvs::ValueArray<kvs::UInt8> readbackColorBuffer( GLenum mode = GL_FRONT ) const;
+    kvs::ValueArray<kvs::Real32> readbackDepthBuffer( GLenum mode = GL_FRONT ) const;
     void displayInfo();
 
     virtual void create();

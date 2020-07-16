@@ -1,0 +1,33 @@
+/**********************************************************/
+/**
+* 234Compositor - Image data merging library
+*
+* Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
+* All rights reserved.
+*
+**/
+/**********************************************************/
+
+
+OUTLINE
+=======
+234Compositor is a parallel image composition library being developed to perform sort-last image composition on massively parallel environments.
+
+
+
+INGREDIENTS
+===========
+
+AUTHORS        Contributors
+ChangeLog      History of development
+COPYING        Copyright
+INSTALL        Description of how to configure
+LICENSE        License of Polylib
+NEWS           Release note
+README         This document
+doc/           Documents
+include/       Header files
+src/           Source files
+example/       Example sources
+Makefile_hand  Makefile for special target
+

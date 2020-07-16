@@ -6,10 +6,24 @@ OBJECTS := \
 $(OUTDIR)/./Communicator.o \
 $(OUTDIR)/./Environment.o \
 $(OUTDIR)/./MPICall.o \
+$(OUTDIR)/./Renderer/234Compositor/234compositor.o \
+$(OUTDIR)/./Renderer/234Compositor/compress.o \
+$(OUTDIR)/./Renderer/234Compositor/exchange.o \
+$(OUTDIR)/./Renderer/234Compositor/merge.o \
+$(OUTDIR)/./Renderer/234Compositor/misc.o \
+$(OUTDIR)/./Renderer/ImageCompositor.o \
 $(OUTDIR)/./Request.o \
 $(OUTDIR)/./Window.o \
 
 
+
+$(OUTDIR)/./Renderer/234Compositor/%.o: ./Renderer/234Compositor/%.cpp ./Renderer/234Compositor/%.h
+	$(MKDIR) $(OUTDIR)/./Renderer/234Compositor
+	$(MPICPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+$(OUTDIR)/./Renderer/%.o: ./Renderer/%.cpp ./Renderer/%.h
+	$(MKDIR) $(OUTDIR)/./Renderer
+	$(MPICPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./%.o: ./%.cpp ./%.h
 	$(MKDIR) $(OUTDIR)
@@ -19,3 +33,7 @@ $(OUTDIR)/./%.o: ./%.cpp ./%.h
 install::
 	$(MKDIR) $(INSTALL_DIR)/include/SupportMPI/.
 	$(INSTALL) ./*.h $(INSTALL_DIR)/include/SupportMPI/.
+	$(MKDIR) $(INSTALL_DIR)/include/SupportMPI/./Renderer
+	$(INSTALL) ./Renderer/*.h $(INSTALL_DIR)/include/SupportMPI/./Renderer
+	$(MKDIR) $(INSTALL_DIR)/include/SupportMPI/./Renderer/234Compositor
+	$(INSTALL) ./Renderer/234Compositor/*.h $(INSTALL_DIR)/include/SupportMPI/./Renderer/234Compositor
