@@ -7,6 +7,7 @@
 #include <kvs/ScreenBase>
 #include <kvs/ValueArray>
 #include <kvs/ColorImage>
+#include <kvs/OpenGL>
 
 
 namespace kvs

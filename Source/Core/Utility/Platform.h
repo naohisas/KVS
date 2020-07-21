@@ -150,7 +150,7 @@
 #endif
 
 // ARM
-#if defined ( __arm__ ) || defined ( _ARM ) || defined ( _M_ARM )
+#if defined ( __arm__ ) || defined ( _ARM ) || defined ( _M_ARM ) || defined ( __ARM_ARCH )
 #undef  KVS_PLATFORM_CPU_UNKNOWN
 #undef  KVS_PLATFORM_CPU_NAME
 #if defined ( __aarch64__ )
