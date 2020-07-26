@@ -57,12 +57,12 @@ void Object::add( const std::string& key, const kvs::json::Value& value )
 
 void Object::add( const std::string& key, const kvs::json::Array& value )
 {
-    SuperClass::insert( std::make_pair( key, picojson::array( value ) ) );
+    SuperClass::insert( std::make_pair( key, picojson::value( value ) ) );
 }
 
 void Object::add( const std::string& key, const kvs::json::Object& value )
 {
-    SuperClass::insert( std::make_pair( key, picojson::object( value ) ) );
+    SuperClass::insert( std::make_pair( key, picojson::value( value ) ) );
 }
 
 } // end of namespace json
