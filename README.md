@@ -17,7 +17,7 @@ KVS supports the following software packages. By checking (changing 0:disable to
 
 |Package|Flag|Description|
 |:--|:--|:--|
-|OpenGL|KVS_ENABLE_OPENGL|Flag for enabling OpenGL functionalities. If zero is specified for this flag, the renderer classes implemented with OpenGL functions in the visualization modules will be unavailable.|
+|OpenGL|KVS_ENABLE_OPENGL|Flag for enabling OpenGL functionalities. If '0' (disable) is specified for this flag, the renderer classes implemented with OpenGL functions in the visualization modules will be unavailable.|
 |GLU|KVS_ENABLE_GLU|Flag for enabling GLU (OpenGL Utility Library) functionalities. KVS can be complied even if this flag is zero.|
 |GLEW|KVS_ENABLE_GLEW|Flag for enabling GLEW (OpenGL Extension Wrangler Library) functionalities. Note: GLEW needs to be installed to compile KVS on Windows environments.|
 |OpenMP|KVS_ENABLE_OPENMP|Flag for enabling OpenMP functionalities. OpenMP supported compiler is required.|
