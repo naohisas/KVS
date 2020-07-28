@@ -184,7 +184,11 @@ int main( int argc, char** argv )
 
     // Image composition.
     timer.start();
+#if defined( VOLUME_RENDERING )
+    const bool depth_testing = false;
+#else
     const bool depth_testing = true;
+#endif
     kvs::ImageCompositor compositor( world );
     compositor.initialize( width, height, depth_testing );
     compositor.run( color_buffer, depth_buffer );
