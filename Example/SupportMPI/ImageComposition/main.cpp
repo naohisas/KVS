@@ -14,7 +14,7 @@
 #include <kvs/Coordinate>
 #include <kvs/Timer>
 
-#define VOLUME_RENDERING
+//#define VOLUME_RENDERING
 
 namespace
 {
