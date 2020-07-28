@@ -14,6 +14,7 @@
 #include <kvs/Coordinate>
 #include <kvs/Timer>
 
+#define VOLUME_RENDERING
 
 namespace
 {
@@ -25,7 +26,7 @@ inline kvs::StructuredVolumeObject* Div(
 {
     const size_t slice_size = volume->resolution().x() * volume->resolution().y();
     const size_t nslices = volume->resolution().z() / ndiv;
-    const size_t size = slice_size * ( ( id == ndiv - 1 ) ? volume->resolution().z() - nslices * ( id -1 ) : nslices );
+    const size_t size = slice_size * nslices;
     const size_t offset = id * slice_size * ( nslices - 1 );
     kvs::ValueArray<kvs::UInt8> values( volume->values().asValueArray<kvs::UInt8>().data() + offset, size );
 
@@ -104,13 +105,19 @@ int main( int argc, char** argv )
     // Input parameters.
     const int volume_size = argc > 1 ? atoi( argv[1] ) : 128;
     const int image_size = argc > 2 ? atoi( argv[2] ) : 512;
-    const bool output_alpha_images = false;
-    const bool output_depth_images = false;
+    const bool output_color_images = argc > 3 ? atoi( argv[3] ) == 1 ? true : false : false;
+    const bool output_alpha_images = argc > 4 ? atoi( argv[4] ) == 1 ? true : false : false;
+    const bool output_depth_images = argc > 5 ? atoi( argv[5] ) == 1 ? true : false : false;
 
     // Input volume data.
     auto* volume = new kvs::HydrogenVolumeData( kvs::Vec3u::Constant( volume_size ) );
+#if defined( VOLUME_RENDERING )
+    auto* object = Div( rank, size, volume );
+    auto* renderer = new kvs::glsl::RayCastingRenderer();
+#else // ISOSURFACE_RENDERING
     auto* object = new kvs::Isosurface( Div( rank, size, volume ), 40 );
     auto* renderer = new kvs::glsl::PolygonRenderer();
+#endif
 
     // Off-screen settings.
     kvs::OffScreen screen;
@@ -170,7 +177,7 @@ int main( int argc, char** argv )
     // Dump rendering images.
     {
         auto n = kvs::String::ToString( rank );
-        ::ColorImage( width, height, color_buffer ).write( "output_" + n + ".bmp");
+        if ( output_color_images ) { ::ColorImage( width, height, color_buffer ).write( "output_" + n + ".bmp"); }
         if ( output_alpha_images ) { ::AlphaImage( width, height, color_buffer ).write( "output_alpha_" + n + ".bmp"); }
         if ( output_depth_images ) { ::DepthImage( width, height, depth_buffer ).write( "output_depth_" + n + ".bmp"); }
     }
