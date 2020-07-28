@@ -189,7 +189,7 @@ int main( int argc, char** argv )
 #else
     const bool depth_testing = true;
 #endif
-    kvs::ImageCompositor compositor( world );
+    kvs::mpi::ImageCompositor compositor( world );
     compositor.initialize( width, height, depth_testing );
     compositor.run( color_buffer, depth_buffer );
     compositor.destroy();

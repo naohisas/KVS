@@ -9,6 +9,9 @@
 namespace kvs
 {
 
+namespace mpi
+{
+
 ImageCompositor::ImageCompositor( const int rank, const int size, const MPI_Comm comm ):
     m_rank( rank ),
     m_size( size ),
@@ -95,5 +98,7 @@ bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer, kvs::Value
 
     return status == EXIT_SUCCESS;
 }
+
+} // end of namespace mpi
 
 } // end of namespace kvs

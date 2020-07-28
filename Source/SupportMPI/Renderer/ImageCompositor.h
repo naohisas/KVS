@@ -7,6 +7,9 @@
 namespace kvs
 {
 
+namespace mpi
+{
+
 class ImageCompositor
 {
 private:
@@ -28,5 +31,7 @@ public:
     bool run( kvs::ValueArray<kvs::UInt8>& color_buffer );
     bool run( kvs::ValueArray<kvs::UInt8>& color_buffer, kvs::ValueArray<kvs::Real32>& depth_buffer );
 };
+
+} // end of namespace mpi
 
 } // end of namespace kvs
