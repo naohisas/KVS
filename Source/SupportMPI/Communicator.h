@@ -28,6 +28,9 @@ public:
     int size() const;
     int rank() const;
 
+    void abort( const int err = 1 );
+    void barrier();
+
     // Send
 
     template <typename T>
@@ -154,6 +157,16 @@ public:
     template <typename T>
     void allReduce( const T* send_values, T* recv_values, const size_t size, const MPI_Op op );
 };
+
+inline void Communicator::abort( int err )
+{
+    KVS_MPI_CALL( MPI_Abort( m_handler, err ) );
+}
+
+inline void Communicator::barrier()
+{
+    KVS_MPI_CALL( MPI_Barrier( m_handler ) );
+}
 
 template <typename T>
 inline void Communicator::send( const int dst, const int tag, const T value )
