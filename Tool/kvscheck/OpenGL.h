@@ -13,7 +13,7 @@
 #include <kvs/glut/GLUT>
 #endif
 #if defined( KVS_SUPPORT_GLFW )
-#include <kvs/glut/GLUT>
+#include <kvs/glfw/GLFW>
 #endif
 
 

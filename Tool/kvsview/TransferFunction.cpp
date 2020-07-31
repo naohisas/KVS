@@ -135,8 +135,8 @@ public:
 
     void update()
     {
-        kvs::Screen* glut_screen = static_cast<kvs::Screen*>( screen() );
-        glut_screen->setBackgroundColor( kvs::RGBColor::White() );
+        kvs::Screen* s = static_cast<kvs::Screen*>( screen() );
+        s->setBackgroundColor( kvs::RGBColor::White() );
 
         kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
         kvs::OpenGL::Disable( GL_LIGHTING );

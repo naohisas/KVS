@@ -22,8 +22,8 @@
 #include <kvs/MouseMoveEventListener>
 #include <kvs/KeyPressEventListener>
 #include <kvs/Background>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include "CommandName.h"
 #include "FileChecker.h"
 
@@ -179,8 +179,8 @@ public:
 
     void update()
     {
-        kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-        glut_screen->scene()->background()->setColor( ::DefaultBackgroundColor );
+        kvs::Screen* s = static_cast<kvs::Screen*>( screen() );
+        s->scene()->background()->setColor( ::DefaultBackgroundColor );
 
         GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
         const GLint left = vp[0];
@@ -343,8 +343,8 @@ const float Argument::biasParameter( void )
 /*===========================================================================*/
 int Main::exec( int argc, char** argv )
 {
-    // Setup GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
+    // Setup viewer application.
+    kvs::Application app( argc, argv );
 
     // Commandline arguments.
     kvsview::Histogram::Argument arg( argc, argv );
@@ -374,7 +374,7 @@ int Main::exec( int argc, char** argv )
     kvsview::Histogram::KeyPressEvent key_press_event( &params );
 
     // Rendering screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.addEvent( &initialize_event );
     screen.addEvent( &paint_event );
     screen.setEvent( &mouse_press_event );
