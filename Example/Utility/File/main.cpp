@@ -48,6 +48,7 @@ int main( int argc, char** argv )
     std::cout << "path name (absolute): " << file.pathName(true) << std::endl;
     std::cout << "file name: " << file.fileName() << std::endl;
     std::cout << "base name: " << file.baseName() << std::endl;
+    std::cout << "base name (not complete): " << file.baseName(false) << std::endl;
     std::cout << "extension: " << file.extension() << std::endl;
     std::cout << "extension (complete): " << file.extension(true) << std::endl;
 

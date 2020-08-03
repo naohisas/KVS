@@ -34,8 +34,6 @@ private:
     std::string m_file_path; ///< file path (ex. "/tmp/abc/xyz.tar.gz")
     std::string m_path_name; ///< path name (ex. "/tmp/abc")
     std::string m_file_name; ///< file name (ex. "xyz.tar.gz")
-    std::string m_base_name; ///< base name (ex. "xyz")
-    std::string m_extension; ///< complete extension (ex. "tar.gz")
 
 public:
     File();
@@ -47,8 +45,8 @@ public:
 
     std::string filePath( bool absolute = false ) const;
     std::string pathName( bool absolute = false ) const;
-    std::string fileName() const;
-    std::string baseName() const;
+    std::string fileName() const { return m_file_name; }
+    std::string baseName( bool complete = true ) const;
     std::string extension( bool complete = false ) const;
 
     size_t byteSize() const;
