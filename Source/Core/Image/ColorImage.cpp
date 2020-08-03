@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ColorImage.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ColorImage.cpp 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   ColorImage.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "ColorImage.h"
@@ -47,7 +40,7 @@ ColorImage::ColorImage()
 /*==========================================================================*/
 ColorImage::ColorImage( const size_t width, const size_t height )
 {
-    BaseClass::create( width, height, ImageBase::Color );
+    this->create( width, height );
 }
 
 /*==========================================================================*/
@@ -63,7 +56,7 @@ ColorImage::ColorImage(
     const size_t height,
     const kvs::ValueArray<kvs::UInt8>& pixels )
 {
-    ImageBase::create( width, height, kvs::ImageBase::Color, pixels );
+    this->create( width, height, pixels );
 }
 
 /*===========================================================================*/
@@ -97,6 +90,53 @@ ColorImage::ColorImage( const kvs::BitImage& image )
 ColorImage::ColorImage( const std::string& filename )
 {
     this->read( filename );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a color image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool ColorImage::create( const size_t width, const size_t height )
+{
+    return BaseClass::create( width, height, ImageBase::Color );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a color image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  pixels [in] pixel data (rgb or rgba pixels)
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool ColorImage::create(
+    const size_t width,
+    const size_t height,
+    const kvs::ValueArray<kvs::UInt8>& pixels )
+{
+    if ( pixels.size() == width * height * 3 )
+    {
+        // RGB color
+        return ImageBase::create( width, height, kvs::ImageBase::Color, pixels );
+    }
+    else if ( pixels.size() == width * height * 4 )
+    {
+        // RGBA color
+        kvs::ValueArray<kvs::UInt8> rgb( width * height * 3 );
+        for ( size_t i = 0; i < width * height; ++i )
+        {
+            rgb[ 3 * i + 0 ] = pixels[ 4 * i + 0 ];
+            rgb[ 3 * i + 1 ] = pixels[ 4 * i + 1 ];
+            rgb[ 3 * i + 2 ] = pixels[ 4 * i + 2 ];
+        }
+        return ImageBase::create( width, height, kvs::ImageBase::Color, rgb );
+    }
+    return false;
 }
 
 /*==========================================================================*/

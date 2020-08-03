@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   CubicImage.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "CubicImage.h"
 #include <kvs/Assert>
 #include <kvs/RGBColor>
@@ -92,7 +98,7 @@ void CubicImage::stitch()
         //  [-X] [-Z] [+X] [+Z]
         //       [-Y]
         //
-        this->create( w * 4, h * 3, kvs::ImageBase::Color );
+        this->create( w * 4, h * 3 );
         ::Draw( this->topImage(), w, 0, this ); // +Y
         ::Draw( this->leftImage(), 0, h, this ); // -X
         ::Draw( this->frontImage(), w, h, this ); // -Z
@@ -107,7 +113,7 @@ void CubicImage::stitch()
         // [+X] [+Y] [+Z]
         // [-X] [-Y] [-Z]
         //
-        this->create( w * 3, h * 2, kvs::ImageBase::Color );
+        this->create( w * 3, h * 2 );
         ::Draw( this->rightImage(), 0, 0, this ); // +X
         ::Draw( this->leftImage(), 0, h, this ); // -X
         ::Draw( this->topImage(), w, 0, this ); // +Y
@@ -126,7 +132,7 @@ void CubicImage::stitch()
         // [+Z]
         // [-Z]
         //
-        this->create( w, h * 6, kvs::ImageBase::Color );
+        this->create( w, h * 6 );
         ::Draw( this->rightImage(), 0, 0, this ); // +X
         ::Draw( this->leftImage(), 0, h, this ); // -X
         ::Draw( this->topImage(), 0, h * 2, this ); // +Y
@@ -140,7 +146,7 @@ void CubicImage::stitch()
         //
         // [+X] [-X] [+Y] [-Y] [+Z] [-Z]
         //
-        this->create( w * 6, h, kvs::ImageBase::Color );
+        this->create( w * 6, h );
         ::Draw( this->rightImage(), 0, 0, this ); // +X
         ::Draw( this->leftImage(), w, 0, this ); // -X
         ::Draw( this->topImage(), w * 2, 0, this ); // +Y

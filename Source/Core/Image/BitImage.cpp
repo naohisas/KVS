@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file BitImage.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: BitImage.cpp 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   BitImage.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "BitImage.h"
@@ -474,6 +467,42 @@ bool BitImage::pixel( const size_t i, const size_t j ) const
 {
     const kvs::UInt8* pixels = BaseClass::pixels().data();
     return( pixels[ j * BaseClass::bytesPerLine() + ( i >> 3 ) ] & ::SetBitMask[ i & 7 ] ? true : false );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a bit image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  bit [in] initial bit
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool BitImage::create( const size_t width, const size_t height, const bool bit )
+{
+    if ( BaseClass::create( width, height, kvs::ImageBase::Bit ) )
+    {
+        this->fill( bit );
+        return true;
+    }
+    return false;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a bit image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  pixels [in] pixel data
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool BitImage::create(
+    const size_t width,
+    const size_t height,
+    const kvs::ValueArray<kvs::UInt8>& pixels )
+{
+    return BaseClass::create( width, height, kvs::ImageBase::Bit, pixels );
 }
 
 /*==========================================================================*/

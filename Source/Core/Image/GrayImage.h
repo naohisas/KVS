@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file GrayImage.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GrayImage.h 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   GrayImage.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__GRAY_IMAGE_H_INCLUDE
-#define KVS__GRAY_IMAGE_H_INCLUDE
-
+#pragma once
 #include <limits>
 #include "ImageBase.h"
 #include "ColorImage.h"
@@ -33,7 +24,6 @@ class BitImage;
 class GrayImage : public kvs::ImageBase
 {
 public:
-
     typedef kvs::ImageBase BaseClass;
     typedef kvs::UInt8 PixelType;
 
@@ -41,7 +31,6 @@ public:
     typedef BaseClass::BilinearInterpolatorGray Bilinear;
 
 public:
-
     // Gray-scaling method.
 
     struct MeanValue
@@ -70,7 +59,6 @@ public:
     };
 
 public:
-
     GrayImage();
     GrayImage( const size_t width, const size_t height );
     GrayImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& data );
@@ -79,6 +67,9 @@ public:
     template <typename GrayScalingMethod>
     GrayImage( const kvs::ColorImage& image, GrayScalingMethod method );
     explicit GrayImage( const std::string& filename );
+
+    bool create( const size_t width, const size_t height );
+    bool create( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& pixels );
 
     kvs::UInt8 pixel( const size_t index ) const;
     kvs::UInt8 pixel( const size_t i, const size_t j ) const;
@@ -96,7 +87,6 @@ public:
     bool write( const std::string& filename ) const;
 
 private:
-
     bool read_image( const kvs::ColorImage& image );
     bool read_image( const kvs::BitImage& image );
 };
@@ -116,5 +106,3 @@ inline GrayImage::GrayImage( const kvs::ColorImage& image, GrayScalingMethod met
 }
 
 } // end of namespace kvs
-
-#endif // KVS__GRAY_IMAGE_H_INCLUDE

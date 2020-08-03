@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ImageBase.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ImageBase.cpp 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   ImageBase.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "ImageBase.h"

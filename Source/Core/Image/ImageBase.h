@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file ImageBase.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ImageBase.h 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   ImageBase.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__IMAGE_BASE_H_INCLUDE
-#define KVS__IMAGE_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/ValueArray>
 #include <kvs/Type>
 #include <kvs/Vector2>
@@ -34,7 +25,6 @@ class GrayImage;
 class ImageBase
 {
 public:
-
     // Image type (number of components)
     enum ImageType
     {
@@ -44,7 +34,6 @@ public:
     };
 
 public:
-
     template <typename ImageDataType> class NearestNeighborInterpolator;
     template <typename ImageDataType> class BilinearInterpolator;
 
@@ -54,7 +43,6 @@ public:
     typedef BilinearInterpolator<kvs::ColorImage> BilinearInterpolatorColor;
 
 private:
-
     size_t m_width; ///< image width [pix]
     size_t m_height; ///< image height [pix]
     size_t m_npixels; ///< number of pixels
@@ -65,7 +53,6 @@ private:
     kvs::ValueArray<kvs::UInt8> m_pixels; ///< pixel data array
 
 public:
-
     ImageBase();
     virtual ~ImageBase();
 
@@ -84,7 +71,6 @@ public:
     bool create( const size_t width, const size_t height, const ImageType type, const kvs::ValueArray<kvs::UInt8>& pixels );
 
 protected:
-
     kvs::ValueArray<kvs::UInt8>& pixelData();
     template <typename ImageDataType, typename Interpolator>
     void resizeImage( const size_t width, const size_t height, ImageDataType* image );
@@ -129,5 +115,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__IMAGE_BASE_H_INCLUDE

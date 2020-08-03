@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file GrayImage.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GrayImage.cpp 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   GrayImage.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "GrayImage.h"
@@ -231,7 +224,7 @@ GrayImage::GrayImage()
 /*==========================================================================*/
 GrayImage::GrayImage( const size_t width, const size_t height )
 {
-    BaseClass::create( width, height, kvs::ImageBase::Gray );
+    this->create( width, height );
 }
 
 /*==========================================================================*/
@@ -247,7 +240,7 @@ GrayImage::GrayImage(
     const size_t height,
     const kvs::ValueArray<kvs::UInt8>& data )
 {
-    BaseClass::create( width, height, kvs::ImageBase::Gray, data );
+    this->create( width, height, data );
 }
 
 /*===========================================================================*/
@@ -283,6 +276,36 @@ GrayImage::GrayImage( const kvs::ColorImage& image )
 GrayImage::GrayImage( const std::string& filename )
 {
     this->read( filename );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a gray image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool GrayImage::create( const size_t width, const size_t height )
+{
+    return BaseClass::create( width, height, kvs::ImageBase::Gray );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a gray image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  pixels [in] pixel data
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool GrayImage::create(
+    const size_t width,
+    const size_t height,
+    const kvs::ValueArray<kvs::UInt8>& pixels )
+{
+    return BaseClass::create( width, height, kvs::ImageBase::Gray, pixels );
 }
 
 /*==========================================================================*/
