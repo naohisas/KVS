@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   DataArrayTag.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: DataArrayTag.cpp 1810 2014-09-03 01:03:41Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #include "DataArrayTag.h"

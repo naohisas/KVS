@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file String.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: String.h 1349 2012-11-13 07:09:38Z s.yamada0808@gmail.com $
+ *  @file   String.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__STRING_H_INCLUDE
-#define KVS__STRING_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <sstream>
 #include <iomanip>
@@ -36,7 +27,6 @@ namespace kvs
 class String
 {
 public:
-
     template <typename T>
     static T To( const std::string& str )
     {
@@ -248,5 +238,3 @@ const T String::toNumber( const std::string& str, int base )
 }
 #endif
 } // end of namespace kvs
-
-#endif // KVS__STRING_H_INCLUDE

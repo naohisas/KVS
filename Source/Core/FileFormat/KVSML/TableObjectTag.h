@@ -3,14 +3,6 @@
  *  @file   TableObjectTag.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TableObjectTag.h 1344 2012-11-07 14:59:01Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/XMLNode>

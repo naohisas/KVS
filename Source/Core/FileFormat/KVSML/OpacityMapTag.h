@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   OpacityMapTag.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OpacityMapTag.h 1342 2012-11-07 13:47:24Z s.yamada0808@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #pragma once

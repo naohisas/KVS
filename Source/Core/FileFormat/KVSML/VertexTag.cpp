@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   VertexTag.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VertexTag.cpp 1345 2012-11-07 15:29:14Z s.yamada0808@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #include "VertexTag.h"

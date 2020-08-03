@@ -3,14 +3,6 @@
  *  @file   ColumnTag.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ColumnTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -33,7 +25,7 @@ namespace kvsml
 class ColumnTag : public kvs::kvsml::TagBase
 {
 public:
-    typedef kvs::kvsml::TagBase BaseClass;
+    using BaseClass = kvs::kvsml::TagBase;
 
 private:
     bool m_has_label; ///< flag to check whether the label is spcified or not

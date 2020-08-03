@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   ColorMapTag.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ColorMapTag.cpp 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #include "ColorMapTag.h"
@@ -54,10 +47,7 @@ ColorMapValueTag::ColorMapValueTag():
 bool ColorMapValueTag::read( const kvs::XMLNode::SuperClass* parent )
 {
     BaseClass::read( parent );
-
-    // Element
-    const kvs::XMLElement::SuperClass* element = kvs::XMLNode::ToElement( BaseClass::m_node );
-
+    const auto* element = kvs::XMLNode::ToElement( BaseClass::m_node );
     return this->read( element );
 }
 
@@ -70,11 +60,11 @@ bool ColorMapValueTag::read( const kvs::XMLNode::SuperClass* parent )
 /*===========================================================================*/
 bool ColorMapValueTag::read( const kvs::XMLElement::SuperClass* element )
 {
-    const std::string tag_name = BaseClass::name();
+    const auto tag_name = BaseClass::name();
 
     // s ="xxx"
-    const std::string s = kvs::XMLElement::AttributeValue( element, "s" );
-    if ( s != "" ) m_scalar = static_cast<float>( atof( s.c_str() ) );
+    const auto s = kvs::XMLElement::AttributeValue( element, "s" );
+    if ( s != "" ) { m_scalar = static_cast<float>( atof( s.c_str() ) ); }
     else
     {
         kvsMessageError( "'s' is not specified in <%s>.", tag_name.c_str() );
@@ -83,8 +73,8 @@ bool ColorMapValueTag::read( const kvs::XMLElement::SuperClass* element )
 
     // r ="xxx"
     kvs::UInt8 red = 0;
-    const std::string r = kvs::XMLElement::AttributeValue( element, "r" );
-    if ( r != "" ) red = static_cast<kvs::UInt8>( atoi( r.c_str() ) );
+    const auto r = kvs::XMLElement::AttributeValue( element, "r" );
+    if ( r != "" ) { red = static_cast<kvs::UInt8>( atoi( r.c_str() ) ); }
     else
     {
         kvsMessageError( "'r' is not specified in <%s>.", tag_name.c_str() );
@@ -93,8 +83,8 @@ bool ColorMapValueTag::read( const kvs::XMLElement::SuperClass* element )
 
     // g ="xxx"
     kvs::UInt8 green = 0;
-    const std::string g = kvs::XMLElement::AttributeValue( element, "g" );
-    if ( g != "" ) green = static_cast<kvs::UInt8>( atoi( g.c_str() ) );
+    const auto g = kvs::XMLElement::AttributeValue( element, "g" );
+    if ( g != "" ) { green = static_cast<kvs::UInt8>( atoi( g.c_str() ) ); }
     else
     {
         kvsMessageError( "'g' is not specified in <%s>.", tag_name.c_str() );
@@ -103,8 +93,8 @@ bool ColorMapValueTag::read( const kvs::XMLElement::SuperClass* element )
 
     // b ="xxx"
     kvs::UInt8 blue = 0;
-    const std::string b = kvs::XMLElement::AttributeValue( element, "b" );
-    if ( b != "" ) blue = static_cast<kvs::UInt8>( atoi( b.c_str() ) );
+    const auto b = kvs::XMLElement::AttributeValue( element, "b" );
+    if ( b != "" ) { blue = static_cast<kvs::UInt8>( atoi( b.c_str() ) ); }
     else
     {
         kvsMessageError( "'b' is not specified in <%s>.", tag_name.c_str() );
