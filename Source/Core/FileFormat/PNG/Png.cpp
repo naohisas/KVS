@@ -10,10 +10,7 @@
 #include <kvs/File>
 #include <kvs/SharedPointer>
 #include <kvs/ValueArray>
-
-//#define STB_IMAGE_IMPLEMENTATION
 #include "../../NanoVG/stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../NanoVG/stb_image_write.h"
 
 
