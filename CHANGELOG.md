@@ -332,6 +332,10 @@
 
 **Removed classes**
 + kvs::TextEngine (use kvs::Painter)
++ kvs::StochasticMultipleTetrahedraCompositor (use kvs::StochasticRenderingCompositor)
++ kvs::StochasticMultipleTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
++ kvs::StochasticMultivariateTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
++ kvs::glsl::rits::ParticleBasedRenderer (use kvs::glsl::ParticleBasedRenderer)
 
 **Removed methods**
 + kvs::glut::ScreenBase::timerEventHandler

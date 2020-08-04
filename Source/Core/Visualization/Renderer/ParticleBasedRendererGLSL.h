@@ -132,5 +132,3 @@ private:
 } // end of namespace glsl
 
 } // end of namespace kvs
-
-#include "ParticleBasedRendererRITS.h"

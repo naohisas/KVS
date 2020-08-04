@@ -347,9 +347,6 @@
 #include <Core/Visualization/Renderer/SphereGlyph.h>
 #include <Core/Visualization/Renderer/SphericalImageRenderer.h>
 #include <Core/Visualization/Renderer/StochasticLineRenderer.h>
-#include <Core/Visualization/Renderer/StochasticMultipleTetrahedraCompositor.h>
-#include <Core/Visualization/Renderer/StochasticMultipleTetrahedraRenderer.h>
-#include <Core/Visualization/Renderer/StochasticMultivariateTetrahedraRenderer.h>
 #include <Core/Visualization/Renderer/StochasticPointRenderer.h>
 #include <Core/Visualization/Renderer/StochasticPolygonRenderer.h>
 #include <Core/Visualization/Renderer/StochasticRendererBase.h>

@@ -360,7 +360,6 @@ $(OUTDIR)\.\Visualization\Renderer\ParallelAxis.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParallelCoordinatesRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBasedRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBasedRendererGLSL.obj \
-$(OUTDIR)\.\Visualization\Renderer\ParticleBasedRendererRITS.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBuffer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBufferAccumulator.obj \
 $(OUTDIR)\.\Visualization\Renderer\ParticleBufferCompositor.obj \
@@ -381,9 +380,6 @@ $(OUTDIR)\.\Visualization\Renderer\ShadingParameter.obj \
 $(OUTDIR)\.\Visualization\Renderer\SphereGlyph.obj \
 $(OUTDIR)\.\Visualization\Renderer\SphericalImageRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticLineRenderer.obj \
-$(OUTDIR)\.\Visualization\Renderer\StochasticMultipleTetrahedraCompositor.obj \
-$(OUTDIR)\.\Visualization\Renderer\StochasticMultipleTetrahedraRenderer.obj \
-$(OUTDIR)\.\Visualization\Renderer\StochasticMultivariateTetrahedraRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticPointRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticPolygonRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticRendererBase.obj \
