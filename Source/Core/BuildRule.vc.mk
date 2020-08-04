@@ -105,6 +105,7 @@ $(OUTDIR)\.\FileFormat\KVSML\ValueTag.obj \
 $(OUTDIR)\.\FileFormat\KVSML\VertexTag.obj \
 $(OUTDIR)\.\FileFormat\PLY\Ply.obj \
 $(OUTDIR)\.\FileFormat\PLY\PlyFile.obj \
+$(OUTDIR)\.\FileFormat\PNG\Png.obj \
 $(OUTDIR)\.\FileFormat\PNM\Header.obj \
 $(OUTDIR)\.\FileFormat\PNM\Pbm.obj \
 $(OUTDIR)\.\FileFormat\PNM\Pgm.obj \
@@ -587,6 +588,12 @@ $<
 $<
 <<
 
+{.\FileFormat\PNG\}.cpp{$(OUTDIR)\.\FileFormat\PNG\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\PNG $(MKDIR) $(OUTDIR)\.\FileFormat\PNG
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\PNG\ @<<
+$<
+<<
+
 {.\FileFormat\PLY\}.cpp{$(OUTDIR)\.\FileFormat\PLY\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\PLY $(MKDIR) $(OUTDIR)\.\FileFormat\PLY
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\PLY\ @<<
@@ -711,6 +718,8 @@ install::
 	$(INSTALL) .\FileFormat\KVSML\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\PLY $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\PLY
 	$(INSTALL) .\FileFormat\PLY\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\PLY
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\PNG $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\PNG
+	$(INSTALL) .\FileFormat\PNG\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\PNG
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\PNM $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\PNM
 	$(INSTALL) .\FileFormat\PNM\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\PNM
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\STL $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\STL

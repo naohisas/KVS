@@ -23,6 +23,7 @@
 #include <Core/FileFormat/KVSML/KVSMLTransferFunction.h>
 #include <Core/FileFormat/KVSML/KVSMLUnstructuredVolumeObject.h>
 #include <Core/FileFormat/PLY/Ply.h>
+#include <Core/FileFormat/PNG/Png.h>
 #include <Core/FileFormat/PNM/Pbm.h>
 #include <Core/FileFormat/PNM/Pgm.h>
 #include <Core/FileFormat/PNM/Ppm.h>

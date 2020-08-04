@@ -105,6 +105,7 @@ $(OUTDIR)/./FileFormat/KVSML/ValueTag.o \
 $(OUTDIR)/./FileFormat/KVSML/VertexTag.o \
 $(OUTDIR)/./FileFormat/PLY/Ply.o \
 $(OUTDIR)/./FileFormat/PLY/PlyFile.o \
+$(OUTDIR)/./FileFormat/PNG/Png.o \
 $(OUTDIR)/./FileFormat/PNM/Header.o \
 $(OUTDIR)/./FileFormat/PNM/Pbm.o \
 $(OUTDIR)/./FileFormat/PNM/Pgm.o \
@@ -537,6 +538,10 @@ $(OUTDIR)/./FileFormat/PNM/%.o: ./FileFormat/PNM/%.cpp ./FileFormat/PNM/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/PNM
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/PNG/%.o: ./FileFormat/PNG/%.cpp ./FileFormat/PNG/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/PNG
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/PLY/%.o: ./FileFormat/PLY/%.cpp ./FileFormat/PLY/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/PLY
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -631,6 +636,8 @@ install::
 	$(INSTALL) ./FileFormat/KVSML/*.h $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PLY
 	$(INSTALL) ./FileFormat/PLY/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PLY
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PNG
+	$(INSTALL) ./FileFormat/PNG/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PNG
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PNM
 	$(INSTALL) ./FileFormat/PNM/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PNM
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/STL

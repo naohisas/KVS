@@ -13,6 +13,7 @@
 + kvs::TrackballInteractor
 + kvs::TransferFunctionEditor
 + kvs::OffScreen
++ kvs::Png
 
 **Added SupportGLFW**
 + kvs::glfw::Application

@@ -23,6 +23,7 @@ FileFormat/KVSML/KVSMLTableObject
 FileFormat/KVSML/KVSMLTransferFunction
 FileFormat/KVSML/KVSMLUnstructuredVolumeObject
 FileFormat/PLY/Ply
+FileFormat/PNG/Png
 FileFormat/PNM/Pbm
 FileFormat/PNM/Pgm
 FileFormat/PNM/Ppm

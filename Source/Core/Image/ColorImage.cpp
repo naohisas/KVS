@@ -15,6 +15,7 @@
 #include <kvs/Ppm>
 #include <kvs/Pgm>
 #include <kvs/Pbm>
+#include <kvs/Png>
 #include <kvs/Tiff>
 #include <kvs/Dicom>
 
@@ -328,6 +329,40 @@ bool ColorImage::read( const std::string& filename )
         return( this->read_image( image ) );
     }
 
+    // PNG image.
+    if ( kvs::Png::CheckExtension( filename ) )
+    {
+        const kvs::Png png( filename );
+        if ( png.bytesPerPixel() == 1 )
+        {
+            kvs::GrayImage image( png.width(), png.height(), png.pixels() );
+            return this->read_image( image );
+        }
+        else if ( png.bytesPerPixel() == 3 )
+        {
+            const auto type = BaseClass::Color;
+            return BaseClass::create( png.width(), png.height(), type, png.pixels() );
+        }
+        else if ( png.bytesPerPixel() == 4 )
+        {
+            const size_t npixels = png.width() * png.height();
+            kvs::ValueArray<kvs::UInt8> pixels( npixels * 3 );
+            for ( size_t i = 0; i < npixels; ++i )
+            {
+                pixels[ 3 * i + 0 ] = png.pixels()[ 4 * i + 0 ];
+                pixels[ 3 * i + 1 ] = png.pixels()[ 4 * i + 1 ];
+                pixels[ 3 * i + 2 ] = png.pixels()[ 4 * i + 2 ];
+            }
+            const auto type = BaseClass::Color;
+            return BaseClass::create( png.width(), png.height(), type, pixels );
+        }
+        else
+        {
+            kvsMessageError() << "PNG image (2-bpp) is not supported." << std::endl;
+            return false;
+        }
+    }
+
     // TIFF image.
     if ( kvs::Tiff::CheckExtension( filename ) )
     {
@@ -412,6 +447,13 @@ bool ColorImage::write( const std::string& filename ) const
     {
         kvs::BitImage image( kvs::GrayImage( *this ) );
         return( image.write( filename ) );
+    }
+
+    // PNG image.
+    if ( kvs::Png::CheckExtension( filename ) )
+    {
+        kvs::Png png( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
+        return png.write( filename );
     }
 
     kvsMessageError( "Write-method for %s is not implemented.",
