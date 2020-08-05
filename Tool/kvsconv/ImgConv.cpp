@@ -46,13 +46,13 @@ Argument::Argument( int argc, char** argv ):
                "\t      5 = Screw\n"
                "\t      6 = Deformed screw\n"
                "\t      7 = Dot concentrate", 1 );
-    addOption( "sphere", "Sphere mapping. Specify six images: top, left, right, bottom, back and front images.", 6 );
-    addOption( "cube", "Cube mapping. Specify six images: top, left, right, bottom, back and front images.", 6 );
+    addOption( "sphere", "Sphere mapping. Specify six images: top, left, right, bottom, back and front images.", 6, false );
+    addOption( "cube", "Cube mapping. Specify six images: top, left, right, bottom, back and front images.", 6, false );
     addOption( "l", "Image layout for cube mapping. (default: 0)\n"
                "\t      0 = Cross\n"
                "\t      1 = Rectangle\n"
                "\t      2 = Vertical\n"
-               "\t      3 = Horizontal", 1 );
+               "\t      3 = Horizontal", 1, false );
 }
 
 /*===========================================================================*/
@@ -136,26 +136,22 @@ kvs::BitImage Argument::bitImage( const kvs::GrayImage& image )
     }
 }
 
-kvs::CubicImage Argument::cubicImage( const bool stitch )
+kvs::CubicImage Argument::cubicImage( const std::string& option )
 {
+    const auto top = kvs::ColorImage( this->optionValue<std::string>( option, 0 ) );
+    const auto left = kvs::ColorImage( this->optionValue<std::string>( option, 1 ) );
+    const auto right =kvs::ColorImage(  this->optionValue<std::string>( option, 2 ) );
+    const auto bottom = kvs::ColorImage( this->optionValue<std::string>( option, 3 ) );
+    const auto back = kvs::ColorImage( this->optionValue<std::string>( option, 4 ) );
+    const auto front = kvs::ColorImage( this->optionValue<std::string>( option, 5 ) );
+
     kvs::CubicImage image;
-    image.setTopImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 0 ) ) );
-    image.setLeftImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 1 ) ) );
-    image.setRightImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 2 ) ) );
-    image.setBottomImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 3 ) ) );
-    image.setBackImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 4 ) ) );
-    image.setFrontImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 5 ) ) );
-
-    switch ( this->optionValue<int>("l") )
-    {
-    case 0: image.setLayoutToCross(); break;
-    case 1: image.setLayoutToRectangle(); break;
-    case 2: image.setLayoutToVertical(); break;
-    case 3: image.setLayoutToHorizontal(); break;
-    default: break;
-    }
-
-    if ( stitch ) { image.stitch(); }
+    image.setTopImage( top );
+    image.setLeftImage( left );
+    image.setRightImage( right );
+    image.setBottomImage( bottom );
+    image.setBackImage( back );
+    image.setFrontImage( front );
 
     return image;
 }
@@ -225,14 +221,24 @@ bool Main::exec()
     // Sphere mapping.
     if ( arg.hasOption("sphere") )
     {
-        kvs::SphericalImage sphere( arg.cubicImage() );
+        kvs::SphericalImage sphere( arg.cubicImage( "sphere" ) );
         return sphere.write( m_output_name );
     }
 
     // Cube mapping.
     if ( arg.hasOption("cube") )
     {
-        kvs::CubicImage cube = arg.cubicImage( true );
+        kvs::CubicImage cube = arg.cubicImage( "cube" );
+        auto l = arg.hasOption("l") ? arg.optionValue<int>("l") : 0;
+        switch ( l )
+        {
+        case 0: cube.setLayoutToCross(); break;
+        case 1: cube.setLayoutToRectangle(); break;
+        case 2: cube.setLayoutToVertical(); break;
+        case 3: cube.setLayoutToHorizontal(); break;
+        default: break;
+        }
+        cube.stitch();
         return cube.write( m_output_name );
     }
 

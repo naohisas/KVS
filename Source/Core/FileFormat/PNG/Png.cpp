@@ -79,7 +79,10 @@ Png::Png(
  *  @param  filename [in] filename of PNG image data
  */
 /*===========================================================================*/
-Png::Png( const std::string& filename )
+Png::Png( const std::string& filename ):
+    m_width( 0 ),
+    m_height( 0 ),
+    m_bpp( 0 )
 {
     this->read( filename );
 }

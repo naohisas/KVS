@@ -76,7 +76,7 @@ void Argument::Common::set_options()
 {
     addHelpOption( "help" );
     addOption( "output", "Output filename. (default: <basename of input data file>.<default extension>)", 1, false );
-    addValue( "input data file" );
+    addValue( "input data file", false );
 }
 
 } // end of namespace kvsconv

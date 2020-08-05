@@ -37,7 +37,7 @@ public:
     std::string outputFilename( const std::string& filename );
     kvs::GrayImage grayImage( const kvs::ColorImage& image );
     kvs::BitImage bitImage( const kvs::GrayImage& image );
-    kvs::CubicImage cubicImage( const bool stitch = false );
+    kvs::CubicImage cubicImage( const std::string& option );
 };
 
 /*===========================================================================*/

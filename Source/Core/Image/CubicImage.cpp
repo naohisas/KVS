@@ -105,6 +105,7 @@ void CubicImage::stitch()
         ::Draw( this->rightImage(), w * 2, h, this ); // +X
         ::Draw( this->backImage(), w * 3, h, this ); // +Z
         ::Draw( this->bottomImage(), w, h * 2, this ); // -Y
+        break;
     }
     case Rectangle:
     {
@@ -120,6 +121,7 @@ void CubicImage::stitch()
         ::Draw( this->bottomImage(), w, h, this ); // -Y
         ::Draw( this->backImage(), w * 2, 0, this ); // +Z
         ::Draw( this->frontImage(), w * 2, h, this ); // -Z
+        break;
     }
     case Vertical:
     {
@@ -139,6 +141,7 @@ void CubicImage::stitch()
         ::Draw( this->bottomImage(), 0, h * 3, this ); // -Y
         ::Draw( this->backImage(), 0, h * 4, this ); // +Z
         ::Draw( this->frontImage(), 0, h * 5, this ); // -Z
+        break;
     }
     case Horizontal:
     {
@@ -153,6 +156,7 @@ void CubicImage::stitch()
         ::Draw( this->bottomImage(), w * 3, 0, this ); // -Y
         ::Draw( this->backImage(), w * 4, 0, this ); // +Z
         ::Draw( this->frontImage(), w * 5, 0, this ); // -Z
+        break;
     }
     default:
         break;
