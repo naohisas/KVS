@@ -3,14 +3,6 @@
  *  @file   UnstructuredVolumeObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: UnstructuredVolumeObject.h 1787 2014-07-17 11:10:26Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <ostream>
@@ -34,8 +26,7 @@ class UnstructuredVolumeObject : public kvs::VolumeObjectBase
     kvsModuleBaseClass( kvs::VolumeObjectBase );
 
 public:
-
-    typedef kvs::ValueArray<kvs::UInt32> Connections;
+    using Connections = kvs::ValueArray<kvs::UInt32>;
 
     enum CellType
     {
@@ -50,14 +41,12 @@ public:
     };
 
 private:
-
     CellType m_cell_type; ///< Cell type.
     size_t m_nnodes; ///< Number of nodes.
     size_t m_ncells; ///< Number of cells.
     Connections m_connections; ///< Connection ( Node ID ) array.
 
 public:
-
     UnstructuredVolumeObject();
 
     void shallowCopy( const UnstructuredVolumeObject& object );

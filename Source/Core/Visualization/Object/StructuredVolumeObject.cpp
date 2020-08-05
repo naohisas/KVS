@@ -3,14 +3,6 @@
  *  @file   StructuredVolumeObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: StructuredVolumeObject.cpp 1762 2014-05-07 04:29:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "StructuredVolumeObject.h"
 #include <kvs/KVSMLStructuredVolumeObject>

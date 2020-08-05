@@ -3,14 +3,6 @@
  *  @file   VolumeObjectBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VolumeObjectBase.cpp 1811 2014-09-03 02:53:36Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "VolumeObjectBase.h"
 #include <kvs/Range>

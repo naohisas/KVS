@@ -3,14 +3,6 @@
  *  @file   PolygonObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PolygonObject.h 1815 2014-10-02 01:17:28Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <ostream>
@@ -38,7 +30,6 @@ class PolygonObject : public kvs::GeometryObjectBase
     kvsModuleBaseClass( kvs::GeometryObjectBase );
 
 public:
-
     enum PolygonType
     {
         Triangle   = 3,
@@ -63,7 +54,6 @@ public:
     };
 
 private:
-
     PolygonType m_polygon_type; ///< polygon type
     ColorType m_color_type; ///< polygon color type
     NormalType m_normal_type; ///< polygon normal type
@@ -71,7 +61,6 @@ private:
     kvs::ValueArray<kvs::UInt8> m_opacities; ///< opacity array
 
 public:
-
     PolygonObject();
 
     void shallowCopy( const PolygonObject& object );

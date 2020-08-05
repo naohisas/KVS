@@ -3,14 +3,6 @@
  *  @file   ImageObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ImageObject.cpp 1775 2014-05-16 13:49:42Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ImageObject.h"
 #include <string>

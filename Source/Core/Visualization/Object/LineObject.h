@@ -3,14 +3,6 @@
  *  @file   LineObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LineObject.h 1815 2014-10-02 01:17:28Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/GeometryObjectBase>
@@ -39,7 +31,6 @@ class LineObject : public kvs::GeometryObjectBase
     kvsModuleBaseClass( kvs::GeometryObjectBase );
 
 public:
-
     enum LineType
     {
         Strip,
@@ -57,14 +48,12 @@ public:
     };
 
 private:
-
     LineType m_line_type; ///< line type
     ColorType m_color_type; ///< line color type
     kvs::ValueArray<kvs::UInt32> m_connections; ///< connection array
     kvs::ValueArray<kvs::Real32> m_sizes; ///< size array
 
 public:
-
     LineObject();
     explicit LineObject( const kvs::PolygonObject& polygon );
 
