@@ -1,53 +1,43 @@
 /*****************************************************************************/
 /**
- *  @file   img2img.h
+ *  @file   UcdConv.h
  *  @author Naohisa Sakamoto
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
+ *  @brief  AVS UCD Data Converter
  */
 /*****************************************************************************/
 #pragma once
 #include <string>
 #include <kvs/CommandLine>
-#include <kvs/ColorImage>
-#include <kvs/GrayImage>
-#include <kvs/BitImage>
+#include <kvs/KVSMLUnstructuredVolumeObject>
 #include "Argument.h"
 
 
 namespace kvsconv
 {
 
-namespace img2img
+namespace UcdConv
 {
 
-const std::string CommandName("img2img");
-const std::string Description("Image data to image data.");
+const std::string CommandName( "ucd_conv" );
+const std::string Description("AVS UCD Data Converter.");
 
 /*===========================================================================*/
 /**
- *  Argument class for img2img.
+ *  Argument class for a ucd2kvsml.
  */
 /*===========================================================================*/
 class Argument : public kvsconv::Argument::Common
 {
 public:
     Argument( int argc, char** argv );
-    const std::string inputFilename();
-    const std::string outputFilename( const std::string& filename );
-    const kvs::GrayImage grayImage( const kvs::ColorImage& image );
-    const kvs::BitImage bitImage( const kvs::GrayImage& image );
+    std::string inputFilename();
+    std::string outputFilename( const std::string& filename );
+    kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();
 };
 
 /*===========================================================================*/
 /**
- *  Main class for img2img.
+ *  Main class for a ucd2kvsml.
  */
 /*===========================================================================*/
 class Main
@@ -63,6 +53,6 @@ public:
     bool exec();
 };
 
-} // end of namespace img2img
+} // end of namespace UcdConv
 
 } // end of namespace kvsconv

@@ -1,49 +1,38 @@
 /*****************************************************************************/
 /**
- *  @file   tet2tet.cpp
+ *  @file   UcdConv.cpp
  *  @author Naohisa Sakamoto
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: tet2tet.cpp 1191 2012-06-12 01:31:49Z naohisa.sakamoto $
+ *  @brief  AVS UCD Data Converter
  */
 /*****************************************************************************/
-#include "tet2tet.h"
+#include "UcdConv.h"
 #include <memory>
 #include <string>
 #include <kvs/File>
-#include <kvs/KVSMLUnstructuredVolumeObject>
+#include <kvs/AVSUcd>
 #include <kvs/UnstructuredVolumeObject>
 #include <kvs/UnstructuredVolumeImporter>
-#include <kvs/UnstructuredVolumeExporter>
 
 
 namespace kvsconv
 {
 
-namespace tet2tet
+namespace UcdConv
 {
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Argument class for a tet2tet.
+ *  @brief  Constructs a new Argument class for a ucd2kvsml.
  *  @param  argc [in] argument count
  *  @param  argv [in] argument values
  */
 /*===========================================================================*/
 Argument::Argument( int argc, char** argv ):
-    kvsconv::Argument::Common( argc, argv, kvsconv::tet2tet::CommandName )
+    kvsconv::Argument::Common( argc, argv, UcdConv::CommandName )
 {
-    addOption( kvsconv::tet2tet::CommandName, kvsconv::tet2tet::Description, 0 );
+    addOption( UcdConv::CommandName, UcdConv::Description, 0 );
     addOption( "e", "External data file. (optional)", 0, false );
     addOption( "b", "Data file as binary. (optional)", 0, false );
-    addOption( "m", "Conversion method. (default: 0)\n"
-               "\t      0 = Subdivide a quadratic tetrahedron into eight tetrahedra\n"
-               "\t      2 = Remove quadratic nodes", 1, false );
 }
 
 /*===========================================================================*/
@@ -52,7 +41,7 @@ Argument::Argument( int argc, char** argv ):
  *  @return input filename
  */
 /*===========================================================================*/
-const std::string Argument::inputFilename( void )
+std::string Argument::inputFilename()
 {
     return this->value<std::string>();
 }
@@ -64,7 +53,7 @@ const std::string Argument::inputFilename( void )
  *  @return output filename.
  */
 /*===========================================================================*/
-const std::string Argument::outputFilename( const std::string& filename )
+std::string Argument::outputFilename( const std::string& filename )
 {
     if ( this->hasOption("output") )
     {
@@ -72,7 +61,8 @@ const std::string Argument::outputFilename( const std::string& filename )
     }
     else
     {
-        // Replace the extension as follows: xxxx.inp -> xxx.kvsml.
+        // Default output filename: <basename_of_filename>.kvsml
+        // e.g) avs_data.inp -> avs_data.kvsml
         const std::string basename = kvs::File( filename ).baseName();
         const std::string extension = "kvsml";
         return basename + "." + extension;
@@ -104,68 +94,53 @@ kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType()
 
 /*===========================================================================*/
 /**
- *  @brief  Returns conversion method.
- *  @return conversion method
- */
-/*===========================================================================*/
-kvs::TetrahedraToTetrahedra::Method Argument::conversionMethod()
-{
-    kvs::TetrahedraToTetrahedra::Method method = kvs::TetrahedraToTetrahedra::Subdivision8;
-
-    if ( this->hasOption("m") )
-    {
-        switch ( this->optionValue<int>("m") )
-        {
-        case 0: method = kvs::TetrahedraToTetrahedra::Subdivision8; break;
-        case 1: method = kvs::TetrahedraToTetrahedra::Removal; break;
-        default: break;
-        }
-    }
-
-    return method;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
 bool Main::exec()
 {
     // Parse specified arguments.
-    tet2tet::Argument arg( m_argc, m_argv );
+    UcdConv::Argument arg( m_argc, m_argv );
     if( !arg.parse() ) { return false; }
 
     // Set a input filename and a output filename.
     m_input_name = arg.inputFilename();
     m_output_name = arg.outputFilename( m_input_name );
 
+    // Check input data file.
+    if ( m_input_name.empty() )
+    {
+        kvsMessageError() << "Input file is not specified." << std::endl;
+        return false;
+    }
+
     kvs::File file( m_input_name );
     if ( !file.exists() )
     {
-        kvsMessageError("Input data file '%s' is not existed.",m_input_name.c_str());
+        kvsMessageError() << m_input_name << " is not found." << std::endl;
         return false;
     }
 
-    // Import the unstructured volume object.
-    kvs::UnstructuredVolumeObject* volume = new kvs::UnstructuredVolumeImporter( m_input_name );
-    if ( !volume )
+    // Read AVS UCD data file.
+    auto* data = new kvs::AVSUcd( m_input_name );
+    if ( data->isFailure() )
     {
-        kvsMessageError("Cannot import unstructured volume object.");
+        kvsMessageError() << "Cannot read " << m_input_name << "." << std::endl;
+        delete data;
         return false;
     }
 
-    // Convert quadratic tetrahedral volume to linear tetrahedral volume.
-    const kvs::TetrahedraToTetrahedra::Method method = arg.conversionMethod();
-    kvs::UnstructuredVolumeObject* object = new kvs::TetrahedraToTetrahedra( volume, method );
+    // Import AVS UCD data as unstructured volume object.
+    auto* object = new kvs::UnstructuredVolumeImporter( data );
     if ( !object )
     {
-        kvsMessageError("Cannot convert to tetrahedral volume dataset.");
-        delete volume;
+        kvsMessageError() << "Cannot import " << m_input_name << "." << std::endl;
+        delete data;
         return false;
     }
-    delete volume;
+    delete data;
 
+    // Write the unstructured volume object to a file in KVSML format.
     const bool ascii = !arg.hasOption("b");
     const bool external = arg.hasOption("e");
     object->write( m_output_name, ascii, external );
@@ -174,6 +149,6 @@ bool Main::exec()
     return true;
 }
 
-} // end of namespace tet2tet
+} // end of namespace UcdConv
 
 } // end of namespace kvsconv

@@ -3,14 +3,6 @@
  *  @file   Argument.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -46,7 +38,7 @@ public:
     Common( int argc, char** argv, const std::string& converter );
 
 private:
-    void set_options( void );
+    void set_options();
 };
 
 } // end of namespace kvsconv

@@ -1,49 +1,45 @@
 /*****************************************************************************/
 /**
- *  @file   fld2kvsml.h
+ *  @file   TetConv.h
  *  @author Naohisa Sakamoto
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
+ *  @brief  Tetrahedral volume data converter
  */
 /*****************************************************************************/
 #pragma once
 #include <string>
 #include <kvs/CommandLine>
-#include <kvs/KVSMLStructuredVolumeObject>
+#include <kvs/KVSMLUnstructuredVolumeObject>
+#include <kvs/TetrahedraToTetrahedra>
 #include "Argument.h"
 
 
 namespace kvsconv
 {
 
-namespace fld2kvsml
+namespace TetConv
 {
 
-const std::string CommandName("fld2kvsml");
-const std::string Description("AVS Field data to KVSML Structured volume object.");
+const std::string CommandName( "tet_conv" );
+const std::string Description( "Tetrahedral Volume Data Converter.");
 
 /*===========================================================================*/
 /**
- *  Argument class for a fld2kvsml.
+ *  Argument class for a tet2tet.
  */
 /*===========================================================================*/
 class Argument : public kvsconv::Argument::Common
 {
 public:
     Argument( int argc, char** argv );
-    const std::string inputFilename();
-    const std::string outputFilename( const std::string& filename );
+    std::string inputFilename();
+    std::string outputFilename( const std::string& filename );
+    kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();
+    kvs::TetrahedraToTetrahedra::Method conversionMethod();
 };
 
 /*===========================================================================*/
 /**
- *  Main class for a fld2kvsml.
+ *  Main class for a tet2tet.
  */
 /*===========================================================================*/
 class Main
@@ -59,6 +55,6 @@ public:
     bool exec();
 };
 
-} // end of namespace fld2kvsml
+} // end of namespace TetConv
 
 } // end of namespace kvsconv

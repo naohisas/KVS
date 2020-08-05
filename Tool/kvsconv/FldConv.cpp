@@ -1,43 +1,37 @@
 /*****************************************************************************/
 /**
- *  @file   ucd2kvsml.cpp
+ *  @file   FldConv.cpp
  *  @author Naohisa Sakamoto
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
+ *  @breif  AVS Field data converter
  */
 /*****************************************************************************/
-#include "ucd2kvsml.h"
+#include "FldConv.h"
 #include <memory>
 #include <string>
 #include <kvs/File>
-#include <kvs/AVSUcd>
-#include <kvs/UnstructuredVolumeObject>
-#include <kvs/UnstructuredVolumeImporter>
+#include <kvs/AVSField>
+#include <kvs/KVSMLStructuredVolumeObject>
+#include <kvs/StructuredVolumeObject>
+#include <kvs/StructuredVolumeImporter>
 
 
 namespace kvsconv
 {
 
-namespace ucd2kvsml
+namespace FldConv
 {
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Argument class for a ucd2kvsml.
+ *  @brief  Constructs a new Argument class for FldConv command.
  *  @param  argc [in] argument count
  *  @param  argv [in] argument values
  */
 /*===========================================================================*/
 Argument::Argument( int argc, char** argv ):
-    kvsconv::Argument::Common( argc, argv, kvsconv::ucd2kvsml::CommandName )
+    kvsconv::Argument::Common( argc, argv, FldConv::CommandName )
 {
-    addOption( kvsconv::ucd2kvsml::CommandName, kvsconv::ucd2kvsml::Description, 0 );
+    addOption( FldConv::CommandName, FldConv::Description, 0 );
     addOption( "e", "External data file. (optional)", 0, false );
     addOption( "b", "Data file as binary. (optional)", 0, false );
 }
@@ -48,7 +42,7 @@ Argument::Argument( int argc, char** argv ):
  *  @return input filename
  */
 /*===========================================================================*/
-const std::string Argument::inputFilename( void )
+std::string Argument::inputFilename()
 {
     return this->value<std::string>();
 }
@@ -60,7 +54,7 @@ const std::string Argument::inputFilename( void )
  *  @return output filename.
  */
 /*===========================================================================*/
-const std::string Argument::outputFilename( const std::string& filename )
+std::string Argument::outputFilename( const std::string& filename )
 {
     if ( this->hasOption("output") )
     {
@@ -68,34 +62,12 @@ const std::string Argument::outputFilename( const std::string& filename )
     }
     else
     {
-        // Replace the extension as follows: xxxx.inp -> xxx.kvsml.
+        // Default output filename: <basename_of_filename>.kvsml
+        // e.g) avs_data.fld -> avs_data.kvsml
         const std::string basename = kvs::File( filename ).baseName();
         const std::string extension = "kvsml";
         return basename + "." + extension;
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns a writing data type (ascii/external ascii/external binary).
- *  @return writing data type
- */
-/*===========================================================================*/
-kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType()
-{
-    if ( this->hasOption("b") )
-    {
-        return kvs::KVSMLUnstructuredVolumeObject::ExternalBinary;
-    }
-    else
-    {
-        if ( this->hasOption("e") )
-        {
-            return kvs::KVSMLUnstructuredVolumeObject::ExternalAscii;
-        }
-    }
-
-    return kvs::KVSMLUnstructuredVolumeObject::Ascii;
 }
 
 /*===========================================================================*/
@@ -106,33 +78,47 @@ kvs::KVSMLUnstructuredVolumeObject::WritingDataType Argument::writingDataType()
 bool Main::exec()
 {
     // Parse specified arguments.
-    ucd2kvsml::Argument arg( m_argc, m_argv );
-    if( !arg.parse() ) { return false; }
+    FldConv::Argument arg( m_argc, m_argv );
+    if ( !arg.parse() ) { return false; }
 
     // Set a input filename and a output filename.
     m_input_name = arg.inputFilename();
     m_output_name = arg.outputFilename( m_input_name );
 
+    // Check input data file.
+    if ( m_input_name.empty() )
+    {
+        kvsMessageError() << "Input file is not specified." << std::endl;
+        return false;
+    }
+
     kvs::File file( m_input_name );
     if ( !file.exists() )
     {
-        kvsMessageError("Input data file '%s' is not existed.",m_input_name.c_str());
+        kvsMessageError() << m_input_name << " is not found." << std::endl;
         return false;
     }
 
-    // Read AVS UCD data file.
-    kvs::AVSUcd* input = new kvs::AVSUcd( m_input_name );
-    if ( input->isFailure() )
+    // Read AVS Field data file.
+    auto* data = new kvs::AVSField( m_input_name );
+    if ( data->isFailure() )
     {
-        kvsMessageError("Cannot read a file %s.", m_input_name.c_str() );
-        delete input;
+        kvsMessageError() << "Cannot read " << m_input_name << "." << std::endl;
+        delete data;
         return false;
     }
 
-    // Import AVS UCD data as unstructured volume object.
-    kvs::UnstructuredVolumeObject* object = new kvs::UnstructuredVolumeImporter( input );
-    delete input;
+    // Import the AVS Field data as structured volume object.
+    auto* object = new kvs::StructuredVolumeImporter( data );
+    if ( !object )
+    {
+        kvsMessageError() << "Cannot import " << m_input_name << "." << std::endl;
+        delete data;
+        return false;
+    }
+    delete data;
 
+    // Write the structured volume object to a file in KVSML format.
     const bool ascii = !arg.hasOption("b");
     const bool external = arg.hasOption("e");
     object->write( m_output_name, ascii, external );
@@ -141,6 +127,6 @@ bool Main::exec()
     return true;
 }
 
-} // end of namespace ucd2kvsml
+} // end of namespace FldConv
 
 } // end of namespace kvsconv

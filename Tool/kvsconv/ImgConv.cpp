@@ -1,40 +1,34 @@
 /*****************************************************************************/
 /**
  *  @file   img2img.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: img2img.cpp 1191 2012-06-12 01:31:49Z naohisa.sakamoto $
+ *  @author Naohisa Sakamoto
+ *  @brief  Image data converter.
  */
 /*****************************************************************************/
-#include "img2img.h"
+#include "ImgConv.h"
 #include <memory>
 #include <string>
 #include <kvs/File>
-#include <kvs/IgnoreUnusedVariable>
+#include <kvs/SphericalImage>
 
 
 namespace kvsconv
 {
 
-namespace img2img
+namespace ImgConv
 {
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new argument class for img2img.
+ *  @brief  Constructs a new argument class for ImgConv.
  *  @param  argc [in] argument count
  *  @param  argv [in] argument values
  */
 /*===========================================================================*/
 Argument::Argument( int argc, char** argv ):
-    kvsconv::Argument::Common( argc, argv, kvsconv::img2img::CommandName )
+    kvsconv::Argument::Common( argc, argv, ImgConv::CommandName )
 {
-    addOption( kvsconv::img2img::CommandName, kvsconv::img2img::Description, 0 );
+    addOption( ImgConv::CommandName, ImgConv::Description, 0 );
     addOption( "s", "Scaling image. (optional: <scale>)", 1 );
     addOption( "r", "Resize image. (optional: <width> <height>)", 2 );
     addOption( "g", "Gray scaling. (default: 0)\n"
@@ -52,6 +46,13 @@ Argument::Argument( int argc, char** argv ):
                "\t      5 = Screw\n"
                "\t      6 = Deformed screw\n"
                "\t      7 = Dot concentrate", 1 );
+    addOption( "sphere", "Sphere mapping. Specify six images: top, left, right, bottom, back and front images.", 6 );
+    addOption( "cube", "Cube mapping. Specify six images: top, left, right, bottom, back and front images.", 6 );
+    addOption( "l", "Image layout for cube mapping. (default: 0)\n"
+               "\t      0 = Cross\n"
+               "\t      1 = Rectangle\n"
+               "\t      2 = Vertical\n"
+               "\t      3 = Horizontal", 1 );
 }
 
 /*===========================================================================*/
@@ -60,9 +61,9 @@ Argument::Argument( int argc, char** argv ):
  *  @return input filename
  */
 /*===========================================================================*/
-const std::string Argument::inputFilename()
+std::string Argument::inputFilename()
 {
-    return this->value<std::string>();
+    return this->hasValues() ? this->value<std::string>() : "";
 }
 
 /*===========================================================================*/
@@ -72,17 +73,23 @@ const std::string Argument::inputFilename()
  *  @return output filename.
  */
 /*===========================================================================*/
-const std::string Argument::outputFilename( const std::string& filename )
+std::string Argument::outputFilename( const std::string& filename )
 {
-    kvs::IgnoreUnusedVariable( filename );
-
     if ( this->hasOption("output") )
     {
         return this->optionValue<std::string>("output");
     }
     else
     {
-        return "";
+        // Default output filename.
+        if ( filename.empty() ) { return "output.png"; }
+        else
+        {
+            // e.g) image_data.bmp -> output_image_data.png
+            const std::string basename = kvs::File( filename ).baseName();
+            const std::string extension = "png";
+            return "output_" + basename + "." + extension;
+        }
     }
 }
 
@@ -93,7 +100,7 @@ const std::string Argument::outputFilename( const std::string& filename )
  *  @return gray image
  */
 /*===========================================================================*/
-const kvs::GrayImage Argument::grayImage( const kvs::ColorImage& image )
+kvs::GrayImage Argument::grayImage( const kvs::ColorImage& image )
 {
     switch ( this->optionValue<int>("g") )
     {
@@ -113,7 +120,7 @@ const kvs::GrayImage Argument::grayImage( const kvs::ColorImage& image )
  *  @return bit image
  */
 /*===========================================================================*/
-const kvs::BitImage Argument::bitImage( const kvs::GrayImage& image )
+kvs::BitImage Argument::bitImage( const kvs::GrayImage& image )
 {
     switch ( this->optionValue<int>("b") )
     {
@@ -129,6 +136,30 @@ const kvs::BitImage Argument::bitImage( const kvs::GrayImage& image )
     }
 }
 
+kvs::CubicImage Argument::cubicImage( const bool stitch )
+{
+    kvs::CubicImage image;
+    image.setTopImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 0 ) ) );
+    image.setLeftImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 1 ) ) );
+    image.setRightImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 2 ) ) );
+    image.setBottomImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 3 ) ) );
+    image.setBackImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 4 ) ) );
+    image.setFrontImage( kvs::ColorImage( this->optionValue<std::string>( "sphere", 5 ) ) );
+
+    switch ( this->optionValue<int>("l") )
+    {
+    case 0: image.setLayoutToCross(); break;
+    case 1: image.setLayoutToRectangle(); break;
+    case 2: image.setLayoutToVertical(); break;
+    case 3: image.setLayoutToHorizontal(); break;
+    default: break;
+    }
+
+    if ( stitch ) { image.stitch(); }
+
+    return image;
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Executes main process.
@@ -137,40 +168,39 @@ const kvs::BitImage Argument::bitImage( const kvs::GrayImage& image )
 bool Main::exec()
 {
     // Parse specified arguments.
-    img2img::Argument arg( m_argc, m_argv );
+    ImgConv::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) { return false; }
 
     // Set a input filename and a output filename.
     m_input_name = arg.inputFilename();
     m_output_name = arg.outputFilename( m_input_name );
 
-    kvs::File file( m_input_name );
-    if ( !file.exists() )
-    {
-        kvsMessageError("Input data file '%s' is not existed.",m_input_name.c_str());
-        return false;
-    }
-
-    if ( m_output_name.empty() )
-    {
-        kvsMessageError("Output filename is required for img2img.");
-        return false;
-    }
-
     // Read the input image file.
     kvs::ColorImage image;
-    if ( !image.read( m_input_name ) )
+    if ( !m_input_name.empty() )
     {
-        kvsMessageError("Cannot read image data file '%s'.",m_input_name.c_str());
-        return false;
+        kvs::File file( m_input_name );
+        if ( !file.exists() )
+        {
+            kvsMessageError() << m_input_name << " is not found." << std::endl;
+            return false;
+        }
+
+        if ( !image.read( m_input_name ) )
+        {
+            kvsMessageError() << "Cannot read " << m_input_name << "." << std::endl;
+            return false;
+        }
     }
 
+    // Scaling
     if ( arg.hasOption("s") )
     {
         const double ratio = arg.optionValue<double>("s");
         image.scale( ratio );
     }
 
+    // Resizing
     if ( arg.hasOption("r") )
     {
         const size_t width  = arg.optionValue<size_t>("r",0);
@@ -178,29 +208,37 @@ bool Main::exec()
         image.resize( width, height );
     }
 
+    // Gray-scaling
     if ( arg.hasOption("g") )
     {
-        // Gray scaling.
         kvs::GrayImage gray = arg.grayImage( image );
-        if ( arg.hasOption("b") )
-        {
-            // Binarization.
-            kvs::BitImage bit = arg.bitImage( gray );
-            return bit.write( m_output_name );
-        }
         return gray.write( m_output_name );
     }
 
+    // Binarization.
     if ( arg.hasOption("b") )
     {
-        // Binarization.
         kvs::BitImage bit = arg.bitImage( kvs::GrayImage( image ) );
         return bit.write( m_output_name );
+    }
+
+    // Sphere mapping.
+    if ( arg.hasOption("sphere") )
+    {
+        kvs::SphericalImage sphere( arg.cubicImage() );
+        return sphere.write( m_output_name );
+    }
+
+    // Cube mapping.
+    if ( arg.hasOption("cube") )
+    {
+        kvs::CubicImage cube = arg.cubicImage( true );
+        return cube.write( m_output_name );
     }
 
     return image.write( m_output_name );
 }
 
-} // end of namespace img2img
+} // end of namespace ImgConv
 
 } // end of namespace kvsconv

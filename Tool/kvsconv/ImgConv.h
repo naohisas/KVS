@@ -1,50 +1,48 @@
 /*****************************************************************************/
 /**
- *  @file   ucd2kvsml.h
+ *  @file   ImgConv.h
  *  @author Naohisa Sakamoto
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
+ *  @brief  Image data converter.
  */
 /*****************************************************************************/
 #pragma once
 #include <string>
 #include <kvs/CommandLine>
-#include <kvs/KVSMLUnstructuredVolumeObject>
+#include <kvs/ColorImage>
+#include <kvs/GrayImage>
+#include <kvs/BitImage>
+#include <kvs/CubicImage>
 #include "Argument.h"
 
 
 namespace kvsconv
 {
 
-namespace ucd2kvsml
+namespace ImgConv
 {
 
-const std::string CommandName("ucd2kvsml");
-const std::string Description("AVS UCD data to KVSML Unstructured volume object.");
+const std::string CommandName( "img_conv" );
+const std::string Description( "Image Data Converter." );
 
 /*===========================================================================*/
 /**
- *  Argument class for a ucd2kvsml.
+ *  Argument class for img2img.
  */
 /*===========================================================================*/
 class Argument : public kvsconv::Argument::Common
 {
 public:
     Argument( int argc, char** argv );
-    const std::string inputFilename();
-    const std::string outputFilename( const std::string& filename );
-    kvs::KVSMLUnstructuredVolumeObject::WritingDataType writingDataType();
+    std::string inputFilename();
+    std::string outputFilename( const std::string& filename );
+    kvs::GrayImage grayImage( const kvs::ColorImage& image );
+    kvs::BitImage bitImage( const kvs::GrayImage& image );
+    kvs::CubicImage cubicImage( const bool stitch = false );
 };
 
 /*===========================================================================*/
 /**
- *  Main class for a ucd2kvsml.
+ *  Main class for img2img.
  */
 /*===========================================================================*/
 class Main
@@ -60,6 +58,6 @@ public:
     bool exec();
 };
 
-} // end of namespace ucd2kvsml
+} // end of namespace ImgConv
 
 } // end of namespace kvsconv

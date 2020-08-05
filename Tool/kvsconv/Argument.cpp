@@ -3,21 +3,13 @@
  *  @file   Argument.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "Argument.h"
 #include "CommandName.h"
-#include "fld2kvsml.h"
-#include "ucd2kvsml.h"
-#include "img2img.h"
-#include "tet2tet.h"
+#include "FldConv.h"
+#include "UcdConv.h"
+#include "ImgConv.h"
+#include "TetConv.h"
 
 
 namespace kvsconv
@@ -36,16 +28,16 @@ Argument::Argument( int argc, char** argv ):
     addHelpOption();
 
     // Help option for each converter.
-    addOption("help", "Output help message for each converter. (ex. -help fld2kvsml)", 1 );
+    addOption("help", "Output help message for each converter. (ex. -help fld_conv)", 1 );
 
     // Converter commands.
-    addOption( kvsconv::fld2kvsml::CommandName, kvsconv::fld2kvsml::Description, 0 );
-    addOption( kvsconv::ucd2kvsml::CommandName, kvsconv::ucd2kvsml::Description, 0 );
-    addOption( kvsconv::img2img::CommandName, kvsconv::img2img::Description, 0 );
-    addOption( kvsconv::tet2tet::CommandName, kvsconv::tet2tet::Description, 0 );
+    addOption( kvsconv::FldConv::CommandName, kvsconv::FldConv::Description, 0 );
+    addOption( kvsconv::UcdConv::CommandName, kvsconv::UcdConv::Description, 0 );
+    addOption( kvsconv::TetConv::CommandName, kvsconv::TetConv::Description, 0 );
+    addOption( kvsconv::ImgConv::CommandName, kvsconv::ImgConv::Description, 0 );
 
     // Input value.
-    addValue("input value");
+    addValue( "input data", false );
 }
 
 /*===========================================================================*/
@@ -80,11 +72,11 @@ Argument::Common::Common( int argc, char** argv, const std::string& converter ):
  *  @brief  Set options for the common argument.
  */
 /*===========================================================================*/
-void Argument::Common::set_options( void )
+void Argument::Common::set_options()
 {
-    addHelpOption("help");
-    addOption("output", "Output filename. (default: <input_basename>.<output_extension>)", 1, false );
-    addValue("input data file");
+    addHelpOption( "help" );
+    addOption( "output", "Output filename. (default: <basename of input data file>.<default extension>)", 1, false );
+    addValue( "input data file" );
 }
 
 } // end of namespace kvsconv

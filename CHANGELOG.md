@@ -373,6 +373,14 @@
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)
 + Environment parameters KVS_APP_USE_GLUT, KVS_APP_USE_GLFW, and KVS_APP_USE_QT for specifying Application and Screen class APIs.
 
+**kvsconv command**
++ Removed '-fld2kvsml' option (use '-fld_conv')
++ Removed '-ucd2kvsml' option (use '-ucd_conv')
++ Removed '-tet2tet' option (use '-tet_conv')
++ Removed '-img2img' option (use '-img_conv')
++ Added cube mapping option '-cube' to '-img_conv'
++ Added sphere mapping option '-sphere' to '-img_conv'
+
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**
 + kvs::Stat::Sum
