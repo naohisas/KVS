@@ -143,7 +143,6 @@
 #include <Core/Thread/Semaphore.h>
 #include <Core/Thread/Thread.h>
 #include <Core/Thread/WriteLocker.h>
-#include <Core/Utility/AnyValue.h>
 #include <Core/Utility/AnyValueArray.h>
 #include <Core/Utility/AnyValueTable.h>
 #include <Core/Utility/Assert.h>

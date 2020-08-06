@@ -226,7 +226,6 @@ $(OUTDIR)\.\Thread\ReadWriteLock.obj \
 $(OUTDIR)\.\Thread\Semaphore.obj \
 $(OUTDIR)\.\Thread\Thread.obj \
 $(OUTDIR)\.\Thread\WriteLocker.obj \
-$(OUTDIR)\.\Utility\AnyValue.obj \
 $(OUTDIR)\.\Utility\AnyValueArray.obj \
 $(OUTDIR)\.\Utility\AnyValueTable.obj \
 $(OUTDIR)\.\Utility\BitArray.obj \

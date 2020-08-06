@@ -340,6 +340,7 @@
 + kvs::StochasticMultipleTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
 + kvs::StochasticMultivariateTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
 + kvs::glsl::rits::ParticleBasedRenderer (use kvs::glsl::ParticleBasedRenderer)
++ kvs::AnyValue
 
 **Removed methods**
 + kvs::glut::ScreenBase::timerEventHandler
@@ -372,6 +373,9 @@
 + kvs::qt::Screen::defaultMouseReleaseEvent
 + kvs::qt::Screen::defaultWheelEvent
 + kvs::qt::Screen::defaultKeyPressEvent
+
+**Removed examples**
++ Example/Utility/AnyValue
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)

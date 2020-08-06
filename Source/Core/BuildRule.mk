@@ -226,7 +226,6 @@ $(OUTDIR)/./Thread/ReadWriteLock.o \
 $(OUTDIR)/./Thread/Semaphore.o \
 $(OUTDIR)/./Thread/Thread.o \
 $(OUTDIR)/./Thread/WriteLocker.o \
-$(OUTDIR)/./Utility/AnyValue.o \
 $(OUTDIR)/./Utility/AnyValueArray.o \
 $(OUTDIR)/./Utility/AnyValueTable.o \
 $(OUTDIR)/./Utility/BitArray.o \

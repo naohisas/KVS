@@ -143,7 +143,6 @@ Thread/ReadWriteLock
 Thread/Semaphore
 Thread/Thread
 Thread/WriteLocker
-Utility/AnyValue
 Utility/AnyValueArray
 Utility/AnyValueTable
 Utility/Assert
