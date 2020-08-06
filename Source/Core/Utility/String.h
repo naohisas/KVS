@@ -84,28 +84,26 @@ private:
     String();
 
 public:
+    // KVS_DEPRECATED
     template <typename T>
-    KVS_DEPRECATED( static std::string ToString( const T& val ) ) { return From<T>( val ); }
+    static std::string ToString( const T& val ) { return From<T>( val ); }
 
+    // KVS_DEPRECATED
     template <typename T>
-    KVS_DEPRECATED( static std::string ToString(
+    static std::string ToString(
         const T& val,
         const int precision,
         const bool fixed = false,
-        const bool scientific = false ) )
+        const bool scientific = false )
     {
         return From( val, precision, fixed, scientific );
     }
 
+    // KVS_DEPRECATED
     template <typename T>
-    KVS_DEPRECATED( static std::string ToString( const T& val, const std::string& format ) )
+    static std::string ToString( const T& val, const std::string& format )
     {
-        char buffer[100];
-        if ( std::sprintf( buffer, format.c_str(), val ) >= 0 )
-        {
-            return std::string( buffer );
-        }
-        return std::string("");
+        return Format( format, val );
     }
 };
 
