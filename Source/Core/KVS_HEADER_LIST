@@ -111,7 +111,6 @@ Numeric/StudentTDistributiion
 Numeric/StudentTDistribution
 Numeric/Xorshift128
 OpenGL/BufferObject
-OpenGL/DisplayList
 OpenGL/FragmentShader
 OpenGL/FrameBuffer
 OpenGL/FrameBufferObject
@@ -160,7 +159,6 @@ Utility/Deprecated
 Utility/Directory
 Utility/Endian
 Utility/Exception
-Utility/FastTokenizer
 Utility/File
 Utility/FileList
 Utility/IgnoreUnusedVariable

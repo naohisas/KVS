@@ -111,7 +111,6 @@
 #include <Core/Numeric/StudentTDistribution.h>
 #include <Core/Numeric/Xorshift128.h>
 #include <Core/OpenGL/BufferObject.h>
-#include <Core/OpenGL/DisplayList.h>
 #include <Core/OpenGL/FragmentShader.h>
 #include <Core/OpenGL/FrameBuffer.h>
 #include <Core/OpenGL/FrameBufferObject.h>
@@ -160,7 +159,6 @@
 #include <Core/Utility/Directory.h>
 #include <Core/Utility/Endian.h>
 #include <Core/Utility/Exception.h>
-#include <Core/Utility/FastTokenizer.h>
 #include <Core/Utility/File.h>
 #include <Core/Utility/FileList.h>
 #include <Core/Utility/IgnoreUnusedVariable.h>

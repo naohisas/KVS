@@ -195,7 +195,6 @@ $(OUTDIR)/./Numeric/SVSolver.o \
 $(OUTDIR)/./Numeric/StudentTDistribution.o \
 $(OUTDIR)/./Numeric/Xorshift128.o \
 $(OUTDIR)/./OpenGL/BufferObject.o \
-$(OUTDIR)/./OpenGL/DisplayList.o \
 $(OUTDIR)/./OpenGL/FragmentShader.o \
 $(OUTDIR)/./OpenGL/FrameBuffer.o \
 $(OUTDIR)/./OpenGL/FrameBufferObject.o \
@@ -232,7 +231,6 @@ $(OUTDIR)/./Utility/BitArray.o \
 $(OUTDIR)/./Utility/CommandLine.o \
 $(OUTDIR)/./Utility/Date.o \
 $(OUTDIR)/./Utility/Directory.o \
-$(OUTDIR)/./Utility/FastTokenizer.o \
 $(OUTDIR)/./Utility/File.o \
 $(OUTDIR)/./Utility/Indent.o \
 $(OUTDIR)/./Utility/MemoryTracer.o \

@@ -333,6 +333,15 @@
 + kvs::qt::Screen::setMouseDoubleClickEvent
 + kvs::qt::Screen::setWheelEvent
 + kvs::qt::Screen::setKeyPressEvent
++ kvs::AnyValue
++ kvs::AnyValueArray::isEmpty
++ kvs::AnyValueArray::swapByte
++ kvs::AnyValueArray::shallowCopy
++ kvs::AnyValueArray::deepCopy
++ kvs::AnyValueArray::pointer
++ kvs::AnyValueArray::to
++ kvs::FastTokenizer
++ kvs::DisplayList
 
 **Removed classes**
 + kvs::TextEngine (use kvs::Painter)
@@ -340,7 +349,6 @@
 + kvs::StochasticMultipleTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
 + kvs::StochasticMultivariateTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
 + kvs::glsl::rits::ParticleBasedRenderer (use kvs::glsl::ParticleBasedRenderer)
-+ kvs::AnyValue
 
 **Removed methods**
 + kvs::glut::ScreenBase::timerEventHandler

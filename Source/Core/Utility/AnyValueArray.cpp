@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file AnyValueArray.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: AnyValueArray.cpp 1244 2012-07-10 11:44:23Z s.yamada0808@gmail.com $
+ *  @file   AnyValueArray.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "AnyValueArray.h"
@@ -26,7 +19,8 @@ kvs::AnyValueArray MakeClone( const void* data, size_t size )
     return kvs::AnyValueArray( ret );
 }
 
-}
+} // end of namespace
+
 
 namespace kvs
 {
@@ -58,9 +52,6 @@ const std::type_info& TypeInfo::type() const
     case kvs::Type::TypeUInt64: return typeid( kvs::UInt64 );
     case kvs::Type::TypeReal32: return typeid( kvs::Real32 );
     case kvs::Type::TypeReal64: return typeid( kvs::Real64 );
-#if KVS_ENABLE_DEPRECATED
-    case kvs::Type::TypeString: return typeid( std::string );
-#endif
     default: break;
     }
     KVS_ASSERT( false );
@@ -99,9 +90,6 @@ const char* TypeInfo::typeName() const
 #endif
     case kvs::Type::TypeReal32: return "float";
     case kvs::Type::TypeReal64: return "double";
-#if KVS_ENABLE_DEPRECATED
-    case kvs::Type::TypeString: return "string";
-#endif
     default: break;
     }
     KVS_ASSERT( false );
@@ -152,9 +140,6 @@ AnyValueArray AnyValueArray::clone() const
     case kvs::Type::TypeUInt64: return ::MakeClone<kvs::UInt64>( data, size );
     case kvs::Type::TypeReal32: return ::MakeClone<kvs::Real32>( data, size );
     case kvs::Type::TypeReal64: return ::MakeClone<kvs::Real64>( data, size );
-#if KVS_ENABLE_DEPRECATED
-    case kvs::Type::TypeString: return ::MakeClone<std::string>( data, size );
-#endif
     default: break;
     }
     KVS_ASSERT( false );
@@ -175,13 +160,6 @@ bool AnyValueArray::unique() const
     return m_values.unique();
 }
 
-#if KVS_ENABLE_DEPRECATED
-void AnyValueArray::deallocate()
-{
-    this->release();
-}
-#endif
-
 template AnyValueArray::AnyValueArray( const kvs::ValueArray<kvs::Int8>& values );
 template AnyValueArray::AnyValueArray( const kvs::ValueArray<kvs::UInt8>& values );
 template AnyValueArray::AnyValueArray( const kvs::ValueArray<kvs::Int16>& values );
@@ -192,133 +170,6 @@ template AnyValueArray::AnyValueArray( const kvs::ValueArray<kvs::Int64>& values
 template AnyValueArray::AnyValueArray( const kvs::ValueArray<kvs::UInt64>& values );
 template AnyValueArray::AnyValueArray( const kvs::ValueArray<kvs::Real32>& values );
 template AnyValueArray::AnyValueArray( const kvs::ValueArray<kvs::Real64>& values );
-#if KVS_ENABLE_DEPRECATED
-template AnyValueArray::AnyValueArray( const kvs::ValueArray<std::string>& values );
-#endif
-
-//template kvs::Int8&   AnyValueArray::at<kvs::Int8>( const size_t index );
-//template kvs::UInt8&  AnyValueArray::at<kvs::UInt8>( const size_t index );
-//template kvs::Int16&  AnyValueArray::at<kvs::Int16>( const size_t index );
-//template kvs::UInt16& AnyValueArray::at<kvs::UInt16>( const size_t index );
-//template kvs::Int32&  AnyValueArray::at<kvs::Int32>( const size_t index );
-//template kvs::UInt32& AnyValueArray::at<kvs::UInt32>( const size_t index );
-//template kvs::Int64&  AnyValueArray::at<kvs::Int64>( const size_t index );
-//template kvs::UInt64& AnyValueArray::at<kvs::UInt64>( const size_t index );
-//template kvs::Real32& AnyValueArray::at<kvs::Real32>( const size_t index );
-//template kvs::Real64& AnyValueArray::at<kvs::Real64>( const size_t index );
-//template std::string& AnyValueArray::at<std::string>( const size_t index );
-//
-//template const kvs::Int8&   AnyValueArray::at<kvs::Int8>( const size_t index ) const;
-//template const kvs::UInt8&  AnyValueArray::at<kvs::UInt8>( const size_t index ) const;
-//template const kvs::Int16&  AnyValueArray::at<kvs::Int16>( const size_t index ) const ;
-//template const kvs::UInt16& AnyValueArray::at<kvs::UInt16>( const size_t index ) const;
-//template const kvs::Int32&  AnyValueArray::at<kvs::Int32>( const size_t index ) const;
-//template const kvs::UInt32& AnyValueArray::at<kvs::UInt32>( const size_t index ) const;
-//template const kvs::Int64&  AnyValueArray::at<kvs::Int64>( const size_t index ) const;
-//template const kvs::UInt64& AnyValueArray::at<kvs::UInt64>( const size_t index ) const;
-//template const kvs::Real32& AnyValueArray::at<kvs::Real32>( const size_t index ) const;
-//template const kvs::Real64& AnyValueArray::at<kvs::Real64>( const size_t index ) const;
-//template const std::string& AnyValueArray::at<std::string>( const size_t index ) const;
-
-//template kvs::Int8   AnyValueArray::to<kvs::Int8>( const size_t index ) const;
-//template kvs::UInt8  AnyValueArray::to<kvs::UInt8>( const size_t index ) const;
-//template kvs::Int16  AnyValueArray::to<kvs::Int16>( const size_t index ) const;
-//template kvs::UInt16 AnyValueArray::to<kvs::UInt16>( const size_t index ) const;
-//template kvs::Int32  AnyValueArray::to<kvs::Int32>( const size_t index ) const;
-//template kvs::UInt32 AnyValueArray::to<kvs::UInt32>( const size_t index ) const;
-//template kvs::Int64  AnyValueArray::to<kvs::Int64>( const size_t index ) const;
-//template kvs::UInt64 AnyValueArray::to<kvs::UInt64>( const size_t index ) const;
-//template kvs::Real32 AnyValueArray::to<kvs::Real32>( const size_t index ) const;
-//template kvs::Real64 AnyValueArray::to<kvs::Real64>( const size_t index ) const;
-//template std::string AnyValueArray::to<std::string>( const size_t index ) const;
-
-//template const kvs::Int8*   AnyValueArray::pointer<kvs::Int8>() const;
-//template const kvs::UInt8*  AnyValueArray::pointer<kvs::UInt8>() const;
-//template const kvs::Int16*  AnyValueArray::pointer<kvs::Int16>() const;
-//template const kvs::UInt16* AnyValueArray::pointer<kvs::UInt16>() const;
-//template const kvs::Int32*  AnyValueArray::pointer<kvs::Int32>() const;
-//template const kvs::UInt32* AnyValueArray::pointer<kvs::UInt32>() const;
-//template const kvs::Int64*  AnyValueArray::pointer<kvs::Int64>() const;
-//template const kvs::UInt64* AnyValueArray::pointer<kvs::UInt64>() const;
-//template const kvs::Real32* AnyValueArray::pointer<kvs::Real32>() const;
-//template const kvs::Real64* AnyValueArray::pointer<kvs::Real64>() const;
-//template const std::string* AnyValueArray::pointer<std::string>() const;
-//
-//template kvs::Int8*   AnyValueArray::pointer<kvs::Int8>();
-//template kvs::UInt8*  AnyValueArray::pointer<kvs::UInt8>();
-//template kvs::Int16*  AnyValueArray::pointer<kvs::Int16>();
-//template kvs::UInt16* AnyValueArray::pointer<kvs::UInt16>();
-//template kvs::Int32*  AnyValueArray::pointer<kvs::Int32>();
-//template kvs::UInt32* AnyValueArray::pointer<kvs::UInt32>();
-//template kvs::Int64*  AnyValueArray::pointer<kvs::Int64>();
-//template kvs::UInt64* AnyValueArray::pointer<kvs::UInt64>();
-//template kvs::Real32* AnyValueArray::pointer<kvs::Real32>();
-//template kvs::Real64* AnyValueArray::pointer<kvs::Real64>();
-//template std::string* AnyValueArray::pointer<std::string>();
-
-#if KVS_ENABLE_DEPRECATED
-
-template AnyValueArray::AnyValueArray( const kvs::Int8* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::UInt8* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::Int16* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::UInt16* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::Int32* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::UInt32* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::Int64* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::UInt64* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::Real32* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const kvs::Real64* values, const size_t nvalues );
-template AnyValueArray::AnyValueArray( const std::string* values, const size_t nvalues );
-
-template AnyValueArray::AnyValueArray( const std::vector<kvs::Int8>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::UInt8>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::Int16>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::UInt16>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::Int32>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::UInt32>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::Int64>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::UInt64>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::Real32>& values );
-template AnyValueArray::AnyValueArray( const std::vector<kvs::Real64>& values );
-template AnyValueArray::AnyValueArray( const std::vector<std::string>& values );
-
-template void* AnyValueArray::allocate<kvs::Int8>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::UInt8>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::Int16>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::UInt16>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::Int32>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::UInt32>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::Int64>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::UInt64>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::Real32>( const size_t nvalues );
-template void* AnyValueArray::allocate<kvs::Real64>( const size_t nvalues );
-template void* AnyValueArray::allocate<std::string>( const size_t nvalues );
-
-template void AnyValueArray::shallowCopy<kvs::Int8>( const kvs::ValueArray<kvs::Int8>& values );
-template void AnyValueArray::shallowCopy<kvs::UInt8>( const kvs::ValueArray<kvs::UInt8>& values );
-template void AnyValueArray::shallowCopy<kvs::Int16>( const kvs::ValueArray<kvs::Int16>& values );
-template void AnyValueArray::shallowCopy<kvs::UInt16>( const kvs::ValueArray<kvs::UInt16>& values );
-template void AnyValueArray::shallowCopy<kvs::Int32>( const kvs::ValueArray<kvs::Int32>& values );
-template void AnyValueArray::shallowCopy<kvs::UInt32>( const kvs::ValueArray<kvs::UInt32>& values );
-template void AnyValueArray::shallowCopy<kvs::Int64>( const kvs::ValueArray<kvs::Int64>& values );
-template void AnyValueArray::shallowCopy<kvs::UInt64>( const kvs::ValueArray<kvs::UInt64>& values );
-template void AnyValueArray::shallowCopy<kvs::Real32>( const kvs::ValueArray<kvs::Real32>& values );
-template void AnyValueArray::shallowCopy<kvs::Real64>( const kvs::ValueArray<kvs::Real64>& values );
-template void AnyValueArray::shallowCopy<std::string>( const kvs::ValueArray<std::string>& values );
-
-template void AnyValueArray::deepCopy<kvs::Int8>( const kvs::Int8* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::UInt8>( const kvs::UInt8* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::Int16>( const kvs::Int16* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::UInt16>( const kvs::UInt16* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::Int32>( const kvs::Int32* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::UInt32>( const kvs::UInt32* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::Int64>( const kvs::Int64* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::UInt64>( const kvs::UInt64* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::Real32>( const kvs::Real32* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<kvs::Real64>( const kvs::Real64* values, const size_t nvalues );
-template void AnyValueArray::deepCopy<std::string>( const std::string* values, const size_t nvalues );
-
-#else
 
 template void AnyValueArray::allocate<kvs::Int8>( const size_t nvalues );
 template void AnyValueArray::allocate<kvs::UInt8>( const size_t nvalues );
@@ -330,7 +181,5 @@ template void AnyValueArray::allocate<kvs::Int64>( const size_t nvalues );
 template void AnyValueArray::allocate<kvs::UInt64>( const size_t nvalues );
 template void AnyValueArray::allocate<kvs::Real32>( const size_t nvalues );
 template void AnyValueArray::allocate<kvs::Real64>( const size_t nvalues );
-
-#endif
 
 } // end of namespace kvs

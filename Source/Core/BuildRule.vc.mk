@@ -195,7 +195,6 @@ $(OUTDIR)\.\Numeric\SVSolver.obj \
 $(OUTDIR)\.\Numeric\StudentTDistribution.obj \
 $(OUTDIR)\.\Numeric\Xorshift128.obj \
 $(OUTDIR)\.\OpenGL\BufferObject.obj \
-$(OUTDIR)\.\OpenGL\DisplayList.obj \
 $(OUTDIR)\.\OpenGL\FragmentShader.obj \
 $(OUTDIR)\.\OpenGL\FrameBuffer.obj \
 $(OUTDIR)\.\OpenGL\FrameBufferObject.obj \
@@ -232,7 +231,6 @@ $(OUTDIR)\.\Utility\BitArray.obj \
 $(OUTDIR)\.\Utility\CommandLine.obj \
 $(OUTDIR)\.\Utility\Date.obj \
 $(OUTDIR)\.\Utility\Directory.obj \
-$(OUTDIR)\.\Utility\FastTokenizer.obj \
 $(OUTDIR)\.\Utility\File.obj \
 $(OUTDIR)\.\Utility\Indent.obj \
 $(OUTDIR)\.\Utility\MemoryTracer.obj \
