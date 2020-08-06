@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ValueArray.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ValueArray.cpp 1137 2012-05-10 00:32:24Z s.yamada0808@gmail.com $
+ *  @file   ValueArray.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "ValueArray.h"

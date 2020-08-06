@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ValueArray.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ValueArray.h 1422 2013-03-02 06:32:39Z s.yamada0808@gmail.com $
+ *  @file   ValueArray.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #pragma once
@@ -257,7 +250,7 @@ public:
 
     friend bool operator <=( const this_type& lhs, const this_type& rhs )
     {
-        return !( rhs < lhs );
+        return !( rhs > lhs );
     }
 
     friend bool operator >=( const this_type& lhs, const this_type& rhs )
@@ -267,10 +260,6 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const this_type& rhs )
     {
-//        if ( rhs.empty() ) { return os << "{ }"; }
-//        os << "{" << rhs.front();
-//        for ( const_iterator i = rhs.begin() + 1; i != rhs.end(); i++ ) { os << ", " << *i; }
-//        return os << "}";
         return os << rhs.format( " ", "", "" );
     }
 
