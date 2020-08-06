@@ -47,9 +47,9 @@ inline std::string Version()
     const int patch_version = GLFW_VERSION_REVISION;
 
     const std::string version(
-        kvs::String::ToString( major_version ) + "." +
-        kvs::String::ToString( minor_version ) + "." +
-        kvs::String::ToString( patch_version ) );
+        kvs::String::From( major_version ) + "." +
+        kvs::String::From( minor_version ) + "." +
+        kvs::String::From( patch_version ) );
     return version;
 }
 

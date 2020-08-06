@@ -75,7 +75,7 @@ int DateAxis::drawTickLabelsOnTop( kvs::Painter& painter )
     kvs::Date date = m_min_date;
     for ( size_t i = 0; i < nticks; ++i )
     {
-        const auto d = date.monthString() + " " + kvs::String::ToString( date.year() );
+        const auto d = date.monthString() + " " + kvs::String::From( date.year() );
         const int x = x0 + stride * i - metrics.width( d ) / 2;
         const int y = y0 - metrics.height() - ValueAxis::labelOffset();
         painter.drawText( kvs::Vec2( x, y ), d );
@@ -107,7 +107,7 @@ int DateAxis::drawTickLabelsOnBottom( kvs::Painter& painter )
     kvs::Date date = m_min_date;
     for ( size_t i = 0; i < nticks; ++i )
     {
-        const std::string d = date.monthString() + " " + kvs::String::ToString( date.year() );
+        const std::string d = date.monthString() + " " + kvs::String::From( date.year() );
         const int x = x0 + stride * i - metrics.width( d ) / 2;
         const int y = y1 + metrics.height() + ValueAxis::labelOffset();
         painter.drawText( kvs::Vec2( x, y ), d );
@@ -141,7 +141,7 @@ int DateAxis::drawTickLabelsOnLeft( kvs::Painter& painter )
     kvs::Date date = m_min_date;
     for ( size_t i = 0; i < nticks; ++i )
     {
-        const std::string d = date.monthString() + " " + kvs::String::ToString( date.year() );
+        const std::string d = date.monthString() + " " + kvs::String::From( date.year() );
         const int x = x0 - metrics.width( d ) - ValueAxis::labelOffset() - offset;
         const int y = y1 - stride * i + metrics.height() / 2;
         painter.drawText( kvs::Vec2( x, y ), d );
@@ -176,7 +176,7 @@ int DateAxis::drawTickLabelsOnRight( kvs::Painter& painter )
     kvs::Date date = m_min_date;
     for ( size_t i = 0; i < nticks; ++i )
     {
-        const std::string d = date.monthString() + " " + kvs::String::ToString( date.year() );
+        const std::string d = date.monthString() + " " + kvs::String::From( date.year() );
         const int x = x1 + ValueAxis::labelOffset() + offset;
         const int y = y1 - stride * i + metrics.height() / 2;
         painter.drawText( kvs::Vec2( x, y ), d );

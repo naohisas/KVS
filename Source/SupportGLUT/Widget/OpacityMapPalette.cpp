@@ -52,7 +52,7 @@ OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::Margin );
-    this->setCaption( "Opacity map palette " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Opacity map palette " + kvs::String::From( ::InstanceCounter++ ) );
 
     m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );
     m_lower_edge_color = ::Default::RectEdgeColor;

@@ -52,7 +52,7 @@ inline std::string Description()
 /*===========================================================================*/
 inline std::string Version()
 {
-    const std::string version = kvs::String::ToString( GLUT_API_VERSION );
+    const std::string version = kvs::String::From( GLUT_API_VERSION );
     return version;
 }
 

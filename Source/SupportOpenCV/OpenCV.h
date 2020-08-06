@@ -53,7 +53,7 @@ inline const std::string Description()
 /*===========================================================================*/
 inline const std::string Version()
 {
-    const std::string version = kvs::String::ToString( CV_VERSION );
+    const std::string version = kvs::String::From( CV_VERSION );
     return version;
 }
 

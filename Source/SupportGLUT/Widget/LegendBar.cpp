@@ -119,8 +119,8 @@ void LegendBar::paintEvent()
     BaseClass::render2D().begin();
     BaseClass::drawBackground();
 
-    const std::string min_value = kvs::String::ToString( m_min_value );
-    const std::string max_value = kvs::String::ToString( m_max_value );
+    const std::string min_value = kvs::String::From( m_min_value );
+    const std::string max_value = kvs::String::From( m_max_value );
     const int character_width  = BaseClass::characterWidth();
     const int character_height = BaseClass::characterHeight();
     const int caption_height = ( m_caption.size() == 0 ) ? 0 : character_height + 5;
@@ -220,8 +220,8 @@ int LegendBar::adjustedWidth()
     }
     case LegendBar::Vertical:
     {
-        std::string min_value = kvs::String::ToString( m_min_value );
-        std::string max_value = kvs::String::ToString( m_max_value );
+        std::string min_value = kvs::String::From( m_min_value );
+        std::string max_value = kvs::String::From( m_max_value );
         width = BaseClass::characterWidth() * kvs::Math::Max( m_caption.size(), min_value.size(), max_value.size() );
         width += BaseClass::margin() * 2;
         width = kvs::Math::Max( width, ::Default::LegendBarHeight );

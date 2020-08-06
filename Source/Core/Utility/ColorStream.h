@@ -77,7 +77,7 @@ public:
 public:
     static std::string CodeString( const int code )
     {
-        return std::string( "\x1b[" + kvs::String::ToString( code ) + "m" );
+        return std::string( "\x1b[" + kvs::String::From( code ) + "m" );
     }
 
     static std::ostream& ResetForegroundColor( std::ostream& os ) { return os << CodeString( ColorDefault ); }

@@ -75,7 +75,7 @@ Histogram::Histogram( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::Margin );
-    this->setCaption( "Histogram " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Histogram " + kvs::String::From( ::InstanceCounter++ ) );
     this->setNumberOfBins( 256 );
 
     m_upper_edge_color = BaseClass::darkenedColor( ::Default::RectColor, 0.6f );

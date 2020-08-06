@@ -56,7 +56,7 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::ButtonMargin );
-    this->setCaption( "PushButton " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "PushButton " + kvs::String::From( ::InstanceCounter++ ) );
     this->setTextMargin( ::Default::TextMargin );
     this->setButtonColor( ::Default::ButtonColor );
 }

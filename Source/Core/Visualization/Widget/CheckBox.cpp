@@ -51,7 +51,7 @@ CheckBox::CheckBox( kvs::ScreenBase* screen ):
         kvs::EventBase::MousePressEvent |
         kvs::EventBase::MouseReleaseEvent );
 
-    this->setCaption( "CheckBox " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "CheckBox " + kvs::String::From( ::InstanceCounter++ ) );
     this->setState( false );
 }
 

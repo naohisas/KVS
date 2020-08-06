@@ -26,8 +26,8 @@ inline const std::string Version()
     const int minor_version = MPI_SUBVERSION;
 
     const std::string version(
-        kvs::String::ToString( major_version ) + "." +
-        kvs::String::ToString( minor_version ) );
+        kvs::String::From( major_version ) + "." +
+        kvs::String::From( minor_version ) );
     return version;
 }
 

@@ -235,7 +235,7 @@ int Main::exec( int argc, char** argv )
         [&]()
         {
             const auto* renderer = screen.scene()->renderer( ::RendererName );
-            const auto fps = kvs::String::ToString( renderer->timer().fps(), 4 );
+            const auto fps = kvs::String::From( renderer->timer().fps(), 4 );
             label.setText( std::string( "FPS: " + fps ).c_str() );
         } );
     label.show();

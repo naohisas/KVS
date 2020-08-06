@@ -135,8 +135,8 @@ void HttpRequestHeader::addField( const std::string& key, const std::string& val
 std::string HttpRequestHeader::makeMessage() const
 {
     std::string request_line;
-    std::string major_version = kvs::String::ToString( m_major_version );
-    std::string minor_version = kvs::String::ToString( m_minor_version );
+    std::string major_version = kvs::String::From( m_major_version );
+    std::string minor_version = kvs::String::From( m_minor_version );
     request_line =
         m_method + " /" + m_path +
         " HTTP/" +

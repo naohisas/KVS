@@ -20,7 +20,7 @@ std::string Description()
 
 std::string Version()
 {
-    const std::string version = kvs::String::ToString( PY_VERSION );
+    const std::string version = kvs::String::From( PY_VERSION );
     return version;
 }
 

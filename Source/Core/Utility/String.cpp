@@ -60,8 +60,94 @@ inline int Compare( register const char* str1, register const char* str2 )
 
 }
 #endif
+
+
+namespace
+{
+
+template <typename T>
+std::string StringFromInt(
+    const T value,
+    const int width,
+    const char fill )
+{
+    std::ostringstream ss;
+    if ( fill ) { ss.fill( fill ); }
+    ss << std::setw( width ) << value;
+    return ss.str();
+}
+
+template <typename T>
+std::string StringFromReal(
+    const T value,
+    const int precision,
+    const bool fixed,
+    const bool scientific )
+{
+    std::ostringstream ss;
+    if ( scientific ) { ss.setf( std::ios_base::scientific ); }
+    else { if ( fixed ) { ss.setf( std::ios_base::fixed ); } }
+    ss << std::setprecision( precision ) << value;
+    return ss.str();
+}
+
+} // end of namespace
+
+
 namespace kvs
 {
+
+std::string String::From( const kvs::Int8 value, const int width, const char fill )
+{
+    return ::StringFromInt( static_cast<int>( value ), width, fill );
+}
+
+std::string String::From( const kvs::Int16 value, const int width, const char fill )
+{
+    return ::StringFromInt( value, width, fill );
+}
+
+std::string String::From( const kvs::Int32 value, const int width, const char fill )
+{
+    return ::StringFromInt( value, width, fill );
+}
+
+std::string String::From( const kvs::UInt8 value, const int width, const char fill )
+{
+    return ::StringFromInt( static_cast<unsigned int>( value ), width, fill );
+}
+
+std::string String::From( const kvs::UInt16 value, const int width, const char fill )
+{
+    return ::StringFromInt( value, width, fill );
+}
+
+std::string String::From( const kvs::UInt32 value, const int width, const char fill )
+{
+    return ::StringFromInt( value, width, fill );
+}
+
+std::string String::From( const kvs::Real32 value, const int precision, const bool fixed, const bool scientific )
+{
+    return ::StringFromReal( value, precision, fixed, scientific );
+}
+
+std::string String::From( const kvs::Real64 value, const int precision, const bool fixed, const bool scientific )
+{
+    return ::StringFromReal( value, precision, fixed, scientific );
+}
+
+std::string String::FromFile( const std::string& filename )
+{
+    std::ifstream ifs( filename.c_str() );
+    if ( !ifs )
+        KVS_THROW( kvs::FileReadFaultException, "Cannot open '" + filename + "'." );
+
+    std::ostringstream buffer;
+    buffer << ifs.rdbuf();
+
+    return buffer.str();
+}
 
 std::string String::ToUpper( const std::string& str )
 {
@@ -134,18 +220,6 @@ std::string String::Replace(
 //    }
 //    return std::string( &buffer[0], size );
 //}
-
-std::string String::FromFile( const std::string& filename )
-{
-    std::ifstream ifs( filename.c_str() );
-    if ( !ifs )
-        KVS_THROW( kvs::FileReadFaultException, "Cannot open '" + filename + "'." );
-
-    std::ostringstream buffer;
-    buffer << ifs.rdbuf();
-
-    return buffer.str();
-}
 
 
 #if KVS_ENABLE_DEPRECATED

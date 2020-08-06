@@ -35,8 +35,9 @@
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank
 + kvs::BitArray::BitArray( size, flag )
-+ kvs::String::ToString( src, format )
-+ kvs::String::ToString( src, precision, fixed, scientific )
++ kvs::String::From( value )
++ kvs::String::From( value, width, fill )
++ kvs::String::From( value, precision, fixed, scientific )
 + kvs::Painter::devicePixelRatio
 + kvs::ApplicationBase::setColorMode
 + kvs::ApplicationBase::setColorModeToDark
@@ -267,6 +268,7 @@
 + kvs::WidgetBase::isShown (use kvs::WidgetBase::isVisible)
 + kvs::WidgetBase::activate (use kvs::WidgetBase::setActive(true))
 + kvs::WidgetBase::deactivate (use kvs::WidgetBase::setActive(false))
++ kvs::String::ToString (use kvs::String::From)
 
 **Removed deprecated class and method**
 + kvs::Material

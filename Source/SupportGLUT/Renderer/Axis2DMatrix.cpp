@@ -338,8 +338,8 @@ void Axis2DMatrix::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
 
             if ( y_index == 0 )
             {
-                const std::string x_min_value = kvs::String::ToString( table->minValue( x_index ) );
-                const std::string x_max_value = kvs::String::ToString( table->maxValue( x_index ) );
+                const std::string x_min_value = kvs::String::From( table->minValue( x_index ) );
+                const std::string x_max_value = kvs::String::From( table->maxValue( x_index ) );
 
                 const float x_min_position_x = x0;
                 const float x_min_position_y = y1 + ::CharacterHeight + 5;
@@ -352,8 +352,8 @@ void Axis2DMatrix::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
 
             if ( x_index == 0 )
             {
-                const std::string y_min_value = kvs::String::ToString( table->minValue( y_index ) );
-                const std::string y_max_value = kvs::String::ToString( table->maxValue( y_index ) );
+                const std::string y_min_value = kvs::String::From( table->minValue( y_index ) );
+                const std::string y_max_value = kvs::String::From( table->maxValue( y_index ) );
 
                 const float y_min_position_x = x0 - y_min_value.size() * ::CharacterWidth - 5;
                 const float y_min_position_y = y1;

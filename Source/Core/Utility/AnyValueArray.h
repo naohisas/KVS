@@ -104,7 +104,7 @@ private:
     template <typename DataT>
     static std::string GetString( const void* ptr )
     {
-        return kvs::String::ToString( *static_cast<const DataT*>( ptr ) );
+        return kvs::String::From( *static_cast<const DataT*>( ptr ) );
     }
 
     template <typename ReturnT>

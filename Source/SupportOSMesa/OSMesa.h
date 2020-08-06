@@ -23,9 +23,9 @@ inline std::string Version()
     const int patch_version = OSMESA_PATCH_VERSION;
 
     const std::string version(
-        kvs::String::ToString( major_version ) + "." +
-        kvs::String::ToString( minor_version ) + "." +
-        kvs::String::ToString( patch_version ) );
+        kvs::String::From( major_version ) + "." +
+        kvs::String::From( minor_version ) + "." +
+        kvs::String::From( patch_version ) );
     return version;
 }
 

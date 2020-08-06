@@ -73,7 +73,7 @@ HistogramBar::HistogramBar( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Margin );
-    this->setCaption( "Histogram " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Histogram " + kvs::String::From( ::InstanceCounter++ ) );
     this->setNumberOfBins( 256 );
 }
 

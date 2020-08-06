@@ -45,7 +45,7 @@ public:
     template <typename T>
     void setAttribute( const std::string& name, const T& value )
     {
-        SuperClass::SetAttribute( name, kvs::String::ToString( value ) );
+        SuperClass::SetAttribute( name, kvs::String::From( value ) );
     }
 
 public:

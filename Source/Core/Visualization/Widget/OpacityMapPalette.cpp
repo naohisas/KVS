@@ -38,7 +38,7 @@ OpacityMapPalette::OpacityMapPalette( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::Margin );
-    this->setCaption( "Opacity map palette " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Opacity map palette " + kvs::String::From( ::InstanceCounter++ ) );
 
     m_opacity_map.create();
 }

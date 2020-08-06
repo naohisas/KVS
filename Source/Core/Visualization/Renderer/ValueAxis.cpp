@@ -139,7 +139,7 @@ int ValueAxis::drawTickLabelsOnTop( kvs::Painter& painter )
         for ( size_t i = 0; i < m_nticks; ++i )
         {
             const double value = m_min + i * ( m_max - m_min ) / ( m_nticks - 1 );
-            const auto v = kvs::String::ToString( value, precision, fixed, scientific );
+            const auto v = kvs::String::From( value, precision, fixed, scientific );
             const int x = x0 + dx * i - metrics.width( v ) / 2;
             const int y = y0 - metrics.height() - m_label_offset;
             painter.drawText( kvs::Vec2( x, y ), v );
@@ -180,7 +180,7 @@ int ValueAxis::drawTickLabelsOnBottom( kvs::Painter& painter )
         for ( size_t i = 0; i < m_nticks; ++i )
         {
             const double value = m_min + i * ( m_max - m_min ) / ( m_nticks - 1 );
-            const auto v = kvs::String::ToString( value, precision, fixed, scientific );
+            const auto v = kvs::String::From( value, precision, fixed, scientific );
             const int x = x0 + dx * i - metrics.width( v ) / 2;
             const int y = y1 + metrics.height() + m_label_offset;
             painter.drawText( kvs::Vec2( x, y ), v );
@@ -222,7 +222,7 @@ int ValueAxis::drawTickLabelsOnLeft( kvs::Painter& painter )
         for ( size_t i = 0; i < m_nticks; ++i )
         {
             const double value = m_min + i * ( m_max - m_min ) / ( m_nticks - 1 );
-            const auto v = kvs::String::ToString( value, precision, fixed, scientific );
+            const auto v = kvs::String::From( value, precision, fixed, scientific );
             const int x = x0 - metrics.width( v ) - m_label_offset - offset;
             const int y = y1 - dy * i + metrics.height() / 2;
             painter.drawText( kvs::Vec2( x, y ), v );
@@ -265,7 +265,7 @@ int ValueAxis::drawTickLabelsOnRight( kvs::Painter& painter )
         for ( size_t i = 0; i < m_nticks; ++i )
         {
             const double value = m_min + i * ( m_max - m_min ) / ( m_nticks - 1 );
-            const auto v = kvs::String::ToString( value, precision, fixed, scientific );
+            const auto v = kvs::String::From( value, precision, fixed, scientific );
             const int x = x1 + m_label_offset + offset;
             const int y = y1 - dy * i + metrics.height() / 2;
             painter.drawText( kvs::Vec2( x, y ), v );

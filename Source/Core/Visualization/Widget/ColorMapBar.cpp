@@ -110,8 +110,8 @@ void ColorMapBar::paintEvent()
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
 
-    const std::string min_value = kvs::String::ToString( m_min_value );
-    const std::string max_value = kvs::String::ToString( m_max_value );
+    const std::string min_value = kvs::String::From( m_min_value );
+    const std::string max_value = kvs::String::From( m_max_value );
     const int text_height = BaseClass::painter().fontMetrics().height();
     const int min_text_width = BaseClass::painter().fontMetrics().width( min_value );
     const int max_text_width = BaseClass::painter().fontMetrics().width( max_value );
@@ -223,8 +223,8 @@ int ColorMapBar::adjustedWidth()
     }
     case ColorMapBar::Vertical:
     {
-        const std::string min_value = kvs::String::ToString( m_min_value );
-        const std::string max_value = kvs::String::ToString( m_max_value );
+        const std::string min_value = kvs::String::From( m_min_value );
+        const std::string max_value = kvs::String::From( m_max_value );
         const size_t min_text_width = metrics.width( min_value );
         const size_t max_text_width = metrics.width( max_value );
         width = ( min_value.size() > max_value.size() ) ? min_text_width : max_text_width;

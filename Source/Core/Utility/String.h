@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <cstdio>
 #include <kvs/Type>
+#include <kvs/Deprecated>
 #if KVS_ENABLE_DEPRECATED
 #include <cstdarg>
 #include <cstdio>
@@ -30,55 +31,54 @@ public:
     template <typename T>
     static T To( const std::string& str )
     {
-        T ret;
-        std::istringstream ss( str );
-        ss >> ret;
+        T ret; std::istringstream ss( str ); ss >> ret;
         return ret;
     }
 
     template <typename T>
-    static std::string ToString( const T& src )
+    static std::string From( const T& value )
     {
-        std::ostringstream ss;
-        ss << src;
+        std::ostringstream ss; ss << value;
         return ss.str();
     }
 
+    static std::string From( const kvs::Int8 value, const int width, const char fill = 0 );
+    static std::string From( const kvs::Int16 value, const int width, const char fill = 0 );
+    static std::string From( const kvs::Int32 value, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt8 value, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt16 value, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt32 value, const int width, const char fill = 0 );
+    static std::string From( const kvs::Real32 value, const int precision, const bool fixed = false, const bool scientific = false );
+    static std::string From( const kvs::Real64 value, const int precision, const bool fixed = false, const bool scientific = false );
+    static std::string FromFile( const std::string& filename );
+    static std::string ToUpper( const std::string& str );
+    static std::string ToLower( const std::string& str );
+    static std::string Replace( const std::string& source, const std::string& pattern, const std::string& placement );
+    //static std::string Format( const char* str, ... );
+
     template <typename T>
-    static std::string ToString( const T& src, const std::string& format )
+    KVS_DEPRECATED( static std::string ToString( const T& value ) ) { return From<T>( value ); }
+
+    template <typename T>
+    KVS_DEPRECATED( static std::string ToString(
+        const T& value,
+        const int precision,
+        const bool fixed = false,
+        const bool scientific = false ) )
+    {
+        return From( value, precision, fixed, scientific );
+    }
+
+    template <typename T>
+    KVS_DEPRECATED( static std::string ToString( const T& value, const std::string& format ) )
     {
         char buffer[100];
-        if ( std::sprintf( buffer, format.c_str(), src ) >= 0 )
+        if ( std::sprintf( buffer, format.c_str(), value ) >= 0 )
         {
             return std::string( buffer );
         }
         return std::string("");
     }
-
-    template <typename T>
-    static std::string ToString(
-        const T& src,
-        const int precision,
-        const bool fixed = false,
-        const bool scientific = false )
-    {
-        std::ostringstream ss;
-        if ( scientific ) { ss.setf( std::ios_base::scientific ); }
-        else { if ( fixed ) { ss.setf( std::ios_base::fixed ); } }
-        ss << std::setprecision( precision ) << src;
-        return ss.str();
-    }
-
-    static std::string ToUpper( const std::string& str );
-
-    static std::string ToLower( const std::string& str );
-
-    static std::string Replace( const std::string& source, const std::string& pattern, const std::string& placement );
-
-    //static std::string Format( const char* str, ... );
-
-    static std::string FromFile( const std::string& filename );
-
 
 #if KVS_ENABLE_DEPRECATED
 private:
@@ -170,28 +170,6 @@ private:
 };
 
 template <>
-inline std::string String::ToString( const kvs::Int8& src )
-{
-    std::ostringstream ss;
-    ss << (int)src;
-    return ss.str();
-}
-
-template <>
-inline std::string String::ToString( const kvs::UInt8& src )
-{
-    std::ostringstream ss;
-    ss << (int)src;
-    return ss.str();
-}
-
-template <>
-inline std::string String::ToString( const std::string& src )
-{
-    return src;
-}
-
-template <>
 inline kvs::Int8 String::To( const std::string& str )
 {
     int ret;
@@ -210,10 +188,33 @@ inline kvs::UInt8 String::To( const std::string& str )
 }
 
 template <>
-inline std::string String::To( const std::string& src )
+inline std::string String::To( const std::string& str )
 {
-    return src;
+    return str;
 }
+
+template <>
+inline std::string String::From( const kvs::Int8& value )
+{
+    std::ostringstream ss;
+    ss << static_cast<int>(value);
+    return ss.str();
+}
+
+template <>
+inline std::string String::From( const kvs::UInt8& value )
+{
+    std::ostringstream ss;
+    ss << static_cast<int>(value);
+    return ss.str();
+}
+
+template <>
+inline std::string String::From( const std::string& value )
+{
+    return value;
+}
+
 
 #if KVS_ENABLE_DEPRECATED
 template<typename T>

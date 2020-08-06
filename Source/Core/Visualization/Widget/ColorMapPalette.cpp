@@ -46,7 +46,7 @@ ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::Margin );
-    this->setCaption( "Color map palette " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Color map palette " + kvs::String::From( ::InstanceCounter++ ) );
     m_drawing_color = kvs::RGBColor( 0, 0, 0 );
     m_color_map.create();
 }

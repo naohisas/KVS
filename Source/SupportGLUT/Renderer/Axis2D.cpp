@@ -308,8 +308,8 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
     glEnd();
 
     // Draw min/max values.
-    const std::string x_min_value = kvs::String::ToString( table->minValue(0) );
-    const std::string x_max_value = kvs::String::ToString( table->maxValue(0) );
+    const std::string x_min_value = kvs::String::From( table->minValue(0) );
+    const std::string x_max_value = kvs::String::From( table->maxValue(0) );
 
     const float x_min_position_x = x0;
     const float x_min_position_y = y1 + ::CharacterHeight + 5;
@@ -319,8 +319,8 @@ void Axis2D::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
     const float x_max_position_y = y1 + ::CharacterHeight + 5;
     ::DrawString( x_max_value, x_max_position_x, x_max_position_y, m_value_color );
 
-    const std::string y_min_value = kvs::String::ToString( table->minValue(1) );
-    const std::string y_max_value = kvs::String::ToString( table->maxValue(1) );
+    const std::string y_min_value = kvs::String::From( table->minValue(1) );
+    const std::string y_max_value = kvs::String::From( table->maxValue(1) );
 
     const float y_min_position_x = x0 - y_min_value.size() * ::CharacterWidth - 5;
     const float y_min_position_y = y1;

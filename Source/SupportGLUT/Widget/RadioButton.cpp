@@ -78,7 +78,7 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::CircleMargin );
-    this->setCaption( "RadioButton " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "RadioButton " + kvs::String::From( ::InstanceCounter++ ) );
     this->setState( false );
 
     m_upper_edge_color = BaseClass::darkenedColor( ::Default::CircleColor, 0.6f );

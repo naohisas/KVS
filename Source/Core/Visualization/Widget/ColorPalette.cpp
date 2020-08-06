@@ -70,7 +70,7 @@ ColorPalette::ColorPalette( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::Margin );
-    this->setCaption( "Color palette " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Color palette " + kvs::String::From( ::InstanceCounter++ ) );
 }
 
 ColorPalette::~ColorPalette()

@@ -62,7 +62,7 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::CircleMargin );
-    this->setCaption( "RadioButton " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "RadioButton " + kvs::String::From( ::InstanceCounter++ ) );
     this->setState( false );
 }
 

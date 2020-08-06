@@ -1002,7 +1002,7 @@ void Axis3D::draw_labels( const kvs::Vector3f& min_coord, const kvs::Vector3f& m
             const size_t nlines = size_t( m_ngridlines.x() ) + 2;
             for ( size_t i = 0; i < nlines; i++ )
             {
-                std::string number = kvs::String::ToString( min_value.x() + dvalue.x() * i );
+                std::string number = kvs::String::From( min_value.x() + dvalue.x() * i );
                 const float x = min_coord.x() + interval.x() * i;
                 const float y = position.y() + offset.y();
                 const float z = position.z() + offset.z();
@@ -1058,7 +1058,7 @@ void Axis3D::draw_labels( const kvs::Vector3f& min_coord, const kvs::Vector3f& m
             const size_t nlines = size_t( m_ngridlines.y() ) + 2;
             for ( size_t i = 0; i < nlines; i++ )
             {
-                std::string number = kvs::String::ToString( min_value.y() + dvalue.y() * i );
+                std::string number = kvs::String::From( min_value.y() + dvalue.y() * i );
                 const float x = position.x() + offset.x();
                 const float y = min_coord.y() + interval.y() * i;
                 const float z = position.z() + offset.y();
@@ -1111,7 +1111,7 @@ void Axis3D::draw_labels( const kvs::Vector3f& min_coord, const kvs::Vector3f& m
             const size_t nlines = size_t( m_ngridlines.z() ) + 2;
             for ( size_t i = 0; i < nlines; i++ )
             {
-                std::string number = kvs::String::ToString( min_value.z() + dvalue.z() * i );
+                std::string number = kvs::String::From( min_value.z() + dvalue.z() * i );
                 const float x = position.x() + offset.x();
                 const float y = position.y() + offset.y();
                 const float z = min_coord.z() + interval.z() * i;
