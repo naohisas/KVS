@@ -194,32 +194,6 @@ std::string String::Replace(
     result.append( source, pos_before, source.size() - pos_before );
     return result;
 }
-//
-//std::string String::Format( const char* str, ... )
-//{
-//    const int max_buffer_size = 65536;
-//    int buffer_size = 256;
-//    std::vector<char> buffer;
-//    int size = 0;
-//
-//    va_list args;
-//    for (;;)
-//    {
-//        buffer.resize( buffer_size );
-//
-//        va_start( args, str );
-//        size = vsnprintf( &buffer[0], buffer.size() - 1, str, args );
-//        va_end( args );
-//
-//        if ( size >= 0 && size < (int)buffer.size() )
-//            break;
-//
-//        buffer_size *= 2;
-//        if ( buffer_size > max_buffer_size )
-//            KVS_THROW( kvs::ArgumentException, "Too long string." );
-//    }
-//    return std::string( &buffer[0], size );
-//}
 
 
 #if KVS_ENABLE_DEPRECATED

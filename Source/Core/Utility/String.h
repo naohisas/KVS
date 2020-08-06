@@ -42,6 +42,20 @@ public:
         return ss.str();
     }
 
+    template <typename... Args>
+    static std::string Format( const char* format, Args... args )
+    {
+        const auto size = std::snprintf( nullptr, 0, format, args... );
+        KVS_ASSERT( size >= 0 );
+
+        char* buffer = new char [ size + 1 ];
+        std::snprintf( buffer, size + 1, format, args... );
+
+        std::string str( buffer );
+        delete [] buffer;
+        return str;
+    }
+
     static std::string From( const kvs::Int8 value, const int width, const char fill = 0 );
     static std::string From( const kvs::Int16 value, const int width, const char fill = 0 );
     static std::string From( const kvs::Int32 value, const int width, const char fill = 0 );
@@ -54,7 +68,6 @@ public:
     static std::string ToUpper( const std::string& str );
     static std::string ToLower( const std::string& str );
     static std::string Replace( const std::string& source, const std::string& pattern, const std::string& placement );
-    //static std::string Format( const char* str, ... );
 
     template <typename T>
     KVS_DEPRECATED( static std::string ToString( const T& value ) ) { return From<T>( value ); }

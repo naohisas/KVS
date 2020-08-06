@@ -38,6 +38,7 @@
 + kvs::String::From( value )
 + kvs::String::From( value, width, fill )
 + kvs::String::From( value, precision, fixed, scientific )
++ kvs::String::Format( format, ... )
 + kvs::Painter::devicePixelRatio
 + kvs::ApplicationBase::setColorMode
 + kvs::ApplicationBase::setColorModeToDark
