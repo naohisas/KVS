@@ -404,7 +404,7 @@ bool GrayImage::create(
     const kvs::ValueArray<kvs::Real32>& pixels )
 {
     PixelData data( width * height );
-    for ( size_t i = 0; data.size(); ++i )
+    for ( size_t i = 0; i < data.size(); ++i )
     {
         data[i] = static_cast<int>( pixels[i] * 255 );
     }
