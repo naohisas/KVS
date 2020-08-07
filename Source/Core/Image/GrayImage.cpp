@@ -262,6 +262,22 @@ GrayImage::GrayImage(
     this->create( width, height, data, channel );
 }
 
+/*==========================================================================*/
+/**
+ *  Constructs a new gray-scale image.
+ *  @param width [in] image width
+ *  @param height [in] image height
+ *  @param data [in] normalized pixel data array
+ */
+/*==========================================================================*/
+GrayImage::GrayImage(
+    const size_t width,
+    const size_t height,
+    const kvs::ValueArray<kvs::Real32>& data )
+{
+    this->create( width, height, data );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a copy of other bit image.
@@ -371,6 +387,31 @@ bool GrayImage::create(
         }
         return BaseClass::create( width, height, kvs::ImageBase::Gray, data );
     }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a gray image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  pixels [in] normalized pixel data
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool GrayImage::create(
+    const size_t width,
+    const size_t height,
+    const kvs::ValueArray<kvs::Real32>& pixels )
+{
+    if ( pixels.size() != width * height ) { return false; }
+
+    PixelData data( width * height );
+    for ( size_t i = 0; data.size(); ++i )
+    {
+        data[i] = static_cast<int>( pixels[i] * 255 );
+    }
+
+    return BaseClass::create( width, height, kvs::ImageBase::Gray, data );
 }
 
 /*==========================================================================*/

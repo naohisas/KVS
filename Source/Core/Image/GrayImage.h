@@ -62,6 +62,7 @@ public:
     GrayImage( const size_t width, const size_t height );
     GrayImage( const size_t width, const size_t height, const PixelData& data );
     GrayImage( const size_t width, const size_t height, const PixelData& data, const int channel );
+    GrayImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::Real32>& data );
     explicit GrayImage( const kvs::BitImage& image );
     explicit GrayImage( const kvs::ColorImage& image );
     GrayImage( const kvs::ColorImage& image, const int channel );
@@ -72,6 +73,7 @@ public:
     bool create( const size_t width, const size_t height );
     bool create( const size_t width, const size_t height, const PixelData& pixels );
     bool create( const size_t width, const size_t height, const PixelData& pixels, const int channel );
+    bool create( const size_t width, const size_t height, const kvs::ValueArray<kvs::Real32>& data );
 
     kvs::UInt8 pixel( const size_t index ) const;
     kvs::UInt8 pixel( const size_t i, const size_t j ) const;
