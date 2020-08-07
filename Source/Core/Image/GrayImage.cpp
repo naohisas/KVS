@@ -403,8 +403,6 @@ bool GrayImage::create(
     const size_t height,
     const kvs::ValueArray<kvs::Real32>& pixels )
 {
-    if ( pixels.size() != width * height ) { return false; }
-
     PixelData data( width * height );
     for ( size_t i = 0; data.size(); ++i )
     {
