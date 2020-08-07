@@ -30,7 +30,7 @@ public:
     typedef BaseClass::BilinearInterpolatorColor Bilinear;
 
 public:
-    ColorImage();
+    ColorImage() {}
     ColorImage( const size_t width, const size_t height );
     ColorImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& pixels );
     explicit ColorImage( const kvs::GrayImage& image );

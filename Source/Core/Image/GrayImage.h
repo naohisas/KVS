@@ -24,52 +24,54 @@ class BitImage;
 class GrayImage : public kvs::ImageBase
 {
 public:
-    typedef kvs::ImageBase BaseClass;
-    typedef kvs::UInt8 PixelType;
-
-    typedef BaseClass::NearestNeighborInterpolatorGray NearestNeighbor;
-    typedef BaseClass::BilinearInterpolatorGray Bilinear;
+    using BaseClass = kvs::ImageBase;
+    using PixelType = kvs::UInt8;
+    using NearestNeighbor = BaseClass::NearestNeighborInterpolatorGray;
+    using Bilinear = BaseClass::BilinearInterpolatorGray;
 
 public:
     // Gray-scaling method.
 
     struct MeanValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct MiddleValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct MedianValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct NTSCWeightedMeanValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct HDTVWeightedMeanValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
 public:
     GrayImage();
     GrayImage( const size_t width, const size_t height );
-    GrayImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& data );
+    GrayImage( const size_t width, const size_t height, const PixelData& data );
+    GrayImage( const size_t width, const size_t height, const PixelData& data, const int channel );
     explicit GrayImage( const kvs::BitImage& image );
     explicit GrayImage( const kvs::ColorImage& image );
+    GrayImage( const kvs::ColorImage& image, const int channel );
     template <typename GrayScalingMethod>
     GrayImage( const kvs::ColorImage& image, GrayScalingMethod method );
     explicit GrayImage( const std::string& filename );
 
     bool create( const size_t width, const size_t height );
-    bool create( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& pixels );
+    bool create( const size_t width, const size_t height, const PixelData& pixels );
+    bool create( const size_t width, const size_t height, const PixelData& pixels, const int channel );
 
     kvs::UInt8 pixel( const size_t index ) const;
     kvs::UInt8 pixel( const size_t i, const size_t j ) const;

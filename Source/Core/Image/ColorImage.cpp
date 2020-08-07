@@ -12,6 +12,7 @@
 #include <kvs/RGBColor>
 #include <kvs/File>
 #include <kvs/Bmp>
+#include <kvs/Png>
 #include <kvs/Ppm>
 #include <kvs/Pgm>
 #include <kvs/Pbm>
@@ -22,15 +23,6 @@
 
 namespace kvs
 {
-
-/*==========================================================================*/
-/**
- *  Constructs a new color image.
- */
-/*==========================================================================*/
-ColorImage::ColorImage()
-{
-}
 
 /*==========================================================================*/
 /**
@@ -428,6 +420,13 @@ bool ColorImage::write( const std::string& filename ) const
         return( bmp.write( filename ) );
     }
 
+    // PNG image.
+    if ( kvs::Png::CheckExtension( filename ) )
+    {
+        kvs::Png png( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
+        return( png.write( filename ) );
+    }
+
     // PPM image.
     if ( kvs::Ppm::CheckExtension( filename ) )
     {
@@ -447,13 +446,6 @@ bool ColorImage::write( const std::string& filename ) const
     {
         kvs::BitImage image( kvs::GrayImage( *this ) );
         return( image.write( filename ) );
-    }
-
-    // PNG image.
-    if ( kvs::Png::CheckExtension( filename ) )
-    {
-        kvs::Png png( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
-        return png.write( filename );
     }
 
     kvsMessageError( "Write-method for %s is not implemented.",
