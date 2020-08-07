@@ -1,3 +1,10 @@
+/*****************************************************************************/
+/**
+ *  @file   main.cpp
+ *  @author Naohisa Sakamoto
+ *  @brief  Example program of parallel rendering with image composition
+ */
+/*****************************************************************************/
 #include <kvs/OffScreen>
 #include <kvs/mpi/Environment>
 #include <kvs/mpi/Communicator>
@@ -13,6 +20,8 @@
 #include <kvs/String>
 #include <kvs/Coordinate>
 #include <kvs/Timer>
+#include <kvs/ColorImage>
+#include <kvs/GrayImage>
 
 //#define VOLUME_RENDERING
 
@@ -43,51 +52,6 @@ inline kvs::StructuredVolumeObject* Div(
     return object;
 }
 
-inline kvs::ColorImage ColorImage(
-    const size_t width,
-    const size_t height,
-    const kvs::ValueArray<kvs::UInt8>& rgba )
-{
-    kvs::ValueArray<kvs::UInt8> rgb( width * height * 3 );
-    for ( size_t i = 0; i < width * height; i++ )
-    {
-        rgb[ 3 * i + 0 ] = rgba[ 4 * i + 0 ];
-        rgb[ 3 * i + 1 ] = rgba[ 4 * i + 1 ];
-        rgb[ 3 * i + 2 ] = rgba[ 4 * i + 2 ];
-    }
-    return kvs::ColorImage( width, height, rgb );
-}
-
-inline kvs::ColorImage AlphaImage(
-    const size_t width,
-    const size_t height,
-    const kvs::ValueArray<kvs::UInt8>& rgba )
-{
-    kvs::ValueArray<kvs::UInt8> rgb( width * height * 3 );
-    for ( size_t i = 0; i < width * height; i++ )
-    {
-        rgb[ 3 * i + 0 ] = rgba[ 4 * i + 3 ];
-        rgb[ 3 * i + 1 ] = rgba[ 4 * i + 3 ];
-        rgb[ 3 * i + 2 ] = rgba[ 4 * i + 3 ];
-    }
-    return kvs::ColorImage( width, height, rgb );
-}
-
-inline kvs::ColorImage DepthImage(
-    const size_t width,
-    const size_t height,
-    const kvs::ValueArray<kvs::Real32>& depth )
-{
-    kvs::ValueArray<kvs::UInt8> rgb( width * height * 3 );
-    for ( size_t i = 0; i < width * height; i++ )
-    {
-        rgb[ 3 * i + 0 ] = int( depth[ i ] * 255 );
-        rgb[ 3 * i + 1 ] = int( depth[ i ] * 255 );
-        rgb[ 3 * i + 2 ] = int( depth[ i ] * 255 );
-    }
-    return kvs::ColorImage( width, height, rgb );
-}
-
 } // end of namespace
 
 
@@ -98,7 +62,7 @@ int main( int argc, char** argv )
     kvs::mpi::Communicator world( MPI_COMM_WORLD );
     kvs::mpi::Logger logger( world );
 
-    const int root = 0;
+    const int root = world.root();
     const int size = world.size();
     const int rank = world.rank();
 
@@ -177,9 +141,9 @@ int main( int argc, char** argv )
     // Dump rendering images.
     {
         auto n = kvs::String::ToString( rank );
-        if ( output_color_images ) { ::ColorImage( width, height, color_buffer ).write( "output_" + n + ".bmp"); }
-        if ( output_alpha_images ) { ::AlphaImage( width, height, color_buffer ).write( "output_alpha_" + n + ".bmp"); }
-        if ( output_depth_images ) { ::DepthImage( width, height, depth_buffer ).write( "output_depth_" + n + ".bmp"); }
+        if ( output_color_images ) { kvs::ColorImage( width, height, color_buffer ).write( "output_" + n + ".bmp"); }
+        if ( output_alpha_images ) { kvs::GrayImage( width, height, color_buffer, 3 ).write( "output_alpha_" + n + ".bmp"); }
+        if ( output_depth_images ) { kvs::GrayImage( width, height, depth_buffer ).write( "output_depth_" + n + ".bmp"); }
     }
 
     // Image composition.
@@ -207,7 +171,7 @@ int main( int argc, char** argv )
     // Write the merged image.
     if ( rank == root )
     {
-        ::ColorImage( width, height, color_buffer ).write( "output.bmp" );
+        kvs::ColorImage( width, height, color_buffer ).write( "output.bmp" );
     }
 
     return 0;
