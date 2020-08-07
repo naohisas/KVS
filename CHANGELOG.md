@@ -196,6 +196,7 @@
 + kvs::EventListener::enableEvent( event_type )
 + kvs::EventListener::disableEvent()
 + kvs::EventListener::disableEvent( event_type )
++ kvs::mpi::Communicator::root()
 + kvs::mpi::Communicator::abort()
 + kvs::mpi::Communicator::barrier()
 

@@ -9,8 +9,9 @@ namespace kvs
 namespace mpi
 {
 
-Communicator::Communicator( const MPI_Comm handler ):
-    m_handler( handler )
+Communicator::Communicator( const MPI_Comm handler, const int root ):
+    m_handler( handler ),
+    m_root( root )
 {
 }
 

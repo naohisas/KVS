@@ -1,5 +1,10 @@
+/*****************************************************************************/
+/**
+ *  @file   Communicator.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
-//#include <mpi.h>
 #include <kvs/Type>
 #include <kvs/ValueArray>
 #include <kvs/Assert>
@@ -16,15 +21,22 @@ namespace kvs
 namespace mpi
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  MPI Communicator class.
+ */
+/*===========================================================================*/
 class Communicator
 {
 private:
     MPI_Comm m_handler; ///< communicator handler
+    int m_root; ///< root node
 
 public:
-    Communicator( const MPI_Comm handler = MPI_COMM_WORLD );
+    Communicator( const MPI_Comm handler = MPI_COMM_WORLD, const int root = 0 );
 
     const MPI_Comm& handler() const { return m_handler; }
+    int root() const { return m_root; }
     int size() const;
     int rank() const;
 
@@ -88,6 +100,24 @@ public:
     template <typename T>
     void broadcast( const int root, T* values, const size_t size );
 
+    template <typename T>
+    void broadcast( T& value )
+    {
+        this->broadcast( this->root(), value );
+    }
+
+    template <typename T>
+    void broadcast( kvs::ValueArray<T>& values )
+    {
+        this->broadcast( this->root(), values );
+    }
+
+    template <typename T>
+    void broadcast( T* values, const size_t size )
+    {
+        this->broadcast( this->root(), values, size );
+    }
+
     // Scatter
 
     template <typename T>
@@ -99,6 +129,24 @@ public:
     template <typename T>
     void scatter( const int root, const T* send_values, const size_t send_size, T* recv_values, const size_t recv_size );
 
+    template <typename T>
+    void scatter( const kvs::ValueArray<T>& send_values, T& recv_value )
+    {
+        this->scatter( this->root(), send_values, recv_value );
+    }
+
+    template <typename T>
+    void scatter( const kvs::ValueArray<T>& send_values, kvs::ValueArray<T>& recv_values )
+    {
+        this->scatter( this->root(), send_values, recv_values );
+    }
+
+    template <typename T>
+    void scatter( const T* send_values, const size_t send_size, T* recv_values, const size_t recv_size )
+    {
+        this->scatter( this->root(), send_values, send_size, recv_values, recv_size );
+    }
+
     // Gather
 
     template <typename T>
@@ -109,6 +157,24 @@ public:
 
     template <typename T>
     void gather( const int root, const T* send_values, const size_t send_size, T* recv_values, const size_t recv_size );
+
+    template <typename T>
+    void gather( const T& send_value, kvs::ValueArray<T>& recv_values )
+    {
+        this->gather( this->root(), send_value, recv_values );
+    }
+
+    template <typename T>
+    void gather( const kvs::ValueArray<T>& send_values, kvs::ValueArray<T>& recv_values )
+    {
+        this->gather( this->root(), send_values, recv_values );
+    }
+
+    template <typename T>
+    void gather( const T* send_values, const size_t send_size, T* recv_values, const size_t recv_size )
+    {
+        this->gather( this->root(), send_values, send_size, recv_values, recv_size );
+    }
 
     // Reduce
 
@@ -123,6 +189,30 @@ public:
 
     template <typename T>
     void reduce( const int root, const T* send_values, T* recv_values, const size_t size, const MPI_Op op );
+
+    template <typename T, typename Op>
+    void reduce( const T& send_value, T& recv_value, const Op op )
+    {
+        this->reduce( this->root(), send_value, recv_value, op );
+    }
+
+    template <typename T, typename Op>
+    void reduce( const kvs::ValueArray<T>& send_value, kvs::ValueArray<T>& recv_value, const Op op )
+    {
+        this->reduce( this->root(), send_value, recv_value, op );
+    }
+
+    template <typename T>
+    void reduce( const T& send_value, T& recv_value, const MPI_Op op )
+    {
+        this->reduce( this->root(), send_value, recv_value, op );
+    }
+
+    template <typename T>
+    void reduce( const T* send_values, T* recv_values, const size_t size, const MPI_Op op )
+    {
+        this->reduce( this->root(), send_values, recv_values, size, op );
+    }
 
     // All-gather
 

@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <kvs/NullStream>
 #include "Communicator.h"
 
 
@@ -25,26 +26,11 @@ namespace mpi
 /*===========================================================================*/
 class Logger
 {
-    class NullStream : public std::ostream
-    {
-        class Buffer : public std::streambuf
-        {
-        public:
-            int overflow( int c ) { return c; }
-        };
-
-    private:
-        Buffer m_buffer; ///< buffer;
-
-    public:
-        NullStream() : std::ostream( &m_buffer ) {}
-    };
-
 private:
     int m_rank; ///< my rank
     std::string m_filename; ///< output filename
     std::ofstream m_stream; ///< output stream
-    NullStream m_null_stream; ///< null stream
+    kvs::NullStream m_null_stream; ///< null stream
 
 public:
     Logger( const kvs::mpi::Communicator& comm ):
