@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file BitArray.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: BitArray.cpp 1298 2012-08-28 12:49:02Z s.yamada0808@gmail.com $
+ *  @file   BitArray.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "BitArray.h"
@@ -71,46 +64,6 @@ size_t CountBits( kvs::UInt8 val )
     val = ( val + ( val >> 4 ) ) & 0x0F;
     return val;
 }
-
-#if 0
-size_t CountBits( kvs::UInt32 val )
-{
-    //val = ( val & 0x55555555 ) + ( val >>  1 & 0x55555555 );
-    //val = ( val & 0x33333333 ) + ( val >>  2 & 0x33333333 );
-    //val = ( val & 0x0F0F0F0F ) + ( val >>  4 & 0x0F0F0F0F );
-    //val = ( val & 0x00FF00FF ) + ( val >>  8 & 0x00FF00FF );
-    //val = ( val & 0x0000FFFF ) + ( val >> 16 & 0x0000FFFF );
-    //return val;
-
-    val = val - ( ( val >>> 1 ) & 0x55555555 );
-    val = ( val & 0x33333333 ) + ( ( val >>  2 ) & 0x33333333 );
-    val = ( val + ( val >> 4 ) ) & 0x0F0F0F0F;
-    val = val + ( val >> 8 );
-    val = val + ( val >> 16 );
-    return val & 0xFF;
-}
-
-size_t CountBits( kvs::UInt64 val )
-{
-    //val = ( val & 0x5555555555555555 ) + ( val >>  1 & 0x5555555555555555 );
-    //val = ( val & 0x3333333333333333 ) + ( val >>  2 & 0x3333333333333333 );
-    //val = ( val & 0x0F0F0F0F0F0F0F0F ) + ( val >>  4 & 0x0F0F0F0F0F0F0F0F );
-    //val = ( val & 0x00FF00FF00FF00FF ) + ( val >>  8 & 0x00FF00FF00FF00FF );
-    //val = ( val & 0x0000FFFF0000FFFF ) + ( val >> 16 & 0x0000FFFF0000FFFF );
-    //val = ( val & 0x00000000FFFFFFFF ) + ( val >> 32 & 0x00000000FFFFFFFF );
-    //return val;
-
-    return CountBits( (kvs::UInt32)( val >> 32 ) ) + CountBits( (kvs::UInt32)( val ) );
-
-    //val = val - ( ( val >> 1 ) & 0x5555555555555555 );
-    //val = ( val & 0x3333333333333333 ) + ( ( val >>  2 ) & 0x3333333333333333 );
-    //val = ( val + ( val >> 4 ) ) & 0x0F0F0F0F0F0F0F0F;
-    //val = val + ( val >> 8 );
-    //val = val + ( val >> 16 );
-    //val = val + ( val >> 32 );
-    //return val & 0xFF;
-}
-#endif
 
 } // end of namespace
 
@@ -285,21 +238,11 @@ size_t BitArray::paddingBit() const
     return this->bitSize() - this->size();
 }
 
-#if KVS_ENABLE_DEPRECATED
-kvs::UInt8* BitArray::allocate( size_t size )
-{
-    m_size = size;
-    m_values.allocate( this->byteSize() );
-    return this->data();
-}
-
-#else
 void BitArray::allocate( size_t size )
 {
     m_size = size;
     m_values.allocate( this->byteSize() );
 }
-#endif
 
 void BitArray::release()
 {

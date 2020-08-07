@@ -2,15 +2,6 @@
 /**
  *  @file   GrADS.cpp
  *  @author Naohisa Sakamoto
- *  @brief  
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GrADS.cpp 1758 2014-05-04 13:19:24Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
 #include "GrADS.h"
@@ -289,7 +280,7 @@ void GrADS::print( std::ostream& os, const kvs::Indent& indent ) const
         {
             if ( file->fileName() == data_filename )
             {
-                const std::string sep = kvs::File::Separator();
+                const std::string sep = kvs::Directory::Separator();
                 const std::string path = directory.path( true );
                 GriddedBinaryDataFile::Date date;
                 date.year = tdef.start.year;

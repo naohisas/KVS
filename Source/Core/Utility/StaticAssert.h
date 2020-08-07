@@ -1,6 +1,11 @@
+/*****************************************************************************/
+/**
+ *  @file   StaticAssert.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/Compiler>
-
 
 #if defined KVS_COMPILER_GCC
   #if !defined(__cpp_static_assert) && !defined(static_assert)

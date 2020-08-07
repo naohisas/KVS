@@ -3,17 +3,8 @@
  *  @file   SharedCount.h
  *  @author Naoya Maeda
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS_SHARED_COUNT_H_INCLUDE
-#define KVS_SHARED_COUNT_H_INCLUDE
+#pragma once
 
 #if 1
   #if defined KVS_COMPILER_GCC
@@ -37,6 +28,7 @@
 #endif
 
 #include <typeinfo>
+
 
 namespace kvs
 {
@@ -355,5 +347,3 @@ inline SharedCount::SharedCount( const WeakCount& other )
 } // detail
 
 } // kvs
-
-#endif

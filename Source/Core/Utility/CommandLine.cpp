@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file CommandLine.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: CommandLine.cpp 1616 2013-07-12 03:22:24Z naohisa.sakamoto@gmail.com $
+ *  @file   CommandLine.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include <iostream>

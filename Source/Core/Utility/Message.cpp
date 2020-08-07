@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Message.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Message.cpp 1297 2012-08-26 08:54:00Z s.yamada0808@gmail.com $
+ *  @file   Message.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Message.h"
@@ -35,8 +28,6 @@ void Message::DefaultHandler(
     const kvs::Message::Context& context,
     const std::string& message )
 {
-//    std::ostream* stream = &std::cerr;
-
     stream << kvs::ColorStream::Bold;
     switch ( type )
     {

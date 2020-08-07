@@ -3,14 +3,6 @@
  *  @file   ColorImage.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ColorImage.h 1339 2012-11-07 07:23:28Z s.yamada0808@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <limits>

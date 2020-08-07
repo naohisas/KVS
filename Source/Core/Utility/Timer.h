@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
  *  @file Timer.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Timer.h 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS_CORE_TIMER_H_INCLUDE
-#define KVS_CORE_TIMER_H_INCLUDE
-
+#pragma once
 #include <ctime>
 #include <iostream>
 #include <vector>
@@ -520,5 +511,3 @@ inline double Timer::fps() const
 }
 
 } // end of namespace kvs
-
-#endif // KVS_CORE_TIMER_H_INCLUDE

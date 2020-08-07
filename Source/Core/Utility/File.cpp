@@ -68,21 +68,6 @@ namespace
 namespace kvs
 {
 
-/*==========================================================================*/
-/**
- *  @brief  Returns file separator.
- *  @return file separator
- */
-/*==========================================================================*/
-std::string File::Separator()
-{
-#if defined ( KVS_PLATFORM_WINDOWS )
-    return "\\";
-#else
-    return "/";
-#endif
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Returns true if the specified file exists.

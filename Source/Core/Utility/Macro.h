@@ -3,18 +3,8 @@
  *  @file   Macro.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Macro.h 1425 2013-03-16 09:37:22Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__MACRO_H_INCLUDE
-#define KVS__MACRO_H_INCLUDE
-
+#pragma once
 #include <kvs/Compiler>
 
 #define KVS_MACRO_FILE __FILE__
@@ -48,5 +38,3 @@
 #else
 #    define KVS_MACRO_MULTI_STATEMENT_END } while ( false )
 #endif
-
-#endif // KVS__MACRO_H_INCLUDE

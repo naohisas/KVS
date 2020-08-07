@@ -3,14 +3,6 @@
  *  @file   Platform.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Platform.h 1109 2012-04-21 11:55:54Z s.yamada0808@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 

@@ -340,8 +340,35 @@
 + kvs::AnyValueArray::deepCopy
 + kvs::AnyValueArray::pointer
 + kvs::AnyValueArray::to
++ kvs::BitArray::pointer
++ kvs::BitArray::shallowCopy
++ kvs::BitArray::deepCopy
++ kvs::BitArray::deallocate
++ kvs::Date::subtractYears (use kvs::Date::subYears)
++ kvs::Date::subtractMonths (use kvs::Date::subMonths)
++ kvs::Date::subtractDays (use kvs::Date::subDays)
++ kvs::Endian::ByteOrder
++ kvs::Endian::Check (use kvs::Endian::IsBig/IsLittle)
++ kvs::Endian::Swap( T& value ) (use kvs::Endian::Swap( T* value ))
++ kvs::File::Separator (use kvs::Directory::Separator)
++ kvs::Math::Power (use std::pow)
++ kvs::Math::Swap (use std::swap)
++ kvs::Math::Shift
++ kvs::Math::SquareRoot (use std::sqrt)
 + kvs::FastTokenizer
 + kvs::DisplayList
+
+**Removed macro**
++ KVS_MESSAGE_RED
++ KVS_MESSAGE_GREEN
++ KVS_MESSAGE_BROWN
++ KVS_MESSAGE_BLUE
++ KVS_MESSAGE_PURPLE
++ KVS_MESSAGE_SKY
++ KVS_MESSAGE_WHITE
++ KVS_MESSAGE_NORMAL
++ KVS_MESSAGE_SET_COLOR
++ KVS_MESSAGE_RESET_COLOR
 
 **Removed classes**
 + kvs::TextEngine (use kvs::Painter)

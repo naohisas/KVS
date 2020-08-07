@@ -6,7 +6,6 @@
 /****************************************************************************/
 #include "ValueArray.h"
 #include <kvs/Type>
-#include <string>
 
 
 namespace kvs
@@ -23,6 +22,5 @@ template class ValueArray<kvs::Int64>;
 template class ValueArray<kvs::UInt64>;
 template class ValueArray<kvs::Real32>;
 template class ValueArray<kvs::Real64>;
-//template class ValueArray<std::string>;
 
 } // end of namespace kvs

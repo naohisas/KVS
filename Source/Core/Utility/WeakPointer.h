@@ -3,17 +3,8 @@
  *  @file   WeakPointer.h
  *  @author Naoya Maeda
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS_WEAK_POINTER
-#define KVS_WEAK_POINTER
+#pragma once
 #include "SharedPointer.h"
 
 
@@ -145,5 +136,3 @@ inline void swap( kvs::WeakPointer<T>& w1, kvs::WeakPointer<T>& w2 )
 }
 
 } // std
-
-#endif

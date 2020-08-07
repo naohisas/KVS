@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <kvs/File>
+#include <kvs/Directory>
 
 
 namespace
@@ -17,7 +18,7 @@ namespace
 
 std::string KVSFontPath()
 {
-    const std::string sep = kvs::File::Separator();
+    const std::string sep = kvs::Directory::Separator();
     const char* kvs_dir = std::getenv("KVS_DIR");
     if ( kvs_dir != NULL )
     {
@@ -55,7 +56,7 @@ public:
         }
 
         // Add current directory (".").
-        const std::string sep = kvs::File::Separator();
+        const std::string sep = kvs::Directory::Separator();
         m_search_path_list.push_back("." + sep );
     }
 
@@ -69,7 +70,7 @@ public:
         std::vector<std::string>::reverse_iterator last = m_search_path_list.rend();
         while ( path != last )
         {
-            const std::string sep = kvs::File::Separator();
+            const std::string sep = kvs::Directory::Separator();
             const std::string filename = *path + sep + source;
             const kvs::File file( filename );
             if ( file.exists() ) { return filename; }

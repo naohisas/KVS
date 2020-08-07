@@ -3,14 +3,6 @@
  *  @file   MemoryTracer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MemoryTracer.cpp 1154 2012-06-06 01:35:35Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "MemoryTracer.h"
 #include <iostream>
@@ -24,11 +16,8 @@
 namespace
 {
 #if defined ( KVS_ENABLE_MEM_DEBUG )
-
 char const* DeleteAtFile = "unknown";
-
 int DeleteAtLine = 0;
-
 #endif
 
 const char* AllocationName[] =
@@ -156,7 +145,7 @@ namespace kvs
  *  @brief  Constructs a new MemoryTracer class.
  */
 /*===========================================================================*/
-MemoryTracer::MemoryTracer( void ):
+MemoryTracer::MemoryTracer():
     m_nallocations( 0 ),
     m_total_nallocations( 0 ),
     m_total_ndeallocations( 0 ),
@@ -190,7 +179,7 @@ MemoryTracer::MemoryTracer( char* filename ):
  *  @brief  Destroys the MemoryTracer class.
  */
 /*===========================================================================*/
-MemoryTracer::~MemoryTracer( void )
+MemoryTracer::~MemoryTracer()
 {
     kvs::MemoryTracer::IsConstructed = false;
     if ( kvs::MemoryTracer::LogFileName )
@@ -214,7 +203,12 @@ MemoryTracer::~MemoryTracer( void )
  *  @param  type [in] allocation (deallocation) type
  */
 /*===========================================================================*/
-void MemoryTracer::insert( void* address, size_t size, char const* file, int line, MemoryTracer::AllocationType type )
+void MemoryTracer::insert(
+    void* address,
+    size_t size,
+    char const* file,
+    int line,
+    MemoryTracer::AllocationType type )
 {
     if ( m_lock_counter > 0 ) return;
 
@@ -223,8 +217,8 @@ void MemoryTracer::insert( void* address, size_t size, char const* file, int lin
     m_nallocations++;
     m_total_nallocations++;
     m_allocated_memory += size;
-//    m_peak_allocated_memory = kvs::Math::Max( m_peak_allocated_memory, m_allocated_memory );
-    m_peak_allocated_memory = m_peak_allocated_memory > m_allocated_memory ? m_peak_allocated_memory : m_allocated_memory;
+    m_peak_allocated_memory = ( m_peak_allocated_memory > m_allocated_memory ) ?
+        m_peak_allocated_memory : m_allocated_memory;
 }
 
 /*===========================================================================*/
@@ -236,7 +230,11 @@ void MemoryTracer::insert( void* address, size_t size, char const* file, int lin
  *  @param  type [in] allocation (deallocation) type
  */
 /*===========================================================================*/
-void MemoryTracer::remove( void* address, char const* file, int line, MemoryTracer::AllocationType type )
+void MemoryTracer::remove(
+    void* address,
+    char const* file,
+    int line,
+    MemoryTracer::AllocationType type )
 {
     if ( m_lock_counter > 0 ) return;
 
@@ -281,9 +279,7 @@ void MemoryTracer::dump( std::ostream& os )
     }
 
     os << "K V S  M E M O R Y  D E B U G  R E P O R T" << std::endl;
-//    os << "Time: " << kvs::Time() << std::endl;
     os << "Time: " << __TIME__ << std::endl;
-//    os << "Date: " << kvs::Date() << std::endl;
     os << "Date: " << __DATE__ << std::endl;
     os << "Command: " << command << std::endl;
     os << "Argument: " << args << std::endl;
@@ -331,7 +327,7 @@ void MemoryTracer::dump( std::ostream& os )
  *  @brief  Lock for insert/remove process.
  */
 /*===========================================================================*/
-void MemoryTracer::lock( void )
+void MemoryTracer::lock()
 {
     m_lock_counter++;
 }
@@ -341,7 +337,7 @@ void MemoryTracer::lock( void )
  *  @brief  Unlock for insert/remove process.
  */
 /*===========================================================================*/
-void MemoryTracer::unlock( void )
+void MemoryTracer::unlock()
 {
     m_lock_counter--;
 }
@@ -352,7 +348,7 @@ void MemoryTracer::unlock( void )
  *  @return leaked memory size
  */
 /*===========================================================================*/
-size_t MemoryTracer::leaked_memory_size( void ) const
+size_t MemoryTracer::leaked_memory_size() const
 {
     int bytes = 0;
     Map::const_iterator mem = m_map.begin();
@@ -379,7 +375,12 @@ size_t MemoryTracer::leaked_memory_size( void ) const
  *  @return address of allocated memory
  */
 /*===========================================================================*/
-void* MemoryTracer::Allocate( size_t size, char const* file, int line, MemoryTracer::AllocationType type, void* address )
+void* MemoryTracer::Allocate(
+    size_t size,
+    char const* file,
+    int line,
+    MemoryTracer::AllocationType type,
+    void* address )
 {
     if ( type == MemoryTracer::Realloc )
     {
@@ -418,7 +419,11 @@ void* MemoryTracer::Allocate( size_t size, char const* file, int line, MemoryTra
  *  @param  type [in] allocation (deallocation) type
  */
 /*===========================================================================*/
-void MemoryTracer::Deallocate( void* address, char const* file, int line, MemoryTracer::AllocationType type )
+void MemoryTracer::Deallocate(
+    void* address,
+    char const* file,
+    int line,
+    MemoryTracer::AllocationType type )
 {
     if ( !address ) return;
 
@@ -462,7 +467,7 @@ MemoryTracer::Lock::Lock( MemoryTracer* tracer ):
  *  @brief  Destructs the Lock class.
  */
 /*===========================================================================*/
-MemoryTracer::Lock::~Lock( void )
+MemoryTracer::Lock::~Lock()
 {
     m_tracer->unlock();
 }
@@ -472,7 +477,7 @@ MemoryTracer::Lock::~Lock( void )
  *  @brief  Constructs a new Node class.
  */
 /*===========================================================================*/
-MemoryTracer::Node::Node( void ):
+MemoryTracer::Node::Node():
     m_size( 0 ),
     m_name( 0 ),
     m_line( 0 ),
@@ -489,7 +494,11 @@ MemoryTracer::Node::Node( void ):
  *  @param  type [in] allocation type
  */
 /*===========================================================================*/
-MemoryTracer::Node::Node( size_t size, char const* name, int line, MemoryTracer::AllocationType type ):
+MemoryTracer::Node::Node(
+    size_t size,
+    char const* name,
+    int line,
+    MemoryTracer::AllocationType type ):
     m_size( size ),
     m_name( name ),
     m_line( line ),
@@ -503,7 +512,7 @@ MemoryTracer::Node::Node( size_t size, char const* name, int line, MemoryTracer:
  *  @return memory size
  */
 /*===========================================================================*/
-size_t MemoryTracer::Node::size( void ) const
+size_t MemoryTracer::Node::size() const
 {
     return( m_size );
 }
@@ -514,7 +523,7 @@ size_t MemoryTracer::Node::size( void ) const
  *  @return filename
  */
 /*===========================================================================*/
-const char* MemoryTracer::Node::name( void ) const
+const char* MemoryTracer::Node::name() const
 {
     return( m_name );
 }
@@ -525,7 +534,7 @@ const char* MemoryTracer::Node::name( void ) const
  *  @return line number
  */
 /*===========================================================================*/
-int MemoryTracer::Node::line( void ) const
+int MemoryTracer::Node::line() const
 {
     return( m_line );
 }
@@ -536,7 +545,7 @@ int MemoryTracer::Node::line( void ) const
  *  @return allocation type
  */
 /*===========================================================================*/
-MemoryTracer::AllocationType MemoryTracer::Node::type( void ) const
+MemoryTracer::AllocationType MemoryTracer::Node::type() const
 {
     return( m_type );
 }

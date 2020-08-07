@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
  *  @file Date.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Date.cpp 1129 2012-05-02 10:51:39Z s.yamada0808@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Date.h"
@@ -363,7 +356,6 @@ void Date::fromString( const std::string date, const std::string sep )
     }
 
     ::DateToJulian( m_year, m_month, m_day, &m_julian_day );
-//    m_julian_day = this->convert_to_julian_date( m_year, m_month, m_day );
 }
 
 bool Date::isLeepYear() const
@@ -474,39 +466,4 @@ void Date::addDays( const int days )
     ::JulianToDate( m_julian_day, &m_year, &m_month, &m_day );
 }
 
-/*
-void Date::adjust_days()
-{
-    const Date this_month( m_year, m_month,     1 );
-    const Date next_month( m_year, m_month + 1, 1 );
-
-    const int ndays = next_month.daysInMonth() - this_month.daysInMonth();
-    while ( m_day > ndays ) --m_day;
-}
-
-long Date::convert_to_julian_date( const int year, const int month, const int day ) const
-{
-    const int a = ( 14 - month ) / 12;
-    const int m = month + 12 * a - 3;
-    const int y = year + 4800 - a;
-
-    return day + ( ( 153 * m + 2 ) / 5 ) + ( 365 * y ) + ( y / 4 ) - ( y / 100 ) + ( y / 400 ) - 32045;
-}
-
-Date Date::convert_from_julian_date( const long julian_day ) const
-{
-    const long a = julian_day + 32044;
-    const long b = ( 4 * a + 3 ) / 146097;
-    const long c = a - ( ( 146097 * b ) / 4 );
-    const long d = ( 4 * c + 3 ) / 1461;
-    const long e = c - ( 1461 * d / 4 );
-    const long m = ( 5 * e + 2 ) / 153;
-
-    const int day = e - ( ( 153 * m + 2 ) / 5 ) + 1;
-    const int month = m + 3 - ( 12 * ( m / 10 ) );
-    const int year = ( 100 * b ) + d - 4800 + ( m / 10 );
-
-    return Date( year, month, day );
-}
-*/
 } // end of namespace kvs

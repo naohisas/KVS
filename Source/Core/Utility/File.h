@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file File.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: File.h 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
+ *  @file   File.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #pragma once
@@ -27,7 +20,6 @@ namespace kvs
 class File
 {
 public:
-    /*KVS_DEPRECATED*/ static std::string Separator();
     static bool Exists( const std::string& file_path );
 
 private:

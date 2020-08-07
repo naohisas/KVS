@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Time.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Time.cpp 1129 2012-05-02 10:51:39Z s.yamada0808@gmail.com $
+ *  @file   Time.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Time.h"

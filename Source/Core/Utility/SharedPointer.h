@@ -3,18 +3,8 @@
  *  @file   SharedPointer.h
  *  @author Naoya Maeda
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS_SHARED_POINTER_H_INCLUDE
-#define KVS_SHARED_POINTER_H_INCLUDE
-
+#pragma once
 
 #include <iostream>
 #include <utility>
@@ -307,5 +297,3 @@ inline void swap( kvs::SharedPointer<T>& s1, kvs::SharedPointer<T>& s2 )
 }
 
 } // std
-
-#endif

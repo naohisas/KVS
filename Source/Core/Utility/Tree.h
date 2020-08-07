@@ -3,18 +3,8 @@
  *  @file   Tree.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Tree.h 1650 2013-10-31 07:08:58Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__TREE_H_INCLUDE
-#define KVS__TREE_H_INCLUDE
-
+#pragma once
 #include <cassert>
 #include <memory>
 #include <stdexcept>
@@ -951,5 +941,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__TREE_H_INCLUDE

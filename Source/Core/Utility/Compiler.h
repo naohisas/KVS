@@ -3,14 +3,6 @@
  *  @file   Compiler.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Compiler.h 1582 2013-06-03 01:31:06Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #define KVS_COMPILER_NUMBER( x )           # x

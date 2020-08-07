@@ -3,18 +3,8 @@
  *  @file   DebugNew.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: DebugNew.h 630 2010-10-10 02:05:28Z naohisa.sakamoto $
- */
 /*****************************************************************************/
-#ifndef KVS__DEBUG_NEW_H_INCLUDE
-#define KVS__DEBUG_NEW_H_INCLUDE
-
+#pragma once
 #if defined ( KVS_ENABLE_MEM_DEBUG )
 
 #include <kvs/MemoryTracer>
@@ -27,5 +17,3 @@
 #define free(p) kvs::MemoryTracer::Deallocate( p, __FILE__, __LINE__, kvs::MemoryTracer::Free )
 
 #endif
-
-#endif // KVS__DEBUG_NEW_H_INCLUDE
