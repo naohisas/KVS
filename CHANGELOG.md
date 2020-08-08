@@ -30,7 +30,7 @@
 + kvs::mpi::Request
 + kvs::mpi::Window
 + kvs::mpi::ImageCompositor
-+ kvs::mpi::Logger
++ kvs::mpi::LogStream
 
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank

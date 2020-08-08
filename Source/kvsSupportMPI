@@ -1,7 +1,7 @@
 #include <SupportMPI/Communicator.h>
 #include <SupportMPI/DataType.h>
 #include <SupportMPI/Environment.h>
-#include <SupportMPI/Logger.h>
+#include <SupportMPI/LogStream.h>
 #include <SupportMPI/MPI.h>
 #include <SupportMPI/Operator.h>
 #include <SupportMPI/Renderer/ImageCompositor.h>

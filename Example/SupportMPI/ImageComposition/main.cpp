@@ -9,7 +9,7 @@
 #include <kvs/mpi/Environment>
 #include <kvs/mpi/Communicator>
 #include <kvs/mpi/ImageCompositor>
-#include <kvs/mpi/Logger>
+#include <kvs/mpi/LogStream>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/PolygonObject>
@@ -60,7 +60,7 @@ int main( int argc, char** argv )
     // MPI related parameters.
     kvs::mpi::Environment env( argc, argv );
     kvs::mpi::Communicator world( MPI_COMM_WORLD );
-    kvs::mpi::Logger logger( world );
+    kvs::mpi::LogStream log( world );
 
     const int root = world.root();
     const int size = world.size();
@@ -115,10 +115,10 @@ int main( int argc, char** argv )
         double min_sec = 0.0; world.reduce( root, timer.sec(), min_sec, MPI_MIN );
         double max_sec = 0.0; world.reduce( root, timer.sec(), max_sec, MPI_MAX );
         double sum_sec = 0.0; world.reduce( root, timer.sec(), sum_sec, MPI_SUM );
-        logger( root ) << "Rendering time:" << std::endl;
-        logger( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
-        logger( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
-        logger( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
+        log( root ) << "Rendering time:" << std::endl;
+        log( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
+        log( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
+        log( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
     }
 
     // Read-back the rendering image of each sub-volume.
@@ -132,10 +132,10 @@ int main( int argc, char** argv )
         double min_sec = 0.0; world.reduce( root, timer.sec(), min_sec, MPI_MIN );
         double max_sec = 0.0; world.reduce( root, timer.sec(), max_sec, MPI_MAX );
         double sum_sec = 0.0; world.reduce( root, timer.sec(), sum_sec, MPI_SUM );
-        logger( root ) << "Read-back time:" << std::endl;
-        logger( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
-        logger( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
-        logger( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
+        log( root ) << "Read-back time:" << std::endl;
+        log( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
+        log( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
+        log( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
     }
 
     // Dump rendering images.
@@ -162,10 +162,10 @@ int main( int argc, char** argv )
         double min_sec = 0.0; world.reduce( root, timer.sec(), min_sec, MPI_MIN );
         double max_sec = 0.0; world.reduce( root, timer.sec(), max_sec, MPI_MAX );
         double sum_sec = 0.0; world.reduce( root, timer.sec(), sum_sec, MPI_SUM );
-        logger( root ) << "Composition time: " << timer.sec() << " [sec]" << std::endl;
-        logger( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
-        logger( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
-        logger( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
+        log( root ) << "Composition time: " << timer.sec() << " [sec]" << std::endl;
+        log( root ) << "    Min: " << min_sec << " [sec]" << std::endl;
+        log( root ) << "    Max: " << max_sec << " [sec]" << std::endl;
+        log( root ) << "    Ave: " << sum_sec / size << " [sec]" << std::endl;
     }
 
     // Write the merged image.

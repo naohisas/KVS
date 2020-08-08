@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   Logger.h
+ *  @file   LogStream.h
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
@@ -21,10 +21,10 @@ namespace mpi
 
 /*===========================================================================*/
 /**
- *  @brief  Logger class.
+ *  @brief  Log stream class.
  */
 /*===========================================================================*/
-class Logger
+class LogStream
 {
 private:
     int m_rank; ///< my rank
@@ -33,12 +33,12 @@ private:
     kvs::NullStream m_null_stream; ///< null stream
 
 public:
-    Logger( const kvs::mpi::Communicator& comm ):
+    LogStream( const kvs::mpi::Communicator& comm ):
         m_rank( comm.rank() )
     {
     }
 
-    Logger( const kvs::mpi::Communicator& comm, const std::string& filename ):
+    LogStream( const kvs::mpi::Communicator& comm, const std::string& filename ):
         m_rank( comm.rank() ),
         m_filename( filename ),
         m_stream( filename.c_str() )
