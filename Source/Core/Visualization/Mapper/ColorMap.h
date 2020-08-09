@@ -56,8 +56,18 @@ public:
         MshSpace
     };
 
+    enum ColorMapType
+    {
+        Magma,
+        Inferno,
+        Plasma,
+        Viridis,
+        Cividis
+    };
+
 private:
     ColorSpace m_color_space; ///< color space for interpolation
+    ColorMapType m_color_map_type; ///< color map type
     size_t m_resolution; ///< table resolution
     float m_min_value; ///< min. value
     float m_max_value; ///< max. value
@@ -97,6 +107,8 @@ public:
 
     const kvs::RGBColor operator []( const size_t index ) const;
     const kvs::RGBColor at( const float value ) const;
+    const kvs::RGBColor at( float value, ColorMapType color_map_type ) const;
+    ColorMap& operator =( const ColorMap& rhs );
     ColorMap& operator =( const ColorMap& rhs );
 };
 

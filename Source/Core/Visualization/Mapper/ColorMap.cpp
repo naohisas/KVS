@@ -13,6 +13,7 @@
  */
 /****************************************************************************/
 #include "ColorMap.h"
+#include "ColorMapData.h"
 #include <kvs/Assert>
 #include <kvs/RGBColor>
 #include <kvs/HSVColor>
@@ -696,6 +697,71 @@ const kvs::RGBColor ColorMap::at( const float value ) const
 
     const kvs::RGBColor c0( m_table.data() + ::NumberOfChannels * s0 );
     const kvs::RGBColor c1( m_table.data() + ::NumberOfChannels * s1 );
+    return kvs::RGBColor::Mix( c0, c1, v - s0 );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns corresponded RGB color value for the selected colormap type
+ *  @param  value [in] value
+ *  @return corresponded RGB color value
+ */
+/*===========================================================================*/
+const kvs::RGBColor ColorMap::at( float value, const ColorMap::ColorMapType color_map_type ) const
+{
+    if ( value <= m_min_value )
+    {
+        value = m_min_value;
+    }
+    else if ( value >= m_max_value )
+    {
+        value = m_max_value;
+    }
+
+    const float r = static_cast<float>( m_resolution - 1 );
+    const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;
+    const size_t s0 = static_cast<size_t>( v );
+    const size_t s1 = kvs::Math::Min( s0 + 1, m_resolution - 1 );
+
+    // Get the corresponded RGB color value for the selected colormap 
+    double d_c0[3];
+    double d_c1[3];
+    switch (color_map_type)
+        {
+            case ColorMap::ColorMapType::Magma:
+                getMagmaColor(s0, d_c0, s1, d_c1);
+                break;
+            case ColorMap::ColorMapType::Inferno:
+                getInfernoColor(s0, d_c0, s1, d_c1);
+                break;
+            case ColorMap::ColorMapType::Plasma:
+                getPlasmaColor(s0, d_c0, s1, d_c1);
+                break;
+            case ColorMap::ColorMapType::Viridis:
+                getViridisColor(s0, d_c0, s1, d_c1);
+                break;
+            case ColorMap::ColorMapType::Cividis:
+                getCividisColor(s0, d_c0, s1, d_c1);
+                break;
+            default:
+                break;
+        }
+
+    // double to kvs::RGBColor
+    const kvs::RGBColor c0
+    ( 
+        static_cast<kvs::UInt8>(d_c0[0] * r),
+        static_cast<kvs::UInt8>(d_c0[1] * r),
+        static_cast<kvs::UInt8>(d_c0[2] * r)
+    );
+
+    const kvs::RGBColor c1
+    (
+        static_cast<kvs::UInt8>(d_c1[0] * r),
+        static_cast<kvs::UInt8>(d_c1[1] * r),
+        static_cast<kvs::UInt8>(d_c1[2] * r)
+    );
+
     return kvs::RGBColor::Mix( c0, c1, v - s0 );
 }
 
