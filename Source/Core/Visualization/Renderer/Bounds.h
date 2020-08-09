@@ -3,21 +3,12 @@
  *  @file   Bounds.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Bounds.h 1797 2014-08-04 01:36:37Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__BOUNDS_H_INCLUDE
-#define KVS__BOUNDS_H_INCLUDE
-
+#pragma once
 #include <kvs/Module>
 #include <kvs/RendererBase>
 #include <kvs/RGBColor>
+#include <kvs/UIColor>
 
 
 namespace kvs
@@ -39,7 +30,6 @@ class Bounds : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 public:
-
     enum Type
     {
         Box = 0, ///< box type bounds
@@ -47,8 +37,7 @@ public:
         Circle = 2, ///< circle type bounds
     };
 
-protected:
-
+private:
     Type m_type; ///< bounds type
     kvs::RGBColor m_line_color;
     kvs::Real32 m_line_width;
@@ -58,8 +47,7 @@ protected:
     bool m_show; ///< flag for showing the bounds
 
 public:
-
-    Bounds();
+    Bounds( const kvs::RGBColor& color = kvs::UIColor::Label(), const kvs::Real32 width = 1.0f );
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setType( const Bounds::Type type ) { m_type = type; }
@@ -72,12 +60,9 @@ public:
     void show() { m_show = true; }
     void hide() { m_show = false; }
 
-public:
-
     kvs::LineObject* outputLineObject( const kvs::ObjectBase* object ) const;
 
 private:
-
     void draw_box_bounds( const kvs::ObjectBase* object );
     void draw_corner_bounds( const kvs::ObjectBase* object );
     void draw_circle_bounds( const kvs::ObjectBase* object );
@@ -87,5 +72,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__BOUNDS_H_INCLUDE

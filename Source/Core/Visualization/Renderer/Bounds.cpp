@@ -3,14 +3,6 @@
  *  @file   Bounds.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Bounds.cpp 1797 2014-08-04 01:36:37Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "Bounds.h"
 #include <kvs/OpenGL>
@@ -30,12 +22,16 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Bounds class.
+ *  @param  color [in] line color
+ *  @param  width [in] line width
  */
 /*===========================================================================*/
-Bounds::Bounds():
+Bounds::Bounds(
+    const kvs::RGBColor& color,
+    const kvs::Real32 width ):
     m_type( Bounds::Box ),
-    m_line_color( kvs::UIColor::Label() ),
-    m_line_width( 1.0f ),
+    m_line_color( color ),
+    m_line_width( width ),
     m_corner_scale( 0.2f ),
     m_division( 50.0f ),
     m_enable_anti_aliasing( false ),
@@ -72,8 +68,8 @@ void Bounds::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     {
-        KVS_GL_CALL( glColor3ub( m_line_color.r(), m_line_color.g(), m_line_color.b() ) );
-        KVS_GL_CALL( glLineWidth( m_line_width ) );
+        kvs::OpenGL::Color( m_line_color );
+        kvs::OpenGL::SetLineWidth( m_line_width );
 
         switch( m_type )
         {
@@ -123,32 +119,32 @@ void Bounds::draw_box_bounds( const kvs::ObjectBase* object )
     const kvs::Real32 z_max = object->maxObjectCoord().z();
 
     // Bottom edges.
-    KVS_GL_CALL_BEG( glBegin( GL_LINE_LOOP ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_min ) ); // (0)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_min ) ); // (1)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_max ) ); // (2)
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_max ) ); // (3)
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINE_LOOP );
+    kvs::OpenGL::Vertex( x_min, y_min, z_min ); // (0)
+    kvs::OpenGL::Vertex( x_max, y_min, z_min ); // (1)
+    kvs::OpenGL::Vertex( x_max, y_min, z_max ); // (2)
+    kvs::OpenGL::Vertex( x_min, y_min, z_max ); // (3)
+    kvs::OpenGL::End();
 
     // Top edges.
-    KVS_GL_CALL_BEG( glBegin( GL_LINE_LOOP ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_min ) ); // (4)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_min ) ); // (5)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_max ) ); // (6)
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_max ) ); // (7)
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINE_LOOP );
+    kvs::OpenGL::Vertex( x_min, y_max, z_min ); // (4)
+    kvs::OpenGL::Vertex( x_max, y_max, z_min ); // (5)
+    kvs::OpenGL::Vertex( x_max, y_max, z_max ); // (6)
+    kvs::OpenGL::Vertex( x_min, y_max, z_max ); // (7)
+    kvs::OpenGL::End();
 
     // Vertical edges.
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_min ) ); // (0)
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_min ) ); // (4)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_min ) ); // (1)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_min ) ); // (5)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_max ) ); // (2)
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_max ) ); // (6)
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_max ) ); // (3)
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_max ) ); // (7)
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertex( x_min, y_min, z_min ); // (0)
+    kvs::OpenGL::Vertex( x_min, y_max, z_min ); // (4)
+    kvs::OpenGL::Vertex( x_max, y_min, z_min ); // (1)
+    kvs::OpenGL::Vertex( x_max, y_max, z_min ); // (5)
+    kvs::OpenGL::Vertex( x_max, y_min, z_max ); // (2)
+    kvs::OpenGL::Vertex( x_max, y_max, z_max ); // (6)
+    kvs::OpenGL::Vertex( x_min, y_min, z_max ); // (3)
+    kvs::OpenGL::Vertex( x_min, y_max, z_max ); // (7)
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -179,60 +175,60 @@ void Bounds::draw_corner_bounds( const kvs::ObjectBase* object )
     const kvs::Real32 z_min_ext = z_min + corner;
 
     // Corner (0): (x_min, y_min, z_min) - (x_min_ext, y_min_ext, z_min_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_min_ext, y_min, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_min_ext, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_min_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_min, z_min ), kvs::Vec3( x_min_ext, y_min, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_min, z_min ), kvs::Vec3( x_min, y_min_ext, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_min, z_min ), kvs::Vec3( x_min, y_min, z_min_ext ) );
+    kvs::OpenGL::End();
 
     // Corner (1): (x_max, y_min, z_min) - (x_max_ext, y_min_ext, z_min_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_max_ext, y_min, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_min_ext, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_min_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_min, z_min ), kvs::Vec3( x_max_ext, y_min, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_min, z_min ), kvs::Vec3( x_max, y_min_ext, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_min, z_min ), kvs::Vec3( x_max, y_min, z_min_ext ) );
+    kvs::OpenGL::End();
 
     // Corner (2): (x_max, y_min, z_max) - (x_max_ext, y_min_ext, z_max_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_max_ext, y_min, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_min_ext, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_min, z_max_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_min, z_max ), kvs::Vec3( x_max_ext, y_min, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_min, z_max ), kvs::Vec3( x_max, y_min_ext, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_min, z_max ), kvs::Vec3( x_max, y_min, z_max_ext ) );
+    kvs::OpenGL::End();
 
     // Corner (3): (x_min, y_min, z_max) - (x_min_ext, y_min_ext, z_max_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_min_ext, y_min, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_min_ext, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_min, z_max_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_min, z_max ), kvs::Vec3( x_min_ext, y_min, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_min, z_max ), kvs::Vec3( x_min, y_min_ext, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_min, z_max ), kvs::Vec3( x_min, y_min, z_max_ext ) );
+    kvs::OpenGL::End();
 
     // Corner (4): (x_min, y_max, z_min) - (x_min_ext, y_max_ext, z_min_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_min_ext, y_max, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_max_ext, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_min_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_max, z_min ), kvs::Vec3( x_min_ext, y_max, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_max, z_min ), kvs::Vec3( x_min, y_max_ext, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_max, z_min ), kvs::Vec3( x_min, y_max, z_min_ext ) );
+    kvs::OpenGL::End();
 
     // Corner (5): (x_max, y_max, z_min) - (x_max_ext, y_max_ext, z_min_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_max_ext, y_max, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_max_ext, z_min ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_min ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_min_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_max, z_min ), kvs::Vec3( x_max_ext, y_max, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_max, z_min ), kvs::Vec3( x_max, y_max_ext, z_min ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_max, z_min ), kvs::Vec3( x_max, y_max, z_min_ext ) );
+    kvs::OpenGL::End();
 
     // Corner (6): (x_max, y_max, z_max) - (x_max_ext, y_max_ext, z_max_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_max_ext, y_max, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_max_ext, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_max, y_max, z_max_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_max, z_max ), kvs::Vec3( x_max_ext, y_max, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_max, z_max ), kvs::Vec3( x_max, y_max_ext, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_max, y_max, z_max ), kvs::Vec3( x_max, y_max, z_max_ext ) );
+    kvs::OpenGL::End();
 
     // Corner (7): (x_min, y_max, z_max) - (x_min_ext, y_max_ext, z_max_ext)
-    KVS_GL_CALL_BEG( glBegin( GL_LINES ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_min_ext, y_max, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_max_ext, z_max ) );
-    KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_max ) ); KVS_GL_CALL_VER( glVertex3f( x_min, y_max, z_max_ext ) );
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::Begin( GL_LINES );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_max, z_max ), kvs::Vec3( x_min_ext, y_max, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_max, z_max ), kvs::Vec3( x_min, y_max_ext, z_max ) );
+    kvs::OpenGL::Vertices( kvs::Vec3( x_min, y_max, z_max ), kvs::Vec3( x_min, y_max, z_max_ext ) );
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
@@ -273,7 +269,7 @@ void Bounds::draw_circle_bounds( const kvs::ObjectBase* object )
     const size_t division = static_cast<size_t>( m_division );
 
     // Circle (0) on XY plane
-    KVS_GL_CALL_BEG( glBegin( GL_LINE_LOOP ) );
+    kvs::OpenGL::Begin( GL_LINE_LOOP );
     const kvs::Real32 a2b2 = a2 * b2;
     for ( size_t i = 0; i <= division; i++ )
     {
@@ -287,12 +283,12 @@ void Bounds::draw_circle_bounds( const kvs::ObjectBase* object )
         const kvs::Real32 x = r * cos + x_center;
         const kvs::Real32 y = r * sin + y_center;
         const kvs::Real32 z = z_center;
-        KVS_GL_CALL_VER( glVertex3f( x, y, z ) );
+        kvs::OpenGL::Vertex( x, y, z );
     }
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::End();
 
     // Circle (1) on YZ plane
-    KVS_GL_CALL_BEG( glBegin( GL_LINE_LOOP ) );
+    kvs::OpenGL::Begin( GL_LINE_LOOP );
     const float b2c2 = b2 * c2;
     for ( size_t i = 0; i <= division; i++ )
     {
@@ -306,12 +302,12 @@ void Bounds::draw_circle_bounds( const kvs::ObjectBase* object )
         const kvs::Real32 x = x_center;
         const kvs::Real32 y = r * cos + y_center;
         const kvs::Real32 z = r * sin + z_center;
-        KVS_GL_CALL_VER( glVertex3f( x, y, z ) );
+        kvs::OpenGL::Vertex( x, y, z );
     }
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::End();
 
     // Circle (2) on ZX plane
-    KVS_GL_CALL_BEG( glBegin( GL_LINE_LOOP ) );
+    kvs::OpenGL::Begin( GL_LINE_LOOP );
     const kvs::Real32 c2a2 = c2 * a2;
     for ( size_t i = 0; i <= division; i++ )
     {
@@ -325,9 +321,9 @@ void Bounds::draw_circle_bounds( const kvs::ObjectBase* object )
         const kvs::Real32 x = r * sin + x_center;
         const kvs::Real32 y = y_center;
         const kvs::Real32 z = r * cos + z_center;
-        KVS_GL_CALL_VER( glVertex3f( x, y, z ) );
+        kvs::OpenGL::Vertex( x, y, z );
     }
-    KVS_GL_CALL_END( glEnd() );
+    kvs::OpenGL::End();
 }
 
 /*===========================================================================*/
