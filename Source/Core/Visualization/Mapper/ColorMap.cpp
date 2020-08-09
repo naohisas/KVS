@@ -707,7 +707,7 @@ const kvs::RGBColor ColorMap::at( const float value ) const
  *  @return corresponded RGB color value
  */
 /*===========================================================================*/
-const kvs::RGBColor ColorMap::at( float value, const ColorMap::ColorMapType color_map_type ) const
+const kvs::RGBColor ColorMap::at( float value, const ColorMapType color_map_type ) const
 {
     if ( value <= m_min_value )
     {
@@ -728,19 +728,19 @@ const kvs::RGBColor ColorMap::at( float value, const ColorMap::ColorMapType colo
     double d_c1[3];
     switch (color_map_type)
         {
-            case ColorMap::ColorMapType::Magma:
+            case Magma:
                 getMagmaColor(s0, d_c0, s1, d_c1);
                 break;
-            case ColorMap::ColorMapType::Inferno:
+            case Inferno:
                 getInfernoColor(s0, d_c0, s1, d_c1);
                 break;
-            case ColorMap::ColorMapType::Plasma:
+            case Plasma:
                 getPlasmaColor(s0, d_c0, s1, d_c1);
                 break;
-            case ColorMap::ColorMapType::Viridis:
+            case Viridis:
                 getViridisColor(s0, d_c0, s1, d_c1);
                 break;
-            case ColorMap::ColorMapType::Cividis:
+            case Cividis:
                 getCividisColor(s0, d_c0, s1, d_c1);
                 break;
             default:

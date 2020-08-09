@@ -67,7 +67,7 @@ public:
 
 private:
     ColorSpace m_color_space; ///< color space for interpolation
-    ColorMapType m_color_map_type; ///< color map type
+    ColorMapType m_color_map_type; ///< colormap type
     size_t m_resolution; ///< table resolution
     float m_min_value; ///< min. value
     float m_max_value; ///< max. value
