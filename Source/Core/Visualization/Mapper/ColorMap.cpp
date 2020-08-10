@@ -374,16 +374,84 @@ kvs::ColorMap ColorMap::BrewerSpectral( const size_t resolution )
 kvs::ColorMap ColorMap::Viridis( const size_t resolution )
 {
     std::list<kvs::RGBColor> colors;
-    colors.push_back( kvs::RGBColor(  68,   1,  84 ) );
-    colors.push_back( kvs::RGBColor(  71,  39, 117 ) );
-    colors.push_back( kvs::RGBColor(  62,  72, 135 ) );
-    colors.push_back( kvs::RGBColor(  49, 102, 141 ) );
-    colors.push_back( kvs::RGBColor(  38, 130, 141 ) );
-    colors.push_back( kvs::RGBColor(  36, 157, 136 ) );
-    colors.push_back( kvs::RGBColor(  55, 181, 120 ) );
-    colors.push_back( kvs::RGBColor( 109, 204,  88 ) );
-    colors.push_back( kvs::RGBColor( 176, 221,  49 ) );
     colors.push_back( kvs::RGBColor( 253, 231,  37 ) );
+    colors.push_back( kvs::RGBColor( 181, 221,  43 ) );
+    colors.push_back( kvs::RGBColor( 109, 206,  88 ) );
+    colors.push_back( kvs::RGBColor(  53, 183, 120 ) );
+    colors.push_back( kvs::RGBColor(  30, 156, 137 ) );
+    colors.push_back( kvs::RGBColor(  37, 130, 142 ) );
+    colors.push_back( kvs::RGBColor(  49, 102, 141 ) );
+    colors.push_back( kvs::RGBColor(  62,  72, 136 ) );
+    colors.push_back( kvs::RGBColor(  71,  38, 118 ) );
+    colors.push_back( kvs::RGBColor(  68,   1,  84 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+kvs::ColorMap ColorMap::Plasma( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 239, 248,  33 ) );
+    colors.push_back( kvs::RGBColor( 252, 201,  38 ) );
+    colors.push_back( kvs::RGBColor( 250, 159,  58 ) );
+    colors.push_back( kvs::RGBColor( 236, 120,  83 ) );
+    colors.push_back( kvs::RGBColor( 215,  86, 108 ) );
+    colors.push_back( kvs::RGBColor( 188,  54, 133 ) );
+    colors.push_back( kvs::RGBColor( 154,  21, 158 ) );
+    colors.push_back( kvs::RGBColor( 112,   0, 168 ) );
+    colors.push_back( kvs::RGBColor(  68,   3, 158 ) );
+    colors.push_back( kvs::RGBColor(  12,   7, 134 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+kvs::ColorMap ColorMap::Inferno( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 252, 254, 164 ) );
+    colors.push_back( kvs::RGBColor( 247, 209,  60 ) );
+    colors.push_back( kvs::RGBColor( 251, 155,   6 ) );
+    colors.push_back( kvs::RGBColor( 237, 104,  37 ) );
+    colors.push_back( kvs::RGBColor( 205,  66,  71 ) );
+    colors.push_back( kvs::RGBColor( 164,  44,  96 ) );
+    colors.push_back( kvs::RGBColor( 118,  27, 109 ) );
+    colors.push_back( kvs::RGBColor(  72,  11, 106 ) );
+    colors.push_back( kvs::RGBColor(  25,  11,  62 ) );
+    colors.push_back( kvs::RGBColor(   0,   0,   3 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+kvs::ColorMap ColorMap::Magma( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 251, 252, 191 ) );
+    colors.push_back( kvs::RGBColor( 254, 201, 141 ) );
+    colors.push_back( kvs::RGBColor( 253, 149, 103 ) );
+    colors.push_back( kvs::RGBColor( 240,  96,  93 ) );
+    colors.push_back( kvs::RGBColor( 203,  62, 113 ) );
+    colors.push_back( kvs::RGBColor( 158,  46, 126 ) );
+    colors.push_back( kvs::RGBColor( 111,  30, 129 ) );
+    colors.push_back( kvs::RGBColor(  66,  15, 116 ) );
+    colors.push_back( kvs::RGBColor(  22,  14,  58 ) );
+    colors.push_back( kvs::RGBColor(   0,   0,   3 ) );
+    colors.reverse();
+    return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
+}
+
+kvs::ColorMap ColorMap::Cividis( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::RGBColor( 255, 233,  69 ) );
+    colors.push_back( kvs::RGBColor( 228, 206,  91 ) );
+    colors.push_back( kvs::RGBColor( 197, 181, 107 ) );
+    colors.push_back( kvs::RGBColor( 166, 156, 117 ) );
+    colors.push_back( kvs::RGBColor( 137, 133, 120 ) );
+    colors.push_back( kvs::RGBColor( 111, 112, 115 ) );
+    colors.push_back( kvs::RGBColor(  85,  91, 108 ) );
+    colors.push_back( kvs::RGBColor(  54,  70, 107 ) );
+    colors.push_back( kvs::RGBColor(   0,  50, 110 ) );
+    colors.push_back( kvs::RGBColor(   0,  32,  76 ) );
     colors.reverse();
     return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
 }
@@ -716,71 +784,6 @@ const kvs::RGBColor ColorMap::at( const float value ) const
     const kvs::RGBColor c1( m_table.data() + ::NumberOfChannels * s1 );
     return kvs::RGBColor::Mix( c0, c1, v - s0 );
 }
-
-// /*===========================================================================*/
-// /**
-//  *  @brief  Returns corresponded RGB color value for the selected colormap type
-//  *  @param  value [in] value
-//  *  @return corresponded RGB color value
-//  */
-// /*===========================================================================*/
-// const kvs::RGBColor ColorMap::at( float value, const ColorMapType color_map_type ) const
-// {
-//     if ( value <= m_min_value )
-//     {
-//         value = m_min_value;
-//     }
-//     else if ( value >= m_max_value )
-//     {
-//         value = m_max_value;
-//     }
-
-//     const float r = static_cast<float>( m_resolution - 1 );
-//     const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;
-//     const size_t s0 = static_cast<size_t>( v );
-//     const size_t s1 = kvs::Math::Min( s0 + 1, m_resolution - 1 );
-
-//     // Get the corresponded RGB color value for the selected colormap 
-//     double d_c0[3];
-//     double d_c1[3];
-//     switch (color_map_type)
-//         {
-//             case Magma:
-//                 getMagmaColor(s0, d_c0, s1, d_c1);
-//                 break;
-//             case Inferno:
-//                 getInfernoColor(s0, d_c0, s1, d_c1);
-//                 break;
-//             case Plasma:
-//                 getPlasmaColor(s0, d_c0, s1, d_c1);
-//                 break;
-//             case Viridis:
-//                 getViridisColor(s0, d_c0, s1, d_c1);
-//                 break;
-//             case Cividis:
-//                 getCividisColor(s0, d_c0, s1, d_c1);
-//                 break;
-//             default:
-//                 break;
-//         }
-
-//     // double to kvs::RGBColor
-//     const kvs::RGBColor c0
-//     ( 
-//         static_cast<kvs::UInt8>(d_c0[0] * r),
-//         static_cast<kvs::UInt8>(d_c0[1] * r),
-//         static_cast<kvs::UInt8>(d_c0[2] * r)
-//     );
-
-//     const kvs::RGBColor c1
-//     (
-//         static_cast<kvs::UInt8>(d_c1[0] * r),
-//         static_cast<kvs::UInt8>(d_c1[1] * r),
-//         static_cast<kvs::UInt8>(d_c1[2] * r)
-//     );
-
-//     return kvs::RGBColor::Mix( c0, c1, v - s0 );
-// }
 
 /*==========================================================================*/
 /**

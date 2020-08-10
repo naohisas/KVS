@@ -44,10 +44,10 @@ public:
     static kvs::ColorMap BrewerSpectral( const size_t resolution = 256 );
 
     static kvs::ColorMap Viridis( const size_t resolution = 256 );
-    // static kvs::ColorMap Plasma( const size_t resolution = 256 );
-    // static kvs::ColorMap Inferno( const size_t resolution = 256 );
-    // static kvs::ColorMap Magma( const size_t resolution = 256 );
-    // static kvs::ColorMap Cividis( const size_t resolution = 256 );
+    static kvs::ColorMap Plasma( const size_t resolution = 256 );
+    static kvs::ColorMap Inferno( const size_t resolution = 256 );
+    static kvs::ColorMap Magma( const size_t resolution = 256 );
+    static kvs::ColorMap Cividis( const size_t resolution = 256 );
 
 public:
     typedef kvs::ValueArray<kvs::UInt8> Table;
