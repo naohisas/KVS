@@ -13,7 +13,6 @@
  */
 /****************************************************************************/
 #include "ColorMap.h"
-// #include "ColorMapData.h"
 #include <kvs/Assert>
 #include <kvs/RGBColor>
 #include <kvs/HSVColor>
@@ -371,6 +370,13 @@ kvs::ColorMap ColorMap::BrewerSpectral( const size_t resolution )
     return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns viridis colormap.
+ *  @param  resolution [in] table resolution
+ *  @return viridis colormap
+ */
+/*===========================================================================*/
 kvs::ColorMap ColorMap::Viridis( const size_t resolution )
 {
     std::list<kvs::RGBColor> colors;
@@ -388,6 +394,13 @@ kvs::ColorMap ColorMap::Viridis( const size_t resolution )
     return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns plasma colormap.
+ *  @param  resolution [in] table resolution
+ *  @return plasma colormap
+ */
+/*===========================================================================*/
 kvs::ColorMap ColorMap::Plasma( const size_t resolution )
 {
     std::list<kvs::RGBColor> colors;
@@ -405,6 +418,13 @@ kvs::ColorMap ColorMap::Plasma( const size_t resolution )
     return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns inferno colormap.
+ *  @param  resolution [in] table resolution
+ *  @return inferno colormap
+ */
+/*===========================================================================*/
 kvs::ColorMap ColorMap::Inferno( const size_t resolution )
 {
     std::list<kvs::RGBColor> colors;
@@ -422,6 +442,13 @@ kvs::ColorMap ColorMap::Inferno( const size_t resolution )
     return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns magma colormap.
+ *  @param  resolution [in] table resolution
+ *  @return magma colormap
+ */
+/*===========================================================================*/
 kvs::ColorMap ColorMap::Magma( const size_t resolution )
 {
     std::list<kvs::RGBColor> colors;
@@ -439,6 +466,13 @@ kvs::ColorMap ColorMap::Magma( const size_t resolution )
     return ::Interpolate( colors, resolution, kvs::ColorMap::LabSpace );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns cividis colormap.
+ *  @param  resolution [in] table resolution
+ *  @return cividis colormap
+ */
+/*===========================================================================*/
 kvs::ColorMap ColorMap::Cividis( const size_t resolution )
 {
     std::list<kvs::RGBColor> colors;
