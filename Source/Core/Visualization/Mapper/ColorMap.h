@@ -43,6 +43,12 @@ public:
     static kvs::ColorMap BrewerRdYlGn( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSpectral( const size_t resolution = 256 );
 
+    static kvs::ColorMap Viridis( const size_t resolution = 256 );
+    // static kvs::ColorMap Plasma( const size_t resolution = 256 );
+    // static kvs::ColorMap Inferno( const size_t resolution = 256 );
+    // static kvs::ColorMap Magma( const size_t resolution = 256 );
+    // static kvs::ColorMap Cividis( const size_t resolution = 256 );
+
 public:
     typedef kvs::ValueArray<kvs::UInt8> Table;
     typedef std::pair<float,kvs::RGBColor> Point;
@@ -56,18 +62,8 @@ public:
         MshSpace
     };
 
-    enum ColorMapType
-    {
-        Magma,
-        Inferno,
-        Plasma,
-        Viridis,
-        Cividis
-    };
-
 private:
     ColorSpace m_color_space; ///< color space for interpolation
-    ColorMapType m_color_map_type; ///< colormap type
     size_t m_resolution; ///< table resolution
     float m_min_value; ///< min. value
     float m_max_value; ///< max. value
@@ -107,8 +103,6 @@ public:
 
     const kvs::RGBColor operator []( const size_t index ) const;
     const kvs::RGBColor at( const float value ) const;
-    const kvs::RGBColor at( float value, ColorMapType color_map_type ) const;
-    ColorMap& operator =( const ColorMap& rhs );
     ColorMap& operator =( const ColorMap& rhs );
 };
 

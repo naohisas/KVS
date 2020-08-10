@@ -5,13 +5,13 @@
  *  @author Tomomasa Uchida
  */
 /*****************************************************************************/
-#include <kvs/ColorMap>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/ImageObject>
 #include <kvs/ImageRenderer>
 #include <kvs/RGBColor>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/ColorMap>
 
 
 /*===========================================================================*/
@@ -24,22 +24,26 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "ColorMap" );
+    screen.create();
 
     // Create pixels.
     const size_t width = 512;
-    const size_t height = 512;
+    const size_t height = 64;
     const size_t channels = 3;
     kvs::ValueArray<kvs::UInt8> pixels(width * height * channels);
 
     // Apply colormap to the image width.
-    kvs::ColorMap cmap( 256, 0.0, width );
+    // kvs::ColorMap cmap( 256, 0.0, width );
+    kvs::ColorMap cmap = kvs::ColorMap::Viridis( 256 );
     for ( size_t j = 0; j < height*channels; j+=channels)
     {
         for ( size_t i = 0, value = 0; i < width*channels; i+=channels, value++ )
         {
-            const kvs::RGBColor color( cmap.at( static_cast<float>(value), kvs::ColorMap::ColorMapType::Viridis) );
+            // const kvs::RGBColor color( cmap.at( static_cast<float>(value), kvs::ColorMap::ColorMapType::Viridis) );
+            const kvs::RGBColor color( cmap.at(static_cast<float>(value)) );
 
             pixels[j*width+i + 0] = color.r();
             pixels[j*width+i + 1] = color.g();
@@ -48,29 +52,24 @@ int main( int argc, char** argv )
     }
 
     // Create an image object.
-    kvs::ImageObject* object = new kvs::ImageObject( width, height, pixels );
+    auto* object = new kvs::ImageObject( width, height, pixels );
     if ( !object )
     {
-        kvsMessageError("Cannot creat an image object.");
+        kvsMessageError() << "Cannot creat an image object." << std::endl;
         return( false );
     }
 
     // Create an image renderer.
-    const kvs::ImageRenderer::Type type = kvs::ImageRenderer::Stretching;
-    kvs::ImageRenderer* renderer = new kvs::ImageRenderer( type );
+    auto* renderer = new kvs::ImageRenderer();
     if ( !renderer )
     {
-        kvsMessageError("Cannot create an image renderer.");
+        kvsMessageError() << "Cannot create an image renderer." << std::endl;
         delete object;
-        return( false );
+        return ( false );
     }
 
-    // Screen.
-    kvs::glut::Screen screen( &app );
-    screen.registerObject( object, renderer );
     screen.setSize( object->width(), object->height() );
-    screen.setTitle( "ColorMap" );
-    screen.show();
+    screen.registerObject( object, renderer );
 
     return app.run();
 }
