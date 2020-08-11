@@ -67,7 +67,7 @@ kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer( GLenum mode ) const
     const size_t height = this->height();
     kvs::ValueArray<kvs::UInt8> buffer( width * height * 4 );
     kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer.data() );
-   ::Flip( buffer.data(), width, height, 4 );
+    ::Flip( buffer.data(), width, height, 4 );
 
     return buffer;
 }
@@ -96,7 +96,7 @@ void ScreenBase::create()
     m_context.create( format, depth_bits, stencil_bits, accum_bits );
     if ( !m_context.isValid() )
     {
-        kvsMessageError( "Cannot create OSMesa context." );
+        kvsMessageError() << "Cannot create OSMesa context." << std::endl;
         return;
     }
 
@@ -108,7 +108,7 @@ void ScreenBase::create()
     // Bind the context to the surface
     if ( !m_context.makeCurrent( m_surface ) )
     {
-        kvsMessageError( "Cannot bind buffer." );
+        kvsMessageError() << "Cannot bind OSMesa context." << std::endl;
         return;
     }
 
