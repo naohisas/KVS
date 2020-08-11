@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   main.cpp
- *  @brief  Example program for applying matplotlib colormap.
+ *  @brief  Example program for applying sequential colormap.
  *  @author Tomomasa Uchida
  */
 /*****************************************************************************/
@@ -24,7 +24,7 @@ int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
-    screen.setTitle( "kvs::ColorMap (Matplotlib Colormap)" );
+    screen.setTitle( "kvs::ColorMap (Sequential Colormap)" );
     screen.setSize( 256, 330 );
     screen.create();
 
