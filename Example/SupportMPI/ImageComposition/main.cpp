@@ -86,7 +86,12 @@ int main( int argc, char** argv )
     // Off-screen settings.
     kvs::OffScreen screen;
     screen.setSize( image_size, image_size );
+#if defined( VOLUME_RENDERING )
+    screen.setBackgroundColor( kvs::RGBColor::Black() );
+    screen.registerObject( volume, new kvs::Bounds( kvs::RGBColor::White() ) );
+#else
     screen.registerObject( volume, new kvs::Bounds() );
+#endif
     screen.registerObject( object, renderer );
     {
         // Object rotation.
