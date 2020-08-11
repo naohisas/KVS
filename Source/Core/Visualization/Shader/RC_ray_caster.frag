@@ -121,9 +121,9 @@ void main()
     vec3 color0 = LookupTexture2D( color_texture, index ).rgb;
 
     // Front face clipping.
-    if ( entry_depth == 1.0 )
+    if ( entry_depth == 0.0 )
     {
-        entry_point = NDC2Obj( vec3( position_ndc.xy, -1.0 ) );;
+        entry_point = NDC2Obj( vec3( position_ndc.xy, -1.0 ) );
         entry_depth = 0.0;
     }
 

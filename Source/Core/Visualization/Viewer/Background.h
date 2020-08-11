@@ -5,7 +5,7 @@
  */
 /****************************************************************************/
 #pragma once
-#include <kvs/RGBAColor>
+#include <kvs/RGBColor>
 #include <kvs/ColorImage>
 #include <kvs/Texture2D>
 
@@ -32,22 +32,24 @@ public:
 private:
     Type m_type;///< background type
     bool m_image_changed; ///< flag for changing background image
-    kvs::RGBAColor m_color[4]; ///< color on the corners
+    kvs::RGBColor m_color[4]; ///< color on the corners
+    kvs::Real32 m_opacity; ///< opacity
     kvs::ColorImage m_image; ///< background image
     kvs::Texture2D m_texture; ///< background image texture
 
 public:
     Background();
-    Background( const kvs::RGBAColor& c );
-    Background( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1 );
-    Background( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1, const kvs::RGBAColor& c2, const kvs::RGBAColor& c3 );
+    Background( const kvs::RGBColor& c );
+    Background( const kvs::RGBColor& c0, const kvs::RGBColor& c1 );
+    Background( const kvs::RGBColor& c0, const kvs::RGBColor& c1, const kvs::RGBColor& c2, const kvs::RGBColor& c3 );
     virtual ~Background();
 
     Background& operator = ( const Background& bg );
 
-    void setColor( const kvs::RGBAColor& c );
-    void setColor( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1 );
-    void setColor( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1, const kvs::RGBAColor& c2, const kvs::RGBAColor& c3 );
+    void setOpacity( const kvs::Real32 opacity ) { m_opacity = opacity; }
+    void setColor( const kvs::RGBColor& c );
+    void setColor( const kvs::RGBColor& c0, const kvs::RGBColor& c1 );
+    void setColor( const kvs::RGBColor& c0, const kvs::RGBColor& c1, const kvs::RGBColor& c2, const kvs::RGBColor& c3 );
     void setImage( const kvs::ColorImage& image );
 
     const kvs::RGBColor& color( size_t index = 0 ) const;

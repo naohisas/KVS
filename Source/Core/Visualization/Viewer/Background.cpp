@@ -16,9 +16,10 @@ namespace kvs
  *  @brief  Constructs a new Background class.
  */
 /*===========================================================================*/
-Background::Background()
+Background::Background():
+    m_type( MonoColor ),
+    m_opacity( 0.0f )
 {
-    m_type = Background::MonoColor;
 }
 
 /*==========================================================================*/
@@ -27,7 +28,8 @@ Background::Background()
  *  @param  c [in] background color
  */
 /*==========================================================================*/
-Background::Background( const kvs::RGBAColor& c )
+Background::Background( const kvs::RGBColor& c ):
+    m_opacity( 0.0f )
 {
     this->setColor( c );
 }
@@ -39,7 +41,8 @@ Background::Background( const kvs::RGBAColor& c )
  *  @param  c1 [in] color on the corner #1 (top side color)
  */
 /*==========================================================================*/
-Background::Background( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1 )
+Background::Background( const kvs::RGBColor& c0, const kvs::RGBColor& c1 ):
+    m_opacity( 0.0f )
 {
     this->setColor( c0, c1 );
 }
@@ -54,10 +57,11 @@ Background::Background( const kvs::RGBAColor& c0, const kvs::RGBAColor& c1 )
  */
 /*==========================================================================*/
 Background::Background(
-    const kvs::RGBAColor& c0,
-    const kvs::RGBAColor& c1,
-    const kvs::RGBAColor& c2,
-    const kvs::RGBAColor& c3 )
+    const kvs::RGBColor& c0,
+    const kvs::RGBColor& c1,
+    const kvs::RGBColor& c2,
+    const kvs::RGBColor& c3 ):
+    m_opacity( 0.0f )
 {
     this->setColor( c0, c1, c2, c3 );
 }
@@ -84,6 +88,7 @@ Background& Background::operator = ( const Background& bg )
     m_color[1] = bg.m_color[1];
     m_color[2] = bg.m_color[2];
     m_color[3] = bg.m_color[3];
+    m_opacity = bg.m_opacity;
     return *this;
 }
 
@@ -93,7 +98,7 @@ Background& Background::operator = ( const Background& bg )
  *  @param  c [in] color
  */
 /*==========================================================================*/
-void Background::setColor( const kvs::RGBAColor& c )
+void Background::setColor( const kvs::RGBColor& c )
 {
     m_type = Background::MonoColor;
     m_color[0] = c;
@@ -106,7 +111,7 @@ void Background::setColor( const kvs::RGBAColor& c )
  *  @param  c1 [in] color on the corner #1 (top side color)
  */
 /*==========================================================================*/
-void Background::setColor( const RGBAColor& c0, const RGBAColor& c1 )
+void Background::setColor( const RGBColor& c0, const RGBColor& c1 )
 {
     m_type = Background::TwoSideColor;
     m_color[0] = c0;
@@ -125,10 +130,10 @@ void Background::setColor( const RGBAColor& c0, const RGBAColor& c1 )
  */
 /*==========================================================================*/
 void Background::setColor(
-    const kvs::RGBAColor& c0,
-    const kvs::RGBAColor& c1,
-    const kvs::RGBAColor& c2,
-    const kvs::RGBAColor& c3 )
+    const kvs::RGBColor& c0,
+    const kvs::RGBColor& c1,
+    const kvs::RGBColor& c2,
+    const kvs::RGBColor& c3 )
 {
     m_type = Background::FourCornersColor;
     m_color[0] = c0;
@@ -187,7 +192,7 @@ void Background::apply()
 void Background::apply_mono_color()
 {
     kvs::OpenGL::SetClearDepth( 1.0 );
-    kvs::OpenGL::SetClearColor( m_color[0] );
+    kvs::OpenGL::SetClearColor( kvs::RGBAColor( m_color[0], m_opacity ) );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
 
@@ -218,10 +223,10 @@ void Background::apply_gradation_color()
             {
                 kvs::OpenGL::SetOrtho( 0, 1, 0, 1, 0, 1 );
                 kvs::OpenGL::Begin( GL_QUADS );
-                kvs::OpenGL::Color( m_color[0] ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 0 ) );
-                kvs::OpenGL::Color( m_color[1] ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 0 ) );
-                kvs::OpenGL::Color( m_color[2] ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 1 ) );
-                kvs::OpenGL::Color( m_color[3] ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 1 ) );
+                kvs::OpenGL::Color( kvs::RGBAColor( m_color[0], m_opacity ) ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 0 ) );
+                kvs::OpenGL::Color( kvs::RGBAColor( m_color[1], m_opacity ) ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 0 ) );
+                kvs::OpenGL::Color( kvs::RGBAColor( m_color[2], m_opacity ) ); kvs::OpenGL::Vertex( kvs::Vec2( 1, 1 ) );
+                kvs::OpenGL::Color( kvs::RGBAColor( m_color[3], m_opacity ) ); kvs::OpenGL::Vertex( kvs::Vec2( 0, 1 ) );
                 kvs::OpenGL::End();
             }
         }
