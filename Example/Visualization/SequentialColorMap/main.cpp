@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   main.cpp
- *  @brief  Example program for applying sequential colormap.
+ *  @brief  Example program for kvs::ColorMap (sequential colormap) class.
  *  @author Tomomasa Uchida
  */
 /*****************************************************************************/
