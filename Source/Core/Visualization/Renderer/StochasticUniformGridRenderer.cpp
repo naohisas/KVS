@@ -418,7 +418,7 @@ void StochasticUniformGridRenderer::Engine::create_shader_program( const kvs::St
     m_ray_casting_shader.setUniform( "volume.max_range", max_range );
     m_ray_casting_shader.setUniform( "transfer_function.min_value", min_value );
     m_ray_casting_shader.setUniform( "transfer_function.max_value", max_value );
-    m_ray_casting_shader.setUniform( "dt", m_step );
+    m_ray_casting_shader.setUniform( "sampling_step", m_step );
     m_ray_casting_shader.setUniform( "shading.Ka", shader().Ka );
     m_ray_casting_shader.setUniform( "shading.Kd", shader().Kd );
     m_ray_casting_shader.setUniform( "shading.Ks", shader().Ks );

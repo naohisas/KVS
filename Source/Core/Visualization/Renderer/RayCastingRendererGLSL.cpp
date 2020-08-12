@@ -437,7 +437,7 @@ void RayCastingRenderer::initialize_shader( const kvs::StructuredVolumeObject* v
     m_ray_casting_shader.setUniform( "volume.max_range", max_range );
     m_ray_casting_shader.setUniform( "transfer_function.min_value", min_value );
     m_ray_casting_shader.setUniform( "transfer_function.max_value", max_value );
-    m_ray_casting_shader.setUniform( "dt", m_step );
+    m_ray_casting_shader.setUniform( "sampling_step", m_step );
     m_ray_casting_shader.setUniform( "opaque", m_opaque );
     m_ray_casting_shader.setUniform( "shading.Ka", BaseClass::shader().Ka );
     m_ray_casting_shader.setUniform( "shading.Kd", BaseClass::shader().Kd );
@@ -456,9 +456,7 @@ void RayCastingRenderer::initialize_jittering_texture()
     m_jittering_texture.release();
 
     const size_t size = 32;
-    kvs::ValueArray<kvs::UInt8> rnd( size * size );
-    srand( (unsigned)time(NULL) );
-    for ( size_t i = 0; i < size * size; i++ ) rnd[i] = static_cast<kvs::UInt8>( 255.0f * rand() / float(RAND_MAX) );
+    auto rnd = kvs::ValueArray<kvs::UInt8>::Random( size * size );
 
     m_jittering_texture.setWrapS( GL_REPEAT );
     m_jittering_texture.setWrapT( GL_REPEAT );
@@ -764,7 +762,6 @@ void RayCastingRenderer::draw_bounding_cube_buffer()
 /*===========================================================================*/
 void RayCastingRenderer::draw_quad( const float opacity )
 {
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
     kvs::OpenGL::Disable( GL_LIGHTING );
 
     kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
