@@ -49,6 +49,7 @@ inline kvs::StructuredVolumeObject* Div(
     object->setValues( kvs::AnyValueArray( values ) );
     object->setMinMaxValues( 0, 255 );
     object->updateMinMaxCoords();
+
     return object;
 }
 
@@ -89,10 +90,13 @@ int main( int argc, char** argv )
 #if defined( VOLUME_RENDERING )
     screen.setBackgroundColor( kvs::RGBColor::Black() );
     screen.registerObject( volume, new kvs::Bounds( kvs::RGBColor::White() ) );
+    volume->hide();
 #else
     screen.registerObject( volume, new kvs::Bounds() );
 #endif
     screen.registerObject( object, renderer );
+
+    float depth = 0.0f;
     {
         // Object rotation.
         auto R = kvs::Xform::Rotation( kvs::Mat3::RotationY( 70 ) );
@@ -107,6 +111,7 @@ int main( int argc, char** argv )
         const kvs::Vec3 Tb = kvs::ObjectCoordinate( offset, object ).toWorldCoordinate().position();
         const kvs::Vec3 T = Tb - Ta; // in world coordinate
         object->multiplyXform( kvs::Xform::Translation( T ) );
+        depth = ( T - screen.scene()->camera()->position() ).length();
     }
 
     // Timer.
@@ -149,18 +154,34 @@ int main( int argc, char** argv )
         if ( output_color_images ) { kvs::ColorImage( width, height, color_buffer ).write( "output_" + n + ".bmp"); }
         if ( output_alpha_images ) { kvs::GrayImage( width, height, color_buffer, 3 ).write( "output_alpha_" + n + ".bmp"); }
         if ( output_depth_images ) { kvs::GrayImage( width, height, depth_buffer ).write( "output_depth_" + n + ".bmp"); }
+
+        /*
+        if ( output_color_images )
+        {
+            std::ofstream ofs( std::string( "output_" + n + ".raw" ).c_str(), std::ios::binary );
+            ofs.write( reinterpret_cast<char*>( color_buffer.data() ), color_buffer.byteSize() );
+        }
+
+        if ( output_depth_images )
+        {
+            std::ofstream ofs( std::string( "output_depth" + n + ".raw" ).c_str(), std::ios::binary );
+            ofs.write( reinterpret_cast<char*>( depth_buffer.data() ), depth_buffer.byteSize() );
+        }
+        */
     }
 
     // Image composition.
     timer.start();
+    kvs::mpi::ImageCompositor compositor( world );
 #if defined( VOLUME_RENDERING )
     const bool depth_testing = false;
+    compositor.initialize( width, height, depth_testing );
+    compositor.run( color_buffer, depth );
 #else
     const bool depth_testing = true;
-#endif
-    kvs::mpi::ImageCompositor compositor( world );
     compositor.initialize( width, height, depth_testing );
     compositor.run( color_buffer, depth_buffer );
+#endif
     compositor.destroy();
     timer.stop();
     {
