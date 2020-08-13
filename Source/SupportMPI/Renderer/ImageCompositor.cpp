@@ -4,6 +4,7 @@
 #define MPI_NO_CPPBIND 1
 #include "./234Compositor/234compositor.h"
 #include <kvs/Assert>
+#include <utility>
 
 
 namespace kvs
@@ -81,6 +82,38 @@ bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer )
         m_comm );
 
     return status == EXIT_SUCCESS;
+}
+
+bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer, const kvs::Real32 depth, const bool btof  )
+{
+    kvs::mpi::Communicator comm( m_comm );
+
+    // Depth list
+    kvs::ValueArray<kvs::Real32> depth_list( comm.size() );
+    comm.allGather( depth, depth_list );
+
+    // Rank list (sorted with depth)
+    const bool ascending = btof; // ordering inverted???
+    auto rank_list = depth_list.argsort( ascending );
+
+    // Iterator (i) to element, which includes my_rank, in rank_list
+    const size_t my_rank = static_cast<size_t>( comm.rank() );
+    auto i = std::find( rank_list.begin(), rank_list.end(), my_rank );
+
+    // Sort color_buffer in back-to-front order
+    const int send_rank = static_cast<int>( std::distance( rank_list.begin(), i ) );
+    const int recv_rank = rank_list[ my_rank ];
+    if ( my_rank != send_rank )
+    {
+        kvs::ValueArray<kvs::UInt8> recv_buffer( m_width * m_height * 4 );
+        auto recv_request = comm.immediateReceive( recv_rank, RECV_TAG, recv_buffer );
+        auto send_request = comm.immediateSend( send_rank, RECV_TAG, color_buffer );
+        recv_request.wait();
+        send_request.wait();
+        color_buffer = recv_buffer;
+    }
+
+    return this->run( color_buffer );
 }
 
 bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer, kvs::ValueArray<kvs::Real32>& depth_buffer )

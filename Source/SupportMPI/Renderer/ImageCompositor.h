@@ -29,6 +29,7 @@ public:
     bool initialize( const size_t width, const size_t height, const bool enable_depth_testing = false );
     bool destroy();
     bool run( kvs::ValueArray<kvs::UInt8>& color_buffer );
+    bool run( kvs::ValueArray<kvs::UInt8>& color_buffer, const kvs::Real32 depth, const bool btof = true );
     bool run( kvs::ValueArray<kvs::UInt8>& color_buffer, kvs::ValueArray<kvs::Real32>& depth_buffer );
 };
 
