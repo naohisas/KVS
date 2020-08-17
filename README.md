@@ -23,7 +23,7 @@ KVS supports the following software packages. By checking (changing 0:disable to
 |OpenMP|KVS_ENABLE_OPENMP|Flag for enabling OpenMP functionalities. OpenMP supported compiler is required.|
 |(Deprecated functions)|KVS_ENABLE_DEPRECATED|Flag for enabling the deprecated functions and classes in KVS. Note: Although the deprecated functions and classes can be available by checking this flag, but not recommended.|
 |GLUT|KVS_SUPPORT_GLUT|Flag for supporting GLUT functions. The screen class based on the GLUT is provided.|
-|GLUT|KVS_SUPPORT_GLFW|Flag for supporting GLFW functions. The screen class based on the GLFW is provided. Note: GLUT or GLFW is required for developing viewer application with KVS.|
+|GLUT|KVS_SUPPORT_GLFW|Flag for supporting GLFW functions. The screen class based on the GLFW is provided. Note: GLUT or GLFW is required for developing viewer application with KVS. See [SupportGLUT](Source/SupportGLUT) for more information.|
 |OpenCV|KVS_SUPPORT_OPENCV|Flag for supporting OpenCV functions. Note: OpenCV4 is not supported.|
 |Qt|KVS_SUPPORT_QT|Flag for supporting Qt classes. The screen class based on the Qt.|
 |Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes.|
