@@ -1,5 +1,5 @@
 # SupportGLUT
-SupportGLUT is a support class library with The OpenGL Utility Toolkit (GLUT) for KVS. By checking the flag KVS_SUPPORT_GLUT in the kvs.cong, GLUT supported classes are compiled and available. The SupportGLUT is required for developping viewer application based on KVS.
+SupportGLUT is a support class library with the OpenGL Utility Toolkit (GLUT) for KVS. By checking the flag KVS_SUPPORT_GLUT in the kvs.cong, GLUT supported classes are compiled and available. The SupportGLUT is required for developping viewer application based on KVS.
 ```Makefile
 KVS_SUPPORT_GLUT = 1
 ```
