@@ -1,5 +1,6 @@
 #include "Context.h"
 #include <kvs/IgnoreUnusedVariable>
+#include <cfenv>
 
 
 namespace kvs
@@ -116,6 +117,8 @@ Context::~Context()
 /*===========================================================================*/
 bool Context::create( GLenum format, GLint depth_bits, GLint stencil_bits, GLint accum_bits )
 {
+    fenv_t fe;
+    std::feholdexcept( &fe );
 #if OSMESA_MAJOR_VERSION * 100 + OSMESA_MINOR_VERSION >= 305
     m_handle = OSMesaCreateContextExt( format, depth_bits, stencil_bits, accum_bits, NULL );
 #else
@@ -124,6 +127,7 @@ bool Context::create( GLenum format, GLint depth_bits, GLint stencil_bits, GLint
     kvs::IgnoreUnusedVariable( accum_bits );
     m_handle = OSMesaCreateContext( format, NULL );
 #endif
+    std::feupdateenv( &fe );
     return this->isValid();
 }
 
