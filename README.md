@@ -34,18 +34,18 @@ KVS supports the following software packages. By checking (changing 0:disable to
 ## Configuration
 The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
 
-+ Windows
+### Linux/Mac
+```
+export KVS_DIR=~/local/kvs
+export PATH=$KVS_DIR/bin:$PATH
+```
+
+### Windows
 
 |Variable|Value|
 |:-------|:----|
 |KVS_DIR |C:\Program Files\kvs|
 |PATH|%PATH%;%KVS_DIR%\bin|
-
-+ Linux and Mac OS X
-```
-export KVS_DIR=~/local/kvs
-export PATH=$KVS_DIR/bin:$PATH
-```
 
 ## Build and install
 By using the make command, KVS can be easily build and install to ```KVS_DIR```.
