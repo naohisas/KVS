@@ -28,8 +28,8 @@ KVS supports the following software packages. By checking (changing 0:disable to
 |Qt|KVS_SUPPORT_QT|Flag for supporting Qt classes. The screen class based on the Qt.|
 |Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes.|
 |MPI|KVS_SUPPORT_MPI|Flag for supporting MPI functions. Note: MPI compiler is required. See [SupportMPI](Source/SupportMPI) for more information.|
-|EGL|KVS_ENABLE_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided. See [SupportEGL](Source/SupportEGL) for more information.|
-|OSMesa|KVS_ENABLE_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided. See See [SupportOSMesa](Source/SupportOSMesa) for more information.|
+|EGL|KVS_SUPPORT_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided. See [SupportEGL](Source/SupportEGL) for more information.|
+|OSMesa|KVS_SUPPORT_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided. See See [SupportOSMesa](Source/SupportOSMesa) for more information.|
 
 ## Configuration
 The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
