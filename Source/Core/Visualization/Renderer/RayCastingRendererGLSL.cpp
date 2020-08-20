@@ -208,25 +208,26 @@ void RayCastingRenderer::exec(
     // Draw the bounding cube.
     m_bounding_cube_shader.bind();
     m_bounding_cube_shader.setUniform( "ModelViewProjectionMatrix", PM );
-    m_entry_exit_framebuffer.bind();
-
-    if ( m_draw_back_face )
     {
-        // Draw the back face of the bounding cube for the entry points.
-        kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0_EXT );
-        kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        kvs::OpenGL::SetCullFace( GL_FRONT );
-        this->draw_bounding_cube_buffer();
+        // Change renderig target to the entry/exit FBO.
+        kvs::FrameBufferObject::GuardedBinder binder( m_entry_exit_framebuffer );
+        if ( m_draw_back_face )
+        {
+            // Draw the back face of the bounding cube for the entry points.
+            kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0_EXT );
+            kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            kvs::OpenGL::SetCullFace( GL_FRONT );
+            this->draw_bounding_cube_buffer();
+        }
+        if ( m_draw_front_face )
+        {
+            // Draw the front face of the bounding cube for the entry points.
+            kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT1_EXT );
+            kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            kvs::OpenGL::SetCullFace( GL_BACK );
+            this->draw_bounding_cube_buffer();
+        }
     }
-    if ( m_draw_front_face )
-    {
-        // Draw the front face of the bounding cube for the entry points.
-        kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT1_EXT );
-        kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        kvs::OpenGL::SetCullFace( GL_BACK );
-        this->draw_bounding_cube_buffer();
-    }
-    m_entry_exit_framebuffer.unbind();
     m_bounding_cube_shader.unbind();
 
     // Draw the volume data.
