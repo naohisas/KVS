@@ -96,10 +96,10 @@ void Texture1D::load(
     const void* data,
     const size_t offset )
 {
-    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
-    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
-    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
-    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
+//    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
+//    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
 
     if ( !m_is_loaded )
     {
@@ -111,8 +111,8 @@ void Texture1D::load(
         BaseClass::setSubImage1D( width, data, offset );
     }
 
-    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
-    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
 }
 
 void Texture1D::loadFromFrameBuffer(
@@ -121,10 +121,10 @@ void Texture1D::loadFromFrameBuffer(
     const size_t width,
     const size_t offset )
 {
-    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
-    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
-    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
-    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
+//    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
+//    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
 
     if ( !m_is_loaded )
     {
@@ -136,8 +136,8 @@ void Texture1D::loadFromFrameBuffer(
         BaseClass::copySubImage1D( x, y, width, offset );
     }
 
-    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
-    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
 }
 
 } // end of namespace kvs
