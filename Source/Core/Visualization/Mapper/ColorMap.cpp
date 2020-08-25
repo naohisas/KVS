@@ -3,14 +3,6 @@
  *  @file   ColorMap.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ColorMap.cpp 1755 2014-05-02 02:18:08Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ColorMap.h"
 #include <kvs/Assert>

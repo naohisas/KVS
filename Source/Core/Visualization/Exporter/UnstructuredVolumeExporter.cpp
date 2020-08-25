@@ -3,14 +3,6 @@
  *  @file   UnstructuredVolumeExporter.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: UnstructuredVolumeExporter.cpp 1824 2014-12-12 08:49:03Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "UnstructuredVolumeExporter.h"
 #include <kvs/ObjectBase>

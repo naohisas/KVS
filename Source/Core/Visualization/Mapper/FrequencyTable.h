@@ -3,14 +3,6 @@
  *  @file   FrequencyTable.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FrequencyTable.h 1726 2014-04-22 06:53:11Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__FREQUENCY_TABLE_H_INCLUDE
 #define KVS__FREQUENCY_TABLE_H_INCLUDE

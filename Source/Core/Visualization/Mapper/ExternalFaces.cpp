@@ -3,14 +3,6 @@
  *  @file   ExternalFaces.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ExternalFaces.cpp 1776 2014-05-16 13:50:56Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ExternalFaces.h"
 #include <kvs/VolumeObjectBase>

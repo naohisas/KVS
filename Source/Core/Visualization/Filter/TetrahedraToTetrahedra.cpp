@@ -3,14 +3,6 @@
  *  @file   TetrahedraToTetrahedra.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TetrahedraToTetrahedra.cpp 1403 2012-12-07 07:35:18Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "TetrahedraToTetrahedra.h"
 #include <algorithm>

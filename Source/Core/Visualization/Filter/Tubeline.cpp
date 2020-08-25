@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   Tubeline.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Tubeline.cpp 1420 2013-02-21 14:15:30Z s.yamada0808@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #include "Tubeline.h"

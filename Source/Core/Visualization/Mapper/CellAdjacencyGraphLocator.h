@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
-/*----------------------------------------------------------------------------
- *
  * References:
  * [1] Guo Jiazhen, "An Efficient Hyperstreamline Visualization Method on Large
  *     -Scale Unstructured Datasets," Master Thesis, Kyoto Univeristy, 2012.

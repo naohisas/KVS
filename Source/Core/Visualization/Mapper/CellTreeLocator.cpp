@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
-/*----------------------------------------------------------------------------
- *
  * References:
  * [1] C. Garth and K.I. Joy, "Fast, memory-efficient cell location in unstructured
  *     grids for visualization, IEEE Transactions on Visualization and Computer

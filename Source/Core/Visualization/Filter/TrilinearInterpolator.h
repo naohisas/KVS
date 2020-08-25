@@ -3,14 +3,6 @@
  *  @file   TrilinearInterpolator.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TrilinearInterpolator.h 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__TRILINEAR_INTERPOLATOR_H_INCLUDE
 #define KVS__TRILINEAR_INTERPOLATOR_H_INCLUDE

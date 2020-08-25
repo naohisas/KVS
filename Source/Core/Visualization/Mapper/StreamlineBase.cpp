@@ -3,14 +3,6 @@
  *  @file   StreamlineBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: StreamlineBase.cpp 1779 2014-05-30 08:23:40Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "StreamlineBase.h"
 #include <kvs/DebugNew>

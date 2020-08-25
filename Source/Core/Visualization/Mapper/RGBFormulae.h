@@ -3,14 +3,6 @@
  *  @file   RGBFormulae.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #ifndef KVS__RGB_FORMULAE_H_INCLUDE
 #define KVS__RGB_FORMULAE_H_INCLUDE

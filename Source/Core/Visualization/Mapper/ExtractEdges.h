@@ -3,14 +3,6 @@
  *  @file   ExtractEdges.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ExtractEdges.h 1766 2014-05-10 15:22:50Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__EXTRACT_EDGES_H_INCLUDE
 #define KVS__EXTRACT_EDGES_H_INCLUDE

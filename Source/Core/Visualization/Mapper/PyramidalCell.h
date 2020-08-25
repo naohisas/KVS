@@ -3,14 +3,6 @@
  *  @file   PyramidalCell.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PyramidalCell.h 1792 2014-07-31 04:50:42Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__PYRAMIDAL_CELL_H_INCLUDE
 #define KVS__PYRAMIDAL_CELL_H_INCLUDE

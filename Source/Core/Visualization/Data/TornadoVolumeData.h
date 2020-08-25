@@ -3,14 +3,6 @@
  *  @file   TornadoVolumeData.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TornadoVolumeData.h 1373 2012-11-30 03:26:51Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__TORNADO_VOLUME_DATA_H_INCLUDE
 #define KVS__TORNADO_VOLUME_DATA_H_INCLUDE

@@ -3,14 +3,6 @@
  *  @file   CreateCell.h
  *  @author Naoya Maeda
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: CreateCell.h 1332 2012-10-13 09:36:23Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/SharedPointer>
