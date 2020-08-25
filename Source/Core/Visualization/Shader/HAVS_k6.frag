@@ -3,14 +3,6 @@
  *  @file   HAVS_k6.frag
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright 2007 Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: k6.frag 1011 2012-01-31 02:57:30Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 //
 // The Hardware-Assisted Visibility Ordering Algorithm

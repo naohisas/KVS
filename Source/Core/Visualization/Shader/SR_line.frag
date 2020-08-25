@@ -3,14 +3,6 @@
  *  @file   SR_line.frag
  *  @author Jun Nishimura, Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #version 120
 #include "qualifire.h"

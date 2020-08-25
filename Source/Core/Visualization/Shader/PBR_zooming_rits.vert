@@ -3,14 +3,6 @@
  *  @file   zooming_rits.vert
  *  @author Makoto Uemura, Satoshi Tanaka
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright 2007 Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: zooming.vert 992 2011-10-15 00:24:45Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 uniform float densityFactor;
 uniform int circle_threshold;

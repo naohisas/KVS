@@ -3,14 +3,6 @@
  *  @file   multiple_tetrahedra1.vert
  *  @author Jun Nishimura
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 varying vec4 position_in;
 varying vec2 random_index_in;

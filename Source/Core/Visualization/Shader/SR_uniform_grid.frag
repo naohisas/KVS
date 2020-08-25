@@ -3,14 +3,6 @@
  *  @file   uniform_grid.frag
  *  @author Naohisa Sakamoto, Naoya Maeda
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #version 120
 #include "shading.h"
