@@ -3,14 +3,6 @@
  *  @file   DiamondGlyph.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: DiamondGlyph.cpp 1634 2013-09-06 08:55:47Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "DiamondGlyph.h"
 #include <kvs/OpenGL>

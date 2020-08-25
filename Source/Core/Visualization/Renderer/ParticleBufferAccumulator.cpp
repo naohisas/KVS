@@ -3,14 +3,6 @@
  *  @file   ParticleBufferAccumulator.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ParticleBufferAccumulator.cpp 1644 2013-09-17 08:25:37Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ParticleBufferAccumulator.h"
 

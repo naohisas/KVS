@@ -3,14 +3,6 @@
  *  @file   VolumeRayIntersector.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VolumeRayIntersector.cpp 1698 2014-01-16 10:49:03Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "VolumeRayIntersector.h"
 #include <cfloat>

@@ -3,14 +3,6 @@
  *  @file   Ray.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Ray.cpp 1640 2013-09-11 01:45:45Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "Ray.h"
 #include <kvs/IgnoreUnusedVariable>

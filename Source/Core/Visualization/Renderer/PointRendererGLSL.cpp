@@ -3,14 +3,6 @@
  *  @file   PointRendererGLSL.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PointRenderer.cpp 1414 2013-01-21 02:16:48Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "PointRenderer.h"
 #include <kvs/DebugNew>

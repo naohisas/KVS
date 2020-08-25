@@ -3,14 +3,6 @@
  *  @file   ParticleBufferCompositor.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ParticleBufferCompositor.h 1641 2013-09-11 06:39:57Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__PARTICLE_BUFFER_COMPOSITOR_H_INCLUDE
 #define KVS__PARTICLE_BUFFER_COMPOSITOR_H_INCLUDE

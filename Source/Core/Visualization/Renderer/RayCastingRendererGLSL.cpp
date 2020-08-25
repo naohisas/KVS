@@ -3,14 +3,6 @@
  *  @file   RayCastingRendererGLSL.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RayCastingRenderer.cpp 1476 2013-04-02 01:55:49Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "RayCastingRendererGLSL.h"
 #include <kvs/DebugNew>

@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   DateAxis.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "DateAxis.h"
 #include <kvs/FontMetrics>
 #include <kvs/Vector2>

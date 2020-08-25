@@ -3,14 +3,6 @@
  *  @file   StochasticPolygonRenderer.cpp
  *  @author Naohisa Sakamoto, Zhao Kun
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "StochasticPolygonRenderer.h"
 #include <cmath>

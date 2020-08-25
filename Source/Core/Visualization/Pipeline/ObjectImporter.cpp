@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ObjectImporter.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ObjectImporter.cpp 1399 2012-12-06 15:27:59Z naohisa.sakamoto@gmail.com $
+ *  @file   ObjectImporter.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "ObjectImporter.h"

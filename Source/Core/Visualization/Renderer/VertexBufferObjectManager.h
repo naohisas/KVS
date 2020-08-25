@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   VertexBufferObjectManager.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/VertexBufferObject>
 #include <kvs/IndexBufferObject>

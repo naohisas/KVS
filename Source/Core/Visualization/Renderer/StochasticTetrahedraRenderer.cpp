@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
-/*----------------------------------------------------------------------------
- *
  * References:
  * [1] Naohisa Sakamoto, Koji Koyamada, "A Stochastic Approach for Rendering
  *     Multiple Irregular Volumes", In Proc. of IEEE Pacific Visualization

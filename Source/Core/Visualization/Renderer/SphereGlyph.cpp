@@ -3,14 +3,6 @@
  *  @file   SphereGlyph.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: SphereGlyph.cpp 1808 2014-08-30 00:00:29Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "SphereGlyph.h"
 #include <kvs/OpenGL>

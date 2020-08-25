@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ShadingParameter.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ShadingParameter.cpp 1113 2012-04-25 13:45:42Z s.yamada0808@gmail.com $
+ *  @file   ShadingParameter.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "ShadingParameter.h"

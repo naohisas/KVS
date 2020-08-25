@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: HAVSVolumeRenderer.h 1457 2013-03-24 06:32:17Z naohisa.sakamoto@gmail.com $
- */
-/*----------------------------------------------------------------------------
- *
  * References:
  * [1] S.Callahan, M.Ikits, J.Comba, and C.Silva, "Hardware-Assisted Visibility
  *     Sorting for Unstructured Volume Rendering," IEEE Trans. on Visualization

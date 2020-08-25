@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   SphericalImageRenderer.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/Module>
 #include <kvs/ImageRenderer>

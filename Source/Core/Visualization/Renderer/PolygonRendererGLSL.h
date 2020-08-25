@@ -3,14 +3,6 @@
  *  @file   PolygonRendererGLSL.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PolygonRenderer.h 1398 2012-12-05 09:33:35Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/DebugNew>

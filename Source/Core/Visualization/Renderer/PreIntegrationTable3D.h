@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
-/*----------------------------------------------------------------------------
- *
  * Acknowledgements:
  * Original source code was developped by University of Utah and can be
  * downloaded at http://havs.sourceforge.net/

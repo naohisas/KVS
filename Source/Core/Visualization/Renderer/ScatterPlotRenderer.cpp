@@ -3,14 +3,6 @@
  *  @file   ScatterPlotRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ScatterPlotRenderer.cpp 1797 2014-08-04 01:36:37Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ScatterPlotRenderer.h"
 #include <kvs/OpenGL>

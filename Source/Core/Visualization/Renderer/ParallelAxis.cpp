@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ParallelAxis.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ParallelAxis.h"
 #include <kvs/OpenGL>
 #include <kvs/Camera>

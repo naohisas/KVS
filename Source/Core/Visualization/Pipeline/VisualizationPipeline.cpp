@@ -3,14 +3,6 @@
  *  @file   VisualizationPipeline.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VisualizationPipeline.cpp 1720 2014-03-12 14:22:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "VisualizationPipeline.h"
 #include <kvs/DebugNew>

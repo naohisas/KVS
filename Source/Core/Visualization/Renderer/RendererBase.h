@@ -3,14 +3,6 @@
  *  @file   RendererBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RendererBase.h 1795 2014-08-01 08:38:08Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__RENDERER_BASE_H_INCLUDE
 #define KVS__RENDERER_BASE_H_INCLUDE
