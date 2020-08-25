@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   OpacityMapPalette.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "OpacityMapPalette.h"
 #include <kvs/MouseButton>
 #include <kvs/MouseEvent>

@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   TransferFunctionEditorBase.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "TransferFunctionEditorBase.h"
 #include <kvs/DebugNew>
 #include <kvs/MouseEvent>

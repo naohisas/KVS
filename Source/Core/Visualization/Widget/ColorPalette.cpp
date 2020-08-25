@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ColorPalette.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ColorPalette.h"
 #include <kvs/HSVColor>
 #include <kvs/String>

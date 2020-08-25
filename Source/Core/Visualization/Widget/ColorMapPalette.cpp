@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ColorMapPalette.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ColorMapPalette.h"
 #include <cstdio>
 #include <kvs/String>
