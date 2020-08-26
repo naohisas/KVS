@@ -3,14 +3,6 @@
  *  @file   Texture3D.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Texture3D.h 1573 2013-05-17 09:49:35Z naohisa.sakamoto $
- */
 /****************************************************************************/
 #ifndef KVS__TEXTURE_3D_H_INCLUDE
 #define KVS__TEXTURE_3D_H_INCLUDE

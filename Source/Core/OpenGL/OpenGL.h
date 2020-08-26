@@ -3,14 +3,6 @@
  *  @file   OpenGL.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OpenGL.h 1808 2014-08-30 00:00:29Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__OPEN_GL_H_INCLUDE
 #define KVS__OPEN_GL_H_INCLUDE

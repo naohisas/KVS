@@ -3,14 +3,6 @@
  *  @file   TextureRectangle.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TextureRectangle.cpp 1590 2013-06-05 09:05:18Z naohisa.sakamoto $
- */
 /****************************************************************************/
 #include "TextureRectangle.h"
 #include <kvs/Math>

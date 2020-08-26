@@ -3,14 +3,6 @@
  *  @file   Texture1D.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Texture1D.cpp 1555 2013-04-21 02:31:38Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "Texture1D.h"
 #include <kvs/Math>

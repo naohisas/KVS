@@ -3,14 +3,6 @@
  *  @file   ProgramObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ProgramObject.h 1149 2012-06-02 13:27:56Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__PROGRAM_OBJECT_H_INCLUDE
 #define KVS__PROGRAM_OBJECT_H_INCLUDE

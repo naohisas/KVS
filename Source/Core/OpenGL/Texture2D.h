@@ -3,14 +3,6 @@
  *  @file   Texture2D.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Texture2D.h 1551 2013-04-20 01:40:09Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__TEXTURE_2D_H_INCLUDE
 #define KVS__TEXTURE_2D_H_INCLUDE

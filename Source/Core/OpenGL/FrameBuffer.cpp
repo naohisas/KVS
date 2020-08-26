@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file FrameBuffer.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FrameBuffer.cpp 1573 2013-05-17 09:49:35Z naohisa.sakamoto $
+ *  @file   FrameBuffer.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "FrameBuffer.h"

@@ -3,14 +3,6 @@
  *  @file   ShaderSource.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ShaderSource.cpp 1033 2012-02-17 16:16:41Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ShaderSource.h"
 #include <kvs/File>

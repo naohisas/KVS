@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Texture1D.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Texture1D.h 1551 2013-04-20 01:40:09Z naohisa.sakamoto@gmail.com $
+ *  @file   Texture1D.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__TEXTURE_1D_H_INCLUDE

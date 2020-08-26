@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file FrameBuffer.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FrameBuffer.h 1554 2013-04-20 15:52:04Z naohisa.sakamoto@gmail.com $
+ *  @file   FrameBuffer.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #pragma once
