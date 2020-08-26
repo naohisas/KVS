@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Condition.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Condition.cpp 1372 2012-11-30 00:27:21Z naohisa.sakamoto@gmail.com $
+ *  @file   Condition.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Condition.h"

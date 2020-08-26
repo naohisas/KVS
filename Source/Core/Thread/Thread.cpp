@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Thread.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Thread.cpp 1386 2012-12-04 09:38:12Z naohisa.sakamoto@gmail.com $
+ *  @file   Thread.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Thread.h"
