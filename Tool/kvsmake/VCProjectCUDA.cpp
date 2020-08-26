@@ -3,14 +3,6 @@
  *  @file   VCProjectCUDA.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: WriteVCProjectCUDA.cpp 1416 2013-02-15 10:59:48Z s.yamada0808@gmail.com $
- */
 /****************************************************************************/
 #include "VCProjectCUDA.h"
 #include "Constant.h"

@@ -1,3 +1,10 @@
+/*****************************************************************************/
+/**
+ *  @file   Build.h
+ *  @author Naohisa Sakamoto
+ *  @brief  Build command execution.
+ */
+/*****************************************************************************/
 #pragma once
 #include <cstdlib>
 #include <string>

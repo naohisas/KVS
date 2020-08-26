@@ -3,14 +3,6 @@
  *  @file   ExtractVertices.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ExtractVertices.cpp 1191 2012-06-12 01:31:49Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include "ExtractVertices.h"
 #include <kvs/DebugNew>
