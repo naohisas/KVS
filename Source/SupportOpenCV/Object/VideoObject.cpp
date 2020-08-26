@@ -3,14 +3,6 @@
  *  @file   VideoObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VideoObject.cpp 1385 2012-12-04 03:25:29Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "VideoObject.h"
 

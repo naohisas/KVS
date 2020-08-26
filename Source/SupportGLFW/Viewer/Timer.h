@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   Timer.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/EventListener>
 #include <kvs/EventHandler>

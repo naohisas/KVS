@@ -2,15 +2,6 @@
 /**
  *  @file   ColorPalette.cpp
  *  @author Naohisa Sakamoto
- *  @brief  
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ColorPalette.cpp 1524 2013-04-11 01:46:06Z naohisa.sakamoto $
  */
 /*****************************************************************************/
 #include "ColorPalette.h"

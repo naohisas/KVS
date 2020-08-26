@@ -1,3 +1,10 @@
+/*****************************************************************************/
+/**
+ *  @file   Context.cpp
+ *  @author Naohisa Sakamoto
+ *  @brief  
+ */
+/*****************************************************************************/
 #include "Context.h"
 #include <kvs/IgnoreUnusedVariable>
 #include <cfenv>

@@ -3,14 +3,6 @@
  *  @file   OpacityMapPalette.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OpacityMapPalette.cpp 1551 2013-04-20 01:40:09Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "OpacityMapPalette.h"
 #include <kvs/MouseButton>

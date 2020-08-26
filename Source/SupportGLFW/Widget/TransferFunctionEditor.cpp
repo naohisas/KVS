@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   TransferFunctionEditor.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "TransferFunctionEditor.h"
 #include <kvs/RGBColor>
 #include <kvs/EventBase>

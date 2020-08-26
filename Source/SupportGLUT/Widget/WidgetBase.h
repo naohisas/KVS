@@ -3,14 +3,6 @@
  *  @file   WidgetBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: WidgetBase.h 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GLUT__WIDGET_BASE_H_INCLUDE
 #define KVS__GLUT__WIDGET_BASE_H_INCLUDE

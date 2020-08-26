@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   Communicator.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "Communicator.h"
 #include "MPICall.h"
 #include <kvs/Type>

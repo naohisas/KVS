@@ -3,14 +3,6 @@
  *  @file   Qt.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Qt.h 1591 2013-06-05 09:28:54Z naohisa.sakamoto $
- */
 /****************************************************************************/
 #ifndef KVS__QT__QT_H_INCLUDE
 #define KVS__QT__QT_H_INCLUDE

@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   MovieRenderer.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/RendererBase>
 #include <kvs/Texture2D>

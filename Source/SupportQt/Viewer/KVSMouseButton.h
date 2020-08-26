@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file KVSMouseButton.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: KVSMouseButton.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
+ *  @file   KVSMouseButton.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__QT__KVS_MOUSE_BUTTON_H_INCLUDE

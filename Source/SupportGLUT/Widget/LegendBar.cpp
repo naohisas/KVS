@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file LegendBar.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LegendBar.cpp 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
+ *  @file   LegendBar.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "LegendBar.h"

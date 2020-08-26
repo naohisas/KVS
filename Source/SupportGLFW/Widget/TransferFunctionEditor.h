@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   TransferFunctionEditor.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/TransferFunctionEditorBase>
 #include <kvs/glfw/Screen>

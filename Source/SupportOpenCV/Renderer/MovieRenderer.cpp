@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   MovieRenderer.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "MovieRenderer.h"
 #include <kvs/Camera>
 #include <kvs/Light>

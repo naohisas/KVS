@@ -3,14 +3,6 @@
  *  @file   WidgetBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: WidgetBase.cpp 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "WidgetBase.h"
 #include <kvs/OpenGL>

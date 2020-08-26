@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ScreenBase.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/ColorImage>
 #include <kvs/OpenGL>
