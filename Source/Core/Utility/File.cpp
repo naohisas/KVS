@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file File.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: File.cpp 1140 2012-05-10 05:10:05Z s.yamada0808@gmail.com $
+ *  @file   File.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "File.h"
