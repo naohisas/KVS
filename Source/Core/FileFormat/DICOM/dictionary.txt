@@ -1,17 +1,8 @@
 #*****************************************************************************/
 #
 #   @file   dictionary.txt
-#   @brief  DICOM dictionary
-#
 #   @author Naohisa Sakamoto
-#   @date   2006/12/16  6:37:24
-#
-#-----------------------------------------------------------------------------
-#
-#   $Author: naohisa $
-#   $Date: 2008/07/29 07:03:53 $
-#   $Source: /home/Repository/viz-server2/cvsroot/KVS_RC1/Source/Core/FileFormat/DICOM/dictionary.txt,v $
-#   $Revision: 1.1 $
+#   @brief  DICOM dictionary
 #
 #*****************************************************************************/
 

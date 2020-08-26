@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   LinearRegression.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/ValueArray>
 #include <kvs/ValueTable>

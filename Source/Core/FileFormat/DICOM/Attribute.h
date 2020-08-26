@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Attribute.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Attribute.h 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
+ *  @file   Attribute.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__DCM__ATTRIBUTE_H_INCLUDE

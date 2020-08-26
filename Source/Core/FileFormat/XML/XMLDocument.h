@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file XMLDocument.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: XMLDocument.h 1304 2012-09-15 01:23:48Z naohisa.sakamoto@gmail.com $
+ *  @file   XMLDocument.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__XML_DOCUMENT_H_INCLUDE

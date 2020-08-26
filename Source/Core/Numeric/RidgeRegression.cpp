@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   RidgeRegression.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "RidgeRegression.h"
 #include <kvs/StudentTDistribution>
 #include <kvs/Matrix>

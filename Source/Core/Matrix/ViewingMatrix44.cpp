@@ -3,14 +3,6 @@
  *  @file   ViewingMatrix.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ViewingMatrix44.cpp 1265 2012-07-31 15:41:15Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #include "ViewingMatrix44.h"
 

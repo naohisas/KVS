@@ -3,14 +3,6 @@
  *  @file   GaussEliminationSolver.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GaussEliminationSolver.h 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GAUSS_ELIMINATION_SOLVER_H_INCLUDE
 #define KVS__GAUSS_ELIMINATION_SOLVER_H_INCLUDE

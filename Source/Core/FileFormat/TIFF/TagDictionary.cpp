@@ -3,14 +3,6 @@
  *  @file   TagDictionary.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TagDictionary.cpp 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "TagDictionary.h"
 #include "TagTable.h"

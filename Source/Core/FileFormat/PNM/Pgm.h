@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Pgm.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Pgm.h 1402 2012-12-07 01:32:08Z naohisa.sakamoto@gmail.com $
+ *  @file   Pgm.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__PGM_H_INCLUDE

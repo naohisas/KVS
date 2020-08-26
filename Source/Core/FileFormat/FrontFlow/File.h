@@ -3,14 +3,6 @@
  *  @file   File.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: File.h 1309 2012-09-18 04:29:34Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GF__FILE_H_INCLUDE
 #define KVS__GF__FILE_H_INCLUDE

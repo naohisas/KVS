@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Dicom.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Dicom.cpp 1313 2012-09-19 08:19:01Z naohisa.sakamoto@gmail.com $
+ *  @file   Dicom.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include <climits>

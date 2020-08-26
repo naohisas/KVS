@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file SocketStandard.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: SocketStandard.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
+ *  @file   SocketStandard.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__SOCKET_STANDARD_H_INCLUDE

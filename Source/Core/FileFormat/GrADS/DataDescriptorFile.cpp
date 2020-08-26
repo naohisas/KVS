@@ -3,14 +3,6 @@
  *  @file   DataDescriptorFile.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: DataDescriptorFile.cpp 1346 2012-11-08 11:57:55Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #include "DataDescriptorFile.h"
 #include <string>

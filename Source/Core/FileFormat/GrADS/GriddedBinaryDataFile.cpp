@@ -3,14 +3,6 @@
  *  @file   GriddedBinaryDataFile.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GriddedBinaryDataFile.cpp 1793 2014-08-01 07:43:50Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "GriddedBinaryDataFile.h"
 #include <fstream>

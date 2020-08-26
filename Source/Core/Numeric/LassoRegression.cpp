@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   LassoRegression.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "LassoRegression.h"
 #include <kvs/StudentTDistribution>
 #include <kvs/Matrix>

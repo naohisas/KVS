@@ -3,14 +3,6 @@
  *  @file   FlowData.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FlowData.h 1312 2012-09-18 15:33:43Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GF__FLOW_DATA_H_INCLUDE
 #define KVS__GF__FLOW_DATA_H_INCLUDE

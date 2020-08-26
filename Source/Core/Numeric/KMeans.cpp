@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
-/*----------------------------------------------------------------------------
- *
  * References:
  * [1] D. Arthur and S. Vassilvitskii, k-means++ : The Advantages of Careful
  *     Seeding, in Proceedings of the eighteenth annual ACM-SIAM symposium on

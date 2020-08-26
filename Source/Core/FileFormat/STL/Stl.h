@@ -3,14 +3,6 @@
  *  @file   Stl.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Stl.h 1718 2014-03-08 08:59:23Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__STL_H_INCLUDE
 #define KVS__STL_H_INCLUDE

@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file FileFormatBase.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FileFormatBase.h 1796 2014-08-01 15:39:29Z naohisa.sakamoto@gmail.com $
+ *  @file   FileFormatBase.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__FILE_FORMAT_BASE_H_INCLUDE

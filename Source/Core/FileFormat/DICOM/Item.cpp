@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Item.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Item.cpp 1758 2014-05-04 13:19:24Z naohisa.sakamoto@gmail.com $
+ *  @file   Item.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Item.h"

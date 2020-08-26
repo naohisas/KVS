@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Value.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Value.cpp 1595 2013-06-12 03:27:28Z naohisa.sakamoto@gmail.com $
+ *  @file   Value.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Value.h"

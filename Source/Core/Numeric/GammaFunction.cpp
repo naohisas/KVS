@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   GammaFunction.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "GammaFunction.h"
 #include <kvs/Assert>
 #include <limits>

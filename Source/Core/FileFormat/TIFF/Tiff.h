@@ -3,14 +3,6 @@
  *  @file   Tiff.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Tiff.h 1313 2012-09-19 08:19:01Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 

@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Dicom.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Dicom.h 1313 2012-09-19 08:19:01Z naohisa.sakamoto@gmail.com $
+ *  @file   Dicom.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__DICOM_H_INCLUDE

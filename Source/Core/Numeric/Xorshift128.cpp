@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Xorshift128.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Xorshift128.cpp 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
+ *  @file   Xorshift128.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Xorshift128.h"

@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   LassoRegression.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/ValueArray>
 #include <kvs/ValueTable>

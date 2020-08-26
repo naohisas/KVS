@@ -1,17 +1,7 @@
 /*****************************************************************************/
 /**
- *  @file   dicom_list.cpp
- *  @brief  DICOM list class.
- *
+ *  @file   DicomList.cpp
  *  @author Naohisa Sakamoto
- *  @date   2019/03/18 14:36:57
- */
-/*----------------------------------------------------------------------------
- *
- *  $Author: naohisa $
- *  $Date: 2008/07/29 07:03:56 $
- *  $Source: /home/Repository/viz-server2/cvsroot/KVS_RC1/Source/Core/FileFormat/DICOM/DicomList.cpp,v $
- *  $Revision: 1.1 $
  */
 /*****************************************************************************/
 #include "DicomList.h"

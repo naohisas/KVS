@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file VR.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VR.h 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
+ *  @file   VR.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__DCM__VR_H_INCLUDE

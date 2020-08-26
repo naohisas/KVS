@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file HttpConnector.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: HttpConnector.cpp 1317 2012-09-25 03:13:02Z naohisa.sakamoto@gmail.com $
+ *  @file   HttpConnector.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "HttpConnector.h"

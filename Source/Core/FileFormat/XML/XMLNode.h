@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   XMLNode.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: XMLNode.h 1304 2012-09-15 01:23:48Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #ifndef KVS__XML_NODE_H_INCLUDE

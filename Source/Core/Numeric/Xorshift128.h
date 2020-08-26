@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Xorshift128.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Xorshift128.h 1421 2013-02-27 17:31:12Z s.yamada0808@gmail.com $
+ *  @file   Xorshift128.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #pragma once

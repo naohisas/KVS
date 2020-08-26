@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Url.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Url.h 1317 2012-09-25 03:13:02Z naohisa.sakamoto@gmail.com $
+ *  @file   Url.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__URL_H_INCLUDE

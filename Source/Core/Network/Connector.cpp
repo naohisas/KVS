@@ -3,14 +3,6 @@
  *  @file   Connector.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Connector.cpp 1317 2012-09-25 03:13:02Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Connector.h"
 #include <kvs/DebugNew>

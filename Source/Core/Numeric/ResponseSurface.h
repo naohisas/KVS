@@ -1,15 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   ResponseSurface.h
- *  @author Naohisa Sakamoto
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ResponseSurface.h 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto, Yukio Yasuhara
  */
 /*****************************************************************************/
 #ifndef KVS__RESPONSE_SURFACE_H_INCLUDE

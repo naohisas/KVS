@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   StudentTDistribution.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "StudentTDistribution.h"
 #include "BetaFunction.h"
 #include <kvs/Math>

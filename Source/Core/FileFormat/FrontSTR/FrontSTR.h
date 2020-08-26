@@ -3,14 +3,6 @@
  *  @file   FrontSTR.h
  *  @author Guo Jiazhen
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FrontSTR.h 1313 2012-09-19 08:19:01Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__FRONT_STR_H_INCLUDE
 #define KVS__FRONT_STR_H_INCLUDE

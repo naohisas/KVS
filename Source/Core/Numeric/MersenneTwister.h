@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file MersenneTwister.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MersenneTwister.h 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
+ *  @file   MersenneTwister.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #pragma once
