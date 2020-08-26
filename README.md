@@ -63,3 +63,6 @@ $ cd KVS
 $ make
 $ make install
 ```
+
+# Copyright
+KVS is released under BSD 3-Clause License. See [LICENSE](LICENSE) for details.
