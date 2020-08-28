@@ -2,7 +2,6 @@
 /**
  *  @file   Context.cpp
  *  @author Naohisa Sakamoto
- *  @brief  
  */
 /*****************************************************************************/
 #include "Context.h"

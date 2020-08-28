@@ -21,14 +21,22 @@ inline void Flip( T* data, const size_t width, const size_t height, const size_t
     // rendering pixel data read backed from GPU with glReadPixels need to be
     // flipped. In the current implementation, it is necessary to specify the
     // gallium driver "softpipe" or "llvmpipe" by environment parameter
-    // 'KVS_OSMESA_GALLIUM_DRIVER'.
-    // e.g.) export KVS_OSMESA_GALLIUM_DRIVER=softpipe
+    // 'KVS_OSMESA_Y_FLIP'. In case that the none-zero value is specified for
+    // this parameter, the data will be flipped.
+    // e.g.) export KVS_OSMESA_Y_FLIP=1   (flipped) default
+    //       export KVS_OSMESA_Y_FLIP=0   (not flipped)
     //
-    const char* driver( std::getenv( "KVS_OSMESA_GALLIUM_DRIVER" ) );
-    if ( !driver ) return;
+    bool y_flip = true;
+    const char* KVS_OSMESA_Y_FLIP( std::getenv( "KVS_OSMESA_Y_FLIP" ) );
+    if ( KVS_OSMESA_Y_FLIP != nullptr )
+    {
+        if ( std::atoi( KVS_OSMESA_Y_FLIP ) == 0 )
+        {
+            y_flip = false;
+        }
+    }
 
-    const bool y_down = ( kvs::osmesa::Context::GetYAxisDirection() == 0 );
-    if ( std::string( driver ) == "softpipe" && y_down )
+    if ( y_flip )
     {
         const size_t stride = width * ncomps;
 
@@ -67,7 +75,7 @@ ScreenBase::~ScreenBase()
 kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer( GLenum mode ) const
 {
     kvs::OpenGL::SetReadBuffer( mode );
-    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
+    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(4) );
 
     const size_t width = this->width();
     const size_t height = this->height();
@@ -81,7 +89,7 @@ kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer( GLenum mode ) const
 kvs::ValueArray<kvs::Real32> ScreenBase::readbackDepthBuffer( GLenum mode ) const
 {
     kvs::OpenGL::SetReadBuffer( mode );
-    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
+    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(4) );
 
     const size_t width = this->width();
     const size_t height = this->height();
