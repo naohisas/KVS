@@ -61,6 +61,7 @@ public:
     size_t numberOfCells() const;
 
     void updateMinMaxCoords();
+    void updateMinMaxValues() const;
 
 public:
     KVS_DEPRECATED( StructuredVolumeObject(

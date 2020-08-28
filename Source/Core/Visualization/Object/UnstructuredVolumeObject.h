@@ -71,9 +71,10 @@ public:
     size_t numberOfNodes() const { return m_nnodes; }
     size_t numberOfCells() const { return m_ncells; }
     const Connections& connections() const { return m_connections; }
-
     size_t numberOfCellNodes() const;
+
     void updateMinMaxCoords();
+    void updateMinMaxValues() const;
 
 public:
     KVS_DEPRECATED( UnstructuredVolumeObject(

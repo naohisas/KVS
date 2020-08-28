@@ -82,7 +82,7 @@ public:
     bool isShown() const { return m_show_flag; }
 
     void updateNormalizeParameters();
-    virtual void updateMinMaxCoords(){};
+    virtual void updateMinMaxCoords() {};
 
 protected:
     void setObjectType( ObjectType object_type ) { m_object_type = object_type; }

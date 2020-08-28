@@ -6,6 +6,7 @@
 /****************************************************************************/
 #include "StructuredVolumeObject.h"
 #include <kvs/KVSMLStructuredVolumeObject>
+#include <kvs/Range>
 
 
 namespace
@@ -59,6 +60,53 @@ kvs::KVSMLStructuredVolumeObject::WritingDataType GetWritingDataType( const bool
     else
     {
         return kvs::KVSMLStructuredVolumeObject::ExternalBinary;
+    }
+}
+
+template<typename T>
+kvs::Range GetMinMaxValues( const kvs::VolumeObjectBase* volume )
+{
+    KVS_ASSERT( volume->values().size() != 0 );
+    KVS_ASSERT( volume->values().size() == volume->veclen() * volume->numberOfNodes() );
+
+    const T* value = reinterpret_cast<const T*>( volume->values().data() );
+    const T* const end = value + volume->numberOfNodes() * volume->veclen();
+
+    if ( volume->veclen() == 1 )
+    {
+        T min_value = *value;
+        T max_value = *value;
+
+        while ( value < end )
+        {
+            min_value = kvs::Math::Min( *value, min_value );
+            max_value = kvs::Math::Max( *value, max_value );
+            ++value;
+        }
+
+        return kvs::Range( static_cast<double>( min_value ), static_cast<double>( max_value ) );
+    }
+    else
+    {
+        kvs::Real64 min_value = kvs::Value<kvs::Real64>::Max();
+        kvs::Real64 max_value = kvs::Value<kvs::Real64>::Min();
+
+        const size_t veclen = volume->veclen();
+
+        while ( value < end )
+        {
+            kvs::Real64 magnitude = 0.0;
+            for ( size_t i = 0; i < veclen; ++i )
+            {
+                magnitude += static_cast<kvs::Real64>( ( *value ) * ( *value ) );
+                ++value;
+            }
+
+            min_value = kvs::Math::Min( magnitude, min_value );
+            max_value = kvs::Math::Max( magnitude, max_value );
+        }
+
+        return kvs::Range( std::sqrt( min_value ), std::sqrt( max_value ) );
     }
 }
 
@@ -386,6 +434,32 @@ void StructuredVolumeObject::updateMinMaxCoords()
             this->minObjectCoord(),
             this->maxObjectCoord() );
     }
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Updates the min/max node value.
+ */
+/*==========================================================================*/
+void StructuredVolumeObject::updateMinMaxValues() const
+{
+    kvs::Range range;
+    switch ( this->values().typeID() )
+    {
+    case kvs::Type::TypeInt8:   { range = ::GetMinMaxValues<kvs::Int8  >( this ); break; }
+    case kvs::Type::TypeInt16:  { range = ::GetMinMaxValues<kvs::Int16 >( this ); break; }
+    case kvs::Type::TypeInt32:  { range = ::GetMinMaxValues<kvs::Int32 >( this ); break; }
+    case kvs::Type::TypeInt64:  { range = ::GetMinMaxValues<kvs::Int64 >( this ); break; }
+    case kvs::Type::TypeUInt8:  { range = ::GetMinMaxValues<kvs::UInt8 >( this ); break; }
+    case kvs::Type::TypeUInt16: { range = ::GetMinMaxValues<kvs::UInt16>( this ); break; }
+    case kvs::Type::TypeUInt32: { range = ::GetMinMaxValues<kvs::UInt32>( this ); break; }
+    case kvs::Type::TypeUInt64: { range = ::GetMinMaxValues<kvs::UInt64>( this ); break; }
+    case kvs::Type::TypeReal32: { range = ::GetMinMaxValues<kvs::Real32>( this ); break; }
+    case kvs::Type::TypeReal64: { range = ::GetMinMaxValues<kvs::Real64>( this ); break; }
+    default: break;
+    }
+
+    this->setMinMaxValues( range.lower(), range.upper() );
 }
 
 std::ostream& operator << ( std::ostream& os, const StructuredVolumeObject& object )

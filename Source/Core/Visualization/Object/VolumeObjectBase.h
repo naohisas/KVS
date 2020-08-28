@@ -78,7 +78,7 @@ public:
     VolumeType volumeType() const { return m_volume_type; }
     virtual size_t numberOfNodes() const = 0;
     virtual size_t numberOfCells() const = 0;
-    void updateMinMaxValues() const;
+    virtual void updateMinMaxValues() const {}
 
 protected:
     void setVolumeType( VolumeType volume_type ) { m_volume_type = volume_type; }

@@ -6,6 +6,7 @@
 /****************************************************************************/
 #include "UnstructuredVolumeObject.h"
 #include <kvs/KVSMLUnstructuredVolumeObject>
+#include <kvs/Range>
 
 
 namespace
@@ -74,6 +75,59 @@ kvs::KVSMLUnstructuredVolumeObject::WritingDataType GetWritingDataType( const bo
     else
     {
         return kvs::KVSMLUnstructuredVolumeObject::ExternalBinary;
+    }
+}
+
+template<typename T>
+kvs::Range GetMinMaxValues( const kvs::UnstructuredVolumeObject* volume )
+{
+    KVS_ASSERT( volume->values().size() != 0 );
+
+    const auto* values = reinterpret_cast<const T*>( volume->values().data() );
+    const auto* connections = volume->connections().data();
+
+    if ( volume->veclen() == 1 )
+    {
+        T min_value = *values;
+        T max_value = *values;
+        const size_t ncells = volume->numberOfCells();
+        const size_t cell_nnodes = volume->numberOfCellNodes();
+        for ( size_t i = 0; i < ncells; ++i )
+        {
+            for ( size_t j = 0; j < cell_nnodes; ++j )
+            {
+                const auto index = *connections++;
+                const T value = values[ index ];
+                min_value = kvs::Math::Min( value, min_value );
+                max_value = kvs::Math::Max( value, max_value );
+            }
+        }
+        return kvs::Range( static_cast<double>( min_value ), static_cast<double>( max_value ) );
+    }
+    else
+    {
+        kvs::Real64 min_value = kvs::Value<kvs::Real64>::Max();
+        kvs::Real64 max_value = kvs::Value<kvs::Real64>::Min();
+        const size_t veclen = volume->veclen();
+        const size_t ncells = volume->numberOfCells();
+        const size_t cell_nnodes = volume->numberOfCellNodes();
+        for ( size_t i = 0; i < ncells; ++i )
+        {
+            for ( size_t j = 0; j < cell_nnodes; ++j )
+            {
+                const auto index = *connections++;
+                const T* value = values + veclen * index;
+                kvs::Real64 magnitude = 0.0;
+                for ( size_t i = 0; i < veclen; ++i )
+                {
+                    magnitude += static_cast<kvs::Real64>( ( *value ) * ( *value ) );
+                    ++value;
+                }
+                min_value = kvs::Math::Min( magnitude, min_value );
+                max_value = kvs::Math::Max( magnitude, max_value );
+            }
+        }
+        return kvs::Range( std::sqrt( min_value ), std::sqrt( max_value ) );
     }
 }
 
@@ -321,32 +375,30 @@ size_t UnstructuredVolumeObject::numberOfCellNodes() const
 /*==========================================================================*/
 void UnstructuredVolumeObject::updateMinMaxCoords()
 {
-    kvs::Vec3 min_coord( 0.0f, 0.0f, 0.0f );
-    kvs::Vec3 max_coord( 0.0f, 0.0f, 0.0f );
+    const auto* coords = this->coords().data();
+    const auto* connections = this->connections().data();
 
-    const float* coord = this->coords().data();
-    const float* const end = coord + this->coords().size();
+    const auto c0 = connections[0];
+    kvs::Vec3 min_coord( coords[ 3 * c0 ], coords[ 3 * c0 + 1 ], coords[ 3 * c0 + 2 ] );
+    kvs::Vec3 max_coord( coords[ 3 * c0 ], coords[ 3 * c0 + 1 ], coords[ 3 * c0 + 2 ] );
 
-    float x = *( coord++ );
-    float y = *( coord++ );
-    float z = *( coord++ );
-
-    min_coord.set( x, y, z );
-    max_coord.set( x, y, z );
-
-    while ( coord < end )
+    const size_t ncells = this->numberOfCells();
+    const size_t cell_nnodes = this->numberOfCellNodes();
+    for ( size_t i = 0; i < ncells; ++i )
     {
-        x = *( coord++ );
-        y = *( coord++ );
-        z = *( coord++ );
-
-        min_coord.x() = kvs::Math::Min( min_coord.x(), x );
-        min_coord.y() = kvs::Math::Min( min_coord.y(), y );
-        min_coord.z() = kvs::Math::Min( min_coord.z(), z );
-
-        max_coord.x() = kvs::Math::Max( max_coord.x(), x );
-        max_coord.y() = kvs::Math::Max( max_coord.y(), y );
-        max_coord.z() = kvs::Math::Max( max_coord.z(), z );
+        for ( size_t j = 0; j < cell_nnodes; ++j )
+        {
+            const auto index = *connections++;
+            const auto x = coords[ 3 * index ];
+            const auto y = coords[ 3 * index + 1 ];
+            const auto z = coords[ 3 * index + 2 ];
+            min_coord.x() = kvs::Math::Min( min_coord.x(), x );
+            min_coord.y() = kvs::Math::Min( min_coord.y(), y );
+            min_coord.z() = kvs::Math::Min( min_coord.z(), z );
+            max_coord.x() = kvs::Math::Max( max_coord.x(), x );
+            max_coord.y() = kvs::Math::Max( max_coord.y(), y );
+            max_coord.z() = kvs::Math::Max( max_coord.z(), z );
+        }
     }
 
     this->setMinMaxObjectCoords( min_coord, max_coord );
@@ -357,6 +409,27 @@ void UnstructuredVolumeObject::updateMinMaxCoords()
             this->minObjectCoord(),
             this->maxObjectCoord() );
     }
+}
+
+void UnstructuredVolumeObject::updateMinMaxValues() const
+{
+    kvs::Range range;
+    switch ( this->values().typeID() )
+    {
+    case kvs::Type::TypeInt8:   { range = ::GetMinMaxValues<kvs::Int8  >( this ); break; }
+    case kvs::Type::TypeInt16:  { range = ::GetMinMaxValues<kvs::Int16 >( this ); break; }
+    case kvs::Type::TypeInt32:  { range = ::GetMinMaxValues<kvs::Int32 >( this ); break; }
+    case kvs::Type::TypeInt64:  { range = ::GetMinMaxValues<kvs::Int64 >( this ); break; }
+    case kvs::Type::TypeUInt8:  { range = ::GetMinMaxValues<kvs::UInt8 >( this ); break; }
+    case kvs::Type::TypeUInt16: { range = ::GetMinMaxValues<kvs::UInt16>( this ); break; }
+    case kvs::Type::TypeUInt32: { range = ::GetMinMaxValues<kvs::UInt32>( this ); break; }
+    case kvs::Type::TypeUInt64: { range = ::GetMinMaxValues<kvs::UInt64>( this ); break; }
+    case kvs::Type::TypeReal32: { range = ::GetMinMaxValues<kvs::Real32>( this ); break; }
+    case kvs::Type::TypeReal64: { range = ::GetMinMaxValues<kvs::Real64>( this ); break; }
+    default: break;
+    }
+
+    this->setMinMaxValues( range.lower(), range.upper() );
 }
 
 std::ostream& operator << ( std::ostream& os, const UnstructuredVolumeObject& object )
