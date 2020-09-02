@@ -29,6 +29,7 @@ private:
 public:
     class Binder;
     class GuardedBinder;
+    static GLuint m_unbind_id; ///< Initial frame buffer id.
 
 public:
     FrameBufferObject(): m_id( 0 ) {}
