@@ -23,7 +23,7 @@ namespace kvs
 void FrameBufferObject::bind() const
 {
     KVS_ASSERT( this->isCreated() );
-    KVS_GL_CALL( glGetIntegerv( GL_FRAMEBUFFER_BINDING, (GLint*)&m_unbind_id ) );
+//    KVS_GL_CALL( glGetIntegerv( GL_FRAMEBUFFER_BINDING, (GLint*)&m_unbind_id ) );
     KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_id ) );
 }
 
