@@ -83,6 +83,7 @@ inline int Extension::exec( int argc, char** argv )
         "GLUT is required to check OpenGL information using kvscheck.");
     return 1;
 #endif
+    return 1;
 }
 
 } // end of namespace kvscheck
