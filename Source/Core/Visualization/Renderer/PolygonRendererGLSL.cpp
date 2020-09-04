@@ -343,6 +343,45 @@ namespace kvs
 namespace glsl
 {
 
+void PolygonRenderer::BufferObject::set( const kvs::PolygonObject* polygon )
+{
+    if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
+    {
+        kvsMessageError("Not supported polygon type.");
+        return;
+    }
+
+    const bool has_normal = polygon->normals().size() > 0;
+    const bool has_connection = ::HasConnections( polygon );
+
+    auto coords = ::VertexCoords( polygon );
+    auto colors = ::VertexColors( polygon );
+    auto normals = ::VertexNormals( polygon );
+
+    m_manager.setVertexArray( coords, 3 );
+    m_manager.setColorArray( colors, 4 );
+    if ( has_normal ) { m_manager.setNormalArray( normals ); }
+    if ( has_connection ) { m_manager.setIndexArray( polygon->connections() ); }
+}
+
+void PolygonRenderer::BufferObject::draw( const kvs::PolygonObject* polygon )
+{
+    kvs::VertexBufferObjectManager::Binder bind( m_manager );
+    {
+        kvs::OpenGL::Enable( GL_DEPTH_TEST );
+        kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+        const size_t nconnections = polygon->numberOfConnections();
+        const size_t nvertices = ::NumberOfVertices( polygon );
+        const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
+        const bool has_connection = m_manager.indexBufferObject().size() > 0;
+
+        // Draw triangles.
+        if ( has_connection ) { m_manager.drawElements( GL_TRIANGLES, 3 * npolygons ); }
+        else { m_manager.drawArrays( GL_TRIANGLES, 0, 3 * npolygons ); }
+    }
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new PolygonRenderer class.
@@ -384,6 +423,9 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
     auto* polygon = kvs::PolygonObject::DownCast( object );
+    const bool has_normal = polygon->normals().size() > 0;
+    if ( !has_normal ) { setEnabledShading( false ); }
+
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
 
@@ -475,30 +517,13 @@ void PolygonRenderer::setupShaderProgram()
 /*===========================================================================*/
 void PolygonRenderer::createBufferObject( const kvs::PolygonObject* polygon )
 {
-    if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
-    {
-        kvsMessageError("Not supported polygon type.");
-        return;
-    }
-
-    const bool has_normal = polygon->normals().size() > 0;
-    const bool has_connection = ::HasConnections( polygon );
-    if ( !has_normal ) { setEnabledShading( false ); }
-
-    auto coords = ::VertexCoords( polygon );
-    auto colors = ::VertexColors( polygon );
-    auto normals = ::VertexNormals( polygon );
-
-    m_vbo_manager.setVertexArray( coords, 3 );
-    m_vbo_manager.setColorArray( colors, 4 );
-    if ( has_normal ) { m_vbo_manager.setNormalArray( normals ); }
-    if ( has_connection ) { m_vbo_manager.setIndexArray( polygon->connections() ); }
-    m_vbo_manager.create();
+    m_buffer_object.set( polygon );
+    m_buffer_object.create();
 }
 
 void PolygonRenderer::updateBufferObject( const kvs::PolygonObject* polygon )
 {
-    m_vbo_manager.release();
+    m_buffer_object.release();
     this->createBufferObject( polygon );
 }
 
@@ -510,19 +535,7 @@ void PolygonRenderer::updateBufferObject( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 void PolygonRenderer::drawBufferObject( const kvs::PolygonObject* polygon )
 {
-    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
-    {
-        kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-        const size_t nconnections = polygon->numberOfConnections();
-        const size_t nvertices = ::NumberOfVertices( polygon );
-        const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
-        const bool has_connection = m_vbo_manager.indexBufferObject().size() > 0;
-
-        // Draw triangles.
-        if ( has_connection ) { m_vbo_manager.drawElements( GL_TRIANGLES, 3 * npolygons ); }
-        else { m_vbo_manager.drawArrays( GL_TRIANGLES, 0, 3 * npolygons ); }
-    }
+    m_buffer_object.draw( polygon );
 }
 
 } // end of namespace glsl

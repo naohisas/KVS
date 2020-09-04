@@ -30,6 +30,19 @@ class PolygonRenderer : public kvs::PolygonRenderer
 {
     kvsModule( kvs::glsl::PolygonRenderer, Renderer );
     kvsModuleBaseClass( kvs::PolygonRenderer );
+public:
+    class BufferObject
+    {
+    private:
+        kvs::VertexBufferObjectManager m_manager;
+    public:
+        BufferObject() {}
+        kvs::VertexBufferObjectManager& manager() { return m_manager; }
+        void create() { m_manager.create(); }
+        void release() { m_manager.release(); }
+        void set( const kvs::PolygonObject* polygon );
+        void draw( const kvs::PolygonObject* polygon );
+    };
 
 private:
     std::string m_vert_file; ///< vertex shader file
@@ -40,7 +53,7 @@ private:
     float m_polygon_offset; ///< polygon offset
     kvs::Shader::ShadingModel* m_shading_model; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
+    BufferObject m_buffer_object;
 
 public:
     PolygonRenderer();
@@ -79,7 +92,6 @@ public:
 protected:
     kvs::Shader::ShadingModel& shadingModel() { return *m_shading_model; }
     kvs::ProgramObject& shader() { return m_shader_program; }
-    kvs::VertexBufferObjectManager& vboManager() { return m_vbo_manager; }
 
     bool isWindowCreated() { return m_width == 0 && m_height == 0; }
     bool isWindowResized( size_t w, size_t h ) { return m_width != w || m_height != h; }
