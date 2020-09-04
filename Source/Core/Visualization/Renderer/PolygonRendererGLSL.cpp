@@ -481,12 +481,6 @@ void PolygonRenderer::createBufferObject( const kvs::PolygonObject* polygon )
         return;
     }
 
-    if ( polygon->colors().size() != 3 && polygon->colorType() == kvs::PolygonObject::PolygonColor )
-    {
-        kvsMessageError("Not supported polygon color type.");
-        return;
-    }
-
     const bool has_normal = polygon->normals().size() > 0;
     const bool has_connection = ::HasConnections( polygon );
     if ( !has_normal ) { setEnabledShading( false ); }
