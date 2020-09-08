@@ -30,11 +30,12 @@ class PolygonRenderer : public kvs::PolygonRenderer
 {
     kvsModule( kvs::glsl::PolygonRenderer, Renderer );
     kvsModuleBaseClass( kvs::PolygonRenderer );
+
 public:
     class BufferObject
     {
     private:
-        kvs::VertexBufferObjectManager m_manager;
+        kvs::VertexBufferObjectManager m_manager; ///< VBOs
     public:
         BufferObject() {}
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
@@ -50,9 +51,10 @@ private:
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
-    float m_polygon_offset; ///< polygon offset
     kvs::Shader::ShadingModel* m_shading_model; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
+
+    float m_polygon_offset; ///< polygon offset
     BufferObject m_buffer_object;
 
 public:

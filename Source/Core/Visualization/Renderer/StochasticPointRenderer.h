@@ -8,6 +8,7 @@
 #include <kvs/Module>
 #include <kvs/ProgramObject>
 #include <kvs/VertexBufferObjectManager>
+#include <kvs/PointRenderer>
 #include "StochasticRenderingEngine.h"
 #include "StochasticRendererBase.h"
 
@@ -42,11 +43,12 @@ public:
 /*===========================================================================*/
 class StochasticPointRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+    using BufferObject = kvs::glsl::PointRenderer::BufferObject;
+
 private:
     kvs::UInt8 m_point_opacity; ///< point opacity
-    bool m_has_normal; ///< check flag for the normal array
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
+    BufferObject m_buffer_object;
 
 public:
     Engine();

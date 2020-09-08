@@ -7,7 +7,6 @@
 #pragma once
 #include <kvs/Module>
 #include <kvs/ProgramObject>
-#include <kvs/VertexBufferObjectManager>
 #include <kvs/PolygonRenderer>
 #include "StochasticRenderingEngine.h"
 #include "StochasticRendererBase.h"

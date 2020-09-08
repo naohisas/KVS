@@ -12,6 +12,8 @@
 #include <kvs/Shader>
 #include <kvs/ProgramObject>
 #include <kvs/VertexBufferObjectManager>
+#include <kvs/Deprecated>
+#include <string>
 
 
 namespace kvs
@@ -25,20 +27,38 @@ class LineRenderer : public kvs::LineRenderer
     kvsModule( kvs::glsl::LineRenderer, Renderer );
     kvsModuleBaseClass( kvs::LineRenderer );
 
+public:
+    class BufferObject
+    {
+    private:
+        kvs::VertexBufferObjectManager m_manager; ///< VBOs
+        kvs::ValueArray<GLint> m_first_array; ///< array of starting indices for the polyline
+        kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
+        bool m_has_connection;
+    public:
+        BufferObject(): m_has_connection( false ) {}
+        kvs::VertexBufferObjectManager& manager() { return m_manager; }
+        void create() { m_manager.create(); }
+        void release() { m_manager.release(); }
+        void set( const kvs::LineObject* line );
+        void draw( const kvs::LineObject* line );
+    };
+
 private:
+    std::string m_vert_file; ///< vertex shader file
+    std::string m_frag_file; ///< fragment shader file
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
-    kvs::ValueArray<GLint> m_first_array; ///< array of starting indices for the polyline
-    kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
-    bool m_has_connection; ///< check flag for the connection array
-    kvs::Shader::ShadingModel* m_shader; ///< shading method
+    kvs::Shader::ShadingModel* m_shading_model; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
 
+    float m_dpr;
+    float m_line_width;
     kvs::Vec2 m_line_width_range;
     float m_outline_width;
     kvs::RGBColor m_outline_color;
+    BufferObject m_buffer_object;
 
 public:
     LineRenderer();
@@ -46,30 +66,46 @@ public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-    template <typename ShadingType>
-    void setShader( const ShadingType shader );
+    const std::string& vertexShaderFile() const { return m_vert_file; }
+    const std::string& fragmentShaderFile() const { return m_frag_file; }
+    float outlineWidth() const { return m_outline_width; }
+    const kvs::RGBColor& outlineColor() const { return m_outline_color; }
+
+    void setVertexShaderFile( const std::string& vert_file ) { m_vert_file = vert_file; }
+    void setFragmentShaderFile( const std::string& frag_file ) { m_frag_file = frag_file; }
     void setOutlineWidth( const float width ) { m_outline_width = width; }
     void setOutlineColor( const kvs::RGBColor color ) { m_outline_color = color; }
 
-private:
-    void create_shader_program();
-    void create_buffer_object( const kvs::LineObject* line );
-};
-
-template <typename ShadingType>
-inline void LineRenderer::setShader( const ShadingType shader )
-{
-    if ( m_shader )
+    template <typename Model>
+    void setShadingModel( const Model model )
     {
-        delete m_shader;
-        m_shader = NULL;
+        if ( m_shading_model ) { delete m_shading_model; m_shading_model = NULL; }
+        m_shading_model = new Model( model );
+        if ( !m_shading_model )
+        {
+            kvsMessageError("Cannot create a specified shading model.");
+        }
     }
 
-    m_shader = new ShadingType( shader );
-    if ( !m_shader )
-    {
-        kvsMessageError("Cannot create a specified shader.");
-    }
+    template <typename ShadingType>
+    KVS_DEPRECATED( void setShader( const ShadingType shader ) ) { this->setShadingModel<ShadingType>( shader ); }
+
+protected:
+    kvs::Shader::ShadingModel& shadingModel() { return *m_shading_model; }
+    kvs::ProgramObject& shader() { return m_shader_program; }
+
+    bool isWindowCreated() { return m_width == 0 && m_height == 0; }
+    bool isWindowResized( size_t w, size_t h ) { return m_width != w || m_height != h; }
+    bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
+    void setWindowSize( size_t w, size_t h ) { m_width = w; m_height = h; }
+    void attachObject( const kvs::ObjectBase* o ) { m_object = o; }
+
+    void createShaderProgram();
+    void updateShaderProgram();
+    void setupShaderProgram();
+    void createBufferObject( const kvs::LineObject* line );
+    void updateBufferObject( const kvs::LineObject* line );
+    void drawBufferObject( const kvs::LineObject* line );
 };
 
 } // end of namespace glsl

@@ -393,8 +393,8 @@ PolygonRenderer::PolygonRenderer():
     m_width( 0 ),
     m_height( 0 ),
     m_object( NULL ),
-    m_polygon_offset( 0.0f ),
-    m_shading_model( new kvs::Shader::Lambert() )
+    m_shading_model( new kvs::Shader::Lambert() ),
+    m_polygon_offset( 0.0f )
 {
 }
 
