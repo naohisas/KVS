@@ -420,7 +420,6 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
 {
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
     auto* polygon = kvs::PolygonObject::DownCast( object );
     const bool has_normal = polygon->normals().size() > 0;
@@ -432,9 +431,8 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
-        this->attachObject( object );
-        this->createBufferObject( polygon );
         this->createShaderProgram();
+        this->createBufferObject( object );
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -444,15 +442,14 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
 
     if ( this->isObjectChanged( object ) )
     {
-        this->attachObject( object );
-        this->updateBufferObject( polygon );
+        this->updateBufferObject( object );
         this->updateShaderProgram();
     }
 
     this->setupShaderProgram();
 
     m_shader_program.bind();
-    this->drawBufferObject( polygon );
+    this->drawBufferObject( camera );
     m_shader_program.unbind();
 
     BaseClass::stopTimer();
@@ -494,16 +491,16 @@ void PolygonRenderer::updateShaderProgram()
 
 void PolygonRenderer::setupShaderProgram()
 {
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-
     kvs::ProgramObject::Binder bind( m_shader_program );
     m_shader_program.setUniform( "shading.Ka", m_shading_model->Ka );
     m_shader_program.setUniform( "shading.Kd", m_shading_model->Kd );
     m_shader_program.setUniform( "shading.Ks", m_shading_model->Ks );
     m_shader_program.setUniform( "shading.S",  m_shading_model->S );
     m_shader_program.setUniform( "offset", m_polygon_offset );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
     m_shader_program.setUniform( "ModelViewMatrix", M );
     m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
     m_shader_program.setUniform( "NormalMatrix", N );
@@ -515,16 +512,17 @@ void PolygonRenderer::setupShaderProgram()
  *  @param  polygon [in] pointer to the polygon object
  */
 /*===========================================================================*/
-void PolygonRenderer::createBufferObject( const kvs::PolygonObject* polygon )
+void PolygonRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
-    m_buffer_object.set( polygon );
+    m_object = object;
+    m_buffer_object.set( kvs::PolygonObject::DownCast( object ) );
     m_buffer_object.create();
 }
 
-void PolygonRenderer::updateBufferObject( const kvs::PolygonObject* polygon )
+void PolygonRenderer::updateBufferObject( const kvs::ObjectBase* object )
 {
     m_buffer_object.release();
-    this->createBufferObject( polygon );
+    this->createBufferObject( object );
 }
 
 /*===========================================================================*/
@@ -533,8 +531,10 @@ void PolygonRenderer::updateBufferObject( const kvs::PolygonObject* polygon )
  *  @param  polygon [in] pointer to the polygon object
  */
 /*===========================================================================*/
-void PolygonRenderer::drawBufferObject( const kvs::PolygonObject* polygon )
+void PolygonRenderer::drawBufferObject( const kvs::Camera* camera )
 {
+    const auto* polygon = kvs::PolygonObject::DownCast( m_object );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
     m_buffer_object.draw( polygon );
 }
 

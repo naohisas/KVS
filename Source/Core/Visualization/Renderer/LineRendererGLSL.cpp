@@ -125,7 +125,6 @@ LineRenderer::LineRenderer():
     m_height( 0 ),
     m_object( NULL ),
     m_shading_model( new kvs::Shader::Lambert() ),
-    m_dpr( 1.0f ),
     m_line_width( 0.0f ),
     m_line_width_range( 0.0f, 0.0f ),
     m_outline_width( 0.0f ),
@@ -156,24 +155,14 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
 
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    kvs::OpenGL::Enable( GL_BLEND );
-    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-    auto* line = kvs::LineObject::DownCast( object );
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
 
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
-        this->attachObject( object );
         this->createShaderProgram();
-        this->createBufferObject( line );
-
-        m_dpr = camera->devicePixelRatio();
-        m_line_width = line->size();
-        kvs::OpenGL::GetFloatv( GL_LINE_WIDTH_RANGE, &m_line_width_range[0] );
+        this->createBufferObject( object );
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -183,15 +172,14 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
 
     if ( this->isObjectChanged( object ) )
     {
-        this->attachObject( object );
-        this->updateBufferObject( line );
+        this->updateBufferObject( object );
         this->updateShaderProgram();
     }
 
     this->setupShaderProgram();
 
     m_shader_program.bind();
-    this->drawBufferObject( line );
+    this->drawBufferObject( camera );
     m_shader_program.unbind();
 
     BaseClass::stopTimer();
@@ -245,18 +233,6 @@ void LineRenderer::setupShaderProgram()
     m_shader_program.setUniform( "ModelViewMatrix", M );
     m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
     m_shader_program.setUniform( "NormalMatrix", N );
-
-    const float dpr = m_dpr;
-    const float line_width = kvs::Math::Min(
-        m_line_width + m_outline_width * 2.0f, m_line_width_range[1] );
-    const float outline_width = kvs::Math::Min(
-        m_outline_width, m_line_width_range[1] * 0.5f );
-    m_shader_program.setUniform( "screen_width", float( m_width ) * dpr );
-    m_shader_program.setUniform( "screen_height",  float( m_height ) * dpr );
-    m_shader_program.setUniform( "line_width_range", m_line_width_range * dpr );
-    m_shader_program.setUniform( "line_width", line_width * dpr );
-    m_shader_program.setUniform( "outline_width", outline_width * dpr );
-    m_shader_program.setUniform( "outline_color", m_outline_color.toVec3() );
 }
 
 /*===========================================================================*/
@@ -265,23 +241,40 @@ void LineRenderer::setupShaderProgram()
  *  @param  line [in] pointer to the line object
  */
 /*===========================================================================*/
-void LineRenderer::createBufferObject( const kvs::LineObject* line )
+void LineRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
+    const auto* line = kvs::LineObject::DownCast( object );
+    m_line_width = line->size();
+    kvs::OpenGL::GetFloatv( GL_LINE_WIDTH_RANGE, &m_line_width_range[0] );
+
+    m_object = object;
     m_buffer_object.set( line );
     m_buffer_object.create();
 }
 
-void LineRenderer::updateBufferObject( const kvs::LineObject* line )
+void LineRenderer::updateBufferObject( const kvs::ObjectBase* object )
 {
     m_buffer_object.release();
-    this->createBufferObject( line );
+    this->createBufferObject( object );
 }
 
-void LineRenderer::drawBufferObject( const kvs::LineObject* line )
+void LineRenderer::drawBufferObject( const kvs::Camera* camera )
 {
-    const float dpr = m_dpr;
-    const float line_width = kvs::Math::Min(
-        line->size() + m_outline_width * 2.0f, m_line_width_range[1] );
+    const auto* line = kvs::LineObject::DownCast( m_object );
+    const float dpr = camera->devicePixelRatio();
+    const float line_width = kvs::Math::Min( line->size() + m_outline_width * 2.0f, m_line_width_range[1] );
+    const float outline_width = kvs::Math::Min( m_outline_width, m_line_width_range[1] * 0.5f );
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "screen_width", float( m_width ) * dpr );
+    m_shader_program.setUniform( "screen_height",  float( m_height ) * dpr );
+    m_shader_program.setUniform( "line_width_range", m_line_width_range * dpr );
+    m_shader_program.setUniform( "line_width", line_width * dpr );
+    m_shader_program.setUniform( "outline_width", outline_width * dpr );
+    m_shader_program.setUniform( "outline_color", m_outline_color.toVec3() );
+
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     kvs::OpenGL::SetLineWidth( line_width * dpr );
     m_buffer_object.draw( line );
 }

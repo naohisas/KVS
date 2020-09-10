@@ -88,9 +88,6 @@ public:
         }
     }
 
-    template <typename ShadingType>
-    KVS_DEPRECATED( void setShader( const ShadingType shader ) ) { this->setShadingModel<ShadingType>( shader ); }
-
 protected:
     kvs::Shader::ShadingModel& shadingModel() { return *m_shading_model; }
     kvs::ProgramObject& shader() { return m_shader_program; }
@@ -99,14 +96,18 @@ protected:
     bool isWindowResized( size_t w, size_t h ) { return m_width != w || m_height != h; }
     bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
     void setWindowSize( size_t w, size_t h ) { m_width = w; m_height = h; }
-    void attachObject( const kvs::ObjectBase* o ) { m_object = o; }
 
     void createShaderProgram();
     void updateShaderProgram();
     void setupShaderProgram();
-    void createBufferObject( const kvs::PolygonObject* polygon );
-    void updateBufferObject( const kvs::PolygonObject* polygon );
-    void drawBufferObject( const kvs::PolygonObject* polygon );
+    void createBufferObject( const kvs::ObjectBase* object );
+    void updateBufferObject( const kvs::ObjectBase* object );
+    void drawBufferObject( const kvs::Camera* camera );
+
+public:
+    template <typename ShadingType>
+    KVS_DEPRECATED( void setShader( const ShadingType shader ) )
+    { this->setShadingModel<ShadingType>( shader ); }
 };
 
 } // end of namespace glsl

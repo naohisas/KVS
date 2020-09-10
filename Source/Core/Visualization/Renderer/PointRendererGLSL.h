@@ -52,9 +52,7 @@ private:
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
     kvs::Shader::ShadingModel* m_shading_model; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
-
-    float m_dpr;
-    BufferObject m_buffer_object;
+    BufferObject m_buffer_object; ///< buffer object (G-buffer)
 
 public:
     PointRenderer();
@@ -71,7 +69,7 @@ public:
     template <typename Model>
     void setShadingModel( const Model model )
     {
-        if ( m_shading_model ) { delete m_shading_model; m_shading_model = NULL; }
+        if ( m_shading_model ) { delete m_shading_model; }
         m_shading_model = new Model( model );
         if ( !m_shading_model )
         {
@@ -79,10 +77,7 @@ public:
         }
     }
 
-    template <typename ShadingType>
-    KVS_DEPRECATED( void setShader( const ShadingType shader ) ) { this->setShadingModel<ShadingType>( shader ); }
-
-private:
+protected:
     kvs::Shader::ShadingModel& shadingModel() { return *m_shading_model; }
     kvs::ProgramObject& shader() { return m_shader_program; }
 
@@ -90,14 +85,18 @@ private:
     bool isWindowResized( size_t w, size_t h ) { return m_width != w || m_height != h; }
     bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
     void setWindowSize( size_t w, size_t h ) { m_width = w; m_height = h; }
-    void attachObject( const kvs::ObjectBase* o ) { m_object = o; }
 
     void createShaderProgram();
     void updateShaderProgram();
     void setupShaderProgram();
-    void createBufferObject( const kvs::PointObject* point );
-    void updateBufferObject( const kvs::PointObject* point );
-    void drawBufferObject( const kvs::PointObject* point );
+    void createBufferObject( const kvs::ObjectBase* object );
+    void updateBufferObject( const kvs::ObjectBase* object );
+    void drawBufferObject( const kvs::Camera* camera );
+
+public:
+    template <typename ShadingType>
+    KVS_DEPRECATED( void setShader( const ShadingType shader ) )
+    { this->setShadingModel<ShadingType>( shader ); }
 };
 
 } // end of namespace glsl

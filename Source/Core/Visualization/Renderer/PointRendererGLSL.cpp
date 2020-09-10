@@ -80,8 +80,7 @@ PointRenderer::PointRenderer():
     m_width( 0 ),
     m_height( 0 ),
     m_object( NULL ),
-    m_shading_model( new kvs::Shader::Lambert() ),
-    m_dpr( 1.0f )
+    m_shading_model( new kvs::Shader::Lambert() )
 {
 }
 
@@ -107,21 +106,15 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
 {
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    kvs::OpenGL::Enable( GL_POINT_SMOOTH ); // Rounded shape.
 
-    auto* point = kvs::PointObject::DownCast( object );
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
 
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
-        this->attachObject( object );
+        this->createBufferObject( object );
         this->createShaderProgram();
-        this->createBufferObject( point );
-
-        m_dpr = camera->devicePixelRatio();
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -131,15 +124,14 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
 
     if ( this->isObjectChanged( object ) )
     {
-        this->attachObject( object );
-        this->updateBufferObject( point );
+        this->updateBufferObject( object );
         this->updateShaderProgram();
     }
 
     this->setupShaderProgram();
 
     m_shader_program.bind();
-    this->drawBufferObject( point );
+    this->drawBufferObject( camera );
     m_shader_program.unbind();
 
     BaseClass::stopTimer();
@@ -202,22 +194,28 @@ void PointRenderer::setupShaderProgram()
  *  @param  point [in] pointer to the point object
  */
 /*===========================================================================*/
-void PointRenderer::createBufferObject( const kvs::PointObject* point )
+void PointRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
-    m_buffer_object.set( point );
+    m_object = object;
+    m_buffer_object.set( kvs::PointObject::DownCast( object ) );
     m_buffer_object.create();
 }
 
-void PointRenderer::updateBufferObject( const kvs::PointObject* point )
+void PointRenderer::updateBufferObject( const kvs::ObjectBase* object )
 {
     m_buffer_object.release();
-    this->createBufferObject( point );
+    this->createBufferObject( object );
 }
 
-void PointRenderer::drawBufferObject( const kvs::PointObject* point )
+void PointRenderer::drawBufferObject( const kvs::Camera* camera )
 {
-    const float dpr = m_dpr;
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_POINT_SMOOTH ); // Rounded shape.
+
+    const auto* point = kvs::PointObject::DownCast( m_object );
+    const float dpr = camera->devicePixelRatio();
     kvs::OpenGL::SetPointSize( point->size() * dpr );
+
     m_buffer_object.draw( point );
 }
 
