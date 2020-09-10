@@ -104,7 +104,6 @@ void StochasticLineRenderer::Engine::create(
     kvs::Light* light )
 {
     auto* line = kvs::LineObject::DownCast( object );
-
     attachObject( object );
     createRandomTexture();
     this->create_shader_program();
@@ -141,13 +140,12 @@ void StochasticLineRenderer::Engine::setup(
 {
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    m_shader_program.bind();
+    kvs::ProgramObject::Binder bind2( m_shader_program );
     m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
     m_shader_program.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
     m_shader_program.setUniform( "random_texture", 0 );
     m_shader_program.setUniform( "opacity", m_line_opacity / 255.0f );
     m_shader_program.setUniform( "line_offset", m_line_offset );
-    m_shader_program.unbind();
 }
 
 /*===========================================================================*/

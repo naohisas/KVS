@@ -62,7 +62,6 @@ void LineRenderer::BufferObject::set( const kvs::LineObject* line )
 
     auto coords = line->coords();
     auto colors = ::VertexColors( line );
-
     m_manager.setVertexArray( coords, 3 );
     m_manager.setColorArray( colors, 3 );
     if ( m_has_connection ) { m_manager.setIndexArray( line->connections() ); }
@@ -110,7 +109,6 @@ void LineRenderer::BufferObject::draw( const kvs::LineObject* line )
             m_manager.drawArrays( GL_LINE_STRIP, 0, nvertices );
         }
     }
-
 }
 
 /*===========================================================================*/
@@ -264,7 +262,6 @@ void LineRenderer::drawBufferObject( const kvs::Camera* camera )
     const float dpr = camera->devicePixelRatio();
     const float line_width = kvs::Math::Min( line->size() + m_outline_width * 2.0f, m_line_width_range[1] );
     const float outline_width = kvs::Math::Min( m_outline_width, m_line_width_range[1] * 0.5f );
-    kvs::ProgramObject::Binder bind( m_shader_program );
     m_shader_program.setUniform( "screen_width", float( m_width ) * dpr );
     m_shader_program.setUniform( "screen_height",  float( m_height ) * dpr );
     m_shader_program.setUniform( "line_width_range", m_line_width_range * dpr );
