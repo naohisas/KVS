@@ -57,8 +57,6 @@ private:
 
     kvs::Real32 m_radius_size;
     kvs::Real32 m_halo_size;
-    // kvs::Texture2D m_shape_texture;
-    // kvs::Texture2D m_diffuse_texture;
     BufferObject m_buffer_object;
 
 public:
@@ -101,9 +99,6 @@ protected:
     void createBufferObject( const kvs::ObjectBase* object );
     void updateBufferObject( const kvs::ObjectBase* object );
     void drawBufferObject( const kvs::Camera* camera );
-
-//    void createShapeTexture();
-//    void createDiffuseTexture();
 
 public:
     template <typename ShadingType>

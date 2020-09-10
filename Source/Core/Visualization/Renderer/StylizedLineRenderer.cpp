@@ -421,8 +421,6 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         this->setWindowSize( width, height );
         this->createShaderProgram();
         this->createBufferObject( object );
-//        this->createShapeTexture();
-//        this->createDiffuseTexture();
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -519,11 +517,6 @@ void StylizedLineRenderer::updateBufferObject( const kvs::ObjectBase* object )
 
 void StylizedLineRenderer::drawBufferObject( const kvs::Camera* camera )
 {
-    // kvs::Texture::Binder unit0( m_shape_texture, 0 );
-    // kvs::Texture::Binder unit1( m_diffuse_texture, 1 );
-    // m_shader_program.setUniform( "shape_texture", 0 );
-    // m_shader_program.setUniform( "diffuse_texture", 1 );
-
     const auto* line = kvs::LineObject::DownCast( m_object );
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::Enable( GL_TEXTURE_2D );
@@ -532,88 +525,5 @@ void StylizedLineRenderer::drawBufferObject( const kvs::Camera* camera )
     kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
     m_buffer_object.draw( line );
 }
-
-#if 0
-void StylizedLineRenderer::createShapeTexture()
-{
-    const size_t resolution = 256;
-    kvs::ValueArray<kvs::Real32> shape( resolution * resolution * 4 );
-    for ( size_t j = 0, index = 0; j < resolution; j++ )
-    {
-        for ( size_t i = 0; i < resolution; i++, index++ )
-        {
-            const size_t index4 = index * 4;
-            const kvs::Real32 x = ( i * 2.0f ) / kvs::Real32( resolution ) - 1.0f;
-
-            // Cylinder shape.
-            shape[ index4 + 0 ] = x * 0.5f + 0.5f;
-            shape[ index4 + 1 ] = std::sqrt( 1.0f - x * x );
-            shape[ index4 + 2 ] = std::sqrt( 1.0f - x * x );
-        }
-    }
-
-    m_shape_texture.setWrapS( GL_REPEAT );
-    m_shape_texture.setWrapT( GL_REPEAT );
-    m_shape_texture.setMagFilter( GL_NEAREST );
-    m_shape_texture.setMinFilter( GL_NEAREST );
-    m_shape_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT );
-    m_shape_texture.create( resolution, resolution, shape.data() );
-}
-
-void StylizedLineRenderer::createDiffuseTexture()
-{
-/*
-    const int resolution = 256;
-    kvs::ValueArray<kvs::Real32> diffuse( resolution * resolution * 4 );
-    for ( int j = 0, index = 0; j < resolution; j++ )
-    {
-        for ( int i = 0; i < resolution; i++, index++ )
-        {
-            const size_t index4 = index * 4;
-//            const size_t index4 = ( j * resolution + i ) * 4;
-//            const float x = kvs::Real32(i) / kvs::Real32( resolution );
-            const float y = kvs::Real32(j) / kvs::Real32( resolution );
-
-            if ( abs( ( resolution / 2 ) - i ) > ( j % ( resolution / 4 ) ) )
-            {
-                diffuse[ index4 + 0 ] = 1.0f;
-                diffuse[ index4 + 1 ] = 1.0f;
-                diffuse[ index4 + 2 ] = 1.0f;
-            }
-            else
-            {
-                diffuse[ index4 + 0 ] = 0.5f;
-                diffuse[ index4 + 1 ] = 0.5f;
-                diffuse[ index4 + 2 ] = 0.5f;
-            }
-            diffuse[ index4 + 3 ] = 1.0f;
-
-//            diffuse[ index4 + 0 ] = (y * 4.0f) - (float)(int)(y*4.0f);
-//            diffuse[ index4 + 1 ] = (y * 4.0f) - (float)(int)(y*4.0f);
-//            diffuse[ index4 + 2 ] = (y * 4.0f) - (float)(int)(y*4.0f);
-//            diffuse[ index4 + 3 ] = 1.0f;
-        }
-    }
-    m_diffuse_texture.setWrapS( GL_REPEAT );
-    m_diffuse_texture.setWrapT( GL_REPEAT );
-    m_diffuse_texture.setMagFilter( GL_LINEAR );
-    m_diffuse_texture.setMinFilter( GL_LINEAR );
-    m_diffuse_texture.setPixelFormat( GL_RGBA32F, GL_RGBA, GL_FLOAT );
-    m_diffuse_texture.create( resolution, resolution, diffuse.data() );
-*/
-
-    kvs::ValueArray<kvs::UInt8> diffuse( 3 );
-    diffuse[0] = 255;
-    diffuse[1] = 255;
-    diffuse[2] = 255;
-
-    m_diffuse_texture.setWrapS( GL_REPEAT );
-    m_diffuse_texture.setWrapT( GL_REPEAT );
-    m_diffuse_texture.setMagFilter( GL_LINEAR );
-    m_diffuse_texture.setMinFilter( GL_LINEAR );
-    m_diffuse_texture.setPixelFormat( GL_RGB, GL_RGB, GL_UNSIGNED_BYTE );
-    m_diffuse_texture.create( 1, 1, diffuse.data() );
-}
-#endif
 
 } // end of namespace kvs
