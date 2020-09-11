@@ -106,9 +106,12 @@ protected:
 
 public:
     template <typename ShadingType>
-    KVS_DEPRECATED( void setShader( const ShadingType shader ) )
-    { this->setShadingModel<ShadingType>( shader ); }
+    KVS_DEPRECATED( void setShader( const ShadingType shader ) );
 };
+
+template <typename ShadingType>
+inline void PolygonRenderer::setShader( const ShadingType shader )
+{ this->setShadingModel<ShadingType>( shader ); }
 
 } // end of namespace glsl
 
