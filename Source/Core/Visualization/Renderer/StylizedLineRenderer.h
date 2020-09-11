@@ -87,6 +87,9 @@ public:
     }
 
 protected:
+    kvs::Shader::ShadingModel& shadingModel() { return *m_shading_model; }
+    kvs::ProgramObject& shader() { return m_shader_program; }
+
     bool isWindowCreated() { return m_width == 0 && m_height == 0; }
     bool isWindowResized( size_t w, size_t h ) { return m_width != w || m_height != h; }
     bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
