@@ -61,7 +61,7 @@ int main( int argc, char** argv )
     delete point;
 
     kvs::StylizedLineRenderer* renderer = new kvs::StylizedLineRenderer();
-    renderer->setShader( kvs::Shader::BlinnPhong() );
+    renderer->setShadingModel( kvs::Shader::BlinnPhong() );
     renderer->enableShading();
 
     kvs::Screen screen( &app );
