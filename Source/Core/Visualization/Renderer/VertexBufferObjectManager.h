@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   VertexBufferObjectManager.h
+ *  @file   VertexBufferObjectManager.cpp
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
