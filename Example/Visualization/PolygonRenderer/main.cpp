@@ -49,7 +49,7 @@ int main( int argc, char** argv )
     if ( glsl )
     {
         kvs::glsl::PolygonRenderer* renderer = new kvs::glsl::PolygonRenderer();
-        renderer->setShader( kvs::Shader::Phong() );
+        renderer->setShadingModel( kvs::Shader::Phong() );
         screen.setTitle( "kvs::glsl::PolygonRenderer" );
         screen.registerObject( object, renderer );
     }

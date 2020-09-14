@@ -11,6 +11,7 @@
 #include <kvs/Shader>
 #include <kvs/ProgramObject>
 #include <kvs/VertexBufferObjectManager>
+#include <string>
 
 
 namespace kvs
@@ -29,14 +30,29 @@ class PointRenderer : public kvs::PointRenderer
     kvsModule( kvs::glsl::PointRenderer, Renderer );
     kvsModuleBaseClass( kvs::PointRenderer );
 
+public:
+    class BufferObject
+    {
+    private:
+        kvs::VertexBufferObjectManager m_manager; ///< VBOs
+    public:
+        BufferObject() {}
+        kvs::VertexBufferObjectManager& manager() { return m_manager; }
+        void create() { m_manager.create(); }
+        void release() { m_manager.release(); }
+        void set( const kvs::PointObject* point );
+        void draw( const kvs::PointObject* point );
+    };
+
 private:
+    std::string m_vert_file; ///< vertex shader file
+    std::string m_frag_file; ///< fragment shader file
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
-    bool m_has_normal; ///< check flag for the normal array
-    kvs::Shader::ShadingModel* m_shader; ///< shading method
+    kvs::Shader::ShadingModel* m_shading_model; ///< shading method
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
+    BufferObject m_buffer_object; ///< buffer object (G-buffer)
 
 public:
     PointRenderer();
@@ -44,29 +60,47 @@ public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-    template <typename ShadingType>
-    void setShader( const ShadingType shader );
+    const std::string& vertexShaderFile() const { return m_vert_file; }
+    const std::string& fragmentShaderFile() const { return m_frag_file; }
 
-private:
-    void create_shader_program();
-    void create_buffer_object( const kvs::PointObject* point );
+    void setVertexShaderFile( const std::string& vert_file ) { m_vert_file = vert_file; }
+    void setFragmentShaderFile( const std::string& frag_file ) { m_frag_file = frag_file; }
+
+    template <typename Model>
+    void setShadingModel( const Model model )
+    {
+        if ( m_shading_model ) { delete m_shading_model; }
+        m_shading_model = new Model( model );
+        if ( !m_shading_model )
+        {
+            kvsMessageError("Cannot create a specified shading model.");
+        }
+    }
+
+protected:
+    kvs::Shader::ShadingModel& shadingModel() { return *m_shading_model; }
+    kvs::ProgramObject& shader() { return m_shader_program; }
+
+    bool isWindowCreated() { return m_width == 0 && m_height == 0; }
+    bool isWindowResized( size_t w, size_t h ) { return m_width != w || m_height != h; }
+    bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
+    void setWindowSize( size_t w, size_t h ) { m_width = w; m_height = h; }
+
+    void createShaderProgram();
+    void updateShaderProgram();
+    void setupShaderProgram();
+    void createBufferObject( const kvs::ObjectBase* object );
+    void updateBufferObject( const kvs::ObjectBase* object );
+    void drawBufferObject( const kvs::Camera* camera );
+
+public:
+    template <typename ShadingType>
+    KVS_DEPRECATED( void setShader( const ShadingType shader ) );
 };
 
 template <typename ShadingType>
 inline void PointRenderer::setShader( const ShadingType shader )
-{
-    if ( m_shader )
-    {
-        delete m_shader;
-        m_shader = NULL;
-    }
-
-    m_shader = new ShadingType( shader );
-    if ( !m_shader )
-    {
-        kvsMessageError("Cannot create a specified shader.");
-    }
-};
+{ this->setShadingModel<ShadingType>( shader ); }
 
 } // end of namespace glsl
 

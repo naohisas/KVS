@@ -199,6 +199,18 @@
 + kvs::mpi::Communicator::root()
 + kvs::mpi::Communicator::abort()
 + kvs::mpi::Communicator::barrier()
++ kvs::glsl::PointRenderer::setVertexShaderFile( vert_file )
++ kvs::glsl::PointRenderer::setFragmentShaderFile( frag_file )
++ kvs::glsl::PointRenderer::setShaderFiles( vert_file, frag_file )
++ kvs::glsl::PointRenderer::ShadingModel<Model>( model )
++ kvs::glsl::LineRenderer::setVertexShaderFile( vert_file )
++ kvs::glsl::LineRenderer::setFragmentShaderFile( frag_file )
++ kvs::glsl::LineRenderer::setShaderFiles( vert_file, frag_file )
++ kvs::glsl::LineRenderer::ShadingModel<Model>( model )
++ kvs::glsl::PolygonRenderer::setVertexShaderFile( vert_file )
++ kvs::glsl::PolygonRenderer::setFragmentShaderFile( frag_file )
++ kvs::glsl::PolygonRenderer::setShaderFiles( vert_file, frag_file )
++ kvs::glsl::PolygonRenderer::ShadingModel<Model>( model )
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
@@ -272,6 +284,9 @@
 + kvs::WidgetBase::activate (use kvs::WidgetBase::setActive(true))
 + kvs::WidgetBase::deactivate (use kvs::WidgetBase::setActive(false))
 + kvs::String::ToString (use kvs::String::From)
++ kvs::glsl::PointRenderer::setShader (use kvs::glsl::PointRenderer::setShadingModel )
++ kvs::glsl::LineRenderer::setShader (use kvs::glsl::LineRenderer::setShadingModel )
++ kvs::glsl::PolygonRenderer::setShader (use kvs::glsl::PolygonRenderer::setShadingModel )
 
 **Removed deprecated class and method**
 + kvs::Material

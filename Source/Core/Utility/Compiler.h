@@ -338,6 +338,19 @@
 #define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
     ( 16 > ( major ) || ( 16 == ( major ) && 6 >= ( minor ) ) )
 
+// Visual Studio 2019 Update 7
+#elif ( _MSC_VER == 1927 )
+#define KVS_COMPILER_VERSION "16.7"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 7 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 7 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 7 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 7 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 7 >= ( minor ) ) )
+
 #else
 #define KVS_COMPILER_VERSION "unknown"
 #define KVS_COMPILER_VERSION_IS( major, minor )

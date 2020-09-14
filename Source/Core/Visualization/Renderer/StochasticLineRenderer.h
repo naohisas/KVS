@@ -8,6 +8,7 @@
 #include <kvs/Module>
 #include <kvs/ProgramObject>
 #include <kvs/VertexBufferObjectManager>
+#include <kvs/LineRenderer>
 #include "StochasticRenderingEngine.h"
 #include "StochasticRendererBase.h"
 
@@ -43,14 +44,13 @@ public:
 /*===========================================================================*/
 class StochasticLineRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+    using BufferObject = kvs::glsl::LineRenderer::BufferObject;
+
 private:
     kvs::UInt8 m_line_opacity; ///< line opacity
-    kvs::ValueArray<GLint> m_first_array; ///< array of starting indices for the polyline
-    kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
-    bool m_has_connection; ///< check flag for the connection array
     float m_line_offset; ///< line offset
     kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
+    BufferObject m_buffer_object;
 
 public:
     Engine();
