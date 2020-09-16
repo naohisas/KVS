@@ -65,7 +65,6 @@ public:
 public:
     class Binder;
 
-    static GLsizei m_buffer_alignment; //Default initalized to 1
 private:
     kvs::VertexBufferObject m_vbo;
     kvs::IndexBufferObject m_ibo;
@@ -99,10 +98,6 @@ public:
     void setIndexArray( const kvs::AnyValueArray& array );
     void setVertexAttribArray( const kvs::AnyValueArray& array, const size_t index, const size_t dim, const bool normalized = false, const size_t stride = 0 );
 
-
-    GLsizei getPaddedBufferSize(VertexBuffer buff) const{
-        return ceil(buff.size / (double)m_buffer_alignment ) * m_buffer_alignment;
-    }
     void create();
     void bind() const;
     void unbind() const;
