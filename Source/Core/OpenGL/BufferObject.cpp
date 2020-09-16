@@ -164,7 +164,7 @@ bool BufferObject::isBound() const
  *  @param  offset [in] texel offset within the existing buffer data array
  */
 /*===========================================================================*/
-void BufferObject::load( const size_t size, const void* data, const size_t offset )
+GLsizei BufferObject::load( const size_t size, const void* data, const size_t offset )
 {
     if ( !m_is_loaded )
     {
@@ -175,6 +175,7 @@ void BufferObject::load( const size_t size, const void* data, const size_t offse
     {
         this->setBufferSubData( size, data, offset );
     }
+    return paddedBufferSize(size);
 }
 
 /*===========================================================================*/
@@ -214,6 +215,12 @@ void BufferObject::deleteID()
         KVS_GL_CALL( glDeleteBuffers( 1, &m_id ) );
     }
     m_id = 0;
+}
+
+GLsizei BufferObject::paddedBufferSize(GLsizei size)
+{
+     int x = size;
+     return (x + 15) & ~15;
 }
 
 void BufferObject::setBufferData( GLsizei size, const GLvoid* data )
