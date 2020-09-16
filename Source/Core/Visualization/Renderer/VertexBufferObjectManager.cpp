@@ -4,7 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include "VertexBufferObjectManager.cpp"
+#include "VertexBufferObjectManager.h"
 #include <algorithm>
 
 
