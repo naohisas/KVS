@@ -66,6 +66,8 @@ public:
     GLuint id() const;
     GLenum target() const;
     GLenum targetBinding() const;
+    static GLsizei paddedBufferSize( GLsizei size);
+
     size_t size() const;
 
     void setUsage( const GLenum usage );
@@ -79,7 +81,7 @@ public:
     bool isValid() const;
     bool isBound() const;
 
-    void load( const size_t size, const void* data, const size_t offset = 0 );
+    GLsizei load( const size_t size, const void* data, const size_t offset = 0 );
     void* map( const GLenum access_type = kvs::BufferObject::ReadWrite );
     void unmap();
 
