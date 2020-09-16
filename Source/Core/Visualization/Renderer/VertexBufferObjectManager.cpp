@@ -4,7 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include "VertexBufferObjectManager.h"
+#include "VertexBufferObjectManager.cpp"
 #include <algorithm>
 
 
@@ -33,7 +33,6 @@ inline GLenum GLType( const kvs::AnyValueArray& array )
 namespace kvs
 {
 
-GLsizei VertexBufferObjectManager::m_buffer_alignment=1;
 
 VertexBufferObjectManager::VertexBufferObjectManager():
     m_vbo_size( 0 ),

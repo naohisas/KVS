@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**
- *  @file   VertexBufferObjectManager.cpp
+ *  @file   VertexBufferObjectManager.h
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
@@ -65,13 +65,11 @@ public:
 public:
     class Binder;
 
-    static GLsizei m_buffer_alignment; //Default initalized to 1
 private:
     kvs::VertexBufferObject m_vbo;
     kvs::IndexBufferObject m_ibo;
     size_t m_vbo_size;
     size_t m_ibo_size;
-
 
     VertexBuffer m_vertex_array;
     VertexBuffer m_color_array;
