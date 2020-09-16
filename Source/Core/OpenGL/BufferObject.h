@@ -79,7 +79,9 @@ public:
     bool isValid() const;
     bool isBound() const;
 
-    void load( const size_t size, const void* data, const size_t offset = 0 );
+    static GLsizei paddedBufferSize(GLsizei size);
+
+    GLsizei load( const size_t size, const void* data, const size_t offset = 0 );
     void* map( const GLenum access_type = kvs::BufferObject::ReadWrite );
     void unmap();
 
