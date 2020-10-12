@@ -40,9 +40,9 @@ Value::Value( const dcm::DataType type, const unsigned int length )
 {
     // Check the data type.
     dcm::DataType data_type = type;
-    if( type != dcm::DATA_STRING || type != dcm::DATA_OTHER )
+    if ( !( type == dcm::DATA_STRING || type == dcm::DATA_OTHER ) )
     {
-        if( dcm::DATA_TYPE_TO_SIZE[type] != length )
+        if ( dcm::DATA_TYPE_TO_SIZE[type] != length )
         {
             data_type = dcm::DATA_STRING;
         }
