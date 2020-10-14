@@ -49,7 +49,7 @@ namespace kvs
 namespace glsl
 {
 
-void PointRenderer::BufferObject::set( const kvs::PointObject* point )
+void PointRenderer::BufferObject::create( const kvs::PointObject* point )
 {
     const bool has_normal = point->normals().size() > 0;
     auto coords = point->coords();
@@ -58,6 +58,8 @@ void PointRenderer::BufferObject::set( const kvs::PointObject* point )
     m_manager.setVertexArray( coords, 3 );
     m_manager.setColorArray( colors, 3 );
     if ( has_normal ) { m_manager.setNormalArray( normals ); }
+
+    m_manager.create();
 }
 
 void PointRenderer::BufferObject::draw( const kvs::PointObject* point )
@@ -197,8 +199,7 @@ void PointRenderer::setupShaderProgram()
 void PointRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
     m_object = object;
-    m_buffer_object.set( kvs::PointObject::DownCast( object ) );
-    m_buffer_object.create();
+    m_buffer_object.create( kvs::PointObject::DownCast( object ) );
 }
 
 void PointRenderer::updateBufferObject( const kvs::ObjectBase* object )

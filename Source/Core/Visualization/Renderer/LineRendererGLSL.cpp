@@ -15,25 +15,251 @@
 namespace
 {
 
+inline bool HasConnections( const kvs::LineObject* line )
+{
+    bool has_connection = line->numberOfConnections() > 0;
+
+    // In the following cases, the connection stored in the line object will be ignored.
+    if ( line->colorType() == kvs::LineObject::LineColor )
+    {
+        const auto ncolors = line->numberOfColors();
+        if ( ncolors > 1 ) { has_connection = false; }
+    }
+
+    return has_connection;
+}
+
+inline kvs::ValueArray<kvs::Real32> VertexCoords( const kvs::LineObject* line )
+{
+    if ( line->colorType() == kvs::LineObject::VertexColor )
+    {
+        return line->coords();
+    }
+
+    // In case of LineColor type
+    const auto ncolors = line->numberOfColors();
+    switch ( line->lineType() )
+    {
+    case kvs::LineObject::Strip:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::Real32> coords;
+            const auto nsegments = line->numberOfVertices() - 1;
+            for ( size_t i = 0; i < nsegments; ++i )
+            {
+                const auto c0 = line->coord( i + 0 );
+                const auto c1 = line->coord( i + 1 );
+                coords.push_back( c0.x() );
+                coords.push_back( c0.y() );
+                coords.push_back( c0.z() );
+                coords.push_back( c1.x() );
+                coords.push_back( c1.y() );
+                coords.push_back( c1.z() );
+            }
+            return kvs::ValueArray<kvs::Real32>( coords );
+        }
+        break;
+    }
+    case kvs::LineObject::Uniline:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::Real32> coords;
+            const auto nsegments = line->numberOfConnections() - 1;
+            for ( size_t i = 0; i < nsegments; ++i )
+            {
+                const auto id0 = line->connections().at( i + 0 );
+                const auto id1 = line->connections().at( i + 1 );
+                const auto c0 = line->coord( id0 );
+                const auto c1 = line->coord( id1 );
+                coords.push_back( c0.x() );
+                coords.push_back( c0.y() );
+                coords.push_back( c0.z() );
+                coords.push_back( c1.x() );
+                coords.push_back( c1.y() );
+                coords.push_back( c1.z() );
+            }
+            return kvs::ValueArray<kvs::Real32>( coords );
+        }
+        break;
+    }
+    case kvs::LineObject::Polyline:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::Real32> coords;
+            const size_t nlines = line->numberOfConnections();
+            for ( size_t i = 0; i < nlines; ++i )
+            {
+                const auto id = 2 * i;
+                const auto id0 = line->connections().at( id + 0 );
+                const auto id1 = line->connections().at( id + 1 );
+                for ( size_t j = id0; j < id1; ++j )
+                {
+                    const auto c0 = line->coord( j + 0 );
+                    const auto c1 = line->coord( j + 1 );
+                    coords.push_back( c0.x() );
+                    coords.push_back( c0.y() );
+                    coords.push_back( c0.z() );
+                    coords.push_back( c1.x() );
+                    coords.push_back( c1.y() );
+                    coords.push_back( c1.z() );
+                }
+            }
+            return kvs::ValueArray<kvs::Real32>( coords );
+        }
+        break;
+    }
+    case kvs::LineObject::Segment:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::Real32> coords;
+            const auto nsegments = line->numberOfConnections();
+            for ( size_t i = 0; i < nsegments; ++i )
+            {
+                const auto id0 = line->connections().at( 2 * i + 0 );
+                const auto id1 = line->connections().at( 2 * i + 1 );
+                const auto c0 = line->coord( id0 );
+                const auto c1 = line->coord( id1 );
+                coords.push_back( c0.x() );
+                coords.push_back( c0.y() );
+                coords.push_back( c0.z() );
+                coords.push_back( c1.x() );
+                coords.push_back( c1.y() );
+                coords.push_back( c1.z() );
+            }
+            return kvs::ValueArray<kvs::Real32>( coords );
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    return line->coords();
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Returns vertex-color array.
  *  @param  line [in] pointer to the line object
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::LineObject* line )
+inline kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::LineObject* line )
 {
-    if ( line->colorType() == kvs::LineObject::VertexColor ) return line->colors();
-
-    const size_t nvertices = line->numberOfVertices();
-    const kvs::RGBColor color = line->color();
-
-    kvs::ValueArray<kvs::UInt8> colors( nvertices * 3 );
-    for ( size_t i = 0; i < nvertices; i++ )
+    if ( line->colorType() == kvs::LineObject::VertexColor )
     {
-        colors[ 3 * i + 0 ] = color.r();
-        colors[ 3 * i + 1 ] = color.g();
-        colors[ 3 * i + 2 ] = color.b();
+        return line->colors();
+    }
+
+    // In case of LineColor type
+    const auto ncolors = line->numberOfColors();
+    switch ( line->lineType() )
+    {
+    case kvs::LineObject::Strip:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::UInt8> colors;
+            const auto nsegments = line->numberOfVertices() - 1;
+            for ( size_t i = 0; i < nsegments; ++i )
+            {
+                const auto c = line->color( i );
+                colors.push_back( c.r() );
+                colors.push_back( c.g() );
+                colors.push_back( c.b() );
+                colors.push_back( c.r() );
+                colors.push_back( c.g() );
+                colors.push_back( c.b() );
+            }
+            return kvs::ValueArray<kvs::UInt8>( colors );
+        }
+        break;
+    }
+    case kvs::LineObject::Uniline:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::UInt8> colors;
+            const auto nsegments = line->numberOfConnections() - 1;
+            for ( size_t i = 0; i < nsegments; ++i )
+            {
+                const auto c = line->color( i );
+                colors.push_back( c.r() );
+                colors.push_back( c.g() );
+                colors.push_back( c.b() );
+                colors.push_back( c.r() );
+                colors.push_back( c.g() );
+                colors.push_back( c.b() );
+            }
+            return kvs::ValueArray<kvs::UInt8>( colors );
+        }
+        break;
+    }
+    case kvs::LineObject::Polyline:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::UInt8> colors;
+            const auto nlines = line->numberOfConnections();
+            for ( size_t i = 0, index = 0; i < nlines; ++i )
+            {
+                const auto id = 2 * i;
+                const auto id0 = line->connections().at( id + 0 );
+                const auto id1 = line->connections().at( id + 1 );
+                for ( size_t j = id0; j < id1; ++j, ++index )
+                {
+                    const auto c = line->color( index );
+                    colors.push_back( c.r() );
+                    colors.push_back( c.g() );
+                    colors.push_back( c.b() );
+                    colors.push_back( c.r() );
+                    colors.push_back( c.g() );
+                    colors.push_back( c.b() );
+                }
+            }
+            return kvs::ValueArray<kvs::UInt8>( colors );
+        }
+        break;
+    }
+    case kvs::LineObject::Segment:
+    {
+        if ( ncolors > 1 )
+        {
+            std::vector<kvs::UInt8> colors;
+            const auto nsegments = line->numberOfConnections();
+            for ( size_t i = 0; i < nsegments; ++i )
+            {
+                const auto c = line->color( i );
+                colors.push_back( c.r() );
+                colors.push_back( c.g() );
+                colors.push_back( c.b() );
+                colors.push_back( c.r() );
+                colors.push_back( c.g() );
+                colors.push_back( c.b() );
+            }
+            return kvs::ValueArray<kvs::UInt8>( colors );
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    const auto nvertices = line->numberOfVertices();
+    kvs::ValueArray<kvs::UInt8> colors( nvertices * 3 );
+    colors.fill(0);
+    if ( ncolors == 1 )
+    {
+        const auto c = line->color();
+        for ( size_t i = 0; i < nvertices; ++i )
+        {
+            colors[ 3 * i + 0 ] = c.r();
+            colors[ 3 * i + 1 ] = c.g();
+            colors[ 3 * i + 2 ] = c.b();
+        }
     }
 
     return colors;
@@ -47,36 +273,31 @@ namespace kvs
 namespace glsl
 {
 
-void LineRenderer::BufferObject::set( const kvs::LineObject* line )
+void LineRenderer::BufferObject::create( const kvs::LineObject* line )
 {
-    if ( line->numberOfColors() != 1 &&
-         line->colorType() == kvs::LineObject::LineColor )
-    {
-        kvsMessageError("Not supported line color type.");
-        return;
-    }
-
-    const auto type = line->lineType();
-    m_has_connection = line->numberOfConnections() > 0 &&
-        ( type == kvs::LineObject::Segment || type == kvs::LineObject::Uniline );
-
-    auto coords = line->coords();
-    auto colors = ::VertexColors( line );
+    const auto coords = ::VertexCoords( line );
+    const auto colors = ::VertexColors( line );
     m_manager.setVertexArray( coords, 3 );
     m_manager.setColorArray( colors, 3 );
-    if ( m_has_connection ) { m_manager.setIndexArray( line->connections() ); }
-
-    if ( ( !m_has_connection ) && ( type == kvs::LineObject::Polyline ) )
+    if ( ::HasConnections( line ) )
     {
-        const kvs::UInt32* pconnections = line->connections().data();
-        m_first_array.allocate( line->numberOfConnections() );
-        m_count_array.allocate( m_first_array.size() );
-        for ( size_t i = 0; i < m_first_array.size(); ++i )
+        if ( line->lineType() == kvs::LineObject::Polyline )
         {
-            m_first_array[i] = pconnections[ 2 * i ];
-            m_count_array[i] = pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1;
+            const kvs::UInt32* pconnections = line->connections().data();
+            m_first_array.allocate( line->numberOfConnections() );
+            m_count_array.allocate( m_first_array.size() );
+            for ( size_t i = 0; i < m_first_array.size(); ++i )
+            {
+                m_first_array[i] = pconnections[ 2 * i ];
+                m_count_array[i] = pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1;
+            }
+        }
+        else
+        {
+            m_manager.setIndexArray( line->connections() );
         }
     }
+    m_manager.create();
 }
 
 void LineRenderer::BufferObject::draw( const kvs::LineObject* line )
@@ -84,29 +305,46 @@ void LineRenderer::BufferObject::draw( const kvs::LineObject* line )
     kvs::VertexBufferObjectManager::Binder bind( m_manager );
 
     // Draw lines.
-    const auto type = line->lineType();
-    if ( m_has_connection )
+    if ( m_first_array.size() > 0 )
     {
-        const size_t nlines = line->numberOfConnections();
-        if ( type == kvs::LineObject::Uniline )
-        {
-            m_manager.drawElements( GL_LINE_STRIP, nlines );
-        }
-        else if ( type ==  kvs::LineObject::Segment )
-        {
-            m_manager.drawElements( GL_LINES, 2 * nlines );
-        }
+        // kvs::LineObject::Polyline
+        m_manager.drawArrays( GL_LINE_STRIP, m_first_array, m_count_array );
     }
     else
     {
-        if ( type == kvs::LineObject::Polyline )
+        if ( ::HasConnections( line ) )
         {
-            m_manager.drawArrays( GL_LINE_STRIP, m_first_array, m_count_array );
+            const size_t nlines = line->numberOfConnections();
+            switch ( line->lineType() )
+            {
+            case kvs::LineObject::Uniline:
+            {
+                m_manager.drawElements( GL_LINE_STRIP, nlines );
+                break;
+            }
+            case kvs::LineObject::Segment:
+            {
+                m_manager.drawElements( GL_LINES, 2 * nlines );
+                break;
+            }
+            default:
+                break;
+            }
         }
-        else if ( type == kvs::LineObject::Strip )
+        else
         {
-            const size_t nvertices = line->numberOfVertices();
-            m_manager.drawArrays( GL_LINE_STRIP, 0, nvertices );
+            if ( line->lineType() == kvs::LineObject::Strip &&
+                 line->coords().byteSize() == m_manager.vertexArray().size )
+            {
+                const size_t nvertices = line->numberOfVertices();
+                m_manager.drawArrays( GL_LINE_STRIP, 0, nvertices );
+            }
+            else
+            {
+                const size_t nelements = m_manager.vertexArray().size / sizeof( kvs::Real32 );
+                const size_t nvertices = nelements / 3;
+                m_manager.drawArrays( GL_LINES, 0, nvertices );
+            }
         }
     }
 }
@@ -246,8 +484,7 @@ void LineRenderer::createBufferObject( const kvs::ObjectBase* object )
     kvs::OpenGL::GetFloatv( GL_LINE_WIDTH_RANGE, &m_line_width_range[0] );
 
     m_object = object;
-    m_buffer_object.set( line );
-    m_buffer_object.create();
+    m_buffer_object.create( line );
 }
 
 void LineRenderer::updateBufferObject( const kvs::ObjectBase* object )
@@ -262,6 +499,7 @@ void LineRenderer::drawBufferObject( const kvs::Camera* camera )
     const float dpr = camera->devicePixelRatio();
     const float line_width = kvs::Math::Min( line->size() + m_outline_width * 2.0f, m_line_width_range[1] );
     const float outline_width = kvs::Math::Min( m_outline_width, m_line_width_range[1] * 0.5f );
+
     m_shader_program.setUniform( "screen_width", float( m_width ) * dpr );
     m_shader_program.setUniform( "screen_height",  float( m_height ) * dpr );
     m_shader_program.setUniform( "line_width_range", m_line_width_range * dpr );

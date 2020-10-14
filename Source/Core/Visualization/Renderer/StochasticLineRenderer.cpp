@@ -171,6 +171,7 @@ void StochasticLineRenderer::Engine::draw(
 
     kvs::Texture::Binder bind3( randomTexture() );
     auto* line = kvs::LineObject::DownCast( object );
+    kvs::OpenGL::SetLineWidth( line->size() * camera->devicePixelRatio() );
     m_buffer_object.draw( line );
 }
 
@@ -206,8 +207,7 @@ void StochasticLineRenderer::Engine::create_buffer_object( const kvs::LineObject
 
     auto location = m_shader_program.attributeLocation( "random_index" );
     m_buffer_object.manager().setVertexAttribArray( indices, location, 2 );
-    m_buffer_object.set( line );
-    m_buffer_object.create();
+    m_buffer_object.create( line );
 }
 
 } // end of namespace kvs

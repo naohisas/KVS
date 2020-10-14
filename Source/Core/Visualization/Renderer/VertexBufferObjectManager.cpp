@@ -135,7 +135,7 @@ void VertexBufferObjectManager::create()
             if ( m_color_array.size > 0 )
             {
                 m_color_array.offset = offset;
-                offset += m_vbo.load( m_color_array.size, m_color_array.pointer,  m_color_array.offset );
+                offset += m_vbo.load( m_color_array.size, m_color_array.pointer, m_color_array.offset );
             }
 
             if ( m_normal_array.size > 0 )

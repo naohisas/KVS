@@ -37,9 +37,8 @@ public:
     public:
         BufferObject(): m_has_connection( false ) {}
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
-        void create() { m_manager.create(); }
         void release() { m_manager.release(); }
-        void set( const kvs::LineObject* line, const kvs::Real32 halo, const kvs::Real32 radius );
+        void create( const kvs::LineObject* line, const kvs::Real32 halo, const kvs::Real32 radius );
         void draw( const kvs::LineObject* line );
     private:
         void create_shape_texture();

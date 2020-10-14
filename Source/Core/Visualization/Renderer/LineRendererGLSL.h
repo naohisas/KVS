@@ -34,13 +34,11 @@ public:
         kvs::VertexBufferObjectManager m_manager; ///< VBOs
         kvs::ValueArray<GLint> m_first_array; ///< array of starting indices for the polyline
         kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
-        bool m_has_connection;
     public:
-        BufferObject(): m_has_connection( false ) {}
+        BufferObject() {}
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
-        void create() { m_manager.create(); }
         void release() { m_manager.release(); }
-        void set( const kvs::LineObject* line );
+        void create( const kvs::LineObject* line );
         void draw( const kvs::LineObject* line );
     };
 

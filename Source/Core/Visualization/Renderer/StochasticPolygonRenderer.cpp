@@ -240,8 +240,7 @@ void StochasticPolygonRenderer::Engine::create_buffer_object( const kvs::Polygon
 
     auto location = m_shader_program.attributeLocation( "random_index" );
     m_buffer_object.manager().setVertexAttribArray( indices, location, 2 );
-    m_buffer_object.set( polygon );
-    m_buffer_object.create();
+    m_buffer_object.create( polygon );
 }
 
 } // end of namespace kvs

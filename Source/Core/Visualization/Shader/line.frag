@@ -29,13 +29,16 @@ uniform vec3 outline_color;
 void main()
 {
     // Outline.
-    float center_line_width = line_width * 0.5 - outline_width;
-    if ( distance( gl_FragCoord.xy, center ) >= center_line_width )
+    if ( outline_width > 0.0 )
     {
-        // The opacity value is set to 0.9 for diminishing aliasing.
-        float opacity = 0.9;
-        gl_FragColor = vec4( outline_color, opacity );
-        return;
+        float center_line_width = line_width * 0.5 - outline_width;
+        if ( distance( gl_FragCoord.xy, center ) >= center_line_width )
+        {
+            // The opacity value is set to 0.9 for diminishing aliasing.
+            float opacity = 0.9;
+            gl_FragColor = vec4( outline_color, opacity );
+            return;
+        }
     }
 
     vec3 color = gl_Color.rgb;

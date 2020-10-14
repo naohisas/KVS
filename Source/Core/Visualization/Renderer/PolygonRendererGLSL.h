@@ -39,9 +39,8 @@ public:
     public:
         BufferObject() {}
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
-        void create() { m_manager.create(); }
         void release() { m_manager.release(); }
-        void set( const kvs::PolygonObject* polygon );
+        void create( const kvs::PolygonObject* polygon );
         void draw( const kvs::PolygonObject* polygon );
     };
 

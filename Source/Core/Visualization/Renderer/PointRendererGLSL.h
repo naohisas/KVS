@@ -38,9 +38,8 @@ public:
     public:
         BufferObject() {}
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
-        void create() { m_manager.create(); }
         void release() { m_manager.release(); }
-        void set( const kvs::PointObject* point );
+        void create( const kvs::PointObject* point );
         void draw( const kvs::PointObject* point );
     };
 

@@ -343,7 +343,7 @@ namespace kvs
 namespace glsl
 {
 
-void PolygonRenderer::BufferObject::set( const kvs::PolygonObject* polygon )
+void PolygonRenderer::BufferObject::create( const kvs::PolygonObject* polygon )
 {
     if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
     {
@@ -362,6 +362,8 @@ void PolygonRenderer::BufferObject::set( const kvs::PolygonObject* polygon )
     m_manager.setColorArray( colors, 4 );
     if ( has_normal ) { m_manager.setNormalArray( normals ); }
     if ( has_connection ) { m_manager.setIndexArray( polygon->connections() ); }
+
+    m_manager.create();
 }
 
 void PolygonRenderer::BufferObject::draw( const kvs::PolygonObject* polygon )
@@ -515,8 +517,7 @@ void PolygonRenderer::setupShaderProgram()
 void PolygonRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
     m_object = object;
-    m_buffer_object.set( kvs::PolygonObject::DownCast( object ) );
-    m_buffer_object.create();
+    m_buffer_object.create( kvs::PolygonObject::DownCast( object ) );
 }
 
 void PolygonRenderer::updateBufferObject( const kvs::ObjectBase* object )

@@ -206,10 +206,11 @@ void Rendering_Uniline_LC_S( const kvs::LineObject* line, const float dpr )
     kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
     kvs::OpenGL::Begin( GL_LINE_STRIP );
     kvs::OpenGL::Color( line->color(0) );
-    const size_t nconnections = line->numberOfConnections();
-    for ( size_t i = 0; i < nconnections; i++ )
+    const size_t nsegments = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < nsegments; ++i )
     {
-        kvs::OpenGL::Vertex( line->coord(i) );
+        const auto id = line->connections().at(i);
+        kvs::OpenGL::Vertex( line->coord(id) );
     }
     kvs::OpenGL::End();
 }
@@ -225,12 +226,14 @@ void Rendering_Uniline_LCs_S( const kvs::LineObject* line, const float dpr )
 {
     kvs::OpenGL::SetLineWidth( line->size(0) * dpr );
     kvs::OpenGL::Begin( GL_LINES );
-    const size_t num = line->numberOfConnections() - 1;
-    for ( size_t i = 0; i < num; i++ )
+    const size_t nsegments = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < nsegments; ++i )
     {
+        const auto id0 = line->connections().at( i + 0 );
+        const auto id1 = line->connections().at( i + 1 );
         kvs::OpenGL::Color( line->color(i) );
-        kvs::OpenGL::Vertex( line->coord(i) );
-        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::Vertex( line->coord( id0 ) );
+        kvs::OpenGL::Vertex( line->coord( id1 ) );
     }
     kvs::OpenGL::End();
 }
@@ -245,13 +248,15 @@ void Rendering_Uniline_LCs_S( const kvs::LineObject* line, const float dpr )
 void Rendering_Uniline_LC_Ss( const kvs::LineObject* line, const float dpr )
 {
     kvs::OpenGL::Color( line->color(0) );
-    const size_t num = line->numberOfConnections() - 1;
-    for ( size_t i = 0; i < num; i++ )
+    const size_t nsegments = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < nsegments; ++i )
     {
+        const auto id0 = line->connections().at( i + 0 );
+        const auto id1 = line->connections().at( i + 1 );
         kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
         kvs::OpenGL::Begin( GL_LINES );
-        kvs::OpenGL::Vertex( line->coord(i) );
-        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::Vertex( line->coord( id0 ) );
+        kvs::OpenGL::Vertex( line->coord( id1 ) );
         kvs::OpenGL::End();
     }
 }
@@ -265,14 +270,16 @@ void Rendering_Uniline_LC_Ss( const kvs::LineObject* line, const float dpr )
 /*==========================================================================*/
 void Rendering_Uniline_LCs_Ss( const kvs::LineObject* line, const float dpr )
 {
-    const size_t num = line->numberOfConnections() - 1;
-    for ( size_t i = 0; i < num; i++ )
+    const size_t nsegments = line->numberOfConnections() - 1;
+    for ( size_t i = 0; i < nsegments; ++i )
     {
+        const auto id0 = line->connections().at( i + 0 );
+        const auto id1 = line->connections().at( i + 1 );
         kvs::OpenGL::SetLineWidth( line->size(i) * dpr );
         kvs::OpenGL::Color( line->color(i) );
         kvs::OpenGL::Begin( GL_LINES );
-        kvs::OpenGL::Vertex( line->coord(i) );
-        kvs::OpenGL::Vertex( line->coord(i+1) );
+        kvs::OpenGL::Vertex( line->coord( id0 ) );
+        kvs::OpenGL::Vertex( line->coord( id1 ) );
         kvs::OpenGL::End();
     }
 }

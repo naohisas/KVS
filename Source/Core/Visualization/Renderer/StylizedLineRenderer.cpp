@@ -232,7 +232,7 @@ kvs::ValueArray<kvs::Real32> QuadVertexTexCoords(
 namespace kvs
 {
 
-void StylizedLineRenderer::BufferObject::set(
+void StylizedLineRenderer::BufferObject::create(
     const kvs::LineObject* line,
     const kvs::Real32 halo,
     const kvs::Real32 radius )
@@ -255,6 +255,7 @@ void StylizedLineRenderer::BufferObject::set(
     m_manager.setColorArray( colors, 3 );
     m_manager.setNormalArray( normals );
     m_manager.setTexCoordArray( texcoords, 4 );
+    m_manager.create();
 
     if ( type == kvs::LineObject::Polyline )
     {
@@ -505,8 +506,7 @@ void StylizedLineRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
     const auto* line = kvs::LineObject::DownCast( object );
     m_object = object;
-    m_buffer_object.set( line, m_halo_size, m_radius_size );
-    m_buffer_object.create();
+    m_buffer_object.create( line, m_halo_size, m_radius_size );
 }
 
 void StylizedLineRenderer::updateBufferObject( const kvs::ObjectBase* object )

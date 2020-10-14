@@ -210,8 +210,7 @@ void StochasticPointRenderer::Engine::create_buffer_object( const kvs::PointObje
 
     auto location = m_shader_program.attributeLocation( "random_index" );
     m_buffer_object.manager().setVertexAttribArray( indices, location, 2 );
-    m_buffer_object.set( point );
-    m_buffer_object.create();
+    m_buffer_object.create( point );
 }
 
 } // end of namespace kvs
