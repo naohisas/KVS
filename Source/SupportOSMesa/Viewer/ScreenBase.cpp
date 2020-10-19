@@ -8,6 +8,7 @@
 #include <kvs/ColorImage>
 #include <kvs/OpenGL>
 #include <cstdio>
+#include <cfenv>
 
 
 namespace
@@ -145,7 +146,11 @@ void ScreenBase::redraw()
 void ScreenBase::draw()
 {
     if ( !m_context.isValid() ) { this->create(); }
+
+    fenv_t fe;
+    std::feholdexcept( &fe );
     this->paintEvent();
+    std::feupdateenv( &fe );
 }
 
 kvs::ColorImage ScreenBase::capture() const
