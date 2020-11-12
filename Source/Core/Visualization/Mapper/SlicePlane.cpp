@@ -205,12 +205,6 @@ void SlicePlane::extract_plane(
     std::vector<kvs::Real32> normals;
     std::vector<kvs::UInt8> colors;
 
-    // Calculate min/max values of the node data.
-    if ( !volume->hasMinMaxValues() )
-    {
-        volume->updateMinMaxValues();
-    }
-
     const kvs::Vec3u ncells( volume->resolution() - kvs::Vec3u::Constant(1) );
     const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
     const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
@@ -372,20 +366,13 @@ void SlicePlane::extract_tetrahedra_plane(
     // Calculated the coordinate data array and the normal vector array.
     std::vector<kvs::Real32> coords;
     std::vector<kvs::Real32> normals;
-    std::vector<kvs::UInt8>  colors;
-
-    // Calculate min/max values of the node data.
-    if ( !volume->hasMinMaxValues() )
-    {
-        volume->updateMinMaxValues();
-    }
+    std::vector<kvs::UInt8> colors;
 
     // Refer the parameters of the unstructured volume object.
     const kvs::Real32* volume_coords = volume->coords().data();
     const kvs::UInt32* volume_connections = volume->connections().data();
     const size_t ncells = volume->numberOfCells();
-
-    const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
+    const auto& color_map = BaseClass::transferFunction().colorMap();
 
     // Extract surfaces.
     size_t index = 0;
@@ -495,20 +482,13 @@ void SlicePlane::extract_hexahedra_plane(
     // Calculated the coordinate data array and the normal vector array.
     std::vector<kvs::Real32> coords;
     std::vector<kvs::Real32> normals;
-    std::vector<kvs::UInt8>  colors;
-
-    // Calculate min/max values of the node data.
-    if ( !volume->hasMinMaxValues() )
-    {
-        volume->updateMinMaxValues();
-    }
+    std::vector<kvs::UInt8> colors;
 
     // Refer the parameters of the unstructured volume object.
     const kvs::Real32* volume_coords = volume->coords().data();
     const kvs::UInt32* volume_connections = volume->connections().data();
     const size_t ncells = volume->numberOfCells();
-
-    const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
+    const auto& color_map = BaseClass::transferFunction().colorMap();
 
     // Extract surfaces.
     size_t index = 0;
@@ -622,20 +602,13 @@ void SlicePlane::extract_pyramid_plane(
     // Calculated the coordinate data array and the normal vector array.
     std::vector<kvs::Real32> coords;
     std::vector<kvs::Real32> normals;
-    std::vector<kvs::UInt8>  colors;
-
-    // Calculate min/max values of the node data.
-    if ( !volume->hasMinMaxValues() )
-    {
-        volume->updateMinMaxValues();
-    }
+    std::vector<kvs::UInt8> colors;
 
     // Refer the parameters of the unstructured volume object.
     const kvs::Real32* volume_coords = volume->coords().data();
     const kvs::UInt32* volume_connections = volume->connections().data();
     const size_t ncells = volume->numberOfCells();
-
-    const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
+    const auto& color_map = BaseClass::transferFunction().colorMap();
 
     // Extract surfaces.
     size_t index = 0;
@@ -747,20 +720,13 @@ void SlicePlane::extract_prism_plane(
     // Calculated the coordinate data array and the normal vector array.
     std::vector<kvs::Real32> coords;
     std::vector<kvs::Real32> normals;
-    std::vector<kvs::UInt8>  colors;
-
-    // Calculate min/max values of the node data.
-    if ( !volume->hasMinMaxValues() )
-    {
-        volume->updateMinMaxValues();
-    }
+    std::vector<kvs::UInt8> colors;
 
     // Refer the parameters of the unstructured volume object.
     const kvs::Real32* volume_coords = volume->coords().data();
     const kvs::UInt32* volume_connections = volume->connections().data();
     const size_t ncells = volume->numberOfCells();
-
-    const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
+    const auto& color_map = BaseClass::transferFunction().colorMap();
 
     // Extract surfaces.
     size_t index = 0;

@@ -790,19 +790,9 @@ const kvs::RGBColor ColorMap::operator []( const size_t index ) const
 /*===========================================================================*/
 const kvs::RGBColor ColorMap::at( const float value ) const
 {
-    if ( value <= m_min_value )
-    {
-        const kvs::RGBColor color( m_table.data() );
-        return color;
-    }
-    else if ( value >= m_max_value )
-    {
-        const kvs::RGBColor color( m_table.data() + ::NumberOfChannels * ( m_resolution - 1 ) );
-        return color;
-    }
-
+    const float v0 = kvs::Math::Clamp( value, m_min_value, m_max_value );
     const float r = static_cast<float>( m_resolution - 1 );
-    const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;
+    const float v = ( v0 - m_min_value ) / ( m_max_value - m_min_value ) * r;
     const size_t s0 = static_cast<size_t>( v );
     const size_t s1 = kvs::Math::Min( s0 + 1, m_resolution - 1 );
 
