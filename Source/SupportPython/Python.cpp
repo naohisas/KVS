@@ -10,7 +10,11 @@
 #define PY_ARRAY_UNIQUE_SYMBOL KVS_PYTHON_NUMPY_ARRAYOBJECT_H
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
+#ifdef KVS_PYTHON3
+namespace { inline void* ImportArray() { if ( PyArray_API == NULL ) { import_array(); }  return NULL; } }
+#else
 namespace { inline void ImportArray() { if ( PyArray_API == NULL ) { import_array(); } } }
+#endif
 
 
 namespace kvs
@@ -37,7 +41,17 @@ void Initialize( const bool import )
     int argc = 1;
     char argv0[] = "Program";
     char* argv[] = { argv0, NULL };
+#ifdef KVS_PYTHON3
+    wchar_t** converted_argv = (wchar_t**)PyMem_Malloc( sizeof( wchar_t* )*argc );
+    for ( int i = 0; i < argc; i++ )
+    {
+        wchar_t* v = Py_DecodeLocale( argv[i], NULL );
+        converted_argv[i] = v;
+    }
+    PySys_SetArgv( argc, converted_argv );
+#else
     PySys_SetArgv( argc, argv );
+#endif
 
     if ( import ) { ::ImportArray(); }
 }

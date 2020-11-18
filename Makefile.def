@@ -441,9 +441,14 @@ endif
 #  NUMPY_INCLUDE_PATH, NUMPY_LIBRARY_PATH
 #=============================================================================
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+  PYTHON_VER := $(shell python -c "from __future__ import print_function; import sys; print( sys.version_info[0] )")
   PYTHON_INCLUDE_PATH := $(shell python-config --includes)
   PYTHON_LIBRARY_PATH := $(shell python-config --ldflags)
-  PYTHON_LINK_LIBRARY := $(shell python-config --libs)
+  ifeq "$(PYTHON_VER)" "3"
+    PYTHON_LINK_LIBRARY := $(shell python-config --libs --embed)
+  else
+    PYTHON_LINK_LIBRARY := $(shell python-config --libs)
+  endif
   ifdef KVS_PYTHON_DIR
     PYTHON_INCLUDE_PATH := -I$(KVS_PYTHON_DIR)/include
     PYTHON_LIBRARY_PATH := -L$(KVS_PYTHON_DIR)/lib

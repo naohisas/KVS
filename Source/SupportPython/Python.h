@@ -20,6 +20,9 @@
 #include <Python.h>
 #endif
 
+#if (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 1) || PY_MAJOR_VERSION > 3
+#define KVS_PYTHON3
+#endif
 
 namespace kvs
 {
