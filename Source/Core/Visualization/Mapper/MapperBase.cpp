@@ -65,9 +65,20 @@ void MapperBase::setRange( const kvs::VolumeObjectBase* volume )
     }
     else
     {
-        const float min_value = static_cast<float>( volume->minValue() );
-        const float max_value = static_cast<float>( volume->maxValue() );
-        if ( !m_tfunc.hasRange() ) m_tfunc.setRange( min_value, max_value );
+        if ( !m_tfunc.hasRange() )
+        {
+            const float min_value = static_cast<float>( volume->minValue() );
+            const float max_value = static_cast<float>( volume->maxValue() );
+            if ( kvs::Math::Equal( min_value, max_value ) )
+            {
+                const float dt = 1.0f;
+                m_tfunc.setRange( min_value, max_value + dt );
+            }
+            else
+            {
+                m_tfunc.setRange( min_value, max_value );
+            }
+        }
     }
 }
 
