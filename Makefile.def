@@ -57,6 +57,10 @@ ifndef KVS_MPI_LD
   KVS_MPI_LD := $(KVS_MPI_CPP)
 endif
 
+ifndef KVS_PY
+  KVS_PY := python
+endif
+
 
 SHELL  := /bin/bash
 CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
@@ -68,6 +72,8 @@ MPICPP := $(CCACHE) $(KVS_MPI_CPP)
 MPICC  := $(CCACHE) $(KVS_MPI_CC)
 MPIFC  := $(CCACHE) $(KVS_MPI_FC)
 MPILD  := $(KVS_MPI_LD)
+PY     := $(KVS_PY)
+PYCONF := $(KVS_PY)-config
 AR     := ar -ru
 RANLIB := ranlib
 MAKE   := make
@@ -441,19 +447,19 @@ endif
 #  NUMPY_INCLUDE_PATH, NUMPY_LIBRARY_PATH
 #=============================================================================
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
-  PYTHON_VER := $(shell python -c "from __future__ import print_function; import sys; print( sys.version_info[0] )")
-  PYTHON_INCLUDE_PATH := $(shell python-config --includes)
-  PYTHON_LIBRARY_PATH := $(shell python-config --ldflags)
+  PYTHON_VER := $(shell $(PY) -c "from __future__ import print_function; import sys; print( sys.version_info[0] )")
+  PYTHON_INCLUDE_PATH := $(shell $(PYCONF) --includes)
+  PYTHON_LIBRARY_PATH := $(shell $(PYCONF) --ldflags)
   ifeq "$(PYTHON_VER)" "3"
-    PYTHON_LINK_LIBRARY := $(shell python-config --libs --embed)
+    PYTHON_LINK_LIBRARY := $(shell $(PYCONF) --libs --embed)
   else
-    PYTHON_LINK_LIBRARY := $(shell python-config --libs)
+    PYTHON_LINK_LIBRARY := $(shell $(PYCONF) --libs)
   endif
   ifdef KVS_PYTHON_DIR
     PYTHON_INCLUDE_PATH := -I$(KVS_PYTHON_DIR)/include
     PYTHON_LIBRARY_PATH := -L$(KVS_PYTHON_DIR)/lib
   endif
-  NUMPY_INCLUDE_PATH := -I$(shell python -c "import numpy; print( numpy.get_include() )")
+  NUMPY_INCLUDE_PATH := -I$(shell $(PY) -c "import numpy; print( numpy.get_include() )")
   NUMPY_LIBRARY_PATH :=
   ifdef KVS_NUMPY_DIR
     NUMPY_INCLUDE_PATH := -I$(KVS_NUMPY_DIR)/include
