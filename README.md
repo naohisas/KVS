@@ -26,7 +26,7 @@ KVS supports the following software packages. By checking (changing 0:disable to
 |GLFW|KVS_SUPPORT_GLFW|Flag for supporting GLFW functions. The screen class based on the GLFW is provided. Note: GLUT or GLFW is required for developing viewer application with KVS. See [SupportGLFW](Source/SupportGLFW) for setting information.|
 |OpenCV|KVS_SUPPORT_OPENCV|Flag for supporting OpenCV functions. Note: OpenCV4 is not supported.|
 |Qt|KVS_SUPPORT_QT|Flag for supporting Qt classes. The screen class based on the Qt.|
-|Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes.|
+|Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes. See [SupportPython](Source/SupportPython) for setting information.|
 |MPI|KVS_SUPPORT_MPI|Flag for supporting MPI functions. Note: MPI compiler is required. See [SupportMPI](Source/SupportMPI) for setting information.|
 |EGL|KVS_SUPPORT_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided. See [SupportEGL](Source/SupportEGL) for setting information.|
 |OSMesa|KVS_SUPPORT_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided. See See [SupportOSMesa](Source/SupportOSMesa) for setting information.|
