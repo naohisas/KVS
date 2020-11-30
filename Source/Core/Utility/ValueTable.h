@@ -9,7 +9,9 @@
 #include <iterator>
 #include <algorithm>
 #include <initializer_list>
+#include <kvs/Value>
 #include <kvs/ValueArray>
+#include <kvs/SliceRange>
 #include <kvs/Assert>
 #include <kvs/Deprecated>
 
@@ -68,17 +70,19 @@ private:
 public:
     static ValueTable Random( const size_t nrows, const size_t ncols, const unsigned int seed = 0 )
     {
-        this_type m( ncols );
-        const_column_iterator last = m.endColumn();
-        for ( column_iterator c = m.beginColumn(); c != last; ++c ) { *c = Column::Random( nrows, seed ); }
+        this_type m( nrows, ncols );
+        if ( seed == 0 ) { static bool flag = true; if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; } }
+        else { kvs::Value<T>::SetSeed( seed ); }
+        for ( auto& c : m.columns() ) { for ( auto& r : c ) { r = kvs::Value<T>::Random(); } }
         return m;
     }
 
     static ValueTable Random( const size_t nrows, const size_t ncols, const T min, const T max, const unsigned int seed = 0 )
     {
-        this_type m( ncols );
-        const_column_iterator last = m.endColumn();
-        for ( column_iterator c = m.beginColumn(); c != last; ++c ) { *c = Column::Random( nrows, min, max, seed ); }
+        this_type m( nrows, ncols );
+        if ( seed == 0 ) { static bool flag = true; if ( flag ) { kvs::Value<T>::SetRandomSeed(); flag = false; } }
+        else { kvs::Value<T>::SetSeed( seed ); }
+        for ( auto& c : m.columns() ) { for ( auto& r : c ) { r = kvs::Value<T>::Random( min, max ); } }
         return m;
     }
 
@@ -164,6 +168,11 @@ public:
     {
         KVS_ASSERT( column_index < m_columns.size() );
         return m_columns[ column_index ];
+    }
+
+    ValueTable operator []( const kvs::SliceRange& column_range ) const
+    {
+        return this->slice( column_range );
     }
 
     ValueTable& operator =( const ValueTable& rhs )
@@ -388,6 +397,11 @@ public:
         return ( *this )[ column_index ].at( row_index );
     }
 
+    Columns& columns()
+    {
+        return m_columns;
+    }
+
     const Columns& columns() const
     {
         return m_columns;
@@ -423,6 +437,39 @@ public:
             result.pushBackColumn( c->clone() );
         }
         return result;
+    }
+
+    ValueTable slice( const kvs::SliceRange& column_range ) const
+    {
+        return this->sliceColumn( column_range );
+    }
+
+    ValueTable slice( const kvs::SliceRange& row_range, const kvs::SliceRange& column_range ) const
+    {
+        return this->sliceColumn( column_range ).sliceRow( row_range );
+    }
+
+    ValueTable sliceColumn( const kvs::SliceRange& column_range ) const
+    {
+        const auto& range = column_range;
+        range.adjust( this->columnSize() );
+
+        ValueTable ret( range.size() );
+        for ( long i = range.start, j = 0; i < range.stop; i += range.step )
+        {
+            ret[j++] = this->column(i);
+        }
+        return ret;
+    }
+
+    ValueTable sliceRow( const kvs::SliceRange& row_range ) const
+    {
+        ValueTable ret;
+        for ( long i = 0; i < this->columnSize(); ++i )
+        {
+            ret.pushBackColumn( this->column(i).slice( row_range ) );
+        }
+        return ret;
     }
 
     void fill( const T& value )

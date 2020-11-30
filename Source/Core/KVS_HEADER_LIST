@@ -176,6 +176,7 @@ Utility/Range
 Utility/Rectangle
 Utility/ReferenceCounter
 Utility/SharedPointer
+Utility/SliceRange
 Utility/SmartPointer
 Utility/Stat
 Utility/String

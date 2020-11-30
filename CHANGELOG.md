@@ -14,6 +14,7 @@
 + kvs::TransferFunctionEditor
 + kvs::OffScreen
 + kvs::Png
++ kvs::SliceRange
 
 **Added SupportGLFW**
 + kvs::glfw::Application
@@ -211,6 +212,13 @@
 + kvs::glsl::PolygonRenderer::setFragmentShaderFile( frag_file )
 + kvs::glsl::PolygonRenderer::setShaderFiles( vert_file, frag_file )
 + kvs::glsl::PolygonRenderer::ShadingModel<Model>( model )
++ kvs::ValueArray::slice( {start,stop,step} )
++ kvs::ValueArray::operator[ {start,stop,step} ]
++ kvs::ValueTable::slice( {cstart,cstop,cstep} )
++ kvs::ValueTable::slice( {rstart,rstop,rstep}, {cstart,cstop,cstep} )
++ kvs::ValueTable::sliceColumn( {cstart,cstop,cstep} )
++ kvs::ValueTable::sliceRow( {rstart,rstop,rstep} )
++ kvs::ValueTable::operator[ {cstart,cstop,cstep} ]
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer

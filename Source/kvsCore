@@ -176,6 +176,7 @@
 #include <Core/Utility/Rectangle.h>
 #include <Core/Utility/ReferenceCounter.h>
 #include <Core/Utility/SharedPointer.h>
+#include <Core/Utility/SliceRange.h>
 #include <Core/Utility/SmartPointer.h>
 #include <Core/Utility/Stat.h>
 #include <Core/Utility/String.h>
