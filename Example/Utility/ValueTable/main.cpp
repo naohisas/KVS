@@ -359,16 +359,22 @@ int main()
 
         std::cout << indent << "v.slice( {1} );" << std::endl;
         std::cout << indent.nextIndent() << v.slice( {1} ).format() << std::endl;
+
         std::cout << indent << "v.slice( {1,3} );" << std::endl;
         std::cout << indent.nextIndent() << v.slice( {1,3} ).format() << std::endl;
+
         std::cout << indent << "v.slice( {0,4,2} );" << std::endl;
         std::cout << indent.nextIndent() << v.slice( {0,4,2} ).format() << std::endl;
+
         std::cout << indent << "v.slice( {1,3}, {0,3} );" << std::endl;
         std::cout << indent.nextIndent() << v.slice( {1,3}, {0,3} ).format() << std::endl;
+
         std::cout << indent << "v.sliceRow( {0,2} );" << std::endl;
         std::cout << indent.nextIndent() << v.sliceRow( {0,2} ).format() << std::endl;
+
         std::cout << indent << "v.sliceColumn( {0,2} );" << std::endl;
         std::cout << indent.nextIndent() << v.sliceColumn( {0,2} ).format() << std::endl;
+
         std::cout << indent << "v[{0,2}];" << std::endl;
         std::cout << indent.nextIndent() << v[{0,2}].format() << std::endl;
         std::cout << std::endl;
