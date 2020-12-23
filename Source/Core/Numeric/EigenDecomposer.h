@@ -5,7 +5,7 @@
  */
 /*****************************************************************************/
 #pragma once
-#include "EigneDecomposition.h"
+#include "EigenDecomposition.h"
 
 namespace kvs
 {

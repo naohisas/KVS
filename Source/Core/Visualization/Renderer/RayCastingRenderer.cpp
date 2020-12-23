@@ -78,6 +78,8 @@ void RayCastingRenderer::exec(
     kvs::Light* light )
 {
     const kvs::StructuredVolumeObject* volume = kvs::StructuredVolumeObject::DownCast( object );
+    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
+
     BaseClass::startTimer();
 
     // Screen size changed.
