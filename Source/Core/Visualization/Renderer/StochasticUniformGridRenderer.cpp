@@ -711,6 +711,7 @@ void StochasticUniformGridRenderer::Engine::draw_bounding_cube_buffer()
 /*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::draw_quad()
 {
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
     kvs::OpenGL::Disable( GL_LIGHTING );
 
     kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
