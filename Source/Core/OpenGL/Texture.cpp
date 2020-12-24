@@ -324,6 +324,7 @@ bool Texture::isCreated() const
 
 bool Texture::isValid() const
 {
+    if ( m_id == 0 ) { return false; }
     GLboolean result = GL_FALSE;
     KVS_GL_CALL( result = glIsTexture( m_id ) );
     return result == GL_TRUE;
