@@ -755,6 +755,7 @@ void RayCastingRenderer::draw_bounding_cube_buffer()
 /*===========================================================================*/
 void RayCastingRenderer::draw_quad( const float opacity )
 {
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
     kvs::OpenGL::Disable( GL_LIGHTING );
 
     kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
