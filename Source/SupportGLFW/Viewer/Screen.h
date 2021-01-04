@@ -47,6 +47,7 @@ public:
     virtual ~Screen();
 
     kvs::Scene* scene();
+    const kvs::Scene* scene() const { return m_scene; }
 
     void setPosition( const int x, const int y );
     void setSize( const int width, const int height );
