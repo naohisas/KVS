@@ -64,6 +64,11 @@ std::string String::From( const kvs::Int32 val, const int width, const char fill
     return ::StringFromInt( val, width, fill );
 }
 
+std::string String::From( const kvs::Int64 val, const int width, const char fill )
+{
+    return ::StringFromInt( val, width, fill );
+}
+
 std::string String::From( const kvs::UInt8 val, const int width, const char fill )
 {
     return ::StringFromInt( static_cast<unsigned int>( val ), width, fill );
@@ -75,6 +80,11 @@ std::string String::From( const kvs::UInt16 val, const int width, const char fil
 }
 
 std::string String::From( const kvs::UInt32 val, const int width, const char fill )
+{
+    return ::StringFromInt( val, width, fill );
+}
+
+std::string String::From( const kvs::UInt64 val, const int width, const char fill )
 {
     return ::StringFromInt( val, width, fill );
 }

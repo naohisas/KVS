@@ -70,9 +70,11 @@ public:
     static std::string From( const kvs::Int8 val, const int width, const char fill = 0 );
     static std::string From( const kvs::Int16 val, const int width, const char fill = 0 );
     static std::string From( const kvs::Int32 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::Int64 val, const int width, const char fill = 0 );
     static std::string From( const kvs::UInt8 val, const int width, const char fill = 0 );
     static std::string From( const kvs::UInt16 val, const int width, const char fill = 0 );
     static std::string From( const kvs::UInt32 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt64 val, const int width, const char fill = 0 );
     static std::string From( const kvs::Real32 val, const int precision, const bool fixed = false, const bool scientific = false );
     static std::string From( const kvs::Real64 val, const int precision, const bool fixed = false, const bool scientific = false );
     static std::string FromFile( const std::string& filename );
