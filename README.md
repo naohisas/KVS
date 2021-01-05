@@ -12,6 +12,22 @@ The source code of KVS can be downloaded via GitHub as follows:
 $ git clone https://github.com/naohisas/KVS.git
 ```
 
+## Configuration
+The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
+
+### Linux/Mac
+```
+export KVS_DIR=~/local/kvs
+export PATH=$KVS_DIR/bin:$PATH
+```
+
+### Windows
+
+|Variable|Value|
+|:-------|:----|
+|KVS_DIR |C:\Program Files\kvs|
+|PATH|%PATH%;%KVS_DIR%\bin|
+
 ## Support software package
 KVS supports the following software packages. By checking (changing 0:disable to 1:enable) the enable/support flags corresponding to each package in [kvs.conf](https://github.com/naohisas/KVS/blob/develop/kvs.conf), the functionalities provided from them can be available in KVS.
 
@@ -30,22 +46,6 @@ KVS supports the following software packages. By checking (changing 0:disable to
 |MPI|KVS_SUPPORT_MPI|Flag for supporting MPI functions. Note: MPI compiler is required. See [SupportMPI](Source/SupportMPI) for setting information.|
 |EGL|KVS_SUPPORT_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided. See [SupportEGL](Source/SupportEGL) for setting information.|
 |OSMesa|KVS_SUPPORT_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided. See See [SupportOSMesa](Source/SupportOSMesa) for setting information.|
-
-## Configuration
-The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
-
-### Linux/Mac
-```
-export KVS_DIR=~/local/kvs
-export PATH=$KVS_DIR/bin:$PATH
-```
-
-### Windows
-
-|Variable|Value|
-|:-------|:----|
-|KVS_DIR |C:\Program Files\kvs|
-|PATH|%PATH%;%KVS_DIR%\bin|
 
 ## Build and install
 By using the make command, KVS can be easily build and install to ```KVS_DIR```.
@@ -66,6 +66,9 @@ $ make install
 
 # Copyright
 KVS is released under BSD 3-Clause License. See [LICENSE](LICENSE) for details.
+
++ KVS/Source/Core/NanoVG uses [nanovg](https://github.com/memononen/nanovg) (under zlib license) and [stb](https://github.com/nothings/stb) (under Public Domain).
++ KVS/Source/Core/FileFormat/XML uses [tinyxml](http://www.grinninglizard.com/tinyxml/) (under zlib license).
 
 # Citation
 Naohisa Sakamoto and Koji Koyamada, [KVS: A simple and effective framework for scientific visualization](https://www.jstage.jst.go.jp/article/jasse/2/1/2_76/_article/-char/en), Journal of Advanced Simulation in Science and Engineering (JASSE), Vol. 2, Issue 1, pp. 76-95, 2015.
