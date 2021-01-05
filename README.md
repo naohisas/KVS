@@ -67,8 +67,8 @@ $ make install
 # Copyright
 KVS is released under BSD 3-Clause License. See [LICENSE](LICENSE) for details.
 
-+ KVS/Source/Core/NanoVG uses [nanovg](https://github.com/memononen/nanovg) (under zlib license) and [stb](https://github.com/nothings/stb) (under Public Domain).
-+ KVS/Source/Core/FileFormat/XML uses [tinyxml](http://www.grinninglizard.com/tinyxml/) (under zlib license).
++ KVS/Source/Core/NanoVG uses [nanovg](https://github.com/memononen/nanovg) (zlib license) and [stb](https://github.com/nothings/stb) (Public Domain/MIT license).
++ KVS/Source/Core/FileFormat/XML uses [tinyxml](http://www.grinninglizard.com/tinyxml/) (zlib license).
 
 # Citation
 Naohisa Sakamoto and Koji Koyamada, [KVS: A simple and effective framework for scientific visualization](https://www.jstage.jst.go.jp/article/jasse/2/1/2_76/_article/-char/en), Journal of Advanced Simulation in Science and Engineering (JASSE), Vol. 2, Issue 1, pp. 76-95, 2015.
