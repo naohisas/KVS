@@ -347,7 +347,8 @@ void PolygonRenderer::BufferObject::create( const kvs::PolygonObject* polygon )
 {
     if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
     {
-        kvsMessageError("Not supported polygon type.");
+        const auto type = polygon->polygonType();
+        kvsMessageError() << "Not supported polygon type (" << type << ")." << std::endl;
         return;
     }
 
