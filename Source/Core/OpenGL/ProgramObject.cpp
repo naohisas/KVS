@@ -9,6 +9,7 @@
 #include <kvs/Exception>
 #include <kvs/OpenGL>
 #include <kvs/Platform>
+#include <vector>
 
 
 namespace kvs
@@ -57,6 +58,7 @@ GLuint ProgramObject::id() const
 /*===========================================================================*/
 std::string ProgramObject::log() const
 {
+    KVS_ASSERT( this->isCreated() );
     GLint length = 512;
     std::vector<char> buffer( length );
     KVS_GL_CALL( glGetProgramInfoLog( m_id, length, NULL, &buffer[0] ) );
@@ -91,6 +93,7 @@ void ProgramObject::release()
 /*===========================================================================*/
 void ProgramObject::attach( const kvs::ShaderObject& shader ) const
 {
+    KVS_ASSERT( this->isCreated() );
     KVS_GL_CALL( glAttachShader( m_id, shader.id() ) );
 }
 
@@ -102,7 +105,32 @@ void ProgramObject::attach( const kvs::ShaderObject& shader ) const
 /*===========================================================================*/
 void ProgramObject::detach( const kvs::ShaderObject& shader ) const
 {
+    KVS_ASSERT( this->isCreated() );
     KVS_GL_CALL( glDetachShader( m_id, shader.id() ) );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Detaches the shader objects from the program object.
+ */
+/*===========================================================================*/
+void ProgramObject::detach() const
+{
+    KVS_ASSERT( this->isCreated() );
+
+    GLint nshaders = 0; // number of attached shaders
+    KVS_GL_CALL( glGetProgramiv( m_id, GL_ATTACHED_SHADERS, &nshaders ) );
+
+    if ( nshaders > 0 )
+    {
+        std::vector<GLuint> ids( nshaders );
+        KVS_GL_CALL( glGetAttachedShaders( m_id, nshaders, nullptr, ids.data() ) );
+
+        for ( const auto& id : ids )
+        {
+            KVS_GL_CALL( glDetachShader( m_id, id ) );
+        }
+    }
 }
 
 /*===========================================================================*/
@@ -113,11 +141,21 @@ void ProgramObject::detach( const kvs::ShaderObject& shader ) const
 /*===========================================================================*/
 bool ProgramObject::link() const
 {
+    KVS_ASSERT( this->isCreated() );
     KVS_GL_CALL( glLinkProgram( m_id ) );
     return this->isLinked();
 }
 
-void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderSource& frag_src )
+/*===========================================================================*/
+/**
+ *  @brief  Builds shader source codes.
+ *  @param  vert_src [in] vertex shader source
+ *  @param  frag_src [in] fragment shader source
+ */
+/*===========================================================================*/
+void ProgramObject::build(
+    const kvs::ShaderSource& vert_src,
+    const kvs::ShaderSource& frag_src )
 {
     kvs::VertexShader vert( vert_src );
     if ( !vert.compile() )
@@ -143,7 +181,18 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     }
 }
 
-void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderSource& geom_src, const kvs::ShaderSource& frag_src )
+/*===========================================================================*/
+/**
+ *  @brief  Builds shader source codes.
+ *  @param  vert_src [in] vertex shader source
+ *  @param  geom_src [in] geometry shader source
+ *  @param  frag_src [in] fragment shader source
+ */
+/*===========================================================================*/
+void ProgramObject::build(
+    const kvs::ShaderSource& vert_src,
+    const kvs::ShaderSource& geom_src,
+    const kvs::ShaderSource& frag_src )
 {
     kvs::VertexShader vert( vert_src );
     if ( !vert.compile() )
@@ -177,8 +226,9 @@ void ProgramObject::build( const kvs::ShaderSource& vert_src, const kvs::ShaderS
     const GLint max_output_vertices = kvs::OpenGL::Integer( GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT );
     if ( max_output_vertices < m_geom_output_vertices )
     {
-        kvsMessageError() << "Geometry shader GL_GEOMETRY_VERTICES_OUT require = "
-                          << m_geom_output_vertices << " > max = " << max_output_vertices << std::endl;
+        kvsMessageError()
+            << "Geometry shader GL_GEOMETRY_VERTICES_OUT require = "
+            << m_geom_output_vertices << " > max = " << max_output_vertices << std::endl;
         KVS_THROW( kvs::OpenGLException, "Geometry shader cannot be attached" );
     }
     this->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, m_geom_output_vertices );
@@ -214,11 +264,23 @@ void ProgramObject::unbind() const
     m_is_bound = false;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determines if the program object is compiled.
+ *  @return true if the program program is compiled
+ */
+/*===========================================================================*/
 bool ProgramObject::isCreated() const
 {
     return m_id > 0;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determins if a name corresponds to a program object.
+ *  @return true if the program object ID is the name of a program object previously created
+ */
+/*===========================================================================*/
 bool ProgramObject::isValid() const
 {
     GLboolean result = GL_FALSE;
@@ -226,11 +288,23 @@ bool ProgramObject::isValid() const
     return result == GL_TRUE;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determines if the program object is bound.
+ *  @return true if the program program is bound
+ */
+/*===========================================================================*/
 bool ProgramObject::isBound() const
 {
     return m_is_bound;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determines if the program object is linked.
+ *  @return true if the program program is linked
+ */
+/*===========================================================================*/
 bool ProgramObject::isLinked() const
 {
     GLint error = 0;
@@ -410,6 +484,14 @@ void ProgramObject::setUniform( const GLchar* name, const kvs::Matrix44f& value 
     KVS_GL_CALL( glUniformMatrix4fv( location, 1, GL_TRUE, &value[0][0] ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Specifies a uniform variable array.
+ *  @param  name [in] name of the uniform variable array
+ *  @param  values [in] value array
+ *  @param  dim [in] dimension of the uniform variable array
+ */
+/*===========================================================================*/
 void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLint>& values, const int dim )
 {
     GLint location = this->uniformLocation( name );
@@ -424,6 +506,14 @@ void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLint>
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Specifies a uniform variable array.
+ *  @param  name [in] name of the uniform variable array
+ *  @param  values [in] value array
+ *  @param  dim [in] dimension of the uniform variable array
+ */
+/*===========================================================================*/
 void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLfloat>& values, const int dim )
 {
     GLint location = this->uniformLocation( name );
@@ -438,21 +528,44 @@ void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLfloa
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets an input type for geometry shader.
+ *  @param  type [in] input type
+ */
+/*===========================================================================*/
 void ProgramObject::setGeometryInputType( const GLint type )
 {
     m_geom_input_type = type;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets an output type for geometry shader.
+ *  @param  type [in] output type
+ */
+/*===========================================================================*/
 void ProgramObject::setGeometryOutputType( const GLint type )
 {
     m_geom_output_type = type;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets number of vertices for geometry shader.
+ *  @param  value [in] number of vertices
+ */
+/*===========================================================================*/
 void ProgramObject::setGeometryOutputVertices( const GLint value )
 {
     m_geom_output_vertices = value;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Creates a program object.
+ */
+/*===========================================================================*/
 void ProgramObject::createID()
 {
     if ( !this->isValid() )
@@ -461,15 +574,28 @@ void ProgramObject::createID()
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Deletes a program object.
+ */
+/*===========================================================================*/
 void ProgramObject::deleteID()
 {
     if ( this->isValid() )
     {
+        this->detach();
         KVS_GL_CALL( glDeleteProgram( m_id ) );
     }
     m_id = 0;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets a prameter to a program object.
+ *  @param  pname [in] name of the parameter
+ *  @param  value [in] value of the parameter
+ */
+/*===========================================================================*/
 void ProgramObject::setParameter( GLenum pname, GLint value )
 {
     KVS_ASSERT( this->isCreated() );
@@ -493,6 +619,12 @@ void ProgramObject::setParameter( GLenum pname, GLint value )
 #endif
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a program object binder.
+ *  @param  po [in] program object
+ */
+/*===========================================================================*/
 ProgramObject::Binder::Binder( const ProgramObject& po ) :
     m_po( po )
 {
@@ -500,6 +632,11 @@ ProgramObject::Binder::Binder( const ProgramObject& po ) :
     po.bind();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Destroys a program object binder.
+ */
+/*===========================================================================*/
 ProgramObject::Binder::~Binder()
 {
     KVS_ASSERT( m_po.isCreated() );
@@ -507,14 +644,7 @@ ProgramObject::Binder::~Binder()
 }
 
 
-/*===========================================================================*/
-/**
- *  @brief  Attaches a vertex shader and a fragment shader and links the program object.
- *  @param  vertex_shader [in] vertex shader that is to be attached
- *  @param  fragment_shader [in] fragment shader that is to be attached
- *  @return <ReturnValue>
- */
-/*===========================================================================*/
+// DEPRECATED
 bool ProgramObject::link(
     const kvs::VertexShader &vertex_shader,
     const kvs::FragmentShader &fragment_shader )
@@ -525,6 +655,7 @@ bool ProgramObject::link(
     return this->link();
 }
 
+// DEPRECATED
 void ProgramObject::create(
     const kvs::ShaderSource& vertex_source,
     const kvs::ShaderSource& fragment_source )

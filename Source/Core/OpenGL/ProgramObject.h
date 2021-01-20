@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__PROGRAM_OBJECT_H_INCLUDE
-#define KVS__PROGRAM_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/ShaderObject>
 #include <kvs/VertexShader>
 #include <kvs/GeometryShader>
@@ -32,7 +30,7 @@ namespace kvs
 class ProgramObject
 {
 private:
-    GLuint m_id; ///< shader ID
+    GLuint m_id; ///< program object ID
     GLenum m_geom_input_type; ///< input type for geometry shader
     GLenum m_geom_output_type; ///< output type for geometry shader
     GLint m_geom_output_vertices; ///< number of vertices for geometry shader
@@ -52,6 +50,7 @@ public:
     void release();
     void attach( const kvs::ShaderObject& shader ) const;
     void detach( const kvs::ShaderObject& shader ) const;
+    void detach() const;
     bool link() const;
     void build( const kvs::ShaderSource& vert_src, const kvs::ShaderSource& frag_src );
     void build( const kvs::ShaderSource& vert_src, const kvs::ShaderSource& geom_src, const kvs::ShaderSource& frag_src );
@@ -114,16 +113,12 @@ class ProgramObject::Binder
     const kvs::ProgramObject& m_po;
 
 public:
-
     Binder( const kvs::ProgramObject& po );
     ~Binder();
 
 private:
-
     Binder( const Binder& );
     Binder& operator =( const Binder& );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__PROGRAM_OBJECT_H_INCLUDE
