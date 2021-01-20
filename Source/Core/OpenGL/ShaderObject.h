@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__SHADER_OBJECT_H_INCLUDE
-#define KVS__SHADER_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/ShaderSource>
 #include <kvs/GL>
 #include <kvs/Deprecated>
@@ -22,17 +20,15 @@ namespace kvs
 /*===========================================================================*/
 class ShaderObject
 {
-protected:
-
+private:
     GLuint m_id; ///< shader ID
     GLenum m_type; ///< shader type (GL_VERTEX_SHADER, GL_GEOMETRY_SHADER or GL_FRAGMENT_SHADER)
 
 public:
-
     ShaderObject( const GLenum type );
     virtual ~ShaderObject();
 
-    GLuint id() const;
+    GLuint id() const { return m_id; }
     std::string log() const;
     std::string source() const;
     void setSource( const kvs::ShaderSource& source ) const;
@@ -47,7 +43,6 @@ public:
     bool isCompiled() const;
 
 protected:
-
     ShaderObject();
     void createID();
     void deleteID();
@@ -58,5 +53,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SHADER_OBJECT_H_INCLUDE

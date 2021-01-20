@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GEOMETRY_SHADER_H_INCLUDE
-#define KVS__GEOMETRY_SHADER_H_INCLUDE
-
+#pragma once
 #include <kvs/ShaderObject>
 #include <kvs/ShaderSource>
 
@@ -22,8 +20,7 @@ namespace kvs
 class GeometryShader : public kvs::ShaderObject
 {
 public:
-
-    typedef kvs::ShaderObject SuperClass;
+    using SuperClass = kvs::ShaderObject;
 
 public:
 
@@ -32,5 +29,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__GEOMETRY_SHADER_H_INCLUDE

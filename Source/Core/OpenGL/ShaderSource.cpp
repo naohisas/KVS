@@ -18,7 +18,6 @@
 namespace
 {
 
-
 /*===========================================================================*/
 /**
  *  @brief  Return KVS shader path ("$KVS_DIR/include/Core/Visualization/Shader").
@@ -50,15 +49,10 @@ std::string KVSShaderPath()
 class SearchPath
 {
 private:
-
     std::vector<std::string> m_search_path_list;
 
 public:
-
-    SearchPath()
-    {
-        this->init();
-    }
+    SearchPath() { this->init(); }
 
     void init()
     {
@@ -102,9 +96,11 @@ public:
     }
 };
 
+// Instance shader search path.
 SearchPath search_path;
 
-}
+} // end of namespace
+
 
 namespace kvs
 {

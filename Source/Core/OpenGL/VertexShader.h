@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__VERTEX_SHADER_H_INCLUDE
-#define KVS__VERTEX_SHADER_H_INCLUDE
-
+#pragma once
 #include <kvs/ShaderObject>
 #include <kvs/ShaderSource>
 
@@ -22,15 +20,11 @@ namespace kvs
 class VertexShader : public kvs::ShaderObject
 {
 public:
-
-    typedef kvs::ShaderObject SuperClass;
+    using SuperClass = kvs::ShaderObject;
 
 public:
-
     VertexShader();
     VertexShader( const kvs::ShaderSource& source );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__VERTEX_SHADER_H_INCLUDE

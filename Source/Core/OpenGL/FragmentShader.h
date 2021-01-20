@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__FRAGMENT_SHADER_H_INCLUDE
-#define KVS__FRAGMENT_SHADER_H_INCLUDE
-
+#pragma once
 #include <kvs/ShaderObject>
 #include <kvs/ShaderSource>
 
@@ -22,15 +20,11 @@ namespace kvs
 class FragmentShader : public kvs::ShaderObject
 {
 public:
-
-    typedef kvs::ShaderObject SuperClass;
+    using SuperClass = kvs::ShaderObject;
 
 public:
-
     FragmentShader();
     FragmentShader( const kvs::ShaderSource& source );
 };
 
 } // end of namespace kvs
-
-#endif // KVS__FRAGMENT_SHADER_H_INCLUDE
