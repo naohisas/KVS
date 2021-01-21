@@ -129,6 +129,13 @@ void ProgramObject::detach() const
         for ( const auto& id : ids )
         {
             KVS_GL_CALL( glDetachShader( m_id, id ) );
+
+            GLboolean result = GL_FALSE;
+            KVS_GL_CALL( result = glIsShader( id ) );
+            if ( result == GL_TRUE )
+            {
+                KVS_GL_CALL( glDeleteShader( id ) );
+            }
         }
     }
 }
