@@ -426,7 +426,7 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
 
     auto* polygon = kvs::PolygonObject::DownCast( object );
     const bool has_normal = polygon->normals().size() > 0;
-    if ( !has_normal ) { setEnabledShading( false ); }
+    BaseClass::setEnabledShading( has_normal );
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
