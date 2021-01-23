@@ -118,6 +118,10 @@ void MarchingPrism::mapping( const kvs::UnstructuredVolumeObject* volume )
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
 
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
+
     const kvs::Real64 min_value = BaseClass::volume()->minValue();
     const kvs::Real64 max_value = BaseClass::volume()->maxValue();
     if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
@@ -239,9 +243,9 @@ void MarchingPrism::extract_surfaces_with_duplication(
         SuperClass::setOpacity( 255 );
     }
 
-    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
+//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/

@@ -124,6 +124,20 @@ void MarchingTetrahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
 
+    if ( m_duplication )
+    {
+        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+        SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+        SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
+    }
+#if NOT_YET_IMPLEMENTATION
+    else
+    {
+        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+        SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+    }
+#endif
+
     const kvs::Real64 min_value = BaseClass::volume()->minValue();
     const kvs::Real64 max_value = BaseClass::volume()->maxValue();
     if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
@@ -247,9 +261,9 @@ void MarchingTetrahedra::extract_surfaces_with_duplication(
         SuperClass::setOpacity( 255 );
     }
 
-    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
+//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/
@@ -296,13 +310,17 @@ void MarchingTetrahedra::extract_surfaces_without_duplication(
     // Calculate the polygon color for the isolevel.
     const kvs::RGBColor color = this->calculate_color<T>();
 
-    SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
-    SuperClass::setConnections( kvs::ValueArray<kvs::UInt32>( connections ) );
-    SuperClass::setColor( color );
-    SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
-    SuperClass::setOpacity( 255 );
-    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+    if ( coords.size() > 0 )
+    {
+        SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
+        SuperClass::setConnections( kvs::ValueArray<kvs::UInt32>( connections ) );
+        SuperClass::setColor( color );
+        SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
+        SuperClass::setOpacity( 255 );
+    }
+
+//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
 #endif // NOT_YET_IMPLEMENTED
 }
 
