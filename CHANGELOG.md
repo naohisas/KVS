@@ -15,6 +15,7 @@
 + kvs::OffScreen
 + kvs::Png
 + kvs::SliceRange
++ kvs::LogStream
 
 **Added SupportGLFW**
 + kvs::glfw::Application

@@ -9,7 +9,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <kvs/NullStream>
+#include <kvs/LogStream>
 #include "Communicator.h"
 
 
@@ -24,13 +24,11 @@ namespace mpi
  *  @brief  Log stream class.
  */
 /*===========================================================================*/
-class LogStream
+
+class LogStream : public kvs::LogStream
 {
 private:
-    int m_rank; ///< my rank
-    std::string m_filename; ///< output filename
-    std::ofstream m_stream; ///< output stream
-    kvs::NullStream m_null_stream; ///< null stream
+    int m_rank;
 
 public:
     LogStream( const kvs::mpi::Communicator& comm ):
@@ -39,20 +37,14 @@ public:
     }
 
     LogStream( const kvs::mpi::Communicator& comm, const std::string& filename ):
-        m_rank( comm.rank() ),
-        m_filename( filename ),
-        m_stream( filename.c_str() )
+        kvs::LogStream( filename ),
+        m_rank( comm.rank() )
     {
-    }
-
-    std::ostream& operator ()()
-    {
-        return m_filename.empty() ? std::cout : m_stream;
     }
 
     std::ostream& operator ()( const int target_rank )
     {
-        return ( target_rank == m_rank ) ? (*this)() : m_null_stream;
+        return kvs::LogStream::operator ()( target_rank == m_rank );
     }
 };
 
