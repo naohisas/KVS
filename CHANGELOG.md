@@ -201,6 +201,7 @@
 + kvs::mpi::Communicator::root()
 + kvs::mpi::Communicator::abort()
 + kvs::mpi::Communicator::barrier()
++ kvs::mpi::Communicator::isRoot()
 + kvs::glsl::PointRenderer::setVertexShaderFile( vert_file )
 + kvs::glsl::PointRenderer::setFragmentShaderFile( frag_file )
 + kvs::glsl::PointRenderer::setShaderFiles( vert_file, frag_file )

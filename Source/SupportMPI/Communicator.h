@@ -39,6 +39,7 @@ public:
     int root() const { return m_root; }
     int size() const;
     int rank() const;
+    bool isRoot() const { return this->rank() == this->root(); }
 
     void abort( const int err = 1 );
     void barrier();
