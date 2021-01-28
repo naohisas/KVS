@@ -53,12 +53,12 @@ public:
     Time last() const { return m_times.back(); }
 
     void start() { m_timer.start(); }
-    void stop() { m_timer.start(); }
+    void stop() { m_timer.stop(); }
     void stamp( const Time time ) { m_times.push_back( time ); }
 
-    void stamp( const kvs::Timer& timer, const bool restart = true )
+    void stamp( const kvs::Timer& timer )
     {
-        this->stamp( this->time( timer, restart ) );
+        this->stamp( this->time( timer ) );
     }
 
     void stamp( const bool restart = true )
