@@ -6,4 +6,5 @@
 #include <SupportMPI/Operator.h>
 #include <SupportMPI/Renderer/ImageCompositor.h>
 #include <SupportMPI/Request.h>
+#include <SupportMPI/StampTimer.h>
 #include <SupportMPI/Window.h>

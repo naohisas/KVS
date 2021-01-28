@@ -16,6 +16,8 @@
 + kvs::Png
 + kvs::SliceRange
 + kvs::LogStream
++ kvs::StampTimer
++ kvs::StampTimerList
 
 **Added SupportGLFW**
 + kvs::glfw::Application
@@ -33,6 +35,7 @@
 + kvs::mpi::Window
 + kvs::mpi::ImageCompositor
 + kvs::mpi::LogStream
++ kvs::mpi::StampTimer
 
 **Added new methods**
 + kvs::Matrix{22,33,44,nm}::rank
