@@ -464,7 +464,7 @@
 + kvs::Stat::AutoCorr
 + kvs::Stat::CrossCorr
 + kvs::Stat::Standardize
-+ kvs::StudentTDistributiion
++ kvs::StudentTDistribution
 + kvs::FisherFDistribution
 + kvs::ChiSquaredDistribution
 + kvs::GaussDistribution
