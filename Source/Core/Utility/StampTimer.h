@@ -23,7 +23,7 @@ namespace kvs
 class StampTimer
 {
 public:
-    using Time = double;
+    using Time = float;
     using Times = std::vector<Time>;
     enum Unit { Sec, MSec, USec, Fps };
 
