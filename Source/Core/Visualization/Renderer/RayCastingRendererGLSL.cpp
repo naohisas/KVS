@@ -194,8 +194,8 @@ void RayCastingRenderer::BufferObject::create(
 /*===========================================================================*/
 void RayCastingRenderer::BufferObject::draw()
 {
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
-    kvs::OpenGL::Disable( GL_LIGHTING );
+//    kvs::OpenGL::Disable( GL_DEPTH_TEST );
+//    kvs::OpenGL::Disable( GL_LIGHTING );
 
     kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
     p1.loadIdentity();
@@ -765,6 +765,8 @@ void RayCastingRenderer::draw_buffer_object( const kvs::StructuredVolumeObject* 
     m_ray_casting_shader.setUniform( "depth_texture", 5 );
     m_ray_casting_shader.setUniform( "color_texture", 6 );
 
+    kvs::OpenGL::Disable( GL_DEPTH_TEST );
+    kvs::OpenGL::Disable( GL_LIGHTING );
     m_volume_buffer.draw();
 }
 

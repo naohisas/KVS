@@ -79,26 +79,26 @@ private:
     float m_step; ///< sampling step
     float m_opaque; ///< opaque value for early ray termination
 
-    // Buffer object
-    BufferObject m_volume_buffer; ///< volume buffer object
-    BoundingBufferObject m_bounding_cube_buffer; ///< bounding cube buffer object
+    // Textures
+    kvs::Texture1D m_transfer_function_texture; ///< transfer function texture
+    kvs::Texture2D m_jittering_texture; ///< texture for stochastic jittering
 
     // Framebuffer
     kvs::Texture2D m_color_texture; ///< texture for color buffer
     kvs::Texture2D m_depth_texture; ///< texture for depth buffer
+
+    // Buffer object
+    BufferObject m_volume_buffer; ///< volume buffer object
+    BoundingBufferObject m_bounding_cube_buffer; ///< bounding cube buffer object
 
     // Entry/exit framebuffer
     kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
     kvs::Texture2D m_entry_texture; ///< entry point texture
     kvs::Texture2D m_exit_texture; ///< exit point texture
 
-    // SHader program
+    // Shader program
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
     kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
-
-    // Textures
-    kvs::Texture1D m_transfer_function_texture; ///< transfer function texture
-    kvs::Texture2D m_jittering_texture; ///< texture for stochastic jittering
 
 public:
     RayCastingRenderer();

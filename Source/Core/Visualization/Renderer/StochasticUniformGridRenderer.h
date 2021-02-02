@@ -12,6 +12,7 @@
 #include <kvs/Texture2D>
 #include <kvs/Texture3D>
 #include <kvs/TransferFunction>
+#include <kvs/RayCastingRenderer>
 #include "StochasticRenderingEngine.h"
 #include "StochasticRendererBase.h"
 
@@ -49,17 +50,31 @@ public:
 /*===========================================================================*/
 class StochasticUniformGridRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+    using BaseClass = kvs::StochasticRenderingEngine;
+
+public:
+    using BufferObject = kvs::glsl::RayCastingRenderer::BufferObject;
+    using BoundingBufferObject = kvs::glsl::RayCastingRenderer::BoundingBufferObject;
+
 private:
-    size_t m_random_index; ///< index used for refering the random texture
+    // Variable
     float m_step; ///< sampling step
+
+    // Transfer function
     bool m_transfer_function_changed; ///< flag for changin transfer function
     kvs::TransferFunction m_transfer_function; ///< transfer function
     kvs::Texture1D m_transfer_function_texture; ///< transfer function texture
+
+    // Buffer object
+    BufferObject m_volume_buffer; ///< volume buffer object
+    BoundingBufferObject m_bounding_cube_buffer; ///< bounding cube buffer
+
+    // Entry/exit framebuffer
+    kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
     kvs::Texture2D m_entry_texture; ///< entry point texture
     kvs::Texture2D m_exit_texture; ///< exit point texture
-    kvs::Texture3D m_volume_texture; ///< volume data (3D texture)
-    kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
-    kvs::VertexBufferObjectManager m_bounding_cube_buffer; ///< bounding cube (VBO)
+
+    // Shader program
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
     kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
 
@@ -82,14 +97,16 @@ public:
     const kvs::TransferFunction& transferFunction() const { return m_transfer_function; }
 
 private:
-    void create_shader_program( const kvs::StructuredVolumeObject* volume );
-    void create_volume_texture( const kvs::StructuredVolumeObject* volume );
-    void create_transfer_function_texture();
-    void create_bounding_cube_buffer( const kvs::StructuredVolumeObject* volume );
+    void create_shader_program( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );
+    void update_shader_program( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );
+    void setup_shader_program( const kvs::Shader::ShadingModel& shading_model, const kvs::ObjectBase* object, const kvs::Camera* camera, const kvs::Light* light );
+
     void create_framebuffer( const size_t width, const size_t height );
     void update_framebuffer( const size_t width, const size_t height );
-    void draw_bounding_cube_buffer();
-    void draw_quad();
+
+    void create_buffer_object( const kvs::StructuredVolumeObject* volume );
+    void update_buffer_object( const kvs::StructuredVolumeObject* volume );
+    void draw_buffer_object( const kvs::StructuredVolumeObject* volume );
 };
 
 } // end of namespace kvs
