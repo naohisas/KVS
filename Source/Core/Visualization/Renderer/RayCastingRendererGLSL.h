@@ -37,6 +37,32 @@ class RayCastingRenderer : public kvs::VolumeRendererBase
     kvsModuleBaseClass( kvs::VolumeRendererBase );
 
 public:
+    class BufferObject
+    {
+    private:
+        kvs::Texture3D m_manager{};
+    public:
+        BufferObject() = default;
+        kvs::Texture3D& manager() { return m_manager; }
+        void release() { m_manager.release(); }
+        void create( const kvs::StructuredVolumeObject* volume,
+                     const kvs::TransferFunction& tfunc );
+        void draw();
+    };
+
+    class BoundingBufferObject
+    {
+    private:
+        kvs::VertexBufferObjectManager m_manager{};
+    public:
+        BoundingBufferObject() = default;
+        kvs::VertexBufferObjectManager& manager() { return m_manager; }
+        void release() { m_manager.release(); }
+        void create( const kvs::StructuredVolumeObject* volume );
+        void draw();
+    };
+
+public:
     enum DrawingBuffer
     {
         FrontFace,
@@ -45,23 +71,34 @@ public:
     };
 
 private:
+    // Variables
     bool m_draw_front_face; ///< frag for drawing front face
     bool m_draw_back_face; ///< frag for drawing back face
     bool m_draw_volume; ///< frag for drawing volume
     bool m_enable_jittering; ///< frag for stochastic jittering
     float m_step; ///< sampling step
     float m_opaque; ///< opaque value for early ray termination
-    kvs::Texture1D m_transfer_function_texture; ///< transfer function texture
-    kvs::Texture2D m_jittering_texture; ///< texture for stochastic jittering
-    kvs::Texture2D m_entry_texture; ///< entry point texture
-    kvs::Texture2D m_exit_texture; ///< exit point texture
+
+    // Buffer object
+    BufferObject m_volume_buffer; ///< volume buffer object
+    BoundingBufferObject m_bounding_cube_buffer; ///< bounding cube buffer object
+
+    // Framebuffer
     kvs::Texture2D m_color_texture; ///< texture for color buffer
     kvs::Texture2D m_depth_texture; ///< texture for depth buffer
-    kvs::Texture3D m_volume_texture; ///< volume data (3D texture)
+
+    // Entry/exit framebuffer
     kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
-    kvs::VertexBufferObjectManager m_bounding_cube_buffer; ///< bounding cube (VBO)
+    kvs::Texture2D m_entry_texture; ///< entry point texture
+    kvs::Texture2D m_exit_texture; ///< exit point texture
+
+    // SHader program
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
     kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
+
+    // Textures
+    kvs::Texture1D m_transfer_function_texture; ///< transfer function texture
+    kvs::Texture2D m_jittering_texture; ///< texture for stochastic jittering
 
 public:
     RayCastingRenderer();
@@ -78,15 +115,16 @@ public:
     void disableJittering() { m_enable_jittering = false; }
 
 private:
-    void initialize_shader( const kvs::StructuredVolumeObject* volume );
-    void initialize_jittering_texture();
-    void initialize_bounding_cube_buffer( const kvs::StructuredVolumeObject* volume );
-    void initialize_transfer_function_texture();
-    void initialize_volume_texture( const kvs::StructuredVolumeObject* volume );
-    void initialize_framebuffer( const size_t width, const size_t height );
+    void create_shader_program( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );
+    void update_shader_program( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );
+    void setup_shader_program( const kvs::Shader::ShadingModel& shading_model, const kvs::ObjectBase* object, const kvs::Camera* camera, const kvs::Light* light );
+
+    void create_framebuffer( const size_t width, const size_t height );
     void update_framebuffer( const size_t width, const size_t height );
-    void draw_bounding_cube_buffer();
-    void draw_quad( const float opacity );
+
+    void create_buffer_object( const kvs::StructuredVolumeObject* volume );
+    void update_buffer_object( const kvs::StructuredVolumeObject* volume );
+    void draw_buffer_object( const kvs::StructuredVolumeObject* volume );
 };
 
 } // end of namespace glsl

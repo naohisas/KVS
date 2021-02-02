@@ -35,6 +35,7 @@ private:
     kvs::FrameBuffer m_color_buffer; ///< color (RGBA) buffer
     kvs::TransferFunction m_tfunc; ///< transfer function
     kvs::Shader::ShadingModel* m_shader; ///< shading method
+    const kvs::ObjectBase* m_object; ///< rendering object
 
 public:
     VolumeRendererBase();
@@ -60,8 +61,13 @@ protected:
     kvs::ValueArray<kvs::Real32>& depthData() { return m_depth_data; }
     kvs::Shader::ShadingModel& shader() { return *m_shader; }
     kvs::TransferFunction& transferFunction() { return m_tfunc; }
+    const kvs::ObjectBase* object() const { return m_object; }
     void setWindowSize( const size_t width, const size_t height ) { m_window_width = width; m_window_height = height; }
     void setDevicePixelRatio( const float dpr ) { m_device_pixel_ratio = dpr; }
+    void setObject( const kvs::ObjectBase* object ) { m_object = object; }
+    bool isWindowCreated() { return m_window_width == 0 && m_window_height == 0; }
+    bool isWindowResized( size_t w, size_t h ) { return m_window_width != w || m_window_height != h; }
+    bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
     void allocateDepthData( const size_t size );
     void allocateColorData( const size_t size );
     void fillDepthData( const kvs::Real32 value );

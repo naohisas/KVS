@@ -22,7 +22,8 @@ VolumeRendererBase::VolumeRendererBase():
     m_window_width( 0 ),
     m_window_height( 0 ),
     m_device_pixel_ratio( 1.0f ),
-    m_shader( NULL )
+    m_shader( NULL ),
+    m_object( NULL )
 {
     m_depth_buffer.setFormat( GL_DEPTH_COMPONENT );
     m_depth_buffer.setType( GL_FLOAT );
