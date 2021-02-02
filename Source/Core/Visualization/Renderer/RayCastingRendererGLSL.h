@@ -54,12 +54,13 @@ public:
     {
     private:
         kvs::VertexBufferObjectManager m_manager{};
+        kvs::ProgramObject m_shader_program{};
     public:
         BoundingBufferObject() = default;
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
-        void release() { m_manager.release(); }
+        void release() { m_manager.release(); m_shader_program.release(); }
         void create( const kvs::StructuredVolumeObject* volume );
-        void draw();
+        void draw( const kvs::Mat4& PM, const bool back = true, const bool front = true );
     };
 
 public:
@@ -98,7 +99,6 @@ private:
 
     // Shader program
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
-    kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
 
 public:
     RayCastingRenderer();

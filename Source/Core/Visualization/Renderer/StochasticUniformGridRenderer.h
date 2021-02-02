@@ -76,7 +76,6 @@ private:
 
     // Shader program
     kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
-    kvs::ProgramObject m_bounding_cube_shader; ///< bounding cube shader
 
 public:
     Engine();

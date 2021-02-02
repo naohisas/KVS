@@ -114,7 +114,6 @@ void StochasticUniformGridRenderer::Engine::release()
     m_bounding_cube_buffer.release();
 
     m_ray_casting_shader.release();
-    m_bounding_cube_shader.release();
 }
 
 /*===========================================================================*/
@@ -205,45 +204,38 @@ void StochasticUniformGridRenderer::Engine::draw( kvs::ObjectBase* object, kvs::
     this->draw_buffer_object( kvs::StructuredVolumeObject::DownCast( object ) );
 }
 
-
 void StochasticUniformGridRenderer::Engine::create_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
-    // Build bounding cube shader.
+    kvs::ShaderSource vert("SR_uniform_grid.vert");
+    kvs::ShaderSource frag("SR_uniform_grid.frag");
+    if ( shading_enabled )
     {
-        kvs::ShaderSource vert( "RC_bounding_cube.vert" );
-        kvs::ShaderSource frag( "RC_bounding_cube.frag" );
-        m_bounding_cube_shader.build( vert, frag );
-    }
-
-    // Build ray caster.
-    {
-        kvs::ShaderSource vert("SR_uniform_grid.vert");
-        kvs::ShaderSource frag("SR_uniform_grid.frag");
-        if ( shading_enabled )
+        switch ( shading_model.type() )
         {
-            switch ( shading_model.type() )
-            {
-            case kvs::Shader::LambertShading: frag.define( "ENABLE_LAMBERT_SHADING" ); break;
-            case kvs::Shader::PhongShading: frag.define( "ENABLE_PHONG_SHADING" ); break;
-            case kvs::Shader::BlinnPhongShading: frag.define( "ENABLE_BLINN_PHONG_SHADING" ); break;
-            default: /* NO SHADING */ break;
-            }
+        case kvs::Shader::LambertShading: frag.define( "ENABLE_LAMBERT_SHADING" ); break;
+        case kvs::Shader::PhongShading: frag.define( "ENABLE_PHONG_SHADING" ); break;
+        case kvs::Shader::BlinnPhongShading: frag.define( "ENABLE_BLINN_PHONG_SHADING" ); break;
+        default: /* NO SHADING */ break;
         }
-        m_ray_casting_shader.build( vert, frag );
-
-        m_ray_casting_shader.bind();
-        m_ray_casting_shader.setUniform( "sampling_step", m_step );
-        m_ray_casting_shader.unbind();
     }
+    m_ray_casting_shader.build( vert, frag );
+
+    m_ray_casting_shader.bind();
+    m_ray_casting_shader.setUniform( "sampling_step", m_step );
+    m_ray_casting_shader.setUniform( "volume_data", 0 );
+    m_ray_casting_shader.setUniform( "exit_points", 1 );
+    m_ray_casting_shader.setUniform( "entry_points", 2 );
+    m_ray_casting_shader.setUniform( "transfer_function_data", 3 );
+    m_ray_casting_shader.setUniform( "random_texture", 4 );
+    m_ray_casting_shader.unbind();
 }
 
 void StochasticUniformGridRenderer::Engine::update_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
-    m_bounding_cube_shader.release();
     m_ray_casting_shader.release();
     this->create_shader_program( shading_model, shading_enabled );
 }
@@ -260,61 +252,43 @@ void StochasticUniformGridRenderer::Engine::setup_shader_program(
 
     // Setup entry/exit textures by drawing bounding cube to FBO
     {
-        kvs::OpenGL::Enable( GL_DEPTH_TEST );
-        kvs::OpenGL::Enable( GL_CULL_FACE );
-        kvs::OpenGL::Disable( GL_LIGHTING );
-
         // Change renderig target to the entry/exit FBO.
         kvs::FrameBufferObject::GuardedBinder binder( m_entry_exit_framebuffer );
-        kvs::ProgramObject::Binder bind( m_bounding_cube_shader );
-        m_bounding_cube_shader.setUniform( "ModelViewProjectionMatrix", PM );
-
-        // Draw the back face of the bounding cube for the entry points.
-        kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0_EXT );
-        kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        kvs::OpenGL::SetCullFace( GL_FRONT );
-        m_bounding_cube_buffer.draw();
-
-        // Draw the front face of the bounding cube for the entry points.
-        kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT1_EXT );
-        kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        kvs::OpenGL::SetCullFace( GL_BACK );
-        m_bounding_cube_buffer.draw();
+        m_bounding_cube_buffer.draw( PM );
     }
 
-    kvs::ProgramObject::Binder bind( m_ray_casting_shader );
-    m_ray_casting_shader.setUniform( "ModelViewProjectionMatrix", PM );
-    m_ray_casting_shader.setUniform( "ModelViewProjectionMatrixInverse", PM_inverse );
-    m_ray_casting_shader.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
+    // Setup shader.
+    {
+        kvs::ProgramObject::Binder bind( m_ray_casting_shader );
+        m_ray_casting_shader.setUniform( "ModelViewProjectionMatrix", PM );
+        m_ray_casting_shader.setUniform( "ModelViewProjectionMatrixInverse", PM_inverse );
+        m_ray_casting_shader.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
 
-    const float f = camera->back();
-    const float n = camera->front();
-    const float to_zw1 = ( f * n ) / ( f - n );
-    const float to_zw2 = 0.5f * ( ( f + n ) / ( f - n ) ) + 0.5f;
-    const float to_ze1 = 0.5f + 0.5f * ( ( f + n ) / ( f - n ) );
-    const float to_ze2 = ( f - n ) / ( f * n );
-    const kvs::Vec3 light_position = kvs::WorldCoordinate( light->position() ).toObjectCoordinate( object ).position();
-    const kvs::Vec3 camera_position = kvs::WorldCoordinate( camera->position() ).toObjectCoordinate( object ).position();
-    m_ray_casting_shader.setUniform( "to_zw1", to_zw1 );
-    m_ray_casting_shader.setUniform( "to_zw2", to_zw2 );
-    m_ray_casting_shader.setUniform( "to_ze1", to_ze1 );
-    m_ray_casting_shader.setUniform( "to_ze2", to_ze2 );
-    m_ray_casting_shader.setUniform( "light_position", light_position );
-    m_ray_casting_shader.setUniform( "camera_position", camera_position );
+        const float f = camera->back();
+        const float n = camera->front();
+        const float to_zw1 = ( f * n ) / ( f - n );
+        const float to_zw2 = 0.5f * ( ( f + n ) / ( f - n ) ) + 0.5f;
+        const float to_ze1 = 0.5f + 0.5f * ( ( f + n ) / ( f - n ) );
+        const float to_ze2 = ( f - n ) / ( f * n );
+        m_ray_casting_shader.setUniform( "to_zw1", to_zw1 );
+        m_ray_casting_shader.setUniform( "to_zw2", to_zw2 );
+        m_ray_casting_shader.setUniform( "to_ze1", to_ze1 );
+        m_ray_casting_shader.setUniform( "to_ze2", to_ze2 );
 
-    m_ray_casting_shader.setUniform( "shading.Ka", shading_model.Ka );
-    m_ray_casting_shader.setUniform( "shading.Kd", shading_model.Kd );
-    m_ray_casting_shader.setUniform( "shading.Ks", shading_model.Ks );
-    m_ray_casting_shader.setUniform( "shading.S",  shading_model.S );
+        const kvs::Vec3 L = kvs::WorldCoordinate( light->position() ).toObjectCoordinate( object ).position();
+        const kvs::Vec3 C = kvs::WorldCoordinate( camera->position() ).toObjectCoordinate( object ).position();
+        m_ray_casting_shader.setUniform( "light_position", L );
+        m_ray_casting_shader.setUniform( "camera_position", C );
 
-    m_ray_casting_shader.setUniform( "volume_data", 0 );
-    m_ray_casting_shader.setUniform( "exit_points", 1 );
-    m_ray_casting_shader.setUniform( "entry_points", 2 );
-    m_ray_casting_shader.setUniform( "transfer_function_data", 3 );
-    m_ray_casting_shader.setUniform( "random_texture", 4 );
+        m_ray_casting_shader.setUniform( "shading.Ka", shading_model.Ka );
+        m_ray_casting_shader.setUniform( "shading.Kd", shading_model.Kd );
+        m_ray_casting_shader.setUniform( "shading.Ks", shading_model.Ks );
+        m_ray_casting_shader.setUniform( "shading.S",  shading_model.S );
+    }
 
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    // Setup OpenGL statement.
     kvs::OpenGL::Disable( GL_CULL_FACE );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
     if ( BaseClass::isEnabledShading() ) kvs::OpenGL::Enable( GL_LIGHTING );
     else kvs::OpenGL::Disable( GL_LIGHTING );
