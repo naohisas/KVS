@@ -42,7 +42,7 @@ public:
         typedef kvs::StochasticPolygonRenderer Renderer;
         kvs::Scene* scene = kvs::Screen::DownCast( screen() )->scene();
         Renderer* renderer = static_cast<Renderer*>( scene->rendererManager()->renderer( "Renderer" ) );
-        renderer->setEnabledLODControl( state() );
+        renderer->setLODControlEnabled( state() );
         screen()->redraw();
     }
 };
@@ -161,7 +161,7 @@ int main( int argc, char** argv )
     kvs::StochasticPolygonRenderer* renderer = new kvs::StochasticPolygonRenderer();
     renderer->setName( "Renderer" );
     renderer->setRepetitionLevel( 50 );
-    renderer->enableLODControl();
+    renderer->setLODControlEnabled( true );
 
     kvs::Screen screen( &app );
     screen.setTitle("Example program for kvs::StochasticPolygonRenderer");

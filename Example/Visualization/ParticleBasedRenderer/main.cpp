@@ -29,19 +29,14 @@
 /*===========================================================================*/
 kvs::StructuredVolumeObject* Import( int argc, char** argv )
 {
-    kvs::StructuredVolumeObject* object = NULL;
     if ( argc > 1 )
     {
-        std::string filename( argv[1] );
-        object = new kvs::StructuredVolumeImporter( argv[1] );
-    }
-    else
-    {
-        kvs::Vector3ui resolution( 32, 32, 32 );
-        object = new kvs::HydrogenVolumeData( resolution );
+        const std::string filename( argv[1] );
+        return new kvs::StructuredVolumeImporter( argv[1] );
     }
 
-    return object;
+    auto resolution = kvs::Vec3u::Constant( 32 );
+    return new kvs::HydrogenVolumeData( resolution );
 }
 
 /*===========================================================================*/
@@ -55,35 +50,32 @@ kvs::StructuredVolumeObject* Import( int argc, char** argv )
 int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::ParticleBasedRenderer" );
+    screen.create();
 
-    kvs::StructuredVolumeObject* volume = Import( argc, argv );
-    volume->print( std::cout );
+    // Import volume object.
+    auto* volume = Import( argc, argv );
+    volume->print( std::cout << "IMPORTED VOLUME" << std::endl, kvs::Indent(4) );
 
-    /* The image quality can be improved by increasing 'repetitions'. However,
-     * the number of generated points will be increased depending on the
-     * number of repetitions. Therefore, the 'repetitions' will be specified
-     * appropriately by taking into account memory resources of CPU and GPU.
-     */
-    const size_t repetitions = 4;
+    // Generate particles.
+    using Sampling = kvs::CellByCellMetropolisSampling;
+    const size_t repeat = 4;
     const float step = 0.5f;
     const kvs::TransferFunction tfunc( 256 );
-    kvs::PointObject* object = new kvs::CellByCellMetropolisSampling( volume, repetitions, step, tfunc );
-    object->print( std::cout << std::endl );
+    auto* object = new Sampling( volume, repeat, step, tfunc );
+    object->print( std::cout << "GENERATED PARTICLES" << std::endl, kvs::Indent(4) );
+
     delete volume;
 
-    /* User can use following particle based renderers.
-     *     (1) CPU renderer -> kvs::ParticleBasedRenderer
-     *     (2) GPU renderer -> kvs::glsl::ParticleBasedRenderer
-     *     (3) GPU renderer -> kvs::glsl::rits::ParticleBasedRenderer (Ritsumeikan Univ. version)
-     */
-    kvs::glsl::ParticleBasedRenderer* renderer = new kvs::glsl::ParticleBasedRenderer();
-    renderer->setRepetitionLevel( repetitions );
-    renderer->enableLODControl();
+    // Setup renderer.
+    using Renderer = kvs::glsl::ParticleBasedRenderer;
+    auto* renderer = new Renderer();
+    renderer->setRepetitionLevel( repeat );
+    renderer->setLODControlEnabled( true );
 
-    kvs::Screen screen( &app );
-    screen.setTitle("kvs::ParticleBasedRenderer");
     screen.registerObject( object, renderer );
-    screen.create();
+    screen.show();
 
     return app.run();
 }

@@ -55,7 +55,7 @@ int main( int argc, char** argv )
 
     kvs::StochasticRenderingCompositor compositor( screen.scene() );
     compositor.setRepetitionLevel( 50 );
-    compositor.enableLODControl();
+    compositor.setLODControlEnabled( true );
     screen.setEvent( &compositor );
 
     kvs::TransferFunctionEditor editor( &screen );
@@ -75,7 +75,7 @@ int main( int argc, char** argv )
     checkbox.anchorToTopLeft();
     checkbox.stateChanged(
         [&]() {
-            compositor.setEnabledLODControl( checkbox.state() );
+            compositor.setLODControlEnabled( checkbox.state() );
             screen.redraw();
         } );
     checkbox.show();

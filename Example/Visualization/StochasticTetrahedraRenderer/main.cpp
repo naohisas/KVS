@@ -62,7 +62,7 @@ public:
         typedef kvs::StochasticTetrahedraRenderer Renderer;
         kvs::Scene* scene = static_cast<kvs::glut::Screen*>( screen() )->scene();
         Renderer* renderer = static_cast<Renderer*>( scene->rendererManager()->renderer( "Renderer" ) );
-        renderer->setEnabledLODControl( state() );
+        renderer->setLODControlEnabled( state() );
         screen()->redraw();
     }
 };
@@ -114,7 +114,7 @@ int main( int argc, char** argv )
     renderer->setName( "Renderer" );
     renderer->setTransferFunction( tfunc );
     renderer->setRepetitionLevel( 50 );
-    renderer->enableLODControl();
+    renderer->setLODControlEnabled( true );
 
     kvs::glut::Screen screen( &app );
     screen.setTitle(" Example program for kvs::StochasticTetrahedraRenderer");

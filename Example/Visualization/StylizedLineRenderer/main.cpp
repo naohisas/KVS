@@ -62,7 +62,7 @@ int main( int argc, char** argv )
 
     kvs::StylizedLineRenderer* renderer = new kvs::StylizedLineRenderer();
     renderer->setShadingModel( kvs::Shader::BlinnPhong() );
-    renderer->enableShading();
+    renderer->setShadingEnabled();
 
     kvs::Screen screen( &app );
     screen.registerObject( object, renderer );

@@ -4,14 +4,6 @@
  *  @brief  Example program for transfer function editor.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1518 2013-04-10 01:13:11Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
@@ -26,14 +18,13 @@
 class TransferFunctionEditor : public kvs::glut::TransferFunctionEditor
 {
 public:
-
     TransferFunctionEditor( kvs::glut::Screen* screen ):
         kvs::glut::TransferFunctionEditor( screen ){}
 
-    void apply( void )
+    void apply()
     {
-        const kvs::RendererBase* base = static_cast<kvs::glut::Screen*>(screen())->scene()->rendererManager()->renderer();
-        kvs::RayCastingRenderer* renderer = (kvs::RayCastingRenderer*)base;
+        auto* scene = kvs::glut::Screen::DownCast( screen() )->scene();
+        auto* renderer = kvs::glsl::RayCastingRenderer::DownCast( scene->rendererManager()->renderer() );
         renderer->setTransferFunction( transferFunction() );
         screen()->redraw();
     }
@@ -41,20 +32,24 @@ public:
 
 int main( int argc, char** argv )
 {
+    // Set an application and a screen.
     kvs::glut::Application app( argc, argv );
+    kvs::glut::Screen screen( &app );
 
+    // Read volume data.
     kvs::StructuredVolumeObject* object = NULL;
     if ( argc > 1 ) object = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else            object = new kvs::HydrogenVolumeData( kvs::Vector3ui( 32, 32, 32 ) );
+    else            object = new kvs::HydrogenVolumeData( kvs::Vec3u( 32, 32, 32 ) );
 
-    kvs::RayCastingRenderer* renderer = new kvs::RayCastingRenderer();
+    // Set ray-casting renderer.
+    auto* renderer = new kvs::glsl::RayCastingRenderer();
     renderer->setShader( kvs::Shader::BlinnPhong() );
-    renderer->enableLODControl();
 
-    kvs::glut::Screen screen( &app );
+    // Register the volume object and renderer.
     screen.registerObject( object, renderer );
     screen.show();
 
+    // Transfer function editor.
     TransferFunctionEditor editor( &screen );
     editor.setVolumeObject( object );
     editor.show();
