@@ -7,6 +7,7 @@
 #pragma once
 #include <kvs/Shader>
 #include <kvs/Texture2D>
+#include <kvs/ValueArray>
 #include <kvs/Deprecated>
 
 
@@ -69,6 +70,7 @@ protected:
     void attachObject( const kvs::ObjectBase* object ) { m_object = object; }
     void detachObject() { m_object = NULL; }
     void createRandomTexture();
+    kvs::ValueArray<kvs::UInt16> randomIndices( const size_t nvertices ) const;
 
 public:
     KVS_DEPRECATED( void setEnabledShading( const bool enable ) ) { this->setShadingEnabled( enable ); }

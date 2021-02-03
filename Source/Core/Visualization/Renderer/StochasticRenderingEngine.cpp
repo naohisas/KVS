@@ -49,4 +49,17 @@ void StochasticRenderingEngine::createRandomTexture()
     m_random_texture.create( m_random_texture_size, m_random_texture_size, random.data() );
 }
 
+kvs::ValueArray<kvs::UInt16> StochasticRenderingEngine::randomIndices( const size_t nvertices ) const
+{
+    const auto tex_size = this->randomTextureSize();
+    kvs::ValueArray<kvs::UInt16> indices( nvertices * 2 );
+    for ( size_t i = 0; i < nvertices; i++ )
+    {
+        const unsigned int count = i * 12347;
+        indices[ 2 * i + 0 ] = static_cast<kvs::UInt16>( ( count ) % tex_size );
+        indices[ 2 * i + 1 ] = static_cast<kvs::UInt16>( ( count / tex_size ) % tex_size );
+    }
+    return indices;
+}
+
 } // end of namespace kvs

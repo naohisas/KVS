@@ -385,19 +385,85 @@ void PolygonRenderer::BufferObject::draw( const kvs::PolygonObject* polygon )
     }
 }
 
+void PolygonRenderer::RenderPass::setShaderFiles(
+    const std::string& vert_file,
+    const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
+void PolygonRenderer::RenderPass::create(
+    const kvs::Shader::ShadingModel& shading_model,
+    const bool shading_enabled )
+{
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( shading_enabled )
+    {
+        switch ( shading_model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
+    }
+
+    m_shader_program.build( vert, frag );
+}
+
+void PolygonRenderer::RenderPass::update(
+    const kvs::Shader::ShadingModel& shading_model,
+    const bool shading_enabled )
+{
+    m_shader_program.release();
+    this->create( shading_model, shading_enabled );
+}
+
+void PolygonRenderer::RenderPass::setup(
+    const kvs::Shader::ShadingModel& shading_model )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "shading.Ka", shading_model.Ka );
+    m_shader_program.setUniform( "shading.Kd", shading_model.Kd );
+    m_shader_program.setUniform( "shading.Ks", shading_model.Ks );
+    m_shader_program.setUniform( "shading.S",  shading_model.S );
+    m_shader_program.setUniform( "offset", m_polygon_offset );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    m_shader_program.setUniform( "ModelViewMatrix", M );
+    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
+    m_shader_program.setUniform( "NormalMatrix", N );
+}
+
+void PolygonRenderer::RenderPass::draw( const kvs::PolygonObject* polygon )
+{
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+
+    m_shader_program.bind();
+    m_buffer_object.draw( polygon );
+    m_shader_program.unbind();
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new PolygonRenderer class.
  */
 /*===========================================================================*/
 PolygonRenderer::PolygonRenderer():
-    m_vert_file( "shader.vert" ),
-    m_frag_file( "shader.frag" ),
     m_width( 0 ),
     m_height( 0 ),
-    m_object( NULL ),
+    m_object( nullptr ),
     m_shading_model( new kvs::Shader::Lambert() ),
-    m_polygon_offset( 0.0f )
+    m_render_pass( m_buffer_object )
 {
 }
 
@@ -450,10 +516,7 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     }
 
     this->setupShaderProgram();
-
-    m_shader_program.bind();
     this->drawBufferObject( camera );
-    m_shader_program.unbind();
 
     BaseClass::stopTimer();
 }
@@ -465,48 +528,17 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
 /*===========================================================================*/
 void PolygonRenderer::createShaderProgram()
 {
-    kvs::ShaderSource vert( this->vertexShaderFile() );
-    kvs::ShaderSource frag( this->fragmentShaderFile() );
-    if ( isShadingEnabled() )
-    {
-        switch ( m_shading_model->type() )
-        {
-        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
-        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
-        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
-        default: break; // NO SHADING
-        }
-
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
-        {
-            frag.define("ENABLE_TWO_SIDE_LIGHTING");
-        }
-    }
-
-    m_shader_program.build( vert, frag );
+    m_render_pass.create( this->shadingModel(), BaseClass::isShadingEnabled() );
 }
 
 void PolygonRenderer::updateShaderProgram()
 {
-    m_shader_program.release();
-    this->createShaderProgram();
+    m_render_pass.update( this->shadingModel(), BaseClass::isShadingEnabled() );
 }
 
 void PolygonRenderer::setupShaderProgram()
 {
-    kvs::ProgramObject::Binder bind( m_shader_program );
-    m_shader_program.setUniform( "shading.Ka", m_shading_model->Ka );
-    m_shader_program.setUniform( "shading.Kd", m_shading_model->Kd );
-    m_shader_program.setUniform( "shading.Ks", m_shading_model->Ks );
-    m_shader_program.setUniform( "shading.S",  m_shading_model->S );
-    m_shader_program.setUniform( "offset", m_polygon_offset );
-
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-    m_shader_program.setUniform( "ModelViewMatrix", M );
-    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
-    m_shader_program.setUniform( "NormalMatrix", N );
+    m_render_pass.setup( this->shadingModel() );
 }
 
 /*===========================================================================*/
@@ -536,8 +568,7 @@ void PolygonRenderer::updateBufferObject( const kvs::ObjectBase* object )
 void PolygonRenderer::drawBufferObject( const kvs::Camera* camera )
 {
     const auto* polygon = kvs::PolygonObject::DownCast( m_object );
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    m_buffer_object.draw( polygon );
+    m_render_pass.draw( polygon );
 }
 
 } // end of namespace glsl
