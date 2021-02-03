@@ -226,7 +226,7 @@ void Argument::Common::applyTo( kvs::Screen& screen, kvs::VisualizationPipeline&
         axis->setYLabel( this->valueAs<std::string>( "axis_y_label", "Y" ) );
         axis->setZLabel( this->valueAs<std::string>( "axis_z_label", "Z" ) );
         axis->setNumberOfGridlines( this->valueAsVec3<kvs::UInt32>( "axis_gridlines", kvs::Vec3u( 5, 5, 5 ) ) );
-        axis->setEnabledAntiAliasing( this->hasOption( "antialiasing" ) );
+        axis->setAntiAliasingEnabled( this->hasOption( "antialiasing" ) );
 
         auto* object = const_cast<kvs::ObjectBase*>( pipe.object() );
         screen.registerObject( object, axis );
