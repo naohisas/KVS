@@ -227,6 +227,7 @@
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
++ Example/Visualization/StochasticUniformGridRenderer
 + Example/SupportMPI/AllToAll
 + Example/SupportMPI/Broadcast
 + Example/SupportMPI/Gather
