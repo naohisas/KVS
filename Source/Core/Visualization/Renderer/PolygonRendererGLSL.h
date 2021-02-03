@@ -47,11 +47,11 @@ public:
     class RenderPass
     {
     private:
-        BufferObject& m_buffer_object;
+        BufferObject& m_buffer_object; ///< buffer object (reference)
         float m_polygon_offset = 0.0f; ///< polygon offset
-        std::string m_vert_shader_file = "shader.vert";
-        std::string m_frag_shader_file = "shader.frag";
-        kvs::ProgramObject m_shader_program{};
+        std::string m_vert_shader_file = "shader.vert"; ///< vertex shader file
+        std::string m_frag_shader_file = "shader.frag"; ///< fragment shader file
+        kvs::ProgramObject m_shader_program{}; ///< shader program
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
         virtual ~RenderPass() {}
@@ -65,9 +65,9 @@ public:
         void setFragmentShaderFile( const std::string& file ) { m_frag_shader_file = file; }
         void setShaderFiles( const std::string& vert_file, const std::string& frag_file );
         virtual void release() { m_shader_program.release(); }
-        virtual void create( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );
-        virtual void update( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );
-        virtual void setup( const kvs::Shader::ShadingModel& shading_model );
+        virtual void create( const kvs::Shader::ShadingModel& model, const bool enable );
+        virtual void update( const kvs::Shader::ShadingModel& model, const bool enable );
+        virtual void setup( const kvs::Shader::ShadingModel& model );
         virtual void draw( const kvs::PolygonObject* polygon );
     };
 
@@ -89,11 +89,9 @@ public:
     const std::string& vertexShaderFile() const { return m_render_pass.vertexShaderFile(); }
     const std::string& fragmentShaderFile() const { return m_render_pass.fragmentShaderFile(); }
     float polygonOffset() const { return m_render_pass.polygonOffset(); }
-
     void setVertexShaderFile( const std::string& file ) { m_render_pass.setVertexShaderFile( file ); }
     void setFragmentShaderFile( const std::string& file ) { m_render_pass.setFragmentShaderFile( file ); }
     void setPolygonOffset( const float offset ) { m_render_pass.setPolygonOffset( offset ); }
-
     void setShaderFiles( const std::string& vert_file, const std::string& frag_file )
     {
         this->setVertexShaderFile( vert_file );

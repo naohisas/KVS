@@ -42,26 +42,34 @@ public:
 /*===========================================================================*/
 class StochasticPolygonRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+public:
     using BaseClass = kvs::StochasticRenderingEngine;
     using BufferObject = kvs::glsl::PolygonRenderer::BufferObject;
 
+    class RenderPass : public kvs::glsl::PolygonRenderer::RenderPass
+    {
+    private:
+        using BaseRenderPass = kvs::glsl::PolygonRenderer::RenderPass;
+        using Parent = BaseClass;
+        const Parent* m_parent; ///< reference to the engine
+    public:
+        RenderPass( BufferObject& buffer_object, Parent* parent );
+        void setup( const kvs::Shader::ShadingModel& shading_model );
+        void draw( const kvs::PolygonObject* polygon );
+    };
+
 private:
-    float m_polygon_offset; ///< polygon offset
-    kvs::ProgramObject m_shader_program; ///< shader program
-    BufferObject m_buffer_object;
+    RenderPass m_render_pass; ///< render pass
+    BufferObject m_buffer_object; ///< buffer object
 
 public:
-    Engine();
-    void release();
+    Engine(): m_render_pass( m_buffer_object, this ) {}
+    void release() { m_render_pass.release(); m_buffer_object.release(); }
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
-    void setPolygonOffset( const float offset ) { m_polygon_offset = offset; }
-
-private:
-    void create_shader_program();
-    void create_buffer_object( const kvs::PolygonObject* polygon );
+    void setPolygonOffset( const float offset ) { m_render_pass.setPolygonOffset( offset ); }
 };
 
 } // end of namespace kvs
