@@ -115,7 +115,7 @@ void PointRenderer::initialize()
     kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
 
-    if ( !this->isEnabledShading() )
+    if ( !this->isShadingEnabled() )
     {
         kvs::OpenGL::Disable( GL_NORMALIZE );
         kvs::OpenGL::Disable( GL_LIGHTING );

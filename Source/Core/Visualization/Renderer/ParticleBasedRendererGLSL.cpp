@@ -89,9 +89,9 @@ ParticleBasedRenderer::ParticleBasedRenderer( const kvs::Mat4& m, const kvs::Mat
  *  @return true, if the shuffling is enabled
  */
 /*===========================================================================*/
-bool ParticleBasedRenderer::isEnabledShuffle() const
+bool ParticleBasedRenderer::isShuffleEnabled() const
 {
-    return static_cast<const Engine&>( engine() ).isEnabledShuffle();
+    return static_cast<const Engine&>( engine() ).isShuffleEnabled();
 }
 
 /*===========================================================================*/
@@ -100,9 +100,9 @@ bool ParticleBasedRenderer::isEnabledShuffle() const
  *  @return true, if the zooming is enabled
  */
 /*===========================================================================*/
-bool ParticleBasedRenderer::isEnabledZooming() const
+bool ParticleBasedRenderer::isZoomingEnabled() const
 {
-    return static_cast<const Engine&>( engine() ).isEnabledZooming();
+    return static_cast<const Engine&>( engine() ).isZoomingEnabled();
 }
 
 /*===========================================================================*/
@@ -111,9 +111,9 @@ bool ParticleBasedRenderer::isEnabledZooming() const
  *  @param  enable [in] enable-flag
  */
 /*===========================================================================*/
-void ParticleBasedRenderer::setEnabledShuffle( const bool enable )
+void ParticleBasedRenderer::setShuffleEnabled( const bool enable )
 {
-    static_cast<Engine&>( engine() ).setEnabledShuffle( enable );
+    static_cast<Engine&>( engine() ).setShuffleEnabled( enable );
 }
 
 /*===========================================================================*/
@@ -122,9 +122,9 @@ void ParticleBasedRenderer::setEnabledShuffle( const bool enable )
  *  @param  enable [in] enable-flag
  */
 /*===========================================================================*/
-void ParticleBasedRenderer::setEnabledZooming( const bool enable )
+void ParticleBasedRenderer::setZoomingEnabled( const bool enable )
 {
-    static_cast<Engine&>( engine() ).setEnabledZooming( enable );
+    static_cast<Engine&>( engine() ).setZoomingEnabled( enable );
 }
 
 /*===========================================================================*/
@@ -276,7 +276,7 @@ void ParticleBasedRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera
 {
     kvs::PointObject* point = kvs::PointObject::DownCast( object );
     m_has_normal = point->normals().size() > 0;
-    if ( !m_has_normal ) setEnabledShading( false );
+    BaseClass::setShadingEnabled( m_has_normal );
 
     // Create resources.
     attachObject( object );
@@ -408,7 +408,7 @@ void ParticleBasedRenderer::Engine::create_shader_program()
     kvs::ShaderSource vert( "PBR_zooming.vert" );
     kvs::ShaderSource frag( "PBR_zooming.frag" );
 
-    if ( isEnabledShading() )
+    if ( BaseClass::isShadingEnabled() )
     {
         switch ( shader().type() )
         {
@@ -424,7 +424,7 @@ void ParticleBasedRenderer::Engine::create_shader_program()
         }
     }
 
-    if ( isEnabledZooming() )
+    if ( this->isZoomingEnabled() )
     {
         vert.define("ENABLE_PARTICLE_ZOOMING");
         frag.define("ENABLE_PARTICLE_ZOOMING");

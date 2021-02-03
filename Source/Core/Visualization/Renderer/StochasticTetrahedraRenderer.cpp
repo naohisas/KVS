@@ -376,7 +376,7 @@ void StochasticTetrahedraRenderer::Engine::create_shader_program()
     kvs::ShaderSource geom( "SR_tetrahedra.geom" );
     kvs::ShaderSource frag( "SR_tetrahedra.frag" );
 
-    if ( isEnabledShading() )
+    if ( BaseClass::isShadingEnabled() )
     {
         switch ( shader().type() )
         {

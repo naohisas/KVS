@@ -43,15 +43,15 @@ public:
     StochasticRenderingCompositor( kvs::Scene* scene );
     const kvs::Timer& timer() const { return m_timer; }
     size_t repetitionLevel() const { return m_repetition_level; }
-    bool isEnabledLODControl() const { return m_enable_lod; }
-    bool isEnabledRefinement() const { return m_enable_refinement; }
+    bool isLODControlEnabled() const { return m_enable_lod; }
+    bool isRefinementEnabled() const { return m_enable_refinement; }
     void setRepetitionLevel( const size_t repetition_level ) { m_repetition_level = repetition_level; }
-    void setEnabledLODControl( const bool enable ) { m_enable_lod = enable; }
-    void setEnabledRefinement( const bool enable ) { m_enable_refinement = enable; }
-    void enableLODControl() { this->setEnabledLODControl( true ); }
-    void enableRefinement() { this->setEnabledRefinement( true ); }
-    void disableLODControl() { this->setEnabledLODControl( false ); }
-    void disableRefinement() { this->setEnabledRefinement( false ); }
+    void setLODControlEnabled( const bool enable = true ) { m_enable_lod = enable; }
+    void setRefinementEnabled( const bool enable = true ) { m_enable_refinement = enable; }
+    void enableLODControl() { this->setLODControlEnabled( true ); }
+    void enableRefinement() { this->setRefinementEnabled( true ); }
+    void disableLODControl() { this->setLODControlEnabled( false ); }
+    void disableRefinement() { this->setRefinementEnabled( false ); }
     void update();
 
 private:
@@ -70,10 +70,10 @@ private:
     void paintEvent() { this->update(); }
 
 public:
-    KVS_DEPRECATED( bool isEnabledShading() const ) { return false; /* do not use */ }
-    KVS_DEPRECATED( void setEnabledShading( const bool /* enable */ ) ) { /* not do anything */}
-    KVS_DEPRECATED( void enableShading() ) { /* not do anything */ }
-    KVS_DEPRECATED( void disableShading() ) { /* not do anything */ }
+    KVS_DEPRECATED( bool isEnabledLODControl() const ) { return this->isLODControlEnabled(); }
+    KVS_DEPRECATED( bool isEnabledRefinement() const ) { return this->isRefinementEnabled(); }
+    KVS_DEPRECATED( void setEnabledLODControl( const bool enable ) ) { this->setLODControlEnabled( enable ); }
+    KVS_DEPRECATED( void setEnabledRefinement( const bool enable ) ) { this->setRefinementEnabled( enable ); }
 };
 
 } // end of namespace kvs

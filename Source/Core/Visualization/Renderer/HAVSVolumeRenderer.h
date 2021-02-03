@@ -31,6 +31,7 @@
 #include <kvs/IndexBufferObject>
 #include <kvs/ProgramObject>
 #include <kvs/FrameBufferObject>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -83,7 +84,7 @@ public:
     void enableVBO() { m_enable_vbo = true; }
     void disableVBO() { m_enable_vbo = false; }
     size_t kBufferSize() const { return m_k_size; }
-    bool isEnabledVBO() const { return m_enable_vbo; }
+    bool isVBOEnabled() const { return m_enable_vbo; }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void initialize();
@@ -102,6 +103,9 @@ private:
     void draw_geometry_pass();
     void draw_flush_pass();
     void draw_texture();
+
+public:
+    KVS_DEPRECATED( bool isEnabledVBO() const ) { return this->isVBOEnabled(); }
 };
 
 /*===========================================================================*/

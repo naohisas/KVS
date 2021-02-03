@@ -172,7 +172,7 @@ void StochasticPointRenderer::Engine::create_shader_program()
 {
     kvs::ShaderSource vert( "SR_point.vert" );
     kvs::ShaderSource frag( "SR_point.frag" );
-    if ( isEnabledShading() )
+    if ( BaseClass::isShadingEnabled() )
     {
         switch ( shader().type() )
         {

@@ -229,7 +229,7 @@ void ParticleBasedRenderer::project_particle(
     }
 
     // Shading calculation.
-    if ( BaseClass::isEnabledShading() ) m_buffer->enableShading();
+    if ( BaseClass::isShadingEnabled() ) m_buffer->enableShading();
     else m_buffer->disableShading();
 
     m_buffer->createImage( &BaseClass::colorData(), &BaseClass::depthData() );

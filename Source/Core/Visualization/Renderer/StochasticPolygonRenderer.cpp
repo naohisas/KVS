@@ -114,7 +114,7 @@ void StochasticPolygonRenderer::Engine::create(
 {
     auto* polygon = kvs::PolygonObject::DownCast( object );
     const bool has_normal = polygon->normals().size() > 0;
-    setEnabledShading( has_normal );
+    BaseClass::setShadingEnabled( has_normal );
 
     attachObject( object );
     createRandomTexture();
@@ -202,7 +202,7 @@ void StochasticPolygonRenderer::Engine::create_shader_program()
 {
     kvs::ShaderSource vert( "SR_polygon.vert" );
     kvs::ShaderSource frag( "SR_polygon.frag" );
-    if ( isEnabledShading() )
+    if ( BaseClass::isShadingEnabled() )
     {
         switch ( shader().type() )
         {

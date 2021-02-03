@@ -40,10 +40,10 @@ public:
 public:
     ParticleBasedRenderer();
     ParticleBasedRenderer( const kvs::Mat4& m, const kvs::Mat4& p, const kvs::Vec4& v );
-    bool isEnabledShuffle() const;
-    bool isEnabledZooming() const;
-    void setEnabledShuffle( const bool enable );
-    void setEnabledZooming( const bool enable );
+    bool isShuffleEnabled() const;
+    bool isZoomingEnabled() const;
+    void setShuffleEnabled( const bool enable = true );
+    void setZoomingEnabled( const bool enable = true );
     void enableShuffle();
     void enableZooming();
     void disableShuffle();
@@ -53,24 +53,15 @@ public:
     const kvs::Vec4& initialViewport() const;
 
 public:
-    // Invalid methods.
-    KVS_DEPRECATED( void initialize() ) {}
-    KVS_DEPRECATED( void setSubpixelLevel( const size_t level ) ) { setRepetitionLevel( level * level ); }
-    KVS_DEPRECATED( void setCircleThreshold( const size_t ) ) {}
-    KVS_DEPRECATED( void enableCoarseRendering( const size_t level = 1 ) ) {}
-    KVS_DEPRECATED( void disableCoarseRendering() ) {}
-    KVS_DEPRECATED( void enableAccumulationBuffer() ) {}
-    KVS_DEPRECATED( void disableAccumulationBuffer() ) {}
-    KVS_DEPRECATED( void enableRandomTexture() ) {}
-    KVS_DEPRECATED( void disableRandomTexture() ) {}
-    KVS_DEPRECATED( size_t subpixelLevel() const ) { return 1; }
-    KVS_DEPRECATED( size_t circleThreshold() const ) { return 3; }
-    KVS_DEPRECATED( bool isEnabledAccumulationBuffer() const ) { return false; }
-    KVS_DEPRECATED( bool isEnabledRandomTexture() const ) { return true; }
+    // Deprecated method
+    KVS_DEPRECATED( bool isEnabledShuffle() const ) { return this->isShuffleEnabled(); }
+    KVS_DEPRECATED( bool isEnabledZooming() const ) { return this->isZoomingEnabled(); }
+    KVS_DEPRECATED( void setEnabledShuffle( const bool enable ) ) { this->setShuffleEnabled( enable ); }
+    KVS_DEPRECATED( void setEnabledZooming( const bool enable ) ) { this->setZoomingEnabled( enable ); }
 
 private:
     // Not supported progressive refinement rendering.
-    bool isEnabledRefinement() const;
+    bool isRefinementEnabled() const;
     void enableRefinement();
     void disableRefinement();
 };
@@ -82,6 +73,8 @@ private:
 /*===========================================================================*/
 class ParticleBasedRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+    using BaseClass = kvs::StochasticRenderingEngine;
+
 private:
     bool m_has_normal; ///< check flag for the normal array
     bool m_enable_shuffle; ///< flag for shuffling particles
@@ -104,14 +97,14 @@ public:
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-    bool isEnabledShuffle() const { return m_enable_shuffle; }
-    bool isEnabledZooming() const { return m_enable_zooming; }
-    void setEnabledShuffle( const bool enable ) { m_enable_shuffle = enable; }
-    void setEnabledZooming( const bool enable ) { m_enable_zooming = enable; }
-    void enableShuffle() { this->setEnabledShuffle( true ); }
-    void enableZooming() { this->setEnabledZooming( true ); }
-    void disableShuffle() { this->setEnabledShuffle( false ); }
-    void disableZooming() { this->setEnabledZooming( false ); }
+    bool isShuffleEnabled() const { return m_enable_shuffle; }
+    bool isZoomingEnabled() const { return m_enable_zooming; }
+    void setShuffleEnabled( const bool enable = true ) { m_enable_shuffle = enable; }
+    void setZoomingEnabled( const bool enable = true ) { m_enable_zooming = enable; }
+    void enableShuffle() { this->setShuffleEnabled( true ); }
+    void enableZooming() { this->setZoomingEnabled( true ); }
+    void disableShuffle() { this->setShuffleEnabled( false ); }
+    void disableZooming() { this->setZoomingEnabled( false ); }
     const kvs::Mat4& initialModelViewMatrix() const { return m_initial_modelview; }
     const kvs::Mat4& initialProjectionMatrix() const { return m_initial_projection; }
     const kvs::Vec4& initialViewport() const { return m_initial_viewport; }
@@ -119,6 +112,12 @@ public:
 private:
     void create_shader_program();
     void create_buffer_object( const kvs::PointObject* point );
+
+public:
+    KVS_DEPRECATED( bool isEnabledShuffle() const ) { return this->isShuffleEnabled(); }
+    KVS_DEPRECATED( bool isEnabledZooming() const ) { return this->isZoomingEnabled(); }
+    KVS_DEPRECATED( void setEnabledShuffle( const bool enable ) ) { this->setShuffleEnabled( enable ); }
+    KVS_DEPRECATED( void setEnabledZooming( const bool enable ) ) { this->setZoomingEnabled( enable ); }
 };
 
 } // end of namespace glsl

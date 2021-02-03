@@ -187,7 +187,7 @@ void ParticleBufferAccumulator::createImage(
                         const size_t point_index3 = 3 * m_index_buffer[bindex];
 
                         kvs::RGBColor color( object->colors().data() + point_index3 );
-                        if( renderer->isEnabledShading() )
+                        if( renderer->isShadingEnabled() )
                         {
                             const kvs::Shader::ShadingModel* shader = renderer->particleBuffer()->shader();
                             const kvs::Vector3f vertex( object->coords().data() + point_index3 );

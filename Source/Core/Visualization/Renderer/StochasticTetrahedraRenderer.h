@@ -55,6 +55,8 @@ public:
 /*===========================================================================*/
 class StochasticTetrahedraRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+    using BaseClass = kvs::StochasticRenderingEngine;
+
 private:
     bool m_transfer_function_changed; ///< flag for changin transfer function
     kvs::TransferFunction m_transfer_function; ///< transfer function

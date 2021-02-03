@@ -103,7 +103,7 @@ void LineRenderer::initialize()
     kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
     // Lighting.
-    if ( !BaseClass::isEnabledShading() ) kvs::OpenGL::Disable( GL_LIGHTING );
+    if ( !BaseClass::isShadingEnabled() ) kvs::OpenGL::Disable( GL_LIGHTING );
     else kvs::OpenGL::Enable( GL_LIGHTING );
 
     // Anti-aliasing.

@@ -59,7 +59,7 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
 
 /*
-    if ( this->isEnabledShading() )
+    if ( this->isShadingEnabled() )
     {
         if ( polygon->normals().size() == 0 )
         {
@@ -162,7 +162,7 @@ void PolygonRenderer::initialize()
     kvs::OpenGL::SetPolygonOffset( m_polygon_offset, 0.0 );
     kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
 
-    if( !this->isEnabledShading() )
+    if( !this->isShadingEnabled() )
     {
         kvs::OpenGL::Disable( GL_NORMALIZE );
         kvs::OpenGL::Disable( GL_LIGHTING );

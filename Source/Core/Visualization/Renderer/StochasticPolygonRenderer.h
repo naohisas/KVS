@@ -42,6 +42,7 @@ public:
 /*===========================================================================*/
 class StochasticPolygonRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+    using BaseClass = kvs::StochasticRenderingEngine;
     using BufferObject = kvs::glsl::PolygonRenderer::BufferObject;
 
 private:

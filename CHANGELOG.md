@@ -300,6 +300,28 @@
 + kvs::glsl::PointRenderer::setShader (use kvs::glsl::PointRenderer::setShadingModel )
 + kvs::glsl::LineRenderer::setShader (use kvs::glsl::LineRenderer::setShadingModel )
 + kvs::glsl::PolygonRenderer::setShader (use kvs::glsl::PolygonRenderer::setShadingModel )
++ kvs::RendererBase::setEnabledShading (use kvs::RendererBase::setShadingEnabled)
++ kvs::RendererBase::isEnabledShading (use kvs::RendererBase::isShadingEnabled)
++ kvs::StochasticRendererBase::setEnabledLODControl (use kvs::StochasticRendererBase::setLODControlEnabled)
++ kvs::StochasticRendererBase::isEnabledLODControl (use kvs::StochasticRendererBase::isLODControlEnabled)
++ kvs::StochasticRendererBase::setEnabledRefinement (use kvs::StochasticRendererBase::setRefinementEnabled)
++ kvs::StochasticRendererBase::isEnabledRefinement (use kvs::StochasticRendererBase::isRefinementEnabled)
++ kvs::StochasticRenderingEngine::setEnabledShading (use kvs::StochasticRenderingEngine::setShadingEnabled)
++ kvs::StochasticRenderingEngine::isEnabledShading (use kvs::StochasticRenderingEngine::isShadingEnabled)
++ kvs::StochasticRenderingCompositor::isEnabledLODControl (use kvs::StochasticRenderingCompositor::isLODControlEnabled)
++ kvs::StochasticRenderingCompositor::isEnabledReginement (use kvs::StochasticRenderingCompositor::isReginementEnabled)
++ kvs::StochasticRenderingCompositor::setEnabledLODControl (use kvs::StochasticRenderingCompositor::setLODControlEnabled)
++ kvs::StochasticRenderingCompositor::setEnabledReginement (use kvs::StochasticRenderingCompositor::setReginementEnabled)
++ kvs::glsl::ParticleBasedRenderer::isEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::isShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::isEnabledZooming (use kvs::glsl::ParticleBasedRenderer::isZoomingEnabled)
++ kvs::glsl::ParticleBasedRenderer::setEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::setShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::setEnabledZooming (use kvs::glsl::ParticleBasedRenderer::setZoomingEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::isEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::Engine::isShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::isEnabledZooming (use kvs::glsl::ParticleBasedRenderer::Engine::isZoomingEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::setEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::Engine::setShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::setEnabledZooming (use kvs::glsl::ParticleBasedRenderer::Engine::setZoomingEnabled)
++ kvs::HAVSVolumeRenderer::isEnabledVBO (use kvs::HAVSVolumeRenderer::isVBOEnabled)
++ kvs::ImageRenderer::isEnabledCentering (use kvs::ImageRenderer::isCenteringEnabled)
 
 **Removed deprecated class and method**
 + kvs::Material
@@ -386,6 +408,26 @@
 + kvs::Math::SquareRoot (use std::sqrt)
 + kvs::FastTokenizer
 + kvs::DisplayList
++ kvs::RendererBase::isShading (use kvs::RendererBase::isShadingEnabled)
++ kvs::RendererBase::initialize_projection
++ kvs::RendererBase::initialize_modelview
++ kvs::glsl::ParticleBasedRenderer::initialize
++ kvs::glsl::ParticleBasedRenderer::setSubpixelLevel
++ kvs::glsl::ParticleBasedRenderer::setCircleThreshold
++ kvs::glsl::ParticleBasedRenderer::enableCoarseRendering
++ kvs::glsl::ParticleBasedRenderer::disableCoarseRendering
++ kvs::glsl::ParticleBasedRenderer::enableAccumulationBuffer
++ kvs::glsl::ParticleBasedRenderer::disableAccumulationBuffer
++ kvs::glsl::ParticleBasedRenderer::enableRandomTexture
++ kvs::glsl::ParticleBasedRenderer::disableRandomTexture
++ kvs::glsl::ParticleBasedRenderer::subpixelLevel
++ kvs::glsl::ParticleBasedRenderer::circleThreshold
++ kvs::glsl::ParticleBasedRenderer::isEnabledAccumulationBuffer
++ kvs::glsl::ParticleBasedRenderer::isEnabledRandomTexture
++ kvs::StochasticRenderingCompositor::isEnabledShading
++ kvs::StochasticRenderingCompositor::setEnabledShading
++ kvs::StochasticRenderingCompositor::enableShading
++ kvs::StochasticRenderingCompositor::disableShading
 
 **Removed macro**
 + KVS_MESSAGE_RED

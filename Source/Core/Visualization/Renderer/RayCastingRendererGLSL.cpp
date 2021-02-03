@@ -277,6 +277,7 @@ void RayCastingRenderer::BoundingBufferObject::create(
         minx, maxy, minz  // 4
     };
 
+    // Create FBO for bounding cube.
     kvs::VertexBufferObjectManager::VertexBuffer vertex_array;
     vertex_array.type = GL_FLOAT;
     vertex_array.size = sizeof( float ) * nelements;
@@ -285,6 +286,7 @@ void RayCastingRenderer::BoundingBufferObject::create(
     m_manager.setVertexArray( vertex_array );
     m_manager.create();
 
+    // Build shader program used for rendering bounding cube.
     const std::string vert(
         "uniform mat4 ModelViewProjectionMatrix;"
         "void main()"
@@ -418,7 +420,7 @@ void RayCastingRenderer::exec(
         BaseClass::setObject( volume );
         const size_t framebuffer_width = BaseClass::framebufferWidth();
         const size_t framebuffer_height = BaseClass::framebufferHeight();
-        this->create_shader_program( BaseClass::shader(), BaseClass::isEnabledShading() );
+        this->create_shader_program( BaseClass::shader(), BaseClass::isShadingEnabled() );
         this->create_framebuffer( framebuffer_width, framebuffer_height );
         this->create_buffer_object( volume );
     }
@@ -436,7 +438,7 @@ void RayCastingRenderer::exec(
         BaseClass::setObject( volume );
         const size_t framebuffer_width = BaseClass::framebufferWidth();
         const size_t framebuffer_height = BaseClass::framebufferHeight();
-        this->update_shader_program( BaseClass::shader(), BaseClass::isEnabledShading() );
+        this->update_shader_program( BaseClass::shader(), BaseClass::isShadingEnabled() );
         this->update_framebuffer( framebuffer_width, framebuffer_height );
         this->update_buffer_object( volume );
     }
@@ -509,16 +511,20 @@ void RayCastingRenderer::setTransferFunction( const kvs::TransferFunction& tfunc
      }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Creates shader program.
+ *  @param  shading_model [in] shading model
+ *  @param  shading_enabled [in] if true, shading will be enabled
+ */
+/*===========================================================================*/
 void RayCastingRenderer::create_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
+    // Set shader sources.
     kvs::ShaderSource vert( "RC_ray_caster.vert" );
     kvs::ShaderSource frag( "RC_ray_caster.frag" );
-#if defined( _TEXTURE_RECTANGLE_ )
-    frag.define("ENABLE_TEXTURE_RECTANGLE");
-#endif
-    if ( m_enable_jittering ) frag.define( "ENABLE_JITTERING" );
     if ( shading_enabled )
     {
         switch ( shading_model.type() )
@@ -529,6 +535,14 @@ void RayCastingRenderer::create_shader_program(
         default: /* NO SHADING */ break;
         }
     }
+
+    // Set additional settings for the shader.
+#if defined( _TEXTURE_RECTANGLE_ )
+    frag.define("ENABLE_TEXTURE_RECTANGLE");
+#endif
+    if ( m_enable_jittering ) { frag.define( "ENABLE_JITTERING" ); }
+
+    // Build the shader.
     m_ray_casting_shader.build( vert, frag );
 
     m_ray_casting_shader.bind();
@@ -544,6 +558,13 @@ void RayCastingRenderer::create_shader_program(
     m_ray_casting_shader.unbind();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Updates shader program.
+ *  @param  shading_model [in] shading model
+ *  @param  shading_enabled [in] if true, shading will be enabled
+ */
+/*===========================================================================*/
 void RayCastingRenderer::update_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
@@ -552,6 +573,15 @@ void RayCastingRenderer::update_shader_program(
     this->create_shader_program( shading_model, shading_enabled );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Setups shader program.
+ *  @param  shading_model [in] shading model
+ *  @param  object [in] pointer to the object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
+ */
+/*===========================================================================*/
 void RayCastingRenderer::setup_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const kvs::ObjectBase* object,
@@ -611,13 +641,21 @@ void RayCastingRenderer::setup_shader_program(
     // Setup OpenGL statement.
     kvs::OpenGL::Disable( GL_CULL_FACE );
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
+
     kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::SetBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 
-    if ( BaseClass::isEnabledShading() ) kvs::OpenGL::Enable( GL_LIGHTING );
+    if ( BaseClass::isShadingEnabled() ) kvs::OpenGL::Enable( GL_LIGHTING );
     else kvs::OpenGL::Disable( GL_LIGHTING );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Creates framebuffer.
+ *  @param  width [in] framebuffer width
+ *  @param  height [in] framebuffer height
+ */
+/*===========================================================================*/
 void RayCastingRenderer::create_framebuffer( const size_t width, const size_t height )
 {
     const size_t size = 32;
@@ -667,6 +705,13 @@ void RayCastingRenderer::create_framebuffer( const size_t width, const size_t he
     m_ray_casting_shader.unbind();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Updates framebuffer.
+ *  @param  width [in] framebuffer width
+ *  @param  height [in] framebuffer height
+ */
+/*===========================================================================*/
 void RayCastingRenderer::update_framebuffer( const size_t width, const size_t height )
 {
     m_jittering_texture.release();
@@ -678,6 +723,12 @@ void RayCastingRenderer::update_framebuffer( const size_t width, const size_t he
     this->create_framebuffer( width, height );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Create buffer object.
+ *  @param  volume [in] pointer to the volume object
+ */
+/*===========================================================================*/
 void RayCastingRenderer::create_buffer_object( const kvs::StructuredVolumeObject* volume )
 {
     m_volume_buffer.create( volume, BaseClass::transferFunction() );
@@ -760,6 +811,12 @@ void RayCastingRenderer::create_buffer_object( const kvs::StructuredVolumeObject
     m_ray_casting_shader.unbind();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Updates buffer object.
+ *  @param  volume [in] pointer to the volume object
+ */
+/*===========================================================================*/
 void RayCastingRenderer::update_buffer_object( const kvs::StructuredVolumeObject* volume )
 {
     m_volume_buffer.release();
@@ -767,6 +824,12 @@ void RayCastingRenderer::update_buffer_object( const kvs::StructuredVolumeObject
     this->create_buffer_object( volume );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  volume [in] pointer to the volume object
+ */
+/*===========================================================================*/
 void RayCastingRenderer::draw_buffer_object( const kvs::StructuredVolumeObject* volume )
 {
     kvs::Texture::Binder unit1( m_volume_buffer.manager(), 0 );

@@ -44,6 +44,7 @@ public:
 /*===========================================================================*/
 class StochasticLineRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+    using BaseClass = kvs::StochasticRenderingEngine;
     using BufferObject = kvs::glsl::LineRenderer::BufferObject;
 
 private:

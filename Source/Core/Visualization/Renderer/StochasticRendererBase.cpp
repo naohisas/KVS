@@ -89,7 +89,7 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
         m_light_position = light->position();
         m_engine->setShader( &shader() );
         m_engine->setRepetitionLevel( m_repetition_level );
-        m_engine->setEnabledShading( kvs::RendererBase::isEnabledShading() );
+        m_engine->setShadingEnabled( kvs::RendererBase::isShadingEnabled() );
         m_engine->create( object, camera, light );
     }
 
@@ -114,7 +114,7 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
         m_ensemble_buffer.clear();
         m_engine->release();
         m_engine->setShader( &shader() );
-        m_engine->setEnabledShading( kvs::RendererBase::isEnabledShading() );
+        m_engine->setShadingEnabled( kvs::RendererBase::isShadingEnabled() );
         m_engine->create( object, camera, light );
     }
 

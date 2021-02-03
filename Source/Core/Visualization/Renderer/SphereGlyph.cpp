@@ -312,7 +312,7 @@ void SphereGlyph::initialize()
     kvs::OpenGL::Disable( GL_LINE_SMOOTH );
     kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
-    if ( !BaseClass::isEnabledShading() )
+    if ( !BaseClass::isShadingEnabled() )
     {
         kvs::OpenGL::Disable( GL_NORMALIZE );
         kvs::OpenGL::Disable( GL_LIGHTING );

@@ -453,7 +453,7 @@ void StylizedLineRenderer::createShaderProgram()
 {
     kvs::ShaderSource vert( this->vertexShaderFile() );
     kvs::ShaderSource frag( this->fragmentShaderFile() );
-    if ( isEnabledShading() )
+    if ( isShadingEnabled() )
     {
         switch ( m_shading_model->type() )
         {

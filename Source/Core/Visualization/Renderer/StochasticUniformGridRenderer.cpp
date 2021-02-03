@@ -70,16 +70,29 @@ void StochasticUniformGridRenderer::setSamplingStep( const float step )
  *  @param  transfer_function [in] transfer function
  */
 /*===========================================================================*/
-void StochasticUniformGridRenderer::setTransferFunction( const kvs::TransferFunction& transfer_function )
+void StochasticUniformGridRenderer::setTransferFunction(
+    const kvs::TransferFunction& transfer_function )
 {
     static_cast<Engine&>( engine() ).setTransferFunction( transfer_function );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns a transfer function.
+ *  @return transfer function
+ */
+/*===========================================================================*/
 const kvs::TransferFunction& StochasticUniformGridRenderer::transferFunction() const
 {
     return static_cast<const Engine&>( engine() ).transferFunction();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns sampling step size.
+ *  @return sampling step size
+ */
+/*===========================================================================*/
 float StochasticUniformGridRenderer::samplingStep() const
 {
     return static_cast<const Engine&>( engine() ).samplingStep();
@@ -137,7 +150,7 @@ void StochasticUniformGridRenderer::Engine::create(
     BaseClass::attachObject( object );
     BaseClass::createRandomTexture();
 
-    this->create_shader_program( BaseClass::shader(), BaseClass::isEnabledShading() );
+    this->create_shader_program( BaseClass::shader(), BaseClass::isShadingEnabled() );
     this->create_framebuffer( framebuffer_width, framebuffer_height );
     this->create_buffer_object( volume );
 }
@@ -204,12 +217,19 @@ void StochasticUniformGridRenderer::Engine::draw( kvs::ObjectBase* object, kvs::
     this->draw_buffer_object( kvs::StructuredVolumeObject::DownCast( object ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Creates shader program.
+ *  @param  shading_model [in] shading model
+ *  @param  shading_enabled [in] if true, shading will be enabled
+ */
+/*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::create_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
-    kvs::ShaderSource vert("SR_uniform_grid.vert");
-    kvs::ShaderSource frag("SR_uniform_grid.frag");
+    kvs::ShaderSource vert( "SR_uniform_grid.vert" );
+    kvs::ShaderSource frag( "SR_uniform_grid.frag" );
     if ( shading_enabled )
     {
         switch ( shading_model.type() )
@@ -232,6 +252,13 @@ void StochasticUniformGridRenderer::Engine::create_shader_program(
     m_ray_casting_shader.unbind();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Updates shader program.
+ *  @param  shading_model [in] shading model
+ *  @param  shading_enabled [in] if true, shading will be enabled
+ */
+/*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::update_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
@@ -240,6 +267,15 @@ void StochasticUniformGridRenderer::Engine::update_shader_program(
     this->create_shader_program( shading_model, shading_enabled );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Setups shader program.
+ *  @param  shading_model [in] shading model
+ *  @param  object [in] pointer to the object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
+ */
+/*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::setup_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const kvs::ObjectBase* object,
@@ -290,7 +326,7 @@ void StochasticUniformGridRenderer::Engine::setup_shader_program(
     kvs::OpenGL::Disable( GL_CULL_FACE );
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
-    if ( BaseClass::isEnabledShading() ) kvs::OpenGL::Enable( GL_LIGHTING );
+    if ( BaseClass::isShadingEnabled() ) kvs::OpenGL::Enable( GL_LIGHTING );
     else kvs::OpenGL::Disable( GL_LIGHTING );
 }
 
@@ -346,6 +382,12 @@ void StochasticUniformGridRenderer::Engine::update_framebuffer(
     this->create_framebuffer( width, height );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Create buffer object.
+ *  @param  volume [in] pointer to the volume object
+ */
+/*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::create_buffer_object(
     const kvs::StructuredVolumeObject* volume )
 {
@@ -429,6 +471,12 @@ void StochasticUniformGridRenderer::Engine::create_buffer_object(
     m_ray_casting_shader.unbind();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Updates buffer object.
+ *  @param  volume [in] pointer to the volume object
+ */
+/*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::update_buffer_object(
     const kvs::StructuredVolumeObject* volume )
 {
@@ -437,6 +485,12 @@ void StochasticUniformGridRenderer::Engine::update_buffer_object(
     this->create_buffer_object( volume );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  volume [in] pointer to the volume object
+ */
+/*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::draw_buffer_object(
     const kvs::StructuredVolumeObject* volume )
 {

@@ -50,7 +50,7 @@ void ImageRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     p.enable( GL_TEXTURE_2D );
 
     if ( !this->texture().isValid() ) { this->createTexture( image ); }
-    if ( this->isEnabledCentering() ) { this->alignCenter( camera ); }
+    if ( this->isCenteringEnabled() ) { this->alignCenter( camera ); }
 
     this->texture().bind();
     this->textureMapping();

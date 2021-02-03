@@ -9,6 +9,7 @@
 #include <kvs/Shader>
 #include <kvs/Matrix44>
 #include <kvs/Module>
+#include <kvs/Deprecated>
 #include "EnsembleAverageBuffer.h"
 #include "StochasticRenderingEngine.h"
 
@@ -57,17 +58,21 @@ public:
     size_t framebufferHeight() const { return static_cast<size_t>( m_window_height * m_device_pixel_ratio ); }
     float devicePixelRatio() const { return m_device_pixel_ratio; }
     size_t repetitionLevel() const { return m_repetition_level; }
-    bool isEnabledLODControl() const { return m_enable_lod; }
-    bool isEnabledRefinement() const { return m_enable_refinement; }
+
     void setWindowSize( const size_t width, const size_t height ) { m_window_width = width; m_window_height = height; }
     void setDevicePixelRatio( const float dpr ) { m_device_pixel_ratio = dpr; }
     void setRepetitionLevel( const size_t repetition_level ) { m_repetition_level = repetition_level; }
-    void setEnabledLODControl( const bool enable ) { m_enable_lod = enable; }
-    void setEnabledRefinement( const bool enable ) { m_enable_refinement = enable; }
-    void enableLODControl() { this->setEnabledLODControl( true ); }
-    void enableRefinement() { this->setEnabledRefinement( true ); }
-    void disableLODControl() { this->setEnabledLODControl( false ); }
-    void disableRefinement() { this->setEnabledRefinement( false ); }
+
+    void setLODControlEnabled( const bool enable = true ) { m_enable_lod = enable; }
+    bool isLODControlEnabled() const { return m_enable_lod; }
+    void enableLODControl() { this->setLODControlEnabled( true ); }
+    void disableLODControl() { this->setLODControlEnabled( false ); }
+
+    void setRefinementEnabled( const bool enable = true ) { m_enable_refinement = enable; }
+    bool isRefinementEnabled() const { return m_enable_refinement; }
+    void enableRefinement() { this->setRefinementEnabled( true ); }
+    void disableRefinement() { this->setRefinementEnabled( false ); }
+
     const kvs::Shader::ShadingModel& shader() const { return *m_shader; }
     const kvs::StochasticRenderingEngine& engine() const { return *m_engine; }
     template <typename ShadingType>
@@ -76,6 +81,12 @@ public:
 protected:
     kvs::Shader::ShadingModel& shader() { return *m_shader; }
     kvs::StochasticRenderingEngine& engine() { return *m_engine; }
+
+public:
+    KVS_DEPRECATED( void setEnabledLODControl( const bool enable ) ) { this->setLODControlEnabled( enable ); }
+    KVS_DEPRECATED( bool isEnabledLODControl() const ) { return this->isLODControlEnabled(); }
+    KVS_DEPRECATED( void setEnabledRefinement( const bool enable ) ) { this->setRefinementEnabled( enable ); }
+    KVS_DEPRECATED( bool isEnabledRefinement() const ) { return this->isRefinementEnabled(); }
 };
 
 template <typename ShadingType>
