@@ -40,18 +40,18 @@ public:
         BufferObject() = default;
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
         void release() { m_manager.release(); }
-        void create( const kvs::PolygonObject* polygon );
-        void draw( const kvs::PolygonObject* polygon );
+        void create( const kvs::ObjectBase* object );
+        void draw( const kvs::ObjectBase* object );
     };
 
     class RenderPass
     {
     private:
         BufferObject& m_buffer_object; ///< buffer object (reference)
-        float m_polygon_offset = 0.0f; ///< polygon offset
         std::string m_vert_shader_file = "shader.vert"; ///< vertex shader file
         std::string m_frag_shader_file = "shader.frag"; ///< fragment shader file
         kvs::ProgramObject m_shader_program{}; ///< shader program
+        float m_polygon_offset = 0.0f; ///< polygon offset
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
         virtual ~RenderPass() {}
@@ -68,14 +68,14 @@ public:
         virtual void create( const kvs::Shader::ShadingModel& model, const bool enable );
         virtual void update( const kvs::Shader::ShadingModel& model, const bool enable );
         virtual void setup( const kvs::Shader::ShadingModel& model );
-        virtual void draw( const kvs::PolygonObject* polygon );
+        virtual void draw( const kvs::ObjectBase* object );
     };
 
 private:
-    size_t m_width; ///< window width
-    size_t m_height; ///< window height
-    const kvs::ObjectBase* m_object; ///< pointer to the rendering object
-    kvs::Shader::ShadingModel* m_shading_model; ///< shading method
+    size_t m_width = 0; ///< window width
+    size_t m_height = 0; ///< window height
+    const kvs::ObjectBase* m_object = nullptr; ///< pointer to the rendering object
+    kvs::Shader::ShadingModel* m_shading_model = nullptr; ///< shading method
 
     RenderPass m_render_pass; ///< render pass
     BufferObject m_buffer_object; ///< buffer object
@@ -121,9 +121,6 @@ protected:
     bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
     void setWindowSize( size_t w, size_t h ) { m_width = w; m_height = h; }
 
-    void createShaderProgram();
-    void updateShaderProgram();
-    void setupShaderProgram();
     void createBufferObject( const kvs::ObjectBase* object );
     void updateBufferObject( const kvs::ObjectBase* object );
     void drawBufferObject( const kvs::Camera* camera );

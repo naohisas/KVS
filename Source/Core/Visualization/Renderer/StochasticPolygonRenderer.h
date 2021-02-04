@@ -55,7 +55,7 @@ public:
     public:
         RenderPass( BufferObject& buffer_object, Parent* parent );
         void setup( const kvs::Shader::ShadingModel& shading_model );
-        void draw( const kvs::PolygonObject* polygon );
+        void draw( const kvs::ObjectBase* object );
     };
 
 private:

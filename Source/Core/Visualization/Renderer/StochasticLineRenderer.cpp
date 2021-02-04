@@ -70,24 +70,64 @@ void StochasticLineRenderer::setOpacity( const kvs::UInt8 opacity )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Engine class.
+ *  @brief  Constructs a new RenderPass class.
+ *  @param  buffer_object [in] buffer object
+ *  @param  parent [in] pointer to engin
  */
 /*===========================================================================*/
-StochasticLineRenderer::Engine::Engine():
-    m_line_opacity( 255 ),
-    m_line_offset( 0.0f )
+StochasticLineRenderer::Engine::RenderPass::RenderPass(
+    Engine::BufferObject& buffer_object,
+    RenderPass::Parent* parent ):
+    BaseRenderPass( buffer_object ),
+    m_parent( parent )
 {
+    this->setVertexShaderFile( "SR_line.vert" );
+    this->setFragmentShaderFile( "SR_line.frag" );
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Releases the GPU resources.
+ *  @brief  Setups render pass.
+ *  @param  shading_model [in] shading model 
  */
 /*===========================================================================*/
-void StochasticLineRenderer::Engine::release()
+void StochasticLineRenderer::Engine::RenderPass::setup(
+    const kvs::Shader::ShadingModel& shading_model )
 {
-    m_shader_program.release();
-    m_buffer_object.release();
+    BaseRenderPass::setup( shading_model );
+
+    auto& shader_program = BaseRenderPass::shaderProgram();
+    kvs::ProgramObject::Binder bind( shader_program );
+
+    const auto size_inv = 1.0f / m_parent->randomTextureSize();
+    shader_program.setUniform( "random_texture_size_inv", size_inv );
+    shader_program.setUniform( "random_texture", 0 );
+    shader_program.setUniform( "opacity", m_opacity / 255.0f );
+    shader_program.setUniform( "line_offset", m_offset );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to line object
+ */
+/*===========================================================================*/
+void StochasticLineRenderer::Engine::RenderPass::draw(
+    const kvs::ObjectBase* object )
+{
+    const size_t size = m_parent->randomTextureSize();
+    const int count = m_parent->repetitionCount() * ::RandomNumber();
+    const float offset_x = static_cast<float>( ( count ) % size );
+    const float offset_y = static_cast<float>( ( count / size ) % size );
+    const kvs::Vec2 random_offset( offset_x, offset_y );
+
+    auto& shader_program = this->shaderProgram();
+    kvs::ProgramObject::Binder bind2( shader_program );
+    shader_program.setUniform( "random_offset", random_offset );
+
+    auto& buffer_object = this->bufferObject();
+    kvs::Texture::Binder bind3( m_parent->randomTexture() );
+    buffer_object.draw( object );
 }
 
 /*===========================================================================*/
@@ -104,10 +144,16 @@ void StochasticLineRenderer::Engine::create(
     kvs::Light* light )
 {
     auto* line = kvs::LineObject::DownCast( object );
-    attachObject( object );
-    createRandomTexture();
-    this->create_shader_program();
-    this->create_buffer_object( line );
+    BaseClass::attachObject( object );
+    BaseClass::createRandomTexture();
+
+    m_render_pass.create( BaseClass::shader(), BaseClass::isShadingEnabled() );
+
+    const size_t nvertices = line->numberOfVertices();
+    const auto indices = BaseClass::randomIndices( nvertices );
+    auto location = m_render_pass.shaderProgram().attributeLocation( "random_index" );
+    m_buffer_object.manager().setVertexAttribArray( indices, location, 2 );
+    m_buffer_object.create( line );
 }
 
 /*===========================================================================*/
@@ -123,6 +169,7 @@ void StochasticLineRenderer::Engine::update(
     kvs::Camera* camera,
     kvs::Light* light )
 {
+    m_render_pass.update( BaseClass::shader(), BaseClass::isShadingEnabled() );
 }
 
 /*===========================================================================*/
@@ -138,14 +185,7 @@ void StochasticLineRenderer::Engine::setup(
     kvs::Camera* camera,
     kvs::Light* light )
 {
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    kvs::ProgramObject::Binder bind2( m_shader_program );
-    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
-    m_shader_program.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
-    m_shader_program.setUniform( "random_texture", 0 );
-    m_shader_program.setUniform( "opacity", m_line_opacity / 255.0f );
-    m_shader_program.setUniform( "line_offset", m_line_offset );
+    m_render_pass.setup( BaseClass::shader() );
 }
 
 /*===========================================================================*/
@@ -161,53 +201,13 @@ void StochasticLineRenderer::Engine::draw(
     kvs::Camera* camera,
     kvs::Light* light )
 {
-    const size_t size = randomTextureSize();
-    const int count = repetitionCount() * ::RandomNumber();
-    const float offset_x = static_cast<float>( ( count ) % size );
-    const float offset_y = static_cast<float>( ( count / size ) % size );
-    const kvs::Vec2 random_offset( offset_x, offset_y );
-    kvs::ProgramObject::Binder bind2( m_shader_program );
-    m_shader_program.setUniform( "random_offset", random_offset );
-
-    kvs::Texture::Binder bind3( randomTexture() );
     auto* line = kvs::LineObject::DownCast( object );
-    kvs::OpenGL::SetLineWidth( line->size() * camera->devicePixelRatio() );
-    m_buffer_object.draw( line );
-}
+    auto dpr = camera->devicePixelRatio();
+    auto line_width = line->size();
 
-/*===========================================================================*/
-/**
- *  @brief  Creates shader program.
- */
-/*===========================================================================*/
-void StochasticLineRenderer::Engine::create_shader_program()
-{
-    kvs::ShaderSource vert( "SR_line.vert" );
-    kvs::ShaderSource frag( "SR_line.frag" );
-    m_shader_program.build( vert, frag );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Create buffer objects.
- *  @param  line [in] pointer to the line object
- */
-/*===========================================================================*/
-void StochasticLineRenderer::Engine::create_buffer_object( const kvs::LineObject* line )
-{
-    const size_t nvertices = line->numberOfVertices();
-    const auto tex_size = randomTextureSize();
-    kvs::ValueArray<kvs::UInt16> indices( nvertices * 2 );
-    for ( size_t i = 0; i < nvertices; i++ )
-    {
-        const unsigned int count = i * 12347;
-        indices[ 2 * i + 0 ] = static_cast<kvs::UInt16>( ( count ) % tex_size );
-        indices[ 2 * i + 1 ] = static_cast<kvs::UInt16>( ( count / tex_size ) % tex_size );
-    }
-
-    auto location = m_shader_program.attributeLocation( "random_index" );
-    m_buffer_object.manager().setVertexAttribArray( indices, location, 2 );
-    m_buffer_object.create( line );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::SetLineWidth( line_width * dpr );
+    m_render_pass.draw( line );
 }
 
 } // end of namespace kvs

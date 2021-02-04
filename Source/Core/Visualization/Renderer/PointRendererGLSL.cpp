@@ -49,12 +49,20 @@ namespace kvs
 namespace glsl
 {
 
-void PointRenderer::BufferObject::create( const kvs::PointObject* point )
+/*===========================================================================*/
+/**
+ *  @brief  Creates a buffer object.
+ *  @param  object [in] pointer to point object  
+ */
+/*===========================================================================*/
+void PointRenderer::BufferObject::create( const kvs::ObjectBase* object )
 {
+    const auto* point = kvs::PointObject::DownCast( object );
     const bool has_normal = point->normals().size() > 0;
     auto coords = point->coords();
     auto colors = ::VertexColors( point );
     auto normals = point->normals();
+
     m_manager.setVertexArray( coords, 3 );
     m_manager.setColorArray( colors, 3 );
     if ( has_normal ) { m_manager.setNormalArray( normals ); }
@@ -62,13 +70,115 @@ void PointRenderer::BufferObject::create( const kvs::PointObject* point )
     m_manager.create();
 }
 
-void PointRenderer::BufferObject::draw( const kvs::PointObject* point )
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to point object
+ */
+/*===========================================================================*/
+void PointRenderer::BufferObject::draw( const kvs::ObjectBase* object )
 {
+    const auto* point = kvs::PointObject::DownCast( object );
+    const size_t nvertices = point->numberOfVertices();
+
     kvs::VertexBufferObjectManager::Binder bind( m_manager );
+    m_manager.drawArrays( GL_POINTS, 0, nvertices );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets vertex and fragment shader files.
+ *  @param  vert_file [in] vertex shader file
+ *  @param  frag_file [in] fragment shader file
+ */
+/*===========================================================================*/
+void PointRenderer::RenderPass::setShaderFiles(
+    const std::string& vert_file, const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Builds shader program.
+ *  @param  model [in] shading model
+ *  @param  enable [in] if true, shading is enabled
+ */
+/*===========================================================================*/
+void PointRenderer::RenderPass::create(
+    const kvs::Shader::ShadingModel& model, const bool enable )
+{
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( enable )
     {
-        const size_t nvertices = point->numberOfVertices();
-        m_manager.drawArrays( GL_POINTS, 0, nvertices );
+        switch ( model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
     }
+
+    m_shader_program.build( vert, frag );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Updates render pass.
+ *  @param  shading_model [in] shading model
+ *  @param  shading_enabled [in] if true, shading is enabled
+ */
+/*===========================================================================*/
+void PointRenderer::RenderPass::update(
+    const kvs::Shader::ShadingModel& shading_model,
+    const bool shading_enabled )
+{
+    m_shader_program.release();
+    this->create( shading_model, shading_enabled );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Setups render pass.
+ *  @param  shading_model [in] shading model
+ */
+/*===========================================================================*/
+void PointRenderer::RenderPass::setup(
+    const kvs::Shader::ShadingModel& shading_model )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "shading.Ka", shading_model.Ka );
+    m_shader_program.setUniform( "shading.Kd", shading_model.Kd );
+    m_shader_program.setUniform( "shading.Ks", shading_model.Ks );
+    m_shader_program.setUniform( "shading.S",  shading_model.S );
+    m_shader_program.setUniform( "offset", m_offset );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    m_shader_program.setUniform( "ModelViewMatrix", M );
+    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
+    m_shader_program.setUniform( "NormalMatrix", N );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to point object
+ */
+/*===========================================================================*/
+void PointRenderer::RenderPass::draw( const kvs::ObjectBase* object )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( object );
 }
 
 /*===========================================================================*/
@@ -77,12 +187,8 @@ void PointRenderer::BufferObject::draw( const kvs::PointObject* point )
  */
 /*===========================================================================*/
 PointRenderer::PointRenderer():
-    m_vert_file( "shader.vert" ),
-    m_frag_file( "shader.frag" ),
-    m_width( 0 ),
-    m_height( 0 ),
-    m_object( NULL ),
-    m_shading_model( new kvs::Shader::Lambert() )
+    m_shading_model( new kvs::Shader::Lambert() ),
+    m_render_pass( m_buffer_object )
 {
 }
 
@@ -104,19 +210,22 @@ PointRenderer::~PointRenderer()
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void PointRenderer::exec(
+    kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
+    const auto shading_enabled = BaseClass::isShadingEnabled();
+    const auto& shading_model = *m_shading_model;
 
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
         this->createBufferObject( object );
-        this->createShaderProgram();
+        m_render_pass.create( shading_model, shading_enabled );
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -127,67 +236,13 @@ void PointRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     if ( this->isObjectChanged( object ) )
     {
         this->updateBufferObject( object );
-        this->updateShaderProgram();
+        m_render_pass.update( shading_model, shading_enabled );
     }
 
-    this->setupShaderProgram();
-
-    m_shader_program.bind();
+    m_render_pass.setup( shading_model );
     this->drawBufferObject( camera );
-    m_shader_program.unbind();
 
     BaseClass::stopTimer();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates shader program.
- */
-/*===========================================================================*/
-void PointRenderer::createShaderProgram()
-{
-    kvs::ShaderSource vert( this->vertexShaderFile() );
-    kvs::ShaderSource frag( this->fragmentShaderFile() );
-    if ( isShadingEnabled() )
-    {
-        switch ( m_shading_model->type() )
-        {
-        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
-        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
-        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
-        default: break; /* NO SHADING */
-        }
-
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
-        {
-            frag.define("ENABLE_TWO_SIDE_LIGHTING");
-        }
-    }
-
-    m_shader_program.build( vert, frag );
-}
-
-void PointRenderer::updateShaderProgram()
-{
-    m_shader_program.release();
-    this->createShaderProgram();
-}
-
-void PointRenderer::setupShaderProgram()
-{
-    kvs::ProgramObject::Binder bind( m_shader_program );
-    m_shader_program.setUniform( "shading.Ka", m_shading_model->Ka );
-    m_shader_program.setUniform( "shading.Kd", m_shading_model->Kd );
-    m_shader_program.setUniform( "shading.Ks", m_shading_model->Ks );
-    m_shader_program.setUniform( "shading.S",  m_shading_model->S );
-    m_shader_program.setUniform( "offset", 0 );
-
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-    m_shader_program.setUniform( "ModelViewMatrix", M );
-    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
-    m_shader_program.setUniform( "NormalMatrix", N );
 }
 
 /*===========================================================================*/
@@ -199,25 +254,36 @@ void PointRenderer::setupShaderProgram()
 void PointRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
     m_object = object;
-    m_buffer_object.create( kvs::PointObject::DownCast( object ) );
+    m_buffer_object.create( object );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Updates buffer object.
+ *  @param  object [in] pointer to object
+ */
+/*===========================================================================*/
 void PointRenderer::updateBufferObject( const kvs::ObjectBase* object )
 {
     m_buffer_object.release();
     this->createBufferObject( object );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to  object
+ */
+/*===========================================================================*/
 void PointRenderer::drawBufferObject( const kvs::Camera* camera )
 {
+    auto* point = kvs::PointObject::DownCast( m_object );
+    auto dpr = camera->devicePixelRatio();
+
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::Enable( GL_POINT_SMOOTH ); // Rounded shape.
-
-    const auto* point = kvs::PointObject::DownCast( m_object );
-    const float dpr = camera->devicePixelRatio();
     kvs::OpenGL::SetPointSize( point->size() * dpr );
-
-    m_buffer_object.draw( point );
+    m_render_pass.draw( point );
 }
 
 } // end of namespace glsl

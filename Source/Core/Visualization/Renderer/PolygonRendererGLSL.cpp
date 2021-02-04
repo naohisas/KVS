@@ -347,11 +347,12 @@ namespace glsl
 /*===========================================================================*/
 /**
  *  @brief  Creates a buffer object.
- *  @param  polygon [in] pointer to polgon object  
+ *  @param  object [in] pointer to polgon object  
  */
 /*===========================================================================*/
-void PolygonRenderer::BufferObject::create( const kvs::PolygonObject* polygon )
+void PolygonRenderer::BufferObject::create( const kvs::ObjectBase* object )
 {
+    const auto* polygon = kvs::PolygonObject::DownCast( object );
     if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
     {
         const auto type = polygon->polygonType();
@@ -361,7 +362,6 @@ void PolygonRenderer::BufferObject::create( const kvs::PolygonObject* polygon )
 
     const bool has_normal = polygon->normals().size() > 0;
     const bool has_connection = ::HasConnections( polygon );
-
     auto coords = ::VertexCoords( polygon );
     auto colors = ::VertexColors( polygon );
     auto normals = ::VertexNormals( polygon );
@@ -377,22 +377,19 @@ void PolygonRenderer::BufferObject::create( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 /**
  *  @brief  Draws buffer object.
- *  @param  polygon [in] pointer to polygon object
+ *  @param  object [in] pointer to polygon object
  */
 /*===========================================================================*/
-void PolygonRenderer::BufferObject::draw( const kvs::PolygonObject* polygon )
+void PolygonRenderer::BufferObject::draw( const kvs::ObjectBase* object )
 {
-    kvs::VertexBufferObjectManager::Binder bind( m_manager );
-
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
+    const auto* polygon = kvs::PolygonObject::DownCast( object );
     const size_t nconnections = polygon->numberOfConnections();
     const size_t nvertices = ::NumberOfVertices( polygon );
     const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
     const bool has_connection = m_manager.indexBufferObject().size() > 0;
 
     // Draw triangles.
+    kvs::VertexBufferObjectManager::Binder bind( m_manager );
     if ( has_connection ) { m_manager.drawElements( GL_TRIANGLES, 3 * npolygons ); }
     else { m_manager.drawArrays( GL_TRIANGLES, 0, 3 * npolygons ); }
 }
@@ -483,16 +480,13 @@ void PolygonRenderer::RenderPass::setup(
 /*===========================================================================*/
 /**
  *  @brief  Draws buffer object.
- *  @param  polygon [in] pointer to polygon object
+ *  @param  object [in] pointer to polygon object
  */
 /*===========================================================================*/
-void PolygonRenderer::RenderPass::draw( const kvs::PolygonObject* polygon )
+void PolygonRenderer::RenderPass::draw( const kvs::ObjectBase* object )
 {
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-
-    m_shader_program.bind();
-    m_buffer_object.draw( polygon );
-    m_shader_program.unbind();
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( object );
 }
 
 /*===========================================================================*/
@@ -501,9 +495,6 @@ void PolygonRenderer::RenderPass::draw( const kvs::PolygonObject* polygon )
  */
 /*===========================================================================*/
 PolygonRenderer::PolygonRenderer():
-    m_width( 0 ),
-    m_height( 0 ),
-    m_object( nullptr ),
     m_shading_model( new kvs::Shader::Lambert() ),
     m_render_pass( m_buffer_object )
 {
@@ -538,12 +529,14 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
+    const auto shading_enabled = BaseClass::isShadingEnabled();
+    const auto& shading_model = *m_shading_model;
 
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
-        this->createShaderProgram();
         this->createBufferObject( object );
+        m_render_pass.create( shading_model, shading_enabled );
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -554,43 +547,13 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     if ( this->isObjectChanged( object ) )
     {
         this->updateBufferObject( object );
-        this->updateShaderProgram();
+        m_render_pass.update( shading_model, shading_enabled );
     }
 
-    this->setupShaderProgram();
+    m_render_pass.setup( shading_model );
     this->drawBufferObject( camera );
 
     BaseClass::stopTimer();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates render pass.
- */
-/*===========================================================================*/
-void PolygonRenderer::createShaderProgram()
-{
-    m_render_pass.create( this->shadingModel(), BaseClass::isShadingEnabled() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Updates render pass.
- */
-/*===========================================================================*/
-void PolygonRenderer::updateShaderProgram()
-{
-    m_render_pass.update( this->shadingModel(), BaseClass::isShadingEnabled() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Setups render pass.
- */
-/*===========================================================================*/
-void PolygonRenderer::setupShaderProgram()
-{
-    m_render_pass.setup( this->shadingModel() );
 }
 
 /*===========================================================================*/
@@ -602,7 +565,7 @@ void PolygonRenderer::setupShaderProgram()
 void PolygonRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
     m_object = object;
-    m_buffer_object.create( kvs::PolygonObject::DownCast( object ) );
+    m_buffer_object.create( object );
 }
 
 /*===========================================================================*/
@@ -625,8 +588,9 @@ void PolygonRenderer::updateBufferObject( const kvs::ObjectBase* object )
 /*===========================================================================*/
 void PolygonRenderer::drawBufferObject( const kvs::Camera* camera )
 {
-    const auto* polygon = kvs::PolygonObject::DownCast( m_object );
-    m_render_pass.draw( polygon );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    m_render_pass.draw( m_object );
 }
 
 } // end of namespace glsl

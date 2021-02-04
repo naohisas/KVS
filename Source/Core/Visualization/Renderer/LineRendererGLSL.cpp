@@ -273,8 +273,9 @@ namespace kvs
 namespace glsl
 {
 
-void LineRenderer::BufferObject::create( const kvs::LineObject* line )
+void LineRenderer::BufferObject::create( const kvs::ObjectBase* object )
 {
+    const auto* line = kvs::LineObject::DownCast( object);
     const auto coords = ::VertexCoords( line );
     const auto colors = ::VertexColors( line );
     m_manager.setVertexArray( coords, 3 );
@@ -300,8 +301,9 @@ void LineRenderer::BufferObject::create( const kvs::LineObject* line )
     m_manager.create();
 }
 
-void LineRenderer::BufferObject::draw( const kvs::LineObject* line )
+void LineRenderer::BufferObject::draw( const kvs::ObjectBase* object )
 {
+    const auto* line = kvs::LineObject::DownCast( object);
     kvs::VertexBufferObjectManager::Binder bind( m_manager );
 
     // Draw lines.
@@ -351,20 +353,107 @@ void LineRenderer::BufferObject::draw( const kvs::LineObject* line )
 
 /*===========================================================================*/
 /**
+ *  @brief  Sets vertex and fragment shader files.
+ *  @param  vert_file [in] vertex shader file
+ *  @param  frag_file [in] fragment shader file
+ */
+/*===========================================================================*/
+void LineRenderer::RenderPass::setShaderFiles(
+    const std::string& vert_file, const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Builds shader program.
+ *  @param  model [in] shading model
+ *  @param  enable [in] if true, shading is enabled
+ */
+/*===========================================================================*/
+void LineRenderer::RenderPass::create(
+    const kvs::Shader::ShadingModel& model, const bool enable )
+{
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( enable )
+    {
+        switch ( model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
+    }
+
+    m_shader_program.build( vert, frag );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Updates render pass.
+ *  @param  shading_model [in] shading model
+ *  @param  shading_enabled [in] if true, shading is enabled
+ */
+/*===========================================================================*/
+void LineRenderer::RenderPass::update(
+    const kvs::Shader::ShadingModel& shading_model,
+    const bool shading_enabled )
+{
+    m_shader_program.release();
+    this->create( shading_model, shading_enabled );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Setups render pass.
+ *  @param  shading_model [in] shading model
+ */
+/*===========================================================================*/
+void LineRenderer::RenderPass::setup(
+    const kvs::Shader::ShadingModel& shading_model )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "shading.Ka", shading_model.Ka );
+    m_shader_program.setUniform( "shading.Kd", shading_model.Kd );
+    m_shader_program.setUniform( "shading.Ks", shading_model.Ks );
+    m_shader_program.setUniform( "shading.S",  shading_model.S );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    m_shader_program.setUniform( "ModelViewMatrix", M );
+    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
+    m_shader_program.setUniform( "NormalMatrix", N );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to line object
+ */
+/*===========================================================================*/
+void LineRenderer::RenderPass::draw( const kvs::ObjectBase* object )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( object );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Constructs a new LineRenderer class.
  */
 /*===========================================================================*/
 LineRenderer::LineRenderer():
-    m_vert_file( "line.vert" ),
-    m_frag_file( "line.frag" ),
-    m_width( 0 ),
-    m_height( 0 ),
-    m_object( NULL ),
     m_shading_model( new kvs::Shader::Lambert() ),
-    m_line_width( 0.0f ),
-    m_line_width_range( 0.0f, 0.0f ),
-    m_outline_width( 0.0f ),
-    m_outline_color( kvs::RGBColor::Black() )
+    m_render_pass( m_buffer_object )
 {
 }
 
@@ -393,12 +482,13 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
-
+    const auto shading_enabled = BaseClass::isShadingEnabled();
+    const auto& shading_model = *m_shading_model;
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
-        this->createShaderProgram();
         this->createBufferObject( object );
+        m_render_pass.create( shading_model, shading_enabled );
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -409,66 +499,13 @@ void LineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
     if ( this->isObjectChanged( object ) )
     {
         this->updateBufferObject( object );
-        this->updateShaderProgram();
+        m_render_pass.update( shading_model, shading_enabled );
     }
 
-    this->setupShaderProgram();
-
-    m_shader_program.bind();
+    m_render_pass.setup( shading_model );
     this->drawBufferObject( camera );
-    m_shader_program.unbind();
 
     BaseClass::stopTimer();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates shader program.
- */
-/*===========================================================================*/
-void LineRenderer::createShaderProgram()
-{
-    kvs::ShaderSource vert( this->vertexShaderFile() );
-    kvs::ShaderSource frag( this->fragmentShaderFile() );
-    if ( isShadingEnabled() )
-    {
-        switch ( m_shading_model->type() )
-        {
-        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
-        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
-        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
-        default: break; // NO SHADING
-        }
-
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
-        {
-            frag.define("ENABLE_TWO_SIDE_LIGHTING");
-        }
-    }
-
-    m_shader_program.build( vert, frag );
-}
-
-void LineRenderer::updateShaderProgram()
-{
-    m_shader_program.release();
-    this->createShaderProgram();
-}
-
-void LineRenderer::setupShaderProgram()
-{
-    kvs::ProgramObject::Binder bind( m_shader_program );
-    m_shader_program.setUniform( "shading.Ka", m_shading_model->Ka );
-    m_shader_program.setUniform( "shading.Kd", m_shading_model->Kd );
-    m_shader_program.setUniform( "shading.Ks", m_shading_model->Ks );
-    m_shader_program.setUniform( "shading.S",  m_shading_model->S );
-
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-    m_shader_program.setUniform( "ModelViewMatrix", M );
-    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
-    m_shader_program.setUniform( "NormalMatrix", N );
 }
 
 /*===========================================================================*/
@@ -479,12 +516,8 @@ void LineRenderer::setupShaderProgram()
 /*===========================================================================*/
 void LineRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
-    const auto* line = kvs::LineObject::DownCast( object );
-    m_line_width = line->size();
-    kvs::OpenGL::GetFloatv( GL_LINE_WIDTH_RANGE, &m_line_width_range[0] );
-
     m_object = object;
-    m_buffer_object.create( line );
+    m_buffer_object.create( object );
 }
 
 void LineRenderer::updateBufferObject( const kvs::ObjectBase* object )
@@ -495,23 +528,37 @@ void LineRenderer::updateBufferObject( const kvs::ObjectBase* object )
 
 void LineRenderer::drawBufferObject( const kvs::Camera* camera )
 {
-    const auto* line = kvs::LineObject::DownCast( m_object );
-    const float dpr = camera->devicePixelRatio();
-    const float line_width = kvs::Math::Min( line->size() + m_outline_width * 2.0f, m_line_width_range[1] );
-    const float outline_width = kvs::Math::Min( m_outline_width, m_line_width_range[1] * 0.5f );
+    auto* line = kvs::LineObject::DownCast( m_object );
+    auto dpr = camera->devicePixelRatio();
+    auto line_width = line->size();
 
-    m_shader_program.setUniform( "screen_width", float( m_width ) * dpr );
-    m_shader_program.setUniform( "screen_height",  float( m_height ) * dpr );
-    m_shader_program.setUniform( "line_width_range", m_line_width_range * dpr );
-    m_shader_program.setUniform( "line_width", line_width * dpr );
-    m_shader_program.setUniform( "outline_width", outline_width * dpr );
-    m_shader_program.setUniform( "outline_color", m_outline_color.toVec3() );
+    // Seting for drawing outline.
+    // {
+    auto outline_color = m_render_pass.outlineColor();
+    auto outline_width = m_render_pass.outlineWidth();
+
+    kvs::Vec2 line_width_range( 0.0f, 0.0f );
+    kvs::OpenGL::GetFloatv( GL_LINE_WIDTH_RANGE, &line_width_range[0] );
+
+    outline_width = kvs::Math::Min( outline_width, line_width_range[1] * 0.5f );
+    line_width = kvs::Math::Min( line->size() + outline_width * 2.0f, line_width_range[1] );
+
+    auto& shader_program = m_render_pass.shaderProgram();
+    shader_program.bind();
+    shader_program.setUniform( "screen_width", float( m_width ) * dpr );
+    shader_program.setUniform( "screen_height",  float( m_height ) * dpr );
+    shader_program.setUniform( "line_width_range", line_width_range * dpr );
+    shader_program.setUniform( "line_width", line_width * dpr );
+    shader_program.setUniform( "outline_width", outline_width * dpr );
+    shader_program.setUniform( "outline_color", outline_color.toVec3() );
+    shader_program.unbind();
+    // }
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     kvs::OpenGL::SetLineWidth( line_width * dpr );
-    m_buffer_object.draw( line );
+    m_render_pass.draw( line );
 }
 
 } // end of namespace glsl

@@ -116,11 +116,11 @@ void StochasticPolygonRenderer::Engine::RenderPass::setup(
 /*===========================================================================*/
 /**
  *  @brief  Draws buffer object.
- *  @param  polygon [in] pointer to polygon object
+ *  @param  object [in] pointer to polygon object
  */
 /*===========================================================================*/
 void StochasticPolygonRenderer::Engine::RenderPass::draw(
-    const kvs::PolygonObject* polygon )
+    const kvs::ObjectBase* object )
 {
     const size_t size = m_parent->randomTextureSize();
     const int count = m_parent->repetitionCount() * ::RandomNumber();
@@ -134,7 +134,7 @@ void StochasticPolygonRenderer::Engine::RenderPass::draw(
 
     auto& buffer_object = this->bufferObject();
     kvs::Texture::Binder bind3( m_parent->randomTexture() );
-    buffer_object.draw( polygon );
+    buffer_object.draw( object );
 }
 
 /*===========================================================================*/
@@ -203,7 +203,9 @@ void StochasticPolygonRenderer::Engine::setup(
 void StochasticPolygonRenderer::Engine::draw(
     kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    m_render_pass.draw( kvs::PolygonObject::DownCast( object ) );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    m_render_pass.draw( object );
 }
 
 } // end of namespace kvs

@@ -33,7 +33,10 @@ public:
 
 public:
     StochasticPointRenderer();
-    /*KVS_DEPRECATED*/ void setOpacity( const kvs::UInt8 opacity );
+
+public:
+    // KVS_DEPRECATED
+    void setOpacity( const kvs::UInt8 opacity );
 };
 
 /*===========================================================================*/
@@ -43,28 +46,39 @@ public:
 /*===========================================================================*/
 class StochasticPointRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+public:
     using BaseClass = kvs::StochasticRenderingEngine;
     using BufferObject = kvs::glsl::PointRenderer::BufferObject;
 
+    class RenderPass : public kvs::glsl::PointRenderer::RenderPass
+    {
+        using BaseRenderPass = kvs::glsl::PointRenderer::RenderPass;
+        using Parent = BaseClass;
+    private:
+        const Parent* m_parent; ///< reference to the engine
+        kvs::UInt8 m_opacity = 255; ///< point opacity
+    public:
+        RenderPass( BufferObject& buffer_object, Parent* parent );
+        void setOpacity( const kvs::UInt8 opacity ) { m_opacity = opacity; }
+        void setup( const kvs::Shader::ShadingModel& model );
+        void draw( const kvs::ObjectBase* object );
+    };
+
 private:
-    kvs::UInt8 m_point_opacity; ///< point opacity
-    kvs::ProgramObject m_shader_program; ///< shader program
-    BufferObject m_buffer_object;
+    RenderPass m_render_pass; ///< render pass
+    BufferObject m_buffer_object; ///< buffer object
 
 public:
-    Engine();
-    void release();
+    Engine(): m_render_pass( m_buffer_object, this ) {}
+    void release() { m_render_pass.release(); m_buffer_object.release(); }
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 public:
-    /*KVS_DEPRECATED*/ void setOpacity( const kvs::UInt8 opacity ) { m_point_opacity = opacity; }
-
-private:
-    void create_shader_program();
-    void create_buffer_object( const kvs::PointObject* point );
+    // KVS_DEPRECATED
+    void setOpacity( const kvs::UInt8 opacity ) { m_render_pass.setOpacity( opacity ); }
 };
 
 } // end of namespace kvs

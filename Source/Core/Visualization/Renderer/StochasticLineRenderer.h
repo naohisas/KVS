@@ -34,7 +34,9 @@ public:
 public:
     StochasticLineRenderer();
     void setLineOffset( const float offset );
-    /*KVS_DEPRECATED*/ void setOpacity( const kvs::UInt8 opacity );
+
+    // KVS_DEPRECATED
+    void setOpacity( const kvs::UInt8 opacity );
 };
 
 /*===========================================================================*/
@@ -44,31 +46,43 @@ public:
 /*===========================================================================*/
 class StochasticLineRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+public:
     using BaseClass = kvs::StochasticRenderingEngine;
     using BufferObject = kvs::glsl::LineRenderer::BufferObject;
 
+    class RenderPass : public kvs::glsl::LineRenderer::RenderPass
+    {
+    private:
+        using BaseRenderPass = kvs::glsl::LineRenderer::RenderPass;
+        using Parent = BaseClass;
+        const Parent* m_parent; ///< reference to the engine
+        kvs::UInt8 m_opacity = 255; ///< point opacity
+        float m_offset = 0.0f; ///< line offset
+    public:
+        RenderPass( BufferObject& buffer_object, Parent* parent );
+        void setOpacity( const kvs::UInt8 opacity ) { m_opacity = opacity; }
+        void setOffset( const float offset ) { m_offset = offset; }
+        void setup( const kvs::Shader::ShadingModel& model );
+        void draw( const kvs::ObjectBase* object );
+    };
+
 private:
-    kvs::UInt8 m_line_opacity; ///< line opacity
-    float m_line_offset; ///< line offset
-    kvs::ProgramObject m_shader_program; ///< shader program
-    BufferObject m_buffer_object;
+    RenderPass m_render_pass; ///< render pass
+    BufferObject m_buffer_object; ///< buffer object
 
 public:
-    Engine();
-    void release();
+    Engine(): m_render_pass( m_buffer_object, this ) {}
+    void release() { m_render_pass.release(); m_buffer_object.release(); }
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-    void setLineOffset( const float offset ) { m_line_offset = offset; }
+    void setLineOffset( const float offset ) { m_render_pass.setOffset( offset ); }
 
 public:
-    /* KVS_DEPRECATED */ void setOpacity( const kvs::UInt8 opacity ){ m_line_opacity = opacity; }
-
-private:
-    void create_shader_program();
-    void create_buffer_object( const kvs::LineObject* line );
+    // KVS_DEPRECATED
+    void setOpacity( const kvs::UInt8 opacity ){ m_render_pass.setOpacity( opacity ); }
 };
 
 } // end of namespace kvs
