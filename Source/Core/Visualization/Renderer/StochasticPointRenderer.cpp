@@ -49,6 +49,29 @@ StochasticPointRenderer::StochasticPointRenderer():
 
 /*===========================================================================*/
 /**
+ *  @brief  Sets depth offset.
+ *  @param  offset [in] depth offset
+ */
+/*===========================================================================*/
+void StochasticPointRenderer::setDepthOffset( const kvs::Vec2& offset )
+{
+    static_cast<Engine&>( engine() ).setDepthOffset( offset );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets depth offset.
+ *  @param  factor [in] scale factor
+ *  @param  units [in] constant depth offset
+ */
+/*===========================================================================*/
+void StochasticPointRenderer::setDepthOffset( const float factor, const float units )
+{
+    static_cast<Engine&>( engine() ).setDepthOffset( factor, units );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Sets an opacity value.
  *  @param  opacity [in] opacity value
  */
@@ -184,6 +207,13 @@ void StochasticPointRenderer::Engine::draw(
 {
     auto* point = kvs::PointObject::DownCast( object );
     auto dpr = camera->devicePixelRatio();
+
+    // Depth offset
+    if ( !kvs::Math::IsZero( m_depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( m_depth_offset[0], m_depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::Enable( GL_POINT_SMOOTH ); // Rounded shape.

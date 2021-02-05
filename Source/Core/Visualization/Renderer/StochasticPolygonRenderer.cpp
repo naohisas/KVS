@@ -69,13 +69,25 @@ StochasticPolygonRenderer::StochasticPolygonRenderer():
 
 /*===========================================================================*/
 /**
- *  @brief  Sets a polygon offset.
- *  @param  offset [in] offset value
+ *  @brief  Sets depth offset.
+ *  @param  offset [in] depth offset
  */
 /*===========================================================================*/
-void StochasticPolygonRenderer::setPolygonOffset( const float offset )
+void StochasticPolygonRenderer::setDepthOffset( const kvs::Vec2& offset )
 {
-    static_cast<Engine&>( engine() ).setPolygonOffset( offset );
+    static_cast<Engine&>( engine() ).setDepthOffset( offset );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets depth offset.
+ *  @param  factor [in] scale factor
+ *  @param  units [in] constant depth offset
+ */
+/*===========================================================================*/
+void StochasticPolygonRenderer::setDepthOffset( const float factor, const float units )
+{
+    static_cast<Engine&>( engine() ).setDepthOffset( factor, units );
 }
 
 /*===========================================================================*/
@@ -203,6 +215,13 @@ void StochasticPolygonRenderer::Engine::setup(
 void StochasticPolygonRenderer::Engine::draw(
     kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
+    // Depth offset
+    if ( !kvs::Math::IsZero( m_depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( m_depth_offset[0], m_depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
+
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     m_render_pass.draw( object );

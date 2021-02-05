@@ -51,16 +51,16 @@ public:
         std::string m_vert_shader_file = "shader.vert"; ///< vertex shader file
         std::string m_frag_shader_file = "shader.frag"; ///< fragment shader file
         kvs::ProgramObject m_shader_program{}; ///< shader program
-        float m_polygon_offset = 0.0f; ///< polygon offset
+//        float m_polygon_offset = 0.0f; ///< polygon offset
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
         virtual ~RenderPass() {}
         BufferObject& bufferObject() { return m_buffer_object; }
-        float polygonOffset() const { return m_polygon_offset; }
+//        float polygonOffset() const { return m_polygon_offset; }
         const std::string& vertexShaderFile() const { return m_vert_shader_file; }
         const std::string& fragmentShaderFile() const { return m_frag_shader_file; }
         kvs::ProgramObject& shaderProgram() { return m_shader_program; }
-        void setPolygonOffset( const float offset ) { m_polygon_offset = offset; }
+//        void setPolygonOffset( const float offset ) { m_polygon_offset = offset; }
         void setVertexShaderFile( const std::string& file ) { m_vert_shader_file = file; }
         void setFragmentShaderFile( const std::string& file ) { m_frag_shader_file = file; }
         void setShaderFiles( const std::string& vert_file, const std::string& frag_file );
@@ -88,10 +88,10 @@ public:
 
     const std::string& vertexShaderFile() const { return m_render_pass.vertexShaderFile(); }
     const std::string& fragmentShaderFile() const { return m_render_pass.fragmentShaderFile(); }
-    float polygonOffset() const { return m_render_pass.polygonOffset(); }
+//    float polygonOffset() const { return m_render_pass.polygonOffset(); }
     void setVertexShaderFile( const std::string& file ) { m_render_pass.setVertexShaderFile( file ); }
     void setFragmentShaderFile( const std::string& file ) { m_render_pass.setFragmentShaderFile( file ); }
-    void setPolygonOffset( const float offset ) { m_render_pass.setPolygonOffset( offset ); }
+//    void setPolygonOffset( const float offset ) { m_render_pass.setPolygonOffset( offset ); }
     void setShaderFiles( const std::string& vert_file, const std::string& frag_file )
     {
         this->setVertexShaderFile( vert_file );
@@ -128,6 +128,8 @@ protected:
 public:
     template <typename ShadingType>
     KVS_DEPRECATED( void setShader( const ShadingType shader ) );
+    KVS_DEPRECATED( void setPolygonOffset( const float offset ) ) { BaseClass::setDepthOffset( offset ); }
+    KVS_DEPRECATED( float polygonOffset() const ) { return BaseClass::depthOffset()[0]; }
 };
 
 template <typename ShadingType>

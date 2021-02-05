@@ -159,7 +159,6 @@ void PointRenderer::RenderPass::setup(
     m_shader_program.setUniform( "shading.Kd", shading_model.Kd );
     m_shader_program.setUniform( "shading.Ks", shading_model.Ks );
     m_shader_program.setUniform( "shading.S",  shading_model.S );
-    m_shader_program.setUniform( "offset", m_offset );
 
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
@@ -279,6 +278,14 @@ void PointRenderer::drawBufferObject( const kvs::Camera* camera )
 {
     auto* point = kvs::PointObject::DownCast( m_object );
     auto dpr = camera->devicePixelRatio();
+
+    // Depth offset
+    const auto depth_offset = BaseClass::depthOffset();
+    if ( !kvs::Math::IsZero( depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( depth_offset[0], depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::Enable( GL_POINT_SMOOTH ); // Rounded shape.

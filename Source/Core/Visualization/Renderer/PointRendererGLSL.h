@@ -51,7 +51,6 @@ public:
         std::string m_vert_shader_file = "shader.vert"; ///< vertex shader file
         std::string m_frag_shader_file = "shader.frag"; ///< fragment shader file
         kvs::ProgramObject m_shader_program{}; ///< shader program
-        float m_offset = 0.0f; ///< offset in clip coordinate
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
         virtual ~RenderPass() {}
@@ -62,7 +61,6 @@ public:
         void setVertexShaderFile( const std::string& file ) { m_vert_shader_file = file; }
         void setFragmentShaderFile( const std::string& file ) { m_frag_shader_file = file; }
         void setShaderFiles( const std::string& vert_file, const std::string& frag_file );
-        void setOffset( const float offset ) { m_offset = offset; }
         virtual void release() { m_shader_program.release(); }
         virtual void create( const kvs::Shader::ShadingModel& model, const bool enable );
         virtual void update( const kvs::Shader::ShadingModel& model, const bool enable );
@@ -95,8 +93,6 @@ public:
         this->setFragmentShaderFile( frag_file );
     }
 
-    void setOffset( const float offset ) { m_render_pass.setOffset( offset ); }
-
     template <typename Model>
     void setShadingModel( const Model model )
     {
@@ -127,6 +123,7 @@ protected:
 public:
     template <typename ShadingType>
     KVS_DEPRECATED( void setShader( const ShadingType shader ) );
+    KVS_DEPRECATED( void setOffset( const float offset ) ) { BaseClass::setDepthOffset( offset ); }
 };
 
 template <typename ShadingType>

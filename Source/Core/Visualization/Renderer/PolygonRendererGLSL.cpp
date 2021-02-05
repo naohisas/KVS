@@ -467,7 +467,7 @@ void PolygonRenderer::RenderPass::setup(
     m_shader_program.setUniform( "shading.Kd", model.Kd );
     m_shader_program.setUniform( "shading.Ks", model.Ks );
     m_shader_program.setUniform( "shading.S",  model.S );
-    m_shader_program.setUniform( "offset", m_polygon_offset );
+//    m_shader_program.setUniform( "offset", m_polygon_offset );
 
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
@@ -588,6 +588,14 @@ void PolygonRenderer::updateBufferObject( const kvs::ObjectBase* object )
 /*===========================================================================*/
 void PolygonRenderer::drawBufferObject( const kvs::Camera* camera )
 {
+    // Depth offset
+    const auto depth_offset = BaseClass::depthOffset();
+    if ( !kvs::Math::IsZero( depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( depth_offset[0], depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
+
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     m_render_pass.draw( m_object );

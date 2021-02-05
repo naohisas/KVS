@@ -54,8 +54,8 @@ public:
         std::string m_vert_shader_file = "line.vert"; ///< vertex shader file
         std::string m_frag_shader_file = "line.frag"; ///< fragment shader file
         kvs::ProgramObject m_shader_program{}; ///< shader program
-        float m_outline_width = 0.0f;
-        kvs::RGBColor m_outline_color{ kvs::RGBColor::Black() };
+        float m_outline_width = 0.0f; ///< outline width
+        kvs::RGBColor m_outline_color{ kvs::RGBColor::Black() }; ///< outline color
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
         virtual ~RenderPass() {}

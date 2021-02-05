@@ -520,12 +520,24 @@ void LineRenderer::createBufferObject( const kvs::ObjectBase* object )
     m_buffer_object.create( object );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Updates buffer object.
+ *  @param  object [in] pointer to object
+ */
+/*===========================================================================*/
 void LineRenderer::updateBufferObject( const kvs::ObjectBase* object )
 {
     m_buffer_object.release();
     this->createBufferObject( object );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to  object
+ */
+/*===========================================================================*/
 void LineRenderer::drawBufferObject( const kvs::Camera* camera )
 {
     auto* line = kvs::LineObject::DownCast( m_object );
@@ -554,10 +566,18 @@ void LineRenderer::drawBufferObject( const kvs::Camera* camera )
     shader_program.unbind();
     // }
 
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    kvs::OpenGL::Enable( GL_BLEND );
+    // Depth offset
+    const auto depth_offset = BaseClass::depthOffset();
+    if ( !kvs::Math::IsZero( depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( depth_offset[0], depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
+
     kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     kvs::OpenGL::SetLineWidth( line_width * dpr );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_BLEND );
     m_render_pass.draw( line );
 }
 

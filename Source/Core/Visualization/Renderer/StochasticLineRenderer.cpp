@@ -48,13 +48,25 @@ StochasticLineRenderer::StochasticLineRenderer():
 
 /*===========================================================================*/
 /**
- *  @brief  Sets a line offset value.
- *  @param  offset [in] offset value
+ *  @brief  Sets depth offset.
+ *  @param  offset [in] depth offset
  */
 /*===========================================================================*/
-void StochasticLineRenderer::setLineOffset( const float offset )
+void StochasticLineRenderer::setDepthOffset( const kvs::Vec2& offset )
 {
-    static_cast<Engine&>( engine() ).setLineOffset( offset );
+    static_cast<Engine&>( engine() ).setDepthOffset( offset );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets depth offset.
+ *  @param  factor [in] scale factor
+ *  @param  units [in] constant depth offset
+ */
+/*===========================================================================*/
+void StochasticLineRenderer::setDepthOffset( const float factor, const float units )
+{
+    static_cast<Engine&>( engine() ).setDepthOffset( factor, units );
 }
 
 /*===========================================================================*/
@@ -103,7 +115,6 @@ void StochasticLineRenderer::Engine::RenderPass::setup(
     shader_program.setUniform( "random_texture_size_inv", size_inv );
     shader_program.setUniform( "random_texture", 0 );
     shader_program.setUniform( "opacity", m_opacity / 255.0f );
-    shader_program.setUniform( "line_offset", m_offset );
 }
 
 /*===========================================================================*/
@@ -204,6 +215,13 @@ void StochasticLineRenderer::Engine::draw(
     auto* line = kvs::LineObject::DownCast( object );
     auto dpr = camera->devicePixelRatio();
     auto line_width = line->size();
+
+    // Depth offset
+    if ( !kvs::Math::IsZero( m_depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( m_depth_offset[0], m_depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::SetLineWidth( line_width * dpr );
