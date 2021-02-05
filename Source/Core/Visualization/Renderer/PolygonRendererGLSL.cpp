@@ -467,7 +467,6 @@ void PolygonRenderer::RenderPass::setup(
     m_shader_program.setUniform( "shading.Kd", model.Kd );
     m_shader_program.setUniform( "shading.Ks", model.Ks );
     m_shader_program.setUniform( "shading.S",  model.S );
-//    m_shader_program.setUniform( "offset", m_polygon_offset );
 
     const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
