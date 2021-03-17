@@ -44,13 +44,13 @@ Argument::Argument( int argc, char** argv ):
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
     // Viewer application.
-    kvs::Application app( argc, argv );
+    kvs::Application app( m_argc, m_argv );
 
     // Parse specified arguments.
-    kvsview::PolygonRenderer::Argument arg( argc, argv );
+    kvsview::PolygonRenderer::Argument arg( m_argc, m_argv );
     if( !arg.parse() ) return false;
 
     // Create a global and screen class.

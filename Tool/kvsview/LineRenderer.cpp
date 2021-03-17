@@ -41,14 +41,14 @@ Argument::Argument( int argc, char** argv ):
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
     // Parse specified arguments.
-    kvsview::LineRenderer::Argument arg( argc, argv );
+    kvsview::LineRenderer::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) { return false; }
 
     // Viewer application.
-    kvs::Application app( argc, argv );
+    kvs::Application app( m_argc, m_argv );
     kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + LineRenderer::CommandName );

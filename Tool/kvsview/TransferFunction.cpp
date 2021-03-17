@@ -280,20 +280,18 @@ const bool Argument::hasOpacityMapOption()
     return this->hasOption("a");
 }
 
- /*===========================================================================*/
+/*===========================================================================*/
 /**
  *  @brief  Executes main process.
- *  @param  argc [i] argument count
- *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
     // Setup Viewer application.
-    kvs::Application app( argc, argv );
+    kvs::Application app( m_argc, m_argv );
 
     // Commandline arguments.
-    kvsview::TransferFunction::Argument arg( argc, argv );
+    kvsview::TransferFunction::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) exit( EXIT_FAILURE );
     m_input_name = arg.value<std::string>();
 

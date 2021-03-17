@@ -23,14 +23,13 @@
 #include "ParticleBasedRenderer.h"
 #include "Histogram.h"
 
-
 KVS_MEMORY_DEBUGGER;
 
 #define KVSVIEW_HELP( method )                                          \
     if ( help == #method ) { return method ::Argument( argc, argv ).parse(); }
 
 #define KVSVIEW_EXEC( method )                                          \
-    if ( arg.hasOption( #method ) ) { return ( arg.clear(), method ::Main().start( argc, argv ) ); }
+    if ( arg.hasOption( #method ) ) { return ( arg.clear(), method ::Main( argc, argv ).run() ); }
 
 
 namespace kvsview
@@ -87,7 +86,7 @@ int32_t Main::exec( int argc, char** argv )
         KVSVIEW_EXEC( RayCastingRenderer );
         KVSVIEW_EXEC( ParticleBasedRenderer );
         KVSVIEW_EXEC( Histogram );
-        return ( arg.clear(), Default::Main().start( argc, argv ) );
+        return ( arg.clear(), Default::Main( argc, argv ).run() );
     }
 }
 

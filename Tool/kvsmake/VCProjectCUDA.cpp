@@ -136,7 +136,7 @@ namespace kvsmake
  *  @return 0 if the project file is generated successfully
  */
 /*===========================================================================*/
-int VCProjectCUDA::exec( int /* argc */, char** /* argv */ )
+int VCProjectCUDA::exec()
 {
     //  Open a template file.
     std::ifstream in( kvsmake::VCProjectCUDATemplate.c_str() );

@@ -84,7 +84,7 @@ namespace kvsmake
  *  @return 0 if the project file is generated successfully
  */
 /*===========================================================================*/
-int QtProject::exec( int /* argc */, char** /* argv */ )
+int QtProject::exec()
 {
     //  Open a template file.
     std::ifstream in( kvsmake::QtProjectTemplate.c_str() );

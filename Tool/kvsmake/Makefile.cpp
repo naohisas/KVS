@@ -82,7 +82,7 @@ namespace kvsmake
  *  @return 0 if the Makefile is generated successfully
  */
 /*===========================================================================*/
-int Makefile::exec( int /* argc */, char** /* argv */ )
+int Makefile::exec()
 {
     //  Open a template file.
     std::ifstream in( kvsmake::MakefileTemplate.c_str() );

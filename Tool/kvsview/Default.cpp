@@ -58,13 +58,13 @@ const bool CheckTransferFunctionFormat( const std::string& filename )
  *  @param  argv [in] argument values
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
     // Application.
-    kvs::Application app( argc, argv );
+    kvs::Application app( m_argc, m_argv );
 
     // Parse specified arguments.
-    kvsview::Default::Argument arg( argc, argv );
+    kvsview::Default::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) { return false; }
 
     /* Transfer function data is checked here, since default visualization
@@ -73,7 +73,7 @@ int Main::exec( int argc, char** argv )
      */
     if ( kvsview::Default::CheckTransferFunctionFormat( arg.value<std::string>() ) )
     {
-        return kvsview::TransferFunction::Main().start( argc, argv );
+        return kvsview::TransferFunction::Main( m_argc, m_argv ).run();
     }
 
     // Create a global and screen class.

@@ -117,7 +117,7 @@ namespace kvsmake
  *  @return 0 if the project file is generated successfully
  */
 /*===========================================================================*/
-int VCProject::exec( int /* argc */, char** /* argv */ )
+int VCProject::exec()
 {
     //  Open a template file.
     std::ifstream in( kvsmake::VCProjectTemplate.c_str() );

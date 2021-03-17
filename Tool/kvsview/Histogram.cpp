@@ -341,13 +341,13 @@ const float Argument::biasParameter( void )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
     // Setup viewer application.
-    kvs::Application app( argc, argv );
+    kvs::Application app( m_argc, m_argv );
 
     // Commandline arguments.
-    kvsview::Histogram::Argument arg( argc, argv );
+    kvsview::Histogram::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) exit( EXIT_FAILURE );
     m_input_name = arg.value<std::string>();
 

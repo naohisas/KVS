@@ -52,27 +52,27 @@ int main( int argc, char** argv )
     if ( cl.hasOption( "g" ) )
     {
         const std::string project_name( cl.optionValue<std::string>( "g" ) );
-        return kvsmake::Makefile( project_name, cl.hasOption( "use_mpi" ) ).start( argc, argv );
+        return kvsmake::Makefile( project_name, cl.hasOption( "use_mpi" ) ).run();
     }
 
     if ( cl.hasOption( "G" ) )
     {
         const kvs::Directory dir( "." );
         const std::string project_name( dir.name() );
-        return kvsmake::Makefile( project_name, cl.hasOption( "use_mpi" ) ).start( argc, argv );
+        return kvsmake::Makefile( project_name, cl.hasOption( "use_mpi" ) ).run();
     }
 
     if ( cl.hasOption( "q" ) || cl.hasOption( "qtproj" ) )
     {
         const std::string project_name( cl.optionValue<std::string>( "qtproj" ) );
-        return kvsmake::QtProject( project_name ).start( argc, argv );
+        return kvsmake::QtProject( project_name ).run();
     }
 
     if ( cl.hasOption( "Q" ) || cl.hasOption( "Qtproj" ) )
     {
         const kvs::Directory dir( "." );
         const std::string project_name( dir.name() );
-        return kvsmake::QtProject( project_name ).start( argc, argv );
+        return kvsmake::QtProject( project_name ).run();
     }
 
     if ( cl.hasOption( "vcproj" ) )
@@ -80,12 +80,12 @@ int main( int argc, char** argv )
         const std::string project_name( cl.optionValue<std::string>( "vcproj" ) );
 #if defined ( KVS_COMPILER_VC )
 #if KVS_COMPILER_VERSION_GREATER_OR_EQUAL( 10, 0 )
-        return kvsmake::VCXProject( project_name ).start( argc, argv );
+        return kvsmake::VCXProject( project_name ).run();
 #else
-        return kvsmake::VCProject( project_name ).start( argc, argv );
+        return kvsmake::VCProject( project_name ).run();
 #endif
 #else // else KVS_COMPILER_VC
-        return kvsmake::VCXProject( project_name ).start( argc, argv );
+        return kvsmake::VCXProject( project_name ).run();
 #endif
     }
 
@@ -95,20 +95,20 @@ int main( int argc, char** argv )
         const std::string project_name( dir.name() );
 #if defined ( KVS_COMPILER_VC )
 #if KVS_COMPILER_VERSION_GREATER_OR_EQUAL( 10, 0 )
-        return kvsmake::VCXProject( project_name ).start( argc, argv );
+        return kvsmake::VCXProject( project_name ).run();
 #else
-        return kvsmake::VCProject( project_name ).start( argc, argv );
+        return kvsmake::VCProject( project_name ).run();
 #endif
 #else
-        return kvsmake::VCXProject( project_name ).start( argc, argv );
+        return kvsmake::VCXProject( project_name ).run();
 #endif
     }
 
     if ( cl.hasOption( "vcproj_cuda" ) )
     {
         const std::string project_name( cl.optionValue<std::string>( "vcproj_cuda" ) );
-        return kvsmake::VCProjectCUDA( project_name ).start( argc, argv );
+        return kvsmake::VCProjectCUDA( project_name ).run();
     }
 
-    return kvsmake::Build().start( argc, argv );
+    return kvsmake::Build( argc, argv ).run();
 }

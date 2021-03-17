@@ -253,6 +253,9 @@
 + kvs::StochasticPolygonRenderer::setDepthOffset( factor, unit )
 + kvs::StochasticPolygonRenderer::Engine::setDepthOffset( offset )
 + kvs::StochasticPolygonRenderer::Engine::setDepthOffset( factor, unit )
++ kvs::Program::exec( func )
++ kvs::Program::exec()
++ kvs::Program::run()
 
 **Added new examples**
 + Example/Visualization/ScatterPlotMatrixRenderer
@@ -360,6 +363,8 @@
 + kvs::StochasticLineRenderer::Engine::setLineOffset (use kvs::StochasticLineRenderer::Engine::setDepthOffset)
 + kvs::StochasticPolygonRenderer::setPolygonOffset (use kvs::StochasticPolygonRenderer::setDepthOffset)
 + kvs::StochasticPolygonRenderer::Engine::setPolygonOffset (use kvs::StochasticPolygonRenderer::Engine::setDepthOffset)
++ kvs::Program::start( argc, argv ) (use kvs::Program::run)
++ kvs::Program::exec( argc, argv ) (use kvs::Program::exec)
 
 **Removed deprecated class and method**
 + kvs::Material

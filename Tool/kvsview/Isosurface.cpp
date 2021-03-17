@@ -134,14 +134,14 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
     // Parse specified arguments.
-    Isosurface::Argument arg( argc, argv );
+    Isosurface::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) return ( false );
 
     // Viewer application.
-    kvs::Application app( argc, argv );
+    kvs::Application app( m_argc, m_argv );
     kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( kvsview::CommandName + " - " + Isosurface::CommandName );

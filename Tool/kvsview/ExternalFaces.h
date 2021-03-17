@@ -47,9 +47,12 @@ class Main : public kvs::Program
 private:
     std::string m_input_name; ///< input filename
     std::string m_output_name; ///< output filename
+    int m_argc;
+    char** m_argv;
 
 public:
-    int exec( int argc, char** argv );
+    Main( int argc, char** argv ): m_argc( argc ), m_argv( argv ) {}
+    int exec();
 };
 
 } // end of namespace ExternalFaces

@@ -15,16 +15,6 @@
 namespace kvscheck
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Min/max value checker class.
- */
-/*===========================================================================*/
-class MinMax : public kvs::Program
-{
-    int exec( int argc, char** argv );
-};
-
 #define KVSCHECK_PRINT_MINMAX( os, type )                               \
     os << std::left << std::setw(14) << #type << " : [ ";               \
     if ( std::string(#type) == "char" )                                 \
@@ -46,26 +36,26 @@ class MinMax : public kvs::Program
 
 /*===========================================================================*/
 /**
- *  @brief  Executes the checker program.
- *  @param  argc [in] argument count
- *  @param  argv [in] argument values
- *  @return 0 if the process is done sucessfully
+ *  @brief  Min/max value checker class.
  */
 /*===========================================================================*/
-inline int MinMax::exec( int argc, char** argv )
+class MinMax : public kvs::Program
 {
-    KVSCHECK_PRINT_MINMAX( std::cout, char );
-    KVSCHECK_PRINT_MINMAX( std::cout, unsigned char );
-    KVSCHECK_PRINT_MINMAX( std::cout, short );
-    KVSCHECK_PRINT_MINMAX( std::cout, unsigned short );
-    KVSCHECK_PRINT_MINMAX( std::cout, int );
-    KVSCHECK_PRINT_MINMAX( std::cout, unsigned int );
-    KVSCHECK_PRINT_MINMAX( std::cout, long );
-    KVSCHECK_PRINT_MINMAX( std::cout, unsigned long );
-    KVSCHECK_PRINT_MINMAX( std::cout, float );
-    KVSCHECK_PRINT_MINMAX( std::cout, double );
-    return 0;
-}
+    int exec()
+    {
+        KVSCHECK_PRINT_MINMAX( std::cout, char );
+        KVSCHECK_PRINT_MINMAX( std::cout, unsigned char );
+        KVSCHECK_PRINT_MINMAX( std::cout, short );
+        KVSCHECK_PRINT_MINMAX( std::cout, unsigned short );
+        KVSCHECK_PRINT_MINMAX( std::cout, int );
+        KVSCHECK_PRINT_MINMAX( std::cout, unsigned int );
+        KVSCHECK_PRINT_MINMAX( std::cout, long );
+        KVSCHECK_PRINT_MINMAX( std::cout, unsigned long );
+        KVSCHECK_PRINT_MINMAX( std::cout, float );
+        KVSCHECK_PRINT_MINMAX( std::cout, double );
+        return 0;
+    }
+};
 
 #undef KVSCHECK_PRINT_MINMAX
 

@@ -21,28 +21,32 @@ namespace kvsmake
 
 class Build : public kvs::Program
 {
-    int exec( int argc, char** argv );
+    int m_argc;
+    char** m_argv;
+
+public:
+    Build( int argc, char** argv ): m_argc( argc ), m_argv( argv ) {}
+
+    int exec()
+    {
+        if ( !kvs::File( kvsmake::MakefileName ).exists() )
+        {
+            kvsMessageError() << "Cannot find " << kvsmake::MakefileName << "." << std::endl;
+            return 1;
+        }
+
+        std::string make_arguments;
+        for ( int i = 1; i < m_argc; ++i )
+        {
+            make_arguments += std::string( " " ) + std::string( m_argv[i] );
+        }
+
+        const std::string command =
+            kvsmake::MakeCommand + std::string( " -f " ) +
+            kvsmake::MakefileName + make_arguments;
+
+        return system( command.c_str() );
+    }
 };
-
-inline int Build::exec( int argc, char** argv )
-{
-    if ( !kvs::File( kvsmake::MakefileName ).exists() )
-    {
-        kvsMessageError() << "Cannot find " << kvsmake::MakefileName << "." << std::endl;
-        return 1;
-    }
-
-    std::string make_arguments;
-    for ( int i = 1; i < argc; ++i )
-    {
-        make_arguments += std::string( " " ) + std::string( argv[i] );
-    }
-
-    const std::string command =
-        kvsmake::MakeCommand + std::string( " -f " ) +
-        kvsmake::MakefileName + make_arguments;
-
-    return system( command.c_str() );
-}
 
 } // end of namespace kvsmake
