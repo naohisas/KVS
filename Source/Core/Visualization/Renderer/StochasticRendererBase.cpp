@@ -68,79 +68,60 @@ void StochasticRendererBase::release()
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticRendererBase::exec(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
     startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
-    const bool window_created = m_window_width == 0 && m_window_height == 0;
-    if ( window_created )
+    if ( this->isWindowCreated() )
     {
-        // Set window width and height
-        m_window_width = width;
-        m_window_height = height;
-        m_device_pixel_ratio = camera->devicePixelRatio();
+        this->setWindowSize( width, height );
+        this->setDevicePixelRatio( camera->devicePixelRatio() );
+        this->setModelView( kvs::OpenGL::ModelViewMatrix() );
+        this->setLightPosition( light->position() );
 
-        m_ensemble_buffer.create( this->framebufferWidth(), this->framebufferHeight() );
-        m_ensemble_buffer.clear();
-        m_modelview = kvs::OpenGL::ModelViewMatrix();
-        m_light_position = light->position();
-        m_engine->setShader( &shader() );
-        m_engine->setRepetitionLevel( m_repetition_level );
-        m_engine->setShadingEnabled( kvs::RendererBase::isShadingEnabled() );
-        m_engine->create( object, camera, light );
+        const auto frame_width = this->framebufferWidth();
+        const auto frame_height = this->framebufferHeight();
+        this->createEnsembleBuffer( frame_width, frame_height );
+        this->createEngine( object, camera, light );
     }
 
-    const bool window_resized = m_window_width != width || m_window_height != height;
-    if ( window_resized )
+    if ( this->isWindowResized( width, height ) )
     {
-        // Update window size
-        m_window_width = width;
-        m_window_height = height;
+        this->setWindowSize( width, height );
 
         // Update ensemble buffer
-        m_ensemble_buffer.release();
-        m_ensemble_buffer.create( this->framebufferWidth(), this->framebufferHeight() );
-        m_ensemble_buffer.clear();
+        this->ensembleBuffer().release();
+        const auto frame_width = this->framebufferWidth();
+        const auto frame_height = this->framebufferHeight();
+        this->createEnsembleBuffer( frame_width, frame_height );
 
-        m_engine->update( object, camera, light );
+        // Update engine
+        this->engine().update( object, camera, light );
     }
 
-    const bool object_changed = m_engine->object() != object;
-    if ( object_changed )
+    if ( this->isObjectChanged( object ) )
     {
-        m_ensemble_buffer.clear();
-        m_engine->release();
-        m_engine->setShader( &shader() );
-        m_engine->setShadingEnabled( kvs::RendererBase::isShadingEnabled() );
-        m_engine->create( object, camera, light );
+        // Clear ensemble buffer
+        this->ensembleBuffer().clear();
+
+        // Recreate engine
+        this->engine().release();
+        this->createEngine( object, camera, light );
     }
 
-    // LOD control.
-    size_t repetitions = m_repetition_level;
-    kvs::Vec3 light_position = light->position();
-    kvs::Mat4 modelview = kvs::OpenGL::ModelViewMatrix();
-    if ( m_light_position != light_position || m_modelview != modelview )
-    {
-        if ( m_enable_lod )
-        {
-            repetitions = m_coarse_level;
-        }
-        m_light_position = light_position;
-        m_modelview = modelview;
-        m_ensemble_buffer.clear();
-    }
-
-    // Setup engine.
-    const bool reset_count = !m_enable_refinement;
-    if ( reset_count ) m_engine->resetRepetitions();
-    m_engine->setup( object, camera, light );
+    this->setupEngine( object, camera, light );
 
     // Ensemble rendering.
-    if ( reset_count ) m_ensemble_buffer.clear();
-    for ( size_t i = 0; i < repetitions; i++ )
+    const auto m = kvs::OpenGL::ModelViewMatrix();
+    const auto l = light->position();
+    const size_t r = this->controllledRepetitions( m, l );
+    for ( size_t i = 0; i < r; i++ )
     {
         // Render to the ensemble buffer.
         m_ensemble_buffer.bind();
@@ -157,6 +138,59 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
 
     kvs::OpenGL::Finish();
     stopTimer();
+}
+
+size_t StochasticRendererBase::controllledRepetitions(
+    const kvs::Mat4& modelview,
+    const kvs::Vec3& light_position )
+{
+    size_t repetitions = m_repetition_level;
+    if ( m_light_position != light_position || m_modelview != modelview )
+    {
+        if ( m_enable_lod )
+        {
+            repetitions = m_coarse_level;
+        }
+        m_light_position = light_position;
+        m_modelview = modelview;
+        m_ensemble_buffer.clear();
+    }
+
+    return repetitions;
+}
+
+void StochasticRendererBase::createEnsembleBuffer(
+    const size_t frame_width,
+    const size_t frame_height )
+{
+    m_ensemble_buffer.create( frame_width, frame_height );
+    m_ensemble_buffer.clear();
+}
+
+void StochasticRendererBase::createEngine(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
+{
+    m_engine->setShader( &shader() );
+    m_engine->setRepetitionLevel( m_repetition_level );
+    m_engine->setShadingEnabled( kvs::RendererBase::isShadingEnabled() );
+    m_engine->create( object, camera, light );
+}
+
+void StochasticRendererBase::setupEngine(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
+{
+    const bool reset_count = !m_enable_refinement;
+    if ( reset_count )
+    {
+        m_engine->resetRepetitions();
+        m_ensemble_buffer.clear();
+    }
+
+    m_engine->setup( object, camera, light );
 }
 
 } // end of namespace kvs

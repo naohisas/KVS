@@ -63,7 +63,6 @@ public:
     virtual void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
     virtual void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
 
-protected:
     const kvs::Shader::ShadingModel& shader() const { return *m_shader; }
     void resetRepetitions() { m_repetition_count = 0; }
     void countRepetitions() { m_repetition_count++; }

@@ -79,8 +79,23 @@ public:
     void setShader( const ShadingType shader );
 
 protected:
+    const kvs::Mat4& modelView() const { return m_modelview; }
+    const kvs::Vec3& lightPosition() const { return m_light_position; }
+    void setModelView( const kvs::Mat4& modelview ) { m_modelview = modelview; }
+    void setLightPosition( const kvs::Vec3& position ) { m_light_position = position; }
+
     kvs::Shader::ShadingModel& shader() { return *m_shader; }
     kvs::StochasticRenderingEngine& engine() { return *m_engine; }
+    kvs::EnsembleAverageBuffer& ensembleBuffer() { return m_ensemble_buffer; }
+
+    bool isWindowCreated() { return m_window_width == 0 && m_window_height == 0; }
+    bool isWindowResized( size_t w, size_t h ) { return m_window_width != w || m_window_height != h; }
+    bool isObjectChanged( const kvs::ObjectBase* o ) { return m_engine->object() != o; }
+
+    size_t controllledRepetitions( const kvs::Mat4& modelview, const kvs::Vec3& light_position );
+    void createEnsembleBuffer( const size_t frame_width, const size_t frame_height );
+    void createEngine( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+    void setupEngine( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 public:
     KVS_DEPRECATED( void setEnabledLODControl( const bool enable ) ) { this->setLODControlEnabled( enable ); }
