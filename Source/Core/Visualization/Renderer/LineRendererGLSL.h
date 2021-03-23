@@ -41,10 +41,11 @@ public:
         kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
     public:
         BufferObject() {}
+        virtual ~BufferObject() {}
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
-        void release() { m_manager.release(); }
-        void create( const kvs::ObjectBase* object );
-        void draw( const kvs::ObjectBase* object );
+        virtual void release() { m_manager.release(); }
+        virtual void create( const kvs::ObjectBase* object );
+        virtual void draw( const kvs::ObjectBase* object );
     };
 
     class RenderPass

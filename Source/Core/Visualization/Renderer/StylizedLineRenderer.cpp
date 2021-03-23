@@ -293,6 +293,13 @@ void StylizedLineRenderer::BufferObject::draw( const kvs::LineObject* line )
     }
 }
 
+void StylizedLineRenderer::RenderPass::setShaderFiles(
+    const std::string& vert_file, const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
 void StylizedLineRenderer::BufferObject::create_shape_texture()
 {
     const size_t resolution = 256;
@@ -374,31 +381,60 @@ void StylizedLineRenderer::BufferObject::create_diffuse_texture()
     m_diffuse_texture.create( 1, 1, diffuse.data() );
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new StylizedLineRenderer class.
- */
-/*===========================================================================*/
-StylizedLineRenderer::StylizedLineRenderer():
-    m_vert_file( "stylized_line.vert" ),
-    m_frag_file( "stylized_line.frag" ),
-    m_width( 0 ),
-    m_height( 0 ),
-    m_object( NULL ),
-    m_shading_model( new kvs::Shader::Lambert() ),
-    m_radius_size( 0.05f ),
-    m_halo_size( 0.0f )
+void StylizedLineRenderer::RenderPass::create(
+        const kvs::Shader::ShadingModel& model, const bool enable )
 {
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( enable )
+    {
+        switch ( model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
+    }
+
+    m_shader_program.build( vert, frag );
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Destroys the StylizedLineRenderer class.
- */
-/*===========================================================================*/
-StylizedLineRenderer::~StylizedLineRenderer()
+void StylizedLineRenderer::RenderPass::update(
+        const kvs::Shader::ShadingModel& model, const bool enable )
 {
-    if ( m_shading_model ) { delete m_shading_model; }
+    m_shader_program.release();
+    this->create( model, enable );
+}
+
+void StylizedLineRenderer::RenderPass::setup(
+        const kvs::Shader::ShadingModel& model )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "shading.Ka", model.Ka );
+    m_shader_program.setUniform( "shading.Kd", model.Kd );
+    m_shader_program.setUniform( "shading.Ks", model.Ks );
+    m_shader_program.setUniform( "shading.S",  model.S );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 P = kvs::OpenGL::ProjectionMatrix();
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    m_shader_program.setUniform( "ModelViewMatrix", M );
+    m_shader_program.setUniform( "ProjectionMatrix", P );
+    m_shader_program.setUniform( "NormalMatrix", N );
+    m_shader_program.setUniform( "shape_texture", 0 ); // *
+    m_shader_program.setUniform( "diffuse_texture", 1 ); // *
+}
+
+void StylizedLineRenderer::RenderPass::draw( const kvs::ObjectBase* object )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( kvs::LineObject::DownCast( object ) );
 }
 
 /*===========================================================================*/
@@ -416,12 +452,14 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
+    const auto shading_enabled = BaseClass::isShadingEnabled();
+    const auto& shading_model = *m_shading_model;
 
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
-        this->createShaderProgram();
         this->createBufferObject( object );
+        m_render_pass.create( shading_model, shading_enabled );
     }
 
     if ( this->isWindowResized( width, height ) )
@@ -432,68 +470,13 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
     if ( this->isObjectChanged( object ) )
     {
         this->updateBufferObject( object );
-        this->updateShaderProgram();
+        m_render_pass.update( shading_model, shading_enabled );
     }
 
-    this->setupShaderProgram();
-
-    m_shader_program.bind();
+    m_render_pass.setup( shading_model );
     this->drawBufferObject( camera );
-    m_shader_program.unbind();
 
     BaseClass::stopTimer();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates shader program.
- */
-/*===========================================================================*/
-void StylizedLineRenderer::createShaderProgram()
-{
-    kvs::ShaderSource vert( this->vertexShaderFile() );
-    kvs::ShaderSource frag( this->fragmentShaderFile() );
-    if ( isShadingEnabled() )
-    {
-        switch ( m_shading_model->type() )
-        {
-        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
-        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
-        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
-        default: break; // NO SHADING
-        }
-
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
-        {
-            frag.define("ENABLE_TWO_SIDE_LIGHTING");
-        }
-    }
-
-    m_shader_program.build( vert, frag );
-}
-
-void StylizedLineRenderer::updateShaderProgram()
-{
-    m_shader_program.release();
-    this->createShaderProgram();
-}
-
-void StylizedLineRenderer::setupShaderProgram()
-{
-    kvs::ProgramObject::Binder bind( m_shader_program );
-    m_shader_program.setUniform( "shading.Ka", m_shading_model->Ka );
-    m_shader_program.setUniform( "shading.Kd", m_shading_model->Kd );
-    m_shader_program.setUniform( "shading.Ks", m_shading_model->Ks );
-    m_shader_program.setUniform( "shading.S",  m_shading_model->S );
-
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 P = kvs::OpenGL::ProjectionMatrix();
-    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-    m_shader_program.setUniform( "ModelViewMatrix", M );
-    m_shader_program.setUniform( "ProjectionMatrix", P );
-    m_shader_program.setUniform( "NormalMatrix", N );
-    m_shader_program.setUniform( "shape_texture", 0 );
-    m_shader_program.setUniform( "diffuse_texture", 1 );
 }
 
 /*===========================================================================*/
@@ -505,8 +488,10 @@ void StylizedLineRenderer::setupShaderProgram()
 void StylizedLineRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
     const auto* line = kvs::LineObject::DownCast( object );
+    const auto halo_size = m_render_pass.haloSize();
+    const auto radius_size = m_render_pass.radiusSize();
     m_object = object;
-    m_buffer_object.create( line, m_halo_size, m_radius_size );
+    m_buffer_object.create( line, halo_size, radius_size );
 }
 
 void StylizedLineRenderer::updateBufferObject( const kvs::ObjectBase* object )
@@ -523,7 +508,7 @@ void StylizedLineRenderer::drawBufferObject( const kvs::Camera* camera )
     kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
-    m_buffer_object.draw( line );
+    m_render_pass.draw( line );
 }
 
 } // end of namespace kvs
