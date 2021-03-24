@@ -54,7 +54,9 @@ class StochasticUniformGridRenderer::Engine : public kvs::StochasticRenderingEng
 
 public:
     using BufferObject = kvs::glsl::RayCastingRenderer::BufferObject;
+    using RenderPass = kvs::glsl::RayCastingRenderer::RenderPass;
     using BoundingBufferObject = kvs::glsl::RayCastingRenderer::BoundingBufferObject;
+    using BoundingRenderPass = kvs::glsl::RayCastingRenderer::BoundingRenderPass;
 
 private:
     // Variable
@@ -65,17 +67,18 @@ private:
     kvs::TransferFunction m_transfer_function; ///< transfer function
     kvs::Texture1D m_transfer_function_texture; ///< transfer function texture
 
-    // Buffer object
-    BufferObject m_volume_buffer; ///< volume buffer object
-    BoundingBufferObject m_bounding_cube_buffer; ///< bounding cube buffer
-
     // Entry/exit framebuffer
     kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
     kvs::Texture2D m_entry_texture; ///< entry point texture
     kvs::Texture2D m_exit_texture; ///< exit point texture
 
-    // Shader program
-    kvs::ProgramObject m_ray_casting_shader; ///< ray casting shader
+    // Buffer object
+    BufferObject m_volume_buffer; ///< volume buffer object
+    BoundingBufferObject m_bounding_cube_buffer; ///< bounding cube buffer
+
+    // Render pass
+    RenderPass m_render_pass{ m_volume_buffer };
+    BoundingRenderPass m_bounding_render_pass{ m_bounding_cube_buffer };
 
 public:
     Engine();

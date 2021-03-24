@@ -30,7 +30,7 @@ namespace
  *  @return random number
  */
 /*===========================================================================*/
-int RandomNumber()
+inline int RandomNumber()
 {
     const int C = 12347;
     static kvs::Xorshift128 R;
@@ -107,6 +107,9 @@ StochasticUniformGridRenderer::Engine::Engine():
     m_step( 0.5f ),
     m_transfer_function_changed( true )
 {
+    m_render_pass.setShaderFiles(
+        "SR_uniform_grid.vert",
+        "SR_uniform_grid.frag" );
 }
 
 /*===========================================================================*/
@@ -126,7 +129,8 @@ void StochasticUniformGridRenderer::Engine::release()
     m_volume_buffer.release();
     m_bounding_cube_buffer.release();
 
-    m_ray_casting_shader.release();
+    m_render_pass.release();
+    m_bounding_render_pass.release();
 }
 
 /*===========================================================================*/
@@ -213,7 +217,7 @@ void StochasticUniformGridRenderer::Engine::setup(
 /*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    kvs::ProgramObject::Binder unit( m_ray_casting_shader );
+    kvs::ProgramObject::Binder unit( m_render_pass.shaderProgram() );
     this->draw_buffer_object( kvs::StructuredVolumeObject::DownCast( object ) );
 }
 
@@ -228,28 +232,17 @@ void StochasticUniformGridRenderer::Engine::create_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
-    kvs::ShaderSource vert( "SR_uniform_grid.vert" );
-    kvs::ShaderSource frag( "SR_uniform_grid.frag" );
-    if ( shading_enabled )
-    {
-        switch ( shading_model.type() )
-        {
-        case kvs::Shader::LambertShading: frag.define( "ENABLE_LAMBERT_SHADING" ); break;
-        case kvs::Shader::PhongShading: frag.define( "ENABLE_PHONG_SHADING" ); break;
-        case kvs::Shader::BlinnPhongShading: frag.define( "ENABLE_BLINN_PHONG_SHADING" ); break;
-        default: /* NO SHADING */ break;
-        }
-    }
-    m_ray_casting_shader.build( vert, frag );
+    m_bounding_render_pass.create();
+    m_render_pass.create( shading_model, shading_enabled );
 
-    m_ray_casting_shader.bind();
-    m_ray_casting_shader.setUniform( "sampling_step", m_step );
-    m_ray_casting_shader.setUniform( "volume_data", 0 );
-    m_ray_casting_shader.setUniform( "exit_points", 1 );
-    m_ray_casting_shader.setUniform( "entry_points", 2 );
-    m_ray_casting_shader.setUniform( "transfer_function_data", 3 );
-    m_ray_casting_shader.setUniform( "random_texture", 4 );
-    m_ray_casting_shader.unbind();
+    auto& shader = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader );
+    shader.setUniform( "sampling_step", m_step );
+    shader.setUniform( "volume_data", 0 );
+    shader.setUniform( "exit_points", 1 );
+    shader.setUniform( "entry_points", 2 );
+    shader.setUniform( "transfer_function_data", 3 );
+    shader.setUniform( "random_texture", 4 );
 }
 
 /*===========================================================================*/
@@ -263,7 +256,8 @@ void StochasticUniformGridRenderer::Engine::update_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
-    m_ray_casting_shader.release();
+    m_render_pass.release();
+    m_bounding_render_pass.release();
     this->create_shader_program( shading_model, shading_enabled );
 }
 
@@ -290,36 +284,15 @@ void StochasticUniformGridRenderer::Engine::setup_shader_program(
     {
         // Change renderig target to the entry/exit FBO.
         kvs::FrameBufferObject::GuardedBinder binder( m_entry_exit_framebuffer );
-        m_bounding_cube_buffer.draw( PM );
+        m_bounding_render_pass.setup();
+        m_bounding_render_pass.draw();
     }
 
-    // Setup shader.
     {
-        kvs::ProgramObject::Binder bind( m_ray_casting_shader );
-        m_ray_casting_shader.setUniform( "ModelViewProjectionMatrix", PM );
-        m_ray_casting_shader.setUniform( "ModelViewProjectionMatrixInverse", PM_inverse );
-        m_ray_casting_shader.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
-
-        const float f = camera->back();
-        const float n = camera->front();
-        const float to_zw1 = ( f * n ) / ( f - n );
-        const float to_zw2 = 0.5f * ( ( f + n ) / ( f - n ) ) + 0.5f;
-        const float to_ze1 = 0.5f + 0.5f * ( ( f + n ) / ( f - n ) );
-        const float to_ze2 = ( f - n ) / ( f * n );
-        m_ray_casting_shader.setUniform( "to_zw1", to_zw1 );
-        m_ray_casting_shader.setUniform( "to_zw2", to_zw2 );
-        m_ray_casting_shader.setUniform( "to_ze1", to_ze1 );
-        m_ray_casting_shader.setUniform( "to_ze2", to_ze2 );
-
-        const kvs::Vec3 L = kvs::WorldCoordinate( light->position() ).toObjectCoordinate( object ).position();
-        const kvs::Vec3 C = kvs::WorldCoordinate( camera->position() ).toObjectCoordinate( object ).position();
-        m_ray_casting_shader.setUniform( "light_position", L );
-        m_ray_casting_shader.setUniform( "camera_position", C );
-
-        m_ray_casting_shader.setUniform( "shading.Ka", shading_model.Ka );
-        m_ray_casting_shader.setUniform( "shading.Kd", shading_model.Kd );
-        m_ray_casting_shader.setUniform( "shading.Ks", shading_model.Ks );
-        m_ray_casting_shader.setUniform( "shading.S",  shading_model.S );
+        m_render_pass.setup( shading_model, object, camera, light );
+        m_render_pass.shaderProgram().bind();
+        m_render_pass.shaderProgram().setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
+        m_render_pass.shaderProgram().unbind();
     }
 
     // Setup OpenGL statement.
@@ -359,10 +332,10 @@ void StochasticUniformGridRenderer::Engine::create_framebuffer(
     m_entry_exit_framebuffer.attachColorTexture( m_exit_texture, 0 );
     m_entry_exit_framebuffer.attachColorTexture( m_entry_texture, 1 );
 
-    m_ray_casting_shader.bind();
-    m_ray_casting_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_ray_casting_shader.setUniform( "height", static_cast<GLfloat>( height ) );
-    m_ray_casting_shader.unbind();
+    auto& shader = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader );
+    shader.setUniform( "width", static_cast<GLfloat>( width ) );
+    shader.setUniform( "height", static_cast<GLfloat>( height ) );
 }
 
 /*===========================================================================*/
@@ -460,15 +433,15 @@ void StochasticUniformGridRenderer::Engine::create_buffer_object(
                          volume->values().typeInfo()->typeName() );
     }
 
-    m_ray_casting_shader.bind();
-    m_ray_casting_shader.setUniform( "volume.resolution", r );
-    m_ray_casting_shader.setUniform( "volume.resolution_ratio", ratio );
-    m_ray_casting_shader.setUniform( "volume.resolution_reciprocal", reciprocal );
-    m_ray_casting_shader.setUniform( "volume.min_range", min_range );
-    m_ray_casting_shader.setUniform( "volume.max_range", max_range );
-    m_ray_casting_shader.setUniform( "transfer_function.min_value", min_value );
-    m_ray_casting_shader.setUniform( "transfer_function.max_value", max_value );
-    m_ray_casting_shader.unbind();
+    auto& shader = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader );
+    shader.setUniform( "volume.resolution", r );
+    shader.setUniform( "volume.resolution_ratio", ratio );
+    shader.setUniform( "volume.resolution_reciprocal", reciprocal );
+    shader.setUniform( "volume.min_range", min_range );
+    shader.setUniform( "volume.max_range", max_range );
+    shader.setUniform( "transfer_function.min_value", min_value );
+    shader.setUniform( "transfer_function.max_value", max_value );
 }
 
 /*===========================================================================*/
@@ -499,7 +472,7 @@ void StochasticUniformGridRenderer::Engine::draw_buffer_object(
     const float offset_x = static_cast<float>( ( count ) % size );
     const float offset_y = static_cast<float>( ( count / size ) % size );
     const kvs::Vec2 random_offset( offset_x, offset_y );
-    m_ray_casting_shader.setUniform( "random_offset", random_offset );
+    m_render_pass.shaderProgram().setUniform( "random_offset", random_offset );
 
     kvs::Texture::Binder unit0( m_volume_buffer.manager(), 0 );
     kvs::Texture::Binder unit1( m_exit_texture, 1 );

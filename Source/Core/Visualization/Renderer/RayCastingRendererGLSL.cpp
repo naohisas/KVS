@@ -285,22 +285,6 @@ void RayCastingRenderer::BoundingBufferObject::create(
     vertex_array.pointer = coords;
     m_manager.setVertexArray( vertex_array );
     m_manager.create();
-
-    // Build shader program used for rendering bounding cube.
-    const std::string vert(
-        "uniform mat4 ModelViewProjectionMatrix;"
-        "void main()"
-        "{"
-        "    gl_Position = ModelViewProjectionMatrix * gl_Vertex;"
-        "    gl_FrontColor = gl_Vertex;"
-        "}" );
-    const std::string frag(
-        "void main()"
-        "{"
-        "    gl_FragColor.rgb = gl_Color.rgb;"
-        "    gl_FragColor.a = gl_FragCoord.z;"
-        "}" );
-    m_shader_program.build( vert, frag );
 }
 
 /*===========================================================================*/
@@ -312,15 +296,11 @@ void RayCastingRenderer::BoundingBufferObject::create(
  */
 /*===========================================================================*/
 void RayCastingRenderer::BoundingBufferObject::draw(
-    const kvs::Mat4& PM,
     const bool back,
     const bool front )
 {
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     kvs::OpenGL::Enable( GL_CULL_FACE );
-
-    kvs::ProgramObject::Binder bind( m_shader_program );
-    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
 
     kvs::VertexBufferObjectManager::Binder binder( m_manager );
     if ( back )
@@ -341,18 +321,140 @@ void RayCastingRenderer::BoundingBufferObject::draw(
     }
 }
 
+void RayCastingRenderer::RenderPass::setShaderFiles(
+    const std::string& vert_file,
+    const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
+void RayCastingRenderer::RenderPass::create(
+    const kvs::Shader::ShadingModel& model,
+    const bool enable )
+{
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( enable )
+    {
+        switch ( model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
+    }
+
+    // Set additional settings for the shader.
+#if defined( _TEXTURE_RECTANGLE_ )
+    frag.define("ENABLE_TEXTURE_RECTANGLE");
+#endif
+    if ( m_enable_jittering ) { frag.define( "ENABLE_JITTERING" ); }
+
+    m_shader_program.build( vert, frag );
+}
+
+void RayCastingRenderer::RenderPass::update(
+    const kvs::Shader::ShadingModel& model,
+    const bool enable )
+{
+    m_shader_program.release();
+    this->create( model, enable );
+}
+
+void RayCastingRenderer::RenderPass::setup(
+    const kvs::Shader::ShadingModel& model,
+    const kvs::ObjectBase* object,
+    const kvs::Camera* camera,
+    const kvs::Light* light )
+{
+    auto& shader = m_shader_program;
+    kvs::ProgramObject::Binder bind( shader );
+    shader.setUniform( "shading.Ka", model.Ka );
+    shader.setUniform( "shading.Kd", model.Kd );
+    shader.setUniform( "shading.Ks", model.Ks );
+    shader.setUniform( "shading.S",  model.S );
+    shader.setUniform( "sampling_step", m_step );
+    shader.setUniform( "opaque", m_opaque );
+
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 PM_inverse = PM.inverted();
+    shader.setUniform( "ModelViewProjectionMatrix", PM );
+    shader.setUniform( "ModelViewProjectionMatrixInverse", PM_inverse );
+
+    const float f = camera->back();
+    const float n = camera->front();
+    const float to_zw1 = ( f * n ) / ( f - n );
+    const float to_zw2 = 0.5f * ( ( f + n ) / ( f - n ) ) + 0.5f;
+    const float to_ze1 = 0.5f + 0.5f * ( ( f + n ) / ( f - n ) );
+    const float to_ze2 = ( f - n ) / ( f * n );
+    shader.setUniform( "to_zw1", to_zw1 );
+    shader.setUniform( "to_zw2", to_zw2 );
+    shader.setUniform( "to_ze1", to_ze1 );
+    shader.setUniform( "to_ze2", to_ze2 );
+
+    const kvs::Vec3 L = kvs::WorldCoordinate( light->position() ).toObjectCoordinate( object ).position();
+    const kvs::Vec3 C = kvs::WorldCoordinate( camera->position() ).toObjectCoordinate( object ).position();
+    shader.setUniform( "light_position", L );
+    shader.setUniform( "camera_position", C );
+}
+
+void RayCastingRenderer::RenderPass::draw(
+    const kvs::ObjectBase* object )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw();
+}
+
+void RayCastingRenderer::BoundingRenderPass::create()
+{
+    const std::string vert(
+        "uniform mat4 ModelViewProjectionMatrix;"
+        "void main()"
+        "{"
+        "    gl_Position = ModelViewProjectionMatrix * gl_Vertex;"
+        "    gl_FrontColor = gl_Vertex;"
+        "}" );
+    const std::string frag(
+        "void main()"
+        "{"
+        "    gl_FragColor.rgb = gl_Color.rgb;"
+        "    gl_FragColor.a = gl_FragCoord.z;"
+        "}" );
+    m_shader_program.build( vert, frag );
+}
+
+void RayCastingRenderer::BoundingRenderPass::update()
+{
+    m_shader_program.release();
+    this->create();
+}
+
+void RayCastingRenderer::BoundingRenderPass::setup()
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * kvs::OpenGL::ModelViewMatrix();
+    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
+}
+
+void RayCastingRenderer::BoundingRenderPass::draw( const bool back, const bool front )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( back, front );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new RayCastingRenderer class.
  */
 /*===========================================================================*/
-RayCastingRenderer::RayCastingRenderer():
-    m_draw_front_face( true ),
-    m_draw_back_face( true ),
-    m_draw_volume( true ),
-    m_enable_jittering( false ),
-    m_step( 0.5f ),
-    m_opaque( 1.0f )
+RayCastingRenderer::RayCastingRenderer()
 {
     BaseClass::setShader( kvs::Shader::Lambert() );
 }
@@ -363,13 +465,7 @@ RayCastingRenderer::RayCastingRenderer():
  *  @param  tfunc [in] transfer function
  */
 /*===========================================================================*/
-RayCastingRenderer::RayCastingRenderer( const kvs::TransferFunction& tfunc ):
-    m_draw_front_face( true ),
-    m_draw_back_face( true ),
-    m_draw_volume( true ),
-    m_enable_jittering( false ),
-    m_step( 0.5f ),
-    m_opaque( 1.0f )
+RayCastingRenderer::RayCastingRenderer( const kvs::TransferFunction& tfunc )
 {
     BaseClass::setTransferFunction( tfunc );
     BaseClass::setShader( kvs::Shader::Lambert() );
@@ -382,13 +478,7 @@ RayCastingRenderer::RayCastingRenderer( const kvs::TransferFunction& tfunc ):
  */
 /*===========================================================================*/
 template <typename ShadingType>
-RayCastingRenderer::RayCastingRenderer( const ShadingType shader ):
-    m_draw_front_face( true ),
-    m_draw_back_face( true ),
-    m_draw_volume( true ),
-    m_enable_jittering( false ),
-    m_step( 0.5f ),
-    m_opaque( 1.0f )
+RayCastingRenderer::RayCastingRenderer( const ShadingType shader )
 {
     BaseClass::setShader( shader );
 }
@@ -456,13 +546,7 @@ void RayCastingRenderer::exec(
     }
 
     this->setup_shader_program( BaseClass::shader(), object, camera, light );
-
-    if ( m_draw_volume )
-    {
-        m_ray_casting_shader.bind();
-        this->draw_buffer_object( volume );
-        m_ray_casting_shader.unbind();
-    }
+    if ( m_draw_volume ) { this->draw_buffer_object( volume ); }
 
     kvs::OpenGL::Finish();
     BaseClass::stopTimer();
@@ -522,40 +606,18 @@ void RayCastingRenderer::create_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
-    // Set shader sources.
-    kvs::ShaderSource vert( "RC_ray_caster.vert" );
-    kvs::ShaderSource frag( "RC_ray_caster.frag" );
-    if ( shading_enabled )
-    {
-        switch ( shading_model.type() )
-        {
-        case kvs::Shader::LambertShading: frag.define( "ENABLE_LAMBERT_SHADING" ); break;
-        case kvs::Shader::PhongShading: frag.define( "ENABLE_PHONG_SHADING" ); break;
-        case kvs::Shader::BlinnPhongShading: frag.define( "ENABLE_BLINN_PHONG_SHADING" ); break;
-        default: /* NO SHADING */ break;
-        }
-    }
+    m_render_pass.create( shading_model, shading_enabled );
+    m_bounding_render_pass.create();
 
-    // Set additional settings for the shader.
-#if defined( _TEXTURE_RECTANGLE_ )
-    frag.define("ENABLE_TEXTURE_RECTANGLE");
-#endif
-    if ( m_enable_jittering ) { frag.define( "ENABLE_JITTERING" ); }
-
-    // Build the shader.
-    m_ray_casting_shader.build( vert, frag );
-
-    m_ray_casting_shader.bind();
-    m_ray_casting_shader.setUniform( "sampling_step", m_step );
-    m_ray_casting_shader.setUniform( "opaque", m_opaque );
-    m_ray_casting_shader.setUniform( "volume_data", 0 );
-    m_ray_casting_shader.setUniform( "exit_points", 1 );
-    m_ray_casting_shader.setUniform( "entry_points", 2 );
-    m_ray_casting_shader.setUniform( "transfer_function_data", 3 );
-    m_ray_casting_shader.setUniform( "jittering_texture", 4 );
-    m_ray_casting_shader.setUniform( "depth_texture", 5 );
-    m_ray_casting_shader.setUniform( "color_texture", 6 );
-    m_ray_casting_shader.unbind();
+    auto& shader = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader );
+    shader.setUniform( "volume_data", 0 );
+    shader.setUniform( "exit_points", 1 );
+    shader.setUniform( "entry_points", 2 );
+    shader.setUniform( "transfer_function_data", 3 );
+    shader.setUniform( "jittering_texture", 4 );
+    shader.setUniform( "depth_texture", 5 );
+    shader.setUniform( "color_texture", 6 );
 }
 
 /*===========================================================================*/
@@ -569,7 +631,8 @@ void RayCastingRenderer::update_shader_program(
     const kvs::Shader::ShadingModel& shading_model,
     const bool shading_enabled )
 {
-    m_ray_casting_shader.release();
+    m_render_pass.release();
+    m_bounding_render_pass.release();
     this->create_shader_program( shading_model, shading_enabled );
 }
 
@@ -599,54 +662,9 @@ void RayCastingRenderer::setup_shader_program(
         m_color_texture.loadFromFrameBuffer( 0, 0, framebuffer_width, framebuffer_height );
     }
 
-    // OpenGL matrices.
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM_inverse = PM.inverted();
-
-    // Draw the bounding cube to setup entry/exit textures.
-    {
-        // Change renderig target to the entry/exit FBO.
-        kvs::FrameBufferObject::GuardedBinder binder( m_entry_exit_framebuffer );
-        m_bounding_cube_buffer.draw( PM, m_draw_back_face, m_draw_front_face );
-    }
-
-    // Setup shader.
-    {
-        kvs::ProgramObject::Binder bind( m_ray_casting_shader );
-        m_ray_casting_shader.setUniform( "ModelViewProjectionMatrix", PM );
-        m_ray_casting_shader.setUniform( "ModelViewProjectionMatrixInverse", PM_inverse );
-
-        const float f = camera->back();
-        const float n = camera->front();
-        const float to_zw1 = ( f * n ) / ( f - n );
-        const float to_zw2 = 0.5f * ( ( f + n ) / ( f - n ) ) + 0.5f;
-        const float to_ze1 = 0.5f + 0.5f * ( ( f + n ) / ( f - n ) );
-        const float to_ze2 = ( f - n ) / ( f * n );
-        m_ray_casting_shader.setUniform( "to_zw1", to_zw1 );
-        m_ray_casting_shader.setUniform( "to_zw2", to_zw2 );
-        m_ray_casting_shader.setUniform( "to_ze1", to_ze1 );
-        m_ray_casting_shader.setUniform( "to_ze2", to_ze2 );
-
-        const kvs::Vec3 L = kvs::WorldCoordinate( light->position() ).toObjectCoordinate( object ).position();
-        const kvs::Vec3 C = kvs::WorldCoordinate( camera->position() ).toObjectCoordinate( object ).position();
-        m_ray_casting_shader.setUniform( "light_position", L );
-        m_ray_casting_shader.setUniform( "camera_position", C );
-
-        m_ray_casting_shader.setUniform( "shading.Ka", shading_model.Ka );
-        m_ray_casting_shader.setUniform( "shading.Kd", shading_model.Kd );
-        m_ray_casting_shader.setUniform( "shading.Ks", shading_model.Ks );
-        m_ray_casting_shader.setUniform( "shading.S",  shading_model.S );
-    }
-
-    // Setup OpenGL statement.
-    kvs::OpenGL::Disable( GL_CULL_FACE );
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
-
-    kvs::OpenGL::Enable( GL_BLEND );
-    kvs::OpenGL::SetBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
-
-    if ( BaseClass::isShadingEnabled() ) kvs::OpenGL::Enable( GL_LIGHTING );
-    else kvs::OpenGL::Disable( GL_LIGHTING );
+    // Setup render passes
+    m_bounding_render_pass.setup();
+    m_render_pass.setup( shading_model, object, camera, light );
 }
 
 /*===========================================================================*/
@@ -699,10 +717,10 @@ void RayCastingRenderer::create_framebuffer( const size_t width, const size_t he
     m_entry_exit_framebuffer.attachColorTexture( m_exit_texture, 0 );
     m_entry_exit_framebuffer.attachColorTexture( m_entry_texture, 1 );
 
-    m_ray_casting_shader.bind();
-    m_ray_casting_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_ray_casting_shader.setUniform( "height", static_cast<GLfloat>( height ) );
-    m_ray_casting_shader.unbind();
+    auto& shader = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader );
+    shader.setUniform( "width", static_cast<GLfloat>( width ) );
+    shader.setUniform( "height", static_cast<GLfloat>( height ) );
 }
 
 /*===========================================================================*/
@@ -800,15 +818,15 @@ void RayCastingRenderer::create_buffer_object( const kvs::StructuredVolumeObject
                          volume->values().typeInfo()->typeName() );
     }
 
-    m_ray_casting_shader.bind();
-    m_ray_casting_shader.setUniform( "volume.resolution", r );
-    m_ray_casting_shader.setUniform( "volume.resolution_ratio", ratio );
-    m_ray_casting_shader.setUniform( "volume.resolution_reciprocal", reciprocal );
-    m_ray_casting_shader.setUniform( "volume.min_range", min_range );
-    m_ray_casting_shader.setUniform( "volume.max_range", max_range );
-    m_ray_casting_shader.setUniform( "transfer_function.min_value", min_value );
-    m_ray_casting_shader.setUniform( "transfer_function.max_value", max_value );
-    m_ray_casting_shader.unbind();
+    auto& shader = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader );
+    shader.setUniform( "volume.resolution", r );
+    shader.setUniform( "volume.resolution_ratio", ratio );
+    shader.setUniform( "volume.resolution_reciprocal", reciprocal );
+    shader.setUniform( "volume.min_range", min_range );
+    shader.setUniform( "volume.max_range", max_range );
+    shader.setUniform( "transfer_function.min_value", min_value );
+    shader.setUniform( "transfer_function.max_value", max_value );
 }
 
 /*===========================================================================*/
@@ -832,14 +850,32 @@ void RayCastingRenderer::update_buffer_object( const kvs::StructuredVolumeObject
 /*===========================================================================*/
 void RayCastingRenderer::draw_buffer_object( const kvs::StructuredVolumeObject* volume )
 {
-    kvs::Texture::Binder unit1( m_volume_buffer.manager(), 0 );
-    kvs::Texture::Binder unit2( m_exit_texture, 1 );
-    kvs::Texture::Binder unit3( m_entry_texture, 2 );
-    kvs::Texture::Binder unit4( m_transfer_function_texture, 3 );
-    kvs::Texture::Binder unit5( m_jittering_texture, 4 );
-    kvs::Texture::Binder unit6( m_depth_texture, 5 );
-    kvs::Texture::Binder unit7( m_color_texture, 6 );
-    m_volume_buffer.draw();
+    // 1st pass: render the bounding cube to the entry/exit texture.
+    {
+        kvs::FrameBufferObject::GuardedBinder binder( m_entry_exit_framebuffer );
+        m_bounding_render_pass.draw( m_draw_back_face, m_draw_front_face );
+    }
+
+    // 2nd pass: render the volume to the framebuffer.
+    {
+        kvs::OpenGL::Disable( GL_CULL_FACE );
+        kvs::OpenGL::Disable( GL_DEPTH_TEST );
+
+        kvs::OpenGL::Enable( GL_BLEND );
+        kvs::OpenGL::SetBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+
+        if ( BaseClass::isShadingEnabled() ) kvs::OpenGL::Enable( GL_LIGHTING );
+        else kvs::OpenGL::Disable( GL_LIGHTING );
+
+        kvs::Texture::Binder unit1( m_volume_buffer.manager(), 0 );
+        kvs::Texture::Binder unit2( m_exit_texture, 1 );
+        kvs::Texture::Binder unit3( m_entry_texture, 2 );
+        kvs::Texture::Binder unit4( m_transfer_function_texture, 3 );
+        kvs::Texture::Binder unit5( m_jittering_texture, 4 );
+        kvs::Texture::Binder unit6( m_depth_texture, 5 );
+        kvs::Texture::Binder unit7( m_color_texture, 6 );
+        m_render_pass.draw( volume );
+    }
 }
 
 } // end of namespace glsl
