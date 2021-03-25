@@ -276,10 +276,6 @@ void StochasticUniformGridRenderer::Engine::setup_shader_program(
     const kvs::Camera* camera,
     const kvs::Light* light )
 {
-    // OpenGL variables.
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM_inverse = PM.inverted();
-
     // Setup entry/exit textures by drawing bounding cube to FBO
     {
         // Change renderig target to the entry/exit FBO.
