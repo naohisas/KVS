@@ -24,15 +24,21 @@ namespace kvs
 class FrameBufferObject
 {
 private:
-    GLuint m_id; ///< object ID
+    GLuint m_id = 0; ///< object ID
 
 public:
     class Binder;
     class GuardedBinder;
+
+//private:
     static GLuint m_unbind_id; ///< Initial frame buffer id.
 
 public:
-    FrameBufferObject(): m_id( 0 ) {}
+    static void SetUnbindID( const GLuint id ) { m_unbind_id = id; }
+    static GLuint UnbindID() { return m_unbind_id; }
+
+public:
+    FrameBufferObject() = default;
     virtual ~FrameBufferObject() { this->release(); }
 
     GLuint id() const { return m_id; }
@@ -71,28 +77,22 @@ public:
 class FrameBufferObject::Binder
 {
     const kvs::FrameBufferObject& m_fbo;
-
 public:
     Binder( const kvs::FrameBufferObject& fbo );
     ~Binder();
-
-private:
-    Binder( const Binder& );
-    Binder& operator =( const Binder& );
+    Binder( const Binder& ) = delete;
+    Binder& operator =( const Binder& ) = delete;
 };
 
 class FrameBufferObject::GuardedBinder
 {
     const kvs::FrameBufferObject& m_fbo;
-    GLint m_id;
-
+    GLint m_id = 0;
 public:
     GuardedBinder( const kvs::FrameBufferObject& fbo );
     ~GuardedBinder();
-
-private:
-    GuardedBinder( const GuardedBinder& );
-    GuardedBinder& operator =( const GuardedBinder& );
+    GuardedBinder( const GuardedBinder& ) = delete;
+    GuardedBinder& operator =( const GuardedBinder& ) = delete;
 };
 
 } // end of namespace kvs

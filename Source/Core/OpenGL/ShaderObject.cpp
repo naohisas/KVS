@@ -16,28 +16,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Construct a shader object.
- *  @param  type [in] shader type
- */
-/*===========================================================================*/
-ShaderObject::ShaderObject( const GLenum type ):
-    m_id( 0 ),
-    m_type( type )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys a shader object.
- */
-/*===========================================================================*/
-ShaderObject::~ShaderObject()
-{
-    this->release();
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Returns the information log for a shader object.
  *  @return information log
  */
@@ -45,9 +23,6 @@ ShaderObject::~ShaderObject()
 std::string ShaderObject::log() const
 {
     KVS_ASSERT( this->isCreated() );
-//    GLint length = 0;
-//    KVS_GL_CALL( glGetShaderiv( m_id, GL_INFO_LOG_LENGTH, &length ) );
-//    if ( length == 0 ) return "";
     GLint length = 512;
     std::vector<char> buffer( length );
     KVS_GL_CALL( glGetShaderInfoLog( m_id, length, NULL, &buffer[0] ) );
@@ -82,26 +57,6 @@ void ShaderObject::setSource( const kvs::ShaderSource& source ) const
     KVS_ASSERT( this->isCreated() );
     const char* code = source.code().c_str();
     KVS_GL_CALL( glShaderSource( m_id, 1, &code, 0 ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Create a shader object.
- */
-/*===========================================================================*/
-void ShaderObject::create()
-{
-    this->createID();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Release a shader object.
- */
-/*===========================================================================*/
-void ShaderObject::release()
-{
-    this->deleteID();
 }
 
 /*===========================================================================*/

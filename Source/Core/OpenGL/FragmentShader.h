@@ -23,7 +23,7 @@ public:
     using SuperClass = kvs::ShaderObject;
 
 public:
-    FragmentShader();
+    FragmentShader(): kvs::ShaderObject( GL_FRAGMENT_SHADER ) {}
     FragmentShader( const kvs::ShaderSource& source );
 };
 

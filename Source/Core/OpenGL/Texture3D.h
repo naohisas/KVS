@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__TEXTURE_3D_H_INCLUDE
-#define KVS__TEXTURE_3D_H_INCLUDE
-
+#pragma once
 #include <kvs/Texture>
 #include <kvs/Deprecated>
 #include <cstddef>
@@ -22,24 +20,18 @@ namespace kvs
 /*==========================================================================*/
 class Texture3D : public kvs::Texture
 {
-public:
-
-    typedef kvs::Texture BaseClass;
-
 private:
-
-    bool m_is_loaded; ///< if true, the texture is loaded
+    bool m_is_loaded = false; ///< if true, the texture is loaded
 
 public:
-
+    using BaseClass = kvs::Texture;
     static void Unbind();
 
 public:
+    Texture3D(): kvs::Texture( GL_TEXTURE_3D, GL_TEXTURE_BINDING_3D ) {}
+    virtual ~Texture3D() { this->release(); }
 
-    Texture3D();
-    virtual ~Texture3D();
-
-    bool isLoaded() const;
+    bool isLoaded() const { return m_is_loaded; }
 
     void create( const size_t width, const size_t height, const size_t depth, const void* data = NULL );
     void release();
@@ -74,5 +66,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__TEXTURE_3D_H_INCLUDE

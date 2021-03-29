@@ -10,13 +10,13 @@
 #include <kvs/OpenGL>
 #include <iostream>
 
-#ifndef GL_TEXTURE_RECTANGLE
-#define GL_TEXTURE_RECTANGLE 0x84F5
-#endif
+//#ifndef GL_TEXTURE_RECTANGLE
+//#define GL_TEXTURE_RECTANGLE 0x84F5
+//#endif
 
-#ifndef GL_TEXTURE_BINDING_RECTANGLE
-#define GL_TEXTURE_BINDING_RECTANGLE 0x84F6
-#endif
+//#ifndef GL_TEXTURE_BINDING_RECTANGLE
+//#define GL_TEXTURE_BINDING_RECTANGLE 0x84F6
+//#endif
 
 
 namespace kvs
@@ -25,32 +25,6 @@ namespace kvs
 void TextureRectangle::Unbind()
 {
     kvs::Texture::Unbind( GL_TEXTURE_RECTANGLE );
-}
-
-/*==========================================================================*/
-/**
- *  Constructor.
- */
-/*==========================================================================*/
-TextureRectangle::TextureRectangle():
-    Texture( GL_TEXTURE_RECTANGLE, GL_TEXTURE_BINDING_RECTANGLE ),
-    m_is_loaded( false )
-{
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-TextureRectangle::~TextureRectangle()
-{
-    this->release();
-}
-
-bool TextureRectangle::isLoaded() const
-{
-    return m_is_loaded;
 }
 
 /*==========================================================================*/

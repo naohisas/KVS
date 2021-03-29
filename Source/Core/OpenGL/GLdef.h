@@ -4,8 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GL_DEF_H_INCLUDE
-#define KVS__GL_DEF_H_INCLUDE
+#pragma once
 
 /*
 ** The OpenGL Extension Wrangler Library
@@ -8655,5 +8654,3 @@ typedef int GLclampx;
 #ifdef __cplusplus
 }
 #endif
-
-#endif // KVS__GL_DEF_H_INCLUDE

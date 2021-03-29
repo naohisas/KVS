@@ -23,7 +23,7 @@ public:
     using SuperClass = kvs::ShaderObject;
 
 public:
-    VertexShader();
+    VertexShader(): kvs::ShaderObject( GL_VERTEX_SHADER ) {}
     VertexShader( const kvs::ShaderSource& source );
 };
 

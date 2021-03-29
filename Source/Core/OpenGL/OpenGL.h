@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__OPEN_GL_H_INCLUDE
-#define KVS__OPEN_GL_H_INCLUDE
-
+#pragma once
 #include <sstream>
 #include <string>
 #include <kvs/GL>
@@ -410,5 +408,3 @@ public:
 } // end of namespace OpenGL
 
 } // end of namespace kvs
-
-#endif // KVS__OPEN_GL_H_INCLUDE

@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__VERTEX_BUFFER_OBJECT_H_INCLUDE
-#define KVS__VERTEX_BUFFER_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/BufferObject>
 
 
@@ -21,10 +19,7 @@ namespace kvs
 class VertexBufferObject : public kvs::BufferObject
 {
 public:
-
     VertexBufferObject();
 };
 
 } // end of namespace kvs
-
-#endif // KVS__GLEW__VERTEX_BUFFER_OBJECT_H_INCLUDE

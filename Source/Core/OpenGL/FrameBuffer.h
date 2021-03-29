@@ -20,13 +20,12 @@ namespace kvs
 class FrameBuffer
 {
 private:
-    GLenum m_format; ///< pixel data format
-    GLenum m_type; ///< pixel data type
+    GLenum m_format = 0; ///< pixel data format
+    GLenum m_type = 0; ///< pixel data type
 
 public:
-    FrameBuffer();
-    FrameBuffer( const GLenum format, const GLenum type );
-    virtual ~FrameBuffer();
+    FrameBuffer( const GLenum format, const GLenum type ): m_format( format ), m_type( type ) {}
+    FrameBuffer() = default;
 
     GLenum format() const { return m_format; }
     GLenum type() const { return m_type; }

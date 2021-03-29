@@ -30,24 +30,24 @@ namespace kvs
 class ProgramObject
 {
 private:
-    GLuint m_id; ///< program object ID
-    GLenum m_geom_input_type; ///< input type for geometry shader
-    GLenum m_geom_output_type; ///< output type for geometry shader
-    GLint m_geom_output_vertices; ///< number of vertices for geometry shader
-    mutable bool m_is_bound; ///< binding flag
+    GLuint m_id = 0; ///< program object ID
+    GLenum m_geom_input_type = 0; ///< input type for geometry shader
+    GLenum m_geom_output_type = 0; ///< output type for geometry shader
+    GLint m_geom_output_vertices = 0; ///< number of vertices for geometry shader
+    mutable bool m_is_bound = false; ///< binding flag
 
 public:
     class Binder;
 
 public:
-    ProgramObject();
-    virtual ~ProgramObject();
+    ProgramObject() = default;
+    virtual ~ProgramObject() { this->release(); }
 
-    GLuint id() const;
+    GLuint id() const { return m_id; }
     std::string log() const;
 
-    void create();
-    void release();
+    void create() { this->createID(); }
+    void release() { this->deleteID(); }
     void attach( const kvs::ShaderObject& shader ) const;
     void detach( const kvs::ShaderObject& shader ) const;
     void detach() const;
@@ -79,9 +79,9 @@ public:
     void setUniform( const GLchar* name, const kvs::ValueArray<GLint>& values, const int dim = 1 );
     void setUniform( const GLchar* name, const kvs::ValueArray<GLfloat>& values, const int dim = 1 );
 
-    void setGeometryInputType( const GLint type );
-    void setGeometryOutputType( const GLint type );
-    void setGeometryOutputVertices( const GLint value );
+    void setGeometryInputType( const GLint type ) { m_geom_input_type = type; }
+    void setGeometryOutputType( const GLint type ) { m_geom_output_type = type; }
+    void setGeometryOutputVertices( const GLint value ) { m_geom_output_vertices = value; }
 
 protected:
     void createID();
@@ -111,14 +111,11 @@ public:
 class ProgramObject::Binder
 {
     const kvs::ProgramObject& m_po;
-
 public:
     Binder( const kvs::ProgramObject& po );
     ~Binder();
-
-private:
-    Binder( const Binder& );
-    Binder& operator =( const Binder& );
+    Binder( const Binder& ) = delete;
+    Binder& operator =( const Binder& ) = delete;
 };
 
 } // end of namespace kvs

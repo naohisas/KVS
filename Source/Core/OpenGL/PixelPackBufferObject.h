@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__PIXEL_PACK_BUFFER_OBJECT_H_INCLUDE
-#define KVS__PIXEL_PACK_BUFFER_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/BufferObject>
 
 
@@ -21,10 +19,7 @@ namespace kvs
 class PixelPackBufferObject : public kvs::BufferObject
 {
 public:
-
     PixelPackBufferObject();
 };
 
 } // end of namespace kvs
-
-#endif // KVS__PIXEL_PACK_BUFFER_OBJECT_H_INCLUDE

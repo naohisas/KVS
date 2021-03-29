@@ -61,215 +61,6 @@ void Texture::SetEnv( GLenum pname, const GLint* params )
 
 /*==========================================================================*/
 /**
- *  Constructor.
- */
-/*==========================================================================*/
-Texture::Texture( const GLenum target, const GLenum target_binding ):
-    m_target( target ),
-    m_target_binding( target_binding ),
-    m_id( 0 ),
-    m_internal_format( 0 ),
-    m_external_format( 0 ),
-    m_external_type( 0 ),
-    m_mag_filter( GL_LINEAR ),
-    m_min_filter( GL_LINEAR ),
-    m_wrap_s( GL_CLAMP ),
-    m_wrap_t( GL_CLAMP ),
-    m_wrap_r( GL_CLAMP ),
-    m_width( 0 ),
-    m_height( 0 ),
-    m_depth( 0 )
-{
-}
-
-GLenum Texture::target() const
-{
-    return m_target;
-}
-
-
-GLenum Texture::targetBinding() const
-{
-    return m_target_binding;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the texture ID.
- */
-/*==========================================================================*/
-GLuint Texture::id() const
-{
-    return m_id;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the magnification filter.
- */
-/*==========================================================================*/
-GLenum Texture::magFilter() const
-{
-    return m_mag_filter;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the minification filter.
- */
-/*==========================================================================*/
-GLenum Texture::minFilter() const
-{
-    return m_min_filter;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the internal pixel format.
- */
-/*==========================================================================*/
-GLint Texture::internalFormat() const
-{
-    return m_internal_format;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the external pixel format.
- */
-/*==========================================================================*/
-GLenum Texture::externalFormat() const
-{
-    return m_external_format;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the external pixel data type.
- */
-/*==========================================================================*/
-GLenum Texture::externalType() const
-{
-    return m_external_type;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the wrap method for s-axis.
- */
-/*==========================================================================*/
-GLenum Texture::wrapS() const
-{
-    return m_wrap_s;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the wrap method for t-axis.
- */
-/*==========================================================================*/
-GLenum Texture::wrapT() const
-{
-    return m_wrap_t;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the wrap method for r-axis.
- */
-/*==========================================================================*/
-GLenum Texture::wrapR() const
-{
-    return m_wrap_r;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the texture width.
- */
-/*==========================================================================*/
-size_t Texture::width() const
-{
-    return m_width;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the texture height.
- */
-/*==========================================================================*/
-size_t Texture::height() const
-{
-    return m_height;
-}
-
-/*==========================================================================*/
-/**
- *  Returns the texture depth.
- */
-/*==========================================================================*/
-size_t Texture::depth() const
-{
-    return m_depth;
-}
-
-/*==========================================================================*/
-/**
- *  Set the magnification filter.
- *  @param mag_filter [in] magnification filter
- */
-/*==========================================================================*/
-void Texture::setMagFilter( const GLenum mag_filter )
-{
-    m_mag_filter = mag_filter;
-}
-
-/*==========================================================================*/
-/**
- *  Set the minification filter.
- *  @param min_filter [in] minification filter
- */
-/*==========================================================================*/
-void Texture::setMinFilter( const GLenum min_filter )
-{
-    m_min_filter = min_filter;
-}
-
-/*==========================================================================*/
-/**
- *  Set the wrap method for s-axis.
- *  @param wrap_s [in] wrap method for s-axis
- */
-/*==========================================================================*/
-void Texture::setWrapS( const GLenum wrap_s )
-{
-    m_wrap_s = wrap_s;
-}
-
-/*==========================================================================*/
-/**
- *  Set the wrap method for t-axis.
- *  @param wrap_t [in] wrap method for t-axis
- */
-/*==========================================================================*/
-void Texture::setWrapT( const GLenum wrap_t )
-{
-    m_wrap_t = wrap_t;
-}
-
-/*==========================================================================*/
-/**
- *  Set the wrap method for r-axis.
- *  @param wrap_r [in] wrap method for r-axis
- */
-/*==========================================================================*/
-void Texture::setWrapR( const GLenum wrap_r )
-{
-    m_wrap_r = wrap_r;
-}
-
-/*==========================================================================*/
-/**
  *  Set the pixel format.
  *  @param internal_format [in] internal pixel format
  *  @param external_format [in] external pixel format
@@ -277,7 +68,7 @@ void Texture::setWrapR( const GLenum wrap_r )
  */
 /*==========================================================================*/
 void Texture::setPixelFormat(
-    const GLint  internal_format,
+    const GLint internal_format,
     const GLenum external_format,
     const GLenum external_type )
 {
@@ -298,6 +89,14 @@ void Texture::setPixelFormat( const size_t nchannels, const size_t bytes_per_cha
     this->estimate_pixel_format( nchannels, bytes_per_channel );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets texture sizes.
+ *  @param  width [in] texture width
+ *  @param  height [in] texture height
+ *  @param  depth [in] texture depth
+ */
+/*===========================================================================*/
 void Texture::setSize( const size_t width, const size_t height, const size_t depth )
 {
     m_width = width;

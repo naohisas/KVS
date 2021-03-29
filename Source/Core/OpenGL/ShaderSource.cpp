@@ -182,37 +182,6 @@ ShaderSource::ShaderSource( const std::string& source )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the shade code.
- */
-/*===========================================================================*/
-const std::string& ShaderSource::code() const
-{
-    return m_code;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets the shader code.
- *  @param  code [in] shade code
- */
-/*===========================================================================*/
-void ShaderSource::setCode( const std::string& code )
-{
-    m_code = code;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Clears the shader code.
- */
-/*===========================================================================*/
-void ShaderSource::clearCode()
-{
-    m_code.erase();
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Defines a macro in the shader code.
  *  @param  name [in] name of macro
  */

@@ -9,86 +9,8 @@
 #include <kvs/Assert>
 
 
-namespace
-{
-
-class GuardedBinder
-{
-private:
-
-    const kvs::RenderBuffer& m_rb;
-    GLint m_id;
-
-public:
-
-    GuardedBinder( const kvs::RenderBuffer& rb ):
-        m_rb( rb ),
-        m_id( 0 )
-    {
-        m_id = kvs::OpenGL::Integer( GL_RENDERBUFFER_BINDING );
-        if ( m_rb.id() != static_cast<GLuint>( m_id ) ) { m_rb.bind(); }
-    }
-
-    ~GuardedBinder()
-    {
-        if ( static_cast<GLuint>( m_id ) != m_rb.id() )
-        {
-            KVS_GL_CALL( glBindRenderbuffer( GL_RENDERBUFFER, m_id ) );
-        }
-    }
-
-private:
-
-    GuardedBinder( const GuardedBinder& );
-    GuardedBinder& operator =( const GuardedBinder& );
-};
-
-}
-
 namespace kvs
 {
-
-RenderBuffer::RenderBuffer():
-    m_id( 0 ),
-    m_internal_format( 0 )
-{
-}
-
-RenderBuffer::RenderBuffer( const GLenum internal_format ):
-    m_id( 0 ),
-    m_internal_format( internal_format )
-{
-}
-
-RenderBuffer::~RenderBuffer()
-{
-    this->release();
-}
-
-GLuint RenderBuffer::id() const
-{
-    return m_id;
-}
-
-GLenum RenderBuffer::internalFormat() const
-{
-    return m_internal_format;
-}
-
-size_t RenderBuffer::width() const
-{
-    return m_width;
-}
-
-size_t RenderBuffer::height() const
-{
-    return m_height;
-}
-
-void RenderBuffer::setInternalFormat( const GLenum internal_format )
-{
-    m_internal_format = internal_format;
-}
 
 void RenderBuffer::create( const size_t width, const size_t height )
 {
@@ -97,7 +19,7 @@ void RenderBuffer::create( const size_t width, const size_t height )
     m_width = width;
     m_height = height;
     this->createID();
-    ::GuardedBinder binder( *this );
+    GuardedBinder binder( *this );
     this->setRenderbufferStorage( m_internal_format, m_width, m_height );
 }
 
@@ -164,6 +86,21 @@ void RenderBuffer::setRenderbufferStorage( GLenum internal_format, GLsizei width
     KVS_ASSERT( height > 0 );
     KVS_ASSERT( height <= kvs::OpenGL::MaxRenderBufferSize() );
     KVS_GL_CALL( glRenderbufferStorage( GL_RENDERBUFFER, internal_format, width, height ) );
+}
+
+RenderBuffer::GuardedBinder::GuardedBinder( const kvs::RenderBuffer& rb ):
+    m_rb( rb )
+{
+    m_id = kvs::OpenGL::Integer( GL_RENDERBUFFER_BINDING );
+    if ( m_rb.id() != static_cast<GLuint>( m_id ) ) { m_rb.bind(); }
+}
+
+RenderBuffer::GuardedBinder::~GuardedBinder()
+{
+    if ( static_cast<GLuint>( m_id ) != m_rb.id() )
+    {
+        KVS_GL_CALL( glBindRenderbuffer( GL_RENDERBUFFER, m_id ) );
+    }
 }
 
 } // end of namespace kvs

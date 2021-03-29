@@ -12,6 +12,7 @@
 
 GLuint kvs::FrameBufferObject::m_unbind_id = 0; // Initialize static unbind id
 
+
 namespace kvs
 {
 
@@ -23,7 +24,6 @@ namespace kvs
 void FrameBufferObject::bind() const
 {
     KVS_ASSERT( this->isCreated() );
-//    KVS_GL_CALL( glGetIntegerv( GL_FRAMEBUFFER_BINDING, (GLint*)&m_unbind_id ) );
     KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_id ) );
 }
 
@@ -91,7 +91,10 @@ void FrameBufferObject::checkStatus() const
     }
 }
 
-void FrameBufferObject::attachColorTexture( const kvs::Texture1D& texture, const size_t color_buffer, const int mip_level ) const
+void FrameBufferObject::attachColorTexture(
+    const kvs::Texture1D& texture,
+    const size_t color_buffer,
+    const int mip_level ) const
 {
     KVS_ASSERT( static_cast<GLint>( color_buffer ) < kvs::OpenGL::MaxColorAttachments() );
     GuardedBinder binder( *this );
@@ -109,7 +112,10 @@ void FrameBufferObject::attachColorTexture( const kvs::Texture1D& texture, const
  *  @param  mip_level [in] mip level
  */
 /*===========================================================================*/
-void FrameBufferObject::attachColorTexture( const kvs::Texture2D& texture, const size_t color_buffer, const int mip_level ) const
+void FrameBufferObject::attachColorTexture(
+    const kvs::Texture2D& texture,
+    const size_t color_buffer,
+    const int mip_level ) const
 {
     KVS_ASSERT( static_cast<GLint>( color_buffer ) < kvs::OpenGL::MaxColorAttachments() );
     GuardedBinder binder( *this );
@@ -128,7 +134,11 @@ void FrameBufferObject::attachColorTexture( const kvs::Texture2D& texture, const
  *  @param  zoffset [in] offset
  */
 /*===========================================================================*/
-void FrameBufferObject::attachColorTexture( const kvs::Texture3D& texture, const size_t color_buffer, const int mip_level, const int zoffset ) const
+void FrameBufferObject::attachColorTexture(
+    const kvs::Texture3D& texture,
+    const size_t color_buffer,
+    const int mip_level,
+    const int zoffset ) const
 {
     KVS_ASSERT( static_cast<GLint>( color_buffer ) < kvs::OpenGL::MaxColorAttachments() );
     GuardedBinder binder( *this );
@@ -138,7 +148,9 @@ void FrameBufferObject::attachColorTexture( const kvs::Texture3D& texture, const
     KVS_GL_CALL( glFramebufferTexture3D( GL_FRAMEBUFFER, attachment, type, id, mip_level, zoffset ) );
 }
 
-void FrameBufferObject::attachDepthTexture( const kvs::Texture1D& texture, const int mip_level ) const
+void FrameBufferObject::attachDepthTexture(
+    const kvs::Texture1D& texture,
+    const int mip_level ) const
 {
     GuardedBinder binder( *this );
     const GLuint id = texture.id();
@@ -147,7 +159,9 @@ void FrameBufferObject::attachDepthTexture( const kvs::Texture1D& texture, const
     KVS_GL_CALL( glFramebufferTexture1D( GL_FRAMEBUFFER, attachment, type, id, mip_level ) );
 }
 
-void FrameBufferObject::attachDepthTexture( const kvs::Texture2D& texture, const int mip_level ) const
+void FrameBufferObject::attachDepthTexture(
+    const kvs::Texture2D& texture,
+    const int mip_level ) const
 {
     GuardedBinder binder( *this );
     const GLuint id = texture.id();
@@ -156,7 +170,10 @@ void FrameBufferObject::attachDepthTexture( const kvs::Texture2D& texture, const
     KVS_GL_CALL( glFramebufferTexture2D( GL_FRAMEBUFFER, attachment, type, id, mip_level ) );
 }
 
-void FrameBufferObject::attachDepthTexture( const kvs::Texture3D& texture, const int mip_level, const int zoffset ) const
+void FrameBufferObject::attachDepthTexture(
+    const kvs::Texture3D& texture,
+    const int mip_level,
+    const int zoffset ) const
 {
     GuardedBinder binder( *this );
     const GLuint id = texture.id();
@@ -165,7 +182,9 @@ void FrameBufferObject::attachDepthTexture( const kvs::Texture3D& texture, const
     KVS_GL_CALL( glFramebufferTexture3D( GL_FRAMEBUFFER, attachment, type, id, mip_level, zoffset ) );
 }
 
-void FrameBufferObject::attachColorRenderBuffer( const kvs::RenderBuffer& render_buffer, const size_t color_buffer ) const
+void FrameBufferObject::attachColorRenderBuffer(
+    const kvs::RenderBuffer& render_buffer,
+    const size_t color_buffer ) const
 {
     KVS_ASSERT( static_cast<GLint>( color_buffer ) < kvs::OpenGL::MaxColorAttachments() );
     GuardedBinder binder( *this );
@@ -174,7 +193,8 @@ void FrameBufferObject::attachColorRenderBuffer( const kvs::RenderBuffer& render
     KVS_GL_CALL( glFramebufferRenderbuffer( GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, id ) );
 }
 
-void FrameBufferObject::attachDepthRenderBuffer( const kvs::RenderBuffer& render_buffer ) const
+void FrameBufferObject::attachDepthRenderBuffer(
+    const kvs::RenderBuffer& render_buffer ) const
 {
     GuardedBinder binder( *this );
     const GLuint id = render_buffer.id();
@@ -182,7 +202,9 @@ void FrameBufferObject::attachDepthRenderBuffer( const kvs::RenderBuffer& render
     KVS_GL_CALL( glFramebufferRenderbuffer( GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, id ) );
 }
 
-void FrameBufferObject::detachColorTexture( const size_t color_buffer, const int mip_level ) const
+void FrameBufferObject::detachColorTexture(
+    const size_t color_buffer,
+    const int mip_level ) const
 {
     GuardedBinder binder( *this );
     const GLenum attachment = GL_COLOR_ATTACHMENT0 + color_buffer;
@@ -251,8 +273,7 @@ FrameBufferObject::Binder::~Binder()
 }
 
 FrameBufferObject::GuardedBinder::GuardedBinder( const kvs::FrameBufferObject& fbo ):
-    m_fbo( fbo ),
-    m_id( 0 )
+    m_fbo( fbo )
 {
     KVS_ASSERT( fbo.isCreated() );
     m_id = kvs::OpenGL::Integer( GL_FRAMEBUFFER_BINDING );

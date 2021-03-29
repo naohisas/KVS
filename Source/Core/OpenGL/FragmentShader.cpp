@@ -13,16 +13,6 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  Constructs a new FragmentShader class.
- */
-/*===========================================================================*/
-FragmentShader::FragmentShader():
-    kvs::ShaderObject( GL_FRAGMENT_SHADER )
-{
-}
-
-/*===========================================================================*/
-/**
- *  Constructs a new FragmentShader class.
  *  @param  source [in] shader source
  */
 /*===========================================================================*/

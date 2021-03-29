@@ -17,41 +17,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new ProgramObject class.
- */
-/*===========================================================================*/
-ProgramObject::ProgramObject():
-    m_id( 0 ),
-    m_geom_input_type( 0 ),
-    m_geom_output_type( 0 ),
-    m_geom_output_vertices( 0 ),
-    m_is_bound( false )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the ProgramObject class.
- */
-/*===========================================================================*/
-ProgramObject::~ProgramObject()
-{
-    this->release();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the program object ID.
- *  @return program object ID
- */
-/*===========================================================================*/
-GLuint ProgramObject::id() const
-{
-    return m_id;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Returns the information log for a program object.
  *  @return information log
  */
@@ -63,26 +28,6 @@ std::string ProgramObject::log() const
     std::vector<char> buffer( length );
     KVS_GL_CALL( glGetProgramInfoLog( m_id, length, NULL, &buffer[0] ) );
     return std::string( buffer.begin(), buffer.end() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates a empty program object.
- */
-/*===========================================================================*/
-void ProgramObject::create()
-{
-    this->createID();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Clears the program object.
- */
-/*===========================================================================*/
-void ProgramObject::release()
-{
-    this->deleteID();
 }
 
 /*===========================================================================*/
@@ -342,7 +287,6 @@ GLint ProgramObject::uniformLocation( const GLchar *name )
 /*===========================================================================*/
 GLint ProgramObject::attributeLocation( const GLchar *name )
 {
-//    return glGetAttribLocation( m_id, name );
     GLint result = 0;
     KVS_GL_CALL( result = glGetAttribLocation( m_id, name ) );
     return result;
@@ -537,39 +481,6 @@ void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLfloa
 
 /*===========================================================================*/
 /**
- *  @brief  Sets an input type for geometry shader.
- *  @param  type [in] input type
- */
-/*===========================================================================*/
-void ProgramObject::setGeometryInputType( const GLint type )
-{
-    m_geom_input_type = type;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets an output type for geometry shader.
- *  @param  type [in] output type
- */
-/*===========================================================================*/
-void ProgramObject::setGeometryOutputType( const GLint type )
-{
-    m_geom_output_type = type;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets number of vertices for geometry shader.
- *  @param  value [in] number of vertices
- */
-/*===========================================================================*/
-void ProgramObject::setGeometryOutputVertices( const GLint value )
-{
-    m_geom_output_vertices = value;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Creates a program object.
  */
 /*===========================================================================*/
@@ -635,8 +546,8 @@ void ProgramObject::setParameter( GLenum pname, GLint value )
 ProgramObject::Binder::Binder( const ProgramObject& po ) :
     m_po( po )
 {
-    KVS_ASSERT( po.isCreated() );
-    po.bind();
+    KVS_ASSERT( m_po.isCreated() );
+    m_po.bind();
 }
 
 /*===========================================================================*/
