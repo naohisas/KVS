@@ -60,21 +60,21 @@ public:
 
 private:
     // Variable
-    float m_step; ///< sampling step
+    float m_step = 0.5f; ///< sampling step
 
     // Transfer function
-    bool m_transfer_function_changed; ///< flag for changin transfer function
-    kvs::TransferFunction m_transfer_function; ///< transfer function
-    kvs::Texture1D m_transfer_function_texture; ///< transfer function texture
+    bool m_transfer_function_changed = true; ///< flag for changin transfer function
+    kvs::TransferFunction m_transfer_function{}; ///< transfer function
+    kvs::Texture1D m_transfer_function_texture{}; ///< transfer function texture
 
     // Entry/exit framebuffer
-    kvs::FrameBufferObject m_entry_exit_framebuffer; ///< framebuffer object for entry/exit point texture
-    kvs::Texture2D m_entry_texture; ///< entry point texture
-    kvs::Texture2D m_exit_texture; ///< exit point texture
+    kvs::FrameBufferObject m_entry_exit_framebuffer{}; ///< framebuffer object for entry/exit point texture
+    kvs::Texture2D m_entry_texture{}; ///< entry point texture
+    kvs::Texture2D m_exit_texture{}; ///< exit point texture
 
     // Buffer object
-    BufferObject m_volume_buffer; ///< volume buffer object
-    BoundingBufferObject m_bounding_cube_buffer; ///< bounding cube buffer
+    BufferObject m_volume_buffer{}; ///< volume buffer object
+    BoundingBufferObject m_bounding_cube_buffer{}; ///< bounding cube buffer
 
     // Render pass
     RenderPass m_render_pass{ m_volume_buffer };
@@ -82,6 +82,7 @@ private:
 
 public:
     Engine();
+    virtual ~Engine() { this->release(); }
     void release();
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );

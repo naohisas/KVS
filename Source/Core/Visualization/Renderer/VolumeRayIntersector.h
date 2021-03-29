@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__VOLUME_RAY_INTERSECTOR_H_INCLUDE
-#define KVS__VOLUME_RAY_INTERSECTOR_H_INCLUDE
-
+#pragma once
 #include <kvs/Ray>
 #include <kvs/Vector3>
 #include <kvs/VolumeObjectBase>
@@ -23,11 +21,9 @@ namespace kvs
 class VolumeRayIntersector : public kvs::Ray
 {
 private:
-
-    kvs::Vector3f m_vertex[8];
+    kvs::Vec3 m_vertex[8];
 
 public:
-
     VolumeRayIntersector(
         const kvs::VolumeObjectBase* volume,
         const float modelview[16],
@@ -36,19 +32,18 @@ public:
 
     bool isIntersected()
     {
-        return(
+        return
             kvs::Ray::isIntersected( m_vertex[0], m_vertex[3], m_vertex[2], m_vertex[1] ) ||
             kvs::Ray::isIntersected( m_vertex[0], m_vertex[1], m_vertex[5], m_vertex[4] ) ||
             kvs::Ray::isIntersected( m_vertex[1], m_vertex[2], m_vertex[6], m_vertex[5] ) ||
             kvs::Ray::isIntersected( m_vertex[2], m_vertex[3], m_vertex[7], m_vertex[6] ) ||
             kvs::Ray::isIntersected( m_vertex[3], m_vertex[0], m_vertex[4], m_vertex[7] ) ||
-            kvs::Ray::isIntersected( m_vertex[4], m_vertex[5], m_vertex[6], m_vertex[7] ) );
+            kvs::Ray::isIntersected( m_vertex[4], m_vertex[5], m_vertex[6], m_vertex[7] );
     }
 
     bool isInside() const
     {
-        const kvs::Vector3f point( this->point() );
-
+        const kvs::Vec3 point( this->point() );
         if ( m_vertex[0].z() < point.z() && point.z() < m_vertex[6].z() )
         {
             if ( m_vertex[0].y() < point.y() && point.y() < m_vertex[6].y() )
@@ -70,5 +65,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__VOLUME_RAY_INTERSECTOR_H_INCLUDE

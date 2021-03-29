@@ -24,10 +24,11 @@ class ScatterPlotMatrixRenderer : public kvs::ScatterPlotRenderer
     kvsModuleBaseClass( kvs::ScatterPlotRenderer );
 
 private:
-    int m_padding; ///< padding in pixels between each rectangle
+    int m_padding = 20; ///< padding in pixels between each rectangle
 
 public:
-    ScatterPlotMatrixRenderer(): m_padding( 20 ) {};
+    ScatterPlotMatrixRenderer() = default;
+    virtual ~ScatterPlotMatrixRenderer() = default;
 
     void setPadding( const int padding ) { m_padding = padding; }
     int padding() const { return m_padding; }

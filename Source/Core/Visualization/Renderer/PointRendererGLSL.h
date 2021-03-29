@@ -38,6 +38,7 @@ public:
         kvs::VertexBufferObjectManager m_manager{}; ///< VBOs
     public:
         BufferObject() = default;
+        virtual ~BufferObject() { this->release(); }
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
         void release() { m_manager.release(); }
         void create( const kvs::ObjectBase* object );
@@ -53,7 +54,7 @@ public:
         kvs::ProgramObject m_shader_program{}; ///< shader program
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
-        virtual ~RenderPass() {}
+        virtual ~RenderPass() { this->release(); }
         BufferObject& bufferObject() { return m_buffer_object; }
         const std::string& vertexShaderFile() const { return m_vert_shader_file; }
         const std::string& fragmentShaderFile() const { return m_frag_shader_file; }

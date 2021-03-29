@@ -103,9 +103,7 @@ float StochasticUniformGridRenderer::samplingStep() const
  *  @brief  Constructs a new Engine class.
  */
 /*===========================================================================*/
-StochasticUniformGridRenderer::Engine::Engine():
-    m_step( 0.5f ),
-    m_transfer_function_changed( true )
+StochasticUniformGridRenderer::Engine::Engine()
 {
     m_render_pass.setShaderFiles(
         "SR_uniform_grid.vert",

@@ -28,14 +28,15 @@ public:
     class BufferObject
     {
     private:
-        kvs::VertexBufferObjectManager m_manager; ///< VBOs
-        kvs::ValueArray<GLint> m_first_array; ///< array of starting indices for the polyline
-        kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
-        kvs::Texture2D m_shape_texture;
-        kvs::Texture2D m_diffuse_texture;
-        bool m_has_connection;
+        kvs::VertexBufferObjectManager m_manager{}; ///< VBOs
+        kvs::ValueArray<GLint> m_first_array{}; ///< array of starting indices for the polyline
+        kvs::ValueArray<GLsizei> m_count_array{}; ///< array of the number of indices for the polyline
+        kvs::Texture2D m_shape_texture{};
+        kvs::Texture2D m_diffuse_texture{};
+        bool m_has_connection = false;
     public:
-        BufferObject(): m_has_connection( false ) {}
+        BufferObject() = default;
+        virtual ~BufferObject() { this->release(); }
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
         void release() { m_manager.release(); }
         void create( const kvs::LineObject* line, const kvs::Real32 halo, const kvs::Real32 radius );
@@ -56,7 +57,7 @@ public:
         kvs::Real32 m_halo_size = 0.0f;
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
-        virtual ~RenderPass() {}
+        virtual ~RenderPass() { this->release(); }
         BufferObject& bufferObject() { return m_buffer_object; }
         const std::string& vertexShaderFile() const { return m_vert_shader_file; }
         const std::string& fragmentShaderFile() const { return m_frag_shader_file; }
@@ -80,9 +81,8 @@ private:
     size_t m_height = 0; ///< window height
     const kvs::ObjectBase* m_object = nullptr; ///< pointer to the rendering object
     kvs::Shader::ShadingModel* m_shading_model = nullptr; ///< shading method
-
-    BufferObject m_buffer_object{};
-    RenderPass m_render_pass{ m_buffer_object };
+    BufferObject m_buffer_object{}; ///< buffer object
+    RenderPass m_render_pass{ m_buffer_object }; ///< render pass
 
 public:
     StylizedLineRenderer(): m_shading_model( new kvs::Shader::Lambert() ) {}

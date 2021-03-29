@@ -29,13 +29,11 @@ namespace kvs
 class ParticleBufferCompositor : public kvs::VolumeRendererBase
 {
 public:
-
     typedef kvs::VolumeRendererBase BaseClass;
     typedef ParticleBufferAccumulator::ObjectList ObjectList;
     typedef ParticleBufferAccumulator::RendererList RendererList;
 
 private:
-
     double m_accumulation_time; ///< accumulation time
     size_t m_num_projected_particles; ///< number of projected points
     size_t m_num_stored_particles; ///< number of stored points
@@ -48,7 +46,6 @@ private:
     kvs::ParticleBufferAccumulator* m_accumulator; ///< pointer to the accumulator
 
 public:
-
     ParticleBufferCompositor(
         kvs::ObjectManager* object_manager,
         kvs::RendererManager* renderer_manager,
@@ -63,7 +60,6 @@ public:
     void clearList();
 
 private:
-
     bool create_accumulator();
     void clean_accumulator();
     void delete_accumulator();

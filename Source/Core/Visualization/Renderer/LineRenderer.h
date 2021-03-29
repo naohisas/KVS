@@ -33,7 +33,6 @@ private:
 
 public:
     LineRenderer() { BaseClass::disableShading(); }
-    virtual ~LineRenderer() = default;
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 

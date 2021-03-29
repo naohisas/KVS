@@ -31,7 +31,6 @@ class ParticleBasedRenderer : public kvs::VolumeRendererBase
     kvsModuleBaseClass( kvs::VolumeRendererBase );
 
 protected:
-
     // Reference data (NOTE: not allocated in thie class).
     const kvs::PointObject* m_ref_point; ///< pointer to the point data
 
@@ -40,7 +39,6 @@ protected:
     kvs::ParticleBuffer* m_buffer; ///< particle buffer
 
 public:
-
     ParticleBasedRenderer();
     ParticleBasedRenderer( const kvs::PointObject* point, const size_t subpixel_level = 1 );
     virtual ~ParticleBasedRenderer();
@@ -54,13 +52,11 @@ public:
     void disableRendering() { m_enable_rendering = false; }
 
 protected:
-
     bool createParticleBuffer( const size_t width, const size_t height, const size_t subpixel_level );
     void cleanParticleBuffer();
     void deleteParticleBuffer();
 
 private:
-
     void create_image( const kvs::PointObject* point, const kvs::Camera* camera, const kvs::Light* light );
     void project_particle( const kvs::PointObject* point, const kvs::Camera* camera, const kvs::Light* light );
 

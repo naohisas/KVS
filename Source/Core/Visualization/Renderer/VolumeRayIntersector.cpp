@@ -29,12 +29,12 @@ VolumeRayIntersector::VolumeRayIntersector(
 {
     const float epsilon = 0.003f; // 1e-3
 
-    const kvs::Vector3f min(
+    const kvs::Vec3 min(
         volume->minExternalCoord().x() + epsilon,
         volume->minExternalCoord().y() + epsilon,
         volume->minExternalCoord().z() + epsilon );
 
-    const kvs::Vector3f max(
+    const kvs::Vec3 max(
         volume->maxExternalCoord().x() - epsilon,
         volume->maxExternalCoord().y() - epsilon,
         volume->maxExternalCoord().z() - epsilon );

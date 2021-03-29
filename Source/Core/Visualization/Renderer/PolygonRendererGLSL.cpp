@@ -603,4 +603,3 @@ void PolygonRenderer::drawBufferObject( const kvs::Camera* camera )
 } // end of namespace glsl
 
 } // end of namespace kvs
-

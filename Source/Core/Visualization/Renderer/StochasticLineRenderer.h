@@ -75,6 +75,7 @@ private:
 
 public:
     Engine(): m_render_pass( m_buffer_object, this ) {}
+    virtual ~Engine() { this->release(); }
     void release() { m_render_pass.release(); m_buffer_object.release(); }
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );

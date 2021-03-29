@@ -23,10 +23,10 @@ class Axis2DMatrix : public kvs::Axis2D
     kvsModuleBaseClass( kvs::Axis2D );
 
 private:
-    int m_padding; ///< padding in pixels between each rectangle
+    int m_padding = 20; ///< padding in pixels between each rectangle
 
 public:
-    Axis2DMatrix(): m_padding( 20 ) {}
+    Axis2DMatrix() = default;
 
     void setPadding( const int padding ) { m_padding = padding; }
     int padding() const { return m_padding; }

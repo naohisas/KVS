@@ -50,6 +50,7 @@ public:
         kvs::Texture3D m_manager{};
     public:
         BufferObject() = default;
+        virtual ~BufferObject() { this->release(); }
         kvs::Texture3D& manager() { return m_manager; }
         void release() { m_manager.release(); }
         void create( const kvs::StructuredVolumeObject* volume,
@@ -63,6 +64,7 @@ public:
         kvs::VertexBufferObjectManager m_manager{};
     public:
         BoundingBufferObject() = default;
+        virtual ~BoundingBufferObject() { this->release(); }
         kvs::VertexBufferObjectManager& manager() { return m_manager; }
         void release() { m_manager.release(); }
         void create( const kvs::StructuredVolumeObject* volume );
@@ -81,7 +83,7 @@ public:
         float m_opaque = 1.0f; ///< opaque value for early ray termination
     public:
         RenderPass( BufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
-        virtual ~RenderPass() {}
+        virtual ~RenderPass() { this->release(); }
         BufferObject& bufferObject() { return m_buffer_object; }
         const std::string& vertexShaderFile() const { return m_vert_shader_file; }
         const std::string& fragmentShaderFile() const { return m_frag_shader_file; }
@@ -109,7 +111,7 @@ public:
         kvs::ProgramObject m_shader_program{}; ///< shader program
     public:
         BoundingRenderPass( BoundingBufferObject& buffer_object ): m_buffer_object( buffer_object ) {}
-        virtual ~BoundingRenderPass() {}
+        virtual ~BoundingRenderPass() { this->release(); }
         BoundingBufferObject& bufferObject() { return m_buffer_object; }
         kvs::ProgramObject& shaderProgram() { return m_shader_program; }
         virtual void release() { m_shader_program.release(); }
@@ -151,6 +153,7 @@ public:
     RayCastingRenderer( const kvs::TransferFunction& tfunc );
     template <typename ShadingType>
     RayCastingRenderer( const ShadingType shader );
+    virtual ~RayCastingRenderer() = default;
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setDrawingBuffer( const DrawingBuffer drawing_buffer );

@@ -33,15 +33,12 @@ inline GLenum GLType( const kvs::AnyValueArray& array )
 namespace kvs
 {
 
-VertexBufferObjectManager::VertexBufferObjectManager():
-    m_vbo_size( 0 ),
-    m_ibo_size( 0 )
+void VertexBufferObjectManager::setVertexAttribArray(
+    const VertexAttribBuffer& buffer )
 {
-}
-
-void VertexBufferObjectManager::setVertexAttribArray( const VertexAttribBuffer& buffer )
-{
-    VertexAttribBuffers::iterator result = std::find( m_vertex_attrib_arrays.begin(), m_vertex_attrib_arrays.end(), buffer );
+    auto result = std::find(
+        m_vertex_attrib_arrays.begin(),
+        m_vertex_attrib_arrays.end(), buffer );
     if ( result == m_vertex_attrib_arrays.end() )
     {
         m_vertex_attrib_arrays.push_back( buffer );
@@ -52,7 +49,10 @@ void VertexBufferObjectManager::setVertexAttribArray( const VertexAttribBuffer& 
     }
 }
 
-void VertexBufferObjectManager::setVertexArray( const kvs::AnyValueArray& array, const size_t dim, const size_t stride )
+void VertexBufferObjectManager::setVertexArray(
+    const kvs::AnyValueArray& array,
+    const size_t dim,
+    const size_t stride )
 {
     m_vertex_array.type = ::GLType( array );
     m_vertex_array.size = array.byteSize();
@@ -61,7 +61,10 @@ void VertexBufferObjectManager::setVertexArray( const kvs::AnyValueArray& array,
     m_vertex_array.pointer = array.data();
 }
 
-void VertexBufferObjectManager::setColorArray( const kvs::AnyValueArray& array, const size_t dim, const size_t stride )
+void VertexBufferObjectManager::setColorArray(
+    const kvs::AnyValueArray& array,
+    const size_t dim,
+    const size_t stride )
 {
     m_color_array.type = ::GLType( array );
     m_color_array.size = array.byteSize();
@@ -70,7 +73,9 @@ void VertexBufferObjectManager::setColorArray( const kvs::AnyValueArray& array, 
     m_color_array.pointer = array.data();
 }
 
-void VertexBufferObjectManager::setNormalArray( const kvs::AnyValueArray& array, const size_t stride )
+void VertexBufferObjectManager::setNormalArray(
+    const kvs::AnyValueArray& array,
+    const size_t stride )
 {
     m_normal_array.type = ::GLType( array );
     m_normal_array.size = array.byteSize();
@@ -79,7 +84,10 @@ void VertexBufferObjectManager::setNormalArray( const kvs::AnyValueArray& array,
     m_normal_array.pointer = array.data();
 }
 
-void VertexBufferObjectManager::setTexCoordArray( const kvs::AnyValueArray& array, const size_t dim, const size_t stride )
+void VertexBufferObjectManager::setTexCoordArray(
+    const kvs::AnyValueArray& array,
+    const size_t dim,
+    const size_t stride )
 {
     m_tex_coord_array.type = ::GLType( array );
     m_tex_coord_array.size = array.byteSize();
@@ -88,14 +96,20 @@ void VertexBufferObjectManager::setTexCoordArray( const kvs::AnyValueArray& arra
     m_tex_coord_array.pointer = array.data();
 }
 
-void VertexBufferObjectManager::setIndexArray( const kvs::AnyValueArray& array )
+void VertexBufferObjectManager::setIndexArray(
+    const kvs::AnyValueArray& array )
 {
     m_index_array.type = ::GLType( array );
     m_index_array.size = array.byteSize();
     m_index_array.pointer = array.data();
 }
 
-void VertexBufferObjectManager::setVertexAttribArray( const kvs::AnyValueArray& array, const size_t index, const size_t dim, const bool normalized, const size_t stride )
+void VertexBufferObjectManager::setVertexAttribArray(
+    const kvs::AnyValueArray& array,
+    const size_t index,
+    const size_t dim,
+    const bool normalized,
+    const size_t stride )
 {
     VertexAttribBuffer attrib_array;
     attrib_array.type = ::GLType( array );
@@ -106,7 +120,10 @@ void VertexBufferObjectManager::setVertexAttribArray( const kvs::AnyValueArray& 
     attrib_array.index = index;
     attrib_array.normalized = ( normalized ) ? GL_TRUE : GL_FALSE;
 
-    VertexAttribBuffers::iterator result = std::find( m_vertex_attrib_arrays.begin(), m_vertex_attrib_arrays.end(), attrib_array );
+    auto result = std::find(
+        m_vertex_attrib_arrays.begin(),
+        m_vertex_attrib_arrays.end(),
+        attrib_array );
     if ( result == m_vertex_attrib_arrays.end() )
     {
         m_vertex_attrib_arrays.push_back( attrib_array );
@@ -129,25 +146,37 @@ void VertexBufferObjectManager::create()
             if ( m_vertex_array.size > 0 )
             {
                 m_vertex_array.offset = offset;
-                offset += m_vbo.load(m_vertex_array.size, m_vertex_array.pointer, m_vertex_array.offset  );
+                offset += m_vbo.load(
+                    m_vertex_array.size,
+                    m_vertex_array.pointer,
+                    m_vertex_array.offset  );
             }
 
             if ( m_color_array.size > 0 )
             {
                 m_color_array.offset = offset;
-                offset += m_vbo.load( m_color_array.size, m_color_array.pointer, m_color_array.offset );
+                offset += m_vbo.load(
+                    m_color_array.size,
+                    m_color_array.pointer,
+                    m_color_array.offset );
             }
 
             if ( m_normal_array.size > 0 )
             {
                 m_normal_array.offset = offset;
-                offset += m_vbo.load( m_normal_array.size, m_normal_array.pointer, m_normal_array.offset );
+                offset += m_vbo.load(
+                    m_normal_array.size,
+                    m_normal_array.pointer,
+                    m_normal_array.offset );
             }
 
             if ( m_tex_coord_array.size > 0 )
             {
                 m_tex_coord_array.offset = offset;
-                offset +=  m_vbo.load( m_tex_coord_array.size, m_tex_coord_array.pointer, m_tex_coord_array.offset );
+                offset +=  m_vbo.load(
+                    m_tex_coord_array.size,
+                    m_tex_coord_array.pointer,
+                    m_tex_coord_array.offset );
             }
 
             for ( size_t i = 0; i < m_vertex_attrib_arrays.size(); i++ )
@@ -155,7 +184,10 @@ void VertexBufferObjectManager::create()
                 if ( m_vertex_attrib_arrays[i].size > 0 )
                 {
                     m_vertex_attrib_arrays[i].offset = offset;
-                    offset +=  m_vbo.load( m_vertex_attrib_arrays[i].size, m_vertex_attrib_arrays[i].pointer, m_vertex_attrib_arrays[i].offset );
+                    offset +=  m_vbo.load(
+                        m_vertex_attrib_arrays[i].size,
+                        m_vertex_attrib_arrays[i].pointer,
+                        m_vertex_attrib_arrays[i].offset );
                 }
             }
 
@@ -189,7 +221,6 @@ void VertexBufferObjectManager::release()
 {
     m_vbo.release();
     m_ibo.release();
-
     m_vbo_size = 0;
     m_ibo_size = 0;
     m_vertex_array = VertexBuffer();
@@ -197,37 +228,54 @@ void VertexBufferObjectManager::release()
     m_normal_array = VertexBuffer();
     m_tex_coord_array = VertexBuffer();
     m_index_array = IndexBuffer();
-    VertexAttribBuffers().swap( m_vertex_attrib_arrays );
+    m_vertex_attrib_arrays.shrink_to_fit();
 }
 
-void VertexBufferObjectManager::drawArrays( GLenum mode, GLint first, GLsizei count )
+void VertexBufferObjectManager::drawArrays(
+    GLenum mode,
+    GLint first,
+    GLsizei count )
 {
     kvs::OpenGL::DrawArrays( mode, first, count );
 }
 
-void VertexBufferObjectManager::drawArrays( GLenum mode, const GLint* first, const GLsizei* count, GLsizei drawcount )
+void VertexBufferObjectManager::drawArrays(
+    GLenum mode,
+    const GLint* first,
+    const GLsizei* count,
+    GLsizei drawcount )
 {
     kvs::OpenGL::MultiDrawArrays( mode, first, count, drawcount );
 }
 
-void VertexBufferObjectManager::drawArrays( GLenum mode, const kvs::ValueArray<GLint>& first, const kvs::ValueArray<GLsizei>& count )
+void VertexBufferObjectManager::drawArrays(
+    GLenum mode,
+    const kvs::ValueArray<GLint>& first,
+    const kvs::ValueArray<GLsizei>& count )
 {
     kvs::OpenGL::MultiDrawArrays( mode, first, count );
 }
 
-void VertexBufferObjectManager::drawElements( GLenum mode, GLsizei count )
+void VertexBufferObjectManager::drawElements(
+    GLenum mode,
+    GLsizei count )
 {
     kvs::IndexBufferObject::Binder bind( m_ibo );
     kvs::OpenGL::DrawElements( mode, count, m_index_array.type, 0 );
 }
 
-void VertexBufferObjectManager::drawElements( GLenum mode, const GLsizei* count, GLsizei drawcount )
+void VertexBufferObjectManager::drawElements(
+    GLenum mode,
+    const GLsizei* count,
+    GLsizei drawcount )
 {
     kvs::IndexBufferObject::Binder bind( m_ibo );
     kvs::OpenGL::MultiDrawElements( mode, count, m_index_array.type, 0, drawcount );
 }
 
-void VertexBufferObjectManager::drawElements( GLenum mode, const kvs::ValueArray<GLsizei>& count )
+void VertexBufferObjectManager::drawElements(
+    GLenum mode,
+    const kvs::ValueArray<GLsizei>& count )
 {
     kvs::IndexBufferObject::Binder bind( m_ibo );
     kvs::OpenGL::MultiDrawElements( mode, count, m_index_array.type, 0 );
@@ -236,13 +284,13 @@ void VertexBufferObjectManager::drawElements( GLenum mode, const kvs::ValueArray
 size_t VertexBufferObjectManager::vertex_buffer_object_size() const
 {
     size_t vbo_size = 0;
-    vbo_size += BufferObject::paddedBufferSize(m_vertex_array.size);
-    vbo_size += BufferObject::paddedBufferSize(m_color_array.size);
-    vbo_size += BufferObject::paddedBufferSize(m_normal_array.size);
-    vbo_size += BufferObject::paddedBufferSize(m_tex_coord_array.size);
+    vbo_size += BufferObject::PaddedBufferSize( m_vertex_array.size );
+    vbo_size += BufferObject::PaddedBufferSize( m_color_array.size );
+    vbo_size += BufferObject::PaddedBufferSize( m_normal_array.size );
+    vbo_size += BufferObject::PaddedBufferSize( m_tex_coord_array.size );
     for ( size_t i = 0; i < m_vertex_attrib_arrays.size(); i++ )
     {
-        vbo_size += BufferObject::paddedBufferSize(m_vertex_attrib_arrays[i].size);
+        vbo_size += BufferObject::PaddedBufferSize( m_vertex_attrib_arrays[i].size );
     }
     return vbo_size;
 }
@@ -329,17 +377,6 @@ void VertexBufferObjectManager::disable_client_state() const
             kvs::OpenGL::DisableVertexAttribArray( array.index );
         }
     }
-}
-
-VertexBufferObjectManager::Binder::Binder( const kvs::VertexBufferObjectManager& vbo_manager ):
-    m_vbo_manager( vbo_manager )
-{
-    m_vbo_manager.bind();
-}
-
-VertexBufferObjectManager::Binder::~Binder()
-{
-    m_vbo_manager.unbind();
 }
 
 } // end of namespace kvs

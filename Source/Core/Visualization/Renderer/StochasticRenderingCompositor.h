@@ -41,6 +41,7 @@ private:
 
 public:
     StochasticRenderingCompositor( kvs::Scene* scene );
+    virtual ~StochasticRenderingCompositor() {}
     const kvs::Timer& timer() const { return m_timer; }
     size_t repetitionLevel() const { return m_repetition_level; }
     bool isLODControlEnabled() const { return m_enable_lod; }

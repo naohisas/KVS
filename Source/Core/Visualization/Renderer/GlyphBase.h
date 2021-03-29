@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GLYPH_BASE_H_INCLUDE
-#define KVS__GLYPH_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/RendererBase>
 #include <kvs/ValueArray>
 #include <kvs/Vector3>
@@ -29,7 +27,6 @@ class GlyphBase : public kvs::RendererBase
     kvsModule( kvs::GlyphBase, Renderer );
 
 public:
-
     enum SizeMode
     {
         SizeByDefault = 0,
@@ -55,7 +52,6 @@ public:
     };
 
 private:
-
     SizeMode m_size_mode; ///< size mode
     DirectionMode m_direction_mode; ///< direction mode
     ColorMode m_color_mode; ///< color mode
@@ -65,11 +61,10 @@ private:
     kvs::ValueArray<kvs::Real32> m_directions; ///< direction vector array
     kvs::ValueArray<kvs::UInt8> m_colors; ///< color value array
     kvs::ValueArray<kvs::UInt8> m_opacities; ///< opacity value array
-    kvs::Vector3f m_scale; ///< scaling vector
+    kvs::Vec3 m_scale; ///< scaling vector
     kvs::TransferFunction m_tfunc; ///< transfer function
 
 public:
-
     GlyphBase();
     virtual ~GlyphBase();
 
@@ -100,7 +95,6 @@ public:
     const kvs::TransferFunction& transferFunction() const { return m_tfunc; }
 
 protected:
-
     void transform( const kvs::Vec3& position, const kvs::Real32 size );
     void transform( const kvs::Vec3& position, const kvs::Vec3& direction, const kvs::Real32 size );
     void calculateCoords( const kvs::VolumeObjectBase* volume );
@@ -114,5 +108,3 @@ protected:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__GLYPH_BASE_H_INCLUDE

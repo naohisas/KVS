@@ -30,7 +30,6 @@ class ParallelCoordinatesRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
-
     int m_top_margin; ///< top margin
     int m_bottom_margin; ///< bottom margin
     int m_left_margin; ///< left margin
@@ -43,7 +42,6 @@ private:
     kvs::ColorMap m_color_map; ///< color map
 
 public:
-
     ParallelCoordinatesRenderer();
 
     void setTopMargin( const int top_margin ) { m_top_margin = top_margin; }

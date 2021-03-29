@@ -40,7 +40,7 @@ private:
 
 public:
     StochasticRenderingEngine();
-    virtual ~StochasticRenderingEngine(){}
+    virtual ~StochasticRenderingEngine() {}
 
     size_t repetitionLevel() const { return m_repetition_level; }
     size_t repetitionCount() const { return m_repetition_count; }
