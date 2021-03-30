@@ -486,7 +486,8 @@ void ProgramObject::setUniform( const GLchar* name, const kvs::ValueArray<GLfloa
 /*===========================================================================*/
 void ProgramObject::createID()
 {
-    if ( !this->isValid() )
+//    if ( !this->isValid() )
+    if ( !this->isCreated() )
     {
         KVS_GL_CALL( m_id = glCreateProgram() );
     }
@@ -499,12 +500,15 @@ void ProgramObject::createID()
 /*===========================================================================*/
 void ProgramObject::deleteID()
 {
-    if ( this->isValid() )
+//    if ( this->isValid() )
+    if ( this->isCreated() )
     {
         this->detach();
+        KVS_GL_CALL( glUseProgram( m_id ) );
         KVS_GL_CALL( glDeleteProgram( m_id ) );
+        KVS_GL_CALL( glUseProgram( 0 ) );
+        m_id = 0;
     }
-    m_id = 0;
 }
 
 /*===========================================================================*/

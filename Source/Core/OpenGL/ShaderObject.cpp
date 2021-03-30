@@ -128,7 +128,8 @@ bool ShaderObject::isCompiled() const
 /*===========================================================================*/
 void ShaderObject::createID()
 {
-    if ( !this->isValid() )
+//    if ( !this->isValid() )
+    if ( !this->isCreated() )
     {
         KVS_GL_CALL( m_id = glCreateShader( m_type ) );
     }
@@ -141,11 +142,12 @@ void ShaderObject::createID()
 /*===========================================================================*/
 void ShaderObject::deleteID()
 {
-    if ( this->isValid() )
+//    if ( this->isValid() )
+    if ( this->isCreated() )
     {
         KVS_GL_CALL( glDeleteShader( m_id ) );
+        m_id = 0;
     }
-    m_id = 0;
 }
 
 } // end of namespace kvs

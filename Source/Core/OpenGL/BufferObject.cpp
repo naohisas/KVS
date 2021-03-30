@@ -134,7 +134,8 @@ GLsizei BufferObject::load( const size_t size, const void* data, const size_t of
 
 void BufferObject::createID()
 {
-    if ( !this->isValid() )
+//    if ( !this->isValid() )
+    if ( !this->isCreated() )
     {
         KVS_GL_CALL( glGenBuffers( 1, &m_id ) );
     }
@@ -142,11 +143,14 @@ void BufferObject::createID()
 
 void BufferObject::deleteID()
 {
-    if ( this->isValid() )
+//    if ( this->isValid() )
+    if ( this->isCreated() )
     {
+        KVS_GL_CALL( glBindBuffer( m_target, m_id ) );
         KVS_GL_CALL( glDeleteBuffers( 1, &m_id ) );
+        KVS_GL_CALL( glBindBuffer( m_target, 0 ) );
+        m_id = 0;
     }
-    m_id = 0;
 }
 
 void BufferObject::setBufferData( GLsizei size, const GLvoid* data )

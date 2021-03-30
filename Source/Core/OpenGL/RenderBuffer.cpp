@@ -64,7 +64,8 @@ bool RenderBuffer::isBound() const
 
 void RenderBuffer::createID()
 {
-    if ( !this->isValid() )
+//    if ( !this->isValid() )
+    if ( !this->isCreated() )
     {
         KVS_GL_CALL( glGenRenderbuffers( 1, &m_id ) );
     }
@@ -72,11 +73,14 @@ void RenderBuffer::createID()
 
 void RenderBuffer::deleteID()
 {
-    if ( this->isValid() )
+//    if ( this->isValid() )
+    if ( this->isCreated() )
     {
+        KVS_GL_CALL( glBindRenderbuffer( GL_RENDERBUFFER, m_id ) );
         KVS_GL_CALL( glDeleteRenderbuffers( 1, &m_id ) );
+        KVS_GL_CALL( glBindRenderbuffer( GL_RENDERBUFFER, 0 ) );
+        m_id = 0;
     }
-    m_id = 0;
 }
 
 void RenderBuffer::setRenderbufferStorage( GLenum internal_format, GLsizei width, GLsizei height )

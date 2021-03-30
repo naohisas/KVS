@@ -26,7 +26,8 @@ private:
 
 public:
     ShaderObject( const GLenum type ): m_type( type ) {}
-    virtual ~ShaderObject() { this->release(); }
+//    virtual ~ShaderObject() { this->release(); }
+    virtual ~ShaderObject() {}
 
     GLuint id() const { return m_id; }
     std::string log() const;

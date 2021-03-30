@@ -236,7 +236,8 @@ void FrameBufferObject::detachDepthRenderBuffer() const
 
 void FrameBufferObject::createID()
 {
-    if ( !this->isValid() )
+//    if ( !this->isValid() )
+    if ( !this->isCreated() )
     {
         KVS_GL_CALL( glGenFramebuffers( 1, &m_id ) );
     }
@@ -244,11 +245,14 @@ void FrameBufferObject::createID()
 
 void FrameBufferObject::deleteID()
 {
-    if ( this->isValid() )
+//    if ( this->isValid() )
+    if ( this->isCreated() )
     {
+        KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_id ) );
         KVS_GL_CALL( glDeleteFramebuffers( 1, &m_id ) );
+        KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_unbind_id ) );
+        m_id = 0;
     }
-    m_id = 0;
 }
 
 GLenum FrameBufferObject::checkFramebufferStatus() const

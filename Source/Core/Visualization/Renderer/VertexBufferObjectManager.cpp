@@ -223,6 +223,7 @@ void VertexBufferObjectManager::release()
     m_ibo.release();
     m_vbo_size = 0;
     m_ibo_size = 0;
+
     m_vertex_array = VertexBuffer();
     m_color_array = VertexBuffer();
     m_normal_array = VertexBuffer();
