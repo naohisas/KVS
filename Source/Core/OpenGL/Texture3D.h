@@ -52,17 +52,6 @@ public:
         const size_t xoffset = 0,
         const size_t yoffset = 0,
         const size_t zoffset = 0 );
-
-public:
-    KVS_DEPRECATED( bool isDownloaded() const ) { return this->isLoaded(); }
-    KVS_DEPRECATED( void download(
-                        const size_t width,
-                        const size_t height,
-                        const size_t depth,
-                        const void* data,
-                        const size_t xoffset = 0,
-                        const size_t yoffset = 0,
-                        const size_t zoffset = 0 ) ) { return this->load( width, height, depth, data, xoffset, yoffset, zoffset ); }
 };
 
 } // end of namespace kvs

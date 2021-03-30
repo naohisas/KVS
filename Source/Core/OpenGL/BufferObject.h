@@ -81,8 +81,6 @@ public:
     void* map( const GLenum type = AccessType::ReadWrite ) { return this->mapBuffer( type ); }
     void unmap() { this->unmapBuffer(); }
 
-    KVS_DEPRECATED( void download( const size_t size, const void* data, const size_t offset = 0 ) ) { this->load( size, data, offset ); }
-
 protected:
     void createID();
     void deleteID();

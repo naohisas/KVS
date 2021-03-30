@@ -69,9 +69,6 @@ protected:
     void createID();
     void deleteID();
     GLenum checkFramebufferStatus() const;
-
-public:
-    KVS_DEPRECATED( void disable() const ) { this->unbind(); }
 };
 
 class FrameBufferObject::Binder

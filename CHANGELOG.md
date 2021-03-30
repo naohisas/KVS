@@ -471,6 +471,24 @@
 + kvs::StochasticRenderingCompositor::setEnabledShading
 + kvs::StochasticRenderingCompositor::enableShading
 + kvs::StochasticRenderingCompositor::disableShading
++ kvs::BufferObject::download (use kvs::BufferObject::load)
++ kvs::FrameBuffer::read (use kvs::FrameBuffer::readPixels)
++ kvs::FrameBuffer::draw (use kvs::FrameBuffer::drawPixels)
++ kvs::FrameBufferObject::disable (use kvs::FrameBufferObject::unbind)
++ kvs::ProgramObject::clear (use kvs::ProgramObject::release)
++ kvs::ProgramObject::setUniformValuei (use kvs::ProgramObject::setUniform)
++ kvs::ProgramObject::setUniformValuef (use kvs::ProgramObject::setUniform)
++ kvs::ShaderObject::create (use kvs::ShaderObject::create and compile)
++ kvs::ShaderObject::clear (use kvs::ShaderObject::release)
++ kvs::Texture::isTexture (use kvs::Texture::isValid)
++ kvs::Texture1D::isDownload (use kvs::Texture1D::isLoaded)
++ kvs::Texture1D::download (use kvs::Texture1D::load)
++ kvs::Texture2D::isDownload (use kvs::Texture2D::isLoaded)
++ kvs::Texture2D::download (use kvs::Texture2D::load)
++ kvs::Texture3D::isDownload (use kvs::Texture3D::isLoaded)
++ kvs::Texture3D::download (use kvs::Texture3D::load)
++ kvs::TextureRectangle::isDownload (use kvs::TextureRectangle::isLoaded)
++ kvs::TextureRectangle::download (use kvs::TextureRectangle::load)
 
 **Removed macro**
 + KVS_MESSAGE_RED

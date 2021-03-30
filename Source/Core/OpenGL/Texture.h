@@ -54,6 +54,7 @@ public:
 
 public:
     Texture( const GLenum target, const GLenum target_binding ): m_target( target ), m_target_binding( target_binding ) {}
+//    virtual ~Texture() {}
 
     /*
     Texture() = delete;
@@ -166,9 +167,6 @@ private:
     void determine_pixel_format_for_2_channel( const size_t bytes_per_channel );
     void determine_pixel_format_for_3_channel( const size_t bytes_per_channel );
     void determine_pixel_format_for_4_channel( const size_t bytes_per_channel );
-
-public:
-    KVS_DEPRECATED( bool isTexture() const ) { return this->isValid(); }
 };
 
 class Texture::Binder

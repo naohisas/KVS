@@ -26,8 +26,7 @@ private:
 
 public:
     ShaderObject( const GLenum type ): m_type( type ) {}
-//    virtual ~ShaderObject() { this->release(); }
-    virtual ~ShaderObject() {}
+    virtual ~ShaderObject() { this->release(); }
 
     GLuint id() const { return m_id; }
     std::string log() const;
@@ -47,10 +46,6 @@ protected:
     ShaderObject();
     void createID();
     void deleteID();
-
-public:
-    KVS_DEPRECATED( bool create( const kvs::ShaderSource& source ) ) { this->create(); return this->compile( source ); }
-    KVS_DEPRECATED( void clear() ) { this->release(); }
 };
 
 } // end of namespace kvs

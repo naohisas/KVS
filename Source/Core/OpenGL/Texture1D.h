@@ -37,10 +37,6 @@ public:
     void release();
     void load( const size_t width, const void* data, const size_t offset = 0 );
     void loadFromFrameBuffer( const int x, const int y, const size_t width, const size_t offset = 0 );
-
-public:
-    KVS_DEPRECATED( bool isDownloaded() const ) { return this->isLoaded(); }
-    KVS_DEPRECATED( void download( const size_t width, const void* data, const size_t offset = 0 ) ) { this->load( width, data, offset ); }
 };
 
 } // end of namespace kvs
