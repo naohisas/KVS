@@ -490,27 +490,6 @@ void PolygonRenderer::RenderPass::draw( const kvs::ObjectBase* object )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new PolygonRenderer class.
- */
-/*===========================================================================*/
-PolygonRenderer::PolygonRenderer():
-    m_shading_model( new kvs::Shader::Lambert() ),
-    m_render_pass( m_buffer_object )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the PolygonRenderer class.
- */
-/*===========================================================================*/
-PolygonRenderer::~PolygonRenderer()
-{
-    if ( m_shading_model ) { delete m_shading_model; }
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes rendering process.
  *  @param  object [in] pointer to the object
  *  @param  camera [in] pointer to the camera

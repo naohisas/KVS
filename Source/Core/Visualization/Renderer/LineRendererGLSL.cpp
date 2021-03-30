@@ -448,27 +448,6 @@ void LineRenderer::RenderPass::draw( const kvs::ObjectBase* object )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new LineRenderer class.
- */
-/*===========================================================================*/
-LineRenderer::LineRenderer():
-    m_shading_model( new kvs::Shader::Lambert() ),
-    m_render_pass( m_buffer_object )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the LineRenderer class.
- */
-/*===========================================================================*/
-LineRenderer::~LineRenderer()
-{
-    if ( m_shading_model ) { delete m_shading_model; }
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes rendering process.
  *  @param  object [in] pointer to the object
  *  @param  camera [in] pointer to the camera
@@ -544,7 +523,7 @@ void LineRenderer::drawBufferObject( const kvs::Camera* camera )
     auto dpr = camera->devicePixelRatio();
     auto line_width = line->size();
 
-    // Seting for drawing outline.
+    // Setting for drawing outline.
     // {
     auto outline_color = m_render_pass.outlineColor();
     auto outline_width = m_render_pass.outlineWidth();

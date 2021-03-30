@@ -78,7 +78,7 @@ private:
 
 public:
     VertexBufferObjectManager() = default;
-    virtual ~VertexBufferObjectManager() = default;
+    virtual ~VertexBufferObjectManager() { this->release(); }
 
     const kvs::VertexBufferObject& vertexBufferObject() const { return m_vbo; }
     const kvs::IndexBufferObject& indexBufferObject() const { return m_ibo; }

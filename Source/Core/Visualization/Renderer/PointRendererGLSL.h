@@ -75,12 +75,12 @@ private:
     const kvs::ObjectBase* m_object = nullptr; ///< pointer to the rendering object
     kvs::Shader::ShadingModel* m_shading_model = nullptr; ///< shading method
 
-    RenderPass m_render_pass; ///< render pass
-    BufferObject m_buffer_object; ///< buffer object
+    BufferObject m_buffer_object{}; ///< buffer object
+    RenderPass m_render_pass{ m_buffer_object }; ///< render pass
 
 public:
-    PointRenderer();
-    virtual ~PointRenderer();
+    PointRenderer(): m_shading_model( new kvs::Shader::Lambert() ) {}
+    virtual ~PointRenderer() { if ( m_shading_model ) { delete m_shading_model; } }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 

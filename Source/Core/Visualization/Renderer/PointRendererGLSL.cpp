@@ -182,27 +182,6 @@ void PointRenderer::RenderPass::draw( const kvs::ObjectBase* object )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new PointRenderer class.
- */
-/*===========================================================================*/
-PointRenderer::PointRenderer():
-    m_shading_model( new kvs::Shader::Lambert() ),
-    m_render_pass( m_buffer_object )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the PointRenderer class.
- */
-/*===========================================================================*/
-PointRenderer::~PointRenderer()
-{
-    if ( m_shading_model ) { delete m_shading_model; }
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes the rendering process.
  *  @param  object [in] pointer to the object
  *  @param  camera [in] pointer to the camera
