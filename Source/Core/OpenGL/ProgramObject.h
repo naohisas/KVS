@@ -89,8 +89,8 @@ protected:
     void setParameter( GLenum pname, GLint value );
 
 public:
-    /*KVS_DEPRECATED*/ bool link( const kvs::VertexShader& vertex_shader, const kvs::FragmentShader& fragment_shader );
-    /*KVS_DEPRECATED*/ void create( const kvs::ShaderSource& vertex_source, const kvs::ShaderSource& fragment_source );
+    KVS_DEPRECATED( bool link( const kvs::VertexShader& vertex_shader, const kvs::FragmentShader& fragment_shader ) );
+    KVS_DEPRECATED( void create( const kvs::ShaderSource& vertex_source, const kvs::ShaderSource& fragment_source ) );
 };
 
 class ProgramObject::Binder

@@ -22,10 +22,8 @@ private:
 public:
     TextureBinder( const kvs::Texture& texture, const GLint unit = 0 );
     ~TextureBinder();
-
-private:
-    TextureBinder( const TextureBinder& );
-    TextureBinder& operator =( const TextureBinder& );
+    TextureBinder( const TextureBinder& ) = delete;
+    TextureBinder& operator =( const TextureBinder& ) = delete;
 };
 
 } // end of namespace kvs

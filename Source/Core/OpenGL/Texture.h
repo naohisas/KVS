@@ -54,7 +54,7 @@ public:
 
 public:
     Texture( const GLenum target, const GLenum target_binding ): m_target( target ), m_target_binding( target_binding ) {}
-//    virtual ~Texture() {}
+    virtual ~Texture() {}
 
     /*
     Texture() = delete;

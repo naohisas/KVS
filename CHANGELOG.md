@@ -365,6 +365,8 @@
 + kvs::StochasticPolygonRenderer::Engine::setPolygonOffset (use kvs::StochasticPolygonRenderer::Engine::setDepthOffset)
 + kvs::Program::start( argc, argv ) (use kvs::Program::run)
 + kvs::Program::exec( argc, argv ) (use kvs::Program::exec)
++ kvs::ProgramObject::link( vert_shader, frag_shader ) (use kvs::ProgramObject::create, attach, and link)
++ kvs::ProgramObject::create( vert_shader, frag_shader )
 
 **Removed deprecated class and method**
 + kvs::Material

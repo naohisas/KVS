@@ -10,14 +10,6 @@
 #include <kvs/OpenGL>
 #include <iostream>
 
-//#ifndef GL_TEXTURE_RECTANGLE
-//#define GL_TEXTURE_RECTANGLE 0x84F5
-//#endif
-
-//#ifndef GL_TEXTURE_BINDING_RECTANGLE
-//#define GL_TEXTURE_BINDING_RECTANGLE 0x84F6
-//#endif
-
 
 namespace kvs
 {

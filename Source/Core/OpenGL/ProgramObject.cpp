@@ -565,7 +565,6 @@ ProgramObject::Binder::~Binder()
     KVS_GL_CALL( glUseProgram( 0 ) );
 }
 
-
 // DEPRECATED
 bool ProgramObject::link(
     const kvs::VertexShader &vertex_shader,
