@@ -14,6 +14,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Unbinds 2D textures.
+ */
+/*===========================================================================*/
 void Texture2D::Unbind()
 {
     kvs::Texture::Unbind( GL_TEXTURE_2D );
@@ -21,7 +26,7 @@ void Texture2D::Unbind()
 
 /*==========================================================================*/
 /**
- *  Create the texture.
+ *  @brief  Create the texture.
  */
 /*==========================================================================*/
 void Texture2D::create( const size_t width, const size_t height, const void* data )
@@ -43,7 +48,7 @@ void Texture2D::create( const size_t width, const size_t height, const void* dat
 
 /*==========================================================================*/
 /**
- *  Release the texture.
+ *  @brief  Release the texture.
  */
 /*==========================================================================*/
 void Texture2D::release()
@@ -54,12 +59,12 @@ void Texture2D::release()
 
 /*==========================================================================*/
 /**
- *  Download the texture data to the GPU.
- *  @param width [in] texture width
- *  @param height [in] texture height
- *  @param data [in] pointer to the pixel data
- *  @param xoffset [in] texel offset in the x direction within the pixel data
- *  @param yoffset [in] texel offset in the y direction within the pixel data
+ *  @brief  Download the texture data to the GPU.
+ *  @param  width [in] texture width
+ *  @param  height [in] texture height
+ *  @param  data [in] pointer to the pixel data
+ *  @param  xoffset [in] texel offset in the x direction within the pixel data
+ *  @param  yoffset [in] texel offset in the y direction within the pixel data
  */
 /*==========================================================================*/
 void Texture2D::load(
@@ -88,6 +93,17 @@ void Texture2D::load(
 //    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
 }
 
+/*==========================================================================*/
+/**
+ *  @brief  Load texture data to from frame buffer.
+ *  @param  x [in] x position of the left corner of the row of pixels
+ *  @param  y [in] y position of the left corner of the row of pixels
+ *  @param  width [in] texture width
+ *  @param  height [in] texture height
+ *  @param  xoffset [in] texel offset in the x-direction within the pixel data
+ *  @param  yoffset [in] texel offset in the y-direction within the pixel data
+ */
+/*==========================================================================*/
 void Texture2D::loadFromFrameBuffer(
     const int x,
     const int y,

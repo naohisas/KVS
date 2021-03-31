@@ -14,6 +14,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Unbinds texture rectangles.
+ */
+/*===========================================================================*/
 void TextureRectangle::Unbind()
 {
     kvs::Texture::Unbind( GL_TEXTURE_RECTANGLE );
@@ -21,7 +26,7 @@ void TextureRectangle::Unbind()
 
 /*==========================================================================*/
 /**
- *  Create the texture.
+ *  @brief  Create the texture.
  */
 /*==========================================================================*/
 void TextureRectangle::create( const size_t width, const size_t height, const void* data )
@@ -43,7 +48,7 @@ void TextureRectangle::create( const size_t width, const size_t height, const vo
 
 /*==========================================================================*/
 /**
- *  Release the texture.
+ *  @brief  Release the texture.
  */
 /*==========================================================================*/
 void TextureRectangle::release()
@@ -54,12 +59,12 @@ void TextureRectangle::release()
 
 /*==========================================================================*/
 /**
- *  Load the texture data to the GPU.
- *  @param width [in] texture width
- *  @param height [in] texture height
- *  @param pixels [in] pointer to the pixel data
- *  @param xoffset [in] texel offset in the x direction within the pixel data
- *  @param yoffset [in] texel offset in the y direction within the pixel data
+ *  @brief  Load the texture data to the GPU.
+ *  @param  width [in] texture width
+ *  @param  height [in] texture height
+ *  @param  pixels [in] pointer to the pixel data
+ *  @param  xoffset [in] texel offset in the x direction within the pixel data
+ *  @param  yoffset [in] texel offset in the y direction within the pixel data
  */
 /*==========================================================================*/
 void TextureRectangle::load(
@@ -69,10 +74,10 @@ void TextureRectangle::load(
     const size_t xoffset,
     const size_t yoffset )
 {
-    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
-    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
-    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
-    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
+//    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
+//    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
 
     if ( !m_is_loaded )
     {
@@ -84,8 +89,8 @@ void TextureRectangle::load(
         BaseClass::setSubImageRectangle( width, height, data, xoffset, yoffset );
     }
 
-    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
-    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
+//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
 }
 
 } // end of namespace kvs

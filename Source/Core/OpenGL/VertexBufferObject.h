@@ -24,7 +24,6 @@ public:
             GL_ARRAY_BUFFER,
             GL_ARRAY_BUFFER_BINDING,
             GL_DYNAMIC_DRAW ) {}
-
 };
 
 } // end of namespace kvs

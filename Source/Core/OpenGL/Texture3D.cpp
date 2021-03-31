@@ -14,6 +14,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Unbinds 3D textures.
+ */
+/*===========================================================================*/
 void Texture3D::Unbind()
 {
     kvs::Texture::Unbind( GL_TEXTURE_3D );
@@ -21,7 +26,7 @@ void Texture3D::Unbind()
 
 /*==========================================================================*/
 /**
- *  Create the texture.
+ *  @brief  Create the texture.
  */
 /*==========================================================================*/
 void Texture3D::create( const size_t width, const size_t height, const size_t depth, const void* data )
@@ -46,7 +51,7 @@ void Texture3D::create( const size_t width, const size_t height, const size_t de
 
 /*==========================================================================*/
 /**
- *  Release the texture.
+ *  @brief  Release the texture.
  */
 /*==========================================================================*/
 void Texture3D::release()
@@ -57,14 +62,14 @@ void Texture3D::release()
 
 /*==========================================================================*/
 /**
- *  Load the texture data to the GPU.
- *  @param width  [in] texture width
- *  @param height [in] texture height
- *  @param depth  [in] texture depth
- *  @param data [in] pointer to the pixel data
- *  @param xoffset [in] texel offset in the x direction within the pixel data
- *  @param yoffset [in] texel offset in the y direction within the pixel data
- *  @param zoffset [in] texel offset in the z direction within the pixel data
+ *  @brief  Load the texture data to the GPU.
+ *  @param  width  [in] texture width
+ *  @param  height [in] texture height
+ *  @param  depth  [in] texture depth
+ *  @param  data [in] pointer to the pixel data
+ *  @param  xoffset [in] texel offset in the x direction within the pixel data
+ *  @param  yoffset [in] texel offset in the y direction within the pixel data
+ *  @param  zoffset [in] texel offset in the z direction within the pixel data
  */
 /*==========================================================================*/
 void Texture3D::load(
@@ -95,6 +100,19 @@ void Texture3D::load(
 //    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
 }
 
+/*==========================================================================*/
+/**
+ *  @brief  Load texture data to from frame buffer.
+ *  @param  x [in] x position of the left corner of the row of pixels
+ *  @param  y [in] y position of the left corner of the row of pixels
+ *  @param  width [in] texture width
+ *  @param  height [in] texture height
+ *  @param  depth [in] texture depth (not used)
+ *  @param  xoffset [in] texel offset in the x-direction within the pixel data
+ *  @param  yoffset [in] texel offset in the y-direction within the pixel data
+ *  @param  zoffset [in] texel offset in the z-direction within the pixel data
+ */
+/*==========================================================================*/
 void Texture3D::loadFromFrameBuffer(
     const int x,
     const int y,

@@ -11,6 +11,13 @@
 namespace
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns name of OpenGL data type.
+ *  @param  array [in] value array
+ *  @return name of OpenGL data type
+ */
+/*===========================================================================*/
 inline GLenum GLType( const kvs::AnyValueArray& array )
 {
     switch ( array.typeID() )
@@ -33,6 +40,12 @@ inline GLenum GLType( const kvs::AnyValueArray& array )
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets vertex attribute array buffer.
+ *  @param  buffer [in] vertex attribute array buffer
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::setVertexAttribArray(
     const VertexAttribBuffer& buffer )
 {
@@ -49,6 +62,14 @@ void VertexBufferObjectManager::setVertexAttribArray(
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets vertex value array.
+ *  @param  array [in] vertex value array
+ *  @param  dim [in] dimension of the array
+ *  @param  stride [in] data stride
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::setVertexArray(
     const kvs::AnyValueArray& array,
     const size_t dim,
@@ -61,6 +82,14 @@ void VertexBufferObjectManager::setVertexArray(
     m_vertex_array.pointer = array.data();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets color value array.
+ *  @param  array [in] color value array
+ *  @param  dim [in] dimension of the array
+ *  @param  stride [in] data stride
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::setColorArray(
     const kvs::AnyValueArray& array,
     const size_t dim,
@@ -73,6 +102,13 @@ void VertexBufferObjectManager::setColorArray(
     m_color_array.pointer = array.data();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets normal vector array.
+ *  @param  array [in] color value array
+ *  @param  stride [in] data stride
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::setNormalArray(
     const kvs::AnyValueArray& array,
     const size_t stride )
@@ -84,6 +120,14 @@ void VertexBufferObjectManager::setNormalArray(
     m_normal_array.pointer = array.data();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets texture coordinate value array.
+ *  @param  array [in] texture coordinate value array
+ *  @param  dim [in] dimension of the array
+ *  @param  stride [in] data stride
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::setTexCoordArray(
     const kvs::AnyValueArray& array,
     const size_t dim,
@@ -96,6 +140,12 @@ void VertexBufferObjectManager::setTexCoordArray(
     m_tex_coord_array.pointer = array.data();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets index array.
+ *  @param  array [in] index array
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::setIndexArray(
     const kvs::AnyValueArray& array )
 {
@@ -104,6 +154,16 @@ void VertexBufferObjectManager::setIndexArray(
     m_index_array.pointer = array.data();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets vertex attribute value array.
+ *  @param  array [in] vertex attribute value array
+ *  @param  index [in] index of vertex attribute to be modified
+ *  @param  dim [in] dimension of the array
+ *  @param  normalized [in] data values should be normalized (GL_TRUE) or not (GL_FALSE)
+ *  @param  stride [in] data stride
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::setVertexAttribArray(
     const kvs::AnyValueArray& array,
     const size_t index,
@@ -134,6 +194,11 @@ void VertexBufferObjectManager::setVertexAttribArray(
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Creates a vertex buffer object and an index buffer object.
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::create()
 {
     const size_t vbo_size = this->vertex_buffer_object_size();
@@ -205,20 +270,33 @@ void VertexBufferObjectManager::create()
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Binds vertex buffer object.
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::bind() const
 {
     m_vbo.bind();
-    m_ibo.bind();
     this->enable_client_state();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Unbinds vertex buffer object.
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::unbind() const
 {
     this->disable_client_state();
-    m_ibo.unbind();
     m_vbo.unbind();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Release resources of vertex buffer object and index buffer object.
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::release()
 {
     m_vbo.release();
@@ -234,6 +312,14 @@ void VertexBufferObjectManager::release()
     m_vertex_attrib_arrays.shrink_to_fit();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws vertex buffer object.
+ *  @param  mode [in] rendering geometric primitives
+ *  @param  first [in] starting index in the arrays
+ *  @param  count [in] number of indices to be rendered
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::drawArrays(
     GLenum mode,
     GLint first,
@@ -242,6 +328,15 @@ void VertexBufferObjectManager::drawArrays(
     kvs::OpenGL::DrawArrays( mode, first, count );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws vertex buffer object.
+ *  @param  mode [in] rendering geometric primitives
+ *  @param  first [in] array of starting index in the arrays
+ *  @param  count [in] array of number of indices to be rendered
+ *  @param  drawcount [in] size of the first and count
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::drawArrays(
     GLenum mode,
     const GLint* first,
@@ -251,6 +346,14 @@ void VertexBufferObjectManager::drawArrays(
     kvs::OpenGL::MultiDrawArrays( mode, first, count, drawcount );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws vertex buffer object.
+ *  @param  mode [in] rendering geometric primitives
+ *  @param  first [in] array of starting index in the arrays
+ *  @param  count [in] array of number of indices to be rendered
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::drawArrays(
     GLenum mode,
     const kvs::ValueArray<GLint>& first,
@@ -259,6 +362,13 @@ void VertexBufferObjectManager::drawArrays(
     kvs::OpenGL::MultiDrawArrays( mode, first, count );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws vertex buffer object with index buffer object.
+ *  @param  mode [in] rendering geometric primitives
+ *  @param  count [in] number of indices to be rendered
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::drawElements(
     GLenum mode,
     GLsizei count )
@@ -267,6 +377,14 @@ void VertexBufferObjectManager::drawElements(
     kvs::OpenGL::DrawElements( mode, count, m_index_array.type, 0 );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws vertex buffer object with index buffer object.
+ *  @param  mode [in] rendering geometric primitives
+ *  @param  count [in] array of number of indices to be rendered
+ *  @param  drawcount [in] size of the count
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::drawElements(
     GLenum mode,
     const GLsizei* count,
@@ -276,6 +394,13 @@ void VertexBufferObjectManager::drawElements(
     kvs::OpenGL::MultiDrawElements( mode, count, m_index_array.type, 0, drawcount );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Draws vertex buffer object with index buffer object.
+ *  @param  mode [in] rendering geometric primitives
+ *  @param  count [in] array of number of indices to be rendered
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::drawElements(
     GLenum mode,
     const kvs::ValueArray<GLsizei>& count )
@@ -284,6 +409,12 @@ void VertexBufferObjectManager::drawElements(
     kvs::OpenGL::MultiDrawElements( mode, count, m_index_array.type, 0 );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns data size of vertex buffer object.
+ *  @return data size of vertex buffer object
+ */
+/*===========================================================================*/
 size_t VertexBufferObjectManager::vertex_buffer_object_size() const
 {
     size_t vbo_size = 0;
@@ -298,6 +429,11 @@ size_t VertexBufferObjectManager::vertex_buffer_object_size() const
     return vbo_size;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Enables client-side capability
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::enable_client_state() const
 {
     if ( m_vertex_array.size > 0 )
@@ -350,6 +486,11 @@ void VertexBufferObjectManager::enable_client_state() const
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Disables client-side capability
+ */
+/*===========================================================================*/
 void VertexBufferObjectManager::disable_client_state() const
 {
     if ( m_vertex_array.size > 0 )

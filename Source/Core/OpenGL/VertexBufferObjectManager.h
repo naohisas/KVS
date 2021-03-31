@@ -58,23 +58,22 @@ public:
         Binder( const kvs::VertexBufferObjectManager& manager ):
             m_manager( manager ) { m_manager.bind(); }
         ~Binder() { m_manager.unbind(); }
-    private:
-        Binder( const Binder& );
-        Binder& operator = ( const Binder& );
+        Binder( const Binder& ) = delete;
+        Binder& operator = ( const Binder& ) = delete;
     };
 
 private:
-    kvs::VertexBufferObject m_vbo{};
-    kvs::IndexBufferObject m_ibo{};
-    size_t m_vbo_size = 0;
-    size_t m_ibo_size = 0;
+    kvs::VertexBufferObject m_vbo{}; ///< vertex buffer object (VBO)
+    kvs::IndexBufferObject m_ibo{}; ///< index buffer object (IBO)
+    size_t m_vbo_size = 0; ///< data size of VBO
+    size_t m_ibo_size = 0; ///< data size of IBO
 
-    VertexBuffer m_vertex_array{};
-    VertexBuffer m_color_array{};
-    VertexBuffer m_normal_array{};
-    VertexBuffer m_tex_coord_array{};
-    IndexBuffer m_index_array{};
-    VertexAttribBuffers m_vertex_attrib_arrays{};
+    VertexBuffer m_vertex_array{}; ///< vertex array buffer
+    VertexBuffer m_color_array{}; ///< color array buffer
+    VertexBuffer m_normal_array{}; ///< normal array buffer
+    VertexBuffer m_tex_coord_array{}; ///< texture coordinate array buffer
+    IndexBuffer m_index_array{}; ///< index array buffer
+    VertexAttribBuffers m_vertex_attrib_arrays{}; ///< vertex attribute array buffers
 
 public:
     VertexBufferObjectManager() = default;

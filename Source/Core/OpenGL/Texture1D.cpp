@@ -14,6 +14,11 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Unbinds 1D textures.
+ */
+/*===========================================================================*/
 void Texture1D::Unbind()
 {
     kvs::Texture::Unbind( GL_TEXTURE_1D );
@@ -21,7 +26,7 @@ void Texture1D::Unbind()
 
 /*==========================================================================*/
 /**
- *  Create the texture.
+ *  @brief  Create the texture.
  */
 /*==========================================================================*/
 void Texture1D::create( const size_t width, const void* data )
@@ -40,7 +45,7 @@ void Texture1D::create( const size_t width, const void* data )
 
 /*==========================================================================*/
 /**
- *  Release the texture.
+ *  @brief  Release the texture.
  */
 /*==========================================================================*/
 void Texture1D::release()
@@ -51,10 +56,10 @@ void Texture1D::release()
 
 /*==========================================================================*/
 /**
- *  Load the texture data to the GPU.
- *  @param width [in] texture width
- *  @param data [in] pointer to the pixel data
- *  @param xoffset [in] texel offset in the x direction within the pixel data
+ *  @brief  Load texture data to the GPU.
+ *  @param  width [in] texture width
+ *  @param  data [in] pointer to the pixel data
+ *  @param  offset [in] texel offset in the x direction within the pixel data
  */
 /*==========================================================================*/
 void Texture1D::load(
@@ -81,6 +86,15 @@ void Texture1D::load(
 //    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
 }
 
+/*==========================================================================*/
+/**
+ *  @brief  Load texture data to from frame buffer.
+ *  @param  x [in] x position of the left corner of the row of pixels
+ *  @param  y [in] y position of the left corner of the row of pixels
+ *  @param  width [in] texture width
+ *  @param  offset [in] texel offset in the x-direction within the pixel data
+ */
+/*==========================================================================*/
 void Texture1D::loadFromFrameBuffer(
     const int x,
     const int y,
