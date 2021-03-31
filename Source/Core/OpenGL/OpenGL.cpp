@@ -1782,13 +1782,7 @@ void DrawArrays( GLenum mode, GLint first, GLsizei count )
 
 void MultiDrawArrays( GLenum mode, const GLint* first, const GLsizei* count, GLsizei drawcount )
 {
-// if OpenGL version is 1.4 or later?
     KVS_GL_CALL( glMultiDrawArrays( mode, first, count, drawcount ) );
-// else
-//    for ( GLsizei i = 0; i < drawcount; ++i )
-//    {
-//        if ( count[i] > 0 ) { kvs::OpenGL::DrawArrays( mode, first[i], count[i] ); }
-//    }
 }
 
 void MultiDrawArrays( GLenum mode, const kvs::ValueArray<GLint>& first, const kvs::ValueArray<GLsizei>& count )
@@ -1803,13 +1797,7 @@ void DrawElements( GLenum mode, GLsizei count, GLenum type, const GLvoid* indice
 
 void MultiDrawElements( GLenum mode, const GLsizei* count, GLenum type, const GLvoid* const* indices, GLsizei drawcount )
 {
-// if OpenGL version is 1.4 or later?
     KVS_GL_CALL( glMultiDrawElements( mode, count, type, (const GLvoid**)indices, drawcount ) );
-// else
-//    for ( GLsizei i = 0; i < drawcount; ++i )
-//    {
-//        if ( count[i] > 0 ) { kvs::OpenGL::DrawElements( mode, count[i], type, indices ); }
-//    }
 }
 
 void MultiDrawElements( GLenum mode, const kvs::ValueArray<GLsizei>& count, GLenum type, const GLvoid* const* indices )
@@ -2198,112 +2186,6 @@ WithPushedMatrix::~WithPushedMatrix()
     kvs::OpenGL::SetMatrixMode( m_current_mode );
 }
 
-void WithPushedMatrix::loadIdentity()
-{
-    kvs::OpenGL::LoadIdentity();
-}
-
-void WithPushedMatrix::loadMatrix( const GLfloat* m )
-{
-    kvs::OpenGL::LoadMatrix( m );
-}
-
-void WithPushedMatrix::loadMatrix( const GLdouble* m )
-{
-    kvs::OpenGL::LoadMatrix( m );
-}
-
-void WithPushedMatrix::multMatrix( const GLfloat* m )
-{
-    kvs::OpenGL::MultMatrix( m );
-}
-
-void WithPushedMatrix::multMatrix( const GLdouble* m )
-{
-    kvs::OpenGL::MultMatrix( m );
-}
-
-void WithPushedMatrix::rotate( GLfloat angle, GLfloat x, GLfloat y, GLfloat z )
-{
-    kvs::OpenGL::Rotate( angle, x, y, z );
-}
-
-void WithPushedMatrix::scale( GLfloat x, GLfloat y, GLfloat z )
-{
-    kvs::OpenGL::Scale( x, y, z );
-}
-
-void WithPushedMatrix::translate( GLfloat x, GLfloat y, GLfloat z )
-{
-    kvs::OpenGL::Translate( x, y, z );
-}
-
-WithPushedAttrib::WithPushedAttrib( GLbitfield mask )
-{
-    kvs::OpenGL::PushAttrib( mask );
-}
-
-WithPushedAttrib::~WithPushedAttrib()
-{
-    kvs::OpenGL::PopAttrib();
-}
-
-void WithPushedAttrib::enable( GLenum cap )
-{
-    kvs::OpenGL::Enable( cap );
-}
-
-void WithPushedAttrib::disable( GLenum cap )
-{
-    kvs::OpenGL::Disable( cap );
-}
-
-WithPushedClientAttrib::WithPushedClientAttrib( GLbitfield mask )
-{
-    kvs::OpenGL::PushClientAttrib( mask );
-}
-
-WithPushedClientAttrib::~WithPushedClientAttrib()
-{
-    kvs::OpenGL::PopClientAttrib();
-}
-
-WithEnabled::WithEnabled( GLenum cap ):
-    m_cap( cap )
-{
-    kvs::OpenGL::Enable( cap );
-}
-
-WithEnabled::~WithEnabled()
-{
-    kvs::OpenGL::Disable( m_cap );
-}
-
-WithDisabled::WithDisabled( GLenum cap ):
-    m_cap( cap )
-{
-    kvs::OpenGL::Disable( cap );
-}
-
-WithDisabled::~WithDisabled()
-{
-    kvs::OpenGL::Enable( m_cap );
-}
-
-Render2D::Render2D()
-{
-}
-
-Render2D::Render2D( GLint x, GLint y, GLint width, GLint height )
-{
-    this->setViewport( x, y, width, height );
-}
-
-Render2D::Render2D( const kvs::Vec4& viewport )
-{
-    this->setViewport( viewport );
-}
-
 void Render2D::begin()
 {
     kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
@@ -2317,10 +2199,10 @@ void Render2D::begin()
     kvs::OpenGL::LoadIdentity();
 
     // The origin is upper-left.
-    const GLint left = m_viewport[0];
-    const GLint top = m_viewport[1];
-    const GLint right = m_viewport[0] + m_viewport[2];
-    const GLint bottom = m_viewport[1] + m_viewport[3];
+    const GLint left = m_vp[0];
+    const GLint top = m_vp[1];
+    const GLint right = m_vp[0] + m_vp[2];
+    const GLint bottom = m_vp[1] + m_vp[3];
     kvs::OpenGL::SetOrtho( left, right, bottom, top, -1, 1 );
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
 }
@@ -2334,14 +2216,6 @@ void Render2D::end()
     kvs::OpenGL::PopMatrix();
 
     kvs::OpenGL::PopAttrib();
-}
-
-void Render2D::setViewport( GLint x, GLint y, GLint width, GLint height )
-{
-    m_viewport[0] = x;
-    m_viewport[1] = y;
-    m_viewport[2] = width;
-    m_viewport[3] = height;
 }
 
 } // end of namespace OpenGL
