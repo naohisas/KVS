@@ -129,6 +129,7 @@
 #include <Core/OpenGL/Texture3D.h>
 #include <Core/OpenGL/TextureRectangle.h>
 #include <Core/OpenGL/VertexBufferObject.h>
+#include <Core/OpenGL/VertexBufferObjectManager.h>
 #include <Core/OpenGL/VertexShader.h>
 #include <Core/OpenMP/OMP.h>
 #include <Core/OpenMP/OpenMP.h>
@@ -355,7 +356,6 @@
 #include <Core/Visualization/Renderer/StochasticUniformGridRenderer.h>
 #include <Core/Visualization/Renderer/StylizedLineRenderer.h>
 #include <Core/Visualization/Renderer/ValueAxis.h>
-#include <Core/Visualization/Renderer/VertexBufferObjectManager.h>
 #include <Core/Visualization/Renderer/VolumeRayIntersector.h>
 #include <Core/Visualization/Renderer/VolumeRendererBase.h>
 #include <Core/Visualization/Viewer/Application.h>

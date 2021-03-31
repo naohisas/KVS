@@ -208,6 +208,7 @@ $(OUTDIR)\.\OpenGL\Texture1D.obj \
 $(OUTDIR)\.\OpenGL\Texture2D.obj \
 $(OUTDIR)\.\OpenGL\Texture3D.obj \
 $(OUTDIR)\.\OpenGL\TextureRectangle.obj \
+$(OUTDIR)\.\OpenGL\VertexBufferObjectManager.obj \
 $(OUTDIR)\.\OpenMP\OpenMP.obj \
 $(OUTDIR)\.\Thread\Condition.obj \
 $(OUTDIR)\.\Thread\Mutex.obj \
@@ -378,7 +379,6 @@ $(OUTDIR)\.\Visualization\Renderer\StochasticTetrahedraRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StochasticUniformGridRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\StylizedLineRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ValueAxis.obj \
-$(OUTDIR)\.\Visualization\Renderer\VertexBufferObjectManager.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRayIntersector.obj \
 $(OUTDIR)\.\Visualization\Renderer\VolumeRendererBase.obj \
 $(OUTDIR)\.\Visualization\Viewer\ApplicationBase.obj \

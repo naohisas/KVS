@@ -129,6 +129,7 @@ OpenGL/Texture2D
 OpenGL/Texture3D
 OpenGL/TextureRectangle
 OpenGL/VertexBufferObject
+OpenGL/VertexBufferObjectManager
 OpenGL/VertexShader
 OpenMP/OMP
 OpenMP/OpenMP
@@ -355,7 +356,6 @@ Visualization/Renderer/StochasticTetrahedraRenderer
 Visualization/Renderer/StochasticUniformGridRenderer
 Visualization/Renderer/StylizedLineRenderer
 Visualization/Renderer/ValueAxis
-Visualization/Renderer/VertexBufferObjectManager
 Visualization/Renderer/VolumeRayIntersector
 Visualization/Renderer/VolumeRendererBase
 Visualization/Viewer/Application
