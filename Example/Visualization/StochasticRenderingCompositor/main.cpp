@@ -48,7 +48,7 @@ int main( int argc, char** argv )
     polygon_object->print( std::cout << std::endl );
 
     auto* polygon_renderer = new kvs::StochasticPolygonRenderer();
-    polygon_renderer->setPolygonOffset( 0.001f );
+    polygon_renderer->setDepthOffset( 0.001f );
 
     screen.registerObject( polygon_object, polygon_renderer );
     screen.registerObject( volume_object, volume_renderer );
