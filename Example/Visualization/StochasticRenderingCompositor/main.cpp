@@ -61,11 +61,11 @@ int main( int argc, char** argv )
     kvs::TransferFunctionEditor editor( &screen );
     editor.setPosition( screen.x() + screen.width(), screen.y() );
     editor.setVolumeObject( volume_object );
-    editor.apply(
-        [&]( kvs::TransferFunction tfunc ) {
-            volume_renderer->setTransferFunction( tfunc );
-            screen.redraw();
-        } );
+    editor.apply( [&]( kvs::TransferFunction tfunc )
+    {
+        volume_renderer->setTransferFunction( tfunc );
+        screen.redraw();
+    } );
     editor.show();
 
     kvs::CheckBox checkbox( &screen );
@@ -73,11 +73,11 @@ int main( int argc, char** argv )
     checkbox.setMargin( 10 );
     checkbox.setState( true );
     checkbox.anchorToTopLeft();
-    checkbox.stateChanged(
-        [&]() {
-            compositor.setLODControlEnabled( checkbox.state() );
-            screen.redraw();
-        } );
+    checkbox.stateChanged( [&]()
+    {
+        compositor.setLODControlEnabled( checkbox.state() );
+        screen.redraw();
+    } );
     checkbox.show();
 
     kvs::Slider opacity( &screen );
@@ -87,16 +87,16 @@ int main( int argc, char** argv )
     opacity.setValue( 0.5 );
     opacity.setRange( 0, 1 );
     opacity.anchorToBottom( &checkbox );
-    opacity.valueChanged(
-        [&]() {
-            auto* scene = screen.scene();
-            auto* object1 = kvs::PolygonObject::DownCast( scene->object( "Polygon" ) );
-            auto* object2 = new kvs::PolygonObject();
-            object2->shallowCopy( *object1 );
-            object2->setName( "Polygon" );
-            object2->setOpacity( int( opacity.value() * 255 + 0.5 ) );
-            scene->replaceObject( "Polygon", object2 );
-        } );
+    opacity.valueChanged( [&]()
+    {
+        auto* scene = screen.scene();
+        auto* object1 = kvs::PolygonObject::DownCast( scene->object( "Polygon" ) );
+        auto* object2 = new kvs::PolygonObject();
+        object2->shallowCopy( *object1 );
+        object2->setName( "Polygon" );
+        object2->setOpacity( int( opacity.value() * 255 + 0.5 ) );
+        scene->replaceObject( "Polygon", object2 );
+    } );
     opacity.show();
 
     kvs::Slider repetition( &screen );
@@ -106,11 +106,11 @@ int main( int argc, char** argv )
     repetition.setValue( 50 );
     repetition.setRange( 1, 100 );
     repetition.anchorToBottom( &opacity );
-    repetition.valueChanged(
-        [&]() {
-            compositor.setRepetitionLevel( int( repetition.value() + 0.5 ) );
-            screen.redraw();
-        } );
+    repetition.valueChanged( [&]()
+    {
+        compositor.setRepetitionLevel( int( repetition.value() + 0.5 ) );
+        screen.redraw();
+    } );
     repetition.show();
 
     return app.run();
