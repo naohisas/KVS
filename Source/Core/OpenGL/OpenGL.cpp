@@ -2344,13 +2344,6 @@ void Render2D::setViewport( GLint x, GLint y, GLint width, GLint height )
     m_viewport[3] = height;
 }
 
-void ActivateTextureUnit( GLint unit )
-{
-    KVS_ASSERT( unit >= 0 );
-    KVS_ASSERT( unit < kvs::OpenGL::MaxCombinedTextureImageUnits() );
-    KVS_GL_CALL( glActiveTexture( GL_TEXTURE0 + unit ) );
-}
-
 } // end of namespace OpenGL
 
 } // end of namespace kvs

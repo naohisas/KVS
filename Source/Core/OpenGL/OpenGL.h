@@ -401,10 +401,6 @@ public:
     void setViewport( GLint x, GLint y, GLint width, GLint height );
 };
 
-/*KVS_DEPRECATED*/ void ActivateTextureUnit( GLint unit );
-/*KVS_DEPRECATED*/ inline std::string ShaderVersion() { return GLSLVersion(); }
-/*KVS_DEPRECATED*/ inline bool CheckError() { return !HasError(); }
-
 } // end of namespace OpenGL
 
 } // end of namespace kvs

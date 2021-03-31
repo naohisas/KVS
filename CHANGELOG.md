@@ -491,6 +491,9 @@
 + kvs::Texture3D::download (use kvs::Texture3D::load)
 + kvs::TextureRectangle::isDownload (use kvs::TextureRectangle::isLoaded)
 + kvs::TextureRectangle::download (use kvs::TextureRectangle::load)
++ kvs::OpenGL::ActivateTextureUnit (use kvs::Texture::SelectActiveUnit)
++ kvs::OpenGL::ShaderVersion (use kvs::OpenGL::GLSLVersion)
++ kvs::OpenGL::CheckError (use kvs::OpenGL::HasError)
 
 **Removed macro**
 + KVS_MESSAGE_RED
