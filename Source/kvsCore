@@ -127,7 +127,6 @@
 #include <Core/OpenGL/Texture1D.h>
 #include <Core/OpenGL/Texture2D.h>
 #include <Core/OpenGL/Texture3D.h>
-#include <Core/OpenGL/TextureBinder.h>
 #include <Core/OpenGL/TextureRectangle.h>
 #include <Core/OpenGL/VertexBufferObject.h>
 #include <Core/OpenGL/VertexShader.h>

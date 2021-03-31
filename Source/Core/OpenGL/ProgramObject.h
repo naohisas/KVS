@@ -24,7 +24,7 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Program object class.
+ *  @brief  Program object class.
  */
 /*===========================================================================*/
 class ProgramObject
@@ -93,9 +93,14 @@ public:
     KVS_DEPRECATED( void create( const kvs::ShaderSource& vertex_source, const kvs::ShaderSource& fragment_source ) );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Binder class for ProgramObject.
+ */
+/*===========================================================================*/
 class ProgramObject::Binder
 {
-    const kvs::ProgramObject& m_po;
+    const kvs::ProgramObject& m_po; ///< target program object
 public:
     Binder( const kvs::ProgramObject& po );
     ~Binder();

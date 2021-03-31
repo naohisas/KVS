@@ -151,9 +151,8 @@ void Texture::deleteID()
 //    if ( this->isValid() )
     if ( this->isCreated() )
     {
-        KVS_GL_CALL( glBindTexture( m_target, m_id ) );
+        if ( this->isBound() ) { this->unbind(); }
         KVS_GL_CALL( glDeleteTextures( 1, &m_id ) );
-        KVS_GL_CALL( glBindTexture( m_target, 0 ) );
         m_id = 0;
     }
 }

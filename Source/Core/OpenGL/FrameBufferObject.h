@@ -18,7 +18,7 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Frame buffer object class.
+ *  @brief  Frame buffer object class.
  */
 /*===========================================================================*/
 class FrameBufferObject
@@ -71,20 +71,30 @@ protected:
     GLenum checkFramebufferStatus() const;
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Binder class for FrameBufferObject.
+ */
+/*===========================================================================*/
 class FrameBufferObject::Binder
 {
-    const kvs::FrameBufferObject& m_fbo;
+    const kvs::FrameBufferObject& m_fbo; ///< target frame buffer object
 public:
-    Binder( const kvs::FrameBufferObject& fbo );
-    ~Binder();
+    Binder( const kvs::FrameBufferObject& fbo ): m_fbo( fbo ) { m_fbo.bind(); }
+    ~Binder() { m_fbo.unbind(); }
     Binder( const Binder& ) = delete;
     Binder& operator =( const Binder& ) = delete;
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Guarded binder class for FrameBufferObject.
+ */
+/*===========================================================================*/
 class FrameBufferObject::GuardedBinder
 {
-    const kvs::FrameBufferObject& m_fbo;
-    GLint m_id = 0;
+    const kvs::FrameBufferObject& m_fbo; ///< target frame buffer object
+    GLint m_id = 0; ///< target binding ID
 public:
     GuardedBinder( const kvs::FrameBufferObject& fbo );
     ~GuardedBinder();

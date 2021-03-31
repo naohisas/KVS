@@ -71,6 +71,7 @@ void ProgramObject::detach() const
         std::vector<GLuint> ids( nshaders );
         KVS_GL_CALL( glGetAttachedShaders( m_id, nshaders, nullptr, ids.data() ) );
 
+        Binder bind( *this );
         for ( const auto& id : ids )
         {
             KVS_GL_CALL( glDetachShader( m_id, id ) );
@@ -504,9 +505,8 @@ void ProgramObject::deleteID()
     if ( this->isCreated() )
     {
         this->detach();
-        KVS_GL_CALL( glUseProgram( m_id ) );
+        if ( this->isBound() ) { this->unbind(); }
         KVS_GL_CALL( glDeleteProgram( m_id ) );
-        KVS_GL_CALL( glUseProgram( 0 ) );
         m_id = 0;
     }
 }

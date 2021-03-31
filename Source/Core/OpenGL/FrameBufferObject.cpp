@@ -18,7 +18,7 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Bind frame buffer object.
+ *  @brief  Bind frame buffer object.
  */
 /*===========================================================================*/
 void FrameBufferObject::bind() const
@@ -29,7 +29,7 @@ void FrameBufferObject::bind() const
 
 /*===========================================================================*/
 /**
- *  Disable frame buffer object.
+ *  @brief  Disable frame buffer object.
  */
 /*===========================================================================*/
 void FrameBufferObject::unbind() const
@@ -38,11 +38,23 @@ void FrameBufferObject::unbind() const
     KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_unbind_id ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determins if a frame buffer object is created.
+ *  @return true if the frame buffer object has been already created
+ */
+/*===========================================================================*/
 bool FrameBufferObject::isCreated() const
 {
     return m_id > 0;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determins if a frame buffer object is valid.
+ *  @return true if the frame buffer object has been already allocated
+ */
+/*===========================================================================*/
 bool FrameBufferObject::isValid() const
 {
     GLboolean result = GL_FALSE;
@@ -50,6 +62,12 @@ bool FrameBufferObject::isValid() const
     return result == GL_TRUE;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determines if a frame buffer object is bound.
+ *  @return true if the frame buffer object has been already bound
+ */
+/*===========================================================================*/
 bool FrameBufferObject::isBound() const
 {
     if ( !this->isCreated() ) { return false; }
@@ -57,6 +75,11 @@ bool FrameBufferObject::isBound() const
     return static_cast<GLuint>( id ) == m_id;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Check the completness status of a frame buffer object.
+ */
+/*===========================================================================*/
 void FrameBufferObject::checkStatus() const
 {
     const GLenum status = this->checkFramebufferStatus();
@@ -91,6 +114,14 @@ void FrameBufferObject::checkStatus() const
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Attaches 1D color texture.
+ *  @param  texture [in] 1D texture
+ *  @param  color_buffer [in] attachment point (0 to GL_MAX_COLOR_ATTACHMENTS)
+ *  @param  mip_level [in] mip level
+ */
+/*===========================================================================*/
 void FrameBufferObject::attachColorTexture(
     const kvs::Texture1D& texture,
     const size_t color_buffer,
@@ -106,9 +137,9 @@ void FrameBufferObject::attachColorTexture(
 
 /*===========================================================================*/
 /**
- *  Attach color texture.
+ *  @brief  Attaches 2D color texture.
  *  @param  texture [in] 2D texture
- *  @param  color_buffer [in] color buffer
+ *  @param  color_buffer [in] attachment point (zero to GL_MAX_COLOR_ATTACHMENTS)
  *  @param  mip_level [in] mip level
  */
 /*===========================================================================*/
@@ -127,11 +158,11 @@ void FrameBufferObject::attachColorTexture(
 
 /*===========================================================================*/
 /**
- *  Attach color texture.
+ *  @brief  Attaches 3D color texture.
  *  @param  texture [in] 3D texture
- *  @param  color_buffer [in] color buffer
+ *  @param  color_buffer [in] attachment point (zero to GL_MAX_COLOR_ATTACHMENTS)
  *  @param  mip_level [in] mip level
- *  @param  zoffset [in] offset
+ *  @param  zoffset [in] offset along z-axis of the 3D texture
  */
 /*===========================================================================*/
 void FrameBufferObject::attachColorTexture(
@@ -148,6 +179,13 @@ void FrameBufferObject::attachColorTexture(
     KVS_GL_CALL( glFramebufferTexture3D( GL_FRAMEBUFFER, attachment, type, id, mip_level, zoffset ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Attaches 1D depth texture.
+ *  @param  texture [in] 1D texture
+ *  @param  mip_level [in] mip level
+ */
+/*===========================================================================*/
 void FrameBufferObject::attachDepthTexture(
     const kvs::Texture1D& texture,
     const int mip_level ) const
@@ -159,6 +197,13 @@ void FrameBufferObject::attachDepthTexture(
     KVS_GL_CALL( glFramebufferTexture1D( GL_FRAMEBUFFER, attachment, type, id, mip_level ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Attaches 2D depth texture.
+ *  @param  texture [in] 2D texture
+ *  @param  mip_level [in] mip level
+ */
+/*===========================================================================*/
 void FrameBufferObject::attachDepthTexture(
     const kvs::Texture2D& texture,
     const int mip_level ) const
@@ -170,6 +215,14 @@ void FrameBufferObject::attachDepthTexture(
     KVS_GL_CALL( glFramebufferTexture2D( GL_FRAMEBUFFER, attachment, type, id, mip_level ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Attaches 3D depth texture.
+ *  @param  texture [in] 3D texture
+ *  @param  mip_level [in] mip level
+ *  @param  zoffset [in] offset along z-axis of the 3D texture
+ */
+/*===========================================================================*/
 void FrameBufferObject::attachDepthTexture(
     const kvs::Texture3D& texture,
     const int mip_level,
@@ -182,6 +235,13 @@ void FrameBufferObject::attachDepthTexture(
     KVS_GL_CALL( glFramebufferTexture3D( GL_FRAMEBUFFER, attachment, type, id, mip_level, zoffset ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Attaches color render buffer.
+ *  @param  render_buffer [in] render buffer
+ *  @param  color_buffer [in] attachment point (zero to GL_MAX_COLOR_ATTACHMENTS)
+ */
+/*===========================================================================*/
 void FrameBufferObject::attachColorRenderBuffer(
     const kvs::RenderBuffer& render_buffer,
     const size_t color_buffer ) const
@@ -193,6 +253,12 @@ void FrameBufferObject::attachColorRenderBuffer(
     KVS_GL_CALL( glFramebufferRenderbuffer( GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, id ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Attaches depth render buffer.
+ *  @param  render_buffer [in] render buffer
+ */
+/*===========================================================================*/
 void FrameBufferObject::attachDepthRenderBuffer(
     const kvs::RenderBuffer& render_buffer ) const
 {
@@ -202,6 +268,13 @@ void FrameBufferObject::attachDepthRenderBuffer(
     KVS_GL_CALL( glFramebufferRenderbuffer( GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, id ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Dettaches 2D color texture.
+ *  @param  color_buffer [in] attachment point (zero to GL_MAX_COLOR_ATTACHMENTS)
+ *  @param  mip_level [in] mip level
+ */
+/*===========================================================================*/
 void FrameBufferObject::detachColorTexture(
     const size_t color_buffer,
     const int mip_level ) const
@@ -212,6 +285,12 @@ void FrameBufferObject::detachColorTexture(
     KVS_GL_CALL( glFramebufferTexture2D( GL_FRAMEBUFFER, attachment, type, 0, mip_level ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Dettaches 2D depth texture.
+ *  @param  mip_level [in] mip level
+ */
+/*===========================================================================*/
 void FrameBufferObject::detachDepthTexture( const int mip_level ) const
 {
     GuardedBinder binder( *this );
@@ -220,6 +299,12 @@ void FrameBufferObject::detachDepthTexture( const int mip_level ) const
     KVS_GL_CALL( glFramebufferTexture2D( GL_FRAMEBUFFER, attachment, type, 0, mip_level ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Dettaches color render buffer.
+ *  @param  color_buffer [in] attachment point (zero to GL_MAX_COLOR_ATTACHMENTS)
+ */
+/*===========================================================================*/
 void FrameBufferObject::detachColorRenderBuffer( const size_t color_buffer ) const
 {
     GuardedBinder binder( *this );
@@ -227,6 +312,11 @@ void FrameBufferObject::detachColorRenderBuffer( const size_t color_buffer ) con
     KVS_GL_CALL( glFramebufferRenderbuffer( GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, 0 ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Dettaches depth render buffer.
+ */
+/*===========================================================================*/
 void FrameBufferObject::detachDepthRenderBuffer() const
 {
     GuardedBinder binder( *this );
@@ -234,6 +324,11 @@ void FrameBufferObject::detachDepthRenderBuffer() const
     KVS_GL_CALL( glFramebufferRenderbuffer( GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, 0 ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Creates frame bufffer object ID.
+ */
+/*===========================================================================*/
 void FrameBufferObject::createID()
 {
 //    if ( !this->isValid() )
@@ -243,18 +338,28 @@ void FrameBufferObject::createID()
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Deletes frame buffer object ID.
+ */
+/*===========================================================================*/
 void FrameBufferObject::deleteID()
 {
 //    if ( this->isValid() )
     if ( this->isCreated() )
     {
-        KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_id ) );
+        if ( this->isBound() ) { this->unbind(); }
         KVS_GL_CALL( glDeleteFramebuffers( 1, &m_id ) );
-        KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_unbind_id ) );
         m_id = 0;
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Check the completness status of a frame buffer object.
+ *  @return status of the frame buffer object
+ */
+/*===========================================================================*/
 GLenum FrameBufferObject::checkFramebufferStatus() const
 {
     GuardedBinder binder( *this );
@@ -263,19 +368,12 @@ GLenum FrameBufferObject::checkFramebufferStatus() const
     return status;
 }
 
-FrameBufferObject::Binder::Binder( const FrameBufferObject& fbo ) :
-    m_fbo( fbo )
-{
-    KVS_ASSERT( fbo.isCreated() );
-    fbo.bind();
-}
-
-FrameBufferObject::Binder::~Binder()
-{
-    KVS_ASSERT( m_fbo.isCreated() );
-    m_fbo.unbind();
-}
-
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new GuardedBinder class.
+ *  @param  fbo [in] target frame buffer object that will be bound
+ */
+/*===========================================================================*/
 FrameBufferObject::GuardedBinder::GuardedBinder( const kvs::FrameBufferObject& fbo ):
     m_fbo( fbo )
 {
@@ -284,6 +382,11 @@ FrameBufferObject::GuardedBinder::GuardedBinder( const kvs::FrameBufferObject& f
     if ( fbo.id() != static_cast<GLuint>( m_id ) ) { fbo.bind(); }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Destroy the GuardedBinder class.
+ */
+/*===========================================================================*/
 FrameBufferObject::GuardedBinder::~GuardedBinder()
 {
     KVS_ASSERT( m_fbo.isCreated() );

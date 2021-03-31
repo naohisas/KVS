@@ -510,6 +510,7 @@
 + kvs::StochasticMultipleTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
 + kvs::StochasticMultivariateTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
 + kvs::glsl::rits::ParticleBasedRenderer (use kvs::glsl::ParticleBasedRenderer)
++ kvs::TextureBinder (use kvs::Texture::Binder)
 
 **Removed methods**
 + kvs::glut::ScreenBase::timerEventHandler

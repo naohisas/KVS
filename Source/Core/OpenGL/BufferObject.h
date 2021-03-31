@@ -15,7 +15,7 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Buffer object class.
+ *  @brief  Buffer object class.
  */
 /*===========================================================================*/
 class BufferObject
@@ -97,10 +97,10 @@ protected:
 /*===========================================================================*/
 class BufferObject::Binder
 {
-    const kvs::BufferObject& m_bo;
+    const kvs::BufferObject& m_bo; ///< target buffer object (reference)
 public:
-    Binder( const kvs::BufferObject& bo );
-    ~Binder();
+    Binder( const kvs::BufferObject& bo ): m_bo( bo ) { m_bo.bind(); }
+    ~Binder() { m_bo.unbind(); }
     Binder( const Binder& ) = delete;
     Binder& operator =( const Binder& ) = delete;
 };
@@ -112,8 +112,8 @@ public:
 /*===========================================================================*/
 class BufferObject::GuardedBinder
 {
-    const kvs::BufferObject& m_bo;
-    GLint m_id = 0;
+    const kvs::BufferObject& m_bo; ///< target buffer object (reference)
+    GLint m_id = 0; ///< target binding ID
 public:
     GuardedBinder( const kvs::BufferObject& bo );
     ~GuardedBinder();

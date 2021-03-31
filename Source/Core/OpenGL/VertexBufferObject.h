@@ -19,7 +19,12 @@ namespace kvs
 class VertexBufferObject : public kvs::BufferObject
 {
 public:
-    VertexBufferObject();
+    VertexBufferObject():
+        kvs::BufferObject(
+            GL_ARRAY_BUFFER,
+            GL_ARRAY_BUFFER_BINDING,
+            GL_DYNAMIC_DRAW ) {}
+
 };
 
 } // end of namespace kvs

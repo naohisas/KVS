@@ -169,6 +169,11 @@ private:
     void determine_pixel_format_for_4_channel( const size_t bytes_per_channel );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Binder class for Texture class.
+ */
+/*===========================================================================*/
 class Texture::Binder
 {
 private:

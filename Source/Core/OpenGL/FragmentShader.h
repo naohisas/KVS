@@ -14,7 +14,7 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Fragment shader class.
+ *  @brief  Fragment shader class.
  */
 /*===========================================================================*/
 class FragmentShader : public kvs::ShaderObject
@@ -23,8 +23,15 @@ public:
     using SuperClass = kvs::ShaderObject;
 
 public:
-    FragmentShader(): kvs::ShaderObject( GL_FRAGMENT_SHADER ) {}
-    FragmentShader( const kvs::ShaderSource& source );
+    FragmentShader():
+        kvs::ShaderObject( GL_FRAGMENT_SHADER ) {}
+
+    FragmentShader( const kvs::ShaderSource& source ):
+        kvs::ShaderObject( GL_FRAGMENT_SHADER )
+    {
+        SuperClass::create();
+        SuperClass::setSource( source );
+    }
 };
 
 } // end of namespace kvs

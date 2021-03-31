@@ -195,15 +195,10 @@ $(OUTDIR)/./Numeric/SVSolver.o \
 $(OUTDIR)/./Numeric/StudentTDistribution.o \
 $(OUTDIR)/./Numeric/Xorshift128.o \
 $(OUTDIR)/./OpenGL/BufferObject.o \
-$(OUTDIR)/./OpenGL/FragmentShader.o \
 $(OUTDIR)/./OpenGL/FrameBuffer.o \
 $(OUTDIR)/./OpenGL/FrameBufferObject.o \
 $(OUTDIR)/./OpenGL/GL.o \
-$(OUTDIR)/./OpenGL/GeometryShader.o \
-$(OUTDIR)/./OpenGL/IndexBufferObject.o \
 $(OUTDIR)/./OpenGL/OpenGL.o \
-$(OUTDIR)/./OpenGL/PixelPackBufferObject.o \
-$(OUTDIR)/./OpenGL/PixelUnpackBufferObject.o \
 $(OUTDIR)/./OpenGL/ProgramObject.o \
 $(OUTDIR)/./OpenGL/RenderBuffer.o \
 $(OUTDIR)/./OpenGL/ShaderObject.o \
@@ -212,10 +207,7 @@ $(OUTDIR)/./OpenGL/Texture.o \
 $(OUTDIR)/./OpenGL/Texture1D.o \
 $(OUTDIR)/./OpenGL/Texture2D.o \
 $(OUTDIR)/./OpenGL/Texture3D.o \
-$(OUTDIR)/./OpenGL/TextureBinder.o \
 $(OUTDIR)/./OpenGL/TextureRectangle.o \
-$(OUTDIR)/./OpenGL/VertexBufferObject.o \
-$(OUTDIR)/./OpenGL/VertexShader.o \
 $(OUTDIR)/./OpenMP/OpenMP.o \
 $(OUTDIR)/./Thread/Condition.o \
 $(OUTDIR)/./Thread/Mutex.o \

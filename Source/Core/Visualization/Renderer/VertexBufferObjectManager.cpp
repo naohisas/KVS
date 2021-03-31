@@ -208,12 +208,14 @@ void VertexBufferObjectManager::create()
 void VertexBufferObjectManager::bind() const
 {
     m_vbo.bind();
+    m_ibo.bind();
     this->enable_client_state();
 }
 
 void VertexBufferObjectManager::unbind() const
 {
     this->disable_client_state();
+    m_ibo.unbind();
     m_vbo.unbind();
 }
 

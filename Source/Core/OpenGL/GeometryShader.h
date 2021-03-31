@@ -17,7 +17,7 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Geometry shader class.
+ *  @brief  Geometry shader class.
  */
 /*===========================================================================*/
 class GeometryShader : public kvs::ShaderObject
@@ -26,8 +26,15 @@ public:
     using SuperClass = kvs::ShaderObject;
 
 public:
-    GeometryShader(): kvs::ShaderObject( GL_GEOMETRY_SHADER ) {}
-    GeometryShader( const kvs::ShaderSource& source );
+    GeometryShader():
+        kvs::ShaderObject( GL_GEOMETRY_SHADER ) {}
+
+    GeometryShader( const kvs::ShaderSource& source ):
+        kvs::ShaderObject( GL_GEOMETRY_SHADER )
+    {
+        SuperClass::create();
+        SuperClass::setSource( source );
+    }
 };
 
 } // end of namespace kvs

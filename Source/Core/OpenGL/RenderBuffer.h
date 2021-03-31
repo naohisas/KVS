@@ -62,7 +62,7 @@ protected:
 /*===========================================================================*/
 class RenderBuffer::Binder
 {
-    const kvs::RenderBuffer& m_rb;
+    const kvs::RenderBuffer& m_rb; ///< target render buffer
 public:
     Binder( const kvs::RenderBuffer& rb ): m_rb( rb ) { m_rb.bind(); }
     ~Binder() { m_rb.unbind(); }
@@ -77,8 +77,8 @@ public:
 /*===========================================================================*/
 class RenderBuffer::GuardedBinder
 {
-    const kvs::RenderBuffer& m_rb;
-    GLint m_id = 0;
+    const kvs::RenderBuffer& m_rb; ///< target render buffer
+    GLint m_id = 0; ///< target binding ID
 public:
     GuardedBinder( const kvs::RenderBuffer& rb );
     ~GuardedBinder();

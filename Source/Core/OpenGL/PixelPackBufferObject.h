@@ -13,13 +13,18 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Pixel buffer object.
+ *  @brief  Pixel buffer object.
  */
 /*===========================================================================*/
 class PixelPackBufferObject : public kvs::BufferObject
 {
 public:
-    PixelPackBufferObject();
+    PixelPackBufferObject():
+        kvs::BufferObject(
+            GL_PIXEL_PACK_BUFFER,
+            GL_PIXEL_PACK_BUFFER_BINDING,
+            GL_DYNAMIC_DRAW ) {}
+
 };
 
 } // end of namespace kvs
