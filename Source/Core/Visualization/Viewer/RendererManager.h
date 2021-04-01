@@ -19,23 +19,25 @@ class RendererBase;
 
 /*==========================================================================*/
 /**
-*  Renderer manager class.
+*  @breif  Renderer manager class.
 */
 /*==========================================================================*/
 class RendererManager
 {
 private:
-    typedef kvs::SharedPointer<kvs::RendererBase> RendererPointer;
-    typedef std::vector<std::pair<int, RendererPointer> > RendererList;
-    typedef RendererList::iterator RendererIterator;
+    using RendererPointer = kvs::SharedPointer<kvs::RendererBase>;
+    using RendererList = std::vector<std::pair<int, RendererPointer> >;
+    using RendererIterator = RendererList::iterator;
 
 private:
-    RendererList m_renderer_list; ///< renderer list
-    int m_renderer_id; ///< renderer ID
+    RendererList m_renderer_list{}; ///< renderer list
+    int m_renderer_id = 0; ///< renderer ID
 
 public:
-    RendererManager();
-    virtual ~RendererManager();
+    RendererManager() = default;
+    virtual ~RendererManager() = default;
+    RendererManager( const RendererManager& ) = delete;
+    RendererManager& operator =( const RendererManager& ) = delete;
 
     int insert( kvs::RendererBase* renderer );
     void erase( bool delete_flag );
@@ -47,12 +49,12 @@ public:
     kvs::RendererBase* renderer( int id );
     kvs::RendererBase* renderer( std::string name );
 
-    int numberOfRenderers() const;
-    bool hasRenderer() const;
+    int numberOfRenderers() const { return m_renderer_list.size(); }
+    bool hasRenderer() const { return this->numberOfRenderers() != 0; }
     int rendererID( const kvs::RendererBase* renderer ) const;
 
     int insert( const kvs::SharedPointer<kvs::RendererBase>& renderer );
-    void erase();
+    void erase() { m_renderer_list.clear(); }
     void erase( int id );
     void erase( std::string name );
     void change( int id, const kvs::SharedPointer<kvs::RendererBase>& renderer );
@@ -61,10 +63,6 @@ public:
 private:
     RendererIterator find_renderer( int id );
     RendererIterator find_renderer( std::string name );
-
-private:
-    RendererManager( const RendererManager& );
-    RendererManager& operator =( const RendererManager& );
 };
 
 } // end of namespace kvs

@@ -11,65 +11,38 @@
 namespace
 {
 
-// for compatibility
+/*===========================================================================*/
+/**
+ *  @brief  Renderer deleter class. (for compatibility)
+ */
+/*===========================================================================*/
 class RendererDeleter
 {
+    bool m_auto_del = true;
 public:
-    RendererDeleter( bool auto_delete = true )
-    {
-        m_auto_delete = auto_delete;
-    }
-
-    void operator ()( kvs::RendererBase* ren )
-    {
-        if ( m_auto_delete )
-        {
-            delete ren;
-        }
-    }
-
-    void disableAutoDelete()
-    {
-        m_auto_delete = false;
-    }
-
-private:
-    bool m_auto_delete;
+    RendererDeleter( bool auto_del = true ): m_auto_del( auto_del ) {}
+    void operator ()( kvs::RendererBase* r ) { if ( m_auto_del ) { delete r; } }
+    void disableAutoDelete() { m_auto_del = false; }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Disables auto-delete for the specified renderer.
+ *  @param  sp [in] shared pointer to the renderer
+ */
+/*===========================================================================*/
 void DisableAutoDelete( const kvs::SharedPointer<kvs::RendererBase>& sp )
 {
     // Disable deletion if the deleter type of sp is RendererDeleter.
     RendererDeleter* d = kvs::get_deleter<RendererDeleter>( sp );
-    if ( d )
-    {
-        d->disableAutoDelete();
-    }
+    if ( d ) { d->disableAutoDelete(); }
 }
 
-}
+} // end of namespace
+
 
 namespace kvs
 {
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new RendererManager class.
- */
-/*==========================================================================*/
-RendererManager::RendererManager()
-{
-    m_renderer_id = 0;
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Destroys the RendererManager class.
- */
-/*==========================================================================*/
-RendererManager::~RendererManager()
-{
-}
 
 /*==========================================================================*/
 /**
@@ -251,28 +224,6 @@ kvs::RendererBase* RendererManager::renderer( std::string name )
     return NULL;
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Returns the number of the stored renderers.
- *  @return number of the stored renderers
- */
-/*==========================================================================*/
-int RendererManager::numberOfRenderers() const
-{
-    return m_renderer_list.size();
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Test whether the renderer manager has renderers.
- *  @return true, if the renderer manager has renderers.
- */
-/*==========================================================================*/
-bool RendererManager::hasRenderer() const
-{
-    return m_renderer_list.size() != 0;
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Returns ID of the specified renderer.
@@ -312,16 +263,6 @@ int RendererManager::insert( const kvs::SharedPointer<kvs::RendererBase>& render
 
 /*==========================================================================*/
 /**
- *  @brief  Erase the renderer.
- */
-/*==========================================================================*/
-void RendererManager::erase()
-{
-    m_renderer_list.clear();
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Erase the renderer which is specified by the given ID.
  *  @param  id [in] renderer ID
  */
@@ -330,7 +271,6 @@ void RendererManager::erase( int id )
 {
     RendererIterator renderer = this->find_renderer( id );
     if ( renderer == m_renderer_list.end() ) return;
-
     m_renderer_list.erase( renderer );
 }
 
@@ -344,7 +284,6 @@ void RendererManager::erase( std::string name )
 {
     RendererIterator renderer = this->find_renderer( name );
     if ( renderer == m_renderer_list.end() ) return;
-
     m_renderer_list.erase( renderer );
 }
 
@@ -355,7 +294,9 @@ void RendererManager::erase( std::string name )
  *  @param  renderer [in] pointer to the inserting renderer
  */
 /*==========================================================================*/
-void RendererManager::change( int id, const kvs::SharedPointer<kvs::RendererBase>& renderer )
+void RendererManager::change(
+    int id,
+    const kvs::SharedPointer<kvs::RendererBase>& renderer )
 {
     // Search the object which is specified by given renderer ID in the
     // renderer pointer list. If it isn't found, this method executes nothing.
@@ -373,7 +314,9 @@ void RendererManager::change( int id, const kvs::SharedPointer<kvs::RendererBase
  *  @param  renderer [in] pointer to the inserting renderer
  */
 /*==========================================================================*/
-void RendererManager::change( std::string name, const kvs::SharedPointer<kvs::RendererBase>& renderer )
+void RendererManager::change(
+    std::string name,
+    const kvs::SharedPointer<kvs::RendererBase>& renderer )
 {
     RendererIterator registered_renderer = this->find_renderer( name );
     if ( registered_renderer == m_renderer_list.end() ) return;

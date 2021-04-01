@@ -145,15 +145,16 @@ void StochasticUniformGridRenderer::Engine::create(
     kvs::Light* light )
 {
     auto* volume = kvs::StructuredVolumeObject::DownCast( object );
-    const float dpr = camera->devicePixelRatio();
-    const size_t framebuffer_width = static_cast<size_t>( camera->windowWidth() * dpr );
-    const size_t framebuffer_height = static_cast<size_t>( camera->windowHeight() * dpr );
-
     BaseClass::attachObject( object );
     BaseClass::createRandomTexture();
 
     this->create_shader_program( BaseClass::shader(), BaseClass::isShadingEnabled() );
+
+    const float dpr = camera->devicePixelRatio();
+    const size_t framebuffer_width = static_cast<size_t>( camera->windowWidth() * dpr );
+    const size_t framebuffer_height = static_cast<size_t>( camera->windowHeight() * dpr );
     this->create_framebuffer( framebuffer_width, framebuffer_height );
+
     this->create_buffer_object( volume );
 }
 
