@@ -14,21 +14,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new StochasticRenderingEngine class.
- */
-/*===========================================================================*/
-StochasticRenderingEngine::StochasticRenderingEngine():
-    m_object( NULL ),
-    m_shader( NULL ),
-    m_enable_shading( true ),
-    m_repetition_level( 1 ),
-    m_repetition_count( 0 ),
-    m_random_texture_size( 512 )
-{
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Creates random texture.
  */
 /*===========================================================================*/
@@ -49,7 +34,14 @@ void StochasticRenderingEngine::createRandomTexture()
     m_random_texture.create( m_random_texture_size, m_random_texture_size, random.data() );
 }
 
-kvs::ValueArray<kvs::UInt16> StochasticRenderingEngine::randomIndices( const size_t nvertices ) const
+/*===========================================================================*/
+/**
+ *  @brief  Returns randomized indices.
+ *  @param  nvertices [in] number of vertices
+ */
+/*===========================================================================*/
+kvs::ValueArray<kvs::UInt16> StochasticRenderingEngine::randomIndices(
+    const size_t nvertices ) const
 {
     const auto tex_size = this->randomTextureSize();
     kvs::ValueArray<kvs::UInt16> indices( nvertices * 2 );

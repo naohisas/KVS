@@ -29,18 +29,22 @@ class StochasticRenderingEngine
     friend class StochasticRenderingCompositor;
 
 private:
-    const kvs::ObjectBase* m_object; ///< pointer to the object
-    const kvs::Shader::ShadingModel* m_shader; ///< pointer to the shader
-    bool m_enable_shading; ///< shading flag
-    size_t m_repetition_level; ///< repetition level
-    size_t m_repetition_count; ///< repetition count
-    size_t m_random_texture_size; ///< size of the random texture
-    kvs::Texture2D m_random_texture; ///< random number texture
-    kvs::Texture2D m_depth_texture; ///< depth texture
+    const kvs::ObjectBase* m_object = nullptr; ///< pointer to the object
+    const kvs::Shader::ShadingModel* m_shader = nullptr; ///< pointer to the shader
+    bool m_enable_shading = true; ///< shading flag
+    size_t m_repetition_level = 1; ///< repetition level
+    size_t m_repetition_count = 0; ///< repetition count
+    size_t m_random_texture_size = 512; ///< size of the random texture
+    kvs::Texture2D m_random_texture{}; ///< random number texture
+    kvs::Texture2D m_depth_texture{}; ///< depth texture
 
 public:
-    StochasticRenderingEngine();
-    virtual ~StochasticRenderingEngine() {}
+    StochasticRenderingEngine() = default;
+    virtual ~StochasticRenderingEngine()
+    {
+        m_random_texture.release();
+        m_depth_texture.release();
+    }
 
     size_t repetitionLevel() const { return m_repetition_level; }
     size_t repetitionCount() const { return m_repetition_count; }
@@ -67,7 +71,7 @@ public:
     void resetRepetitions() { m_repetition_count = 0; }
     void countRepetitions() { m_repetition_count++; }
     void attachObject( const kvs::ObjectBase* object ) { m_object = object; }
-    void detachObject() { m_object = NULL; }
+    void detachObject() { m_object = nullptr; }
     void createRandomTexture();
     kvs::ValueArray<kvs::UInt16> randomIndices( const size_t nvertices ) const;
 
