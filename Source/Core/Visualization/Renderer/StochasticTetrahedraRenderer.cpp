@@ -49,7 +49,9 @@ int RandomNumber()
  *  @param  size [in] random texture size
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::UInt16> RandomIndices( const kvs::UnstructuredVolumeObject* volume, const size_t size )
+kvs::ValueArray<kvs::UInt16> RandomIndices(
+    const kvs::UnstructuredVolumeObject* volume,
+    const size_t size )
 {
     const size_t nnodes = volume->numberOfNodes();
     kvs::ValueArray<kvs::UInt16> indices( nnodes * 2 );
@@ -70,7 +72,8 @@ kvs::ValueArray<kvs::UInt16> RandomIndices( const kvs::UnstructuredVolumeObject*
  */
 /*===========================================================================*/
 template <typename T>
-kvs::ValueArray<kvs::Real32> NormalizedValuesForType( const kvs::UnstructuredVolumeObject* volume )
+kvs::ValueArray<kvs::Real32> NormalizedValuesForType(
+    const kvs::UnstructuredVolumeObject* volume )
 {
     if ( !volume->hasMinMaxValues() ) volume->updateMinMaxValues();
     const kvs::Real64 min_value = volume->minValue();
@@ -94,7 +97,8 @@ kvs::ValueArray<kvs::Real32> NormalizedValuesForType( const kvs::UnstructuredVol
  *  @param  volume [in] pointer to the volume object
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::Real32> NormalizedValues( const kvs::UnstructuredVolumeObject* volume )
+kvs::ValueArray<kvs::Real32> NormalizedValues(
+    const kvs::UnstructuredVolumeObject* volume )
 {
     switch ( volume->values().typeID() )
     {
@@ -113,7 +117,8 @@ kvs::ValueArray<kvs::Real32> NormalizedValues( const kvs::UnstructuredVolumeObje
  *  @param  volume [in] pointer to the volume object
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::Real32> VertexNormalsForType( const kvs::UnstructuredVolumeObject* volume )
+kvs::ValueArray<kvs::Real32> VertexNormalsForType(
+    const kvs::UnstructuredVolumeObject* volume )
 {
     const size_t nnodes = volume->numberOfNodes();
     const size_t ncells = volume->numberOfCells();
@@ -172,7 +177,8 @@ kvs::ValueArray<kvs::Real32> VertexNormalsForType( const kvs::UnstructuredVolume
  *  @param  volume [in] pointer to the volume object
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::Real32> VertexNormals( const kvs::UnstructuredVolumeObject* volume )
+kvs::ValueArray<kvs::Real32> VertexNormals(
+    const kvs::UnstructuredVolumeObject* volume )
 {
     switch ( volume->values().typeID() )
     {
@@ -208,7 +214,8 @@ StochasticTetrahedraRenderer::StochasticTetrahedraRenderer():
  *  @param  transfer_function [in] transfer function
  */
 /*===========================================================================*/
-void StochasticTetrahedraRenderer::setTransferFunction( const kvs::TransferFunction& transfer_function )
+void StochasticTetrahedraRenderer::setTransferFunction(
+    const kvs::TransferFunction& transfer_function )
 {
     static_cast<Engine&>( engine() ).setTransferFunction( transfer_function );
 }
@@ -234,205 +241,108 @@ float StochasticTetrahedraRenderer::samplingStep() const
     return static_cast<const Engine&>( engine() ).samplingStep();
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Engine class.
- */
-/*===========================================================================*/
-StochasticTetrahedraRenderer::Engine::Engine():
-    m_transfer_function_changed( true ),
-    m_sampling_step( 1.0f ),
-    m_maxT( 0.0f )
+
+void StochasticTetrahedraRenderer::Engine::TransferFunctionBuffer::create(
+    const kvs::TransferFunction& tfunc )
 {
+    const size_t width = tfunc.resolution();
+    const auto table = tfunc.table();
+    m_texture.setWrapS( GL_CLAMP_TO_EDGE );
+    m_texture.setMagFilter( GL_LINEAR );
+    m_texture.setMinFilter( GL_LINEAR );
+    m_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT  );
+    m_texture.create( width, table.data() );
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Releases the GPU resources.
- */
-/*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::release()
+void StochasticTetrahedraRenderer::Engine::TransferFunctionBuffer::update(
+    const kvs::TransferFunction& tfunc )
 {
-    m_shader_program.release();
-    m_vbo_manager.release();
-    m_preintegration_texture.release();
-    m_decomposition_texture.release();
-    m_transfer_function_texture.release();
+    m_texture.release();
+    this->create( tfunc );
+}
+
+void StochasticTetrahedraRenderer::Engine::TransferFunctionBuffer::release()
+{
+    m_texture.release();
+}
+
+int StochasticTetrahedraRenderer::Engine::PreIntegrationBuffer::inverseTextureSize() const
+{
+    return kvs::Math::Min( 16384, kvs::OpenGL::MaxTextureSize() );
+}
+
+void StochasticTetrahedraRenderer::Engine::PreIntegrationBuffer::create(
+    const kvs::TransferFunction& tfunc )
+{
+    kvs::PreIntegrationTable2D table;
+    table.setTransferFunction( tfunc );
+    table.create();
+
+    auto T = table.T();
+    auto T_inv = table.inverseT( this->inverseTextureSize() );
+    const auto resolution = T.size();
+
+    m_T_max = T.back();
+
+    m_T_texture.setWrapS( GL_CLAMP_TO_EDGE );
+    m_T_texture.setMagFilter( GL_LINEAR );
+    m_T_texture.setMinFilter( GL_LINEAR );
+    m_T_texture.setPixelFormat( GL_R32F, GL_RED, GL_FLOAT  );
+    m_T_texture.create( T.size(), T.data() );
+
+    m_T_inv_texture.setWrapS( GL_CLAMP_TO_EDGE );
+    m_T_inv_texture.setMagFilter( GL_LINEAR );
+    m_T_inv_texture.setMinFilter( GL_LINEAR );
+    m_T_inv_texture.setPixelFormat( GL_R32F, GL_RED, GL_FLOAT  );
+    m_T_inv_texture.create( T_inv.size(), T_inv.data() );
+
+    m_texture.setWrapS( GL_CLAMP_TO_EDGE );
+    m_texture.setWrapT( GL_CLAMP_TO_EDGE );
+    m_texture.setMagFilter( GL_LINEAR );
+    m_texture.setMinFilter( GL_LINEAR );
+    m_texture.setPixelFormat( GL_R32F, GL_RED, GL_FLOAT );
+    m_texture.create( resolution, resolution, table.table().data() );
+}
+
+void StochasticTetrahedraRenderer::Engine::PreIntegrationBuffer::update(
+    const kvs::TransferFunction& tfunc )
+{
+    m_texture.release();
     m_T_texture.release();
-    m_inv_T_texture.release();
-    m_transfer_function_changed = true;
+    m_T_inv_texture.release();
+    this->create( tfunc );
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Create shaders and buffer objects.
- *  @param  object [in] pointer to the polygon object
- *  @param  camera [in] pointer to the camera
- *  @param  light [in] pointer to the light
- */
-/*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticTetrahedraRenderer::Engine::PreIntegrationBuffer::release()
 {
-    kvs::UnstructuredVolumeObject* volume = kvs::UnstructuredVolumeObject::DownCast( object );
-
-    attachObject( object );
-    createRandomTexture();
-    this->create_shader_program();
-    this->create_buffer_object( volume );
-    this->create_preintegration_texture();
-    this->create_decomposition_texture();
+    m_texture.release();
+    m_T_texture.release();
+    m_T_inv_texture.release();
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Update.
- *  @param  polygon [in] pointer to the polygon object
- *  @param  camera [in] pointer to the camera
- *  @param  light [in] pointer to the light
- */
-/*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void StochasticTetrahedraRenderer::Engine::DecompositionBuffer::create()
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Set up.
- *  @param  polygon [in] pointer to the polygon object
- *  @param  camera [in] pointer to the camera
- *  @param  light [in] pointer to the light
- */
-/*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
-{
-    if ( m_transfer_function_changed )
+    const size_t size = 81;
+    kvs::ValueArray<GLubyte> table( size * 4 );
+    for ( size_t i = 0; i < size; i++ )
     {
-        // Re-create pre-integration table.
-        m_preintegration_texture.release();
-        m_transfer_function_texture.release();
-        m_T_texture.release();
-        m_inv_T_texture.release();
-        this->create_preintegration_texture();
+        table[ i * 4 + 0 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][1] * 32;
+        table[ i * 4 + 1 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][2] * 32;
+        table[ i * 4 + 2 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][3] * 32;
+        table[ i * 4 + 3 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][0] * 32;
     }
 
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    const kvs::Mat4 PM_inverse = PM.inverted();
-    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-    m_shader_program.bind();
-    m_shader_program.setUniform( "ModelViewMatrix", M );
-    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
-    m_shader_program.setUniform( "ModelViewProjectionMatrixInverse", PM_inverse );
-    m_shader_program.setUniform( "NormalMatrix", N );
-    m_shader_program.setUniform( "maxT", m_maxT );
-    m_shader_program.setUniform( "sampling_step_inv", 1.0f / m_sampling_step );
-    m_shader_program.setUniform( "delta", 0.5f / m_transfer_function.resolution() );
-    m_shader_program.unbind();
+    m_texture.setWrapS( GL_CLAMP_TO_EDGE );
+    m_texture.setWrapT( GL_CLAMP_TO_EDGE );
+    m_texture.setMagFilter( GL_NEAREST );
+    m_texture.setMinFilter( GL_NEAREST );
+    m_texture.setPixelFormat( GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE );
+    m_texture.create( size, 1, table.data() );
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Draw an ensemble.
- *  @param  object [in] pointer to the unstructured volume object
- *  @param  camera [in] pointer to the camera
- *  @param  light [in] pointer to the light
- */
-/*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
-{
-    kvs::UnstructuredVolumeObject* volume = kvs::UnstructuredVolumeObject::DownCast( object );
-
-    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
-    kvs::ProgramObject::Binder bind2( m_shader_program );
-    kvs::Texture::Binder bind3( randomTexture(), 0 );
-    kvs::Texture::Binder bind4( m_preintegration_texture, 1 );
-    kvs::Texture::Binder bind5( m_decomposition_texture, 2 );
-    kvs::Texture::Binder bind6( m_transfer_function_texture, 3 );
-    kvs::Texture::Binder bind7( m_T_texture, 4 );
-    kvs::Texture::Binder bind8( m_inv_T_texture, 5 );
-    {
-        kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
-
-        const size_t size = randomTextureSize();
-        const int count = repetitionCount() * ::RandomNumber();
-        const float offset_x = static_cast<float>( ( count ) % size );
-        const float offset_y = static_cast<float>( ( count / size ) % size );
-        const kvs::Vec2 random_offset( offset_x, offset_y );
-        m_shader_program.setUniform( "random_offset", random_offset );
-
-        const size_t ncells = volume->numberOfCells();
-        m_vbo_manager.drawElements( GL_LINES_ADJACENCY_EXT, 4 * ncells );
-    }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates shader program.
- */
-/*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::create_shader_program()
-{
-    kvs::ShaderSource vert( "SR_tetrahedra.vert" );
-    kvs::ShaderSource geom( "SR_tetrahedra.geom" );
-    kvs::ShaderSource frag( "SR_tetrahedra.frag" );
-
-    if ( BaseClass::isShadingEnabled() )
-    {
-        switch ( shader().type() )
-        {
-        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
-        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
-        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
-        default: break; // NO SHADING
-        }
-
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
-        {
-            frag.define("ENABLE_TWO_SIDE_LIGHTING");
-        }
-    }
-
-    if ( depthTexture().isCreated() )
-    {
-        vert.define("ENABLE_EXACT_DEPTH_TESTING");
-        geom.define("ENABLE_EXACT_DEPTH_TESTING");
-        frag.define("ENABLE_EXACT_DEPTH_TESTING");
-    }
-
-    // Parameters for geometry shader.
-    m_shader_program.setGeometryInputType( GL_LINES_ADJACENCY_EXT );
-    m_shader_program.setGeometryOutputType( GL_TRIANGLE_STRIP );
-    m_shader_program.setGeometryOutputVertices( 4 * 3 );
-
-    // Build shaders.
-    m_shader_program.build( vert, geom, frag );
-
-    // Set default parameters.
-    kvs::ProgramObject::Binder bind( m_shader_program );
-    {
-        // Shading parameters.
-        m_shader_program.setUniform( "shading.Ka", shader().Ka );
-        m_shader_program.setUniform( "shading.Kd", shader().Kd );
-        m_shader_program.setUniform( "shading.Ks", shader().Ks );
-        m_shader_program.setUniform( "shading.S",  shader().S );
-
-        m_shader_program.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
-        m_shader_program.setUniform( "random_texture", 0 );
-        m_shader_program.setUniform( "preintegration_texture", 1 );
-        m_shader_program.setUniform( "decomposition_texture", 2 );
-        m_shader_program.setUniform( "transfer_function_texture", 3 );
-        m_shader_program.setUniform( "T_texture", 4 );
-        m_shader_program.setUniform( "invT_texture", 5 );
-    }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Create buffer objects.
- *  @param  volume [in] pointer to the volume object
- */
-/*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::create_buffer_object( const kvs::UnstructuredVolumeObject* volume )
+void StochasticTetrahedraRenderer::Engine::BufferObject::create(
+    const kvs::UnstructuredVolumeObject* volume,
+    const kvs::ProgramObject& shader_program )
 {
     if ( volume->cellType() != kvs::UnstructuredVolumeObject::Tetrahedra )
     {
@@ -446,66 +356,282 @@ void StochasticTetrahedraRenderer::Engine::create_buffer_object( const kvs::Unst
         return;
     }
 
-    const kvs::ValueArray<kvs::UInt16> indices = ::RandomIndices( volume, randomTextureSize() );
-    const kvs::ValueArray<kvs::Real32> values = ::NormalizedValues( volume );
-    const kvs::ValueArray<kvs::Real32> coords = volume->coords();
-    const kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( volume );
-    m_vbo_manager.setVertexAttribArray( indices, m_shader_program.attributeLocation("random_index"), 2 );
-    m_vbo_manager.setVertexAttribArray( values, m_shader_program.attributeLocation("value"), 1 );
-    m_vbo_manager.setVertexArray( coords, 3 );
-    m_vbo_manager.setNormalArray( normals );
-    m_vbo_manager.setIndexArray( volume->connections() );
-    m_vbo_manager.create();
+    const auto indices = ::RandomIndices( volume, m_engine->randomTextureSize() );
+    const auto values = ::NormalizedValues( volume );
+    const auto coords = volume->coords();
+    const auto normals = ::VertexNormals( volume );
+    m_manager.setVertexAttribArray( indices, shader_program.attributeLocation("random_index"), 2 );
+    m_manager.setVertexAttribArray( values, shader_program.attributeLocation("value"), 1 );
+    m_manager.setVertexArray( coords, 3 );
+    m_manager.setNormalArray( normals );
+    m_manager.setIndexArray( volume->connections() );
+    m_manager.create();
+}
+
+void StochasticTetrahedraRenderer::Engine::BufferObject::draw(
+    const kvs::UnstructuredVolumeObject* volume )
+{
+    const size_t ncells = volume->numberOfCells();
+    kvs::VertexBufferObjectManager::Binder bind( m_manager );
+    m_manager.drawElements( GL_LINES_ADJACENCY_EXT, 4 * ncells );
+}
+
+void StochasticTetrahedraRenderer::Engine::RenderPass::setShaderFiles(
+    const std::string& vert_file,
+    const std::string& geom_file,
+    const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setGeometryShaderFile( geom_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
+void StochasticTetrahedraRenderer::Engine::RenderPass::create(
+    const kvs::Shader::ShadingModel& model,
+    const bool shading,
+    const bool exact )
+{
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource geom( m_geom_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( shading )
+    {
+        switch ( model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
+    }
+
+    if ( exact )
+    {
+        vert.define("ENABLE_EXACT_DEPTH_TESTING");
+        geom.define("ENABLE_EXACT_DEPTH_TESTING");
+        frag.define("ENABLE_EXACT_DEPTH_TESTING");
+    }
+
+    // Parameters for geometry shader.
+    m_shader_program.setGeometryInputType( GL_LINES_ADJACENCY_EXT );
+    m_shader_program.setGeometryOutputType( GL_TRIANGLE_STRIP );
+    m_shader_program.setGeometryOutputVertices( 4 * 3 );
+
+    // Build shaders.
+    m_shader_program.build( vert, geom, frag );
+}
+
+void StochasticTetrahedraRenderer::Engine::RenderPass::update(
+    const kvs::Shader::ShadingModel& model,
+    const bool shading,
+    const bool exact )
+{
+    m_shader_program.release();
+    this->create( model, shading, exact );
+}
+
+void StochasticTetrahedraRenderer::Engine::RenderPass::setup(
+    const kvs::Shader::ShadingModel& model )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "shading.Ka", model.Ka );
+    m_shader_program.setUniform( "shading.Kd", model.Kd );
+    m_shader_program.setUniform( "shading.Ks", model.Ks );
+    m_shader_program.setUniform( "shading.S",  model.S );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
+    const kvs::Mat4 PM_inverse = PM.inverted();
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    m_shader_program.setUniform( "ModelViewMatrix", M );
+    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
+    m_shader_program.setUniform( "ModelViewProjectionMatrixInverse", PM_inverse );
+    m_shader_program.setUniform( "NormalMatrix", N );
+    m_shader_program.setUniform( "sampling_step_inv", 1.0f / m_sampling_step );
+}
+
+void StochasticTetrahedraRenderer::Engine::RenderPass::draw(
+    const kvs::UnstructuredVolumeObject* volume )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( volume );
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Creates pre-integration texture.
+ *  @brief  Releases the GPU resources.
  */
 /*===========================================================================*/
-void StochasticTetrahedraRenderer::Engine::create_preintegration_texture()
+void StochasticTetrahedraRenderer::Engine::release()
 {
-    kvs::PreIntegrationTable2D table;
-    table.setTransferFunction( m_transfer_function );
-    table.create();
+    m_render_pass.release();
+    m_buffer_object.release();
+    m_transfer_function_buffer.release();
+    m_preintegration_buffer.release();
+    m_decomposition_buffer.release();
+    m_transfer_function_changed = true;
+}
 
-    int resolution_inverse_texture_size = kvs::Math::Min( 16384, kvs::OpenGL::MaxTextureSize() );
-    m_shader_program.bind();
-    m_shader_program.setUniform( "delta2", 0.5f / resolution_inverse_texture_size );
-    m_shader_program.unbind();
+/*===========================================================================*/
+/**
+ *  @brief  Create shaders and buffer objects.
+ *  @param  object [in] pointer to the polygon object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::Engine::create(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
+{
+    auto* volume = kvs::UnstructuredVolumeObject::DownCast( object );
 
-    kvs::ValueArray<kvs::Real32> T = table.T();
-    kvs::ValueArray<kvs::Real32> invT = table.inverseT( resolution_inverse_texture_size );
-    size_t resolution = T.size();
+    BaseClass::attachObject( object );
+    BaseClass::createRandomTexture();
+    this->create_shader_program();
+    this->create_buffer_object( volume );
+    this->create_transfer_function_texture();
+    this->create_decomposition_texture();
+}
 
-    m_maxT = T.back();
+/*===========================================================================*/
+/**
+ *  @brief  Update.
+ *  @param  polygon [in] pointer to the polygon object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::Engine::update(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
+{
+}
 
-    m_T_texture.setWrapS( GL_CLAMP_TO_EDGE );
-    m_T_texture.setMagFilter( GL_LINEAR );
-    m_T_texture.setMinFilter( GL_LINEAR );
-    m_T_texture.setPixelFormat( GL_R32F, GL_RED, GL_FLOAT  );
-    m_T_texture.create( T.size(), T.data() );
+/*===========================================================================*/
+/**
+ *  @brief  Set up.
+ *  @param  polygon [in] pointer to the polygon object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::Engine::setup(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
+{
+    if ( m_transfer_function_changed ) { this->update_transfer_function_texture(); }
 
-    m_inv_T_texture.setWrapS( GL_CLAMP_TO_EDGE );
-    m_inv_T_texture.setMagFilter( GL_LINEAR );
-    m_inv_T_texture.setMinFilter( GL_LINEAR );
-    m_inv_T_texture.setPixelFormat( GL_R32F, GL_RED, GL_FLOAT  );
-    m_inv_T_texture.create( invT.size(), invT.data() );
+    m_render_pass.setup( BaseClass::shader() );
 
-    m_transfer_function_texture.setWrapS( GL_CLAMP_TO_EDGE );
-    m_transfer_function_texture.setMagFilter( GL_LINEAR );
-    m_transfer_function_texture.setMinFilter( GL_LINEAR );
-    m_transfer_function_texture.setPixelFormat( GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT );
-    m_transfer_function_texture.create( m_transfer_function.resolution(), m_transfer_function.table().data() );
+    auto& shader_program = m_render_pass.shaderProgram();
+    shader_program.bind();
+    shader_program.setUniform( "maxT", m_preintegration_buffer.Tmax() );
+    shader_program.setUniform( "delta", 0.5f / m_transfer_function.resolution() );
+    shader_program.unbind();
+}
 
-    m_preintegration_texture.setWrapS( GL_CLAMP_TO_EDGE );
-    m_preintegration_texture.setWrapT( GL_CLAMP_TO_EDGE );
-    m_preintegration_texture.setMagFilter( GL_LINEAR );
-    m_preintegration_texture.setMinFilter( GL_LINEAR );
-    m_preintegration_texture.setPixelFormat( GL_R32F, GL_RED, GL_FLOAT );
-    m_preintegration_texture.create( resolution, resolution, table.table().data() );
+/*===========================================================================*/
+/**
+ *  @brief  Draw an ensemble.
+ *  @param  object [in] pointer to the unstructured volume object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::Engine::draw(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
+{
+    kvs::OpenGL::WithEnabled d( GL_DEPTH_TEST );
 
+    const size_t size = randomTextureSize();
+    const int count = repetitionCount() * ::RandomNumber();
+    const float offset_x = static_cast<float>( ( count ) % size );
+    const float offset_y = static_cast<float>( ( count / size ) % size );
+    const kvs::Vec2 random_offset( offset_x, offset_y );
+
+    auto& shader_program = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader_program );
+    shader_program.setUniform( "random_offset", random_offset );
+
+    kvs::Texture::Binder unit0( BaseClass::randomTexture(), 0 );
+    kvs::Texture::Binder unit1( m_preintegration_buffer.texture(), 1 );
+    kvs::Texture::Binder unit2( m_decomposition_buffer.texture(), 2 );
+    kvs::Texture::Binder unit3( m_transfer_function_buffer.texture(), 3 );
+    kvs::Texture::Binder unit4( m_preintegration_buffer.T(), 4 );
+    kvs::Texture::Binder unit5( m_preintegration_buffer.Tinverse(), 5 );
+    auto* volume = kvs::UnstructuredVolumeObject::DownCast( object );
+    m_buffer_object.draw( volume );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates shader program.
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::Engine::create_shader_program()
+{
+    m_render_pass.create(
+        BaseClass::shader(),
+        BaseClass::isShadingEnabled(),
+        BaseClass::depthTexture().isCreated() );
+
+    auto& shader_program = m_render_pass.shaderProgram();
+    kvs::ProgramObject::Binder bind( shader_program );
+    shader_program.setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
+    shader_program.setUniform( "random_texture", 0 );
+    shader_program.setUniform( "preintegration_texture", 1 );
+    shader_program.setUniform( "decomposition_texture", 2 );
+    shader_program.setUniform( "transfer_function_texture", 3 );
+    shader_program.setUniform( "T_texture", 4 );
+    shader_program.setUniform( "invT_texture", 5 );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Create buffer objects.
+ *  @param  volume [in] pointer to the volume object
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::Engine::create_buffer_object(
+    const kvs::UnstructuredVolumeObject* volume )
+{
+    m_buffer_object.create( volume, m_render_pass.shaderProgram() );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates pre-integration texture and transfer function texture.
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::Engine::create_transfer_function_texture()
+{
+    m_preintegration_buffer.create( m_transfer_function );
+    m_transfer_function_buffer.create( m_transfer_function );
     m_transfer_function_changed = false;
+
+    const auto inv_size = m_preintegration_buffer.inverseTextureSize();
+    auto& shader_program = m_render_pass.shaderProgram();
+    shader_program.bind();
+    shader_program.setUniform( "delta2", 0.5f / inv_size );
+    shader_program.unbind();
+}
+
+void StochasticTetrahedraRenderer::Engine::update_transfer_function_texture()
+{
+    m_transfer_function_buffer.release();
+    m_preintegration_buffer.release();
+    this->create_transfer_function_texture();
 }
 
 /*===========================================================================*/
@@ -515,21 +641,7 @@ void StochasticTetrahedraRenderer::Engine::create_preintegration_texture()
 /*===========================================================================*/
 void StochasticTetrahedraRenderer::Engine::create_decomposition_texture()
 {
-    kvs::ValueArray<GLubyte> table( 81 * 4 );
-    for ( size_t i = 0; i < 81; i++ )
-    {
-        table[ i * 4 + 0 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][1] * 32;
-        table[ i * 4 + 1 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][2] * 32;
-        table[ i * 4 + 2 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][3] * 32;
-        table[ i * 4 + 3 ] = kvs::ProjectedTetrahedraTable::PatternInfo[i][0] * 32;
-    }
-
-    m_decomposition_texture.setWrapS( GL_CLAMP_TO_EDGE );
-    m_decomposition_texture.setWrapT( GL_CLAMP_TO_EDGE );
-    m_decomposition_texture.setMagFilter( GL_NEAREST );
-    m_decomposition_texture.setMinFilter( GL_NEAREST );
-    m_decomposition_texture.setPixelFormat( GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE );
-    m_decomposition_texture.create( 81, 1, table.data() );
+    m_decomposition_buffer.create();
 }
 
 } // end of namespace kvs
