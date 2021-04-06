@@ -272,7 +272,7 @@ bool ProgramObject::isLinked() const
  *  @return location of a specific uniform variable
  */
 /*===========================================================================*/
-GLint ProgramObject::uniformLocation( const GLchar *name )
+GLint ProgramObject::uniformLocation( const GLchar *name ) const
 {
     GLint result = 0;
     KVS_GL_CALL( result = glGetUniformLocation( m_id, name ) );
@@ -286,7 +286,7 @@ GLint ProgramObject::uniformLocation( const GLchar *name )
  *  @return location of a specific attribute variable
  */
 /*===========================================================================*/
-GLint ProgramObject::attributeLocation( const GLchar *name )
+GLint ProgramObject::attributeLocation( const GLchar *name ) const
 {
     GLint result = 0;
     KVS_GL_CALL( result = glGetAttribLocation( m_id, name ) );

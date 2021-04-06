@@ -62,8 +62,8 @@ public:
     bool isBound() const;
     bool isLinked() const;
 
-    GLint uniformLocation( const GLchar* name );
-    GLint attributeLocation( const GLchar* name );
+    GLint uniformLocation( const GLchar* name ) const;
+    GLint attributeLocation( const GLchar* name ) const;
 
     void setUniform( const GLchar* name, const GLint value );
     void setUniform( const GLchar* name, const kvs::Vector2i& value );
