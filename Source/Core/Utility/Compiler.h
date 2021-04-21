@@ -351,6 +351,47 @@
 #define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
     ( 16 > ( major ) || ( 16 == ( major ) && 7 >= ( minor ) ) )
 
+#elif ( _MSC_VER == 1928 )
+// Visual Studio 2019 Update 8
+#if ( _MSC_FULL_VER == 192829333 ) || ( _MSC_FULL_VER == 192829334 )
+#define KVS_COMPILER_VERSION "16.8"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 8 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 8 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 8 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 8 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 8 >= ( minor ) ) )
+
+// Visual Studio 2019 Update 9
+#else
+#define KVS_COMPILER_VERSION "16.9"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 9 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 9 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 9 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 9 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 9 >= ( minor ) ) )
+#endif
+
+// Visual Studio 2019 Update 10
+#elif ( _MSC_VER == 1929 )
+#define KVS_COMPILER_VERSION "16.10"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 10 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 10 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 10 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 10 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 10 >= ( minor ) ) )
+
 #else
 #define KVS_COMPILER_VERSION "unknown"
 #define KVS_COMPILER_VERSION_IS( major, minor )
