@@ -81,7 +81,6 @@ inline kvs::ValueArray<kvs::Real32> InverseDistanceWeighting<kvs::Real32>::seria
             const kvs::Real32 d = m_bucket.at(i).at(j).second;
             value += ( ( 1.0f / d ) / w ) * s;
         }
-        if ( n != 0 ) value /= n;
 
         values[i] = value;
     }
@@ -117,7 +116,6 @@ inline kvs::ValueArray<kvs::Real32> InverseDistanceWeighting<kvs::Vec3>::seriali
             const kvs::Real32 d = m_bucket.at(i).at(j).second;
             value += ( ( 1.0f / d ) / w ) * v;
         }
-        if ( n != 0 ) value /= n;
 
         values[ i * veclen + 0 ] = value[0];
         values[ i * veclen + 1 ] = value[1];
@@ -155,7 +153,6 @@ inline kvs::ValueArray<kvs::Real32> InverseDistanceWeighting<kvs::Mat3>::seriali
             const kvs::Real32 d = m_bucket.at(i).at(j).second;
             value += ( ( 1.0f / d ) / w ) * t;
         }
-        if ( n != 0 ) value /= n;
 
         values[ i * veclen + 0 ] = value[0][0];
         values[ i * veclen + 1 ] = value[0][1];
