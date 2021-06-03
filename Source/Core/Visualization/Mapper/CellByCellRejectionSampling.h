@@ -30,27 +30,25 @@ class CellByCellRejectionSampling : public kvs::MapperBase, public kvs::PointObj
     kvsModuleSuperClass( kvs::PointObject );
 
 private:
-
-    const kvs::Camera* m_camera; ///< camera (reference)
-    size_t m_repetition_level; ///< repetition level
-    float m_sampling_step; ///< sampling step in the object coordinate
-    float m_object_depth; ///< object depth
+    const kvs::Camera* m_camera = nullptr; ///< camera (reference)
+    size_t m_repetition_level = 1; ///< repetition level
+    float m_sampling_step = 0.5f; ///< sampling step in the object coordinate
+    float m_object_depth = 0.0f; ///< object depth
 
 public:
-
-    CellByCellRejectionSampling();
+    CellByCellRejectionSampling() = default;
     CellByCellRejectionSampling(
         const kvs::VolumeObjectBase* volume,
-        const size_t repetition_level,
-        const float sampling_step,
-        const kvs::TransferFunction& transfer_function,
+        const size_t repetition_level = 1,
+        const float sampling_step = 0.5f,
+        const kvs::TransferFunction& transfer_function = kvs::TransferFunction(),
         const float object_depth = 0.0f );
     CellByCellRejectionSampling(
         const kvs::Camera* camera,
         const kvs::VolumeObjectBase* volume,
-        const size_t repetition_level,
-        const float sampling_step,
-        const kvs::TransferFunction& transfer_function,
+        const size_t repetition_level = 1,
+        const float sampling_step = 0.5f,
+        const kvs::TransferFunction& transfer_function = kvs::TransferFunction(),
         const float object_depth = 0.0f );
 
     SuperClass* exec( const kvs::ObjectBase* object );
@@ -65,7 +63,6 @@ public:
     void setObjectDepth( const float depth ) { m_object_depth = depth; }
 
 private:
-
     void mapping( const kvs::StructuredVolumeObject* volume );
     void mapping( const kvs::UnstructuredVolumeObject* volume );
     template <typename T>

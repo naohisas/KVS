@@ -21,18 +21,6 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new CellByCellMetropolisSampling class.
- */
-/*===========================================================================*/
-CellByCellMetropolisSampling::CellByCellMetropolisSampling():
-    kvs::MapperBase(),
-    kvs::PointObject(),
-    m_camera( 0 )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new CellByCellMetropolisSampling class.
  *  @param  volume [in] pointer to the volume object
  *  @param  repetition_level [in] repetition level
  *  @param  sampling_step [in] sapling step
