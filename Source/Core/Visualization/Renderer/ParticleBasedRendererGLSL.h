@@ -83,6 +83,7 @@ public:
         size_t m_nmanagers = 0; ///< number of VBO managers (repeat level)
         Manager* m_managers = nullptr; ///< a set of VBO managers for each repetition
         bool m_enable_shuffle = false; ///< flag for shuffling particles
+        size_t m_random_index = 0;
     public:
         BufferObject() = default;
         virtual ~BufferObject() { if ( m_managers ) { delete [] m_managers; m_nmanagers = 0; }  }
@@ -95,6 +96,7 @@ public:
         void setShuffleEnabled( const bool enable = true ) { m_enable_shuffle = enable; }
         void enableShuffle() { this->setShuffleEnabled( true ); }
         void disableShuffle() { this->setShuffleEnabled( false ); }
+        void setRandomIndex( const size_t index ) { m_random_index = index; }
     };
 
     class RenderPass
@@ -131,31 +133,31 @@ public:
     };
 
 private:
-    bool m_has_normal; ///< check flag for the normal array
-    bool m_enable_shuffle; ///< flag for shuffling particles
-    bool m_enable_zooming; ///< flag for zooming particles
-    size_t m_random_index; ///< index used for refering the random texture
-    kvs::Mat4 m_initial_modelview; ///< initial modelview matrix
-    kvs::Mat4 m_initial_projection; ///< initial projection matrix
-    kvs::Vec4 m_initial_viewport; ///< initial viewport
-    float m_initial_object_depth; ///< initial object depth
-    kvs::ProgramObject m_shader_program; ///< zooming shader program
-    kvs::VertexBufferObjectManager* m_vbo_manager; ///< vertex buffer object managers for each repetition
+    kvs::Mat4 m_initial_modelview = kvs::Mat4::Zero(); ///< initial modelview matrix
+    kvs::Mat4 m_initial_projection = kvs::Mat4::Zero(); ///< initial projection matrix
+    kvs::Vec4 m_initial_viewport = kvs::Vec4::Zero(); ///< initial viewport
+    float m_initial_object_depth = 0.0f; ///< initial object depth
+
+    BufferObject m_buffer_object; ///< buffer object
+    RenderPass m_render_pass; ///< render pass
 
 public:
-    Engine();
-    Engine( const kvs::Mat4& m, const kvs::Mat4& p, const kvs::Vec4& v );
-    virtual ~Engine();
-    void release();
+    Engine(): m_render_pass( m_buffer_object, this ) {}
+    Engine( const kvs::Mat4& m, const kvs::Mat4& p, const kvs::Vec4& v ):
+        m_initial_modelview(m), m_initial_projection(p), m_initial_viewport(v),
+        m_render_pass( m_buffer_object, this ) {}
+    virtual ~Engine() { this->release(); }
+    void release() { m_render_pass.release(); m_buffer_object.release(); }
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-    bool isShuffleEnabled() const { return m_enable_shuffle; }
-    bool isZoomingEnabled() const { return m_enable_zooming; }
-    void setShuffleEnabled( const bool enable = true ) { m_enable_shuffle = enable; }
-    void setZoomingEnabled( const bool enable = true ) { m_enable_zooming = enable; }
+    bool isShuffleEnabled() const { return m_buffer_object.isShuffleEnabled(); }
+    bool isZoomingEnabled() const { return m_render_pass.isZoomingEnabled(); }
+    void setShuffleEnabled( const bool enable = true ) { m_buffer_object.setShuffleEnabled( enable ); }
+    void setZoomingEnabled( const bool enable = true ) { m_render_pass.setZoomingEnabled( enable ); }
+
     void enableShuffle() { this->setShuffleEnabled( true ); }
     void enableZooming() { this->setZoomingEnabled( true ); }
     void disableShuffle() { this->setShuffleEnabled( false ); }
