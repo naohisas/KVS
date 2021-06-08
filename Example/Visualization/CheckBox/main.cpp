@@ -14,30 +14,37 @@
 #include <kvs/UIColor>
 
 
-namespace
-{
-bool EdgeFlag = true;
-bool PlaneFlag = true;
-}
-
 /*===========================================================================*/
 /**
- *  @brief  User-defined paint event class.
+ *  @brief  Main function.
+ *  @param  argc [i] argument counter
+ *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-class PaintEvent : public kvs::PaintEventListener
+int main( int argc, char** argv )
 {
-    void update()
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::CheckBox" );
+    screen.create();
+
+    // Flags
+    struct { bool edge = true; bool plane = true; } flag;
+
+    // Paint event (drawing a triangle with edges)
+    kvs::PaintEventListener paint_event( [&]
     {
         glEnable( GL_DEPTH_TEST );
 
-        if ( ::EdgeFlag )
+        if ( flag.edge )
         {
-            const auto c = kvs::UIColor::Label();
             glEnable( GL_LINE_SMOOTH );
             glEnable( GL_BLEND );
+
             glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
             glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+
+            const auto c = kvs::UIColor::Label();
             glLineWidth( 2 );
             glBegin( GL_LINE_STRIP );
             glColor3ub( c.r(), c.g(), c.b() );
@@ -51,7 +58,7 @@ class PaintEvent : public kvs::PaintEventListener
             glDisable( GL_BLEND );
         }
 
-        if ( ::PlaneFlag )
+        if ( flag.plane )
         {
             glEnable( GL_POLYGON_OFFSET_FILL );
             glPolygonOffset( 1.0, 0.0 );
@@ -66,60 +73,26 @@ class PaintEvent : public kvs::PaintEventListener
         }
 
         glDisable( GL_DEPTH_TEST );
-    }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  User-defined checkbox.
- */
-/*===========================================================================*/
-class EdgeBox : public kvs::CheckBox
-{
-public:
-    EdgeBox( kvs::Screen* screen ): kvs::CheckBox( screen ){};
-    void stateChanged() { ::EdgeFlag = this->state(); }
-};
-
-class PlaneBox : public kvs::CheckBox
-{
-public:
-    PlaneBox( kvs::Screen* screen ): kvs::CheckBox( screen ){};
-    void stateChanged() { ::PlaneFlag = this->state(); }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Main function.
- *  @param  argc [i] argument counter
- *  @param  argv [i] argument values
- */
-/*===========================================================================*/
-int main( int argc, char** argv )
-{
-    kvs::Application app( argc, argv );
-    kvs::Screen screen( &app );
-    screen.setTitle( "CheckBox" );
-    screen.setGeometry( 0, 0, 512, 512 );
-
-    PaintEvent paint_event;
+    } );
     screen.addEvent( &paint_event );
-    screen.create();
 
-    EdgeBox edge( &screen );
-    edge.setX( 10 );
-    edge.setY( 10 );
+    // Check box for edge drawing
+    kvs::CheckBox edge( &screen );
+    edge.setCaption( "Edge" );
+    edge.setState( flag.edge );
     edge.setMargin( 10 );
-    edge.setCaption("Edge");
-    edge.setState( ::EdgeFlag );
+    edge.anchorToTopLeft();
+    edge.stateChanged( [&] () { flag.edge = edge.state(); } );
 
-    PlaneBox plane( &screen );
-    plane.setX( edge.x() );
-    plane.setY( edge.y() + 20 );
+    // Check box for plane drawing
+    kvs::CheckBox plane( &screen );
+    plane.setCaption( "Plane" );
+    plane.setState( flag.plane );
     plane.setMargin( 10 );
-    plane.setCaption("Plane");
-    plane.setState( ::PlaneFlag );
+    plane.anchorToBottom( &edge );
+    plane.stateChanged( [&] () { flag.plane = plane.state(); } );
 
+    // Check box group
     kvs::CheckBoxGroup group;
     group.add( &edge );
     group.add( &plane );
