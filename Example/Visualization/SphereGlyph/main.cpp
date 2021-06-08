@@ -19,44 +19,28 @@
  *  @brief  Main function.
  *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
- *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::SphereGlyph" );
+    screen.create();
 
-    /* Read volume data from the specified data file. If the data file is not
-     * specified, tornado volume data is created by using kvs::TornadoVolumeData class.
-     */
+    // Import volume data.
     kvs::StructuredVolumeObject* object = NULL;
-    if ( argc > 1 ) object = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else object = new kvs::TornadoVolumeData( kvs::Vector3ui( 8, 8, 8 ) );
-    if ( !object )
-    {
-        kvsMessageError() << "Cannot create a structured volume object." << std::endl;
-        return ( false );
-    }
+    if ( argc > 1 ) object = new kvs::StructuredVolumeImporter( argv[1] );
+    else object = new kvs::TornadoVolumeData( { 8, 8, 8 } );
 
     // Create an sphere glyph renderer.
-    kvs::SphereGlyph* glyph = new kvs::SphereGlyph();
-    if ( !glyph )
-    {
-        kvsMessageError() << "Cannot creat a glyph renderer." << std::endl;
-        return ( false );
-    }
-
-    // Set properties.
     const kvs::TransferFunction tfunc( 256 );
+    auto* glyph = new kvs::SphereGlyph();
     glyph->setTransferFunction( tfunc );
     glyph->setNumberOfSlices( 20 );
     glyph->setNumberOfStacks( 20 );
 
-    kvs::Screen screen( &app );
     screen.registerObject( object, glyph );
-    screen.setGeometry( 0, 0, 512, 512 );
-    screen.setTitle( "kvs::SphereGlyph" );
-    screen.create();
 
     return app.run();
 }

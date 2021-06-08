@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   main.cpp
- *  @brief  Example program for the CheckBox widget.
+ *  @brief  Example program for kvs::CheckBox class.
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
