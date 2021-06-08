@@ -23,7 +23,6 @@
 int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
-
     kvs::Screen screen( &app );
     screen.setTitle( "kvs::Slider" );
     screen.create();
