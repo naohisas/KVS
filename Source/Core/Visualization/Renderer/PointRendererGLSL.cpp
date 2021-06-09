@@ -121,7 +121,7 @@ void PointRenderer::RenderPass::create(
         default: break; // NO SHADING
         }
 
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        if ( model.two_side_lighting )
         {
             frag.define("ENABLE_TWO_SIDE_LIGHTING");
         }
@@ -197,12 +197,13 @@ void PointRenderer::exec(
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
     const auto shading_enabled = BaseClass::isShadingEnabled();
-    const auto& shading_model = *m_shading_model;
+    auto& shading_model = *m_shading_model;
 
     if ( this->isWindowCreated() )
     {
         this->setWindowSize( width, height );
         this->createBufferObject( object );
+        shading_model.two_side_lighting = BaseClass::isTwoSideLightingEnabled();
         m_render_pass.create( shading_model, shading_enabled );
     }
 
@@ -214,6 +215,7 @@ void PointRenderer::exec(
     if ( this->isObjectChanged( object ) )
     {
         this->updateBufferObject( object );
+        shading_model.two_side_lighting = BaseClass::isTwoSideLightingEnabled();
         m_render_pass.update( shading_model, shading_enabled );
     }
 

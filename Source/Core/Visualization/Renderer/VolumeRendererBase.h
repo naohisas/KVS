@@ -56,6 +56,11 @@ public:
     void setTransferFunction( const kvs::TransferFunction& tfunc ) { m_tfunc = tfunc; }
     const kvs::TransferFunction& transferFunction() const { return m_tfunc; }
 
+    void setTwoSideLightingEnabled( const bool enable = true ) { m_shader->two_side_lighting = enable; }
+    bool isTwoSideLightingEnabled() const { return m_shader->two_side_lighting; }
+    void enableTwoSideLighting() { this->setTwoSideLightingEnabled( true ); }
+    void disableTwoSideLighting() { this->setTwoSideLightingEnabled( false ); }
+
 protected:
     kvs::ValueArray<kvs::UInt8>& colorData() { return m_color_data; }
     kvs::ValueArray<kvs::Real32>& depthData() { return m_depth_data; }

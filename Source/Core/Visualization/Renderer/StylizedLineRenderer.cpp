@@ -15,7 +15,7 @@
 namespace
 {
 
-kvs::ValueArray<kvs::Real32> QuadVertexCoords( const kvs::LineObject* line )
+inline kvs::ValueArray<kvs::Real32> QuadVertexCoords( const kvs::LineObject* line )
 {
     const size_t nvertices = line->numberOfVertices();
     kvs::ValueArray<kvs::Real32> coords( nvertices * 6 );
@@ -31,7 +31,7 @@ kvs::ValueArray<kvs::Real32> QuadVertexCoords( const kvs::LineObject* line )
     return coords;
 }
 
-kvs::ValueArray<kvs::UInt8> QuadVertexColors( const kvs::LineObject* line )
+inline kvs::ValueArray<kvs::UInt8> QuadVertexColors( const kvs::LineObject* line )
 {
     const size_t nvertices = line->numberOfVertices();
     kvs::ValueArray<kvs::UInt8> colors( nvertices * 6 );
@@ -63,7 +63,7 @@ kvs::ValueArray<kvs::UInt8> QuadVertexColors( const kvs::LineObject* line )
     return colors;
 }
 
-kvs::ValueArray<kvs::Real32> QuadVertexNormals( const kvs::LineObject* line )
+inline kvs::ValueArray<kvs::Real32> QuadVertexNormals( const kvs::LineObject* line )
 {
     const size_t nvertices = line->numberOfVertices();
     kvs::ValueArray<kvs::Real32> normals( nvertices * 6 );
@@ -201,7 +201,7 @@ kvs::ValueArray<kvs::Real32> QuadVertexNormals( const kvs::LineObject* line )
     return normals;
 }
 
-kvs::ValueArray<kvs::Real32> QuadVertexTexCoords(
+inline kvs::ValueArray<kvs::Real32> QuadVertexTexCoords(
     const kvs::LineObject* line,
     const float halo_size,
     const float radius_size )
@@ -382,7 +382,7 @@ void StylizedLineRenderer::BufferObject::create_diffuse_texture()
 }
 
 void StylizedLineRenderer::RenderPass::create(
-        const kvs::Shader::ShadingModel& model, const bool enable )
+    const kvs::Shader::ShadingModel& model, const bool enable )
 {
     kvs::ShaderSource vert( m_vert_shader_file );
     kvs::ShaderSource frag( m_frag_shader_file );
@@ -396,7 +396,7 @@ void StylizedLineRenderer::RenderPass::create(
         default: break; // NO SHADING
         }
 
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        if ( model.two_side_lighting )
         {
             frag.define("ENABLE_TWO_SIDE_LIGHTING");
         }
@@ -406,14 +406,14 @@ void StylizedLineRenderer::RenderPass::create(
 }
 
 void StylizedLineRenderer::RenderPass::update(
-        const kvs::Shader::ShadingModel& model, const bool enable )
+    const kvs::Shader::ShadingModel& model, const bool enable )
 {
     m_shader_program.release();
     this->create( model, enable );
 }
 
 void StylizedLineRenderer::RenderPass::setup(
-        const kvs::Shader::ShadingModel& model )
+    const kvs::Shader::ShadingModel& model )
 {
     kvs::ProgramObject::Binder bind( m_shader_program );
     m_shader_program.setUniform( "shading.Ka", model.Ka );
@@ -453,7 +453,8 @@ void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
     const auto shading_enabled = BaseClass::isShadingEnabled();
-    const auto& shading_model = *m_shading_model;
+    auto& shading_model = *m_shading_model;
+    shading_model.two_side_lighting = false;
 
     if ( this->isWindowCreated() )
     {

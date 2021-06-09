@@ -304,7 +304,7 @@ void ParticleBasedRenderer::Engine::RenderPass::create(
         default: break; // NO SHADING
         }
 
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
+        if ( model.two_side_lighting )
         {
             frag.define("ENABLE_TWO_SIDE_LIGHTING");
         }

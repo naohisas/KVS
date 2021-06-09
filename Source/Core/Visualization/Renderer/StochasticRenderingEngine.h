@@ -58,8 +58,8 @@ public:
     void setRandomTextureSize( const size_t size ) { m_random_texture_size = size; }
     void setDepthTexture( const kvs::Texture2D& depth_texture ) { m_depth_texture = depth_texture; }
 
-    void setShadingEnabled( const bool enable = true ) { m_enable_shading = enable; }
     bool isShadingEnabled() const { return m_enable_shading; }
+    void setShadingEnabled( const bool enable = true ) { m_enable_shading = enable; }
 
     virtual void release() = 0;
     virtual void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;

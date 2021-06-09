@@ -21,13 +21,6 @@ namespace kvs
  */
 /*===========================================================================*/
 StochasticRendererBase::StochasticRendererBase( kvs::StochasticRenderingEngine* engine ):
-    m_window_width( 0 ),
-    m_window_height( 0 ),
-    m_device_pixel_ratio( 1.0f ),
-    m_repetition_level( 1 ),
-    m_coarse_level( 1 ),
-    m_enable_lod( false ),
-    m_enable_refinement( false ),
     m_shader( new kvs::Shader::Lambert() ),
     m_engine( engine )
 {

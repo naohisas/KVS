@@ -33,18 +33,18 @@ class StochasticRendererBase : public kvs::RendererBase
     friend class StochasticRenderingCompositor;
 
 private:
-    size_t m_window_width; ///< window width
-    size_t m_window_height; ///< window height
-    float m_device_pixel_ratio; ///< device pixel ratio
-    size_t m_repetition_level; ///< repetition level
-    size_t m_coarse_level; ///< repetition level for the coarse rendering (LOD)
-    bool m_enable_lod; ///< flag for LOD rendering
-    bool m_enable_refinement; ///< flag for progressive refinement rendering
-    kvs::Mat4 m_modelview; ///< modelview matrix used for LOD control
-    kvs::Vec3 m_light_position; ///< light position used for LOD control
-    kvs::EnsembleAverageBuffer m_ensemble_buffer; ///< ensemble averaging buffer
-    kvs::Shader::ShadingModel* m_shader; ///< shading method
-    kvs::StochasticRenderingEngine* m_engine; ///< rendering engine
+    size_t m_window_width = 0; ///< window width
+    size_t m_window_height = 0; ///< window height
+    float m_device_pixel_ratio = 1.0f; ///< device pixel ratio
+    size_t m_repetition_level = 1; ///< repetition level
+    size_t m_coarse_level = 1; ///< repetition level for the coarse rendering (LOD)
+    bool m_enable_lod = false; ///< flag for LOD rendering
+    bool m_enable_refinement = false; ///< flag for progressive refinement rendering
+    kvs::Mat4 m_modelview{}; ///< modelview matrix used for LOD control
+    kvs::Vec3 m_light_position{}; ///< light position used for LOD control
+    kvs::EnsembleAverageBuffer m_ensemble_buffer{}; ///< ensemble averaging buffer
+    kvs::Shader::ShadingModel* m_shader = nullptr; ///< shading method
+    kvs::StochasticRenderingEngine* m_engine = nullptr; ///< rendering engine
 
 public:
     StochasticRendererBase( kvs::StochasticRenderingEngine* engine );
@@ -72,6 +72,11 @@ public:
     bool isRefinementEnabled() const { return m_enable_refinement; }
     void enableRefinement() { this->setRefinementEnabled( true ); }
     void disableRefinement() { this->setRefinementEnabled( false ); }
+
+    void setTwoSideLightingEnabled( const bool enable = true ) { m_shader->two_side_lighting = enable; }
+    bool isTwoSideLightingEnabled() const { return m_shader->two_side_lighting; }
+    void enableTwoSideLighting() { this->setTwoSideLightingEnabled( true ); }
+    void disableTwoSideLighting() { this->setTwoSideLightingEnabled( false ); }
 
     const kvs::Shader::ShadingModel& shader() const { return *m_shader; }
     const kvs::StochasticRenderingEngine& engine() const { return *m_engine; }
