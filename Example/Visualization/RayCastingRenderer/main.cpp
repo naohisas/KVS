@@ -12,7 +12,6 @@
 #include <kvs/RayCastingRenderer>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/TransferFunction>
-#include <iostream>
 
 
 /*===========================================================================*/
@@ -20,56 +19,51 @@
  *  @brief  Main function.
  *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
- *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
-    screen.setTitle( "RayCastingRenderer" );
+    screen.setTitle( "kvs::RayCastingRenderer" );
     screen.create();
 
-    // Read volume data from the specified data file. If the data file is not
-    // specified, scalar hydrogen volume data will be created by using
-    // kvs::HydrogenVolumeData class.
-    kvs::StructuredVolumeObject* object = NULL;
-    if ( argc > 1 )
+    // Import volume data as structured volume object.
+    auto* object = [&]() -> kvs::StructuredVolumeObject*
     {
-        object = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-        object->print( std::cout );
-    }
-    else
-    {
-        object = new kvs::HydrogenVolumeData( kvs::Vec3u::Constant( 64 ) );
-        object->print( std::cout );
-    }
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::HydrogenVolumeData( { 32, 32, 32 } );
+    }();
 
-    // Parameters for the ray casting renderer.
-    kvs::Real32 sampling_step = 0.5f;
-    kvs::Real32 opaque_value = 0.97f;
-    kvs::TransferFunction transfer_function( 256 );
+    // Create ray casting renderer.
+    const auto step = 0.5f; // sampling step
+    const auto opaque = 0.97f; // opaque value for eary-ray-termination
+    const auto tfunc = kvs::TransferFunction( 256 ); // transfer function
+    const auto glsl = true; // true: GPU-based, false: CPU-based
+    auto* renderer = [&]() -> kvs::RendererBase*
+    {
+        if ( glsl )
+        {
+            // Hardware accelerated ray casting renderer.
+            auto* r = new kvs::glsl::RayCastingRenderer();
+            r->setSamplingStep( step );
+            r->setOpaqueValue( opaque );
+            r->setTransferFunction( tfunc );
+            return r;
+        }
+        else
+        {
+            // Software based ray casting renderer.
+            auto* r = new kvs::RayCastingRenderer();
+            r->setSamplingStep( step );
+            r->setOpaqueValue( opaque );
+            r->setTransferFunction( tfunc );
+            r->enableLODControl();
+            return r;
+        }
+    }();
 
-    bool glsl = true;
-    if ( glsl )
-    {
-        // Hardware accelerated ray casting renderer with GLSL.
-        auto* renderer = new kvs::glsl::RayCastingRenderer();
-        renderer->setSamplingStep( sampling_step );
-        renderer->setOpaqueValue( opaque_value );
-        renderer->setTransferFunction( transfer_function );
-        screen.registerObject( object, renderer );
-    }
-    else
-    {
-        // Software based ray casting renderer.
-        auto* renderer = new kvs::RayCastingRenderer();
-        renderer->setSamplingStep( 0.5f );
-        renderer->setOpaqueValue( 0.97f );
-        renderer->setTransferFunction( transfer_function );
-        renderer->enableLODControl();
-        screen.registerObject( object, renderer );
-    }
+    screen.registerObject( object, renderer );
 
     return app.run();
 }

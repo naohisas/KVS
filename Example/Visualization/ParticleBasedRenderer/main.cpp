@@ -14,37 +14,13 @@
 #include <kvs/CellByCellMetropolisSampling>
 #include <kvs/ParticleBasedRenderer>
 #include <kvs/TransferFunction>
-#include <kvs/Vector3>
-#include <iostream>
-#include <string>
 
-
-/*===========================================================================*/
-/**
- *  @brief  Import structured volume object
- *  @param  argc [i] argument count
- *  @param  argv [i] argument values
- *  @return pointer to the imported structured volume object
- */
-/*===========================================================================*/
-kvs::StructuredVolumeObject* Import( int argc, char** argv )
-{
-    if ( argc > 1 )
-    {
-        const std::string filename( argv[1] );
-        return new kvs::StructuredVolumeImporter( argv[1] );
-    }
-
-    auto resolution = kvs::Vec3u::Constant( 32 );
-    return new kvs::HydrogenVolumeData( resolution );
-}
 
 /*===========================================================================*/
 /**
  *  @brief  Main function.
  *  @param  argc [i] argument count
  *  @param  argv [i] argument values
- *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
@@ -54,28 +30,42 @@ int main( int argc, char** argv )
     screen.setTitle( "kvs::ParticleBasedRenderer" );
     screen.create();
 
-    // Import volume object.
-    auto* volume = Import( argc, argv );
-    volume->print( std::cout << "IMPORTED VOLUME" << std::endl, kvs::Indent(4) );
+    // Import volume data as structured volume object.
+    auto* volume = [&]() -> kvs::StructuredVolumeObject*
+    {
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::HydrogenVolumeData( { 32, 32, 32 } );
+    }();
 
-    // Generate particles.
-    using Sampling = kvs::CellByCellMetropolisSampling;
-    const size_t repeat = 4;
-    const float step = 0.5f;
-    const kvs::TransferFunction tfunc( 256 );
-    auto* object = new Sampling( volume, repeat, step, tfunc );
-    object->print( std::cout << "GENERATED PARTICLES" << std::endl, kvs::Indent(4) );
-
+    // Generate particles as point object.
+    const auto repeat = 4; // number of repetitions
+    const auto step = 0.5f; // sampling step
+    const auto tfunc = kvs::TransferFunction( 256 ); // transfer function
+    auto* object = new kvs::CellByCellMetropolisSampling( volume, repeat, step, tfunc );
     delete volume;
 
-    // Setup renderer.
-    using Renderer = kvs::glsl::ParticleBasedRenderer;
-    auto* renderer = new Renderer();
-    renderer->setRepetitionLevel( repeat );
-    renderer->setLODControlEnabled( true );
+    // Create particle-based renderer.
+    const auto glsl = true; // true; GPU-based, false: CPU-based
+    auto* renderer = [&]() -> kvs::RendererBase*
+    {
+        if ( glsl )
+        {
+            // Hardware accelerated particle-based renderer
+            auto* r = new kvs::glsl::ParticleBasedRenderer();
+            r->setRepetitionLevel( repeat );
+            r->setLODControlEnabled( true );
+            return r;
+        }
+        else
+        {
+            // Software-based particle-based renderer
+            auto* r = new kvs::ParticleBasedRenderer();
+            r->setSubpixelLevel( size_t( std::sqrt( repeat ) ) );
+            return r;
+        }
+    }();
 
     screen.registerObject( object, renderer );
-    screen.show();
 
     return app.run();
 }
