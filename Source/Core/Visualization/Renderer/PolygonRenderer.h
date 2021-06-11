@@ -30,7 +30,7 @@ class PolygonRenderer : public kvs::RendererBase
 private:
     mutable bool m_enable_anti_aliasing = false; ///< flag for anti-aliasing (AA)
     mutable bool m_enable_multisample_anti_aliasing = false; ///< flag for multisample anti-aliasing (MSAA)
-    mutable bool m_enable_two_side_lighting = true; ///< flag for two-side lighting
+    mutable bool m_enable_two_side_lighting = false; ///< flag for two-side lighting
     kvs::Vec2 m_depth_offset{ 0.0f, 0.0f }; ///< depth offset {factor, units}
 
 public:

@@ -38,7 +38,7 @@ public:
         float Kd = 0.0f; ///< diffuse coefficient
         float Ks = 0.0f; ///< specular coefficient
         float S = 0.0f; ///< shininess
-        bool two_side_lighting = true; ///< flag for two-side lighting
+        bool two_side_lighting = false; ///< flag for two-side lighting
 
         Base() = default;
         virtual ~Base() = default;
