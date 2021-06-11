@@ -573,7 +573,7 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
     CPPFLAGS += -Kopenmp
   # For Intel C++ compiler (icpc mpiicpc)
   else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
-    CPPFLAGS += -openmp
+    CPPFLAGS += -qopenmp
   # For g++
   else
     CPPFLAGS += -fopenmp
