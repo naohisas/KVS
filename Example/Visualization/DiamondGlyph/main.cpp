@@ -28,13 +28,15 @@ int main( int argc, char** argv )
     screen.setTitle( "kvs::DiamondGlyph" );
     screen.create();
 
-    // Import volume data.
-    kvs::StructuredVolumeObject* object = NULL;
-    if ( argc > 1 ) object = new kvs::StructuredVolumeImporter( argv[1] );
-    else object = new kvs::TornadoVolumeData( { 8, 8, 8 } );
+    // Import volume data as structured volume object.
+    auto* object = [&]() -> kvs::StructuredVolumeObject*
+    {
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::TornadoVolumeData( { 8, 8, 8 } );
+    }();
 
     // Create a diamond glyph renderer.
-    const kvs::TransferFunction tfunc( 256 );
+    const auto tfunc = kvs::TransferFunction( 256 ); // transfer function
     auto* glyph = new kvs::DiamondGlyph();
     glyph->setTransferFunction( tfunc );
 

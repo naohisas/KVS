@@ -253,91 +253,79 @@ int main( int argc, char** argv )
     // User specified events.
     const int interval1 = 1000; // interval time in millisecond for the timer event
     kvs::EventListener event;
-    event.initializeEvent(
-        []()
+    event.initializeEvent( []()
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "initializeEvent()" << std::endl;
+    } );
+    event.paintEvent( []()
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "paintEvent()" << std::endl;
+        glBegin( GL_TRIANGLES );
+        glColor3ub( 255,   0,   0 ); glVertex3d(  0.0,  3.0, 0.0 );
+        glColor3ub(   0, 255,   0 ); glVertex3d(  3.0, -3.0, 0.0 );
+        glColor3ub(   0,   0, 255 ); glVertex3d( -3.0, -3.0, 0.0 );
+        glEnd();
+    } );
+    event.resizeEvent( []( int w, int h )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "resizeEvent( " << w << ", " << h << " )" << std::endl;
+    } );
+    event.mousePressEvent( []( kvs::MouseEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "mousePressEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
+    } );
+    event.mouseMoveEvent( []( kvs::MouseEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "mouseMoveEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
+    } );
+    event.mouseReleaseEvent( []( kvs::MouseEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "mouseReleaseEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
+    } );
+    event.mouseDoubleClickEvent( []( kvs::MouseEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "mouseDoubleClickEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
+    } );
+    event.wheelEvent( []( kvs::WheelEvent* e )
+    {
+        std::cout << "\t" << "Event::wheelEvent( " << e->direction() << " )" << std::endl;
+    } );
+    event.keyPressEvent( [&]( kvs::KeyEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "keyPressEvent( " << char( e->key() ) << " )" << std::endl;
+        switch ( e->key() )
         {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "initializeEvent()" << std::endl;
-        } );
-    event.paintEvent(
-        []()
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "paintEvent()" << std::endl;
-            glBegin( GL_TRIANGLES );
-            glColor3ub( 255,   0,   0 ); glVertex3d(  0.0,  3.0, 0.0 );
-            glColor3ub(   0, 255,   0 ); glVertex3d(  3.0, -3.0, 0.0 );
-            glColor3ub(   0,   0, 255 ); glVertex3d( -3.0, -3.0, 0.0 );
-            glEnd();
-        } );
-    event.resizeEvent(
-        []( int w, int h )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "resizeEvent( " << w << ", " << h << " )" << std::endl;
-        } );
-    event.mousePressEvent(
-        []( kvs::MouseEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "mousePressEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
-        } );
-    event.mouseMoveEvent(
-        []( kvs::MouseEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "mouseMoveEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
-        } );
-    event.mouseReleaseEvent(
-        []( kvs::MouseEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "mouseReleaseEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
-        } );
-    event.mouseDoubleClickEvent(
-        []( kvs::MouseEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "mouseDoubleClickEvent( " << e->x() << ", " << e->y() << " )" << std::endl;
-        } );
-    event.wheelEvent(
-        []( kvs::WheelEvent* e )
-        {
-            std::cout << "\t" << "Event::wheelEvent( " << e->direction() << " )" << std::endl;
-        } );
-    event.keyPressEvent(
-        [&]( kvs::KeyEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "keyPressEvent( " << char( e->key() ) << " )" << std::endl;
-            switch ( e->key() )
-            {
-            case kvs::Key::t:
-                if ( event.eventTimer()->isStopped() ) { event.eventTimer()->start(); }
-                else { event.eventTimer()->stop(); }
-                break;
-            default:
-                break;
-            }
-        } );
-    event.keyRepeatEvent(
-        []( kvs::KeyEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "keyRepeatEvent( " << char( e->key() ) << " )" << std::endl;
-        } );
-    event.keyReleaseEvent(
-        []( kvs::KeyEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "keyReleaseEvent( " << char( e->key() ) << " )" << std::endl;
-        } );
-    event.timerEvent(
-        []( kvs::TimeEvent* e )
-        {
-            std::cout << "kvs::EventListener" << std::endl;
-            std::cout << "\t" << "timerEvent()" << std::endl;
-        }, interval1 );
+        case kvs::Key::t:
+            if ( event.eventTimer()->isStopped() ) { event.eventTimer()->start(); }
+            else { event.eventTimer()->stop(); }
+            break;
+        default:
+            break;
+        }
+    } );
+    event.keyRepeatEvent( []( kvs::KeyEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "keyRepeatEvent( " << char( e->key() ) << " )" << std::endl;
+    } );
+    event.keyReleaseEvent( []( kvs::KeyEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "keyReleaseEvent( " << char( e->key() ) << " )" << std::endl;
+    } );
+    event.timerEvent( []( kvs::TimeEvent* e )
+    {
+        std::cout << "kvs::EventListener" << std::endl;
+        std::cout << "\t" << "timerEvent()" << std::endl;
+    }, interval1 );
     screen.addEvent( &event );
 
     // User specified events.
