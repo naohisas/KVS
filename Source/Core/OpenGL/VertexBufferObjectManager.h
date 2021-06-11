@@ -68,12 +68,12 @@ private:
     size_t m_vbo_size = 0; ///< data size of VBO
     size_t m_ibo_size = 0; ///< data size of IBO
 
-    VertexBuffer m_vertex_array{}; ///< vertex array buffer
-    VertexBuffer m_color_array{}; ///< color array buffer
-    VertexBuffer m_normal_array{}; ///< normal array buffer
-    VertexBuffer m_tex_coord_array{}; ///< texture coordinate array buffer
-    IndexBuffer m_index_array{}; ///< index array buffer
-    VertexAttribBuffers m_vertex_attrib_arrays{}; ///< vertex attribute array buffers
+    VertexBuffer m_vertex_array; ///< vertex array buffer
+    VertexBuffer m_color_array; ///< color array buffer
+    VertexBuffer m_normal_array; ///< normal array buffer
+    VertexBuffer m_tex_coord_array; ///< texture coordinate array buffer
+    IndexBuffer m_index_array; ///< index array buffer
+    VertexAttribBuffers m_vertex_attrib_arrays; ///< vertex attribute array buffers
 
 public:
     VertexBufferObjectManager() = default;
