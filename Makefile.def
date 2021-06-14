@@ -298,7 +298,7 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
       OPENMP_LINK_LIBRARY +=
     # For Intel C++ compiler (icpc/mpiicpc)
     else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
-      OPENMP_LINK_LIBRARY += -liomp
+      OPENMP_LINK_LIBRARY += -liomp5
     # For g++
     else
       OPENMP_LINK_LIBRARY += -lgomp
