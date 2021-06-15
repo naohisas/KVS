@@ -6,23 +6,19 @@
 #include <kvs/HydrogenVolumeData>
 #include <kvs/RayCastingRenderer>
 #include <kvs/Timer>
-#include <kvs/osmesa/Screen>
+#include <kvs/OffScreen>
 
 
 int main( int argc, char** argv )
 {
     std::cout << "OSMesa version: " << kvs::osmesa::Version() << std::endl;
 
-    kvs::StructuredVolumeObject* volume = NULL;
-    if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else            volume = new kvs::HydrogenVolumeData( kvs::Vec3u( 64, 64, 64 ) );
+    auto* object = new kvs::HydrogenVolumeData( { 64, 64, 64 } );
+    auto* renderer = new kvs::glsl::RayCastingRenderer();
+    //auto* renderer = new kvs::RayCastingRenderer();
 
-    kvs::StructuredVolumeObject* object = volume;
-    // kvs::RayCastingRenderer* renderer = new kvs::RayCastingRenderer();
-    kvs::glsl::RayCastingRenderer* renderer = new kvs::glsl::RayCastingRenderer();
-
-    kvs::osmesa::Screen screen;
-    screen.setGeometry( 0, 0, 512, 512 );
+    kvs::OffScreen screen;
+    screen.setSize( 512, 512 );
     screen.registerObject( object, renderer );
 
     kvs::Timer timer( kvs::Timer::Start );
@@ -32,15 +28,16 @@ int main( int argc, char** argv )
         std::string filename = "output_" + num.str() + ".bmp";
 
         std::cout << "rendering to ... " << std::flush;
-        object->multiplyXform( kvs::Xform::Rotation( kvs::Mat3::RotationY( 30 ) ) );
+        auto R = kvs::Xform::Rotation( kvs::Mat3::RotationY( 30 ) );
+        object->multiplyXform( R );
         screen.draw();
         screen.capture().write( filename );
         std::cout << filename << std::endl;
     }
     timer.stop();
 
-    std::cout << "Total rendering time:   " << timer.sec() << " [sec]" << std::endl;
-    std::cout << "Average rendering time: " << timer.sec() / 12.0f << " [sec]" << std::endl;
+    std::cout << "Total:   " << timer.sec() << " [sec]" << std::endl;
+    std::cout << "Average: " << timer.sec() / 12.0f << " [sec]" << std::endl;
 
     return 0;
 }
