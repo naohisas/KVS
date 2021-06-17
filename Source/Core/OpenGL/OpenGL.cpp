@@ -1907,7 +1907,7 @@ GLint UnProject(
 void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, GLint stacks )
 {
     const int CacheSize = 240;
-    const float Pi = 3.14159265358979323846;
+    const float Pi = float(3.14159265358979323846);
 
     GLint i,j;
     GLfloat sinCache[CacheSize];
@@ -1934,8 +1934,8 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     }
 
     /* Compute length (needed for normal calculations) */
-    deltaRadius = base - top;
-    length = std::sqrt(deltaRadius*deltaRadius + height*height);
+    deltaRadius = float(base - top);
+    length = float(std::sqrt(deltaRadius*deltaRadius + height*height));
     if ( length == 0.0 )
     {
         kvsMessageError("Invalid value.");
@@ -1949,7 +1949,7 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     needCache3 = 0;
 
     zNormal = deltaRadius / length;
-    xyNormalRatio = height / length;
+    xyNormalRatio = float(height) / length;
 
     for (i = 0; i < slices; i++)
     {
@@ -1967,7 +1967,7 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     {
         for (i = 0; i < slices; i++)
         {
-            angle = 2 * Pi * (i-0.5) / slices;
+            angle = 2.0f * Pi * (i-0.5f) / slices;
             sinCache3[i] = xyNormalRatio * std::sin(angle);
             cosCache3[i] = xyNormalRatio * std::cos(angle);
         }
@@ -1999,10 +1999,10 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     */
     for (j = 0; j < stacks; j++)
     {
-        zLow = j * height / stacks;
-        zHigh = (j + 1) * height / stacks;
-        radiusLow = base - deltaRadius * ((float) j / stacks);
-        radiusHigh = base - deltaRadius * ((float) (j + 1) / stacks);
+        zLow = j * float(height) / stacks;
+        zHigh = (j + 1) * float(height) / stacks;
+        radiusLow = float(base) - deltaRadius * ((float) j / stacks);
+        radiusHigh = float(base) - deltaRadius * ((float) (j + 1) / stacks);
 
         kvs::OpenGL::Begin( GL_QUAD_STRIP );
         for (i = 0; i <= slices; i++)
@@ -2018,7 +2018,7 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
 void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
 {
     const int CacheSize = 240;
-    const float Pi = 3.14159265358979323846;
+    const float Pi = float(3.14159265358979323846);
 
     GLint i,j;
     GLfloat sinCache1a[CacheSize];
@@ -2074,8 +2074,8 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
             sinCache2b[j] = std::sin(angle);
             cosCache2b[j] = std::cos(angle);
         }
-        sinCache1b[j] = radius * std::sin(angle);
-        cosCache1b[j] = radius * std::cos(angle);
+        sinCache1b[j] = float(radius) * std::sin(angle);
+        cosCache1b[j] = float(radius) * std::cos(angle);
     }
     /* Make sure it comes to a point */
     sinCache1b[0] = 0;
@@ -2084,7 +2084,7 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
     if (needCache3) {
         for (i = 0; i < slices; i++)
         {
-            angle = 2 * Pi * (i-0.5) / slices;
+            angle = 2.0f * Pi * (i-0.5f) / slices;
             sinCache3a[i] = std::sin(angle);
             cosCache3a[i] = std::cos(angle);
         }
@@ -2199,10 +2199,10 @@ void Render2D::begin()
     kvs::OpenGL::LoadIdentity();
 
     // The origin is upper-left.
-    const GLint left = m_vp[0];
-    const GLint top = m_vp[1];
-    const GLint right = m_vp[0] + m_vp[2];
-    const GLint bottom = m_vp[1] + m_vp[3];
+    const GLint left = int(m_vp[0]);
+    const GLint top = int(m_vp[1]);
+    const GLint right = int(m_vp[0] + m_vp[2]);
+    const GLint bottom = int(m_vp[1] + m_vp[3]);
     kvs::OpenGL::SetOrtho( left, right, bottom, top, -1, 1 );
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
 }

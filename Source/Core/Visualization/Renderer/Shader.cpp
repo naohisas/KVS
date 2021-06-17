@@ -91,7 +91,7 @@ const kvs::RGBColor Shader::Lambert::shadedColor(
  *  @return attenuation value
  */
 /*==========================================================================*/
-inline float Shader::Lambert::attenuation(
+float Shader::Lambert::attenuation(
     const kvs::Vec3& vertex,
     const kvs::Vec3& gradient ) const
 {
@@ -165,7 +165,7 @@ const kvs::RGBColor Shader::Phong::shadedColor(
  *  @return attenuation value
  */
 /*==========================================================================*/
-inline float Shader::Phong::attenuation(
+float Shader::Phong::attenuation(
     const kvs::Vec3& vertex,
     const kvs::Vec3& gradient ) const
 {
@@ -239,7 +239,7 @@ const kvs::RGBColor Shader::BlinnPhong::shadedColor(
  *  @return attenuation value
  */
 /*==========================================================================*/
-inline float Shader::BlinnPhong::attenuation(
+float Shader::BlinnPhong::attenuation(
     const kvs::Vec3& vertex,
     const kvs::Vec3& gradient ) const
 {

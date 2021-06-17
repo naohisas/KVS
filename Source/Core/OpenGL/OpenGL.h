@@ -422,10 +422,13 @@ private:
     kvs::Vec4 m_vp{ 0.0f, 0.0f, 0.0f, 0.0f }; ///< viewport
 public:
     Render2D() = default;
-    Render2D( GLint x, GLint y, GLint w, GLint h ): m_vp( x, y, w, h ) {}
+    Render2D( GLint x, GLint y, GLint w, GLint h ): m_vp( kvs::Vec4i(x, y, w, h) ) {}
     Render2D( const kvs::Vec4& vp ): m_vp( vp ) {}
     void setViewport( const kvs::Vec4& vp ) { m_vp = vp; }
-    void setViewport( GLint x, GLint y, GLint w, GLint h ) { m_vp = kvs::Vec4( x, y, w, h ); }
+    void setViewport( GLint x, GLint y, GLint w, GLint h )
+    {
+        m_vp = kvs::Vec4( kvs::Vec4i( x, y, w, h ) );
+    }
     void begin();
     void end();
 };
