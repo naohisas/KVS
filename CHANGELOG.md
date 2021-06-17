@@ -558,6 +558,14 @@
 
 **Removed examples**
 + Example/Utility/AnyValue
++ Example/SupportGLUT/CheckBox
++ Example/SupportGLUT/LegendBar
++ Example/SupportGLUT/OrientationBox
++ Example/SupportGLUT/PushButton
++ Example/SupportGLUT/RadioButton
++ Example/SupportGLUT/Slider
++ Example/SupportGLUT/TransferFunctionEditor
++ Example/Visualization/StochasticMultivariateTetrahedraRenderer
 
 **Added new option in KVS**
 + Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)

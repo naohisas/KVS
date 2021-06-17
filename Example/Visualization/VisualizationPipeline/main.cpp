@@ -57,7 +57,7 @@ int main( int argc, char** argv )
     }
 
     // Output the visualization pipeline as a string.
-    pipeline.print();
+    pipeline.print( std::cout );
 
     // Screen.
     kvs::Screen screen( &app );

@@ -29,11 +29,13 @@ namespace Widget
  *  @param  screen [in] pointer to the screen
  */
 /*===========================================================================*/
-CounterLabel::CounterLabel( Parameter* parameter, kvs::glut::Screen* screen ):
-    kvs::glut::Label( screen ),
+CounterLabel::CounterLabel( Parameter* parameter, kvs::Screen* screen ):
+    kvs::Label( screen ),
     m_parameter( parameter )
 {
-    setTextColor( kvs::RGBColor( 255, 255, 255 ) );
+    auto font = this->font();
+    font.setColor( kvs::RGBColor( 255, 255, 255 ) );
+    this->setFont( font );
 }
 
 /*===========================================================================*/
@@ -41,7 +43,7 @@ CounterLabel::CounterLabel( Parameter* parameter, kvs::glut::Screen* screen ):
  *  @brief  Callback function when the screen is updated.
  */
 /*===========================================================================*/
-void CounterLabel::screenUpdated( void )
+void CounterLabel::screenUpdated()
 {
     if ( m_parameter->enable_show_information ) show();
     else hide();
@@ -56,10 +58,10 @@ void CounterLabel::screenUpdated( void )
  *  @brief  Callback function when the screen is resized.
  */
 /*===========================================================================*/
-void CounterLabel::screenResized( void )
+void CounterLabel::screenResized()
 {
     // Anchor at the top-right on the screen.
-    const size_t width = static_cast<kvs::glut::Screen*>(screen())->scene()->camera()->windowWidth();
+    const size_t width = static_cast<kvs::Screen*>(screen())->scene()->camera()->windowWidth();
     setX( width - 100 );
     setY( 10 );
 }
@@ -71,11 +73,13 @@ void CounterLabel::screenResized( void )
  *  @param  screen [in] pointer to the screen
  */
 /*===========================================================================*/
-ModalityLabel::ModalityLabel( Parameter* parameter, kvs::glut::Screen* screen ):
-    kvs::glut::Label( screen ),
+ModalityLabel::ModalityLabel( Parameter* parameter, kvs::Screen* screen ):
+    kvs::Label( screen ),
     m_parameter( parameter )
 {
-    setTextColor( kvs::RGBColor( 255, 255, 255 ) );
+    auto font = this->font();
+    font.setColor( kvs::RGBColor( 255, 255, 255 ) );
+    this->setFont( font );
 }
 
 /*===========================================================================*/
@@ -83,7 +87,7 @@ ModalityLabel::ModalityLabel( Parameter* parameter, kvs::glut::Screen* screen ):
  *  @brief  Callback function when the screen is updated.
  */
 /*===========================================================================*/
-void ModalityLabel::screenUpdated( void )
+void ModalityLabel::screenUpdated()
 {
     if ( m_parameter->enable_show_information ) show();
     else hide();
@@ -100,7 +104,7 @@ void ModalityLabel::screenUpdated( void )
  *  @brief  Callback function when the screen is resized.
  */
 /*===========================================================================*/
-void ModalityLabel::screenResized( void )
+void ModalityLabel::screenResized()
 {
     // Anchor at the top-left on the screen.
     setX( 10 );
@@ -112,11 +116,13 @@ void ModalityLabel::screenResized( void )
  *  @brief  Constructs a new ImageInfoLabel class.
  */
 /*===========================================================================*/
-ImageInfoLabel::ImageInfoLabel( Parameter* parameter, kvs::glut::Screen* screen ):
-    kvs::glut::Label( screen ),
+ImageInfoLabel::ImageInfoLabel( Parameter* parameter, kvs::Screen* screen ):
+    kvs::Label( screen ),
     m_parameter( parameter )
 {
-    setTextColor( kvs::RGBColor( 255, 255, 255 ) );
+    auto font = this->font();
+    font.setColor( kvs::RGBColor( 255, 255, 255 ) );
+    this->setFont( font );
 };
 
 /*===========================================================================*/
@@ -124,7 +130,7 @@ ImageInfoLabel::ImageInfoLabel( Parameter* parameter, kvs::glut::Screen* screen 
  *  @brief  Callback function when the screen is updated.
  */
 /*===========================================================================*/
-void ImageInfoLabel::screenUpdated( void )
+void ImageInfoLabel::screenUpdated()
 {
     if ( m_parameter->enable_show_information ) show();
     else hide();
@@ -159,11 +165,11 @@ void ImageInfoLabel::screenUpdated( void )
  *  @brief  Callback function when the screen is resized.
  */
 /*===========================================================================*/
-void ImageInfoLabel::screenResized( void )
+void ImageInfoLabel::screenResized()
 {
     // Anchor at the bottom-left on the screen.
     const size_t character_height = 12;
-    const size_t height = static_cast<kvs::glut::Screen*>(screen())->scene()->camera()->windowHeight();
+    const size_t height = static_cast<kvs::Screen*>(screen())->scene()->camera()->windowHeight();
     setX( 10 );
     setY( height - 19 * character_height - 10 );
 }

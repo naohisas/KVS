@@ -150,5 +150,5 @@ int main( int argc, char** argv )
     else if ( argument.hasOption("client") ) return Client( argument );
 
     kvsMessageError("Need to specify '-server' or '-client'.");
-    return false;
+    return 0;
 }
