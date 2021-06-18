@@ -36,7 +36,7 @@ int main( int argc, char** argv )
     auto* object = new kvs::TableObject();
     object->addColumn( random_x, min_value, max_value, "X value" );
     object->addColumn( random_y, min_value, max_value, "Y value" );
-    object->addColumn( random_y, min_value, max_value, "Z value" );
+    object->addColumn( random_z, min_value, max_value, "Z value" );
 
     const int left = 65;
     const int top = 35;
