@@ -1,4 +1,4 @@
-### Version 2.x.x Released (202x.xx.xx)
+### Version 3.0.0 Released (2021.06.18)
 **Added new classes and functions**
 + kvs::ValueAxis
 + kvs::DateAxis
