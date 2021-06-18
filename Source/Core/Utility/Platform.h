@@ -3,14 +3,6 @@
  *  @file   Platform.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Platform.h 1109 2012-04-21 11:55:54Z s.yamada0808@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 
@@ -149,6 +141,19 @@
 #define KVS_PLATFORM_CPU_NAME "MIPS"
 #endif
 
+// ARM
+#if defined ( __arm__ ) || defined ( _ARM ) || defined ( _M_ARM ) || defined ( __ARM_ARCH )
+#undef  KVS_PLATFORM_CPU_UNKNOWN
+#undef  KVS_PLATFORM_CPU_NAME
+#if defined ( __aarch64__ )
+#define KVS_PLATFORM_CPU_ARM64
+#define KVS_PLATFORM_CPU_NAME "ARM 64"
+#else
+#define KVS_PLATFORM_CPU_ARM
+#define KVS_PLATFORM_CPU_NAME "ARM"
+#endif
+#endif
+
 #if defined ( KVS_PLATFORM_CPU_UNKNOWN )
 #pragma message("Platform.h: Unknown CPU architecture.")
 #endif
@@ -162,7 +167,8 @@
     defined ( __amd64__ ) || defined( _M_AMD64 ) ||                     \
     defined ( __ia64__ ) || defined ( __ia64 ) || defined ( _M_IA64 ) || \
     defined ( __powerpc64__ ) ||                                        \
-    defined ( __arch64__ )
+    defined ( __arch64__ ) ||                                           \
+    defined ( __aarch64__ )
 #define KVS_PLATFORM_CPU_64
 #else
 #define KVS_PLATFORM_CPU_32
@@ -205,6 +211,12 @@
 
 #elif defined ( KVS_PLATFORM_CPU_MIPS )
 #define KVS_PLATFORM_BIG_ENDIAN
+
+#elif defined ( KVS_PLATFORM_CPU_ARM64 )
+#define KVS_PLATFORM_LITTLE_ENDIAN
+
+#elif defined ( KVS_PLATFORM_CPU_ARM )
+#define KVS_PLATFORM_LITTLE_ENDIAN
 
 #else
 //#warning Unknown byte-order of the platform.

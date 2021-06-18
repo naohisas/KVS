@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file GrayImage.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GrayImage.cpp 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   GrayImage.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "GrayImage.h"
@@ -19,6 +12,7 @@
 #include <kvs/File>
 #include <kvs/KVSMLImageObject>
 #include <kvs/Bmp>
+#include <kvs/Png>
 #include <kvs/Ppm>
 #include <kvs/Pbm>
 #include <kvs/Pgm>
@@ -39,7 +33,7 @@ namespace kvs
 /*===========================================================================*/
 void GrayImage::MeanValue::operator () (
     const kvs::ColorImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+    PixelData& data )
 {
     const size_t width = image.width();
     const size_t height = image.height();
@@ -72,7 +66,7 @@ void GrayImage::MeanValue::operator () (
 /*===========================================================================*/
 void GrayImage::MiddleValue::operator () (
     const kvs::ColorImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+    PixelData& data )
 {
     const size_t width = image.width();
     const size_t height = image.height();
@@ -107,7 +101,7 @@ void GrayImage::MiddleValue::operator () (
 /*===========================================================================*/
 void GrayImage::MedianValue::operator () (
     const kvs::ColorImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+    PixelData& data )
 {
     const size_t width = image.width();
     const size_t height = image.height();
@@ -141,7 +135,7 @@ void GrayImage::MedianValue::operator () (
 /*===========================================================================*/
 void GrayImage::NTSCWeightedMeanValue::operator () (
     const kvs::ColorImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+    PixelData& data )
 {
     const size_t width = image.width();
     const size_t height = image.height();
@@ -178,7 +172,7 @@ void GrayImage::NTSCWeightedMeanValue::operator () (
 /*===========================================================================*/
 void GrayImage::HDTVWeightedMeanValue::operator () (
     const kvs::ColorImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+    PixelData& data )
 {
     const double gamma_value = 2.2;
     const size_t width = image.width();
@@ -231,7 +225,7 @@ GrayImage::GrayImage()
 /*==========================================================================*/
 GrayImage::GrayImage( const size_t width, const size_t height )
 {
-    BaseClass::create( width, height, kvs::ImageBase::Gray );
+    this->create( width, height );
 }
 
 /*==========================================================================*/
@@ -245,9 +239,43 @@ GrayImage::GrayImage( const size_t width, const size_t height )
 GrayImage::GrayImage(
     const size_t width,
     const size_t height,
-    const kvs::ValueArray<kvs::UInt8>& data )
+    const PixelData& data )
 {
-    BaseClass::create( width, height, kvs::ImageBase::Gray, data );
+    this->create( width, height, data );
+}
+
+/*==========================================================================*/
+/**
+ *  Constructs a new gray-scale image.
+ *  @param width [in] image width
+ *  @param height [in] image height
+ *  @param data [in] pixel data array
+ *  @param channel [in] channel number
+ */
+/*==========================================================================*/
+GrayImage::GrayImage(
+    const size_t width,
+    const size_t height,
+    const PixelData& data,
+    const int channel )
+{
+    this->create( width, height, data, channel );
+}
+
+/*==========================================================================*/
+/**
+ *  Constructs a new gray-scale image.
+ *  @param width [in] image width
+ *  @param height [in] image height
+ *  @param data [in] normalized pixel data array
+ */
+/*==========================================================================*/
+GrayImage::GrayImage(
+    const size_t width,
+    const size_t height,
+    const kvs::ValueArray<kvs::Real32>& data )
+{
+    this->create( width, height, data );
 }
 
 /*===========================================================================*/
@@ -276,6 +304,18 @@ GrayImage::GrayImage( const kvs::ColorImage& image )
 
 /*===========================================================================*/
 /**
+ *  @brief  Constructs a new gray-scale image from the color image.
+ *  @param  image [in] color image
+ *  @param  channel [in] channel number
+ */
+/*===========================================================================*/
+GrayImage::GrayImage( const kvs::ColorImage& image, const int channel )
+{
+    this->create( image.width(), image.height(), image.pixels(), channel );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Constructs a new GrayImage class.
  *  @param  filename [in] filename
  */
@@ -283,6 +323,93 @@ GrayImage::GrayImage( const kvs::ColorImage& image )
 GrayImage::GrayImage( const std::string& filename )
 {
     this->read( filename );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a gray image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool GrayImage::create( const size_t width, const size_t height )
+{
+    return BaseClass::create( width, height, kvs::ImageBase::Gray );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a gray image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  pixels [in] pixel data
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool GrayImage::create(
+    const size_t width,
+    const size_t height,
+    const PixelData& pixels )
+{
+    return BaseClass::create( width, height, kvs::ImageBase::Gray, pixels );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a gray image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  pixels [in] pixel data
+ *  @param  channel [in] channel number
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool GrayImage::create(
+    const size_t width,
+    const size_t height,
+    const PixelData& pixels,
+    const int channel )
+{
+    if ( pixels.size() == width * height )
+    {
+        // gray-scale data
+        return this->create( width, height, pixels );
+    }
+    else
+    {
+        // color data (stride = 3:rgb, 4:rgba)
+        PixelData data( width * height );
+        const size_t stride = pixels.size() / ( width * height );
+        for ( size_t i = 0; i < data.size(); ++i )
+        {
+            data[i] = pixels[ stride * i + channel ];
+        }
+        return BaseClass::create( width, height, kvs::ImageBase::Gray, data );
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates a gray image.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  pixels [in] normalized pixel data
+ *  @return true if the create process is done successfully
+ */
+/*===========================================================================*/
+bool GrayImage::create(
+    const size_t width,
+    const size_t height,
+    const kvs::ValueArray<kvs::Real32>& pixels )
+{
+    PixelData data( width * height );
+    for ( size_t i = 0; i < data.size(); ++i )
+    {
+        data[i] = static_cast<int>( pixels[i] * 255 );
+    }
+
+    return BaseClass::create( width, height, kvs::ImageBase::Gray, data );
 }
 
 /*==========================================================================*/
@@ -435,8 +562,9 @@ bool GrayImage::read( const std::string& filename )
         }
     }
 
-    // Bitmap and PPM image.
+    // Bitmap, PNG and PPM image.
     if ( kvs::Bmp::CheckExtension( filename ) ||
+         kvs::Png::CheckExtension( filename ) ||
          kvs::Ppm::CheckExtension( filename ) )
     {
         kvs::ColorImage image; image.read( filename );
@@ -464,13 +592,13 @@ bool GrayImage::read( const std::string& filename )
         const kvs::Tiff tiff( filename );
         if ( tiff.colorMode() == kvs::Tiff::Color24 )
         {
-            const kvs::ValueArray<kvs::UInt8>& data = tiff.rawData().asValueArray<kvs::UInt8>();
+            const PixelData& data = tiff.rawData().asValueArray<kvs::UInt8>();
             kvs::ColorImage image( tiff.width(), tiff.height(), data );
             return( this->read_image( image ) );
         }
         if ( tiff.colorMode() == kvs::Tiff::Gray8 )
         {
-            const kvs::ValueArray<kvs::UInt8>& data = tiff.rawData().asValueArray<kvs::UInt8>();
+            const PixelData& data = tiff.rawData().asValueArray<kvs::UInt8>();
             const BaseClass::ImageType type = BaseClass::Gray;
             return( BaseClass::create( tiff.width(), tiff.height(), type, data ) );
         }
@@ -502,7 +630,7 @@ bool GrayImage::read( const std::string& filename )
  *  @return true, if the writing process is done successfully
  */
 /*==========================================================================*/
-bool GrayImage::write( const std::string& filename )
+bool GrayImage::write( const std::string& filename ) const
 {
     // KVSML image.
     if ( kvs::KVSMLImageObject::CheckExtension( filename ) )
@@ -518,6 +646,7 @@ bool GrayImage::write( const std::string& filename )
 
     // Bitmap and PPM image.
     if ( kvs::Bmp::CheckExtension( filename ) ||
+         kvs::Png::CheckExtension( filename ) ||
          kvs::Ppm::CheckExtension( filename ) )
     {
         kvs::ColorImage image( *this );

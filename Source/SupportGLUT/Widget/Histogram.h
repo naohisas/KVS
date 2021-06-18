@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Histogram.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Histogram.h 1690 2014-01-01 08:14:08Z naohisa.sakamoto@gmail.com $
+ *  @file   Histogram.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__GLUT__HISTOGRAM_H_INCLUDE
@@ -27,6 +20,7 @@
 #include <kvs/ClassName>
 #include <kvs/Vector2>
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -62,7 +56,7 @@ private:
     kvs::Vector2i m_previous_position; ///< mouse previous position
 
 public:
-    Histogram( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( Histogram( kvs::ScreenBase* screen = 0 ) );
     virtual ~Histogram();
 
     virtual void screenUpdated() {}

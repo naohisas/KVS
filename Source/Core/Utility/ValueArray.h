@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ValueArray.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ValueArray.h 1422 2013-03-02 06:32:39Z s.yamada0808@gmail.com $
+ *  @file   ValueArray.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #pragma once
@@ -24,6 +17,7 @@
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Value>
+#include <kvs/SliceRange>
 #include <kvs/SharedPointer>
 #include <kvs/Deleter>
 
@@ -226,6 +220,11 @@ public:
         return this->data()[ index ];
     }
 
+    ValueArray operator [] ( const kvs::SliceRange& range ) const
+    {
+        return this->slice( range );
+    }
+
     ValueArray& operator =( const ValueArray& rhs )
     {
         ValueArray temp( rhs );
@@ -257,7 +256,7 @@ public:
 
     friend bool operator <=( const this_type& lhs, const this_type& rhs )
     {
-        return !( rhs < lhs );
+        return !( rhs > lhs );
     }
 
     friend bool operator >=( const this_type& lhs, const this_type& rhs )
@@ -267,10 +266,6 @@ public:
 
     friend std::ostream& operator <<( std::ostream& os, const this_type& rhs )
     {
-//        if ( rhs.empty() ) { return os << "{ }"; }
-//        os << "{" << rhs.front();
-//        for ( const_iterator i = rhs.begin() + 1; i != rhs.end(); i++ ) { os << ", " << *i; }
-//        return os << "}";
         return os << rhs.format( " ", "", "" );
     }
 
@@ -340,6 +335,23 @@ public:
         return ValueArray( this->data(), this->size() );
     }
 
+    ValueArray slice( const kvs::SliceRange& range ) const
+    {
+        range.adjust( this->size() ); // make the slice indices positive.
+
+        if ( range.step == 1 )
+        {
+            return ValueArray( this->begin() + range.start, this->begin() + range.stop );
+        }
+
+        ValueArray ret( range.size() );
+        for ( long i = range.start, j = 0; i < range.stop; i += range.step )
+        {
+            ret[j++] = this->at(i);
+        }
+        return ret;
+    }
+
     reference at( const size_t index )
     {
         return ( *this )[ index ];
@@ -348,6 +360,11 @@ public:
     const_reference at( const size_t index ) const
     {
         return ( *this )[ index ];
+    }
+
+    ValueArray at( const kvs::SliceRange& range ) const
+    {
+        return ( *this )[ range ];
     }
 
     value_type* pointer()

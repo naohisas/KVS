@@ -3,14 +3,6 @@
  *  @file   GeometryObjectBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GeometryObjectBase.h 1759 2014-05-05 06:14:18Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <ostream>
@@ -37,8 +29,7 @@ class GeometryObjectBase : public kvs::ObjectBase
     kvsModule( kvs::GeometryObjectBase, Object );
 
 public:
-
-    typedef kvs::ObjectBase BaseClass;
+    using BaseClass = kvs::ObjectBase;
 
     enum GeometryType
     {
@@ -49,14 +40,12 @@ public:
     };
 
 private:
-
     GeometryType m_geometry_type; ///< geometry type
     kvs::ValueArray<kvs::Real32> m_coords; ///< vertex array
     kvs::ValueArray<kvs::UInt8> m_colors; ///< color (r,g,b) array
     kvs::ValueArray<kvs::Real32> m_normals; ///< normal array
 
 public:
-
     GeometryObjectBase();
 
     void shallowCopy( const GeometryObjectBase& object );
@@ -85,11 +74,9 @@ public:
     void updateMinMaxCoords();
 
 protected:
-
     void setGeometryType( GeometryType geometry_type ) { m_geometry_type = geometry_type; }
 
 private:
-
     void calculate_min_max_coords();
 
 public:

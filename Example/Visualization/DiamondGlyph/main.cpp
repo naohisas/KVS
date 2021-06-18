@@ -5,13 +5,13 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/DiamondGlyph>
 #include <kvs/TornadoVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -23,37 +23,24 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::DiamondGlyph" );
+    screen.create();
 
-    /* Read volume data from the specified data file. If the data file is not
-     * specified, tornado volume data is created by using kvs::TornadoVolumeData class.
-     */
-    kvs::StructuredVolumeObject* object = NULL;
-    if ( argc > 1 ) object = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else object = new kvs::TornadoVolumeData( kvs::Vec3u( 8, 8, 8 ) );
-    if ( !object )
+    // Import volume data as structured volume object.
+    auto* object = [&]() -> kvs::StructuredVolumeObject*
     {
-        kvsMessageError() << "Cannot create a structured volume object." << std::endl;
-        return ( false );
-    }
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::TornadoVolumeData( { 8, 8, 8 } );
+    }();
 
     // Create a diamond glyph renderer.
-    kvs::DiamondGlyph* glyph = new kvs::DiamondGlyph();
-    if ( !glyph )
-    {
-        kvsMessageError() << "Cannot creat an diamond glyph." << std::endl;
-        return ( false );
-    }
-
-    // Set properties.
-    const kvs::TransferFunction tfunc( 256 );
+    const auto tfunc = kvs::TransferFunction( 256 ); // transfer function
+    auto* glyph = new kvs::DiamondGlyph();
     glyph->setTransferFunction( tfunc );
 
-    kvs::glut::Screen screen( &app );
     screen.registerObject( object, glyph );
-    screen.setGeometry( 0, 0, 512, 512 );
-    screen.setTitle( "kvs::DiamondGlyph" );
-    screen.show();
 
     return app.run();
 }

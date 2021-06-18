@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ScreenBase.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/ColorImage>
 #include <kvs/OpenGL>
@@ -31,9 +37,9 @@ ScreenBase::~ScreenBase()
     m_surface.destroy();
 }
 
-kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer() const
+kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer( GLenum mode ) const
 {
-    kvs::OpenGL::SetReadBuffer( GL_FRONT );
+    kvs::OpenGL::SetReadBuffer( mode );
     kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
 
     kvs::ValueArray<kvs::UInt8> buffer( this->width() * this->height() * 4 );
@@ -42,9 +48,9 @@ kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer() const
     return buffer;
 }
 
-kvs::ValueArray<kvs::Real32> ScreenBase::readbackDepthBuffer() const
+kvs::ValueArray<kvs::Real32> ScreenBase::readbackDepthBuffer( GLenum mode ) const
 {
-    kvs::OpenGL::SetReadBuffer( GL_FRONT );
+    kvs::OpenGL::SetReadBuffer( mode );
     kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
 
     kvs::ValueArray<kvs::Real32> buffer( this->width() * this->height() );

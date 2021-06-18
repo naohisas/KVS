@@ -3,14 +3,6 @@
  *  @file   Label.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -30,19 +22,30 @@ namespace kvs
 class Label : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using TextList = std::vector<std::string>;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
-    std::vector<std::string> m_text; ///< text list
+    TextList m_text_list; ///< text list
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     Label( kvs::ScreenBase* screen = 0 );
 
-    virtual void screenUpdated(){};
-    virtual void screenResized(){};
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
 
-    void setText( const std::string& text ) { m_text.clear(); this->addText( text ); }
-    void addText( const std::string& text ) { m_text.push_back( text ); }
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
+
+    const TextList& textList() const { return m_text_list; }
+    const std::string& text( const size_t index ) { return m_text_list[ index ]; }
+
+    void setText( const std::string& text ) { m_text_list.clear(); this->addText( text ); }
+    void addText( const std::string& text ) { m_text_list.push_back( text ); }
     void setText( const char* text, ... );
     void addText( const char* text, ... );
 

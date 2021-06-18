@@ -5,8 +5,8 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/PolygonImporter>
 #include <kvs/PolygonObject>
 #include <kvs/PolygonRenderer>
@@ -24,8 +24,8 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setGeometry( 0, 0, 512, 512 );
 
     kvs::PolygonObject* object = NULL;
@@ -49,7 +49,7 @@ int main( int argc, char** argv )
     if ( glsl )
     {
         kvs::glsl::PolygonRenderer* renderer = new kvs::glsl::PolygonRenderer();
-        renderer->setShader( kvs::Shader::Phong() );
+        renderer->setShadingModel( kvs::Shader::Phong() );
         screen.setTitle( "kvs::glsl::PolygonRenderer" );
         screen.registerObject( object, renderer );
     }
@@ -60,7 +60,7 @@ int main( int argc, char** argv )
         screen.registerObject( object, renderer );
     }
 
-    screen.show();
+    screen.create();
 
     return app.run();
 }

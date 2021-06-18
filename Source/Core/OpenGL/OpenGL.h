@@ -3,18 +3,8 @@
  *  @file   OpenGL.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OpenGL.h 1808 2014-08-30 00:00:29Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__OPEN_GL_H_INCLUDE
-#define KVS__OPEN_GL_H_INCLUDE
-
+#pragma once
 #include <sstream>
 #include <string>
 #include <kvs/GL>
@@ -348,75 +338,101 @@ GLint UnProject(
 void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, GLint stacks );
 void DrawSphere( GLdouble radius, GLint slices, GLint stacks );
 
+/*===========================================================================*/
+/**
+ *  @brief  WithPushedMatrix class.
+ */
+/*===========================================================================*/
 class WithPushedMatrix
 {
-    GLint m_current_mode;
+    GLint m_current_mode = 0; ///< current mode
 public:
     WithPushedMatrix( GLenum mode );
     ~WithPushedMatrix();
-    void loadIdentity();
-    void loadMatrix( const GLfloat* m );
-    void loadMatrix( const GLdouble* m );
-    void multMatrix( const GLfloat* m );
-    void multMatrix( const GLdouble* m );
-    void rotate( GLfloat angle, GLfloat x, GLfloat y, GLfloat z );
-    void scale( GLfloat x, GLfloat y, GLfloat z );
-    void translate( GLfloat x, GLfloat y, GLfloat z );
+    void loadIdentity() { OpenGL::LoadIdentity(); }
+    void loadMatrix( const GLfloat* m ) { OpenGL::LoadMatrix( m ); }
+    void loadMatrix( const GLdouble* m ) { OpenGL::LoadMatrix( m ); }
+    void multMatrix( const GLfloat* m ) { OpenGL::MultMatrix( m ); }
+    void multMatrix( const GLdouble* m ) { OpenGL::MultMatrix( m ); }
+    void rotate( GLfloat angle, GLfloat x, GLfloat y, GLfloat z ) { OpenGL::Rotate( angle, x, y, z ); }
+    void scale( GLfloat x, GLfloat y, GLfloat z ) { OpenGL::Scale( x, y, z ); }
+    void translate( GLfloat x, GLfloat y, GLfloat z ) { OpenGL::Translate( x, y, z ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  WithPushedAttrib class.
+ */
+/*===========================================================================*/
 class WithPushedAttrib
 {
 public:
-    WithPushedAttrib( GLbitfield mask );
-    ~WithPushedAttrib();
-    void enable( GLenum cap );
-    void disable( GLenum cap );
+    WithPushedAttrib( GLbitfield mask ) { OpenGL::PushAttrib( mask ); }
+    ~WithPushedAttrib() { OpenGL::PopAttrib(); }
+    void enable( GLenum cap ) { OpenGL::Enable( cap ); }
+    void disable( GLenum cap ) { OpenGL::Disable( cap ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  WithPushedClientAttrib class.
+ */
+/*===========================================================================*/
 class WithPushedClientAttrib
 {
 public:
-    WithPushedClientAttrib( GLbitfield mask );
-    ~WithPushedClientAttrib();
+    WithPushedClientAttrib( GLbitfield mask ) { OpenGL::PushClientAttrib( mask ); }
+    ~WithPushedClientAttrib() { OpenGL::PopClientAttrib(); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  WithEnabled class.
+ */
+/*===========================================================================*/
 class WithEnabled
 {
-    GLenum m_cap;
+    GLenum m_cap = 0; ///< capability that will be enabled
 public:
-    WithEnabled( GLenum cap );
-    ~WithEnabled();
+    WithEnabled( GLenum cap ): m_cap( cap ) { OpenGL::Enable( m_cap ); }
+    ~WithEnabled() { OpenGL::Disable( m_cap ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  WithDisabled class.
+ */
+/*===========================================================================*/
 class WithDisabled
 {
-    GLenum m_cap;
+    GLenum m_cap = 0; ///< capability that will be disabled
 public:
-    WithDisabled( GLenum cap );
-    ~WithDisabled();
+    WithDisabled( GLenum cap ): m_cap( cap ) { OpenGL::Disable( m_cap ); }
+    ~WithDisabled() { OpenGL::Disable( m_cap ); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Render2D class.
+ */
+/*===========================================================================*/
 class Render2D
 {
 private:
-    kvs::Vec4 m_viewport;
-
+    kvs::Vec4 m_vp{ 0.0f, 0.0f, 0.0f, 0.0f }; ///< viewport
 public:
-    Render2D();
-    Render2D( GLint x, GLint y, GLint width, GLint height );
-    Render2D( const kvs::Vec4& viewport );
+    Render2D() = default;
+    Render2D( GLint x, GLint y, GLint w, GLint h ): m_vp( kvs::Vec4i(x, y, w, h) ) {}
+    Render2D( const kvs::Vec4& vp ): m_vp( vp ) {}
+    void setViewport( const kvs::Vec4& vp ) { m_vp = vp; }
+    void setViewport( GLint x, GLint y, GLint w, GLint h )
+    {
+        m_vp = kvs::Vec4( kvs::Vec4i( x, y, w, h ) );
+    }
     void begin();
     void end();
-    void setViewport( const kvs::Vec4& viewport ) { m_viewport = viewport; }
-    void setViewport( GLint x, GLint y, GLint width, GLint height );
 };
-
-/*KVS_DEPRECATED*/ void ActivateTextureUnit( GLint unit );
-/*KVS_DEPRECATED*/ inline std::string ShaderVersion() { return GLSLVersion(); }
-/*KVS_DEPRECATED*/ inline bool CheckError() { return !HasError(); }
 
 } // end of namespace OpenGL
 
 } // end of namespace kvs
-
-#endif // KVS__OPEN_GL_H_INCLUDE

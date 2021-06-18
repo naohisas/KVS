@@ -3,20 +3,10 @@
  *  @file   ObjectBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ObjectBase.cpp 1801 2014-08-05 14:45:34Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ObjectBase.h"
 #include <iomanip>
-#include <kvs/Camera>
 #include <kvs/Math>
-#include <kvs/OpenGL>
 #include <kvs/IgnoreUnusedVariable>
 
 

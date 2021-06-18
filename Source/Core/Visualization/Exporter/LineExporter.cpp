@@ -3,14 +3,6 @@
  *  @file   LineExporter.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LineExporter.cpp 1722 2014-03-13 01:45:06Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "LineExporter.h"
 #include <kvs/Message>

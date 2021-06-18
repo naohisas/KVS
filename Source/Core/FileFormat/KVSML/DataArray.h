@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   DataArray.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: DataArray.h 1303 2012-09-14 11:26:37Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #pragma once
@@ -100,13 +93,7 @@ namespace DataArray
 /*===========================================================================*/
 inline std::string GetDataFilename( const std::string& filename, const std::string& type )
 {
-    const std::string basename( kvs::File( filename ).baseName() );
-//    const std::string pathname( kvs::File( filename ).pathName() );
-//    const std::string sep( kvs::File::Separator() );
-    const std::string ext( "dat" );
-
-//    return( pathname + sep + basename + "_" + type + "." + ext );
-    return basename + "_" + type + "." + ext;
+    return kvs::File( filename ).baseName() + "_" + type + ".dat";
 }
 
 /*===========================================================================*/

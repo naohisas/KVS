@@ -3,14 +3,6 @@
  *  @file   Axis3D.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #ifndef KVS__GLUT__AXIS_3D_H_INCLUDE
 #define KVS__GLUT__AXIS_3D_H_INCLUDE

@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file KVSKey.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: KVSKey.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
+ *  @file   KVSKey.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__QT__KVS_KEY_H_INCLUDE
@@ -28,18 +21,27 @@ class KVSKey
 {
 public:
 
-    static int Code( const int key );
-
 #if ( KVS_QT_VERSION >= 4 )
+    static int Code( const int key, const Qt::KeyboardModifiers modifier );
     static int Modifier( const Qt::KeyboardModifiers modifier );
 #else
+    static int Code( const int key, Qt::ButtonState modifier );
     static int Modifier( Qt::ButtonState modifier );
 #endif
 };
 
-inline int KVSKey::Code( const int key )
+#if ( KVS_QT_VERSION >= 4 )
+inline int KVSKey::Code( const int key, const Qt::KeyboardModifiers modifier )
+#else
+inline int KVSKey::Code( const int key, Qt::ButtonState modifier )
+#endif
 {
-    switch( key )
+#if ( KVS_QT_VERSION >= 4 )
+    const bool shift = ( modifier == Qt::ShiftModifier );
+#else
+    const bool shift = ( modifier == Qt::ShiftButton );
+#endif
+    switch ( key )
     {
     case Qt::Key_Escape:     return( kvs::Key::Escape );
     case Qt::Key_Backspace:  return( kvs::Key::BackSpace );
@@ -77,32 +79,34 @@ inline int KVSKey::Code( const int key )
     case Qt::Key_7:          return( kvs::Key::Seven );
     case Qt::Key_8:          return( kvs::Key::Eight );
     case Qt::Key_9:          return( kvs::Key::Nine );
-    case Qt::Key_A:          return( kvs::Key::a );
-    case Qt::Key_B:          return( kvs::Key::b );
-    case Qt::Key_C:          return( kvs::Key::c );
-    case Qt::Key_D:          return( kvs::Key::d );
-    case Qt::Key_E:          return( kvs::Key::e );
-    case Qt::Key_F:          return( kvs::Key::f );
-    case Qt::Key_G:          return( kvs::Key::g );
-    case Qt::Key_H:          return( kvs::Key::h );
-    case Qt::Key_I:          return( kvs::Key::i );
-    case Qt::Key_J:          return( kvs::Key::j );
-    case Qt::Key_K:          return( kvs::Key::k );
-    case Qt::Key_L:          return( kvs::Key::l );
-    case Qt::Key_M:          return( kvs::Key::m );
-    case Qt::Key_N:          return( kvs::Key::n );
-    case Qt::Key_O:          return( kvs::Key::o );
-    case Qt::Key_P:          return( kvs::Key::p );
-    case Qt::Key_Q:          return( kvs::Key::q );
-    case Qt::Key_R:          return( kvs::Key::r );
-    case Qt::Key_S:          return( kvs::Key::s );
-    case Qt::Key_T:          return( kvs::Key::t );
-    case Qt::Key_U:          return( kvs::Key::u );
-    case Qt::Key_V:          return( kvs::Key::v );
-    case Qt::Key_W:          return( kvs::Key::w );
-    case Qt::Key_X:          return( kvs::Key::x );
-    case Qt::Key_Y:          return( kvs::Key::y );
-    case Qt::Key_Z:          return( kvs::Key::z );
+
+    case Qt::Key_A:          return( shift ? kvs::Key::A : kvs::Key::a );
+    case Qt::Key_B:          return( shift ? kvs::Key::B : kvs::Key::b );
+    case Qt::Key_C:          return( shift ? kvs::Key::C : kvs::Key::c );
+    case Qt::Key_D:          return( shift ? kvs::Key::D : kvs::Key::d );
+    case Qt::Key_E:          return( shift ? kvs::Key::E : kvs::Key::e );
+    case Qt::Key_F:          return( shift ? kvs::Key::F : kvs::Key::f );
+    case Qt::Key_G:          return( shift ? kvs::Key::G : kvs::Key::g );
+    case Qt::Key_H:          return( shift ? kvs::Key::H : kvs::Key::h );
+    case Qt::Key_I:          return( shift ? kvs::Key::I : kvs::Key::i );
+    case Qt::Key_J:          return( shift ? kvs::Key::J : kvs::Key::j );
+    case Qt::Key_K:          return( shift ? kvs::Key::K : kvs::Key::k );
+    case Qt::Key_L:          return( shift ? kvs::Key::L : kvs::Key::l );
+    case Qt::Key_M:          return( shift ? kvs::Key::M : kvs::Key::m );
+    case Qt::Key_N:          return( shift ? kvs::Key::N : kvs::Key::n );
+    case Qt::Key_O:          return( shift ? kvs::Key::O : kvs::Key::o );
+    case Qt::Key_P:          return( shift ? kvs::Key::P : kvs::Key::p );
+    case Qt::Key_Q:          return( shift ? kvs::Key::Q : kvs::Key::q );
+    case Qt::Key_R:          return( shift ? kvs::Key::R : kvs::Key::r );
+    case Qt::Key_S:          return( shift ? kvs::Key::S : kvs::Key::s );
+    case Qt::Key_T:          return( shift ? kvs::Key::T : kvs::Key::t );
+    case Qt::Key_U:          return( shift ? kvs::Key::U : kvs::Key::u );
+    case Qt::Key_V:          return( shift ? kvs::Key::V : kvs::Key::v );
+    case Qt::Key_W:          return( shift ? kvs::Key::W : kvs::Key::w );
+    case Qt::Key_X:          return( shift ? kvs::Key::X : kvs::Key::x );
+    case Qt::Key_Y:          return( shift ? kvs::Key::Y : kvs::Key::y );
+    case Qt::Key_Z:          return( shift ? kvs::Key::Z : kvs::Key::z );
+
     case Qt::Key_F1:         return( kvs::Key::F1 );
     case Qt::Key_F2:         return( kvs::Key::F2 );
     case Qt::Key_F3:         return( kvs::Key::F3 );

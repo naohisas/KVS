@@ -3,16 +3,9 @@
  *  @file   PolygonRendererGLSL.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PolygonRenderer.cpp 1414 2013-01-21 02:16:48Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "PolygonRenderer.h"
+#include <kvs/DebugNew>
 #include <kvs/OpenGL>
 #include <kvs/ProgramObject>
 #include <kvs/ShaderSource>
@@ -353,29 +346,146 @@ namespace glsl
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new PolygonRenderer class.
+ *  @brief  Creates a buffer object.
+ *  @param  object [in] pointer to polgon object  
  */
 /*===========================================================================*/
-PolygonRenderer::PolygonRenderer():
-    m_width( 0 ),
-    m_height( 0 ),
-    m_object( NULL ),
-    m_has_normal( false ),
-    m_has_connection( false ),
-    m_polygon_offset( 0.0f ),
-    m_shader( NULL )
+void PolygonRenderer::BufferObject::create( const kvs::ObjectBase* object )
 {
-    this->setShader( kvs::Shader::Lambert() );
+    const auto* polygon = kvs::PolygonObject::DownCast( object );
+    if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
+    {
+        const auto type = polygon->polygonType();
+        kvsMessageError() << "Not supported polygon type (" << type << ")." << std::endl;
+        return;
+    }
+
+    const bool has_normal = polygon->normals().size() > 0;
+    const bool has_connection = ::HasConnections( polygon );
+    auto coords = ::VertexCoords( polygon );
+    auto colors = ::VertexColors( polygon );
+    auto normals = ::VertexNormals( polygon );
+
+    m_manager.setVertexArray( coords, 3 );
+    m_manager.setColorArray( colors, 4 );
+    if ( has_normal ) { m_manager.setNormalArray( normals ); }
+    if ( has_connection ) { m_manager.setIndexArray( polygon->connections() ); }
+
+    m_manager.create();
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Destroys the PolygonRenderer class.
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to polygon object
  */
 /*===========================================================================*/
-PolygonRenderer::~PolygonRenderer()
+void PolygonRenderer::BufferObject::draw( const kvs::ObjectBase* object )
 {
-    if ( m_shader ) { delete m_shader; }
+    const auto* polygon = kvs::PolygonObject::DownCast( object );
+    const size_t nconnections = polygon->numberOfConnections();
+    const size_t nvertices = ::NumberOfVertices( polygon );
+    const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
+    const bool has_connection = m_manager.indexBufferObject().size() > 0;
+
+    // Draw triangles.
+    kvs::VertexBufferObjectManager::Binder bind( m_manager );
+    if ( has_connection ) { m_manager.drawElements( GL_TRIANGLES, 3 * npolygons ); }
+    else { m_manager.drawArrays( GL_TRIANGLES, 0, 3 * npolygons ); }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets vertex and fragment shader files.
+ *  @param  vert_file [in] vertex shader file
+ *  @param  frag_file [in] fragment shader file
+ */
+/*===========================================================================*/
+void PolygonRenderer::RenderPass::setShaderFiles(
+    const std::string& vert_file, const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Builds shader program.
+ *  @param  model [in] shading model
+ *  @param  enable [in] if true, shading is enabled
+ */
+/*===========================================================================*/
+void PolygonRenderer::RenderPass::create(
+    const kvs::Shader::ShadingModel& model, const bool enable )
+{
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( enable )
+    {
+        switch ( model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( model.two_side_lighting )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
+    }
+
+    m_shader_program.build( vert, frag );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Updates render pass.
+ *  @param  model [in] shading model
+ *  @param  enable [in] if true, shading is enabled
+ */
+/*===========================================================================*/
+void PolygonRenderer::RenderPass::update(
+    const kvs::Shader::ShadingModel& model, const bool enable )
+{
+    m_shader_program.release();
+    this->create( model, enable );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Setups render pass.
+ *  @param  model [in] shading model
+ */
+/*===========================================================================*/
+void PolygonRenderer::RenderPass::setup(
+    const kvs::Shader::ShadingModel& model )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "shading.Ka", model.Ka );
+    m_shader_program.setUniform( "shading.Kd", model.Kd );
+    m_shader_program.setUniform( "shading.Ks", model.Ks );
+    m_shader_program.setUniform( "shading.S",  model.S );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    m_shader_program.setUniform( "ModelViewMatrix", M );
+    m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
+    m_shader_program.setUniform( "NormalMatrix", N );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  object [in] pointer to polygon object
+ */
+/*===========================================================================*/
+void PolygonRenderer::RenderPass::draw( const kvs::ObjectBase* object )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( object );
 }
 
 /*===========================================================================*/
@@ -388,101 +498,42 @@ PolygonRenderer::~PolygonRenderer()
 /*===========================================================================*/
 void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
-    m_has_normal = polygon->normals().size() > 0;
-    m_has_connection = ::HasConnections( polygon );
-    if ( !m_has_normal ) setEnabledShading( false );
-
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+
+    auto* polygon = kvs::PolygonObject::DownCast( object );
+    const bool has_normal = polygon->normals().size() > 0;
+    BaseClass::setShadingEnabled( has_normal );
 
     const size_t width = camera->windowWidth();
     const size_t height = camera->windowHeight();
-    const bool window_created = m_width == 0 && m_height == 0;
-    if ( window_created )
+    const auto shading_enabled = BaseClass::isShadingEnabled();
+    auto& shading_model = *m_shading_model;
+
+    if ( this->isWindowCreated() )
     {
-        m_width = width;
-        m_height = height;
-        m_object = object;
-        this->create_shader_program();
-        this->create_buffer_object( polygon );
+        this->setWindowSize( width, height );
+        this->createBufferObject( object );
+        shading_model.two_side_lighting = BaseClass::isTwoSideLightingEnabled();
+        m_render_pass.create( shading_model, shading_enabled );
     }
 
-    const bool window_resized = m_width != width || m_height != height;
-    if ( window_resized )
+    if ( this->isWindowResized( width, height ) )
     {
-        m_width = width;
-        m_height = height;
+        this->setWindowSize( width, height );
     }
 
-    const bool object_changed = m_object != object;
-    if ( object_changed )
+    if ( this->isObjectChanged( object ) )
     {
-        m_object = object;
-        m_shader_program.release();
-        m_vbo_manager.release();
-        this->create_shader_program();
-        this->create_buffer_object( polygon );
+        this->updateBufferObject( object );
+        shading_model.two_side_lighting = BaseClass::isTwoSideLightingEnabled();
+        m_render_pass.update( shading_model, shading_enabled );
     }
 
-    kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager );
-    kvs::ProgramObject::Binder bind2( m_shader_program );
-    {
-        kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-        const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-        const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-        const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-        m_shader_program.setUniform( "ModelViewMatrix", M );
-        m_shader_program.setUniform( "ModelViewProjectionMatrix", PM );
-        m_shader_program.setUniform( "NormalMatrix", N );
-
-        const size_t nconnections = polygon->numberOfConnections();
-        const size_t nvertices = ::NumberOfVertices( polygon );
-        const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
-
-        // Draw triangles.
-        if ( m_has_connection ) { m_vbo_manager.drawElements( GL_TRIANGLES, 3 * npolygons ); }
-        else { m_vbo_manager.drawArrays( GL_TRIANGLES, 0, 3 * npolygons ); }
-    }
+    m_render_pass.setup( shading_model );
+    this->drawBufferObject( camera );
 
     BaseClass::stopTimer();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates shader program.
- */
-/*===========================================================================*/
-void PolygonRenderer::create_shader_program()
-{
-    kvs::ShaderSource vert( "shader.vert" );
-    kvs::ShaderSource frag( "shader.frag" );
-    if ( isEnabledShading() )
-    {
-        switch ( m_shader->type() )
-        {
-        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
-        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
-        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
-        default: break; // NO SHADING
-        }
-
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
-        {
-            frag.define("ENABLE_TWO_SIDE_LIGHTING");
-        }
-    }
-
-    m_shader_program.build( vert, frag );
-    m_shader_program.bind();
-    m_shader_program.setUniform( "shading.Ka", m_shader->Ka );
-    m_shader_program.setUniform( "shading.Kd", m_shader->Kd );
-    m_shader_program.setUniform( "shading.Ks", m_shader->Ks );
-    m_shader_program.setUniform( "shading.S",  m_shader->S );
-    m_shader_program.setUniform( "offset", m_polygon_offset );
-    m_shader_program.unbind();
 }
 
 /*===========================================================================*/
@@ -491,29 +542,43 @@ void PolygonRenderer::create_shader_program()
  *  @param  polygon [in] pointer to the polygon object
  */
 /*===========================================================================*/
-void PolygonRenderer::create_buffer_object( const kvs::PolygonObject* polygon )
+void PolygonRenderer::createBufferObject( const kvs::ObjectBase* object )
 {
-    if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
+    m_object = object;
+    m_buffer_object.create( object );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Updates buffer object.
+ *  @param  object [in] pointer to object
+ */
+/*===========================================================================*/
+void PolygonRenderer::updateBufferObject( const kvs::ObjectBase* object )
+{
+    m_buffer_object.release();
+    this->createBufferObject( object );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Draws buffer object.
+ *  @param  polygon [in] pointer to the polygon object
+ */
+/*===========================================================================*/
+void PolygonRenderer::drawBufferObject( const kvs::Camera* camera )
+{
+    // Depth offset
+    const auto depth_offset = BaseClass::depthOffset();
+    if ( !kvs::Math::IsZero( depth_offset[0] ) )
     {
-        kvsMessageError("Not supported polygon type.");
-        return;
+        kvs::OpenGL::SetPolygonOffset( depth_offset[0], depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
     }
 
-    if ( polygon->colors().size() != 3 && polygon->colorType() == kvs::PolygonObject::PolygonColor )
-    {
-        kvsMessageError("Not supported polygon color type.");
-        return;
-    }
-
-    kvs::ValueArray<kvs::Real32> coords = ::VertexCoords( polygon );
-    kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( polygon );
-    kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( polygon );
-
-    m_vbo_manager.setVertexArray( coords, 3 );
-    m_vbo_manager.setColorArray( colors, 4 );
-    if ( normals.size() > 0 ) { m_vbo_manager.setNormalArray( normals ); }
-    if ( m_has_connection ) { m_vbo_manager.setIndexArray( polygon->connections() ); }
-    m_vbo_manager.create();
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    m_render_pass.draw( m_object );
 }
 
 } // end of namespace glsl

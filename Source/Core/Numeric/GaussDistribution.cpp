@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   GaussDistribution.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "GaussDistribution.h"
 #include "GammaFunction.h"
 #include <kvs/Assert>

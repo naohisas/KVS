@@ -3,14 +3,6 @@
  *  @file   Application.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Application.cpp 1443 2013-03-18 07:00:28Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Application.h"
 #include <QApplication>

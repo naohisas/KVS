@@ -3,14 +3,6 @@
  *  @file   StochasticRenderingCompositor.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "StochasticRenderingCompositor.h"
 #include <kvs/Assert>
@@ -210,7 +202,7 @@ void StochasticRenderingCompositor::check_object_changed()
                 stochastic_renderer->engine().setDepthTexture( m_ensemble_buffer.currentDepthTexture() );
                 stochastic_renderer->engine().setShader( &stochastic_renderer->shader() );
                 stochastic_renderer->engine().setRepetitionLevel( m_repetition_level );
-                stochastic_renderer->engine().setEnabledShading( stochastic_renderer->isEnabledShading() );
+                stochastic_renderer->engine().setShadingEnabled( stochastic_renderer->isShadingEnabled() );
 
                 kvs::OpenGL::PushMatrix();
                 m_scene->updateGLModelingMatrix( object );
@@ -254,7 +246,7 @@ void StochasticRenderingCompositor::engines_create()
             stochastic_renderer->engine().setDepthTexture( m_ensemble_buffer.currentDepthTexture() );
             stochastic_renderer->engine().setShader( &stochastic_renderer->shader() );
             stochastic_renderer->engine().setRepetitionLevel( m_repetition_level );
-            stochastic_renderer->engine().setEnabledShading( stochastic_renderer->isEnabledShading() );
+            stochastic_renderer->engine().setShadingEnabled( stochastic_renderer->isShadingEnabled() );
 
             kvs::OpenGL::PushMatrix();
             m_scene->updateGLModelingMatrix( object );

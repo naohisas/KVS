@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file HttpRequestHeader.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: HttpRequestHeader.cpp 1318 2012-10-01 04:30:36Z naohisa.sakamoto@gmail.com $
+ *  @file   HttpRequestHeader.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "HttpRequestHeader.h"
@@ -135,8 +128,8 @@ void HttpRequestHeader::addField( const std::string& key, const std::string& val
 std::string HttpRequestHeader::makeMessage() const
 {
     std::string request_line;
-    std::string major_version = kvs::String::ToString( m_major_version );
-    std::string minor_version = kvs::String::ToString( m_minor_version );
+    std::string major_version = kvs::String::From( m_major_version );
+    std::string minor_version = kvs::String::From( m_minor_version );
     request_line =
         m_method + " /" + m_path +
         " HTTP/" +

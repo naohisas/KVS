@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file CellByCellParticleGenerator.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: CellByCellParticleGenerator.h 1382 2012-12-03 14:54:28Z naohisa.sakamoto@gmail.com $
+ *  @file   CellByCellParticleGenerator.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__CELL_BY_CELL_PARTICLE_GENERATOR_H_INCLUDE

@@ -3,14 +3,6 @@
  *  @file   QtProject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: WriteQtProject.cpp 1409 2012-12-21 15:19:08Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "QtProject.h"
 #include <string>
@@ -92,7 +84,7 @@ namespace kvsmake
  *  @return 0 if the project file is generated successfully
  */
 /*===========================================================================*/
-int QtProject::exec( int /* argc */, char** /* argv */ )
+int QtProject::exec()
 {
     //  Open a template file.
     std::ifstream in( kvsmake::QtProjectTemplate.c_str() );

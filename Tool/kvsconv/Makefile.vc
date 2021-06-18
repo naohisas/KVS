@@ -90,10 +90,10 @@ TARGET_EXE = $(OUTDIR)\$(PROJECT_NAME).exe
 #  Object.
 #=============================================================================
 OBJECTS = \
-$(OUTDIR)/fld2kvsml.obj \
-$(OUTDIR)/ucd2kvsml.obj \
-$(OUTDIR)/img2img.obj \
-$(OUTDIR)/tet2tet.obj \
+$(OUTDIR)/FldConv.obj \
+$(OUTDIR)/UcdConv.obj \
+$(OUTDIR)/TetConv.obj \
+$(OUTDIR)/ImgConv.obj \
 $(OUTDIR)/Argument.obj \
 $(OUTDIR)/main.obj \
 

@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file GrayImage.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GrayImage.h 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   GrayImage.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__GRAY_IMAGE_H_INCLUDE
-#define KVS__GRAY_IMAGE_H_INCLUDE
-
+#pragma once
 #include <limits>
 #include "ImageBase.h"
 #include "ColorImage.h"
@@ -33,52 +24,56 @@ class BitImage;
 class GrayImage : public kvs::ImageBase
 {
 public:
-
-    typedef kvs::ImageBase BaseClass;
-    typedef kvs::UInt8 PixelType;
-
-    typedef BaseClass::NearestNeighborInterpolatorGray NearestNeighbor;
-    typedef BaseClass::BilinearInterpolatorGray Bilinear;
+    using BaseClass = kvs::ImageBase;
+    using PixelType = kvs::UInt8;
+    using NearestNeighbor = BaseClass::NearestNeighborInterpolatorGray;
+    using Bilinear = BaseClass::BilinearInterpolatorGray;
 
 public:
-
     // Gray-scaling method.
 
     struct MeanValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct MiddleValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct MedianValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct NTSCWeightedMeanValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
     struct HDTVWeightedMeanValue
     {
-        void operator () ( const kvs::ColorImage& image, kvs::ValueArray<kvs::UInt8>& data );
+        void operator () ( const kvs::ColorImage& image, PixelData& data );
     };
 
 public:
-
     GrayImage();
     GrayImage( const size_t width, const size_t height );
-    GrayImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& data );
+    GrayImage( const size_t width, const size_t height, const PixelData& data );
+    GrayImage( const size_t width, const size_t height, const PixelData& data, const int channel );
+    GrayImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::Real32>& data );
     explicit GrayImage( const kvs::BitImage& image );
     explicit GrayImage( const kvs::ColorImage& image );
+    GrayImage( const kvs::ColorImage& image, const int channel );
     template <typename GrayScalingMethod>
     GrayImage( const kvs::ColorImage& image, GrayScalingMethod method );
     explicit GrayImage( const std::string& filename );
+
+    bool create( const size_t width, const size_t height );
+    bool create( const size_t width, const size_t height, const PixelData& pixels );
+    bool create( const size_t width, const size_t height, const PixelData& pixels, const int channel );
+    bool create( const size_t width, const size_t height, const kvs::ValueArray<kvs::Real32>& data );
 
     kvs::UInt8 pixel( const size_t index ) const;
     kvs::UInt8 pixel( const size_t i, const size_t j ) const;
@@ -93,10 +88,9 @@ public:
     template <typename InterpolationMethod>
     void resize( const size_t width, const size_t height, InterpolationMethod method );
     bool read( const std::string& filename );
-    bool write( const std::string& filename );
+    bool write( const std::string& filename ) const;
 
 private:
-
     bool read_image( const kvs::ColorImage& image );
     bool read_image( const kvs::BitImage& image );
 };
@@ -116,5 +110,3 @@ inline GrayImage::GrayImage( const kvs::ColorImage& image, GrayScalingMethod met
 }
 
 } // end of namespace kvs
-
-#endif // KVS__GRAY_IMAGE_H_INCLUDE

@@ -5,8 +5,8 @@
  *  @brief  Example program for kvs::StochasticPolygonRenderer class.
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/CheckBox>
 #include <kvs/Slider>
 #include <kvs/PolygonObject>
@@ -30,7 +30,7 @@ class LODCheckBox : public kvs::CheckBox
 {
 public:
 
-    LODCheckBox( kvs::glut::Screen* screen ):
+    LODCheckBox( kvs::Screen* screen ):
         kvs::CheckBox( screen )
     {
         setMargin( 10 );
@@ -40,9 +40,9 @@ public:
     void stateChanged()
     {
         typedef kvs::StochasticPolygonRenderer Renderer;
-        kvs::Scene* scene = static_cast<kvs::glut::Screen*>( screen() )->scene();
+        kvs::Scene* scene = kvs::Screen::DownCast( screen() )->scene();
         Renderer* renderer = static_cast<Renderer*>( scene->rendererManager()->renderer( "Renderer" ) );
-        renderer->setEnabledLODControl( state() );
+        renderer->setLODControlEnabled( state() );
         screen()->redraw();
     }
 };
@@ -56,7 +56,7 @@ class OpacitySlider : public kvs::Slider
 {
 public:
 
-    OpacitySlider( kvs::glut::Screen* screen ):
+    OpacitySlider( kvs::Screen* screen ):
         kvs::Slider( screen )
     {
         setWidth( 150 );
@@ -67,7 +67,7 @@ public:
     void valueChanged()
     {
         typedef kvs::PolygonObject Object;
-        kvs::Scene* scene = static_cast<kvs::glut::Screen*>( screen() )->scene();
+        kvs::Scene* scene = kvs::Screen::DownCast( screen() )->scene();
         Object* object1 = Object::DownCast( scene->objectManager()->object( "Polygon" ) );
         Object* object2 = new Object();
         object2->shallowCopy( *object1 );
@@ -86,7 +86,7 @@ class RepetitionSlider : public kvs::Slider
 {
 public:
 
-    RepetitionSlider( kvs::glut::Screen* screen ):
+    RepetitionSlider( kvs::Screen* screen ):
         kvs::Slider( screen )
     {
         setWidth( 150 );
@@ -97,7 +97,7 @@ public:
     void valueChanged()
     {
         typedef kvs::StochasticPolygonRenderer Renderer;
-        kvs::Scene* scene = static_cast<kvs::glut::Screen*>( screen() )->scene();
+        kvs::Scene* scene = kvs::Screen::DownCast( screen() )->scene();
         Renderer* renderer = static_cast<Renderer*>( scene->rendererManager()->renderer( "Renderer" ) );
         renderer->setRepetitionLevel( int( value() + 0.5 ) );
         screen()->redraw();
@@ -151,7 +151,7 @@ kvs::PolygonObject* Import( int argc, char** argv )
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     kvs::PolygonObject* object = Import( argc, argv );
     object->setName( "Polygon" );
@@ -161,12 +161,12 @@ int main( int argc, char** argv )
     kvs::StochasticPolygonRenderer* renderer = new kvs::StochasticPolygonRenderer();
     renderer->setName( "Renderer" );
     renderer->setRepetitionLevel( 50 );
-    renderer->enableLODControl();
+    renderer->setLODControlEnabled( true );
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.setTitle("Example program for kvs::StochasticPolygonRenderer");
     screen.registerObject( object, renderer );
-    screen.show();
+    screen.create();
 
     LODCheckBox checkbox( &screen );
     checkbox.setPosition( 0, 0 );

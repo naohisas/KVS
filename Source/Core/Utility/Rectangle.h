@@ -3,18 +3,8 @@
  *  @file   Rectangle.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Rectangle.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__RECTANGLE_H_INCLUDE
-#define KVS__RECTANGLE_H_INCLUDE
-
+#pragma once
 #include <kvs/Vector2>
 
 
@@ -73,5 +63,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__RECTANGLE_H_INCLUDE

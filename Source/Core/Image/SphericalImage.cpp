@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   SphericalImage.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "SphericalImage.h"
 #include "CubicImage.h"
 #include <kvs/ColorImage>
@@ -54,7 +60,7 @@ void SphericalImage::stitch( const kvs::CubicImage& cubic_image )
     const size_t w = cubic_image.frontImage().width();
     const size_t h = cubic_image.frontImage().height();
 
-    this->create( w * 4, h * 3, kvs::ImageBase::Color );
+    this->create( w * 4, h * 3 );
     KVS_OMP_PARALLEL_FOR( schedule(dynamic) )
     for ( size_t j = 0; j < this->height(); j++ )
     {

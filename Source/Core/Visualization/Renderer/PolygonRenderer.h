@@ -3,22 +3,19 @@
  *  @file   PolygonRenderer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PolygonRenderer.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <kvs/RendererBase>
 #include <kvs/Module>
+#include <kvs/Deprecated>
 
 
 namespace kvs
 {
+
+class ObjectBase;
+class Camera;
+class Light;
 
 /*==========================================================================*/
 /**
@@ -31,20 +28,23 @@ class PolygonRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
-    mutable bool m_enable_anti_aliasing; ///< flag for anti-aliasing (AA)
-    mutable bool m_enable_multisample_anti_aliasing; ///< flag for multisample anti-aliasing (MSAA)
-    mutable bool m_enable_two_side_lighting; ///< flag for two-side lighting
-    float m_polygon_offset; ///< polygon offset
+    mutable bool m_enable_anti_aliasing = false; ///< flag for anti-aliasing (AA)
+    mutable bool m_enable_multisample_anti_aliasing = false; ///< flag for multisample anti-aliasing (MSAA)
+    mutable bool m_enable_two_side_lighting = false; ///< flag for two-side lighting
+    kvs::Vec2 m_depth_offset{ 0.0f, 0.0f }; ///< depth offset {factor, units}
 
 public:
-    PolygonRenderer();
-    virtual ~PolygonRenderer();
+    PolygonRenderer() = default;
+    virtual ~PolygonRenderer() = default;
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-    float polygonOffset() const { return m_polygon_offset; }
-    void setPolygonOffset( const float offset ) { m_polygon_offset = offset; }
-
+    const kvs::Vec2& depthOffset() const { return m_depth_offset; }
+    bool isTwoSideLightingEnabled() const { return m_enable_two_side_lighting; }
+    void setDepthOffset( const kvs::Vec2& offset ) { m_depth_offset = offset; }
+    void setDepthOffset( const float factor, const float units = 0.0f );
+    void setAntiAliasingEnabled( const bool enable = true, const bool multisample = false ) const;
+    void setTwoSideLightingEnabled( const bool enable = true ) const;
     void enableAntiAliasing( const bool multisample = false ) const;
     void disableAntiAliasing() const;
     void enableTwoSideLighting() const;
@@ -53,6 +53,10 @@ public:
 
 private:
     void initialize();
+
+public:
+    KVS_DEPRECATED( float polygonOffset() const ) { return m_depth_offset[0]; }
+    KVS_DEPRECATED( void setPolygonOffset( const float offset ) ) { m_depth_offset[0] = offset; }
 };
 
 } // end of namespace kvs

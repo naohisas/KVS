@@ -3,14 +3,6 @@
  *  @file   CellLocator.cpp
  *  @author Naohisa Sakamoto, Guo Jiazhen
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "CellLocator.h"
 #include <kvs/TetrahedralCell>

@@ -1,0 +1,18 @@
+/**********************************************************/
+/**
+* 234Compositor - Image data merging library
+*
+* Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
+* All rights reserved.
+*
+**/
+/**********************************************************/
+
+CONTRIBUTORS
+============
+
+First     Last       Contact
+--------  --------   ---------------
+Jorji     Nonaka     jorji@riken.jp
+Kenji     Ono        keno@riken.jp
+Chongke   Bi         bichongke@riken.jp

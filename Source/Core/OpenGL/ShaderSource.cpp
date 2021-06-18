@@ -3,14 +3,6 @@
  *  @file   ShaderSource.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ShaderSource.cpp 1033 2012-02-17 16:16:41Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "ShaderSource.h"
 #include <kvs/File>
@@ -26,7 +18,6 @@
 namespace
 {
 
-
 /*===========================================================================*/
 /**
  *  @brief  Return KVS shader path ("$KVS_DIR/include/Core/Visualization/Shader").
@@ -35,7 +26,7 @@ namespace
 /*===========================================================================*/
 std::string KVSShaderPath()
 {
-    const std::string sep = kvs::File::Separator();
+    const std::string sep = kvs::Directory::Separator();
     const char* kvs_dir = std::getenv("KVS_DIR");
     if ( kvs_dir != NULL )
     {
@@ -58,15 +49,10 @@ std::string KVSShaderPath()
 class SearchPath
 {
 private:
-
     std::vector<std::string> m_search_path_list;
 
 public:
-
-    SearchPath()
-    {
-        this->init();
-    }
+    SearchPath() { this->init(); }
 
     void init()
     {
@@ -78,7 +64,7 @@ public:
         }
 
         // Add current directory (".").
-        const std::string sep = kvs::File::Separator();
+        const std::string sep = kvs::Directory::Separator();
         m_search_path_list.push_back("." + sep );
     }
 
@@ -99,7 +85,7 @@ public:
         std::vector<std::string>::reverse_iterator last = m_search_path_list.rend();
         while ( path != last )
         {
-            const std::string sep = kvs::File::Separator();
+            const std::string sep = kvs::Directory::Separator();
             const std::string filename = *path + sep + source;
             const kvs::File file( filename );
             if ( file.exists() ) { return filename; }
@@ -110,9 +96,11 @@ public:
     }
 };
 
+// Instance shader search path.
 SearchPath search_path;
 
-}
+} // end of namespace
+
 
 namespace kvs
 {
@@ -190,37 +178,6 @@ ShaderSource::ShaderSource( const std::string& source )
         const std::string code( source );
         this->setCode( code );
     }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the shade code.
- */
-/*===========================================================================*/
-const std::string& ShaderSource::code() const
-{
-    return m_code;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets the shader code.
- *  @param  code [in] shade code
- */
-/*===========================================================================*/
-void ShaderSource::setCode( const std::string& code )
-{
-    m_code = code;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Clears the shader code.
- */
-/*===========================================================================*/
-void ShaderSource::clearCode()
-{
-    m_code.erase();
 }
 
 /*===========================================================================*/

@@ -3,14 +3,6 @@
  *  @file   MarchingCubes.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MarchingCubes.cpp 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "MarchingCubes.h"
 #include "MarchingCubesTable.h"
@@ -122,6 +114,18 @@ void MarchingCubes::mapping( const kvs::StructuredVolumeObject* volume )
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
+
+    if ( m_duplication )
+    {
+        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+        SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
+        SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+    }
+    else
+    {
+        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+        SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+    }
 
     const kvs::Real64 min_value = BaseClass::volume()->minValue();
     const kvs::Real64 max_value = BaseClass::volume()->maxValue();
@@ -273,13 +277,17 @@ void MarchingCubes::extract_surfaces_with_duplication(
     // Calculate the polygon color for the isolevel.
     const kvs::RGBColor color = this->calculate_color<T>();
 
-    SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
-    SuperClass::setColor( color );
-    SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
-    SuperClass::setOpacity( 255 );
-    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
+    if ( coords.size() > 0 )
+    {
+        SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
+        SuperClass::setColor( color );
+        SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
+        SuperClass::setOpacity( 255 );
+    }
+
+//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/
@@ -328,8 +336,9 @@ void MarchingCubes::extract_surfaces_without_duplication(
     SuperClass::setColor( color );
     SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
     SuperClass::setOpacity( 255 );
-    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+
+//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
 }
 
 /*==========================================================================*/

@@ -20,11 +20,12 @@
 #=============================================================================
 #  Command macro.
 #=============================================================================
-MAKE = nmake /nologo
-CPP  = cl /nologo
-LD   = link /nologo
-AR   = lib /nologo
-QMAKE= qmake
+MAKE   = nmake /nologo
+CPP    = cl /nologo
+MPICPP = mpicxx /nologo
+LD     = link /nologo
+AR     = lib /nologo
+QMAKE  = qmake
 
 MKDIR   = mkdir
 RM      = del /s
@@ -59,9 +60,11 @@ LIB_KVS_CORE = kvsCore.lib
 
 LIB_KVS_SUPPORT_CUDA   = libkvsSupportCUDA.lib
 LIB_KVS_SUPPORT_GLUT   = kvsSupportGLUT.lib
+LIB_KVS_SUPPORT_GLFW   = kvsSupportGLFW.lib
 LIB_KVS_SUPPORT_QT     = kvsSupportQt.lib
 LIB_KVS_SUPPORT_OPENCV = kvsSupportOpenCV.lib
 LIB_KVS_SUPPORT_PYTHON = kvsSupportPython.lib
+LIB_KVS_SUPPORT_MPI    = kvsSupportMPI.lib
 LIB_KVS_SUPPORT_EGL    = kvsSupportEGL.lib
 LIB_KVS_SUPPORT_OSMESA = kvsSupportOSMesa.lib
 
@@ -123,6 +126,20 @@ GLUT_LINK_LIBRARY = glut32.lib
 !IFDEF KVS_GLUT_DIR
 GLUT_INCLUDE_PATH = $(GLUT_INCLUDE_PATH) /I"$(KVS_GLUT_DIR)\include"
 GLUT_LIBRARY_PATH = $(GLUT_LIBRARY_PATH) /LIBPATH:"$(KVS_GLUT_DIR)\lib"
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
+#  GLFW_INCLUDE_PATH, GLFW_LIBRARY_PATH, GLFW_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_GLFW)" == "1"
+GLFW_INCLUDE_PATH =
+GLFW_LIBRARY_PATH =
+GLFW_LINK_LIBRARY = glfw3.lib
+!IFDEF KVS_GLFW_DIR
+GLFW_INCLUDE_PATH = $(GLFW_INCLUDE_PATH) /I"$(KVS_GLFW_DIR)\include"
+GLFW_LIBRARY_PATH = $(GLFW_LIBRARY_PATH) /LIBPATH:"$(KVS_GLFW_DIR)\lib"
 !ENDIF
 !ENDIF
 
@@ -193,6 +210,20 @@ NUMPY_LIBRARY_PATH = $(NUMPY_LIBRARY_PATH) /LIBPATH:"$(KVS_NUMPY_DIR)\lib"
 !ENDIF
 !IFDEF KVS_NUMPY_LINK_LIBRARY
 NUMPY_LINK_LIBRARY = $(KVS_NUMPY_LINK_LIBRARY)
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
+#  MPI_INCLUDE_PATH, MPI_LIBRARY_PATH, MPI_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_MPI)" == "1"
+MPI_INCLUDE_PATH =
+MPI_LIBRARY_PATH =
+MPI_LINK_LIBRARY =
+!IFDEF KVS_MPI_DIR
+MPI_INCLUDE_PATH = $(MPI_INCLUDE_PATH) /I"$(KVS_MPI_DIR)\include"
+MPI_LIBRARY_PATH = $(MPI_LIBRARY_PATH) /LIBPATH:"$(KVS_MPI_DIR)\lib"
 !ENDIF
 !ENDIF
 
@@ -271,6 +302,10 @@ DEFINITIONS = $(DEFINITIONS) $(GLEW_INCLUDE_PATH)
 !IF "$(KVS_SUPPORT_GLUT)" == "1"
 DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_GLUT
 !ENDIF
+
+!IF "$(KVS_SUPPORT_GLFW)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_GLFW
+!ENDIF
 !ENDIF
 
 !IF "$(KVS_SUPPORT_QT)" == "1"
@@ -287,6 +322,10 @@ DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_CUDA
 
 !IF "$(KVS_SUPPORT_PYTHON)" == "1"
 DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_PYTHON
+!ENDIF
+
+!IF "$(KVS_SUPPORT_MPI)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_MPI
 !ENDIF
 
 !IF "$(KVS_SUPPORT_EGL)" == "1"

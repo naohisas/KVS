@@ -3,14 +3,6 @@
  *  @file   MapperBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MapperBase.cpp 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "MapperBase.h"
 #include <kvs/StructuredVolumeObject>
@@ -73,9 +65,20 @@ void MapperBase::setRange( const kvs::VolumeObjectBase* volume )
     }
     else
     {
-        const float min_value = static_cast<float>( volume->minValue() );
-        const float max_value = static_cast<float>( volume->maxValue() );
-        if ( !m_tfunc.hasRange() ) m_tfunc.setRange( min_value, max_value );
+        if ( !m_tfunc.hasRange() )
+        {
+            const float min_value = static_cast<float>( volume->minValue() );
+            const float max_value = static_cast<float>( volume->maxValue() );
+            if ( kvs::Math::Equal( min_value, max_value ) )
+            {
+                const float dt = 1.0f;
+                m_tfunc.setRange( min_value, max_value + dt );
+            }
+            else
+            {
+                m_tfunc.setRange( min_value, max_value );
+            }
+        }
     }
 }
 

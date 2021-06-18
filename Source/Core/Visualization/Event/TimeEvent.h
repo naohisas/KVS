@@ -3,18 +3,8 @@
  *  @file   TimeEvent.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TimeEvent.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__TIME_EVENT_H_INCLUDE
-#define KVS__TIME_EVENT_H_INCLUDE
-
+#pragma once
 #include <kvs/EventBase>
 
 
@@ -29,13 +19,9 @@ namespace kvs
 class TimeEvent : public kvs::EventBase
 {
 public:
-
-    TimeEvent();
-    virtual ~TimeEvent();
-
-    int type() const;
+    TimeEvent() {}
+    virtual ~TimeEvent() {}
+    int type() const { return kvs::EventBase::TimerEvent; }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__TIME_EVENT_H_INCLUDE

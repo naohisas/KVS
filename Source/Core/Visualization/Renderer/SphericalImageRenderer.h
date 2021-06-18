@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   SphericalImageRenderer.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/Module>
 #include <kvs/ImageRenderer>
@@ -17,10 +23,10 @@ class SphericalImageRenderer : public kvs::ImageRenderer
     kvsModuleBaseClass( kvs::ImageRenderer );
 
 private:
-    kvs::ProgramObject m_shader_program; ///< shader program
+    kvs::ProgramObject m_shader_program{}; ///< shader program
 
 public:
-    SphericalImageRenderer() {}
+    SphericalImageRenderer() = default;
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 private:

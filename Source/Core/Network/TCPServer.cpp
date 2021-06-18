@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file TCPServer.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TCPServer.cpp 1536 2013-04-15 02:21:56Z naohisa.sakamoto@gmail.com $
+ *  @file   TCPServer.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "TCPServer.h"

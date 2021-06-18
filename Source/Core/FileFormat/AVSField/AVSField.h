@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file AVSField.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: AVSField.h 1511 2013-04-08 15:12:12Z naohisa.sakamoto@gmail.com $
+ *  @file   AVSField.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__AVS_FIELD_H_INCLUDE

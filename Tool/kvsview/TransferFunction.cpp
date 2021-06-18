@@ -3,14 +3,6 @@
  *  @file   TransferFunction.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TransferFunction.cpp 1551 2013-04-20 01:40:09Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "TransferFunction.h"
 #include <kvs/DebugNew>
@@ -20,8 +12,8 @@
 #include <kvs/OpenGL>
 #include <kvs/InitializeEventListener>
 #include <kvs/PaintEventListener>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Background>
 #include "CommandName.h"
 
@@ -143,8 +135,8 @@ public:
 
     void update()
     {
-        kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-        glut_screen->setBackgroundColor( kvs::RGBColor::White() );
+        kvs::Screen* s = static_cast<kvs::Screen*>( screen() );
+        s->setBackgroundColor( kvs::RGBColor::White() );
 
         kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
         kvs::OpenGL::Disable( GL_LIGHTING );
@@ -288,20 +280,18 @@ const bool Argument::hasOpacityMapOption()
     return this->hasOption("a");
 }
 
- /*===========================================================================*/
+/*===========================================================================*/
 /**
  *  @brief  Executes main process.
- *  @param  argc [i] argument count
- *  @param  argv [i] argument values
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
-    // Setup GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
+    // Setup Viewer application.
+    kvs::Application app( m_argc, m_argv );
 
     // Commandline arguments.
-    kvsview::TransferFunction::Argument arg( argc, argv );
+    kvsview::TransferFunction::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) exit( EXIT_FAILURE );
     m_input_name = arg.value<std::string>();
 
@@ -321,7 +311,7 @@ int Main::exec( int argc, char** argv )
     kvsview::TransferFunction::PaintEvent paint_event( &params );
 
     // Create and show the rendering screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.addEvent( &initialize_event );
     screen.addEvent( &paint_event );
     screen.setGeometry( 0, 0, 512, 100 );

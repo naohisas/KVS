@@ -3,14 +3,6 @@
  *  @file   RadioButtonGroup.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <list>
@@ -31,23 +23,41 @@ namespace kvs
 class RadioButtonGroup : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using PressedButtonFunc = std::function<void(kvs::RadioButton*)>;
+    using PressedIdFunc = std::function<void(int)>;
+    using ReleasedButtonFunc = std::function<void(kvs::RadioButton*)>;
+    using ReleasedIdFunc = std::function<void(int)>;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     std::list<kvs::RadioButton*> m_buttons; ///< radio button list
+    PressedButtonFunc m_pressed_button;
+    PressedIdFunc m_pressed_id;
+    ReleasedButtonFunc m_released_button;
+    ReleasedIdFunc m_released_id;
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     RadioButtonGroup( kvs::ScreenBase* screen = 0 );
 
-    virtual void pressed( kvs::RadioButton* button ) { kvs::IgnoreUnusedVariable( button ); };
-    virtual void pressed( int id ) { kvs::IgnoreUnusedVariable( id ); };
-    virtual void released( kvs::RadioButton* button ) { kvs::IgnoreUnusedVariable( button ); };
-    virtual void released( int id ) { kvs::IgnoreUnusedVariable( id ); };
-    virtual void screenUpdated() {};
-    virtual void screenResized() {};
+    void pressed( PressedButtonFunc func ) { m_pressed_button = func; }
+    void pressed( PressedIdFunc func ) { m_pressed_id = func; }
+    void released( ReleasedButtonFunc func ) { m_released_button = func; }
+    void released( ReleasedIdFunc func ) { m_released_id = func; }
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void pressed( kvs::RadioButton* button ) { if ( m_pressed_button ) m_pressed_button( button ); };
+    virtual void pressed( int id ) { if ( m_pressed_id ) m_pressed_id( id ); };
+    virtual void released( kvs::RadioButton* button ) { if ( m_released_button ) m_released_button( button ); }
+    virtual void released( int id ) { if ( m_released_id ) m_released_id( id ); };
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::list<kvs::RadioButton*>& radioButtons() const { return m_buttons; }
-
     void add( kvs::RadioButton* button );
     void remove( kvs::RadioButton* button );
     void show();

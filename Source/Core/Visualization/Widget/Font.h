@@ -3,14 +3,6 @@
  *  @file   Font.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -82,12 +74,6 @@ private:
     float m_shadow_blur; ///< shadow blur level
 
 public:
-//    static void AddSearchPath( const std::string& path );
-//    static void SetSearchPath( const std::string& path );
-//    static void ResetSearchPath();
-//    static void RemoveSearchPath();
-
-public:
     Font();
     Font( const Family& family, const float size );
     Font( const Family& family, const float size, const kvs::RGBAColor& color );
@@ -137,12 +123,6 @@ public:
     std::string familyName() const;
     std::string styleName() const;
     std::string fontName() const;
-
-    // Deprecated.
-    float width( const std::string& /*text*/ ) const { return 0; }
-    float height() const { return 0; }
-    void draw( const kvs::Vec2& /*p*/, const std::string& /*text*/ ) const {}
-    void draw( const kvs::Vec2& /*p*/, const Icon& /*icon*/, const float /*size*/ ) const {}
 };
 
 } // end of namespace kvs

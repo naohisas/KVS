@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   SphericalMovieRenderer.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "SphericalMovieRenderer.h"
 #include <kvs/Camera>
 #include <kvs/ImageObject>

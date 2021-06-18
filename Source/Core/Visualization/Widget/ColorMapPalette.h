@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ColorMapPalette.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <string>
 #include <kvs/Texture1D>
@@ -20,7 +26,9 @@ class ScreenBase;
 class ColorMapPalette : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     std::string m_caption; ///< caption
@@ -30,13 +38,19 @@ private:
     kvs::RGBColor m_drawing_color; ///< drawing color
     kvs::Vec2 m_pressed_position; ///< mouse pressed position
     const kvs::ColorPalette* m_color_palette; ///< pointer to the color palette
+    bool m_update; ///< flag for updating color palette
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     ColorMapPalette( kvs::ScreenBase* screen = 0 );
     virtual ~ColorMapPalette();
 
-    virtual void screenUpdated() {};
-    virtual void screenResized() {};
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::string& caption() const { return m_caption; }
     const kvs::WidgetBase& palette() const { return m_palette; }
@@ -47,7 +61,7 @@ public:
     void setDrawingColor( const kvs::RGBColor& color ) { m_drawing_color = color; }
     void attachColorPalette( const kvs::ColorPalette* palette ) { m_color_palette = palette; }
     void detachColorPalette() { m_color_palette = NULL; }
-    void update() { this->initialize_texture( m_color_map ); }
+    void update() { m_update = true; }
 
     void paintEvent();
     void resizeEvent( int width, int height );

@@ -3,14 +3,6 @@
  *  @file   OpacityMapBar.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "OpacityMapBar.h"
 #include <kvs/Type>
@@ -43,7 +35,9 @@ namespace kvs
 /*===========================================================================*/
 OpacityMapBar::OpacityMapBar( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
-    m_show_range_value( true )
+    m_show_range_value( true ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
@@ -95,7 +89,7 @@ void OpacityMapBar::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) { return; }
+    if ( !BaseClass::isVisible() ) { return; }
     if ( !m_texture.isValid() ) { this->create_texture(); }
     if ( !m_checkerboard.isValid() ) { this->create_checkerboard(); }
 
@@ -103,8 +97,8 @@ void OpacityMapBar::paintEvent()
     BaseClass::drawBackground();
 
     const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
-    const std::string min_value = kvs::String::ToString( m_min_value );
-    const std::string max_value = kvs::String::ToString( m_max_value );
+    const std::string min_value = kvs::String::From( m_min_value );
+    const std::string max_value = kvs::String::From( m_max_value );
     const int text_height = metrics.height();
     const int min_text_width = metrics.width( min_value );
     const int max_text_width = metrics.width( max_value );
@@ -188,6 +182,8 @@ void OpacityMapBar::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
     this->screenResized();
 }
 
@@ -213,8 +209,8 @@ int OpacityMapBar::adjustedWidth()
     }
     case OpacityMapBar::Vertical:
     {
-        const std::string min_value = kvs::String::ToString( m_min_value );
-        const std::string max_value = kvs::String::ToString( m_max_value );
+        const std::string min_value = kvs::String::From( m_min_value );
+        const std::string max_value = kvs::String::From( m_max_value );
         const size_t min_text_width = metrics.width( min_value );
         const size_t max_text_width = metrics.width( max_value );
         width = ( min_value.size() > max_value.size() ) ? min_text_width : max_text_width;

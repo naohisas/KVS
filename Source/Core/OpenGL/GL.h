@@ -3,18 +3,8 @@
  *  @file   GL.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS__GL_H_INCLUDE
-#define KVS__GL_H_INCLUDE
-
+#pragma once
 #include <kvs/Macro>
 #include <kvs/Breakpoint>
 #include <kvs/Platform>
@@ -175,5 +165,3 @@ bool HasError( const char* file, const int line, const char* func, const char* c
 #define KVS_GL_CALL_END( command )
 #define KVS_GL_CALL_VER( command )
 #endif // KVS_ENABLE_OPENGL
-
-#endif // KVS__GL_H_INCLUDE

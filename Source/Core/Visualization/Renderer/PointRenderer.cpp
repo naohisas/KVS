@@ -3,14 +3,6 @@
  *  @file   PointRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PointRenderer.cpp 1634 2013-09-06 08:55:47Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "PointRenderer.h"
 #include "PointRenderingFunction.h"
@@ -27,27 +19,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  Constructor.
- */
-/*==========================================================================*/
-PointRenderer::PointRenderer():
-    m_enable_anti_aliasing( false ),
-    m_enable_multisample_anti_aliasing( false ),
-    m_enable_two_side_lighting( true )
-{
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-PointRenderer::~PointRenderer()
-{
-}
-
-/*==========================================================================*/
-/**
  *  Point rendering method.
  *  @param object [in] pointer to the object
  *  @param camera [in] pointer to the camera
@@ -58,72 +29,105 @@ void PointRenderer::exec( ObjectBase* object, Camera* camera, Light* light )
 {
     kvs::IgnoreUnusedVariable( light );
 
-    kvs::PointObject* point = kvs::PointObject::DownCast( object );
-
     BaseClass::startTimer();
+    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
 
-    kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
-
+    auto* point = kvs::PointObject::DownCast( object );
     if ( point->normals().size() == 0 ) { BaseClass::disableShading(); }
 
     this->initialize();
-
-#if KVS_ENABLE_DEPRECATED
-    point->applyMaterial();
-#endif
-
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
     ::PointRenderingFunction( point, camera->devicePixelRatio() );
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
 
     BaseClass::stopTimer();
 }
 
 /*===========================================================================*/
 /**
- *  Enables anti-aliasing.
+ *  @brief  Sets depth offset.
+ *  @param  factor [in] scale factor
+ *  @param  units [in] constant depth offset
  */
 /*===========================================================================*/
-void PointRenderer::enableAntiAliasing( const bool multisample ) const
+void PointRenderer::setDepthOffset( const float factor, const float units )
 {
-    m_enable_anti_aliasing = true;
+    m_depth_offset = kvs::Vec2( factor, units );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Enables anti-aliasing option.
+ *  @param  enable [in] if true, anti-aliasing is enabled
+ *  @param  multisample [in] if true, multi-sample anti-aliasing is enabled
+ */
+/*===========================================================================*/
+void PointRenderer::setAntiAliasingEnabled( const bool enable, const bool multisample ) const
+{
+    m_enable_anti_aliasing = enable;
     m_enable_multisample_anti_aliasing = multisample;
 }
 
 /*===========================================================================*/
 /**
- *  Disables anti-aliasing.
+ *  @brief  Enables two-side lighting option.
+ *  @param  enable [in] if true, two-side lighting is enabled
+ */
+/*===========================================================================*/
+void PointRenderer::setTwoSideLightingEnabled( const bool enable ) const
+{
+    m_enable_two_side_lighting = enable;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Enables anti-aliasing option.
+ *  @param  multisample [in] if true, multi-sample anti-aliasing is enabled
+ */
+/*===========================================================================*/
+void PointRenderer::enableAntiAliasing( const bool multisample ) const
+{
+    this->setAntiAliasingEnabled( true, multisample );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Disables anti-aliasing option.
  */
 /*===========================================================================*/
 void PointRenderer::disableAntiAliasing() const
 {
-    m_enable_anti_aliasing = false;
-    m_enable_multisample_anti_aliasing = false;
+    this->setAntiAliasingEnabled( false, false );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Enables two-side lighting option.
+ */
+/*===========================================================================*/
 void PointRenderer::enableTwoSideLighting() const
 {
-    m_enable_two_side_lighting = true;
+    this->setTwoSideLightingEnabled( true );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Disables two-side lighting option.
+ */
+/*===========================================================================*/
 void PointRenderer::disableTwoSideLighting() const
 {
-    m_enable_two_side_lighting = false;
+    this->setTwoSideLightingEnabled( false );
 }
 
-bool PointRenderer::isTwoSideLighting() const
-{
-    return m_enable_two_side_lighting;
-}
-
+/*===========================================================================*/
+/**
+ *  @brief  Initializes the OpenGL properties.
+ */
+/*===========================================================================*/
 void PointRenderer::initialize()
 {
-    kvs::OpenGL::SetShadeModel( GL_SMOOTH );
-
-    kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
-    kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
-
-    if ( !this->isEnabledShading() )
+    // Lighting
+    kvs::Light::SetModelTwoSide( this->isTwoSideLightingEnabled() );
+    if ( !this->isShadingEnabled() )
     {
         kvs::OpenGL::Disable( GL_NORMALIZE );
         kvs::OpenGL::Disable( GL_LIGHTING );
@@ -134,9 +138,14 @@ void PointRenderer::initialize()
         kvs::OpenGL::Enable( GL_LIGHTING );
     }
 
-    kvs::Light::SetModelTwoSide( this->isTwoSideLighting() );
+    // Depth offset
+    if ( !kvs::Math::IsZero( m_depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( m_depth_offset[0], m_depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
 
-    // Anti-aliasing.
+    // Anti-aliasing
     if ( m_enable_anti_aliasing )
     {
 #if defined ( GL_MULTISAMPLE )
@@ -158,8 +167,11 @@ void PointRenderer::initialize()
         }
     }
 
-    // Rounded shape.
-    kvs::OpenGL::Enable( GL_POINT_SMOOTH );
+    kvs::OpenGL::SetShadeModel( GL_SMOOTH );
+    kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+    kvs::OpenGL::Enable( GL_POINT_SMOOTH ); // Rounded shape.
+    kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
 }
 
 } // end of namespace kvs

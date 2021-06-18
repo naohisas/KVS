@@ -5,15 +5,14 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/LineObject>
-#include <kvs/LineRenderer>
 #include <kvs/Streamline>
 #include <kvs/TornadoVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -21,50 +20,51 @@
  *  @brief  Main function.
  *  @param  argc [i] argument counter
  *  @param  argv [i] argument values
- *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::Streamline" );
+    screen.create();
 
-    /* Read volume data from the specified data file. If the data file is not
-     * specified, scalar hydrogen volume data is created by using
-     * kvs::HydrogenVolumeData class.
-     */
-    kvs::StructuredVolumeObject* volume = NULL;
-    if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else volume = new kvs::TornadoVolumeData( kvs::Vec3u( 32, 32, 32 ) );
-
-    std::vector<kvs::Real32> v;
-    kvs::Vec3i min_coord( 15, 15,  0 );
-    kvs::Vec3i max_coord( 20, 20, 30 );
-    for ( int k = min_coord.z(); k < max_coord.z(); k++ )
+    // Import volume data as structured volume object.
+    auto* volume = [&]() -> kvs::StructuredVolumeObject*
     {
-        for ( int j = min_coord.y(); j < max_coord.y(); j++ )
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::TornadoVolumeData( { 32, 32, 32 } );
+    }();
+
+    // Generate seed points as point object.
+    const kvs::Vec3i min_coord( 15, 15,  0 );
+    const kvs::Vec3i max_coord( 20, 20, 30 );
+    auto* point = new kvs::PointObject;
+    point->setCoords( [&]
+    {
+        std::vector<kvs::Real32> v;
+        for ( int k = min_coord.z(); k < max_coord.z(); k++ )
         {
-            for ( int i = min_coord.x(); i < max_coord.x(); i++ )
+            for ( int j = min_coord.y(); j < max_coord.y(); j++ )
             {
-                v.push_back( static_cast<kvs::Real32>(i) );
-                v.push_back( static_cast<kvs::Real32>(j) );
-                v.push_back( static_cast<kvs::Real32>(k) );
+                for ( int i = min_coord.x(); i < max_coord.x(); i++ )
+                {
+                    v.push_back( static_cast<kvs::Real32>(i) );
+                    v.push_back( static_cast<kvs::Real32>(j) );
+                    v.push_back( static_cast<kvs::Real32>(k) );
+                }
             }
         }
-    }
-    kvs::PointObject* point = new kvs::PointObject;
-    point->setCoords( kvs::ValueArray<kvs::Real32>( v ) );
+        return kvs::ValueArray<kvs::Real32>( v );
+    } () );
 
-    const kvs::TransferFunction transfer_function( 256 );
-    kvs::LineObject* object = new kvs::Streamline( volume, point, transfer_function );
-
-    delete volume;
+    // Generate streamlines as line object.
+    const auto tfunc = kvs::TransferFunction( 256 ); // transfer function
+    auto* object = new kvs::Streamline( volume, point, tfunc );
     delete point;
+    delete volume;
 
-    kvs::glut::Screen screen( &app );
     screen.registerObject( object );
-    screen.setGeometry( 0, 0, 512, 512 );
-    screen.setTitle( "kvs::Streamline" );
-    screen.show();
 
     return app.run();
 }

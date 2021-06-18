@@ -3,14 +3,6 @@
  *  @file   LineRenderer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LineRenderer.h 1784 2014-06-05 10:12:54Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <kvs/RendererBase>
@@ -35,17 +27,21 @@ class LineRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
-    mutable bool m_enable_anti_aliasing; ///< flag for anti-aliasing (AA)
-    mutable bool m_enable_multisample_anti_aliasing; ///< flag for multisample anti-aliasing (MSAA)
+    mutable bool m_enable_anti_aliasing = false; ///< flag for anti-aliasing (AA)
+    mutable bool m_enable_multisample_anti_aliasing = false; ///< flag for multisample anti-aliasing (MSAA)
+    kvs::Vec2 m_depth_offset{ 0.0f, 0.0f }; ///< depth offset {factor, units}
 
 public:
-    LineRenderer();
-    virtual ~LineRenderer();
-
-    void enableAntiAliasing( const bool multisample = false ) const;
-    void disableAntiAliasing() const;
+    LineRenderer() { BaseClass::disableShading(); }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+
+    const kvs::Vec2& depthOffset() const { return m_depth_offset; }
+    void setDepthOffset( const kvs::Vec2& offset ) { m_depth_offset = offset; }
+    void setDepthOffset( const float factor, const float units = 0.0f );
+    void setAntiAliasingEnabled( const bool enable = true, const bool multisample = false ) const;
+    void enableAntiAliasing( const bool multisample = false ) const;
+    void disableAntiAliasing() const;
 
 private:
     void initialize();

@@ -3,14 +3,6 @@
  *  @file   CellByCellUniformSampling.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: CellByCellUniformSampling.h 1792 2014-07-31 04:50:42Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 
@@ -38,15 +30,13 @@ class CellByCellUniformSampling : public kvs::MapperBase, public kvs::PointObjec
     kvsModuleSuperClass( kvs::PointObject );
 
 private:
-
-    const kvs::Camera* m_camera; ///< camera (reference)
-    size_t m_repetition_level; ///< repetition level
-    float m_sampling_step; ///< sampling step in the object coordinate
-    float m_object_depth; ///< object depth
+    const kvs::Camera* m_camera = nullptr; ///< camera (reference)
+    size_t m_repetition_level = 1; ///< repetition level
+    float m_sampling_step = 0.5f; ///< sampling step in the object coordinate
+    float m_object_depth = 0.0f; ///< object depth
 
 public:
-
-    CellByCellUniformSampling();
+    CellByCellUniformSampling() = default;
     CellByCellUniformSampling(
         const kvs::VolumeObjectBase* volume,
         const size_t repetition_level,
@@ -73,7 +63,6 @@ public:
     void setObjectDepth( const float depth ) { m_object_depth = depth; }
 
 private:
-
     void mapping( const kvs::StructuredVolumeObject* volume );
     void mapping( const kvs::UnstructuredVolumeObject* volume );
     template <typename T>

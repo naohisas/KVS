@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file XMLElement.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: XMLElement.h 1345 2012-11-07 15:29:14Z s.yamada0808@gmail.com $
+ *  @file   XMLElement.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__XML_ELEMENT_H_INCLUDE
@@ -45,7 +38,7 @@ public:
     template <typename T>
     void setAttribute( const std::string& name, const T& value )
     {
-        SuperClass::SetAttribute( name, kvs::String::ToString( value ) );
+        SuperClass::SetAttribute( name, kvs::String::From( value ) );
     }
 
 public:

@@ -3,35 +3,100 @@
  *  @file   ScreenBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/Assert>
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
 #include <kvs/WheelEvent>
-#include <kvs/TimerEventListener>
+#include <kvs/EventTimer>
+#include <kvs/EventListener>
 #include <kvs/qt/Qt>
 #include <kvs/qt/Application>
-#include <kvs/qt/Timer>
 #include <SupportQt/Viewer/KVSMouseButton.h>
 #include <SupportQt/Viewer/KVSKey.h>
 #include <kvs/OpenGL>
 #include <kvs/Version>
 
 
+namespace
+{
+
+class EventTimer : public QObject, public kvs::EventTimer
+{
+public:
+    EventTimer( kvs::EventListener* listener ): kvs::EventTimer( listener ) {}
+    virtual ~EventTimer() {}
+    void start( int msec );
+    void stop();
+    void nortify();
+
+private:
+    void timerEvent( QTimerEvent* e ) { this->nortify(); }
+};
+
+void EventTimer::start( int msec )
+{
+    if ( msec < 0 ) { return; }
+    if ( this->isStopped() )
+    {
+        this->setInterval( msec );
+        this->setStopped( false );
+        this->setID( QObject::startTimer( msec ) );
+    }
+}
+
+void EventTimer::stop()
+{
+    if ( !this->isStopped() )
+    {
+        this->setStopped( true );
+        QObject::killTimer( this->id() );
+    }
+}
+
+void EventTimer::nortify()
+{
+    if ( !this->isStopped() )
+    {
+        if ( this->eventListener() )
+        {
+            this->eventListener()->onEvent( this->timeEvent() );
+        }
+    }
+}
+
+}
+
 namespace kvs
 {
 
 namespace qt
 {
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the pointer to the qt screen base downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return pointer to the qt screen base
+ */
+/*===========================================================================*/
+ScreenBase* ScreenBase::DownCast( kvs::ScreenBase* screen )
+{
+    return dynamic_cast<ScreenBase*>( screen );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the const pointer to the qt screen base downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return const pointer to the qt screen base
+ */
+/*===========================================================================*/
+const ScreenBase* ScreenBase::DownCast( const kvs::ScreenBase* screen )
+{
+    return dynamic_cast<ScreenBase*>( const_cast<kvs::ScreenBase*>( screen ) );
+}
 
 /*===========================================================================*/
 /**
@@ -45,8 +110,8 @@ ScreenBase::ScreenBase( kvs::qt::Application* application, QWidget* parent ):
     m_id( -1 ),
     m_mouse_event( 0 ),
     m_key_event( 0 ),
-    m_wheel_event( 0 ),
-    m_is_fullscreen( false )
+    m_wheel_event( 0 )
+//    m_is_fullscreen( false )
 {
     if ( application ) application->attach( this );
 
@@ -67,6 +132,24 @@ ScreenBase::~ScreenBase()
     delete m_wheel_event;
 }
 
+void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::setEvent( event, name );
+}
+
+void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::addEvent( event, name );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Creates a screen.
@@ -75,6 +158,8 @@ ScreenBase::~ScreenBase()
 void ScreenBase::create()
 {
     KVS_ASSERT( m_id == -1 );
+    static int id = 0;
+    m_id = id++;
 
     // Initialize display mode.
     QGLFormat f = QGLFormat::defaultFormat();
@@ -89,13 +174,23 @@ void ScreenBase::create()
     QGLFormat::setDefaultFormat( f );
 
     // Set screen geometry.
-    QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
+    if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
+    {
+        // Centering
+        const QRect desk = QApplication::desktop()->screenGeometry();
+        const int px = ( desk.width() - BaseClass::width() ) / 2;
+        const int py = ( desk.height() - BaseClass::height() ) / 2;
+        const int offset = 20;
+        QWidget::setGeometry( px + offset * m_id, py + offset * m_id, BaseClass::width(), BaseClass::height() );
+    }
+    else
+    {
+        // User specified geometry.
+        QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
+    }
 
     QGLWidget::makeCurrent();
-
-    // Create window.
-    static int counter = 0;
-    m_id = counter++;
+    QWidget::show();
 }
 
 /*===========================================================================*/
@@ -106,8 +201,10 @@ void ScreenBase::create()
 /*===========================================================================*/
 void ScreenBase::show()
 {
+    BaseClass::show();
+
 #if 1 // KVS_ENABLE_DEPRECATED
-    if ( m_id == -1 ) { this->create(); QWidget::show(); }
+    if ( m_id == -1 ) { this->create(); }
     else {
 #endif
 
@@ -125,8 +222,10 @@ void ScreenBase::show()
 /*===========================================================================*/
 void ScreenBase::showFullScreen()
 {
-    if ( m_is_fullscreen ) return;
-    m_is_fullscreen = true;
+//    if ( m_is_fullscreen ) return;
+//    m_is_fullscreen = true;
+    if ( BaseClass::isFullScreen() ) { return; }
+    BaseClass::showFullScreen();
 
     const int x = QGLWidget::pos().x();
     const int y = QGLWidget::pos().y();
@@ -142,8 +241,10 @@ void ScreenBase::showFullScreen()
 /*===========================================================================*/
 void ScreenBase::showNormal()
 {
-    if ( !m_is_fullscreen ) return;
-    m_is_fullscreen = false;
+//    if ( !m_is_fullscreen ) return;
+//    m_is_fullscreen = false;
+    if ( !BaseClass::isFullScreen() ) { return; }
+    BaseClass::showNormal();
 
     QWidget::resize( BaseClass::width(), BaseClass::height() );
     QWidget::move( BaseClass::x(), BaseClass::y() );
@@ -157,6 +258,7 @@ void ScreenBase::showNormal()
 /*===========================================================================*/
 void ScreenBase::hide()
 {
+    BaseClass::hide();
     QWidget::hide();
 }
 
@@ -213,24 +315,10 @@ void ScreenBase::resize( int width, int height )
  *  @return true, if the window is full-screen
  */
 /*===========================================================================*/
-bool ScreenBase::isFullScreen() const
-{
-    return m_is_fullscreen;
-}
-
-void ScreenBase::enable(){}
-void ScreenBase::disable(){}
-void ScreenBase::reset(){}
-
-void ScreenBase::initializeEvent(){}
-void ScreenBase::paintEvent(){}
-void ScreenBase::resizeEvent( int, int ){}
-void ScreenBase::mousePressEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseMoveEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ){}
-void ScreenBase::wheelEvent( kvs::WheelEvent* ){}
-void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
+//bool ScreenBase::isFullScreen() const
+//{
+//    return m_is_fullscreen;
+//}
 
 /*===========================================================================*/
 /**
@@ -257,6 +345,19 @@ void ScreenBase::initializeGL()
     BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
 
     this->initializeEvent();
+
+    for ( auto& l : BaseClass::eventHandler()->listeners() )
+    {
+        if ( l->eventType() & kvs::EventBase::TimerEvent )
+        {
+            auto* t = l->eventTimer();
+            if ( t )
+            {
+                auto i = l->timerInterval();
+                l->eventTimer()->start( i );
+            }
+        }
+    }
 }
 
 /*===========================================================================*/
@@ -407,28 +508,27 @@ void ScreenBase::wheelEvent( QWheelEvent* event )
 void ScreenBase::keyPressEvent( QKeyEvent* event )
 {
     m_key_event->setPosition( 0, 0 );
-    m_key_event->setKey( kvs::qt::KVSKey::Code( event->key() ) );
-
-    this->keyPressEvent( m_key_event );
+    m_key_event->setKey( kvs::qt::KVSKey::Code( event->key(), event->modifiers() ) );
+    m_key_event->setModifiers( kvs::qt::KVSKey::Modifier( event->modifiers() ) );
+    if ( event->isAutoRepeat() )
+    {
+        m_key_event->setAction( kvs::Key::Repeated );
+        this->keyRepeatEvent( m_key_event );
+    }
+    else
+    {
+        m_key_event->setAction( kvs::Key::Pressed );
+        this->keyPressEvent( m_key_event );
+    }
 }
 
-std::list<kvs::qt::Timer*>& ScreenBase::timerEventHandler()
+void ScreenBase::keyReleaseEvent( QKeyEvent* event )
 {
-    return m_timer_event_handler;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Adds a timer event listener.
- *  @param  event [in] pointer to a timer event listener
- *  @param  timer [in] pointer to timer
- */
-/*===========================================================================*/
-void ScreenBase::addTimerEvent( kvs::TimerEventListener* event, kvs::qt::Timer* timer )
-{
-    event->setScreen( this );
-    timer->setEventListener( event );
-    m_timer_event_handler.push_back( timer );
+    m_key_event->setPosition( 0, 0 );
+    m_key_event->setKey( kvs::qt::KVSKey::Code( event->key(), event->modifiers() ) );
+    m_key_event->setModifiers( kvs::qt::KVSKey::Modifier( event->modifiers() ) );
+    m_key_event->setAction( kvs::Key::Released );
+    this->keyReleaseEvent( m_key_event );
 }
 
 } // end of namespace qt

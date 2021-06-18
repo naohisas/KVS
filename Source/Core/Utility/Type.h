@@ -1,26 +1,13 @@
 /****************************************************************************/
 /**
- *  @file Type.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Type.h 1336 2012-10-30 22:37:49Z s.yamada0808@gmail.com $
+ *  @file   Type.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS_CORE_TYPE_H_INCLUDE
-#define KVS_CORE_TYPE_H_INCLUDE
-
+#pragma once
 #include <typeinfo>
 #include <kvs/Compiler>
 #include <kvs/Platform>
-
-#if KVS_ENABLE_DEPRECATED
-#include <string>
-#endif
 
 namespace kvs
 {
@@ -47,9 +34,6 @@ typedef unsigned long long UInt64;
 
 typedef float       Real32;
 typedef double      Real64;
-#if KVS_ENABLE_DEPRECATED
-typedef long double Real128;
-#endif
 
 
 class Type
@@ -67,9 +51,6 @@ public:
         TypeUInt64,
         TypeReal32,
         TypeReal64,
-#if KVS_ENABLE_DEPRECATED
-        TypeString,
-#endif
         UnknownType
     };
 
@@ -92,10 +73,5 @@ template <> inline Type::TypeID Type::GetID<kvs::UInt32>() { return TypeUInt32; 
 template <> inline Type::TypeID Type::GetID<kvs::UInt64>() { return TypeUInt64; }
 template <> inline Type::TypeID Type::GetID<kvs::Real32>() { return TypeReal32; }
 template <> inline Type::TypeID Type::GetID<kvs::Real64>() { return TypeReal64; }
-#if KVS_ENABLE_DEPRECATED
-template <> inline Type::TypeID Type::GetID<std::string>() { return TypeString; }
-#endif
 
 } // end of namespace kvs
-
-#endif // KVS_CORE_TYPE_H_INCLUDE

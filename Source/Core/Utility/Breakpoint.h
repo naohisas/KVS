@@ -3,14 +3,6 @@
  *  @file   Breakpoint.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Breakpoint.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
- */
 /****************************************************************************/
 #pragma once
 #include <kvs/Compiler>
@@ -37,6 +29,10 @@
 #    define KVS_BREAKPOINT { __asm__( "unimp 0" ); }
 #  elif defined ( KVS_PLATFORM_CPU_SPARC64 )
 #    define KVS_BREAKPOINT { __asm__( "illtrap 0" ); }
+#  elif defined ( KVS_PLATFORM_CPU_ARM )
+#    define KVS_BREAKPOINT { __asm__( "bkpt #0" ); }
+#  elif defined ( KVS_PLATFORM_CPU_ARM64 )
+#    define KVS_BREAKPOINT { __asm__( "brk #0" ); }
 #  else
 #    pragma message("Breakpoint.h: Unknown breakpoint code for the CPU architecture.")
 #    define KVS_BREAKPOINT { }

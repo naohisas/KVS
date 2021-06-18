@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file Math.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Math.h 1618 2013-07-12 05:39:03Z naohisa.sakamoto@gmail.com $
+ *  @file   Math.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__MATH_H_INCLUDE
-#define KVS__MATH_H_INCLUDE
-
+#pragma once
 #include <cmath>
 
 
@@ -24,19 +15,12 @@ namespace Math
 {
 
 #define KVS__MATH_TINY_VALUE 1.e-6
-
 const double sqrt2 = 1.4142135623730950488;
-
 const double sqrt2_div_2 = 0.7071067811865475244;
-
 const double pi = 3.1415926535897932384;
-
 const double pi_mul_2 = 6.2831853071795864769;
-
 const double pi_div_2 = 1.5707963267948966192;
-
 const double pi_div_16 = 0.1963495408493620774;
-
 const double golden_ratio = 1.6180339887498948482;
 
 template <typename T>
@@ -314,53 +298,6 @@ inline float PI()
     return 6 * std::asin( 0.5f );
 }
 
-
-
-
-
-
-#if KVS_ENABLE_DEPRECATED
-template <typename T>
-inline T Power( T a, T b )
-{
-    return std::pow( a, b );
-}
-
-
-template <typename T>
-inline void Swap( T& a, T& b )
-{
-    T tmp;
-    tmp = a;
-    a   = b;
-    b   = tmp;
-}
-
-template <typename T>
-inline void Shift( T& a, T& b, T c )
-{
-    a = b;
-    b = c;
-}
-
-template <typename T>
-inline void Shift( T& a, T& b, T& c, T d )
-{
-    a = b;
-    b = c;
-    c = d;
-}
-
-template <typename T>
-inline T SquareRoot( T a )
-{
-    return static_cast<T>( std::sqrt( a ) );
-}
-
-#endif
-
 } // end of namespace Math
 
 } // end of namespace kvs
-
-#endif // KVS__MATH_H_INCLUDE

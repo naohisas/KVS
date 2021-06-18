@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ColorMapPalette.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ColorMapPalette.h"
 #include <cstdio>
 #include <kvs/String>
@@ -33,7 +39,10 @@ namespace kvs
 ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_palette( NULL ),
-    m_color_palette( NULL )
+    m_color_palette( NULL ),
+    m_update( true ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::setEventType(
         kvs::EventBase::PaintEvent |
@@ -43,7 +52,7 @@ ColorMapPalette::ColorMapPalette( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::Margin );
-    this->setCaption( "Color map palette " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Color map palette " + kvs::String::From( ::InstanceCounter++ ) );
     m_drawing_color = kvs::RGBColor( 0, 0, 0 );
     m_color_map.create();
 }
@@ -91,9 +100,13 @@ void ColorMapPalette::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
-    if ( !m_texture.isValid() ) { this->initialize_texture( m_color_map ); }
+    if ( !m_texture.isValid() || m_update )
+    {
+        this->initialize_texture( m_color_map );
+        m_update = false;
+    }
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -133,6 +146,8 @@ void ColorMapPalette::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -145,16 +160,16 @@ void ColorMapPalette::resizeEvent( int width, int height )
 /*===========================================================================*/
 void ColorMapPalette::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
 
         if ( m_palette.contains( event->x(), event->y(), true ) )
         {
-            m_palette.activate();
+            m_palette.setActive( true );
 
             // Color map palette geometry.
             const int x0 = m_palette.x0();
@@ -199,7 +214,7 @@ void ColorMapPalette::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void ColorMapPalette::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -263,13 +278,13 @@ void ColorMapPalette::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
-        if ( m_palette.isActive() ) m_palette.deactivate();
+        if ( m_palette.isActive() ) m_palette.setActive( false );
 
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

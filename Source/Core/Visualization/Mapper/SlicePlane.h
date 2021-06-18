@@ -3,18 +3,8 @@
  *  @file   SlicePlane.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: SlicePlane.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__SLICE_PLANE_H_INCLUDE
-#define KVS__SLICE_PLANE_H_INCLUDE
-
+#pragma once
 #include <kvs/PolygonObject>
 #include <kvs/VolumeObjectBase>
 #include <kvs/StructuredVolumeObject>
@@ -40,11 +30,9 @@ class SlicePlane : public kvs::MapperBase, public kvs::PolygonObject
     kvsModuleSuperClass( kvs::PolygonObject );
 
 private:
-
     kvs::Vec4 m_coefficients; ///< coeficients of a slice plane
 
 public:
-
     SlicePlane();
     SlicePlane(
         const kvs::VolumeObjectBase* volume,
@@ -63,7 +51,6 @@ public:
     SuperClass* exec( const kvs::ObjectBase* object );
 
 protected:
-
     void mapping( const kvs::VolumeObjectBase* volume );
     template <typename T> void extract_plane( const kvs::StructuredVolumeObject* volume );
     template <typename T> void extract_plane( const kvs::UnstructuredVolumeObject* volume );
@@ -90,5 +77,3 @@ protected:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SLICE_PLANE_H_INCLUDE

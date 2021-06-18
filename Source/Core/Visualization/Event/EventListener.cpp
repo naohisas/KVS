@@ -3,14 +3,6 @@
  *  @file   EventListener.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: EventListener.cpp 1574 2013-05-21 10:28:12Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "EventListener.h"
 #include <kvs/EventBase>
@@ -26,22 +18,29 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new EventListener class.
+ *  @param  event_type [in] event types of this listener class
+ *  @param  msec [in] interval time in millisecond for timer event
  */
 /*===========================================================================*/
-EventListener::EventListener():
-    m_event_type( 0 ),
+EventListener::EventListener( const int event_type, const int msec ):
+    m_event_type( event_type ),
     m_name( "" ),
-    m_screen( NULL ),
-    m_scene( NULL )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the EventListener class.
- */
-/*===========================================================================*/
-EventListener::~EventListener()
+    m_screen( nullptr ),
+    m_scene( nullptr ),
+    m_event_timer( nullptr ),
+    m_timer_interval( msec ),
+    m_initialize_event( nullptr ),
+    m_paint_event( nullptr ),
+    m_resize_event( nullptr ),
+    m_mouse_press_event( nullptr ),
+    m_mouse_move_event( nullptr ),
+    m_mouse_release_event( nullptr ),
+    m_mouse_double_click_event( nullptr ),
+    m_wheel_event( nullptr ),
+    m_key_press_event( nullptr ),
+    m_key_repeat_event( nullptr ),
+    m_key_release_event( nullptr ),
+    m_timer_event( nullptr )
 {
 }
 
@@ -55,53 +54,73 @@ void EventListener::onEvent( kvs::EventBase* event )
 {
     switch ( event->type() )
     {
-    case kvs::EventBase::InitializeEvent: this->initializeEvent(); break;
-    case kvs::EventBase::PaintEvent: this->paintEvent(); break;
+    case kvs::EventBase::InitializeEvent:
+    {
+        this->initializeEvent();
+        break;
+    }
+    case kvs::EventBase::PaintEvent:
+    {
+        this->paintEvent();
+        break;
+    }
     case kvs::EventBase::MousePressEvent:
     {
-        kvs::MouseEvent* e = static_cast<kvs::MouseEvent*>( event );
+        auto* e = static_cast<kvs::MouseEvent*>( event );
         this->mousePressEvent( e );
         break;
     }
     case kvs::EventBase::MouseMoveEvent:
     {
-        kvs::MouseEvent* e = static_cast<kvs::MouseEvent*>( event );
+        auto* e = static_cast<kvs::MouseEvent*>( event );
         this->mouseMoveEvent( e );
         break;
     }
     case kvs::EventBase::MouseReleaseEvent:
     {
-        kvs::MouseEvent* e = static_cast<kvs::MouseEvent*>( event );
+        auto* e = static_cast<kvs::MouseEvent*>( event );
         this->mouseReleaseEvent( e );
         break;
     }
     case kvs::EventBase::MouseDoubleClickEvent:
     {
-        kvs::MouseEvent* e = static_cast<kvs::MouseEvent*>( event );
+        auto* e = static_cast<kvs::MouseEvent*>( event );
         this->mouseDoubleClickEvent( e );
         break;
     }
     case kvs::EventBase::ResizeEvent:
     {
-        kvs::ResizeEvent* e = static_cast<kvs::ResizeEvent*>( event );
+        auto* e = static_cast<kvs::ResizeEvent*>( event );
         this->resizeEvent( e->width(), e->height() );
         break;
     }
     case kvs::EventBase::WheelEvent:
     {
-        kvs::KeyEvent* e = static_cast<kvs::KeyEvent*>( event );
-        this->keyPressEvent( e );
+        auto* e = static_cast<kvs::WheelEvent*>( event );
+        this->wheelEvent( e );
         break;
     }
     case kvs::EventBase::KeyPressEvent:
     {
-        kvs::KeyEvent* e = static_cast<kvs::KeyEvent*>( event );
+        auto* e = static_cast<kvs::KeyEvent*>( event );
         this->keyPressEvent( e );
+        break;
+    }
+    case kvs::EventBase::KeyRepeatEvent:
+    {
+        auto* e = static_cast<kvs::KeyEvent*>( event );
+        this->keyRepeatEvent( e );
+        break;
+    }
+    case kvs::EventBase::KeyReleaseEvent:
+    {
+        auto* e = static_cast<kvs::KeyEvent*>( event );
+        this->keyReleaseEvent( e );
         break;
     }
     case kvs::EventBase::TimerEvent:
     {
-        kvs::TimeEvent* e = static_cast<kvs::TimeEvent*>( event );
+        auto* e = static_cast<kvs::TimeEvent*>( event );
         this->timerEvent( e );
         break;
     }

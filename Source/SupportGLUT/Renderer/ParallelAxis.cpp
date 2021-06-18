@@ -3,14 +3,6 @@
  *  @file   ParallelAxis.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "ParallelAxis.h"
 #include <kvs/OpenGL>
@@ -325,13 +317,13 @@ void ParallelAxis::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
         std::string min_value;
         if ( std::ceil( table->maxValue(i) ) == std::floor( table->maxValue(i) ) )
         {
-            max_value = kvs::String::ToString( int(table->maxValue(i)) );
-            min_value = kvs::String::ToString( int(table->minValue(i)) );
+            max_value = kvs::String::From( int(table->maxValue(i)) );
+            min_value = kvs::String::From( int(table->minValue(i)) );
         }
         else
         {
-            max_value = kvs::String::ToString( table->maxValue(i) );
-            min_value = kvs::String::ToString( table->minValue(i) );
+            max_value = kvs::String::From( table->maxValue(i) );
+            min_value = kvs::String::From( table->minValue(i) );
         }
 
         const size_t max_width = max_value.size() * ::CharacterWidth;

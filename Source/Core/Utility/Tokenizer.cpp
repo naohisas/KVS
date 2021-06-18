@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Tokenizer.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Tokenizer.cpp 1416 2013-02-15 10:59:48Z s.yamada0808@gmail.com $
+ *  @file   Tokenizer.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Tokenizer.h"

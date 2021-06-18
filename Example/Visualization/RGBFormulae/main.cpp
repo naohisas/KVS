@@ -5,8 +5,8 @@
  *  @brief  Example program for kvs::RGBFormulae class.
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/ColorMapBar>
 #include <kvs/RGBFormulae>
 #include <kvs/Label>
@@ -22,14 +22,14 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     // Screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.setTitle( "kvs::RGBFormulae" );
     screen.setBackgroundColor( kvs::RGBColor::White() );
     screen.setSize( 256, 590 );
-    screen.show();
+    screen.create();
 
     const kvs::Font font( kvs::Font::Sans, kvs::Font::Bold, 20 );
     const size_t h = kvs::FontMetrics( font, screen.paintDevice() ).height();

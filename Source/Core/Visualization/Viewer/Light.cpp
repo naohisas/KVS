@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Light.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Light.cpp 1799 2014-08-04 05:36:04Z naohisa.sakamoto@gmail.com $
+ *  @file   Light.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Light.h"
@@ -307,9 +300,10 @@ void Light::resetXform()
 void Light::rotate( const kvs::Mat3& rotation )
 {
     const kvs::Vec3 t = m_transform_center;
-    const kvs::Xform x = kvs::Xform::Translation( t )
-                       * kvs::Xform::Rotation( rotation )
-                       * kvs::Xform::Translation( -t );
+    const kvs::Xform x =
+        kvs::Xform::Translation( t ) *
+        kvs::Xform::Rotation( rotation ) *
+        kvs::Xform::Translation( -t );
     this->multiplyXform( x );
 }
 

@@ -3,18 +3,8 @@
  *  @file   Shader.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Shader.h 1802 2014-08-07 09:22:11Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__SHADER_H_INCLUDE
-#define KVS__SHADER_H_INCLUDE
-
+#pragma once
 #include <kvs/Vector3>
 #include <kvs/Camera>
 #include <kvs/Light>
@@ -32,89 +22,165 @@ namespace kvs
 class Shader
 {
 public:
-
     enum Type
     {
         UnknownShading = 0, ///< unknown shading type
-        LambertShading,     ///< Lambertian shading
-        PhongShading,       ///< Phong shading
-        BlinnPhongShading   ///< Blinn-Phong shading
+        LambertShading, ///< Lambertian shading
+        PhongShading, ///< Phong shading
+        BlinnPhongShading ///< Blinn-Phong shading
     };
 
     struct Base
     {
-        kvs::Vector3f camera_position; ///< camera position in the object coordinate
-        kvs::Vector3f light_position; ///< light position in the object coordinate
-        float Ka; ///< ambient coefficient
-        float Kd; ///< diffuse coefficient
-        float Ks; ///< specular coefficient
-        float S;  ///< shininess
+        kvs::Vec3 camera_position{}; ///< camera position in the object coordinate
+        kvs::Vec3 light_position{}; ///< light position in the object coordinate
+        float Ka = 0.0f; ///< ambient coefficient
+        float Kd = 0.0f; ///< diffuse coefficient
+        float Ks = 0.0f; ///< specular coefficient
+        float S = 0.0f; ///< shininess
+        bool two_side_lighting = false; ///< flag for two-side lighting
 
-        Base();
-        virtual ~Base();
+        Base() = default;
+        virtual ~Base() = default;
 
-        virtual void set( const kvs::Camera* camera, const kvs::Light* light, const kvs::ObjectBase* object ) = 0;
         virtual Shader::Type type() const = 0;
+
+        virtual void set(
+            const kvs::Camera* camera,
+            const kvs::Light* light,
+            const kvs::ObjectBase* object ) = 0;
+
         virtual const kvs::RGBColor shadedColor(
             const kvs::RGBColor& color,
-            const kvs::Vector3f& vertex,
-            const kvs::Vector3f& normal ) const = 0;
-        virtual float attenuation( const kvs::Vector3f& vertex, const kvs::Vector3f& gradient ) const = 0;
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& normal ) const = 0;
+
+        virtual float attenuation(
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& gradient ) const = 0;
     };
 
 public:
-
     /*KVS_DEPRECATED*/ typedef Base shader_type;
-    typedef Base ShadingModel;
+    using ShadingModel = Base;
 
 public:
-
     struct Lambert : public Base
     {
-        Lambert();
-        Lambert( const Lambert& shader );
-        Lambert( const float ka, const float kd );
+        Lambert(
+            const float ka = 0.4f,
+            const float kd = 0.6f )
+        {
+            Base::Ka = ka;
+            Base::Kd = kd;
+        }
 
-        void set( const kvs::Camera* camera, const kvs::Light* light, const kvs::ObjectBase* object );
-        Shader::Type type() const;
+        Lambert( const Lambert& shader )
+        {
+            Base::camera_position = shader.camera_position;
+            Base::light_position = shader.light_position;
+            Base::Ka = shader.Ka;
+            Base::Kd = shader.Kd;
+        }
+
+        Shader::Type type() const { return Shader::LambertShading; }
+
+        void set(
+            const kvs::Camera* camera,
+            const kvs::Light* light,
+            const kvs::ObjectBase* object );
+
         const kvs::RGBColor shadedColor(
             const kvs::RGBColor& color,
-            const kvs::Vector3f& vertex,
-            const kvs::Vector3f& normal ) const;
-        float attenuation( const kvs::Vector3f& vertex, const kvs::Vector3f& gradient ) const;
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& normal ) const;
+
+        float attenuation(
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& gradient ) const;
     };
 
     struct Phong : public Base
     {
-        Phong();
-        Phong( const Phong& shader );
-        Phong( const float ka, const float kd, const float ks, const float s );
+        Phong(
+            const float ka = 0.3f,
+            const float kd = 0.5f,
+            const float ks = 0.8f,
+            const float s = 100.0f )
+        {
+            Base::Ka = ka;
+            Base::Kd = kd;
+            Base::Ks = ks;
+            Base::S = s;
+        }
 
-        void set( const kvs::Camera* camera, const kvs::Light* light, const kvs::ObjectBase* object );
-        Shader::Type type() const;
+        Phong( const Phong& shader )
+        {
+            Base::camera_position = shader.camera_position;
+            Base::light_position = shader.light_position;
+            Base::Ka = shader.Ka;
+            Base::Kd = shader.Kd;
+            Base::Ks = shader.Ks;
+            Base::S = shader.S;
+        }
+
+        Shader::Type type() const { return Shader::PhongShading; }
+
+        void set(
+            const kvs::Camera* camera,
+            const kvs::Light* light,
+            const kvs::ObjectBase* object );
+
         const kvs::RGBColor shadedColor(
             const kvs::RGBColor& color,
-            const kvs::Vector3f& vertex,
-            const kvs::Vector3f& normal ) const;
-        float attenuation( const kvs::Vector3f& vertex, const kvs::Vector3f& gradient ) const;
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& normal ) const;
+
+        float attenuation(
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& gradient ) const;
     };
 
     struct BlinnPhong : public Base
     {
-        BlinnPhong();
-        BlinnPhong( const BlinnPhong& shader );
-        BlinnPhong( const float ka, const float kd, const float ks, const float s );
+        BlinnPhong(
+            const float ka = 0.3f,
+            const float kd = 0.5f,
+            const float ks = 0.8f,
+            const float s = 100.0f )
+        {
+            Base::Ka = ka;
+            Base::Kd = kd;
+            Base::Ks = ks;
+            Base::S = s;
+        }
 
-        void set( const kvs::Camera* camera, const kvs::Light* light, const kvs::ObjectBase* object );
-        Shader::Type type() const;
+        BlinnPhong( const BlinnPhong& shader )
+        {
+            Base::camera_position = shader.camera_position;
+            Base::light_position = shader.light_position;
+            Base::Ka = shader.Ka;
+            Base::Kd = shader.Kd;
+            Base::Ks = shader.Ks;
+            Base::S = shader.S;
+        }
+
+        Shader::Type type() const { return Shader::BlinnPhongShading; }
+
+        void set(
+            const kvs::Camera* camera,
+            const kvs::Light* light,
+            const kvs::ObjectBase* object );
+
         const kvs::RGBColor shadedColor(
             const kvs::RGBColor& color,
-            const kvs::Vector3f& vertex,
-            const kvs::Vector3f& normal ) const;
-        float attenuation( const kvs::Vector3f& vertex, const kvs::Vector3f& gradient ) const;
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& normal ) const;
+
+        float attenuation(
+            const kvs::Vec3& vertex,
+            const kvs::Vec3& gradient ) const;
     };
 };
 
 } // end of namespace kvs
-
-#endif // KVS__SHADER_H_INCLUDE

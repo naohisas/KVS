@@ -3,18 +3,8 @@
  *  @file   Exception.h
  *  @author Naoya Maeda
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS_EXCEPTION_H_INCLUDE
-#define KVS_EXCEPTION_H_INCLUDE
-
+#pragma once
 #include <exception>
 #include <string>
 #include <sstream>
@@ -131,5 +121,3 @@ public:
 };
 
 } // kvs
-
-#endif

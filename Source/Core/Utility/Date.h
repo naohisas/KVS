@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file Date.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Date.h 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
+ *  @file   Date.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__DATE_H_INCLUDE
-#define KVS__DATE_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <string>
 #include <kvs/Deprecated>
@@ -30,7 +21,6 @@ namespace kvs
 class Date
 {
 public:
-
     enum DayOfWeek
     {
         UnknownDay   = -1,
@@ -63,14 +53,12 @@ public:
     };
 
 private:
-
     int m_year; ///< year
     int m_month; ///< month
     int m_day; ///< day
     long m_julian_day; ///< julian day
 
 public:
-
     Date();
     Date( const long julian_day );
     Date( const int year, const int month, const int day );
@@ -116,19 +104,6 @@ public:
     void subYears( const int years ) { this->addYears( -1 * years ); }
     void subMonths( const int months ) { this->addMonths( -1 * months ); }
     void subDays( const int days ) { this->addDays( -1 * days ); }
-
-private:
-
-//    void adjust_days();
-//    long convert_to_julian_date( const int year, const int month, const int day ) const;
-//    Date convert_from_julian_date( const long julian_day ) const;
-
-public:
-    KVS_DEPRECATED( void subtractYears( const int years ) ) { this->subYears( years ); }
-    KVS_DEPRECATED( void subtractMonths( const int months ) ) { this->subMonths( months ); }
-    KVS_DEPRECATED( void subtractDays( const int days ) ) { this->subDays( days ); }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__DATE_H_INCLUDE

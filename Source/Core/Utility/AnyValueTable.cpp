@@ -3,14 +3,6 @@
  *  @file   AnyValueTable.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "AnyValueTable.h"
 #include <kvs/Type>
@@ -30,8 +22,5 @@ template AnyValueTable::AnyValueTable( const kvs::ValueTable<kvs::Int64>& table 
 template AnyValueTable::AnyValueTable( const kvs::ValueTable<kvs::UInt64>& table );
 template AnyValueTable::AnyValueTable( const kvs::ValueTable<kvs::Real32>& table );
 template AnyValueTable::AnyValueTable( const kvs::ValueTable<kvs::Real64>& table );
-#if KVS_ENABLE_DEPRECATED
-template AnyValueTable::AnyValueTable( const kvs::ValueTable<std::string>& table );
-#endif
 
 }

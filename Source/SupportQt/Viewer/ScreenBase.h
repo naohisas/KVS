@@ -3,18 +3,8 @@
  *  @file   ScreenBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS__QT__SCREEN_BASE_H_INCLUDE
-#define KVS__QT__SCREEN_BASE_H_INCLUDE
-
+#pragma once
 #include <kvs/ScreenBase>
 #include <kvs/qt/Qt>
 
@@ -25,13 +15,11 @@ namespace kvs
 class MouseEvent;
 class WheelEvent;
 class KeyEvent;
-class TimerEventListener;
 
 namespace qt
 {
 
 class Application;
-class Timer;
 
 /*===========================================================================*/
 /**
@@ -42,19 +30,20 @@ class ScreenBase : public QGLWidget, public kvs::ScreenBase
 {
     Q_OBJECT
 
-    typedef kvs::ScreenBase BaseClass;
+    using BaseClass = kvs::ScreenBase;
+
+public:
+    static ScreenBase* DownCast( kvs::ScreenBase* screen );
+    static const ScreenBase* DownCast( const kvs::ScreenBase* screen );
 
 private:
-
     int m_id; ///< window ID
     kvs::MouseEvent* m_mouse_event; ///< mouse event
     kvs::KeyEvent* m_key_event; ///< key event
     kvs::WheelEvent* m_wheel_event; ///< wheel event
-    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
-    std::list<kvs::qt::Timer*> m_timer_event_handler; ///< timer list for timer events
+//    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
 
 public:
-
     ScreenBase( kvs::qt::Application* application = 0, QWidget* parent = 0 );
     virtual ~ScreenBase();
 
@@ -63,6 +52,9 @@ public:
     int y() const { return BaseClass::y(); }
     int width() const { return BaseClass::width(); }
     int height() const { return BaseClass::height(); }
+
+    virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
 
     virtual void create();
     virtual void show();
@@ -73,23 +65,25 @@ public:
     virtual void pushDown();
     virtual void redraw();
     virtual void resize( int width, int height );
-    virtual bool isFullScreen() const;
-    virtual void enable();
-    virtual void disable();
-    virtual void reset();
+//    virtual bool isFullScreen() const;
 
-    virtual void initializeEvent();
-    virtual void paintEvent();
-    virtual void resizeEvent( int width, int height );
-    virtual void mousePressEvent( kvs::MouseEvent* event );
-    virtual void mouseMoveEvent( kvs::MouseEvent* event );
-    virtual void mouseReleaseEvent( kvs::MouseEvent* event );
-    virtual void mouseDoubleClickEvent( kvs::MouseEvent* event );
-    virtual void wheelEvent( kvs::WheelEvent* event );
-    virtual void keyPressEvent( kvs::KeyEvent* event );
+    virtual void enable() {}
+    virtual void disable() {}
+    virtual void reset() {}
+
+    virtual void initializeEvent() {}
+    virtual void paintEvent() {}
+    virtual void resizeEvent( int width, int height ) {}
+    virtual void mousePressEvent( kvs::MouseEvent* event ) {}
+    virtual void mouseMoveEvent( kvs::MouseEvent* event ) {}
+    virtual void mouseReleaseEvent( kvs::MouseEvent* event ) {}
+    virtual void mouseDoubleClickEvent( kvs::MouseEvent* event ) {}
+    virtual void wheelEvent( kvs::WheelEvent* event ) {}
+    virtual void keyPressEvent( kvs::KeyEvent* event ) {}
+    virtual void keyRepeatEvent( kvs::KeyEvent* event ) {}
+    virtual void keyReleaseEvent( kvs::KeyEvent* event ) {}
 
 private:
-
     // Callback functions for Qt.
     void initializeGL();
     void paintGL();
@@ -100,16 +94,9 @@ private:
     void mouseDoubleClickEvent( QMouseEvent* event );
     void wheelEvent( QWheelEvent* event );
     void keyPressEvent( QKeyEvent* event );
-
-#if 1 // KVS_ENABLE_DEPRECATED
-public:
-    std::list<kvs::qt::Timer*>& timerEventHandler();
-    void addTimerEvent( kvs::TimerEventListener* event, kvs::qt::Timer* timer );
-#endif
+    void keyReleaseEvent( QKeyEvent* event );
 };
 
 } // end of namespace qt
 
 } // end of namespace kvs
-
-#endif // KVS__QT__SCREEN_BASE_H_INCLUDE

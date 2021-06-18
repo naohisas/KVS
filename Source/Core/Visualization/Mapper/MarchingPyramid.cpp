@@ -3,14 +3,6 @@
  *  @file   MarchingPyramid.cpp
  *  @author Jun Nishimura, Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MarchingPyramid.cpp 1707 2014-01-27 07:37:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "MarchingPyramid.h"
 #include "MarchingPyramidTable.h"
@@ -125,6 +117,10 @@ void MarchingPyramid::mapping( const kvs::UnstructuredVolumeObject* volume )
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );
     BaseClass::setMinMaxCoords( volume, this );
+
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 
     const kvs::Real64 min_value = BaseClass::volume()->minValue();
     const kvs::Real64 max_value = BaseClass::volume()->maxValue();
@@ -242,18 +238,17 @@ void MarchingPyramid::extract_surfaces_with_duplication(
         } // end of loop-triangle
     } // end of loop-cell
 
-    // Calculate the polygon color for the isolevel.
-    const kvs::RGBColor color = this->calculate_color<T>();
-
-    if( coords.size() > 0 ){
+    if ( coords.size() > 0 )
+    {
         SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
-        SuperClass::setColor( color );
+        SuperClass::setColor( this->calculate_color<T>() );
         SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
         SuperClass::setOpacity( 255 );
-        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-        SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-        SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
     }
+
+//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/

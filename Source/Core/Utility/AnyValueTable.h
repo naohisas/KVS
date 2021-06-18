@@ -3,18 +3,8 @@
  *  @file   AnyValueTable.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS__ANY_VALUE_TABLE_H_INCLUDE
-#define KVS__ANY_VALUE_TABLE_H_INCLUDE
-
+#pragma once
 #include <vector>
 #include <iterator>
 #include <algorithm>
@@ -35,7 +25,6 @@ namespace kvs
 class AnyValueTable
 {
 public:
-
     typedef kvs::AnyValueArray Column;
     typedef std::vector<Column> Columns;
     typedef Columns::iterator column_iterator;
@@ -46,11 +35,9 @@ public:
     typedef Columns::const_reverse_iterator const_column_reverse_iterator;
 
 private:
-
     Columns m_columns;
 
 public:
-
     AnyValueTable(){}
 
     template <typename T>
@@ -227,5 +214,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__ANY_VALUE_TABLE_H_INCLUDE

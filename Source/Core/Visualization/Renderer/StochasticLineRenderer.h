@@ -3,19 +3,13 @@
  *  @file   StochasticLineRenderer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/Module>
 #include <kvs/ProgramObject>
 #include <kvs/VertexBufferObjectManager>
+#include <kvs/LineRenderer>
+#include <kvs/Deprecated>
 #include "StochasticRenderingEngine.h"
 #include "StochasticRendererBase.h"
 
@@ -40,8 +34,13 @@ public:
 
 public:
     StochasticLineRenderer();
-    void setLineOffset( const float offset );
-    /*KVS_DEPRECATED*/ void setOpacity( const kvs::UInt8 opacity );
+    void setDepthOffset( const kvs::Vec2& offset );
+    void setDepthOffset( const float factor, const float units = 0.0f );
+
+public:
+    // KVS_DEPRECATED
+    void setOpacity( const kvs::UInt8 opacity );
+    KVS_DEPRECATED( void setLineOffset( const float offset ) ) { this->setDepthOffset( offset ); }
 };
 
 /*===========================================================================*/
@@ -51,31 +50,44 @@ public:
 /*===========================================================================*/
 class StochasticLineRenderer::Engine : public kvs::StochasticRenderingEngine
 {
+public:
+    using BaseClass = kvs::StochasticRenderingEngine;
+    using BufferObject = kvs::glsl::LineRenderer::BufferObject;
+
+    class RenderPass : public kvs::glsl::LineRenderer::RenderPass
+    {
+    private:
+        using BaseRenderPass = kvs::glsl::LineRenderer::RenderPass;
+        using Parent = BaseClass;
+        const Parent* m_parent; ///< reference to the engine
+        kvs::UInt8 m_opacity = 255; ///< point opacity
+    public:
+        RenderPass( BufferObject& buffer_object, Parent* parent );
+        void setOpacity( const kvs::UInt8 opacity ) { m_opacity = opacity; }
+        void setup( const kvs::Shader::ShadingModel& model );
+        void draw( const kvs::ObjectBase* object );
+    };
+
 private:
-    kvs::UInt8 m_line_opacity; ///< line opacity
-    kvs::ValueArray<GLint> m_first_array; ///< array of starting indices for the polyline
-    kvs::ValueArray<GLsizei> m_count_array; ///< array of the number of indices for the polyline
-    bool m_has_connection; ///< check flag for the connection array
-    float m_line_offset; ///< line offset
-    kvs::ProgramObject m_shader_program; ///< shader program
-    kvs::VertexBufferObjectManager m_vbo_manager; ///< vertex buffer object manager
+    kvs::Vec2 m_depth_offset{ 0.0f, 0.0f }; ///< depth offset {factor, units}
+    RenderPass m_render_pass; ///< render pass
+    BufferObject m_buffer_object; ///< buffer object
 
 public:
-    Engine();
-    void release();
+    Engine(): m_render_pass( m_buffer_object, this ) {}
+    virtual ~Engine() { this->release(); }
+    void release() { m_render_pass.release(); m_buffer_object.release(); }
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void update( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-    void setLineOffset( const float offset ) { m_line_offset = offset; }
+    void setDepthOffset( const kvs::Vec2& offset ) { m_depth_offset = offset; }
+    void setDepthOffset( const float factor, const float units = 0.0f ) { m_depth_offset = kvs::Vec2( factor, units ); }
 
 public:
-    /* KVS_DEPRECATED */ void setOpacity( const kvs::UInt8 opacity ){ m_line_opacity = opacity; }
-
-private:
-    void create_shader_program();
-    void create_buffer_object( const kvs::LineObject* line );
+    /* KVS_DEPRECATED */ void setOpacity( const kvs::UInt8 opacity ){ m_render_pass.setOpacity( opacity ); }
+    KVS_DEPRECATED( void setLineOffset( const float offset ) ) { this->setDepthOffset( offset ); }
 };
 
 } // end of namespace kvs

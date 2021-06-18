@@ -3,14 +3,6 @@
  *  @file   Vector2.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Vector2.cpp 1340 2012-11-07 07:31:06Z s.yamada0808@gmail.com $
- */
 /****************************************************************************/
 #include "Vector2.h"
 #include <kvs/Type>

@@ -3,18 +3,8 @@
  *  @file   Texture2D.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Texture2D.h 1551 2013-04-20 01:40:09Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__TEXTURE_2D_H_INCLUDE
-#define KVS__TEXTURE_2D_H_INCLUDE
-
+#pragma once
 #include <kvs/Texture>
 #include <kvs/Deprecated>
 #include <cstddef>
@@ -30,24 +20,18 @@ namespace kvs
 /*==========================================================================*/
 class Texture2D : public kvs::Texture
 {
-public:
-
-    typedef kvs::Texture BaseClass;
-
 private:
-
-    bool m_is_loaded; ///< if true, the texture is loaded
+    bool m_is_loaded = false; ///< if true, the texture is loaded
 
 public:
-
+    using BaseClass = kvs::Texture;
     static void Unbind();
 
 public:
+    Texture2D(): kvs::Texture( GL_TEXTURE_2D, GL_TEXTURE_BINDING_2D ) {}
+    virtual ~Texture2D() { this->release(); }
 
-    Texture2D();
-    virtual ~Texture2D();
-
-    bool isLoaded() const;
+    bool isLoaded() const { return m_is_loaded; }
 
     void create( const size_t width, const size_t height, const void* data = NULL );
     void release();
@@ -64,17 +48,6 @@ public:
         const size_t height,
         const size_t xoffset = 0,
         const size_t yoffset = 0 );
-
-public:
-    KVS_DEPRECATED( bool isDownload() const ) { return this->isLoaded(); }
-    KVS_DEPRECATED( void download(
-                        const size_t width,
-                        const size_t height,
-                        const void* data,
-                        const size_t xoffset = 0,
-                        const size_t yoffset = 0 ) ) { this->load( width, height, data, xoffset, yoffset ); }
 };
 
 } // end of namespace kvs
-
-#endif // KVS_CORE_TEXTURE_2D_H_INCLUDE

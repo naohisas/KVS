@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   Screen.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include "ScreenBase.h"
 #include <string>
@@ -29,6 +35,7 @@ public:
     virtual ~Screen();
 
     kvs::Scene* scene() { return m_scene; }
+    const kvs::Scene* scene() const { return m_scene; }
 
     void setBackgroundColor( const kvs::RGBColor& color );
     void setBackgroundColor( const kvs::RGBColor& color1, const kvs::RGBColor& color2 );

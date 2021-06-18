@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file MersenneTwister.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MersenneTwister.cpp 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
+ *  @file   MersenneTwister.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "MersenneTwister.h"

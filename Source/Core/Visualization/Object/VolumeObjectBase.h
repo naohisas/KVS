@@ -3,14 +3,6 @@
  *  @file   VolumeObjectBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VolumeObjectBase.h 1811 2014-09-03 02:53:36Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <string>
@@ -37,13 +29,11 @@ class VolumeObjectBase : public kvs::ObjectBase
     kvsModule( kvs::VolumeObjectBase, Object );
 
 public:
-
-    typedef kvs::ObjectBase BaseClass;
-    typedef kvs::ValueArray<float> Coords;
-    typedef kvs::AnyValueArray Values;
+    using BaseClass = kvs::ObjectBase;
+    using Coords = kvs::ValueArray<float>;
+    using Values = kvs::AnyValueArray;
 
 public:
-
     enum VolumeType
     {
         Structured = 0, ///< Structured volume.
@@ -52,7 +42,6 @@ public:
     };
 
 private:
-
     VolumeType m_volume_type; ///< volume type
     std::string m_label; ///< data label
     std::string m_unit; ///< data unit
@@ -64,7 +53,6 @@ private:
     mutable kvs::Real64 m_max_value; ///< Maximum field value
 
 public:
-
     VolumeObjectBase();
 
     void shallowCopy( const VolumeObjectBase& object );
@@ -90,10 +78,9 @@ public:
     VolumeType volumeType() const { return m_volume_type; }
     virtual size_t numberOfNodes() const = 0;
     virtual size_t numberOfCells() const = 0;
-    void updateMinMaxValues() const;
+    virtual void updateMinMaxValues() const {}
 
 protected:
-
     void setVolumeType( VolumeType volume_type ) { m_volume_type = volume_type; }
 
 public:

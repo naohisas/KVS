@@ -3,14 +3,6 @@
  *  @file   Slider.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Slider.cpp 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Slider.h"
 #include <kvs/OpenGL>
@@ -65,7 +57,7 @@ Slider::Slider( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::SliderMargin );
-    this->setCaption( "Slider " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Slider " + kvs::String::From( ::InstanceCounter++ ) );
     this->setValue( ::Default::Value );
     this->setRange( ::Default::MinValue, ::Default::MaxValue );
     this->setSliderColor( ::Default::SliderColor );
@@ -324,14 +316,14 @@ void Slider::paintEvent()
     if ( m_show_range_value )
     {
         {
-            std::string min_value = kvs::String::ToString( m_min_value );
+            std::string min_value = kvs::String::From( m_min_value );
             const int x = BaseClass::x0() + m_margin;
             const int y = BaseClass::y0() + m_margin + character_height + ::Default::SliderHeight;
             BaseClass::drawText( x, y + character_height, min_value );
         }
 
         {
-            std::string max_value = kvs::String::ToString( m_max_value );
+            std::string max_value = kvs::String::From( m_max_value );
             const int x = BaseClass::x1() - m_margin - max_value.size() * character_width;
             const int y = BaseClass::y0() + m_margin + character_height + ::Default::SliderHeight;
             BaseClass::drawText( x, y + character_height, max_value );

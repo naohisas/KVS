@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file GLUT.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GLUT.h 1104 2012-04-21 06:00:16Z s.yamada0808@gmail.com $
+ *  @file   GLUT.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__GLUT__GLUT_H_INCLUDE
@@ -52,7 +45,7 @@ inline std::string Description()
 /*===========================================================================*/
 inline std::string Version()
 {
-    const std::string version = kvs::String::ToString( GLUT_API_VERSION );
+    const std::string version = kvs::String::From( GLUT_API_VERSION );
     return version;
 }
 

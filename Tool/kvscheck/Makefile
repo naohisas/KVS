@@ -29,6 +29,10 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
 INCLUDE_PATH += $(GLUT_INCLUDE_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+INCLUDE_PATH += $(GLFW_INCLUDE_PATH)
+endif
+
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 INCLUDE_PATH += $(OPENCV_INCLUDE_PATH)
 endif
@@ -37,10 +41,15 @@ ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 INCLUDE_PATH += $(PYTHON_INCLUDE_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+INCLUDE_PATH += $(MPI_INCLUDE_PATH)
+endif
+
 ifeq "$(KVS_SUPPORT_EGL)" "1"
 INCLUDE_PATH += $(EGL_INCLUDE_PATH)
 endif
 
+INCLUDE_PATH += $(OPENMP_INCLUDE_PATH)
 INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
 INCLUDE_PATH += $(GL_INCLUDE_PATH)
 
@@ -56,12 +65,20 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
 LIBRARY_PATH += -L../../Source/SupportGLUT/$(OUTDIR) $(GLUT_LIBRARY_PATH)
 endif
 
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+LIBRARY_PATH += -L../../Source/SupportGLFW/$(OUTDIR) $(GLFW_LIBRARY_PATH)
+endif
+
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 LIBRARY_PATH += -L../../Source/SupportOpenCV/$(OUTDIR) $(OPENCV_LIBRARY_PATH)
 endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 LIBRARY_PATH += -L../../Source/SupportPython/$(OUTDIR) $(PYTHON_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+LIBRARY_PATH += -L../../Source/SupportMPI/$(OUTDIR) $(MPI_LIBRARY_PATH)
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"
@@ -72,6 +89,7 @@ ifeq "$(KVS_SUPPORT_OSMESA)" "1"
 LIBRARY_PATH += -L../../Source/SupportOSMesa/$(OUTDIR)
 endif
 
+LIBRARY_PATH += $(OPENMP_LIBRARY_PATH)
 LIBRARY_PATH += $(GLEW_LIBRARY_PATH)
 LIBRARY_PATH += $(GL_LIBRARY_PATH)
 
@@ -87,12 +105,20 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
 LINK_LIBRARY += -lkvsSupportGLUT $(GLUT_LINK_LIBRARY)
 endif
 
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+LINK_LIBRARY += -lkvsSupportGLFW $(GLFW_LINK_LIBRARY)
+endif
+
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 LINK_LIBRARY += -lkvsSupportOpenCV $(OPENCV_LINK_LIBRARY)
 endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 LINK_LIBRARY += -lkvsSupportPython $(PYTHON_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+LINK_LIBRARY += -lkvsSupportMPI $(MPI_LINK_LIBRARY)
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"
@@ -103,6 +129,7 @@ ifeq "$(KVS_SUPPORT_OSMESA)" "1"
 LINK_LIBRARY += -lkvsSupportOSMesa
 endif
 
+LINK_LIBRARY += $(OPENMP_LINK_LIBRARY)
 LINK_LIBRARY += $(GLEW_LINK_LIBRARY)
 LINK_LIBRARY += $(GL_LINK_LIBRARY)
 
@@ -129,6 +156,11 @@ $(OUTDIR)/main.o \
 #=============================================================================
 #  Build rule.
 #=============================================================================
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+CPP := $(MPICPP)
+LD  := $(MPILD)
+endif
+
 $(TARGET_EXE): $(OBJECTS)
 	$(LD) $(LDFLAGS) $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY)
 

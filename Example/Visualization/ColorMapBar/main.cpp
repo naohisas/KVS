@@ -1,12 +1,12 @@
 /*****************************************************************************/
 /**
  *  @file   main.cpp
- *  @brief  Example program for colormap bar.
+ *  @brief  Example program for kvs::ColorMapBar class.
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/ColorMapBar>
 #include <kvs/HydrogenVolumeData>
 #include <kvs/StructuredVolumeObject>
@@ -22,21 +22,19 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::ColorMapBar" );
+    screen.create();
 
     // Color map.
     auto cmap = kvs::ColorMap::BrewerSpectral( 256 );
+    auto tfunc = kvs::TransferFunction( cmap );
 
     // Object and renderer.
-    auto* object = new kvs::HydrogenVolumeData( kvs::Vector3ui( 32, 32, 32 ) );
-    auto* renderer = new kvs::glsl::RayCastingRenderer();
-    renderer->setTransferFunction( kvs::TransferFunction( cmap ) );
-
-    // Screen.
-    kvs::glut::Screen screen( &app );
-    screen.setTitle( "LegendBar" );
+    auto* object = new kvs::HydrogenVolumeData( { 32, 32, 32 } );
+    auto* renderer = new kvs::glsl::RayCastingRenderer( tfunc );
     screen.registerObject( object, renderer );
-    screen.show();
 
     // Colormap bar.
     kvs::ColorMapBar cmap_bar( &screen );

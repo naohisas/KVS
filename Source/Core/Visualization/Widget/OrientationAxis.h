@@ -3,14 +3,6 @@
  *  @file   OrientationAxis.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/Camera>
@@ -33,8 +25,10 @@ class ObjectBase;
 class OrientationAxis : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
-    typedef kvs::Camera::ProjectionType ProjectionType;
+    using BaseClass = kvs::WidgetBase;
+    using ProjectionType = kvs::Camera::ProjectionType;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
     enum AxisType
     {
@@ -67,15 +61,19 @@ private:
     AxisType m_axis_type; ///< axis type
     BoxType m_box_type; ///< box type
     ProjectionType m_projection_type; ///< projection type
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene );
     OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase* object );
     virtual ~OrientationAxis();
 
-public:
-    virtual void screenUpdated() {}
-    virtual void screenResized() {}
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::string& xTag() const { return m_x_tag; }
     const std::string& yTag() const { return m_y_tag; }

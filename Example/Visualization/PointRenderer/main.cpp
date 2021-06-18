@@ -5,11 +5,11 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/PointImporter>
 #include <kvs/PointObject>
 #include <kvs/PointRenderer>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -22,11 +22,11 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "PointRenderer" );
-    screen.show();
+    screen.create();
 
     kvs::PointObject* object = NULL;
     if ( argc > 1 )

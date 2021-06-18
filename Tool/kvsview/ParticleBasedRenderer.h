@@ -3,14 +3,6 @@
  *  @file   ParticleBasedRenderer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ParticleBasedRenderer.h 1569 2013-05-08 02:48:35Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -27,8 +19,8 @@ namespace kvsview
 namespace ParticleBasedRenderer
 {
 
-const std::string CommandName("ParticleBasedRenderer");
-const std::string Description("Rendering a volume object. (optional)");
+const std::string CommandName( "ParticleBasedRenderer" );
+const std::string Description( "Rendering a volume object. (optional)" );
 
 /*===========================================================================*/
 /**
@@ -40,18 +32,17 @@ class Argument : public kvsview::Argument::Common
 public:
     Argument( int argc, char** argv );
 
-public:
-    const int sampling() const;
-    const int shader() const;
-    const bool noShading() const;
-    const bool noLOD() const;
-    const bool noGPU() const;
-//    const bool noZooming() const;
-    const float ambient() const;
-    const float diffuse() const;
-    const float specular() const;
-    const float shininess() const;
-    const size_t repetitionLevel() const;
+    int sampling() const { return valueAs<int>( "sampling", 0 ); }
+    int shader() const { return valueAs<int>( "shader", 0 ); }
+    bool noshading() const { return hasOption( "noshading" ); }
+    bool nolod() const { return hasOption( "nolod" ); }
+    bool nogpu() const { return hasOption( "nogpu" ); }
+    float ambient() const { return valueAs<float>( "ka", shader() == 0 ? 0.4f : 0.3f ); }
+    float diffuse() const { return valueAs<float>( "kd", shader() == 0 ? 0.6f : 0.5f ); }
+    float specular() const { return valueAs<float>( "ks", 0.8f ); }
+    float shininess() const { return valueAs<float>( "n", 100.0f ); }
+    size_t repetitionLevel() const { return valueAs<size_t>( "r", 1 ); }
+
     const kvs::TransferFunction transferFunction( const kvs::VolumeObjectBase* volume ) const;
 };
 
@@ -65,9 +56,12 @@ class Main : public kvs::Program
 private:
     std::string m_input_name; ///< input filename
     std::string m_output_name; ///< output filename
+    int m_argc;
+    char** m_argv;
 
 public:
-    int exec( int argc, char** argv );
+    Main( int argc, char** argv ): m_argc( argc ), m_argv( argv ) {}
+    int exec();
 };
 
 } // end of namespace ParticleBasedRenderer

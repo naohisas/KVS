@@ -3,14 +3,6 @@
  *  @file   Matrix.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Matrix.h 1384 2012-12-04 01:26:40Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <iostream>
@@ -20,6 +12,7 @@
 #include <kvs/DebugNew>
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <kvs/BitArray>
 #include <kvs/Indent>
 #include <kvs/Vector>
 #include <kvs/Matrix22>
@@ -224,6 +217,7 @@ public:
     size_t pivot( const size_t row_index ) const;
     const Matrix transposed() const;
     const Matrix inverted() const;
+    size_t rank() const;
 
     bool isSquare() const;
     bool isSymmetric() const;
@@ -1004,6 +998,53 @@ inline const Matrix<T> Matrix<T>::inverted() const
 {
     Matrix result( *this ); result.invert();
     return std::move( result );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the rank of this matrix.
+ *  @return rank of this matrix
+ */
+/*===========================================================================*/
+template<typename T>
+inline size_t Matrix<T>::rank() const
+{
+    const size_t nrows = this->rowSize();
+    const size_t ncols = this->columnSize();
+
+    kvs::Matrix<T> tmp = *this;
+    kvs::BitArray flags( nrows, false );
+
+    size_t r = 0;
+    for ( size_t i = 0; i < ncols; ++i )
+    {
+        size_t j = 0;
+        for ( j = 0; j < nrows; ++j )
+        {
+            if ( !flags[j] && !kvs::Math::IsZero( tmp[j][i] ) ) { break; }
+        }
+
+        if ( j != nrows )
+        {
+            ++r;
+            flags.set(j);
+            for ( size_t s = i + 1; s < ncols; ++s )
+            {
+                tmp[j][s] /= tmp[j][i];
+            }
+            for ( size_t s = 0; s < nrows; ++s )
+            {
+                if ( s != j && !kvs::Math::IsZero( tmp[s][i] ) )
+                {
+                    for ( size_t t = i + 1; t < ncols; ++t )
+                    {
+                        tmp[s][t] -= tmp[j][t] * tmp[s][i];
+                    }
+                }
+            }
+        }
+    }
+    return r;
 }
 
 template<typename T>

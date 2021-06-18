@@ -3,14 +3,6 @@
  *  @file   TableObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TableObject.h 1759 2014-05-05 06:14:18Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <vector>
@@ -38,14 +30,12 @@ class TableObject : public kvs::ObjectBase
     kvsModuleBaseClass( kvs::ObjectBase );
 
 public:
-
     typedef kvs::AnyValueTable::Columns Columns;
     typedef std::vector<std::string> Labels;
     typedef std::vector<kvs::Real64> Values;
     typedef std::vector<kvs::UInt8> InsideRangeFlags;
 
 private:
-
     size_t m_nrows; ///< number of rows
     size_t m_ncolumns; ///< number of columns
     kvs::AnyValueTable m_table; ///< table data
@@ -57,7 +47,6 @@ private:
     InsideRangeFlags m_inside_range_flags; ///< check flags for value range
 
 public:
-
     TableObject();
 
     void shallowCopy( const TableObject& other );
@@ -67,9 +56,11 @@ public:
     bool write( const std::string& filename, const bool ascii = true, const bool external = false ) const;
 
     void addColumn( const kvs::AnyValueArray& array, const std::string& label = "" );
+    void addColumn( const kvs::AnyValueArray& array, const kvs::Real64 min_value, const kvs::Real64 max_value, const std::string& label = "" );
     void setTable( const kvs::AnyValueTable& table, const Labels& lanels = Labels() );
     void setMinValue( const size_t column_index, const kvs::Real64 value );
     void setMaxValue( const size_t column_index, const kvs::Real64 value );
+    void setMinMaxValues( const size_t column_index, const kvs::Real64 min_value, const kvs::Real64 max_value );
     void setMinRange( const size_t column_index, const kvs::Real64 range );
     void setMaxRange( const size_t column_index, const kvs::Real64 range );
     void setRange( const size_t column_index, const kvs::Real64 min_range, const kvs::Real64 max_range );
@@ -99,7 +90,6 @@ public:
     template <typename T> const T& at( const size_t row, const size_t column ) const;
 
 protected:
-
     void setNumberOfRows( const size_t nrows ) { m_nrows = nrows; }
     void setNumberOfColumns( const size_t ncolumns ) { m_ncolumns = ncolumns; }
     void setLabels( const Labels& labels ) { m_labels = labels; }
@@ -123,8 +113,6 @@ public:
     KVS_DEPRECATED( const Values& minRangeList() const ) { return this->minRanges(); }
     KVS_DEPRECATED( const Values& maxRangeList() const ) { return this->maxRanges(); }
     KVS_DEPRECATED( const InsideRangeFlags& insideRangeList() const ) { return this->insideRangeFlags(); }
-    template <typename T> KVS_DEPRECATED( void addColumn( const kvs::ValueArray<T>& array, const std::string& label = "" ) );
-    template <typename T> KVS_DEPRECATED( void addColumn( const std::vector<T>& array, const std::string& label = "" ) );
 };
 
 /*===========================================================================*/
@@ -138,32 +126,6 @@ template <typename T>
 inline const T& TableObject::at( const size_t row, const size_t column ) const
 {
     return( this->column( column ).template at<T>( row ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Adds a column.
- *  @param  array [in] column array
- *  @param  label [in] column label
- */
-/*===========================================================================*/
-template <typename T>
-inline void TableObject::addColumn( const kvs::ValueArray<T>& array, const std::string& label )
-{
-    this->addColumn( kvs::AnyValueArray( array ), label ); // Shallow copy.
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Adds a column.
- *  @param  array [in] column array
- *  @param  label [in] column label
- */
-/*===========================================================================*/
-template <typename T>
-inline void TableObject::addColumn( const std::vector<T>& array, const std::string& label )
-{
-    this->addColumn( kvs::AnyValueArray( array ), label ); // Deep copy.
 }
 
 } // end of namespace kvs

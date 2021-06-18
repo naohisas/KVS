@@ -3,14 +3,6 @@
  *  @file   Vector4.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Vector4.cpp 1348 2012-11-13 07:05:59Z s.yamada0808@gmail.com $
- */
 /****************************************************************************/
 #include "Vector4.h"
 #include <kvs/Type>

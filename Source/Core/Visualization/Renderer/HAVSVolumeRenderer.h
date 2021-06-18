@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: HAVSVolumeRenderer.h 1457 2013-03-24 06:32:17Z naohisa.sakamoto@gmail.com $
- */
-/*----------------------------------------------------------------------------
- *
  * References:
  * [1] S.Callahan, M.Ikits, J.Comba, and C.Silva, "Hardware-Assisted Visibility
  *     Sorting for Unstructured Volume Rendering," IEEE Trans. on Visualization
@@ -39,6 +31,7 @@
 #include <kvs/IndexBufferObject>
 #include <kvs/ProgramObject>
 #include <kvs/FrameBufferObject>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -91,7 +84,7 @@ public:
     void enableVBO() { m_enable_vbo = true; }
     void disableVBO() { m_enable_vbo = false; }
     size_t kBufferSize() const { return m_k_size; }
-    bool isEnabledVBO() const { return m_enable_vbo; }
+    bool isVBOEnabled() const { return m_enable_vbo; }
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void initialize();
@@ -110,6 +103,9 @@ private:
     void draw_geometry_pass();
     void draw_flush_pass();
     void draw_texture();
+
+public:
+    KVS_DEPRECATED( bool isEnabledVBO() const ) { return this->isVBOEnabled(); }
 };
 
 /*===========================================================================*/

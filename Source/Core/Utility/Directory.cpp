@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Directory.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Directory.cpp 1597 2013-06-13 01:27:02Z naohisa.sakamoto@gmail.com $
+ *  @file   Directory.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Directory.h"

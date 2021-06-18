@@ -3,14 +3,6 @@
  *  @file   RayCastingRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RayCastingRenderer.cpp 1803 2014-08-08 05:51:05Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "RayCastingRenderer.h"
 #include <cstring>
@@ -86,6 +78,8 @@ void RayCastingRenderer::exec(
     kvs::Light* light )
 {
     const kvs::StructuredVolumeObject* volume = kvs::StructuredVolumeObject::DownCast( object );
+    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
+
     BaseClass::startTimer();
 
     // Screen size changed.

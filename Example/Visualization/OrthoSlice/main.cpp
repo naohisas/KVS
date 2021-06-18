@@ -5,14 +5,14 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/PolygonObject>
 #include <kvs/OrthoSlice>
 #include <kvs/HydrogenVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -20,50 +20,30 @@
  *  @brief  Main function.
  *  @param  argc [i] argument count
  *  @param  argv [i] argument values
- *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::OrthoSlice" );
+    screen.create();
 
-    /* Read volume data from the specified data file. If the data file is not
-     * specified, scalar hydrogen volume data is created by using
-     * kvs::HydrogenVolumeData class.
-     */
-    kvs::StructuredVolumeObject* volume = NULL;
-    if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else            volume = new kvs::HydrogenVolumeData( kvs::Vector3ui( 64, 64, 64 ) );
-
-    if ( !volume )
+    // Import volume data as structured volume object.
+    auto* volume = [&]() -> kvs::StructuredVolumeObject*
     {
-        kvsMessageError( "Cannot create a structured volume object." );
-        return( false );
-    }
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::HydrogenVolumeData( { 64, 64, 64 } );
+    }();
 
-    /* Extract orthogonal planes by using OrthoSlice class.
-     *    p: plane position.
-     *    a: axis of the orthogonal plane.
-     *    t: transfer function.
-     */
-    const float p = volume->resolution().z() * 0.5f;
-    const kvs::OrthoSlice::AlignedAxis a = kvs::OrthoSlice::ZAxis;
-    const kvs::TransferFunction t( 256 );
-    kvs::PolygonObject* object = new kvs::OrthoSlice( volume, p, a, t );
-    if ( !object )
-    {
-        kvsMessageError( "Cannot create a polygon object." );
-        delete volume;
-        return( false );
-    }
-
+    // Extract orthogonal planes as polygon object.
+    const auto p = volume->resolution().z() * 0.5f; // plane position
+    const auto a = kvs::OrthoSlice::ZAxis; // axis of the orthogonal plane
+    const auto t = kvs::TransferFunction( 256 ); // transfer function
+    auto* object = new kvs::OrthoSlice( volume, p, a, t );
     delete volume;
 
-    kvs::glut::Screen screen( &app );
     screen.registerObject( object );
-    screen.setGeometry( 0, 0, 512, 512 );
-    screen.setTitle( "kvs::OrthoSlice" );
-    screen.show();
 
-    return( app.run() );
+    return app.run();
 }

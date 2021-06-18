@@ -1,17 +1,7 @@
 /*****************************************************************************/
 /**
- *  @file   dicom_list.cpp
- *  @brief  DICOM list class.
- *
+ *  @file   DicomList.cpp
  *  @author Naohisa Sakamoto
- *  @date   2019/03/18 14:36:57
- */
-/*----------------------------------------------------------------------------
- *
- *  $Author: naohisa $
- *  $Date: 2008/07/29 07:03:56 $
- *  $Source: /home/Repository/viz-server2/cvsroot/KVS_RC1/Source/Core/FileFormat/DICOM/DicomList.cpp,v $
- *  $Revision: 1.1 $
  */
 /*****************************************************************************/
 #include "DicomList.h"
@@ -395,21 +385,21 @@ bool DicomList::read( const std::string& dirname )
     BaseClass::setSuccess( true );
 
     kvs::Directory dir( dirname );
-    if( !dir.exists() )
+    if ( !dir.exists() )
     {
         kvsMessageError( "%s is not existed.", dir.path().c_str() );
         BaseClass::setSuccess( false );
         return false;
     }
 
-    if( !dir.isDirectory() )
+    if ( !dir.isDirectory() )
     {
         kvsMessageError( "%s is not directory.", dir.path().c_str() );
         BaseClass::setSuccess( false );
         return false;
     }
 
-    if( dir.fileList().size() == 0 )
+    if ( dir.fileList().size() == 0 )
     {
         kvsMessageError( "File not found in %s.", dir.path().c_str() );
         BaseClass::setSuccess( false );
@@ -418,33 +408,30 @@ bool DicomList::read( const std::string& dirname )
 
     // Read DICOM data file. (".dcm" only, if extension_check is true)
     bool flag = false;
-
-    kvs::FileList::const_iterator file = dir.fileList().begin();
-    kvs::FileList::const_iterator last = dir.fileList().end();
-    while ( file != last )
+    for ( const auto& file : dir.fileList() )
     {
-        if( m_extension_check )
+        if ( m_extension_check )
         {
-            if( file->extension() != "dcm" ) continue;
+            if ( file.extension() != "dcm" ) continue;
         }
 
-        kvs::Dicom* dicom = new kvs::Dicom( file->filePath( true ) );
-        if( !flag )
+        kvs::Dicom* dicom = new kvs::Dicom( file.filePath( true ) );
+        if ( !flag )
         {
-            m_row             = dicom->row();
-            m_column          = dicom->column();
+            m_row = dicom->row();
+            m_column = dicom->column();
             m_slice_thickness = dicom->sliceThickness();
-            m_slice_spacing   = dicom->sliceSpacing();
-            m_pixel_spacing   = dicom->pixelSpacing();
-            m_min_raw_value   = dicom->minRawValue();
-            m_max_raw_value   = dicom->maxRawValue();
+            m_slice_spacing = dicom->sliceSpacing();
+            m_pixel_spacing = dicom->pixelSpacing();
+            m_min_raw_value = dicom->minRawValue();
+            m_max_raw_value = dicom->maxRawValue();
             flag = true;
         }
         else
         {
-            if( m_row != dicom->row() || m_column != dicom->column() )
+            if ( m_row != dicom->row() || m_column != dicom->column() )
             {
-                kvsMessageError( "Not correspond image size (%s).", file->filePath().c_str() );
+                kvsMessageError( "Not correspond image size (%s).", file.filePath().c_str() );
                 continue;
             }
 
@@ -453,8 +440,6 @@ bool DicomList::read( const std::string& dirname )
         }
 
         m_list.push_back( dicom );
-
-        ++file;
     }
 
     return true;

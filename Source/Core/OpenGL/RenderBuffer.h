@@ -3,18 +3,8 @@
  *  @file   RenderBuffer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RenderBuffer.h 634 2010-10-13 07:04:05Z naohisa.sakamoto $
- */
 /*****************************************************************************/
-#ifndef KVS__RENDER_BUFFER_H_INCLUDE
-#define KVS__RENDER_BUFFER_H_INCLUDE
-
+#pragma once
 #include <kvs/GL>
 #include <cstddef>
 
@@ -29,25 +19,27 @@ namespace kvs
 /*===========================================================================*/
 class RenderBuffer
 {
-protected:
-
-    GLuint m_id; ///< buffer ID
-    GLenum m_internal_format; ///< render buffer internal format
-    size_t m_width; ///< buffer width
-    size_t m_height; ///< buffer height
+private:
+    GLuint m_id = 0; ///< buffer ID
+    GLenum m_internal_format = 0; ///< render buffer internal format
+    size_t m_width = 0; ///< buffer width
+    size_t m_height = 0; ///< buffer height
 
 public:
+    class Binder;
+    class GuardedBinder;
 
-    RenderBuffer();
-    RenderBuffer( const GLenum internal_format );
-    virtual ~RenderBuffer();
+public:
+    RenderBuffer() = default;
+    RenderBuffer( const GLenum format ): m_internal_format( format ) {}
+    virtual ~RenderBuffer() { this->release(); }
 
-    GLuint id() const;
-    GLenum internalFormat() const;
-    size_t width() const;
-    size_t height() const;
+    GLuint id() const { return m_id; }
+    GLenum internalFormat() const { return m_internal_format; }
+    size_t width() const { return m_width; }
+    size_t height() const { return m_height; }
 
-    void setInternalFormat( const GLenum internal_format );
+    void setInternalFormat( const GLenum format ) { m_internal_format = format; }
 
     void create( const size_t width, const size_t height );
     void release();
@@ -58,12 +50,40 @@ public:
     bool isBound() const;
 
 protected:
-
     void createID();
     void deleteID();
     void setRenderbufferStorage( GLenum internal_format, GLsizei width, GLsizei height );
 };
 
-} // end of namespace kvs
+/*===========================================================================*/
+/**
+ *  @brief  Binder class for RenderBuffer.
+ */
+/*===========================================================================*/
+class RenderBuffer::Binder
+{
+    const kvs::RenderBuffer& m_rb; ///< target render buffer
+public:
+    Binder( const kvs::RenderBuffer& rb ): m_rb( rb ) { m_rb.bind(); }
+    ~Binder() { m_rb.unbind(); }
+    Binder( const Binder& ) = delete;
+    Binder& operator =( const Binder& ) = delete;
+};
 
-#endif // KVS__RENDER_BUFFER_H_INCLUDE
+/*===========================================================================*/
+/**
+ *  @brief  Guarded binder class for RenderBuffer.
+ */
+/*===========================================================================*/
+class RenderBuffer::GuardedBinder
+{
+    const kvs::RenderBuffer& m_rb; ///< target render buffer
+    GLint m_id = 0; ///< target binding ID
+public:
+    GuardedBinder( const kvs::RenderBuffer& rb );
+    ~GuardedBinder();
+    GuardedBinder( const GuardedBinder& ) = delete;
+    GuardedBinder& operator =( const GuardedBinder& ) = delete;
+};
+
+} // end of namespace kvs

@@ -3,14 +3,6 @@
  *  @file   OpenGL.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "OpenGL.h"
 #include <kvs/Assert>
@@ -1790,13 +1782,7 @@ void DrawArrays( GLenum mode, GLint first, GLsizei count )
 
 void MultiDrawArrays( GLenum mode, const GLint* first, const GLsizei* count, GLsizei drawcount )
 {
-// if OpenGL version is 1.4 or later?
     KVS_GL_CALL( glMultiDrawArrays( mode, first, count, drawcount ) );
-// else
-//    for ( GLsizei i = 0; i < drawcount; ++i )
-//    {
-//        if ( count[i] > 0 ) { kvs::OpenGL::DrawArrays( mode, first[i], count[i] ); }
-//    }
 }
 
 void MultiDrawArrays( GLenum mode, const kvs::ValueArray<GLint>& first, const kvs::ValueArray<GLsizei>& count )
@@ -1811,13 +1797,7 @@ void DrawElements( GLenum mode, GLsizei count, GLenum type, const GLvoid* indice
 
 void MultiDrawElements( GLenum mode, const GLsizei* count, GLenum type, const GLvoid* const* indices, GLsizei drawcount )
 {
-// if OpenGL version is 1.4 or later?
     KVS_GL_CALL( glMultiDrawElements( mode, count, type, (const GLvoid**)indices, drawcount ) );
-// else
-//    for ( GLsizei i = 0; i < drawcount; ++i )
-//    {
-//        if ( count[i] > 0 ) { kvs::OpenGL::DrawElements( mode, count[i], type, indices ); }
-//    }
 }
 
 void MultiDrawElements( GLenum mode, const kvs::ValueArray<GLsizei>& count, GLenum type, const GLvoid* const* indices )
@@ -1927,7 +1907,7 @@ GLint UnProject(
 void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, GLint stacks )
 {
     const int CacheSize = 240;
-    const float Pi = 3.14159265358979323846;
+    const float Pi = float(3.14159265358979323846);
 
     GLint i,j;
     GLfloat sinCache[CacheSize];
@@ -1954,8 +1934,8 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     }
 
     /* Compute length (needed for normal calculations) */
-    deltaRadius = base - top;
-    length = std::sqrt(deltaRadius*deltaRadius + height*height);
+    deltaRadius = float(base - top);
+    length = float(std::sqrt(deltaRadius*deltaRadius + height*height));
     if ( length == 0.0 )
     {
         kvsMessageError("Invalid value.");
@@ -1969,7 +1949,7 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     needCache3 = 0;
 
     zNormal = deltaRadius / length;
-    xyNormalRatio = height / length;
+    xyNormalRatio = float(height) / length;
 
     for (i = 0; i < slices; i++)
     {
@@ -1987,7 +1967,7 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     {
         for (i = 0; i < slices; i++)
         {
-            angle = 2 * Pi * (i-0.5) / slices;
+            angle = 2.0f * Pi * (i-0.5f) / slices;
             sinCache3[i] = xyNormalRatio * std::sin(angle);
             cosCache3[i] = xyNormalRatio * std::cos(angle);
         }
@@ -2019,10 +1999,10 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
     */
     for (j = 0; j < stacks; j++)
     {
-        zLow = j * height / stacks;
-        zHigh = (j + 1) * height / stacks;
-        radiusLow = base - deltaRadius * ((float) j / stacks);
-        radiusHigh = base - deltaRadius * ((float) (j + 1) / stacks);
+        zLow = j * float(height) / stacks;
+        zHigh = (j + 1) * float(height) / stacks;
+        radiusLow = float(base) - deltaRadius * ((float) j / stacks);
+        radiusHigh = float(base) - deltaRadius * ((float) (j + 1) / stacks);
 
         kvs::OpenGL::Begin( GL_QUAD_STRIP );
         for (i = 0; i <= slices; i++)
@@ -2038,7 +2018,7 @@ void DrawCylinder( GLdouble base, GLdouble top, GLdouble height, GLint slices, G
 void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
 {
     const int CacheSize = 240;
-    const float Pi = 3.14159265358979323846;
+    const float Pi = float(3.14159265358979323846);
 
     GLint i,j;
     GLfloat sinCache1a[CacheSize];
@@ -2094,8 +2074,8 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
             sinCache2b[j] = std::sin(angle);
             cosCache2b[j] = std::cos(angle);
         }
-        sinCache1b[j] = radius * std::sin(angle);
-        cosCache1b[j] = radius * std::cos(angle);
+        sinCache1b[j] = float(radius) * std::sin(angle);
+        cosCache1b[j] = float(radius) * std::cos(angle);
     }
     /* Make sure it comes to a point */
     sinCache1b[0] = 0;
@@ -2104,7 +2084,7 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
     if (needCache3) {
         for (i = 0; i < slices; i++)
         {
-            angle = 2 * Pi * (i-0.5) / slices;
+            angle = 2.0f * Pi * (i-0.5f) / slices;
             sinCache3a[i] = std::sin(angle);
             cosCache3a[i] = std::cos(angle);
         }
@@ -2206,112 +2186,6 @@ WithPushedMatrix::~WithPushedMatrix()
     kvs::OpenGL::SetMatrixMode( m_current_mode );
 }
 
-void WithPushedMatrix::loadIdentity()
-{
-    kvs::OpenGL::LoadIdentity();
-}
-
-void WithPushedMatrix::loadMatrix( const GLfloat* m )
-{
-    kvs::OpenGL::LoadMatrix( m );
-}
-
-void WithPushedMatrix::loadMatrix( const GLdouble* m )
-{
-    kvs::OpenGL::LoadMatrix( m );
-}
-
-void WithPushedMatrix::multMatrix( const GLfloat* m )
-{
-    kvs::OpenGL::MultMatrix( m );
-}
-
-void WithPushedMatrix::multMatrix( const GLdouble* m )
-{
-    kvs::OpenGL::MultMatrix( m );
-}
-
-void WithPushedMatrix::rotate( GLfloat angle, GLfloat x, GLfloat y, GLfloat z )
-{
-    kvs::OpenGL::Rotate( angle, x, y, z );
-}
-
-void WithPushedMatrix::scale( GLfloat x, GLfloat y, GLfloat z )
-{
-    kvs::OpenGL::Scale( x, y, z );
-}
-
-void WithPushedMatrix::translate( GLfloat x, GLfloat y, GLfloat z )
-{
-    kvs::OpenGL::Translate( x, y, z );
-}
-
-WithPushedAttrib::WithPushedAttrib( GLbitfield mask )
-{
-    kvs::OpenGL::PushAttrib( mask );
-}
-
-WithPushedAttrib::~WithPushedAttrib()
-{
-    kvs::OpenGL::PopAttrib();
-}
-
-void WithPushedAttrib::enable( GLenum cap )
-{
-    kvs::OpenGL::Enable( cap );
-}
-
-void WithPushedAttrib::disable( GLenum cap )
-{
-    kvs::OpenGL::Disable( cap );
-}
-
-WithPushedClientAttrib::WithPushedClientAttrib( GLbitfield mask )
-{
-    kvs::OpenGL::PushClientAttrib( mask );
-}
-
-WithPushedClientAttrib::~WithPushedClientAttrib()
-{
-    kvs::OpenGL::PopClientAttrib();
-}
-
-WithEnabled::WithEnabled( GLenum cap ):
-    m_cap( cap )
-{
-    kvs::OpenGL::Enable( cap );
-}
-
-WithEnabled::~WithEnabled()
-{
-    kvs::OpenGL::Disable( m_cap );
-}
-
-WithDisabled::WithDisabled( GLenum cap ):
-    m_cap( cap )
-{
-    kvs::OpenGL::Disable( cap );
-}
-
-WithDisabled::~WithDisabled()
-{
-    kvs::OpenGL::Enable( m_cap );
-}
-
-Render2D::Render2D()
-{
-}
-
-Render2D::Render2D( GLint x, GLint y, GLint width, GLint height )
-{
-    this->setViewport( x, y, width, height );
-}
-
-Render2D::Render2D( const kvs::Vec4& viewport )
-{
-    this->setViewport( viewport );
-}
-
 void Render2D::begin()
 {
     kvs::OpenGL::PushAttrib( GL_ALL_ATTRIB_BITS );
@@ -2325,10 +2199,10 @@ void Render2D::begin()
     kvs::OpenGL::LoadIdentity();
 
     // The origin is upper-left.
-    const GLint left = m_viewport[0];
-    const GLint top = m_viewport[1];
-    const GLint right = m_viewport[0] + m_viewport[2];
-    const GLint bottom = m_viewport[1] + m_viewport[3];
+    const GLint left = int(m_vp[0]);
+    const GLint top = int(m_vp[1]);
+    const GLint right = int(m_vp[0] + m_vp[2]);
+    const GLint bottom = int(m_vp[1] + m_vp[3]);
     kvs::OpenGL::SetOrtho( left, right, bottom, top, -1, 1 );
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
 }
@@ -2342,21 +2216,6 @@ void Render2D::end()
     kvs::OpenGL::PopMatrix();
 
     kvs::OpenGL::PopAttrib();
-}
-
-void Render2D::setViewport( GLint x, GLint y, GLint width, GLint height )
-{
-    m_viewport[0] = x;
-    m_viewport[1] = y;
-    m_viewport[2] = width;
-    m_viewport[3] = height;
-}
-
-void ActivateTextureUnit( GLint unit )
-{
-    KVS_ASSERT( unit >= 0 );
-    KVS_ASSERT( unit < kvs::OpenGL::MaxCombinedTextureImageUnits() );
-    KVS_GL_CALL( glActiveTexture( GL_TEXTURE0 + unit ) );
 }
 
 } // end of namespace OpenGL

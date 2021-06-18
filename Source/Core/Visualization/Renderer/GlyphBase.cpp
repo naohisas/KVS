@@ -3,14 +3,6 @@
  *  @file   GlyphBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GlyphBase.cpp 1797 2014-08-04 01:36:37Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "GlyphBase.h"
 #include <kvs/OpenGL>

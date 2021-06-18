@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   Table.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "Table.h"
 #include "NumPy.h"
 
@@ -15,16 +21,18 @@ template <typename T>
 PyObject* Convert( const kvs::ValueTable<T>& table )
 {
     const int ndim = 2;
-    const int nrows = table[0].size();
+    const int nrows = table.rowSize();
     const int ncols = table.columnSize();
     npy_intp dims[2] = { nrows, ncols };
 
+    // array: row-major 2D array
+    // table: column-major table
     PyArrayObject* array = (PyArrayObject*)PyArray_SimpleNew( ndim, dims, Type<T>() );
-    for ( int i = 0; i < nrows; i++ )
+    for ( int j = 0; j < nrows; ++j )
     {
-        for ( int j = 0; j < ncols; j++ )
+        for ( int i = 0; i < ncols; ++i )
         {
-            *(T*)PyArray_GETPTR2( array, i, j ) = table[j][i];
+            *(T*)PyArray_GETPTR2( array, j, i ) = table[i][j];
         }
     }
 
@@ -38,12 +46,14 @@ kvs::ValueTable<T> Convert( const PyArrayObject* array )
     const int nrows = PyArray_DIMS( (PyArrayObject*)array )[0];
     const int ncols = PyArray_DIMS( (PyArrayObject*)array )[1];
 
-    kvs::ValueTable<T> table( ncols, nrows );
-    for ( int i = 0; i < nrows; i++ )
+    // array: row-major 2D array
+    // table: column-major table
+    kvs::ValueTable<T> table( nrows, ncols );
+    for ( int j = 0; j < nrows; ++j )
     {
-        for ( int j = 0; j < ncols; j++ )
+        for ( int i = 0; i < ncols; i++ )
         {
-            table[j][i] = *(T*)PyArray_GETPTR2( (PyArrayObject*)array, i, j );
+            table[i][j] = *(T*)PyArray_GETPTR2( (PyArrayObject*)array, j, i );
         }
     }
 

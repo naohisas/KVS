@@ -3,16 +3,9 @@
  *  @file   DisplayFormat.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: DisplayFormat.h 1514 2013-04-09 07:14:05Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
+
 
 namespace kvs
 {
@@ -25,7 +18,6 @@ namespace kvs
 class DisplayFormat
 {
 private:
-
     bool m_double_buffer; ///< double buffering (true:double buffering, false:single buffering, default:true)
     bool m_color_buffer; ///< color buffer mode (true:RGBA mode, false:color index mode, default:true)
     bool m_depth_buffer; ///< depth buffer (true:enable, false:disable, default:true)
@@ -36,26 +28,33 @@ private:
     bool m_alpha_channel; ///< alpha channel (true:enable, false:disable, default:false)
 
 public:
+    DisplayFormat():
+        m_double_buffer( true ),
+        m_color_buffer( true ),
+        m_depth_buffer( true ),
+        m_accumulation_buffer( false ),
+        m_stencil_buffer( false ),
+        m_stereo_buffer( false ),
+        m_multisample_buffer( false ),
+        m_alpha_channel( false ) {}
 
-    DisplayFormat();
+    bool doubleBuffer() const { return m_double_buffer; }
+    bool colorBuffer() const { return m_color_buffer; }
+    bool depthBuffer() const { return m_depth_buffer; }
+    bool accumulationBuffer() const { return m_accumulation_buffer; }
+    bool stencilBuffer() const { return m_stencil_buffer; }
+    bool stereoBuffer() const { return m_stereo_buffer; }
+    bool multisampleBuffer() const { return m_multisample_buffer; }
+    bool alphaChannel() const { return m_alpha_channel; }
 
-    bool doubleBuffer() const;
-    bool colorBuffer() const;
-    bool depthBuffer() const;
-    bool accumulationBuffer() const;
-    bool stencilBuffer() const;
-    bool stereoBuffer() const;
-    bool multisampleBuffer() const;
-    bool alphaChannel() const;
-
-    void setDoubleBuffer( const bool enable );
-    void setColorBuffer( const bool enable );
-    void setDepthBuffer( const bool enable );
-    void setAccumulationBuffer( const bool enable );
-    void setStencilBuffer( const bool enable );
-    void setStereoBuffer( const bool enable );
-    void setMultisampleBuffer( const bool enable );
-    void setAlphaChannel( const bool enable );
+    void setDoubleBuffer( const bool enable ) { m_depth_buffer = enable; }
+    void setColorBuffer( const bool enable ) { m_color_buffer = enable; }
+    void setDepthBuffer( const bool enable ) { m_depth_buffer = enable; }
+    void setAccumulationBuffer( const bool enable ) { m_accumulation_buffer = enable; }
+    void setStencilBuffer( const bool enable ) { m_stencil_buffer = enable; }
+    void setStereoBuffer( const bool enable ) { m_stereo_buffer = enable; }
+    void setMultisampleBuffer( const bool enable ) { m_multisample_buffer = enable; }
+    void setAlphaChannel( const bool enable ) { m_alpha_channel = enable; }
 };
 
 } // end of namespace kvs

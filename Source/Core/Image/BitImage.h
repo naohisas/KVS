@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file BitImage.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: BitImage.h 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   BitImage.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__BIT_IMAGE_H_INCLUDE
-#define KVS__BIT_IMAGE_H_INCLUDE
-
+#pragma once
 #include <limits>
 #include "ImageBase.h"
 #include "GrayImage.h"
@@ -33,12 +24,10 @@ class ColorImage;
 class BitImage : public kvs::ImageBase
 {
 public:
-
     typedef kvs::ImageBase BaseClass;
     typedef bool PixelType;
 
 public:
-
     // Binarization method.
 
     struct PTile
@@ -82,7 +71,6 @@ public:
     };
 
 public:
-
     BitImage();
     BitImage( const size_t width, const size_t height, const bool bit = true );
     BitImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& data );
@@ -90,6 +78,9 @@ public:
     template <typename BinarizationMethod>
     BitImage( const kvs::GrayImage& image, BinarizationMethod method );
     explicit BitImage( const std::string& filename );
+
+    bool create( const size_t width, const size_t height, const bool bit = true );
+    bool create( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& pixels );
 
     bool pixel( const size_t index ) const;
     bool pixel( const size_t i, const size_t j ) const;
@@ -106,7 +97,6 @@ public:
     bool write( const std::string& filename );
 
 private:
-
     void set_bit( const size_t i, const size_t j );
     void reset_bit( const size_t i, const size_t j );
 };
@@ -126,5 +116,3 @@ inline BitImage::BitImage( const kvs::GrayImage& image, BinarizationMethod metho
 }
 
 } // end of namespace kvs
-
-#endif // KVS__BIT_IMAGE_H_INCLUDE

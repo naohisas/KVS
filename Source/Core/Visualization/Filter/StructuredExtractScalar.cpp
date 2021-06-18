@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   StructuredExtractScalar.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "StructuredExtractScalar.h"
 
 

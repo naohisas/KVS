@@ -19,7 +19,7 @@
 // SupportGLUT
 #include <kvs/glut/Application>
 #include <kvs/glut/Screen>
-#include <kvs/glut/Label>
+#include <kvs/Label>
 
 
 /*===========================================================================*/
@@ -66,15 +66,15 @@ int main( int argc, char** argv )
     screen.addEvent( &paint_event );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "SimpleTriangle" );
-    screen.show();
+    screen.create();
 
     // Message.
-    kvs::glut::Label message( &screen );
+    kvs::Label message( &screen );
     message.setMargin( 10 );
-    message.addText( "Rotation:    [Left Button]" );
-    message.addText( "Translation: [Right Button] or [Ctrl] + [Left Button]" );
-    message.addText( "Scaling:     [Shift] + [Left Button]" );
-    message.addText( "Quit:        [Esc] or [q]" );
+    message.addText( "Rotation:  [Left Button]" );
+    message.addText( "Translation:  [Right Button] or [Ctrl] + [Left Button]" );
+    message.addText( "Scaling:  [Shift] + [Left Button]" );
+    message.addText( "Quit:  [Esc] or [q]" );
     message.show();
 
     return app.run();

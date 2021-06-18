@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file AVSUcd.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: AVSUcd.h 1454 2013-03-23 05:59:35Z naohisa.sakamoto@gmail.com $
+ *  @file   AVSUcd.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__AVS_UCD_H_INCLUDE

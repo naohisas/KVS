@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   FisherFDistribution.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "FisherFDistribution.h"
 #include "BetaFunction.h"
 #include "GammaFunction.h"

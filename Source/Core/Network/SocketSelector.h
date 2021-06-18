@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file SocketSelector.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: SocketSelector.h 1317 2012-09-25 03:13:02Z naohisa.sakamoto@gmail.com $
+ *  @file   SocketSelector.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__SOCKET_SELECTOR_H_INCLUDE

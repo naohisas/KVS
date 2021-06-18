@@ -3,14 +3,6 @@
  *  @file   GriddedBinaryDataFile.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GriddedBinaryDataFile.h 1793 2014-08-01 07:43:50Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GRADS__GRIDDED_BINARY_DATA_FILE_H_INCLUDE
 #define KVS__GRADS__GRIDDED_BINARY_DATA_FILE_H_INCLUDE

@@ -5,14 +5,14 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
 #include <kvs/PolygonObject>
 #include <kvs/Isosurface>
 #include <kvs/HydrogenVolumeData>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -24,47 +24,27 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen( &app );
-    screen.setGeometry( 0, 0, 512, 512 );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
     screen.setTitle( "kvs::Isosurface" );
+    screen.create();
 
-    /* Read volume data from the specified data file. If the data file is not
-     * specified, scalar hydrogen volume data is created by using
-     * kvs::HydrogenVolumeData class.
-     */
-    kvs::StructuredVolumeObject* volume = NULL;
-    if ( argc > 1 ) volume = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-    else volume = new kvs::HydrogenVolumeData( kvs::Vec3u( 64, 64, 64 ) );
-    if ( !volume )
+    // Import volume data as structured volume object.
+    auto* volume = [&]() -> kvs::StructuredVolumeObject*
     {
-        kvsMessageError() << "Cannot create a structured volume object." << std::endl;
-        return ( false );
-    }
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::HydrogenVolumeData( { 64, 64, 64 } );
+    }();
 
-    /* Extract surfaces by using the kvs::Isosurface class.
-     *
-     *    i: isolevel
-     *    n: NormalType (PolygonNormal/VertexNormal)
-     *    d: check flag whether the duplicate vertices are deleted (false) or not
-     *    t: transfer function
-     */
-    const double i = ( volume->maxValue() + volume->minValue() ) * 0.5;
-    const kvs::PolygonObject::NormalType n = kvs::PolygonObject::VertexNormal;
-    const bool d = false;
-    const kvs::TransferFunction t( 256 );
-    kvs::PolygonObject* object = new kvs::Isosurface( volume, i, n, d, t );
-    if ( !object )
-    {
-        kvsMessageError() << "Cannot create a polygon object." << std::endl;
-        delete volume;
-        return ( false );
-    }
-
+    // Extract isosurfaces as polygon object.
+    const auto i = ( volume->maxValue() + volume->minValue() ) * 0.5; // isolevel
+    const auto n = kvs::PolygonObject::VertexNormal; // normal type
+    const auto d = false; // false: duplicated vertices will be removed
+    const auto t = kvs::TransferFunction( 256 ); // transfer function
+    auto* object = new kvs::Isosurface( volume, i, n, d, t );
     delete volume;
 
     screen.registerObject( object );
-    screen.show();
 
     return app.run();
 }

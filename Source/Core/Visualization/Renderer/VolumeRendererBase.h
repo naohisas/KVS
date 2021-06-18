@@ -3,14 +3,6 @@
  *  @file   VolumeRendererBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VolumeRendererBase.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <kvs/DebugNew>
@@ -43,6 +35,7 @@ private:
     kvs::FrameBuffer m_color_buffer; ///< color (RGBA) buffer
     kvs::TransferFunction m_tfunc; ///< transfer function
     kvs::Shader::ShadingModel* m_shader; ///< shading method
+    const kvs::ObjectBase* m_object; ///< rendering object
 
 public:
     VolumeRendererBase();
@@ -63,13 +56,23 @@ public:
     void setTransferFunction( const kvs::TransferFunction& tfunc ) { m_tfunc = tfunc; }
     const kvs::TransferFunction& transferFunction() const { return m_tfunc; }
 
+    void setTwoSideLightingEnabled( const bool enable = true ) { m_shader->two_side_lighting = enable; }
+    bool isTwoSideLightingEnabled() const { return m_shader->two_side_lighting; }
+    void enableTwoSideLighting() { this->setTwoSideLightingEnabled( true ); }
+    void disableTwoSideLighting() { this->setTwoSideLightingEnabled( false ); }
+
 protected:
     kvs::ValueArray<kvs::UInt8>& colorData() { return m_color_data; }
     kvs::ValueArray<kvs::Real32>& depthData() { return m_depth_data; }
     kvs::Shader::ShadingModel& shader() { return *m_shader; }
     kvs::TransferFunction& transferFunction() { return m_tfunc; }
+    const kvs::ObjectBase* object() const { return m_object; }
     void setWindowSize( const size_t width, const size_t height ) { m_window_width = width; m_window_height = height; }
     void setDevicePixelRatio( const float dpr ) { m_device_pixel_ratio = dpr; }
+    void setObject( const kvs::ObjectBase* object ) { m_object = object; }
+    bool isWindowCreated() { return m_window_width == 0 && m_window_height == 0; }
+    bool isWindowResized( size_t w, size_t h ) { return m_window_width != w || m_window_height != h; }
+    bool isObjectChanged( const kvs::ObjectBase* o ) { return m_object != o; }
     void allocateDepthData( const size_t size );
     void allocateColorData( const size_t size );
     void fillDepthData( const kvs::Real32 value );

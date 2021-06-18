@@ -33,6 +33,7 @@ ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 INCLUDE_PATH += $(OPENCV_INCLUDE_PATH)
 endif
 
+INCLUDE_PATH += $(OPENMP_INCLUDE_PATH)
 INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
 INCLUDE_PATH += $(GL_INCLUDE_PATH)
 
@@ -52,6 +53,7 @@ ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 LIBRARY_PATH += -L../../Source/SupportOpenCV/$(OUTDIR) $(OPENCV_LIBRARY_PATH)
 endif
 
+LIBRARY_PATH += $(OPENMP_LIBRARY_PATH)
 LIBRARY_PATH += $(GLEW_LIBRARY_PATH)
 LIBRARY_PATH += $(GL_LIBRARY_PATH)
 
@@ -71,6 +73,7 @@ ifeq "$(KVS_SUPPORT_OPENCV)" "1"
 LINK_LIBRARY += -lkvsSupportOpenCV $(OPENCV_LINK_LIBRARY)
 endif
 
+LINK_LIBRARY += $(OPENMP_LINK_LIBRARY)
 LINK_LIBRARY += $(GLEW_LINK_LIBRARY)
 LINK_LIBRARY += $(GL_LINK_LIBRARY)
 
@@ -91,10 +94,10 @@ endif
 #  Object.
 #=============================================================================
 OBJECTS := \
-$(OUTDIR)/fld2kvsml.o \
-$(OUTDIR)/ucd2kvsml.o \
-$(OUTDIR)/img2img.o \
-$(OUTDIR)/tet2tet.o \
+$(OUTDIR)/FldConv.o \
+$(OUTDIR)/UcdConv.o \
+$(OUTDIR)/TetConv.o \
+$(OUTDIR)/ImgConv.o \
 $(OUTDIR)/Argument.o \
 $(OUTDIR)/main.o \
 

@@ -3,14 +3,6 @@
  *  @file   CellAdjacencyGraph.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: CellAdjacencyGraph.cpp,v 1.2 2009/05/24 01:05:25 naohisa Exp $
- */
 /*****************************************************************************/
 #include "CellAdjacencyGraph.h"
 #include <kvs/UnstructuredVolumeObject>

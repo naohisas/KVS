@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   TagBase.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TagBase.h 1348 2012-11-13 07:05:59Z s.yamada0808@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #pragma once

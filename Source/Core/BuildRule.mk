@@ -105,6 +105,7 @@ $(OUTDIR)/./FileFormat/KVSML/ValueTag.o \
 $(OUTDIR)/./FileFormat/KVSML/VertexTag.o \
 $(OUTDIR)/./FileFormat/PLY/Ply.o \
 $(OUTDIR)/./FileFormat/PLY/PlyFile.o \
+$(OUTDIR)/./FileFormat/PNG/Png.o \
 $(OUTDIR)/./FileFormat/PNM/Header.o \
 $(OUTDIR)/./FileFormat/PNM/Pbm.o \
 $(OUTDIR)/./FileFormat/PNM/Pgm.o \
@@ -171,7 +172,7 @@ $(OUTDIR)/./Network/Url.o \
 $(OUTDIR)/./Numeric/AdaptiveKMeans.o \
 $(OUTDIR)/./Numeric/BetaFunction.o \
 $(OUTDIR)/./Numeric/ChiSquaredDistribution.o \
-$(OUTDIR)/./Numeric/EigenDecomposer.o \
+$(OUTDIR)/./Numeric/EigenDecomposition.o \
 $(OUTDIR)/./Numeric/ExponentialDistribution.o \
 $(OUTDIR)/./Numeric/FastKMeans.o \
 $(OUTDIR)/./Numeric/FisherFDistribution.o \
@@ -179,31 +180,25 @@ $(OUTDIR)/./Numeric/GammaFunction.o \
 $(OUTDIR)/./Numeric/GaussDistribution.o \
 $(OUTDIR)/./Numeric/GaussEliminationSolver.o \
 $(OUTDIR)/./Numeric/KMeans.o \
-$(OUTDIR)/./Numeric/LUDecomposer.o \
+$(OUTDIR)/./Numeric/LUDecomposition.o \
 $(OUTDIR)/./Numeric/LUSolver.o \
 $(OUTDIR)/./Numeric/LassoRegression.o \
 $(OUTDIR)/./Numeric/LinearRegression.o \
 $(OUTDIR)/./Numeric/MersenneTwister.o \
-$(OUTDIR)/./Numeric/QRDecomposer.o \
+$(OUTDIR)/./Numeric/QRDecomposition.o \
 $(OUTDIR)/./Numeric/QRSolver.o \
 $(OUTDIR)/./Numeric/Quaternion.o \
 $(OUTDIR)/./Numeric/ResponseSurface.o \
 $(OUTDIR)/./Numeric/RidgeRegression.o \
-$(OUTDIR)/./Numeric/SVDecomposer.o \
+$(OUTDIR)/./Numeric/SVDecomposition.o \
 $(OUTDIR)/./Numeric/SVSolver.o \
 $(OUTDIR)/./Numeric/StudentTDistribution.o \
 $(OUTDIR)/./Numeric/Xorshift128.o \
 $(OUTDIR)/./OpenGL/BufferObject.o \
-$(OUTDIR)/./OpenGL/DisplayList.o \
-$(OUTDIR)/./OpenGL/FragmentShader.o \
 $(OUTDIR)/./OpenGL/FrameBuffer.o \
 $(OUTDIR)/./OpenGL/FrameBufferObject.o \
 $(OUTDIR)/./OpenGL/GL.o \
-$(OUTDIR)/./OpenGL/GeometryShader.o \
-$(OUTDIR)/./OpenGL/IndexBufferObject.o \
 $(OUTDIR)/./OpenGL/OpenGL.o \
-$(OUTDIR)/./OpenGL/PixelPackBufferObject.o \
-$(OUTDIR)/./OpenGL/PixelUnpackBufferObject.o \
 $(OUTDIR)/./OpenGL/ProgramObject.o \
 $(OUTDIR)/./OpenGL/RenderBuffer.o \
 $(OUTDIR)/./OpenGL/ShaderObject.o \
@@ -212,10 +207,8 @@ $(OUTDIR)/./OpenGL/Texture.o \
 $(OUTDIR)/./OpenGL/Texture1D.o \
 $(OUTDIR)/./OpenGL/Texture2D.o \
 $(OUTDIR)/./OpenGL/Texture3D.o \
-$(OUTDIR)/./OpenGL/TextureBinder.o \
 $(OUTDIR)/./OpenGL/TextureRectangle.o \
-$(OUTDIR)/./OpenGL/VertexBufferObject.o \
-$(OUTDIR)/./OpenGL/VertexShader.o \
+$(OUTDIR)/./OpenGL/VertexBufferObjectManager.o \
 $(OUTDIR)/./OpenMP/OpenMP.o \
 $(OUTDIR)/./Thread/Condition.o \
 $(OUTDIR)/./Thread/Mutex.o \
@@ -225,14 +218,12 @@ $(OUTDIR)/./Thread/ReadWriteLock.o \
 $(OUTDIR)/./Thread/Semaphore.o \
 $(OUTDIR)/./Thread/Thread.o \
 $(OUTDIR)/./Thread/WriteLocker.o \
-$(OUTDIR)/./Utility/AnyValue.o \
 $(OUTDIR)/./Utility/AnyValueArray.o \
 $(OUTDIR)/./Utility/AnyValueTable.o \
 $(OUTDIR)/./Utility/BitArray.o \
 $(OUTDIR)/./Utility/CommandLine.o \
 $(OUTDIR)/./Utility/Date.o \
 $(OUTDIR)/./Utility/Directory.o \
-$(OUTDIR)/./Utility/FastTokenizer.o \
 $(OUTDIR)/./Utility/File.o \
 $(OUTDIR)/./Utility/Indent.o \
 $(OUTDIR)/./Utility/MemoryTracer.o \
@@ -251,29 +242,11 @@ $(OUTDIR)/./Utility/ValueArray.o \
 $(OUTDIR)/./Utility/ValueTable.o \
 $(OUTDIR)/./Visualization/Data/HydrogenVolumeData.o \
 $(OUTDIR)/./Visualization/Data/TornadoVolumeData.o \
-$(OUTDIR)/./Visualization/Event/EventBase.o \
 $(OUTDIR)/./Visualization/Event/EventHandler.o \
 $(OUTDIR)/./Visualization/Event/EventListener.o \
-$(OUTDIR)/./Visualization/Event/IdleEventListener.o \
-$(OUTDIR)/./Visualization/Event/InitializeEvent.o \
-$(OUTDIR)/./Visualization/Event/InitializeEventListener.o \
-$(OUTDIR)/./Visualization/Event/KeyEvent.o \
-$(OUTDIR)/./Visualization/Event/KeyPressEventListener.o \
-$(OUTDIR)/./Visualization/Event/MouseDoubleClickEventListener.o \
-$(OUTDIR)/./Visualization/Event/MouseEvent.o \
-$(OUTDIR)/./Visualization/Event/MouseMoveEventListener.o \
-$(OUTDIR)/./Visualization/Event/MousePressEventListener.o \
-$(OUTDIR)/./Visualization/Event/MouseReleaseEventListener.o \
-$(OUTDIR)/./Visualization/Event/PaintEvent.o \
-$(OUTDIR)/./Visualization/Event/PaintEventListener.o \
-$(OUTDIR)/./Visualization/Event/ResizeEvent.o \
-$(OUTDIR)/./Visualization/Event/ResizeEventListener.o \
+$(OUTDIR)/./Visualization/Event/EventTimer.o \
 $(OUTDIR)/./Visualization/Event/ScreenCaptureEvent.o \
 $(OUTDIR)/./Visualization/Event/TargetChangeEvent.o \
-$(OUTDIR)/./Visualization/Event/TimeEvent.o \
-$(OUTDIR)/./Visualization/Event/TimerEventListener.o \
-$(OUTDIR)/./Visualization/Event/WheelEvent.o \
-$(OUTDIR)/./Visualization/Event/WheelEventListener.o \
 $(OUTDIR)/./Visualization/Exporter/LineExporter.o \
 $(OUTDIR)/./Visualization/Exporter/PointExporter.o \
 $(OUTDIR)/./Visualization/Exporter/PolygonExporter.o \
@@ -297,6 +270,8 @@ $(OUTDIR)/./Visualization/Importer/PolygonImporter.o \
 $(OUTDIR)/./Visualization/Importer/StructuredVolumeImporter.o \
 $(OUTDIR)/./Visualization/Importer/TableImporter.o \
 $(OUTDIR)/./Visualization/Importer/UnstructuredVolumeImporter.o \
+$(OUTDIR)/./Visualization/Interactor/InteractorBase.o \
+$(OUTDIR)/./Visualization/Interactor/TrackballInteractor.o \
 $(OUTDIR)/./Visualization/Mapper/Cell.o \
 $(OUTDIR)/./Visualization/Mapper/CellAdjacencyGraph.o \
 $(OUTDIR)/./Visualization/Mapper/CellAdjacencyGraphLocator.o \
@@ -363,6 +338,7 @@ $(OUTDIR)/./Visualization/Renderer/Axis2D.o \
 $(OUTDIR)/./Visualization/Renderer/Axis2DMatrix.o \
 $(OUTDIR)/./Visualization/Renderer/Axis3D.o \
 $(OUTDIR)/./Visualization/Renderer/Bounds.o \
+$(OUTDIR)/./Visualization/Renderer/DateAxis.o \
 $(OUTDIR)/./Visualization/Renderer/DiamondGlyph.o \
 $(OUTDIR)/./Visualization/Renderer/EnsembleAverageBuffer.o \
 $(OUTDIR)/./Visualization/Renderer/GlyphBase.o \
@@ -374,7 +350,6 @@ $(OUTDIR)/./Visualization/Renderer/ParallelAxis.o \
 $(OUTDIR)/./Visualization/Renderer/ParallelCoordinatesRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBasedRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBasedRendererGLSL.o \
-$(OUTDIR)/./Visualization/Renderer/ParticleBasedRendererRITS.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBuffer.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBufferAccumulator.o \
 $(OUTDIR)/./Visualization/Renderer/ParticleBufferCompositor.o \
@@ -395,9 +370,6 @@ $(OUTDIR)/./Visualization/Renderer/ShadingParameter.o \
 $(OUTDIR)/./Visualization/Renderer/SphereGlyph.o \
 $(OUTDIR)/./Visualization/Renderer/SphericalImageRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticLineRenderer.o \
-$(OUTDIR)/./Visualization/Renderer/StochasticMultipleTetrahedraCompositor.o \
-$(OUTDIR)/./Visualization/Renderer/StochasticMultipleTetrahedraRenderer.o \
-$(OUTDIR)/./Visualization/Renderer/StochasticMultivariateTetrahedraRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticPointRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticPolygonRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticRendererBase.o \
@@ -406,18 +378,16 @@ $(OUTDIR)/./Visualization/Renderer/StochasticRenderingEngine.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticTetrahedraRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StochasticUniformGridRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/StylizedLineRenderer.o \
-$(OUTDIR)/./Visualization/Renderer/VertexBufferObjectManager.o \
+$(OUTDIR)/./Visualization/Renderer/ValueAxis.o \
 $(OUTDIR)/./Visualization/Renderer/VolumeRayIntersector.o \
 $(OUTDIR)/./Visualization/Renderer/VolumeRendererBase.o \
 $(OUTDIR)/./Visualization/Viewer/ApplicationBase.o \
 $(OUTDIR)/./Visualization/Viewer/Background.o \
 $(OUTDIR)/./Visualization/Viewer/Camera.o \
 $(OUTDIR)/./Visualization/Viewer/CameraCoordinate.o \
-$(OUTDIR)/./Visualization/Viewer/DisplayFormat.o \
 $(OUTDIR)/./Visualization/Viewer/FontMetrics.o \
 $(OUTDIR)/./Visualization/Viewer/IDManager.o \
 $(OUTDIR)/./Visualization/Viewer/Light.o \
-$(OUTDIR)/./Visualization/Viewer/Material.o \
 $(OUTDIR)/./Visualization/Viewer/Mouse.o \
 $(OUTDIR)/./Visualization/Viewer/NormalizedDeviceCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/ObjectCoordinate.o \
@@ -428,6 +398,7 @@ $(OUTDIR)/./Visualization/Viewer/RendererManager.o \
 $(OUTDIR)/./Visualization/Viewer/Scene.o \
 $(OUTDIR)/./Visualization/Viewer/ScreenBase.o \
 $(OUTDIR)/./Visualization/Viewer/Trackball.o \
+$(OUTDIR)/./Visualization/Viewer/UIColor.o \
 $(OUTDIR)/./Visualization/Viewer/WindowCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/WorldCoordinate.o \
 $(OUTDIR)/./Visualization/Viewer/Xform.o \
@@ -447,7 +418,7 @@ $(OUTDIR)/./Visualization/Widget/PushButton.o \
 $(OUTDIR)/./Visualization/Widget/RadioButton.o \
 $(OUTDIR)/./Visualization/Widget/RadioButtonGroup.o \
 $(OUTDIR)/./Visualization/Widget/Slider.o \
-$(OUTDIR)/./Visualization/Widget/TextEngine.o \
+$(OUTDIR)/./Visualization/Widget/TransferFunctionEditorBase.o \
 $(OUTDIR)/./Visualization/Widget/WidgetBase.o \
 
 
@@ -474,6 +445,10 @@ $(OUTDIR)/./Visualization/Object/%.o: ./Visualization/Object/%.cpp ./Visualizati
 
 $(OUTDIR)/./Visualization/Mapper/%.o: ./Visualization/Mapper/%.cpp ./Visualization/Mapper/%.h
 	$(MKDIR) $(OUTDIR)/./Visualization/Mapper
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+$(OUTDIR)/./Visualization/Interactor/%.o: ./Visualization/Interactor/%.cpp ./Visualization/Interactor/%.h
+	$(MKDIR) $(OUTDIR)/./Visualization/Interactor
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./Visualization/Importer/%.o: ./Visualization/Importer/%.cpp ./Visualization/Importer/%.h
@@ -546,6 +521,10 @@ $(OUTDIR)/./FileFormat/STL/%.o: ./FileFormat/STL/%.cpp ./FileFormat/STL/%.h
 
 $(OUTDIR)/./FileFormat/PNM/%.o: ./FileFormat/PNM/%.cpp ./FileFormat/PNM/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/PNM
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+$(OUTDIR)/./FileFormat/PNG/%.o: ./FileFormat/PNG/%.cpp ./FileFormat/PNG/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/PNG
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 $(OUTDIR)/./FileFormat/PLY/%.o: ./FileFormat/PLY/%.cpp ./FileFormat/PLY/%.h
@@ -642,6 +621,8 @@ install::
 	$(INSTALL) ./FileFormat/KVSML/*.h $(INSTALL_DIR)/include/Core/./FileFormat/KVSML
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PLY
 	$(INSTALL) ./FileFormat/PLY/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PLY
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PNG
+	$(INSTALL) ./FileFormat/PNG/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PNG
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PNM
 	$(INSTALL) ./FileFormat/PNM/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PNM
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/STL
@@ -680,6 +661,8 @@ install::
 	$(INSTALL) ./Visualization/Filter/*.h $(INSTALL_DIR)/include/Core/./Visualization/Filter
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Importer
 	$(INSTALL) ./Visualization/Importer/*.h $(INSTALL_DIR)/include/Core/./Visualization/Importer
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Interactor
+	$(INSTALL) ./Visualization/Interactor/*.h $(INSTALL_DIR)/include/Core/./Visualization/Interactor
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Mapper
 	$(INSTALL) ./Visualization/Mapper/*.h $(INSTALL_DIR)/include/Core/./Visualization/Mapper
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./Visualization/Object

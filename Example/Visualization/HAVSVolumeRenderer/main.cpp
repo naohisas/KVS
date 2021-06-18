@@ -5,8 +5,9 @@
  *  @brief  Example program for kvs::glew::HAVSVolumeRenderer class.
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#define KVS_APP_GLUT
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/UnstructuredVolumeObject>
 #include <kvs/UnstructuredVolumeImporter>
 #include <kvs/HAVSVolumeRenderer>
@@ -22,10 +23,10 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen;
-    screen.setGeometry( 0, 0, 512, 512 );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen;
     screen.setTitle( "kvs::HAVSVolumeRenderer" );
+    screen.create();
 
     kvs::UnstructuredVolumeObject* object = NULL;
     if ( argc > 1 )
@@ -44,11 +45,10 @@ int main( int argc, char** argv )
         return ( false );
     }
 
-    kvs::HAVSVolumeRenderer* renderer = new kvs::HAVSVolumeRenderer();
+    auto* renderer = new kvs::HAVSVolumeRenderer();
     renderer->setKBufferSize( 2 );
 
     screen.registerObject( object, renderer );
-    screen.show();
 
     return app.run();
 }

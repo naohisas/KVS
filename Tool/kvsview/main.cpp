@@ -3,14 +3,6 @@
  *  @file   main.cpp
  *  @author Naohisa Sakamto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1497 2013-04-04 07:17:54Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <kvs/MemoryDebugger>
 #include <kvs/Message>
@@ -31,14 +23,13 @@
 #include "ParticleBasedRenderer.h"
 #include "Histogram.h"
 
-
 KVS_MEMORY_DEBUGGER;
 
 #define KVSVIEW_HELP( method )                                          \
     if ( help == #method ) { return method ::Argument( argc, argv ).parse(); }
 
 #define KVSVIEW_EXEC( method )                                          \
-    if ( arg.hasOption( #method ) ) { return ( arg.clear(), method ::Main().start( argc, argv ) ); }
+    if ( arg.hasOption( #method ) ) { return ( arg.clear(), method ::Main( argc, argv ).run() ); }
 
 
 namespace kvsview
@@ -53,7 +44,7 @@ namespace kvsview
 /*===========================================================================*/
 int32_t Main::exec( int argc, char** argv )
 {
-    Argument arg( argc, argv );
+    kvsview::Argument arg( argc, argv );
     if ( !arg.read() ) { return 1; }
 
     // Output help messsage for the specified visualization method.
@@ -95,7 +86,7 @@ int32_t Main::exec( int argc, char** argv )
         KVSVIEW_EXEC( RayCastingRenderer );
         KVSVIEW_EXEC( ParticleBasedRenderer );
         KVSVIEW_EXEC( Histogram );
-        return ( arg.clear(), Default::Main().start( argc, argv ) );
+        return ( arg.clear(), Default::Main( argc, argv ).run() );
     }
 }
 

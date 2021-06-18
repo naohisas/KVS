@@ -1,19 +1,10 @@
 /****************************************************************************/
 /**
- *  @file CommandLine.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: CommandLine.h 1338 2012-11-04 02:45:57Z s.yamada0808@gmail.com $
+ *  @file   CommandLine.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__COMMAND_LINE_H_INCLUDE
-#define KVS__COMMAND_LINE_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <sstream>
 #include <vector>
@@ -34,7 +25,6 @@ namespace kvs
 class CommandLine
 {
 public:
-
     enum HelpMessageMode
     {
         UsageOnly, ///< usage only mode
@@ -42,19 +32,14 @@ public:
     };
 
 public:
-
-    typedef std::string Argument;
     class Option;
     class Value;
-
-public:
-
+    typedef std::string Argument;
     typedef std::vector<std::string> Arguments;
     typedef std::vector<Option> Options;
     typedef std::vector<Value> Values;
 
-protected:
-
+private:
     int m_argc; ///< argument count
     char** m_argv; ///< argument values
     std::string m_command_name; ///< command name
@@ -66,13 +51,10 @@ protected:
     Values m_values; ///< values
 
 public:
-
     CommandLine();
     CommandLine( int argc, char** argv );
     CommandLine( int argc, char** argv, const std::string& command_name );
     virtual ~CommandLine();
-
-public:
 
     int argc() const { return m_argc; }
     char** argv() const { return m_argv; }
@@ -108,30 +90,7 @@ public:
     void addValue( const std::string& description, bool is_required = true );
     void showHelpMessage( HelpMessageMode mode = UsageOnly ) const;
 
-#if KVS_ENABLE_DEPRECATED
-protected:
-    void add_help_option( const std::string& help_option = "h" )
-    {
-        this->addHelpOption( help_option );
-    }
-
-    void add_option(
-        const std::string& name,
-        const std::string& description,
-        size_t             nvalues     = 0,
-        bool               is_required = false )
-    {
-        this->addOption( name, description, nvalues, is_required );
-    }
-
-    void add_value( const std::string& description, bool is_required = true )
-    {
-        this->addValue( description, is_required );
-    }
-#endif
-
 private:
-
     bool is_option( const std::string& argument ) const;
     std::string get_option_name( const std::string& argument ) const;
     bool is_help_option( const std::string& value ) const;
@@ -150,7 +109,6 @@ private:
 class CommandLine::Option
 {
 private:
-
     std::string m_name; ///< option name
     std::string m_description; ///< option description
     size_t m_nvalues; ///< number of required values
@@ -159,9 +117,7 @@ private:
     std::vector<std::string> m_values; ///< option values
 
 public:
-
     Option();
-
     explicit Option(
         const std::string& name,
         const std::string& description = "",
@@ -191,16 +147,13 @@ public:
 class CommandLine::Value
 {
 private:
-
     std::string m_description; ///< value description
     bool m_is_required; ///< true, if the value is required
     bool m_is_given; ///< true, if the value is given
     Argument m_value; ///< value (not allocated)
 
 public:
-
     Value();
-
     explicit Value(
         const std::string& description,
         bool is_required = true );
@@ -284,5 +237,3 @@ inline T CommandLine::Value::value() const
 }
 
 } // end of namespace kvs
-
-#endif // KVS__COMMAND_LINE_H_INCLUDE

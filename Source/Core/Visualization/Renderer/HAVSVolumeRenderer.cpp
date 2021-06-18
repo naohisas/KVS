@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: HAVSVolumeRenderer.cpp 1457 2013-03-24 06:32:17Z naohisa.sakamoto@gmail.com $
- */
-/*----------------------------------------------------------------------------
- *
  * References:
  * [1] S.Callahan, M.Ikits, J.Comba, and C.Silva, "Hardware-Assisted Visibility
  *     Sorting for Unstructured Volume Rendering," IEEE Trans. on Visualization
@@ -126,7 +118,7 @@ HAVSVolumeRenderer::HAVSVolumeRenderer( kvs::UnstructuredVolumeObject* volume, c
 HAVSVolumeRenderer::~HAVSVolumeRenderer()
 {
     if ( m_meshes ) delete m_meshes;
-    if ( !this->isEnabledVBO() )
+    if ( !this->isVBOEnabled() )
     {
         if ( m_pindices ) delete [] m_pindices;
     }
@@ -204,7 +196,7 @@ void HAVSVolumeRenderer::attachVolumeObject( const kvs::UnstructuredVolumeObject
 
 void HAVSVolumeRenderer::initialize_geometry()
 {
-    if ( this->isEnabledVBO() )
+    if ( this->isVBOEnabled() )
     {
         const size_t coords_size = m_meshes->coords().byteSize();
         const kvs::Real32* coords_pointer = m_meshes->coords().data();
@@ -380,7 +372,7 @@ void HAVSVolumeRenderer::sort_geometry( kvs::Camera* camera, kvs::ObjectBase* ob
     const HAVSVolumeRenderer::Vertex eye( position );
     m_meshes->sort( eye );
 
-    if ( this->isEnabledVBO() )
+    if ( this->isVBOEnabled() )
     {
         m_vertex_indices.bind();
         m_pindices = static_cast<GLuint*>( m_vertex_indices.map( kvs::IndexBufferObject::WriteOnly ) );
@@ -396,7 +388,7 @@ void HAVSVolumeRenderer::sort_geometry( kvs::Camera* camera, kvs::ObjectBase* ob
         }
     }
 
-    if ( this->isEnabledVBO() )
+    if ( this->isVBOEnabled() )
     {
         m_vertex_indices.unmap();
         m_vertex_indices.unbind();
@@ -450,7 +442,7 @@ void HAVSVolumeRenderer::draw_geometry_pass()
         m_shader_kbuffer.setUniform( "kbuffer3", 3 );
     }
 
-    if ( this->isEnabledVBO() )
+    if ( this->isVBOEnabled() )
     {
         kvs::OpenGL::EnableClientState( GL_VERTEX_ARRAY );
         m_vertex_coords.bind();

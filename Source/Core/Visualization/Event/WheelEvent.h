@@ -3,18 +3,8 @@
  *  @file   WheelEvent.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: WheelEvent.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__WHEEL_EVENT_H_INCLUDE
-#define KVS__WHEEL_EVENT_H_INCLUDE
-
+#pragma once
 #include <kvs/EventBase>
 
 
@@ -28,26 +18,22 @@ namespace kvs
 /*===========================================================================*/
 class WheelEvent : public kvs::EventBase
 {
-protected:
-
+private:
     int m_x; ///< x coordinate value of mouse cursor position
     int m_y; ///< y coordinate value of mouse cursor position
     int m_direction; ///< scroll direction
 
 public:
+    WheelEvent() {}
+    virtual ~WheelEvent() {}
 
-    WheelEvent();
-    virtual ~WheelEvent();
+    int x() const { return m_x; }
+    int y() const { return m_y; }
+    int direction() const { return m_direction; }
+    int type() const { return kvs::EventBase::WheelEvent; }
 
-    int x() const;
-    int y() const;
-    int direction() const;
-    int type() const;
-
-    void setPosition( int x, int y );
-    void setDirection( int direction );
+    void setPosition( int x, int y ) { m_x = x; m_y = y; }
+    void setDirection( int direction ) { m_direction = direction; }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__WHEEL_EVENT_H_INCLUDE

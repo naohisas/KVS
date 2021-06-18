@@ -3,14 +3,6 @@
  *  @file   shader.vert
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright 2007 Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: shading.vert 476 2010-02-14 15:45:46Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #version 120
 #include "qualifire.h"

@@ -1,1 +1,1 @@
-#include <Core/Visualization/Renderer/VertexBufferObjectManager.h>
+#include <Core/OpenGL/VertexBufferObjectManager.h>

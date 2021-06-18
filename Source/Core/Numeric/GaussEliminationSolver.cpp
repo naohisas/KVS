@@ -3,14 +3,6 @@
  *  @file   GaussEliminationSolver.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GaussEliminationSolver.cpp 1365 2012-11-29 08:45:27Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "GaussEliminationSolver.h"
 #include <kvs/Matrix>

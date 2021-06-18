@@ -3,14 +3,6 @@
  *  @file   ImageRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ImageRenderer.cpp 1822 2014-10-24 09:01:51Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ImageRenderer.h"
 #include <kvs/Camera>
@@ -58,7 +50,7 @@ void ImageRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     p.enable( GL_TEXTURE_2D );
 
     if ( !this->texture().isValid() ) { this->createTexture( image ); }
-    if ( this->isEnabledCentering() ) { this->alignCenter( camera ); }
+    if ( this->isCenteringEnabled() ) { this->alignCenter( camera ); }
 
     this->texture().bind();
     this->textureMapping();

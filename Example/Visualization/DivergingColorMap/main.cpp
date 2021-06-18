@@ -5,8 +5,8 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Label>
 #include <kvs/ColorMapBar>
 #include <kvs/ColorMap>
@@ -21,14 +21,11 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-
-    // Screen.
-    kvs::glut::Screen screen( &app );
-    screen.setTitle( "kvs::ColorMap" );
-    screen.setBackgroundColor( kvs::RGBColor::White() );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::ColorMap (Diverging Colormap)" );
     screen.setSize( 256, 655 );
-    screen.show();
+    screen.create();
 
     const kvs::Font font( kvs::Font::Sans, kvs::Font::Bold, 20 );
     const size_t h = kvs::FontMetrics( font, screen.paintDevice() ).height();

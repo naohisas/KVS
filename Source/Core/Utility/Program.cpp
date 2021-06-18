@@ -3,14 +3,6 @@
  *  @file   Program.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "Program.h"
 #include <exception>
@@ -19,6 +11,31 @@
 
 namespace kvs
 {
+
+/*===========================================================================*/
+/**
+ *  @brief  Run the program by calling the exec method.
+ *  @return not zero value if the process is done successfully
+ */
+/*===========================================================================*/
+int Program::run()
+{
+    try
+    {
+        return this->exec();
+    }
+    catch ( const std::exception& err )
+    {
+        std::cerr << "An exception was thrown" << std::endl;
+        std::cerr << err.what() << std::endl;
+        throw;
+    }
+    catch ( ... )
+    {
+        std::cerr << "Unknown exception was thrown" << std::endl;
+        throw;
+    }
+}
 
 /*===========================================================================*/
 /**

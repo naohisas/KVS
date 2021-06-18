@@ -3,14 +3,6 @@
  *  @file   PointRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PointRenderer.cpp 1191 2012-06-12 01:31:49Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include "PointRenderer.h"
 #include <kvs/DebugNew>
@@ -18,8 +10,8 @@
 #include <kvs/PipelineModule>
 #include <kvs/VisualizationPipeline>
 #include <kvs/PointRenderer>
-#include <kvs/glut/Screen>
-#include <kvs/glut/Application>
+#include <kvs/Screen>
+#include <kvs/Application>
 #include "CommandName.h"
 #include "FileChecker.h"
 
@@ -41,7 +33,7 @@ Argument::Argument( int argc, char** argv ):
     kvsview::Argument::Common( argc, argv, kvsview::PointRenderer::CommandName )
 {
     // Parameters for the point renderer class.
-    addOption( kvsview::PointRenderer::CommandName, kvsview::PointRenderer::Description, 0 );
+    addOption( kvsview::PointRenderer::CommandName, PointRenderer::Description, 0 );
 }
 
 /*===========================================================================*/
@@ -49,26 +41,24 @@ Argument::Argument( int argc, char** argv ):
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
-
     // Parse specified arguments.
-    kvsview::PointRenderer::Argument arg( argc, argv );
-    if( !arg.parse() ) return false;
+    kvsview::PointRenderer::Argument arg( m_argc, m_argv );
+    if ( !arg.parse() ) { return ( false ); }
 
-    // Create screen.
-    kvs::glut::Screen screen( &app );
+    // Viewer application.
+    kvs::Application app( m_argc, m_argv );
+    kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
-    screen.setTitle( kvsview::CommandName + " - " + kvsview::PointRenderer::CommandName );
+    screen.setTitle( kvsview::CommandName + " - " + PointRenderer::CommandName );
     screen.show();
 
     // Check the input data.
     m_input_name = arg.value<std::string>();
     if ( !kvsview::FileChecker::ImportablePoint( m_input_name ) )
     {
-        kvsMessageError("%s is not point data.", m_input_name.c_str());
+        kvsMessageError() << m_input_name << " is not point data." << std::endl;
         return false;
     }
 
@@ -77,9 +67,10 @@ int Main::exec( int argc, char** argv )
     pipe.import();
 
     // Verbose information.
+    const kvs::Indent indent(4);
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, indent );
     }
 
     // Set a point renderer.
@@ -87,16 +78,16 @@ int Main::exec( int argc, char** argv )
     pipe.connect( renderer );
     if ( !pipe.exec() )
     {
-        kvsMessageError("Cannot execute the visulization pipeline.");
-        return false;
+        kvsMessageError() << "Cannot execute the visulization pipeline." << std::endl;
+        return (false);
     }
     screen.registerObject( &pipe );
 
     // Verbose information.
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
-        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, indent );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, indent );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.

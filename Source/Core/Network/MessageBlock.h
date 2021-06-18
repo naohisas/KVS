@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
  *  @file MessageBlock.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MessageBlock.h 1536 2013-04-15 02:21:56Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__MESSAGE_BLOCK_H_INCLUDE

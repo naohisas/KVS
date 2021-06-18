@@ -3,14 +3,6 @@
  *  @file   VideoRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VideoRenderer.cpp 1506 2013-04-06 07:58:23Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "VideoRenderer.h"
 #include <kvs/Camera>

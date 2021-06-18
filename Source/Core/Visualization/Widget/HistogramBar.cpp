@@ -3,14 +3,6 @@
  *  @file   HistogramBar.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "HistogramBar.h"
 #include <kvs/StructuredVolumeObject>
@@ -61,7 +53,9 @@ HistogramBar::HistogramBar( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_graph_color( kvs::RGBAColor( 0, 0, 0, 1.0f ) ),
     m_bias_parameter( 0.5f ),
-    m_palette( NULL )
+    m_palette( NULL ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
@@ -71,7 +65,7 @@ HistogramBar::HistogramBar( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Margin );
-    this->setCaption( "Histogram " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Histogram " + kvs::String::From( ::InstanceCounter++ ) );
     this->setNumberOfBins( 256 );
 }
 
@@ -116,7 +110,7 @@ void HistogramBar::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -157,6 +151,8 @@ void HistogramBar::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -169,16 +165,16 @@ void HistogramBar::resizeEvent( int width, int height )
 /*===========================================================================*/
 void HistogramBar::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
 
         if ( m_palette.contains( event->x(), event->y(), true ) )
         {
-            m_palette.activate();
+            m_palette.setActive( true );
 
             // Current mouse cursor position.
             const int x = event->x();
@@ -198,7 +194,7 @@ void HistogramBar::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void HistogramBar::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -230,13 +226,13 @@ void HistogramBar::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
-        if ( m_palette.isActive() ) m_palette.deactivate();
+        if ( m_palette.isActive() ) m_palette.setActive( false );
 
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

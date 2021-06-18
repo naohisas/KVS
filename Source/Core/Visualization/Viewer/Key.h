@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Key.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Key.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
+ *  @file   Key.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #pragma once
@@ -160,6 +153,14 @@ struct Key
         ShiftModifier   = 0x02000000,
         ControlModifier = 0x04000000,
         AltModifier     = 0x08000000
+    };
+
+    enum Action
+    {
+        NoAction = 0x00000000,
+        Pressed  = 0x00000001,
+        Repeated = 0x00000002,
+        Released = 0x00000003
     };
 };
 

@@ -3,14 +3,6 @@
  *  @file   ScreenBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/Message>
@@ -18,13 +10,14 @@
 #include <kvs/MouseEvent>
 #include <kvs/KeyEvent>
 #include <kvs/WheelEvent>
-#include <kvs/TimerEventListener>
+#include <kvs/EventListener>
 #include <kvs/glut/GLUT>
 #include <kvs/glut/Application>
-#include <kvs/glut/Timer>
 #include <SupportGLUT/Viewer/KVSMouseButton.h>
 #include <SupportGLUT/Viewer/KVSKey.h>
 #include <cstdlib>
+#include <kvs/EventTimer>
+#include <map>
 
 
 namespace
@@ -46,6 +39,67 @@ void ExitFunction()
     }
 }
 
+class EventTimer : public kvs::EventTimer
+{
+private:
+    static int m_counter;
+    static std::map<int,EventTimer*> m_timers;
+    friend void TimerFunc( int id );
+
+public:
+    EventTimer( kvs::EventListener* listener );
+    virtual ~EventTimer();
+    void start( int msec );
+    void nortify();
+};
+
+int EventTimer::m_counter = 0;
+std::map<int,EventTimer*> EventTimer::m_timers;
+
+void TimerFunc( int id )
+{
+    auto* t = EventTimer::m_timers.find( id )->second;
+    if ( t )
+    {
+        t->nortify();
+        glutTimerFunc( t->interval(), TimerFunc, t->id() );
+    }
+}
+
+EventTimer::EventTimer( kvs::EventListener* listener ):
+    kvs::EventTimer( listener )
+{
+    this->setID( EventTimer::m_counter++ );
+    EventTimer::m_timers.insert( std::make_pair( this->id(), this ) );
+}
+
+EventTimer::~EventTimer()
+{
+    EventTimer::m_timers.erase( this->id() );
+}
+
+void EventTimer::start( int msec )
+{
+    if ( msec < 0 ) { return; }
+    if ( this->isStopped() )
+    {
+        this->setInterval( msec );
+        this->setStopped( false );
+        glutTimerFunc( this->interval(), TimerFunc, this->id() );
+    }
+}
+
+void EventTimer::nortify()
+{
+    if ( !this->isStopped() )
+    {
+        if ( this->eventListener() )
+        {
+            this->eventListener()->onEvent( this->timeEvent() );
+        }
+    }
+}
+
 }
 
 
@@ -54,6 +108,30 @@ namespace kvs
 
 namespace glut
 {
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the pointer to the glut screen base downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return pointer to the glut screen base
+ */
+/*===========================================================================*/
+ScreenBase* ScreenBase::DownCast( kvs::ScreenBase* screen )
+{
+    return dynamic_cast<ScreenBase*>( screen );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns the const pointer to the glut screen base downcasted from the screen base.
+ *  @param  screen [in] the screen base.
+ *  @return const pointer to the glut screen base
+ */
+/*===========================================================================*/
+const ScreenBase* ScreenBase::DownCast( const kvs::ScreenBase* screen )
+{
+    return dynamic_cast<ScreenBase*>( const_cast<kvs::ScreenBase*>( screen ) );
+}
 
 /*===========================================================================*/
 /**
@@ -164,9 +242,25 @@ void KeyPressFunction( unsigned char key, int x, int y )
 {
     const int id = glutGetWindow();
     const int code = kvs::glut::KVSKey::ASCIICode( key );
+    const int mods = kvs::glut::KVSKey::Modifier( glutGetModifiers() );
     ::Context[id]->m_key_event->setKey( code );
     ::Context[id]->m_key_event->setPosition( x, y );
-    ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+    ::Context[id]->m_key_event->setModifiers( mods );
+    switch ( ::Context[id]->m_key_event->action() )
+    {
+    case kvs::Key::NoAction:
+    case kvs::Key::Released:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Pressed );
+        ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+        break;
+    case kvs::Key::Pressed:
+    case kvs::Key::Repeated:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Repeated );
+        ::Context[id]->keyRepeatEvent( ::Context[id]->m_key_event );
+        break;
+    default:
+        break;
+    }
 }
 
 /*===========================================================================*/
@@ -183,7 +277,59 @@ void SpecialKeyPressFunction( int key, int x, int y )
     const int code = kvs::glut::KVSKey::SpecialCode( key );
     ::Context[id]->m_key_event->setKey( code );
     ::Context[id]->m_key_event->setPosition( x, y );
-    ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+    switch ( ::Context[id]->m_key_event->action() )
+    {
+    case kvs::Key::NoAction:
+    case kvs::Key::Released:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Pressed );
+        ::Context[id]->keyPressEvent( ::Context[id]->m_key_event );
+        break;
+    case kvs::Key::Pressed:
+    case kvs::Key::Repeated:
+        ::Context[id]->m_key_event->setAction( kvs::Key::Repeated );
+        ::Context[id]->keyRepeatEvent( ::Context[id]->m_key_event );
+        break;
+    default:
+        break;
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Key release function for glutKeyboardUpFunc.
+ *  @param  key [in] key code
+ *  @param  x [in] x coordinate value of the mouse cursor on the window coordinate
+ *  @param  y [in] y coordinate value of the mouse cursor on the window coordinate
+ */
+/*===========================================================================*/
+void KeyReleaseFunction( unsigned char key, int x, int y )
+{
+    const int id = glutGetWindow();
+    const int code = kvs::glut::KVSKey::ASCIICode( key );
+    const int mods = kvs::glut::KVSKey::Modifier( glutGetModifiers() );
+    ::Context[id]->m_key_event->setKey( code );
+    ::Context[id]->m_key_event->setPosition( x, y );
+    ::Context[id]->m_key_event->setModifiers( mods );
+    ::Context[id]->m_key_event->setAction( kvs::Key::Released );
+    ::Context[id]->keyReleaseEvent( ::Context[id]->m_key_event );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Key release function for glutSpecialUpFunc.
+ *  @param  key [in] key code
+ *  @param  x [in] x coordinate value of the mouse cursor on the window coordinate
+ *  @param  y [in] y coordinate value of the mouse cursor on the window coordinate
+ */
+/*===========================================================================*/
+void SpecialKeyReleaseFunction( int key, int x, int y )
+{
+    const int id = glutGetWindow();
+    const int code = kvs::glut::KVSKey::SpecialCode( key );
+    ::Context[id]->m_key_event->setKey( code );
+    ::Context[id]->m_key_event->setPosition( x, y );
+    ::Context[id]->m_key_event->setAction( kvs::Key::Released );
+    ::Context[id]->keyReleaseEvent( ::Context[id]->m_key_event );
 }
 
 /*===========================================================================*/
@@ -196,8 +342,8 @@ ScreenBase::ScreenBase( kvs::glut::Application* application ):
     m_id( -1 ),
     m_mouse_event( 0 ),
     m_key_event( 0 ),
-    m_wheel_event( 0 ),
-    m_is_fullscreen( false )
+    m_wheel_event( 0 )
+//    m_is_fullscreen( false )
 {
     if ( application ) application->attach( this );
 
@@ -225,6 +371,38 @@ ScreenBase::~ScreenBase()
 
 /*===========================================================================*/
 /**
+ *  @brief  Sets an event.
+ *  @param  event [in] event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
+void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::setEvent( event, name );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Adds an event.
+ *  @param  event [in] event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
+void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
+{
+    if ( event->eventType() & kvs::EventBase::TimerEvent )
+    {
+        event->setEventTimer( new ::EventTimer( event ) );
+    }
+    BaseClass::addEvent( event, name );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Creates the screen.
  */
 /*===========================================================================*/
@@ -245,6 +423,18 @@ void ScreenBase::create()
     glutInitDisplayMode( mode );
 
     // Set screen geometry.
+    if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
+    {
+        // Centering
+        const int desk_width = glutGet( GLUT_SCREEN_WIDTH );
+        const int desk_height = glutGet( GLUT_SCREEN_HEIGHT );
+        const int px = ( desk_width - BaseClass::width() ) / 2;
+        const int py = ( desk_height - BaseClass::height() ) / 2;
+        const int offset = 20;
+        static int counter = 0;
+        this->setPosition( px + offset * counter, py + offset * counter );
+        counter++;
+    }
     glutInitWindowPosition( BaseClass::x(), BaseClass::y() );
     glutInitWindowSize( BaseClass::width(), BaseClass::height() );
 
@@ -281,6 +471,8 @@ void ScreenBase::create()
     glutMotionFunc( MouseMoveFunction );
     glutKeyboardFunc( KeyPressFunction );
     glutSpecialFunc( SpecialKeyPressFunction );
+    glutKeyboardUpFunc( KeyReleaseFunction );
+    glutSpecialUpFunc( SpecialKeyReleaseFunction );
     glutDisplayFunc( DisplayFunction );
     glutReshapeFunc( ResizeFunction );
 }
@@ -293,6 +485,8 @@ void ScreenBase::create()
 /*===========================================================================*/
 void ScreenBase::show()
 {
+    BaseClass::show();
+
 #if 1 // KVS_ENABLE_DEPRECATED
     if ( m_id == -1 ) this->create();
     else {
@@ -313,8 +507,11 @@ void ScreenBase::show()
 /*===========================================================================*/
 void ScreenBase::showFullScreen()
 {
-    if ( m_is_fullscreen ) return;
-    m_is_fullscreen = true;
+    if ( BaseClass::isFullScreen() ) { return; }
+    //if ( m_is_fullscreen ) return;
+
+    BaseClass::showFullScreen();
+    //m_is_fullscreen = true;
 
     const int x = glutGet( (GLenum)GLUT_WINDOW_X );
     const int y = glutGet( (GLenum)GLUT_WINDOW_Y );
@@ -330,12 +527,14 @@ void ScreenBase::showFullScreen()
 /*===========================================================================*/
 void ScreenBase::showNormal()
 {
-    if ( !m_is_fullscreen ) return;
-    m_is_fullscreen = false;
+    if ( !BaseClass::isFullScreen() ) { return; }
+    //if ( !m_is_fullscreen ) return;
+
+    BaseClass::showNormal();
+    //m_is_fullscreen = false;
 
     glutReshapeWindow( BaseClass::width(), BaseClass::height() );
     glutPositionWindow( BaseClass::x(), BaseClass::y() );
-    glutPopWindow();
 }
 
 /*===========================================================================*/
@@ -345,6 +544,8 @@ void ScreenBase::showNormal()
 /*===========================================================================*/
 void ScreenBase::hide()
 {
+    BaseClass::hide();
+
     glutSetWindow( m_id );
     glutHideWindow();
 }
@@ -412,10 +613,10 @@ void ScreenBase::draw()
  *  @return true, if the window is full-screen
  */
 /*===========================================================================*/
-bool ScreenBase::isFullScreen() const
-{
-    return m_is_fullscreen;
-}
+//bool ScreenBase::isFullScreen() const
+//{
+//    return m_is_fullscreen;
+//}
 
 /*===========================================================================*/
 /**
@@ -432,39 +633,6 @@ kvs::ColorImage ScreenBase::capture() const
     kvs::OpenGL::SetReadBuffer( GL_FRONT );
     kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data() );
     return kvs::ColorImage( width, height, buffer );
-}
-
-void ScreenBase::enable(){}
-void ScreenBase::disable(){}
-void ScreenBase::reset(){}
-
-void ScreenBase::initializeEvent(){}
-void ScreenBase::paintEvent(){}
-void ScreenBase::resizeEvent( int, int ){}
-void ScreenBase::mousePressEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseMoveEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseReleaseEvent( kvs::MouseEvent* ){}
-void ScreenBase::mouseDoubleClickEvent( kvs::MouseEvent* ){}
-void ScreenBase::wheelEvent( kvs::WheelEvent* ){}
-void ScreenBase::keyPressEvent( kvs::KeyEvent* ){}
-
-std::list<kvs::glut::Timer*>& ScreenBase::timerEventHandler()
-{
-    return m_timer_event_handler;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Adds a timer event listener.
- *  @param  event [in] pointer to a timer event listener
- *  @param  timer [in] pointer to timer
- */
-/*===========================================================================*/
-void ScreenBase::addTimerEvent( kvs::TimerEventListener* event, kvs::glut::Timer* timer )
-{
-    event->setScreen( this );
-    timer->setEventListener( event );
-    m_timer_event_handler.push_back( timer );
 }
 
 } // end of namespace glut

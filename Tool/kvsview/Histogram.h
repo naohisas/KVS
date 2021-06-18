@@ -3,14 +3,6 @@
  *  @file   Histogram.h
  *  @auhtor Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Histogram.h 621 2010-09-30 08:04:55Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -39,8 +31,6 @@ class Argument : public kvsview::Argument::Common
 {
 public:
     Argument( int argc, char** argv );
-
-public:
     const float biasParameter();
 };
 
@@ -54,9 +44,12 @@ class Main : public kvs::Program
 private:
     std::string m_input_name; ///< input filename
     std::string m_output_name; ///< output filename
+    int m_argc;
+    char** m_argv;
 
 public:
-    int exec( int argc, char** argv );
+    Main( int argc, char** argv ): m_argc( argc ), m_argv( argv ) {}
+    int exec();
 };
 
 } // end of namespace Histogram

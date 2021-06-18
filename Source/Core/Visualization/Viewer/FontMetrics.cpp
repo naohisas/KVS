@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   FontMetrics.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "FontMetrics.h"
 #include <kvs/Assert>
 
@@ -5,12 +11,25 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new FontMetrics class.
+ *  @param  font [in] font data
+ *  @param  device [in] paint device
+ */
+/*===========================================================================*/
 FontMetrics::FontMetrics( const kvs::Font& font, kvs::PaintDevice* device ):
     m_font( font ),
     m_device( device )
 {
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns height of the characters represented by the specified font.
+ *  @return height in pixels of the characters
+ */
+/*===========================================================================*/
 int FontMetrics::height() const
 {
     KVS_ASSERT( m_device != NULL );
@@ -29,6 +48,12 @@ int FontMetrics::height() const
     return line_height;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns width of the specfied text with the font.
+ *  @return width in pixels of the text
+ */
+/*===========================================================================*/
 int FontMetrics::width( const std::string& text ) const
 {
     KVS_ASSERT( m_device != NULL );

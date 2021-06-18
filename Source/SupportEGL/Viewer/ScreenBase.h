@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ScreenBase.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include "../EGL.h"
 #include "Display.h"
@@ -7,6 +13,7 @@
 #include <kvs/ScreenBase>
 #include <kvs/ValueArray>
 #include <kvs/ColorImage>
+#include <kvs/OpenGL>
 
 
 namespace kvs
@@ -29,8 +36,8 @@ public:
     ScreenBase();
     virtual ~ScreenBase();
 
-    kvs::ValueArray<kvs::UInt8> readbackColorBuffer() const;
-    kvs::ValueArray<kvs::Real32> readbackDepthBuffer() const;
+    kvs::ValueArray<kvs::UInt8> readbackColorBuffer( GLenum mode = GL_FRONT ) const;
+    kvs::ValueArray<kvs::Real32> readbackDepthBuffer( GLenum mode = GL_FRONT ) const;
     void displayInfo();
 
     virtual void create();

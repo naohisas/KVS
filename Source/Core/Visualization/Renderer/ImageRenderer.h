@@ -3,23 +3,13 @@
  *  @file   ImageRenderer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ImageRenderer.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__IMAGE_RENDERER_H_INCLUDE
-#define KVS__IMAGE_RENDERER_H_INCLUDE
-
+#pragma once
 #include "RendererBase.h"
 #include <kvs/Texture2D>
 #include <kvs/ImageObject>
 #include <kvs/Module>
-
+#include <kvs/Deprecated>
 
 namespace kvs
 {
@@ -50,10 +40,10 @@ private:
 public:
     ImageRenderer();
 
-    bool isEnabledCentering() const { return m_enable_centering; }
-    void setEnabledCentering( const bool enable ) { m_enable_centering = enable; }
-    void enableCentering() { this->setEnabledCentering( true ); }
-    void disableCentering() { this->setEnabledCentering( false ); }
+    bool isCenteringEnabled() const { return m_enable_centering; }
+    void setCenteringEnabled( const bool enable = true ) { m_enable_centering = enable; }
+    void enableCentering() { this->setCenteringEnabled( true ); }
+    void disableCentering() { this->setCenteringEnabled( false ); }
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 protected:
@@ -61,8 +51,10 @@ protected:
     void createTexture( const kvs::ImageObject* image );
     void alignCenter( const kvs::Camera* camera );
     void textureMapping();
+
+public:
+    KVS_DEPRECATED( bool isEnabledCentering() const ) { return this->isCenteringEnabled(); }
+    KVS_DEPRECATED( void setEnabledCentering( const bool enable ) ) { this->setCenteringEnabled( enable ); }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__IMAGE_RENDERER_H_INCLUDE

@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ChiSquaredDistribution.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/Type>
 #include <kvs/ValueArray>

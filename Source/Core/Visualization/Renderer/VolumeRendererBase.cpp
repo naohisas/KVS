@@ -3,14 +3,6 @@
  *  @file   VolumeRendererBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VolumeRendererBase.cpp 1642 2013-09-15 12:41:47Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "VolumeRendererBase.h"
 #include <kvs/Camera>
@@ -30,7 +22,8 @@ VolumeRendererBase::VolumeRendererBase():
     m_window_width( 0 ),
     m_window_height( 0 ),
     m_device_pixel_ratio( 1.0f ),
-    m_shader( NULL )
+    m_shader( NULL ),
+    m_object( NULL )
 {
     m_depth_buffer.setFormat( GL_DEPTH_COMPONENT );
     m_depth_buffer.setType( GL_FLOAT );

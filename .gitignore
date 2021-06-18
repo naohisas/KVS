@@ -35,3 +35,8 @@ Debug
 /Build
 
 *.stash
+Example/Numeric/EigenDecomposition/EigenDecomposition
+Example/Numeric/EigenDecomposition/Makefile.kvs
+Source/SupportQt/BuildRule.mk
+
+.vscode/

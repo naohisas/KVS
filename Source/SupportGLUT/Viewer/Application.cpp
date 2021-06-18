@@ -3,19 +3,12 @@
  *  @file   Application.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Application.cpp 1595 2013-06-12 03:27:28Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Application.h"
 #include <kvs/glut/GLUT>
 #include <kvs/ScreenBase>
 #include <kvs/glut/ScreenBase>
+#include <kvs/EventListener>
 #include <cstdlib>
 
 
@@ -64,13 +57,24 @@ int Application::run()
     if ( flag )
     {
         // Call initialize event function for each screen.
-        std::list<kvs::ScreenBase*>::iterator screen = screens().begin();
-        std::list<kvs::ScreenBase*>::iterator end = screens().end();
-        while ( screen != end )
+        for ( auto& s : BaseClass::screens() )
         {
-            kvs::glut::ScreenBase* this_screen = static_cast<kvs::glut::ScreenBase*>(*screen);
-            this_screen->initializeEvent();
-            screen++;
+            auto* screen = kvs::glut::ScreenBase::DownCast( s );
+            screen->initializeEvent();
+
+            // Start time events registered in the screen.
+            for ( auto& l : screen->eventHandler()->listeners() )
+            {
+                if ( l->eventType() & kvs::EventBase::TimerEvent )
+                {
+                    auto* t = l->eventTimer();
+                    if ( t )
+                    {
+                        auto i = l->timerInterval();
+                        l->eventTimer()->start( i );
+                    }
+                }
+            }
         }
 
         // Run GLUT main loop.

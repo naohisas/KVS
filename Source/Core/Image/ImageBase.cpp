@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ImageBase.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ImageBase.cpp 1571 2013-05-09 14:49:50Z naohisa.sakamoto@gmail.com $
+ *  @file   ImageBase.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "ImageBase.h"
@@ -131,86 +124,6 @@ ImageBase::~ImageBase()
 {
 }
 
-/*==========================================================================*/
-/**
- *  Get the image width.
- */
-/*==========================================================================*/
-size_t ImageBase::width() const
-{
-    return( m_width );
-}
-
-/*==========================================================================*/
-/**
- *  Get the image height.
- */
-/*==========================================================================*/
-size_t ImageBase::height() const
-{
-    return( m_height );
-}
-
-/*==========================================================================*/
-/**
- *  Get the number of bytes per line.
- */
-/*==========================================================================*/
-size_t ImageBase::bytesPerLine() const
-{
-    return( m_bpl );
-}
-
-/*==========================================================================*/
-/**
- *  Get the number of bits per pixel.
- */
-/*==========================================================================*/
-size_t ImageBase::bitsPerPixel() const
-{
-    return( m_bpp );
-}
-
-/*==========================================================================*/
-/**
- *  Get the number of pixels.
- */
-/*==========================================================================*/
-size_t ImageBase::numberOfPixels() const
-{
-    return( m_npixels );
-}
-
-/*==========================================================================*/
-/**
- *  Get the number of padding bits.
- */
-/*==========================================================================*/
-size_t ImageBase::padding() const
-{
-    return( m_padding );
-}
-
-/*==========================================================================*/
-/**
- *  Get data size [byte].
- */
-/*==========================================================================*/
-size_t ImageBase::size() const
-{
-    return( m_size );
-}
-
-/*==========================================================================*/
-/**
- *  Get the pointer to the pixel data.
- */
-/*==========================================================================*/
-const kvs::ValueArray<kvs::UInt8>& ImageBase::pixels() const
-{
-    return( m_pixels );
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Flip the image data.
@@ -243,16 +156,6 @@ void ImageBase::flip()
 void ImageBase::copy( const ImageBase& image )
 {
     *this = image;
-}
-
-/*==========================================================================*/
-/**
- *  Get the pointer to the pixel data.
- */
-/*==========================================================================*/
-kvs::ValueArray<kvs::UInt8>& ImageBase::pixelData()
-{
-    return( m_pixels );
 }
 
 /*==========================================================================*/
@@ -344,12 +247,12 @@ void ImageBase::resizeImage( const size_t width, const size_t height, ImageDataT
 
     const double ratio_width  = m_width / static_cast<double>( width );
     const double ratio_height = m_height / static_cast<double>( height );
-    for( size_t j = 0; j < height; j++ )
+    for ( size_t j = 0; j < height; j++ )
     {
         const double v = j * ratio_height;
         interpolator.setV( v );
 
-        for( size_t i = 0; i < width; i++ )
+        for ( size_t i = 0; i < width; i++ )
         {
             const double u = i * ratio_width;
             interpolator.setU( u );

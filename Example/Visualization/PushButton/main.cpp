@@ -5,168 +5,94 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#include <kvs/RGBColor>
+#include <kvs/Application>
+#include <kvs/Screen>
+#include <kvs/UIColor>
 #include <kvs/PaintEventListener>
 #include <kvs/OpenGL>
 #include <kvs/PushButton>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
-
-namespace
-{
-const kvs::RGBColor Gray( 100, 100, 100 );
-const kvs::RGBColor Red( 255, 0, 0 );
-const kvs::RGBColor Green( 0, 255, 0 );
-const kvs::RGBColor Blue( 0, 0, 255 );
-kvs::RGBColor Color = Gray;
-}
-
-
-/*===========================================================================*/
-/**
- *  @brief  User-defined paint event class.
- */
-/*===========================================================================*/
-class PaintEvent : public kvs::PaintEventListener
-{
-    void update()
-    {
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-        glLineWidth( 3 );
-        glBegin( GL_TRIANGLES );
-        glColor3ub( ::Color.r(), ::Color.g(), ::Color.b() );
-        glVertex3d(  0.0,  3.0, 0.0 );
-        glVertex3d(  3.0, -3.0, 0.0 );
-        glVertex3d( -3.0, -3.0, 0.0 );
-        glEnd();
-    }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Push button for specifying the color of red.
- */
-/*===========================================================================*/
-class RedButton : public kvs::PushButton
-{
-public:
-    RedButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
-    void pressed() { ::Color = ::Red; }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Push button for specifying the color of green.
- */
-/*===========================================================================*/
-class GreenButton : public kvs::PushButton
-{
-public:
-    GreenButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
-    void pressed() { ::Color = ::Green; }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Push button for specifying the color of blue.
- */
-/*===========================================================================*/
-class BlueButton : public kvs::PushButton
-{
-public:
-    BlueButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
-    void pressed() { ::Color = ::Blue; }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Push button for reset.
- */
-/*===========================================================================*/
-class ResetButton : public kvs::PushButton
-{
-public:
-    ResetButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
-    void pressed() { ::Color = ::Gray; screen()->reset(); }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Push button for quit.
- */
-/*===========================================================================*/
-class QuitButton : public kvs::PushButton
-{
-public:
-    QuitButton( kvs::glut::Screen* screen ): kvs::PushButton( screen ){};
-    void pressed() { exit( EXIT_SUCCESS ); }
-};
 
 /*===========================================================================*/
 /**
  *  @brief  Main function.
  *  @param  argc [i] argument count
  *  @param  argv [i] argument values
- *  @return true, if the main process is done succesfully
  */
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "kvs::PushButton" );
+    screen.create();
 
-    PaintEvent paint_event;
+    // Triangle color.
+    auto color = kvs::UIColor::Gray();
 
-    kvs::glut::Screen screen( &app );
+    // Paint event (drawing a triangle)
+    kvs::PaintEventListener paint_event( [&]
+    {
+        glBegin( GL_TRIANGLES );
+        glColor3ub( color.r(), color.g(), color.b() );
+        glVertex3d(  0.0,  3.0, 0.0 );
+        glVertex3d(  3.0, -3.0, 0.0 );
+        glVertex3d( -3.0, -3.0, 0.0 );
+        glEnd();
+    } );
     screen.addEvent( &paint_event );
-    screen.setTitle( "PushButton" );
-    screen.setGeometry( 0, 0, 512, 512 );
-    screen.show();
 
-    RedButton red( &screen );
-    red.setButtonColor( ::Red );
-    red.setX( 0 );
-    red.setY( 0 );
-    red.setWidth( 150 );
-    red.setMargin( 10 );
-    red.setCaption("Red");
-    red.show();
+    // Button width and margin.
+    const size_t width = 150;
+    const size_t margin = 10;
 
-    GreenButton green( &screen );
-    green.setButtonColor( ::Green );
-    green.setX( red.x() );
-    green.setY( red.y() + red.height() );
-    green.setWidth( 150 );
-    green.setMargin( 10 );
-    green.setCaption("Green");
-    green.show();
+    // Button for changing triangle color to red.
+    kvs::PushButton red_button( &screen );
+    red_button.setCaption( "Red" );
+    red_button.setButtonColor( kvs::UIColor::Red() );
+    red_button.setWidth( width );
+    red_button.setMargin( margin );
+    red_button.anchorToTopLeft();
+    red_button.pressed( [&] { color = kvs::UIColor::Red(); } );
+    red_button.show();
 
-    BlueButton blue( &screen );
-    blue.setButtonColor( ::Blue );
-    blue.setX( green.x() );
-    blue.setY( green.y() + green.height() );
-    blue.setWidth( 150 );
-    blue.setMargin( 10 );
-    blue.setCaption("Blue");
-    blue.show();
+    // Button for changing triangle color to green.
+    kvs::PushButton green_button( &screen );
+    green_button.setCaption( "Green" );
+    green_button.setButtonColor( kvs::UIColor::Green() );
+    green_button.setWidth( width );
+    green_button.setMargin( margin );
+    green_button.anchorToBottom( &red_button );
+    green_button.pressed( [&] { color = kvs::UIColor::Green(); } );
+    green_button.show();
 
-    ResetButton reset( &screen );
-    reset.setX( blue.x() );
-    reset.setY( blue.y() + blue.height() * 2 );
-    reset.setWidth( 150 );
-    reset.setMargin( 10 );
-    reset.setCaption("Reset");
-    reset.show();
+    // Button for changing triangle color to blue.
+    kvs::PushButton blue_button( &screen );
+    blue_button.setCaption( "Blue" );
+    blue_button.setButtonColor( kvs::UIColor::Blue() );
+    blue_button.setWidth( width );
+    blue_button.setMargin( margin );
+    blue_button.anchorToBottom( &green_button );
+    blue_button.pressed( [&] { color = kvs::UIColor::Blue(); } );
+    blue_button.show();
 
-    QuitButton quit( &screen );
-    quit.setX( reset.x() );
-    quit.setY( reset.y() + reset.height() );
-    quit.setWidth( 150 );
-    quit.setMargin( 10 );
-    quit.setCaption("Quit");
-    quit.show();
+    // Button for quit.
+    kvs::PushButton quit_button( &screen );
+    quit_button.setCaption( "Quit" );
+    quit_button.setWidth( width );
+    quit_button.setMargin( margin );
+    quit_button.anchorToBottomRight();
+    quit_button.pressed( [&] { exit( EXIT_SUCCESS ); } );
+    quit_button.show();
+
+    // Button for reset.
+    kvs::PushButton reset_button( &screen );
+    reset_button.setCaption( "Reset" );
+    reset_button.setWidth( width );
+    reset_button.setMargin( margin );
+    reset_button.anchorToTop( &quit_button );
+    reset_button.pressed( [&] { color = kvs::UIColor::Gray(); screen.reset(); } );
+    reset_button.show();
 
     return app.run();
 }

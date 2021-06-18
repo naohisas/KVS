@@ -5,13 +5,13 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
-#include <kvs/KVSMLObjectLine>
+#include <kvs/KVSMLLineObject>
 #include <kvs/LineImporter>
 #include <kvs/LineObject>
 #include <kvs/LineRenderer>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -24,14 +24,14 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     const std::string filename( argc > 1 ? argv[1] : "" );
     kvs::LineObject* object = new kvs::LineImporter( filename );
     if ( !object )
     {
         kvsMessageError( "Cannot creat a line object.");
-        return( false );
+        return ( false );
     }
 
     kvs::LineRenderer* renderer = new kvs::LineRenderer();
@@ -40,11 +40,11 @@ int main( int argc, char** argv )
         kvsMessageError( "Cannot creat a line renderer.");
     }
 
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.registerObject( object, renderer );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::LineRenderer" );
-    screen.show();
+    screen.create();
 
-    return( app.run() );
+    return app.run();
 }

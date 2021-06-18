@@ -3,14 +3,6 @@
  *  @file   TCPBarrierServer.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TCPBarrierServer.h 1317 2012-09-25 03:13:02Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__TCP_BARRIER_SERVER_H_INCLUDE
 #define KVS__TCP_BARRIER_SERVER_H_INCLUDE

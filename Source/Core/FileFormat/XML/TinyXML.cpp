@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file TinyXML.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TinyXML.cpp 631 2010-10-10 02:15:35Z naohisa.sakamoto $
+ *  @file   TinyXML.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 /*

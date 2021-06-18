@@ -2,15 +2,6 @@
 /**
  *  @file   GrADS.cpp
  *  @author Naohisa Sakamoto
- *  @brief  
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: GrADS.cpp 1758 2014-05-04 13:19:24Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
 #include "GrADS.h"
@@ -39,7 +30,7 @@ std::string ReplaceYear( const std::string& filename, const int year )
     if ( filename.find("%y2",0) != std::string::npos )
     {
         int y = year % 100;
-        std::string replace = kvs::String::ToString( y );
+        std::string replace = kvs::String::From( y );
         return kvs::String::Replace( filename, "%y2", replace );
     }
 
@@ -47,7 +38,7 @@ std::string ReplaceYear( const std::string& filename, const int year )
     {
         int y = year;
         if ( y < 100 ) y = ( 50 <= y ) ? year + 1900 : year + 2000;
-        std::string replace = kvs::String::ToString( y );
+        std::string replace = kvs::String::From( y );
         return kvs::String::Replace( filename, "%y4", replace );
     }
 
@@ -58,7 +49,7 @@ std::string ReplaceMonth( const std::string& filename, const int month )
 {
     if ( filename.find("%m1",0) != std::string::npos )
     {
-        std::string replace = kvs::String::ToString( month );
+        std::string replace = kvs::String::From( month );
         return kvs::String::Replace( filename, "%m1", replace );
     }
 
@@ -80,7 +71,7 @@ std::string ReplaceDay( const std::string& filename, const int day )
 {
     if ( filename.find("%d1",0) != std::string::npos )
     {
-        std::string replace = kvs::String::ToString( day );
+        std::string replace = kvs::String::From( day );
         return kvs::String::Replace( filename, "%d1", replace );
     }
 
@@ -97,7 +88,7 @@ std::string ReplaceHour( const std::string& filename, const int hour )
 {
     if ( filename.find("%h1",0) != std::string::npos )
     {
-        std::string replace = kvs::String::ToString( hour );
+        std::string replace = kvs::String::From( hour );
         return kvs::String::Replace( filename, "%h1", replace );
     }
 
@@ -289,7 +280,7 @@ void GrADS::print( std::ostream& os, const kvs::Indent& indent ) const
         {
             if ( file->fileName() == data_filename )
             {
-                const std::string sep = kvs::File::Separator();
+                const std::string sep = kvs::Directory::Separator();
                 const std::string path = directory.path( true );
                 GriddedBinaryDataFile::Date date;
                 date.year = tdef.start.year;

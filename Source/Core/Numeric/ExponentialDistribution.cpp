@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ExponentialDistribution.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ExponentialDistribution.h"
 #include <kvs/Assert>
 #include <cmath>

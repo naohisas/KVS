@@ -3,14 +3,6 @@
  *  @file   PushButton.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PushButton.cpp 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "PushButton.h"
 #include <kvs/OpenGL>
@@ -56,7 +48,7 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::ButtonMargin );
-    this->setCaption( "PushButton " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "PushButton " + kvs::String::From( ::InstanceCounter++ ) );
     this->setTextMargin( ::Default::TextMargin );
     this->setButtonColor( ::Default::ButtonColor );
 }

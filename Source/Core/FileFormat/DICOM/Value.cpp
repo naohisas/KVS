@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Value.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Value.cpp 1595 2013-06-12 03:27:28Z naohisa.sakamoto@gmail.com $
+ *  @file   Value.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Value.h"
@@ -47,9 +40,9 @@ Value::Value( const dcm::DataType type, const unsigned int length )
 {
     // Check the data type.
     dcm::DataType data_type = type;
-    if( type != dcm::DATA_STRING || type != dcm::DATA_OTHER )
+    if ( !( type == dcm::DATA_STRING || type == dcm::DATA_OTHER ) )
     {
-        if( dcm::DATA_TYPE_TO_SIZE[type] != length )
+        if ( dcm::DATA_TYPE_TO_SIZE[type] != length )
         {
             data_type = dcm::DATA_STRING;
         }

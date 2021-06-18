@@ -3,14 +3,6 @@
  *  @file   StylizedLineRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "StylizedLineRenderer.h"
 #include <kvs/OpenGL>
@@ -23,7 +15,7 @@
 namespace
 {
 
-kvs::ValueArray<kvs::Real32> QuadVertexCoords( const kvs::LineObject* line )
+inline kvs::ValueArray<kvs::Real32> QuadVertexCoords( const kvs::LineObject* line )
 {
     const size_t nvertices = line->numberOfVertices();
     kvs::ValueArray<kvs::Real32> coords( nvertices * 6 );
@@ -39,7 +31,7 @@ kvs::ValueArray<kvs::Real32> QuadVertexCoords( const kvs::LineObject* line )
     return coords;
 }
 
-kvs::ValueArray<kvs::UInt8> QuadVertexColors( const kvs::LineObject* line )
+inline kvs::ValueArray<kvs::UInt8> QuadVertexColors( const kvs::LineObject* line )
 {
     const size_t nvertices = line->numberOfVertices();
     kvs::ValueArray<kvs::UInt8> colors( nvertices * 6 );
@@ -71,7 +63,7 @@ kvs::ValueArray<kvs::UInt8> QuadVertexColors( const kvs::LineObject* line )
     return colors;
 }
 
-kvs::ValueArray<kvs::Real32> QuadVertexNormals( const kvs::LineObject* line )
+inline kvs::ValueArray<kvs::Real32> QuadVertexNormals( const kvs::LineObject* line )
 {
     const size_t nvertices = line->numberOfVertices();
     kvs::ValueArray<kvs::Real32> normals( nvertices * 6 );
@@ -209,7 +201,7 @@ kvs::ValueArray<kvs::Real32> QuadVertexNormals( const kvs::LineObject* line )
     return normals;
 }
 
-kvs::ValueArray<kvs::Real32> QuadVertexTexCoords(
+inline kvs::ValueArray<kvs::Real32> QuadVertexTexCoords(
     const kvs::LineObject* line,
     const float halo_size,
     const float radius_size )
@@ -240,177 +232,32 @@ kvs::ValueArray<kvs::Real32> QuadVertexTexCoords(
 namespace kvs
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new StylizedLineRenderer class.
- */
-/*===========================================================================*/
-StylizedLineRenderer::StylizedLineRenderer():
-    m_width( 0 ),
-    m_height( 0 ),
-    m_object( NULL ),
-    m_has_connection( false ),
-    m_shader( NULL ),
-    m_radius_size( 0.05f ),
-    m_halo_size( 0.0f )
+void StylizedLineRenderer::BufferObject::create(
+    const kvs::LineObject* line,
+    const kvs::Real32 halo,
+    const kvs::Real32 radius )
 {
-    this->setShader( kvs::Shader::Lambert() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the StylizedLineRenderer class.
- */
-/*===========================================================================*/
-StylizedLineRenderer::~StylizedLineRenderer()
-{
-    if ( m_shader ) { delete m_shader; }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Executes rendering process.
- *  @param  object [in] pointer to the object
- *  @param  camera [in] pointer to the camera
- *  @param  light [in] pointer to the light
- */
-/*===========================================================================*/
-void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
-{
-    kvs::LineObject* line = kvs::LineObject::DownCast( object );
-    m_has_connection = line->numberOfConnections() > 0;
-
-    BaseClass::startTimer();
-
-    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    kvs::OpenGL::Enable( GL_TEXTURE_2D );
-    kvs::OpenGL::Enable( GL_BLEND );
-    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-    const size_t width = camera->windowWidth();
-    const size_t height = camera->windowHeight();
-    const bool window_created = m_width == 0 && m_height == 0;
-    if ( window_created )
-    {
-        m_width = width;
-        m_height = height;
-        m_object = object;
-        this->create_shader_program();
-        this->create_buffer_object( line );
-        this->create_shape_texture();
-        this->create_diffuse_texture();
-    }
-
-    const bool window_resized = m_width != width || m_height != height;
-    if ( window_resized )
-    {
-        m_width = width;
-        m_height = height;
-    }
-
-    const bool object_changed = m_object != object;
-    if ( object_changed )
-    {
-        m_object = object;
-        m_shader_program.release();
-        m_vbo_manager.release();
-        this->create_shader_program();
-        this->create_buffer_object( line );
-    }
-
-    kvs::VertexBufferObjectManager::Binder bind0( m_vbo_manager );
-    kvs::ProgramObject::Binder bind1( m_shader_program );
-    kvs::Texture::Binder unit0( m_shape_texture, 0 );
-    kvs::Texture::Binder unit1( m_diffuse_texture, 1 );
-    {
-        kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
-
-        const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
-        const kvs::Mat4 P = kvs::OpenGL::ProjectionMatrix();
-        const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
-        m_shader_program.setUniform( "ModelViewMatrix", M );
-        m_shader_program.setUniform( "ProjectionMatrix", P );
-        m_shader_program.setUniform( "NormalMatrix", N );
-        m_shader_program.setUniform( "shape_texture", 0 );
-        m_shader_program.setUniform( "diffuse_texture", 1 );
-
-        // Draw lines.
-        switch ( line->lineType() )
-        {
-        case kvs::LineObject::Polyline:
-            m_vbo_manager.drawArrays( GL_QUAD_STRIP, m_first_array, m_count_array );
-            break;
-        case kvs::LineObject::Strip:
-            m_vbo_manager.drawArrays( GL_QUAD_STRIP, 0, line->numberOfVertices() * 2 );
-            break;
-        default: break;
-        }
-    }
-
-    BaseClass::stopTimer();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates shader program.
- */
-/*===========================================================================*/
-void StylizedLineRenderer::create_shader_program()
-{
-    kvs::ShaderSource vert( "stylized_line.vert" );
-    kvs::ShaderSource frag( "stylized_line.frag" );
-    if ( isEnabledShading() )
-    {
-        switch ( m_shader->type() )
-        {
-        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
-        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
-        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
-        default: break; // NO SHADING
-        }
-
-        if ( kvs::OpenGL::Boolean( GL_LIGHT_MODEL_TWO_SIDE ) == GL_TRUE )
-        {
-            frag.define("ENABLE_TWO_SIDE_LIGHTING");
-        }
-    }
-
-    m_shader_program.build( vert, frag );
-    m_shader_program.bind();
-    m_shader_program.setUniform( "shading.Ka", m_shader->Ka );
-    m_shader_program.setUniform( "shading.Kd", m_shader->Kd );
-    m_shader_program.setUniform( "shading.Ks", m_shader->Ks );
-    m_shader_program.setUniform( "shading.S",  m_shader->S );
-    m_shader_program.unbind();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Creates buffer object.
- *  @param  line [in] pointer to the line object
- */
-/*===========================================================================*/
-void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
-{
-    if ( line->numberOfColors() != 1 && line->colorType() == kvs::LineObject::LineColor )
+    if ( line->numberOfColors() != 1 &&
+         line->colorType() == kvs::LineObject::LineColor )
     {
         kvsMessageError("Not supported line color type.");
         return;
     }
 
-    kvs::ValueArray<kvs::Real32> coords = ::QuadVertexCoords( line );
-    kvs::ValueArray<kvs::UInt8> colors = ::QuadVertexColors( line );
-    kvs::ValueArray<kvs::Real32> normals = ::QuadVertexNormals( line );
-    kvs::ValueArray<kvs::Real32> texcoords = ::QuadVertexTexCoords( line, m_halo_size, m_radius_size );
+    const auto type = line->lineType();
+    m_has_connection = line->numberOfConnections() > 0;
 
-    m_vbo_manager.setVertexArray( coords, 3 );
-    m_vbo_manager.setColorArray( colors, 3 );
-    m_vbo_manager.setNormalArray( normals );
-    m_vbo_manager.setTexCoordArray( texcoords, 4 );
-    m_vbo_manager.create();
+    auto coords = ::QuadVertexCoords( line );
+    auto colors = ::QuadVertexColors( line );
+    auto normals = ::QuadVertexNormals( line );
+    auto texcoords = ::QuadVertexTexCoords( line, halo, radius );
+    m_manager.setVertexArray( coords, 3 );
+    m_manager.setColorArray( colors, 3 );
+    m_manager.setNormalArray( normals );
+    m_manager.setTexCoordArray( texcoords, 4 );
+    m_manager.create();
 
-    if ( line->lineType() == kvs::LineObject::Polyline )
+    if ( type == kvs::LineObject::Polyline )
     {
         const kvs::UInt32* pconnections = line->connections().data();
         m_first_array.allocate( line->numberOfConnections() );
@@ -421,9 +268,39 @@ void StylizedLineRenderer::create_buffer_object( const kvs::LineObject* line )
             m_count_array[i] = 2 * ( pconnections[ 2 * i + 1 ] - pconnections[ 2 * i ] + 1 );
         }
     }
+
+    if ( !m_shape_texture.isCreated() ) { this->create_shape_texture(); }
+    if ( !m_diffuse_texture.isCreated() ) { this->create_diffuse_texture(); }
 }
 
-void StylizedLineRenderer::create_shape_texture()
+void StylizedLineRenderer::BufferObject::draw( const kvs::LineObject* line )
+{
+    kvs::VertexBufferObjectManager::Binder bind( m_manager );
+    kvs::Texture::Binder unit0( m_shape_texture, 0 );
+    kvs::Texture::Binder unit1( m_diffuse_texture, 1 );
+
+    // Draw lines.
+    const auto type = line->lineType();
+    switch ( type )
+    {
+    case kvs::LineObject::Polyline:
+        m_manager.drawArrays( GL_QUAD_STRIP, m_first_array, m_count_array );
+        break;
+    case kvs::LineObject::Strip:
+        m_manager.drawArrays( GL_QUAD_STRIP, 0, line->numberOfVertices() * 2 );
+        break;
+    default: break;
+    }
+}
+
+void StylizedLineRenderer::RenderPass::setShaderFiles(
+    const std::string& vert_file, const std::string& frag_file )
+{
+    this->setVertexShaderFile( vert_file );
+    this->setFragmentShaderFile( frag_file );
+}
+
+void StylizedLineRenderer::BufferObject::create_shape_texture()
 {
     const size_t resolution = 256;
     kvs::ValueArray<kvs::Real32> shape( resolution * resolution * 4 );
@@ -449,7 +326,7 @@ void StylizedLineRenderer::create_shape_texture()
     m_shape_texture.create( resolution, resolution, shape.data() );
 }
 
-void StylizedLineRenderer::create_diffuse_texture()
+void StylizedLineRenderer::BufferObject::create_diffuse_texture()
 {
 /*
     const int resolution = 256;
@@ -502,6 +379,137 @@ void StylizedLineRenderer::create_diffuse_texture()
     m_diffuse_texture.setMinFilter( GL_LINEAR );
     m_diffuse_texture.setPixelFormat( GL_RGB, GL_RGB, GL_UNSIGNED_BYTE );
     m_diffuse_texture.create( 1, 1, diffuse.data() );
+}
+
+void StylizedLineRenderer::RenderPass::create(
+    const kvs::Shader::ShadingModel& model, const bool enable )
+{
+    kvs::ShaderSource vert( m_vert_shader_file );
+    kvs::ShaderSource frag( m_frag_shader_file );
+    if ( enable )
+    {
+        switch ( model.type() )
+        {
+        case kvs::Shader::LambertShading: frag.define("ENABLE_LAMBERT_SHADING"); break;
+        case kvs::Shader::PhongShading: frag.define("ENABLE_PHONG_SHADING"); break;
+        case kvs::Shader::BlinnPhongShading: frag.define("ENABLE_BLINN_PHONG_SHADING"); break;
+        default: break; // NO SHADING
+        }
+
+        if ( model.two_side_lighting )
+        {
+            frag.define("ENABLE_TWO_SIDE_LIGHTING");
+        }
+    }
+
+    m_shader_program.build( vert, frag );
+}
+
+void StylizedLineRenderer::RenderPass::update(
+    const kvs::Shader::ShadingModel& model, const bool enable )
+{
+    m_shader_program.release();
+    this->create( model, enable );
+}
+
+void StylizedLineRenderer::RenderPass::setup(
+    const kvs::Shader::ShadingModel& model )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_shader_program.setUniform( "shading.Ka", model.Ka );
+    m_shader_program.setUniform( "shading.Kd", model.Kd );
+    m_shader_program.setUniform( "shading.Ks", model.Ks );
+    m_shader_program.setUniform( "shading.S",  model.S );
+
+    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4 P = kvs::OpenGL::ProjectionMatrix();
+    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    m_shader_program.setUniform( "ModelViewMatrix", M );
+    m_shader_program.setUniform( "ProjectionMatrix", P );
+    m_shader_program.setUniform( "NormalMatrix", N );
+    m_shader_program.setUniform( "shape_texture", 0 ); // *
+    m_shader_program.setUniform( "diffuse_texture", 1 ); // *
+}
+
+void StylizedLineRenderer::RenderPass::draw( const kvs::ObjectBase* object )
+{
+    kvs::ProgramObject::Binder bind( m_shader_program );
+    m_buffer_object.draw( kvs::LineObject::DownCast( object ) );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Executes rendering process.
+ *  @param  object [in] pointer to the object
+ *  @param  camera [in] pointer to the camera
+ *  @param  light [in] pointer to the light
+ */
+/*===========================================================================*/
+void StylizedLineRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+{
+    BaseClass::startTimer();
+    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
+
+    const size_t width = camera->windowWidth();
+    const size_t height = camera->windowHeight();
+    const auto shading_enabled = BaseClass::isShadingEnabled();
+    auto& shading_model = *m_shading_model;
+    shading_model.two_side_lighting = false;
+
+    if ( this->isWindowCreated() )
+    {
+        this->setWindowSize( width, height );
+        this->createBufferObject( object );
+        m_render_pass.create( shading_model, shading_enabled );
+    }
+
+    if ( this->isWindowResized( width, height ) )
+    {
+        this->setWindowSize( width, height );
+    }
+
+    if ( this->isObjectChanged( object ) )
+    {
+        this->updateBufferObject( object );
+        m_render_pass.update( shading_model, shading_enabled );
+    }
+
+    m_render_pass.setup( shading_model );
+    this->drawBufferObject( camera );
+
+    BaseClass::stopTimer();
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Creates buffer object.
+ *  @param  line [in] pointer to the line object
+ */
+/*===========================================================================*/
+void StylizedLineRenderer::createBufferObject( const kvs::ObjectBase* object )
+{
+    const auto* line = kvs::LineObject::DownCast( object );
+    const auto halo_size = m_render_pass.haloSize();
+    const auto radius_size = m_render_pass.radiusSize();
+    m_object = object;
+    m_buffer_object.create( line, halo_size, radius_size );
+}
+
+void StylizedLineRenderer::updateBufferObject( const kvs::ObjectBase* object )
+{
+    m_buffer_object.release();
+    this->createBufferObject( object );
+}
+
+void StylizedLineRenderer::drawBufferObject( const kvs::Camera* camera )
+{
+    const auto* line = kvs::LineObject::DownCast( m_object );
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_TEXTURE_2D );
+    kvs::OpenGL::Enable( GL_BLEND );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    kvs::Texture::SetEnv( GL_TEXTURE_ENV_MODE, GL_REPLACE );
+    m_render_pass.draw( line );
 }
 
 } // end of namespace kvs

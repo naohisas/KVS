@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file XMLDeclaration.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: XMLDeclaration.h 1304 2012-09-15 01:23:48Z naohisa.sakamoto@gmail.com $
+ *  @file   XMLDeclaration.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__XML_DECLARATION_H_INCLUDE

@@ -3,14 +3,6 @@
  *  @file   PolygonObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PolygonObject.cpp 1759 2014-05-05 06:14:18Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "PolygonObject.h"
 #include <string>
@@ -159,7 +151,10 @@ namespace kvs
  *  @brief  Constructs a new PolygonObject class.
  */
 /*===========================================================================*/
-PolygonObject::PolygonObject()
+PolygonObject::PolygonObject():
+    m_polygon_type( UnknownPolygonType ),
+    m_color_type( UnknownColorType ),
+    m_normal_type( UnknownNormalType )
 {
     BaseClass::setGeometryType( Polygon );
     this->setOpacity( 255 );

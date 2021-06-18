@@ -1,3 +1,584 @@
+### Version 3.0.0 Released (2021.06.18)
+**Added new classes and functions**
++ kvs::ValueAxis
++ kvs::DateAxis
++ kvs::UIColor
++ kvs::Margins
++ kvs::Application
++ kvs::Screen
++ kvs::KeyRepeatEventListener
++ kvs::KeyReleaseEventListener
++ kvs::EventTimer
++ kvs::InteractorBase
++ kvs::TrackballInteractor
++ kvs::TransferFunctionEditor
++ kvs::OffScreen
++ kvs::Png
++ kvs::SliceRange
++ kvs::LogStream
++ kvs::StampTimer
++ kvs::StampTimerList
+
+**Added SupportGLFW**
++ kvs::glfw::Application
++ kvs::glfw::Screen
++ kvs::glfw::ScreenBase
++ kvs::glfw::Timer
++ kvs::glfw::TransferFunctionEditor
+
+**Added SupportMPI**
++ kvs::mpi::Communicator
++ kvs::mpi::DataType
++ kvs::mpi::Environment
++ kvs::mpi::Operator
++ kvs::mpi::Request
++ kvs::mpi::Window
++ kvs::mpi::ImageCompositor
++ kvs::mpi::LogStream
++ kvs::mpi::StampTimer
+
+**Added new methods**
++ kvs::Matrix{22,33,44,nm}::rank
++ kvs::BitArray::BitArray( size, flag )
++ kvs::String::From( value )
++ kvs::String::From( value, width, fill )
++ kvs::String::From( value, precision, fixed, scientific )
++ kvs::String::From( value, thousands_sep )
++ kvs::String::Format( format, ... )
++ kvs::Painter::devicePixelRatio
++ kvs::ApplicationBase::setColorMode
++ kvs::ApplicationBase::setColorModeToDark
++ kvs::ApplicationBase::setColorModeToLight
++ kvs::Axis2D::setXAxis
++ kvs::Axis2D::setYAxis
++ kvs::Axis2D::setTitle
++ kvs::Axis2D::setTitleFont
++ kvs::Axis2D::setBackgroundVisible
++ kvs::Axis2D::setBorderlineColor
++ kvs::Axis2D::setBorderlineWidth
++ kvs::Axis2D::setBorderlineVisible
++ kvs::Axis2D::setNumberOfGridlines
++ kvs::Axis2D::setNumberOfXGridlines
++ kvs::Axis2D::setNumberOfYGridlines
++ kvs::Axis2D::setGridlinePattern
++ kvs::Axis2D::setGridlinePatternToSolid
++ kvs::Axis2D::setGridlinePatternToDash
++ kvs::Axis2D::setGridlinePatternToDot
++ kvs::Axis2D::setGridlinePatternToDashDot
++ kvs::Axis2D::setGridlineColor
++ kvs::Axis2D::setGridlineWidth
++ kvs::Axis2D::setGridlineVisible
++ kvs::Axis2D::xAxis
++ kvs::Axis2D::yAxis
++ kvs::Axis2D::title
++ kvs::Axis2D::titleFont
++ kvs::Axis2D::titleOffset
++ kvs::Axis2D::isBackgroundVisible
++ kvs::Axis2D::borderlineColor
++ kvs::Axis2D::borderlineWidth
++ kvs::Axis2D::isBorderlineVisible
++ kvs::Axis2D::numberOfGridlines
++ kvs::Axis2D::numberOfXGridlines
++ kvs::Axis2D::numberOfYGridlines
++ kvs::Axis2D::gridlinePattern
++ kvs::Axis2D::gridlineColor
++ kvs::Axis2D::gridlineWidth
++ kvs::Axis2D::isGridlineVisible
++ kvs::ScatterPlotRenderer::setBackgroundVisible
++ kvs::ScatterPlotRenderer::setPolylineVisible
++ kvs::ScatterPlotRenderer::pointColor
++ kvs::ScatterPlotRenderer::edgeColor
++ kvs::ScatterPlotRenderer::edgeOpacity
++ kvs::ScatterPlotRenderer::edgeWidth
++ kvs::ScatterPlotRenderer::polylineColor
++ kvs::ScatterPlotRenderer::polylineOpacity
++ kvs::ScatterPlotRenderer::polylineWidth
++ kvs::ScatterPlotRenderer::isPolylineVisible
++ kvs::ScatterPlotRenderer::isBackgroundVisible
++ kvs::TableObject::setMinMaxValues
++ kvs::TableObject::addColumn( array, min_value, max_value, label )
++ kvs::KeyEvent::modifiers
++ kvs::KeyEvent::setModifiers
++ kvs::glut::ScreenBase::DownCast
++ kvs::glut::Screen::DownCast
++ kvs::qt::ScreenBase::DownCast
++ kvs::qt::Screen::DownCast
++ kvs::Isosurface::Isosurface( volume, normal_type )
++ kvs::Mouse::setTrackball
++ kvs::Mouse::setOperationModeToRotation
++ kvs::Mouse::setOperationModeToTranslation
++ kvs::Mouse::setOperationModeToScaling
++ kvs::ArrowGlyph::setArrowType
++ kvs::ArrowGlyph::setArrowTypeToLine
++ kvs::ArrowGlyph::setArrowTypeToTube
++ kvs::ArrowGlyph::arrowType
++ kvs::EventHandler::keyRepeatEvent
++ kvs::EventHandler::keyReleaseEvent
++ kvs::glut::ScreenBase::keyRepeatEvent
++ kvs::glut::ScreenBase::keyReleaseEvent
++ kvs::qt::ScreenBase::keyRepeatEvent
++ kvs::qt::ScreenBase::keyReleaseEvent
++ kvs::WidgetBase::isVisible
++ kvs::WidgetBase::isActive
++ kvs::WidgetBase::anchor
++ kvs::WidgetBase::anchorTo
++ kvs::WidgetBase::anchorToTopLeft
++ kvs::WidgetBase::anchorToTopCenter
++ kvs::WidgetBase::anchorToTopRight
++ kvs::WidgetBase::anchorToBottomLeft
++ kvs::WidgetBase::anchorToBottomCenter
++ kvs::WidgetBase::anchorToBottomRight
++ kvs::WidgetBase::anchorToLeftCenter
++ kvs::WidgetBase::anchorToCenter
++ kvs::WidgetBase::anchorToRightCenter
++ kvs::WidgetBase::anchorTo( parent )
++ kvs::WidgetBase::anchorToTopLeft( parent )
++ kvs::WidgetBase::anchorToTopRight( parent )
++ kvs::WidgetBase::anchorToBottomLeft( parent )
++ kvs::WidgetBase::anchorToBottomRight( parent )
++ kvs::WidgetBase::anchorTopLeftTo( parent )
++ kvs::WidgetBase::anchorTopLeftToTopRight( parent )
++ kvs::WidgetBase::anchorTopLeftToBottomRight( parent )
++ kvs::WidgetBase::anchorTopLeftToBottomLeft( parent )
++ kvs::WidgetBase::anchorTopRightTo( parent )
++ kvs::WidgetBase::anchorTopRightToTopLeft( parent )
++ kvs::WidgetBase::anchorTopRightToBottomLeft( parent )
++ kvs::WidgetBase::anchorTopRightToBottomRight( parent )
++ kvs::WidgetBase::anchorBottomLeftTo( parent )
++ kvs::WidgetBase::anchorBottomLeftToTopLeft( parent )
++ kvs::WidgetBase::anchorBottomLeftToTopRight( parent )
++ kvs::WidgetBase::anchorBottomLeftToBottomRight( parent )
++ kvs::WidgetBase::anchorBottomRightTo( parent )
++ kvs::WidgetBase::anchorBottomRightToTopLeft( parent )
++ kvs::WidgetBase::anchorBottomRightToTopRight( parent )
++ kvs::WidgetBase::anchorBottomRightToBottomLeft( parent )
++ kvs::WidgetBase::anchorToTop( parent )
++ kvs::WidgetBase::anchorToBottom( parent )
++ kvs::WidgetBase::anchorToLeft( parent )
++ kvs::WidgetBase::anchorToRight( parent )
++ kvs::PushButton::pressed( lambda )
++ kvs::PushButton::released( lambda )
++ kvs::PushButton::screenUpdated( lambda )
++ kvs::PushButton::screenResized( lambda )
++ kvs::EventListener::EventListener( event_type )
++ kvs::EventListener::initializeEvent( lambda )
++ kvs::EventListener::paintEvent( lambda )
++ kvs::EventListener::resizeEvent( lambda )
++ kvs::EventListener::mousePressEvent( lambda )
++ kvs::EventListener::mouseMoveEvent( lambda )
++ kvs::EventListener::mouseReleaseEvent( lambda )
++ kvs::EventListener::mouseDoubleClickEvent( lambda )
++ kvs::EventListener::wheelEvent( lambda )
++ kvs::EventListener::keyPressEvent( lambda )
++ kvs::EventListener::keyRepeatEvent( lambda )
++ kvs::EventListener::keyReleaseEvent( lambda )
++ kvs::EventListener::timerEvent( lambda )
++ kvs::InitializeEventListener::InitializeEventListener( lambda )
++ kvs::InitializeEventListener::update( lambda )
++ kvs::PaintEventListener::PaintEventListener( lambda )
++ kvs::PaintEventListener::update( lambda )
++ kvs::ResizeEventListener::ResizeEventListener( lambda )
++ kvs::ResizeEventListener::update( lambda )
++ kvs::MousePressEventListener::MousePressEventListener( lambda )
++ kvs::MousePressEventListener::update( lambda )
++ kvs::MouseMoveEventListener::MouseMoveEventListener( lambda )
++ kvs::MouseMoveEventListener::update( lambda )
++ kvs::MouseReleaseEventListener::MouseReleaseEventListener( lambda )
++ kvs::MouseReleaseEventListener::update( lambda )
++ kvs::WheelEventListener::WheelEventListener( lambda )
++ kvs::WheelEventListener::update( lambda )
++ kvs::KeyPressEventListener::KeyPressEventListener( lambda )
++ kvs::KeyPressEventListener::update( lambda )
++ kvs::KeyRepeatEventListener::KeyRepeatEventListener( lambda )
++ kvs::KeyRepeatEventListener::update( lambda )
++ kvs::KeyReleaseEventListener::KeyReleaseEventListener( lambda )
++ kvs::KeyReleaseEventListener::update( lambda )
++ kvs::TimerEventListener::TimerEventListener( lambda )
++ kvs::TimerEventListener::update( lambda )
++ kvs::ScreenCaptureEvent::ScreenCaptureEvent( lambda, key )
++ kvs::ScreenCaptureEvent::update( lambda )
++ kvs::EventListener::enableEvent()
++ kvs::EventListener::enableEvent( event_type )
++ kvs::EventListener::disableEvent()
++ kvs::EventListener::disableEvent( event_type )
++ kvs::mpi::Communicator::root()
++ kvs::mpi::Communicator::abort()
++ kvs::mpi::Communicator::barrier()
++ kvs::mpi::Communicator::isRoot()
++ kvs::glsl::PointRenderer::setVertexShaderFile( vert_file )
++ kvs::glsl::PointRenderer::setFragmentShaderFile( frag_file )
++ kvs::glsl::PointRenderer::setShaderFiles( vert_file, frag_file )
++ kvs::glsl::PointRenderer::ShadingModel<Model>( model )
++ kvs::glsl::LineRenderer::setVertexShaderFile( vert_file )
++ kvs::glsl::LineRenderer::setFragmentShaderFile( frag_file )
++ kvs::glsl::LineRenderer::setShaderFiles( vert_file, frag_file )
++ kvs::glsl::LineRenderer::ShadingModel<Model>( model )
++ kvs::glsl::PolygonRenderer::setVertexShaderFile( vert_file )
++ kvs::glsl::PolygonRenderer::setFragmentShaderFile( frag_file )
++ kvs::glsl::PolygonRenderer::setShaderFiles( vert_file, frag_file )
++ kvs::glsl::PolygonRenderer::ShadingModel<Model>( model )
++ kvs::ValueArray::slice( {start,stop,step} )
++ kvs::ValueArray::operator[ {start,stop,step} ]
++ kvs::ValueTable::slice( {cstart,cstop,cstep} )
++ kvs::ValueTable::slice( {rstart,rstop,rstep}, {cstart,cstop,cstep} )
++ kvs::ValueTable::sliceColumn( {cstart,cstop,cstep} )
++ kvs::ValueTable::sliceRow( {rstart,rstop,rstep} )
++ kvs::ValueTable::operator[ {cstart,cstop,cstep} ]
++ kvs::PointRenderer::depthOffset()
++ kvs::PointRenderer::isTwoSideLightingEnabled()
++ kvs::PointRenderer::setDepthOffset( offset )
++ kvs::PointRenderer::setDepthOffset( factor, unit )
++ kvs::PointRenderer::setAntiAliasingEnabled( enable, multisample )
++ kvs::PointRenderer::setTwoSideLightingEnabled( enable )
++ kvs::LineRenderer::depthOffset()
++ kvs::LineRenderer::isTwoSideLightingEnabled()
++ kvs::LineRenderer::setDepthOffset( offset )
++ kvs::LineRenderer::setDepthOffset( factor, unit )
++ kvs::LineRenderer::setAntiAliasingEnabled( enable, multisample )
++ kvs::PolygonRenderer::depthOffset()
++ kvs::PolygonRenderer::isTwoSideLightingEnabled()
++ kvs::PolygonRenderer::setDepthOffset( offset )
++ kvs::PolygonRenderer::setDepthOffset( factor, unit )
++ kvs::PolygonRenderer::setAntiAliasingEnabled( enable, multisample )
++ kvs::PolygonRenderer::setTwoSideLightingEnabled( enable )
++ kvs::StochasticLineRenderer::setDepthOffset( offset )
++ kvs::StochasticLineRenderer::setDepthOffset( factor, unit )
++ kvs::StochasticLineRenderer::Engine::setDepthOffset( offset )
++ kvs::StochasticLineRenderer::Engine::setDepthOffset( factor, unit )
++ kvs::StochasticPointRenderer::setDepthOffset( offset )
++ kvs::StochasticPointRenderer::setDepthOffset( factor, unit )
++ kvs::StochasticPointRenderer::Engine::setDepthOffset( offset )
++ kvs::StochasticPointRenderer::Engine::setDepthOffset( factor, unit )
++ kvs::StochasticPolygonRenderer::setDepthOffset( offset )
++ kvs::StochasticPolygonRenderer::setDepthOffset( factor, unit )
++ kvs::StochasticPolygonRenderer::Engine::setDepthOffset( offset )
++ kvs::StochasticPolygonRenderer::Engine::setDepthOffset( factor, unit )
++ kvs::StochasticRendererBase::setTwoSideLightingEnabled( enable )
++ kvs::StochasticRendererBase::isTwoSideLightingEnabled()
++ kvs::StochasticRendererBase::enableTwoSideLighting()
++ kvs::StochasticRendererBase::disableTwoSideLighting()
++ kvs::VolumeRendererBase::setTwoSideLightingEnabled( enable )
++ kvs::VolumeRendererBase::isTwoSideLightingEnabled()
++ kvs::VolumeRendererBase::enableTwoSideLighting()
++ kvs::VolumeRendererBase::disableTwoSideLighting()
++ kvs::Program::exec( func )
++ kvs::Program::exec()
++ kvs::Program::run()
+
+**Added new examples**
++ Example/Visualization/ScatterPlotMatrixRenderer
++ Example/Visualization/StochasticUniformGridRenderer
++ Example/Visualization/TransferFunctionEditor
++ Example/SupportMPI/AllToAll
++ Example/SupportMPI/Broadcast
++ Example/SupportMPI/Gather
++ Example/SupportMPI/HelloWorld
++ Example/SupportMPI/PutGet
++ Example/SupportMPI/Reduce
++ Example/SupportMPI/Scatter
++ Example/SupportMPI/SendRecv
++ Example/SupportMPI/ImageComposition
+
+**Deprecated classes**
++ kvs::glut::CheckBox (use kvs::CheckBox)
++ kvs::glut::CheckBoxGroup (use kvs::CheckBoxGroup)
++ kvs::glut::ColorMapPalette (use kvs::ColorMapPalette)
++ kvs::glut::ColorPalette (use kvs::ColorPalette)
++ kvs::glut::Histogram (use kvs::Histogram)
++ kvs::glut::Label (use kvs::Label)
++ kvs::glut::LegendBar (use kvs::LegendBar)
++ kvs::glut::OpacityMapPalette (use kvs::OpacityMapPalette)
++ kvs::glut::OrientationAxis (use kvs::OrientationAxis)
++ kvs::glut::PushButton (use kvs::PushButton)
++ kvs::glut::RadioButton (use kvs::RadioButton)
++ kvs::glut::RadioButtonGropu (use kvs::RadioButtonGropu)
++ kvs::glut::Slider (use kvs::Slider)
++ kvs::glut::WidgetBase (use kvs::WidgetBase)
+
+**Deprecated methods**
++ kvs::Axis2D::setTopMargin (use kvs::Axis2D::setMargins)
++ kvs::Axis2D::setBottomMargin (use kvs::Axis2D::setMargins)
++ kvs::Axis2D::setLeftMargin (use kvs::Axis2D::setMargins)
++ kvs::Axis2D::setRightMargin (use kvs::Axis2D::setMargins)
++ kvs::Axis2D::setAxisWidth (use kvs::Axis2D::{xAxis,yAxis}().setWidth)
++ kvs::Axis2D::setAxisColor (use kvs::Axis2D::{xAxis,yAxis}().setColor)
++ kvs::Axis2D::setValueColor (use kvs::Axis2D::{xAxis,yAxis}().setTickLabelFont)
++ kvs::Axis2D::setLabelColor (use kvs::Axis2D::{xAxis,yAxis}().setLabelFont)
++ kvs::Axis2D::setXLabel (use kvs::Axis2D::xAxis().setLabel)
++ kvs::Axis2D::setYLabel (use kvs::Axis2D::yAxis().setLabel)
++ kvs::Axis2D::axisWidth (use kvs::Axis2D::xAxis().width)
++ kvs::Axis2D::axisColor (use kvs::Axis2D::xAxis().color)
++ kvs::Axis2D::valueColor (use kvs::Axis2D::xAxis().tickLabelFont().color)
++ kvs::Axis2D::labelColor (use kvs::Axis2D::xAxis().labelFont().color)
++ kvs::Axis2D::xLabel (use kvs::Axis2D::xAxis().label)
++ kvs::Axis2D::yLabel (use kvs::Axis2D::yAxis().label)
++ kvs::Axis2DMatrix::setTopMargin (use kvs::Axis2DMatrix::setMargins)
++ kvs::Axis2DMatrix::setBottomMargin (use kvs::Axis2DMatrix::setMargins)
++ kvs::Axis2DMatrix::setLeftMargin (use kvs::Axis2DMatrix::setMargins)
++ kvs::Axis2DMatrix::setRightMargin (use kvs::Axis2DMatrix::setMargins)
++ kvs::Axis2DMatrix::setAxisWidth (use kvs::Axis2DMatrix::axis(i).setWidth)
++ kvs::Axis2DMatrix::setAxisColor (use kvs::Axis2DMatrix::axis(i).setColor)
++ kvs::Axis2DMatrix::setValueColor (use kvs::Axis2DMatrix::axis(i).setTickLabelFont)
++ kvs::Axis2DMatrix::setLabelColor (use kvs::Axis2DMatrix::axis(i).setLabelFont)
++ kvs::Axis2DMatrix::setMargin (use kvs::Axis2DMatrix::setPadding)
++ kvs::Axis2DMatrix::margin (use kvs::Axis2DMatrix::padding)
++ kvs::ScatterPlotRenderer::setTopMargin (use kvs::ScatterPlotRenderer::setMargins)
++ kvs::ScatterPlotRenderer::setBottomMargin (use kvs::ScatterPlotRenderer::setMargins)
++ kvs::ScatterPlotRenderer::setLeftMargin (use kvs::ScatterPlotRenderer::setMargins)
++ kvs::ScatterPlotRenderer::setRightMargin (use kvs::ScatterPlotRenderer::setMargins)
++ kvs::ScatterPlotRenderer::setEnabledPolyline (use kvs::ScatterPlotRenderer::setPolylineVisible)
++ kvs::ScatterPlotMatrixRenderer::setTopMargin (use kvs::ScatterPlotMatrixRenderer::setMargins)
++ kvs::ScatterPlotMatrixRenderer::setBottomMargin (use kvs::ScatterPlotMatrixRenderer::setMargins)
++ kvs::ScatterPlotMatrixRenderer::setLeftMargin (use kvs::ScatterPlotMatrixRenderer::setMargins)
++ kvs::ScatterPlotMatrixRenderer::setRightMargin (use kvs::ScatterMatrixPlotRenderer::setMargins)
++ kvs::ScatterPlotMatrixRenderer::setMargin (use kvs::ScatterPlotMatrixRenderer::setPadding)
++ kvs::ScatterPlotMatrixRenderer::margin (use kvs::ScatterPlotMatrixRenderer::padding)
++ kvs::ArrowGlyph::setType (use kvs::ArrowGlyph::setArrowType)
++ kvs::ArrowGlyph::type (use kvs::ArrowGlyph::arrowType)
++ kvs::WidgetBase::isShown (use kvs::WidgetBase::isVisible)
++ kvs::WidgetBase::activate (use kvs::WidgetBase::setActive(true))
++ kvs::WidgetBase::deactivate (use kvs::WidgetBase::setActive(false))
++ kvs::String::ToString (use kvs::String::From)
++ kvs::glsl::PointRenderer::setShader (use kvs::glsl::PointRenderer::setShadingModel )
++ kvs::glsl::LineRenderer::setShader (use kvs::glsl::LineRenderer::setShadingModel )
++ kvs::glsl::PolygonRenderer::setShader (use kvs::glsl::PolygonRenderer::setShadingModel )
++ kvs::RendererBase::setEnabledShading (use kvs::RendererBase::setShadingEnabled)
++ kvs::RendererBase::isEnabledShading (use kvs::RendererBase::isShadingEnabled)
++ kvs::StochasticRendererBase::setEnabledLODControl (use kvs::StochasticRendererBase::setLODControlEnabled)
++ kvs::StochasticRendererBase::isEnabledLODControl (use kvs::StochasticRendererBase::isLODControlEnabled)
++ kvs::StochasticRendererBase::setEnabledRefinement (use kvs::StochasticRendererBase::setRefinementEnabled)
++ kvs::StochasticRendererBase::isEnabledRefinement (use kvs::StochasticRendererBase::isRefinementEnabled)
++ kvs::StochasticRenderingEngine::setEnabledShading (use kvs::StochasticRenderingEngine::setShadingEnabled)
++ kvs::StochasticRenderingEngine::isEnabledShading (use kvs::StochasticRenderingEngine::isShadingEnabled)
++ kvs::StochasticRenderingCompositor::isEnabledLODControl (use kvs::StochasticRenderingCompositor::isLODControlEnabled)
++ kvs::StochasticRenderingCompositor::isEnabledReginement (use kvs::StochasticRenderingCompositor::isReginementEnabled)
++ kvs::StochasticRenderingCompositor::setEnabledLODControl (use kvs::StochasticRenderingCompositor::setLODControlEnabled)
++ kvs::StochasticRenderingCompositor::setEnabledReginement (use kvs::StochasticRenderingCompositor::setReginementEnabled)
++ kvs::glsl::ParticleBasedRenderer::isEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::isShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::isEnabledZooming (use kvs::glsl::ParticleBasedRenderer::isZoomingEnabled)
++ kvs::glsl::ParticleBasedRenderer::setEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::setShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::setEnabledZooming (use kvs::glsl::ParticleBasedRenderer::setZoomingEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::isEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::Engine::isShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::isEnabledZooming (use kvs::glsl::ParticleBasedRenderer::Engine::isZoomingEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::setEnabledShuffle (use kvs::glsl::ParticleBasedRenderer::Engine::setShuffleEnabled)
++ kvs::glsl::ParticleBasedRenderer::Engine::setEnabledZooming (use kvs::glsl::ParticleBasedRenderer::Engine::setZoomingEnabled)
++ kvs::HAVSVolumeRenderer::isEnabledVBO (use kvs::HAVSVolumeRenderer::isVBOEnabled)
++ kvs::ImageRenderer::isEnabledCentering (use kvs::ImageRenderer::isCenteringEnabled)
++ kvs::PointRenderer::isTwoSideLighting (use kvs::PointRenderer::isTwoSideLightingEnabled)
++ kvs::glsl::PointRenderer::setOffset (use kvs::glsl::PointRenderer::setDepthOffset)
++ kvs::glsl::PolygonRenderer::isTwoSideLighting (use kvs::glsl::PolygonRenderer::isTwoSideLightingEnabled)
++ kvs::glsl::PolygonRenderer::setPolygonOffset (use kvs::glsl::PolygonRenderer::setDepthOffset)
++ kvs::StochasticLineRenderer::setLineOffset (use kvs::StochasticLineRenderer::setDepthOffset)
++ kvs::StochasticLineRenderer::Engine::setLineOffset (use kvs::StochasticLineRenderer::Engine::setDepthOffset)
++ kvs::StochasticPolygonRenderer::setPolygonOffset (use kvs::StochasticPolygonRenderer::setDepthOffset)
++ kvs::StochasticPolygonRenderer::Engine::setPolygonOffset (use kvs::StochasticPolygonRenderer::Engine::setDepthOffset)
++ kvs::Program::start( argc, argv ) (use kvs::Program::run)
++ kvs::Program::exec( argc, argv ) (use kvs::Program::exec)
++ kvs::ProgramObject::link( vert_shader, frag_shader ) (use kvs::ProgramObject::create, attach, and link)
++ kvs::ProgramObject::create( vert_shader, frag_shader )
+
+**Removed deprecated class and method**
++ kvs::Material
++ kvs::Camera::modelViewMatrix
++ kvs::Camera::projectionModelViewMatrix
++ kvs::Camera::getProjectionMatrix
++ kvs::Camera::getModelViewMatrix
++ kvs::Camera::getProjectionModelViewMatrix
++ kvs::Camera::getCombinedMatrix
++ kvs::Camera::projectObjectToWindow
++ kvs::Camera::projectWindowToObject
++ kvs::Camera::projectWindowToCamera
++ kvs::Camera::projectWindowToWorld
++ kvs::Camera::projectObjectToCamera
++ kvs::Camera::projectCameraToObject
++ kvs::Camera::projectWorldToCamera
++ kvs::Camera::projectCameraToWorld
++ kvs::Camera::projectWorldToObject
++ kvs::Camera::projectObjectToWorld
++ kvs::IDManager::operator []
++ kvs::Light::setModelLocalViewer
++ kvs::Light::setModelTwoSide
++ kvs::Light::setModelAmbient
++ kvs::Mouse::attachCamera
++ kvs::Mouse::setRotationCenter
++ kvs::Mouse::scaling
++ kvs::Mouse::translation
++ kvs::Mouse::rotation
++ kvs::ObjectManager::nobjects
++ kvs::ObjectManager::setActiveObjectID
++ kvs::glut::Screen::camera
++ kvs::glut::Screen::light
++ kvs::glut::Screen::mouse
++ kvs::glut::Screen::background
++ kvs::glut::Screen::objectManager
++ kvs::glut::Screen::rendererManager
++ kvs::glut::Screen::IDManager
++ kvs::glut::Screen::controlTarget
++ kvs::glut::Screen::setPaintEvent
++ kvs::glut::Screen::setResizeEvent
++ kvs::glut::Screen::setMousePressEvent
++ kvs::glut::Screen::setMouseMoveEvent
++ kvs::glut::Screen::setMouseReleaseEvent
++ kvs::glut::Screen::setMouseDoubleClickEvent
++ kvs::glut::Screen::setWheelEvent
++ kvs::glut::Screen::setKeyPressEvent
++ kvs::qt::Screen::camera
++ kvs::qt::Screen::light
++ kvs::qt::Screen::mouse
++ kvs::qt::Screen::background
++ kvs::qt::Screen::objectManager
++ kvs::qt::Screen::rendererManager
++ kvs::qt::Screen::IDManager
++ kvs::qt::Screen::controlTarget
++ kvs::qt::Screen::setPaintEvent
++ kvs::qt::Screen::setResizeEvent
++ kvs::qt::Screen::setMousePressEvent
++ kvs::qt::Screen::setMouseMoveEvent
++ kvs::qt::Screen::setMouseReleaseEvent
++ kvs::qt::Screen::setMouseDoubleClickEvent
++ kvs::qt::Screen::setWheelEvent
++ kvs::qt::Screen::setKeyPressEvent
++ kvs::AnyValue
++ kvs::AnyValueArray::isEmpty
++ kvs::AnyValueArray::swapByte
++ kvs::AnyValueArray::shallowCopy
++ kvs::AnyValueArray::deepCopy
++ kvs::AnyValueArray::pointer
++ kvs::AnyValueArray::to
++ kvs::BitArray::pointer
++ kvs::BitArray::shallowCopy
++ kvs::BitArray::deepCopy
++ kvs::BitArray::deallocate
++ kvs::Date::subtractYears (use kvs::Date::subYears)
++ kvs::Date::subtractMonths (use kvs::Date::subMonths)
++ kvs::Date::subtractDays (use kvs::Date::subDays)
++ kvs::Endian::ByteOrder
++ kvs::Endian::Check (use kvs::Endian::IsBig/IsLittle)
++ kvs::Endian::Swap( T& value ) (use kvs::Endian::Swap( T* value ))
++ kvs::File::Separator (use kvs::Directory::Separator)
++ kvs::Math::Power (use std::pow)
++ kvs::Math::Swap (use std::swap)
++ kvs::Math::Shift
++ kvs::Math::SquareRoot (use std::sqrt)
++ kvs::FastTokenizer
++ kvs::DisplayList
++ kvs::RendererBase::isShading (use kvs::RendererBase::isShadingEnabled)
++ kvs::RendererBase::initialize_projection
++ kvs::RendererBase::initialize_modelview
++ kvs::glsl::ParticleBasedRenderer::initialize
++ kvs::glsl::ParticleBasedRenderer::setSubpixelLevel
++ kvs::glsl::ParticleBasedRenderer::setCircleThreshold
++ kvs::glsl::ParticleBasedRenderer::enableCoarseRendering
++ kvs::glsl::ParticleBasedRenderer::disableCoarseRendering
++ kvs::glsl::ParticleBasedRenderer::enableAccumulationBuffer
++ kvs::glsl::ParticleBasedRenderer::disableAccumulationBuffer
++ kvs::glsl::ParticleBasedRenderer::enableRandomTexture
++ kvs::glsl::ParticleBasedRenderer::disableRandomTexture
++ kvs::glsl::ParticleBasedRenderer::subpixelLevel
++ kvs::glsl::ParticleBasedRenderer::circleThreshold
++ kvs::glsl::ParticleBasedRenderer::isEnabledAccumulationBuffer
++ kvs::glsl::ParticleBasedRenderer::isEnabledRandomTexture
++ kvs::StochasticRenderingCompositor::isEnabledShading
++ kvs::StochasticRenderingCompositor::setEnabledShading
++ kvs::StochasticRenderingCompositor::enableShading
++ kvs::StochasticRenderingCompositor::disableShading
++ kvs::BufferObject::download (use kvs::BufferObject::load)
++ kvs::FrameBuffer::read (use kvs::FrameBuffer::readPixels)
++ kvs::FrameBuffer::draw (use kvs::FrameBuffer::drawPixels)
++ kvs::FrameBufferObject::disable (use kvs::FrameBufferObject::unbind)
++ kvs::ProgramObject::clear (use kvs::ProgramObject::release)
++ kvs::ProgramObject::setUniformValuei (use kvs::ProgramObject::setUniform)
++ kvs::ProgramObject::setUniformValuef (use kvs::ProgramObject::setUniform)
++ kvs::ShaderObject::create (use kvs::ShaderObject::create and compile)
++ kvs::ShaderObject::clear (use kvs::ShaderObject::release)
++ kvs::Texture::isTexture (use kvs::Texture::isValid)
++ kvs::Texture1D::isDownload (use kvs::Texture1D::isLoaded)
++ kvs::Texture1D::download (use kvs::Texture1D::load)
++ kvs::Texture2D::isDownload (use kvs::Texture2D::isLoaded)
++ kvs::Texture2D::download (use kvs::Texture2D::load)
++ kvs::Texture3D::isDownload (use kvs::Texture3D::isLoaded)
++ kvs::Texture3D::download (use kvs::Texture3D::load)
++ kvs::TextureRectangle::isDownload (use kvs::TextureRectangle::isLoaded)
++ kvs::TextureRectangle::download (use kvs::TextureRectangle::load)
++ kvs::OpenGL::ActivateTextureUnit (use kvs::Texture::SelectActiveUnit)
++ kvs::OpenGL::ShaderVersion (use kvs::OpenGL::GLSLVersion)
++ kvs::OpenGL::CheckError (use kvs::OpenGL::HasError)
+
+**Removed macro**
++ KVS_MESSAGE_RED
++ KVS_MESSAGE_GREEN
++ KVS_MESSAGE_BROWN
++ KVS_MESSAGE_BLUE
++ KVS_MESSAGE_PURPLE
++ KVS_MESSAGE_SKY
++ KVS_MESSAGE_WHITE
++ KVS_MESSAGE_NORMAL
++ KVS_MESSAGE_SET_COLOR
++ KVS_MESSAGE_RESET_COLOR
+
+**Removed classes**
++ kvs::TextEngine (use kvs::Painter)
++ kvs::StochasticMultipleTetrahedraCompositor (use kvs::StochasticRenderingCompositor)
++ kvs::StochasticMultipleTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
++ kvs::StochasticMultivariateTetrahedraRenderer (use kvs::StochasticTetrahedraRenderer)
++ kvs::glsl::rits::ParticleBasedRenderer (use kvs::glsl::ParticleBasedRenderer)
++ kvs::TextureBinder (use kvs::Texture::Binder)
+
+**Removed methods**
++ kvs::glut::ScreenBase::timerEventHandler
++ kvs::glut::ScreenBase::addTimerEvent
++ kvs::glut::Screen::idleMouseEvent
++ kvs::glut::Screen::defaultPaintEvent
++ kvs::glut::Screen::defaultResizeEvent
++ kvs::glut::Screen::defaultMousePressEvent
++ kvs::glut::Screen::defaultMouseMoveEvent
++ kvs::glut::Screen::defaultMouseReleaseEvent
++ kvs::glut::Screen::defaultWheelEvent
++ kvs::glut::Screen::defaultKeyPressEvent
++ kvs::glfw::ScreenBase::timerEventHandler
++ kvs::glfw::ScreenBase::addTimerEvent
++ kvs::glfw::Screen::idleMouseEvent
++ kvs::glfw::Screen::defaultPaintEvent
++ kvs::glfw::Screen::defaultResizeEvent
++ kvs::glfw::Screen::defaultMousePressEvent
++ kvs::glfw::Screen::defaultMouseMoveEvent
++ kvs::glfw::Screen::defaultMouseReleaseEvent
++ kvs::glfw::Screen::defaultWheelEvent
++ kvs::glfw::Screen::defaultKeyPressEvent
++ kvs::qt::ScreenBase::timerEventHandler
++ kvs::qt::ScreenBase::addTimerEvent
++ kvs::qt::Screen::idleMouseEvent
++ kvs::qt::Screen::defaultPaintEvent
++ kvs::qt::Screen::defaultResizeEvent
++ kvs::qt::Screen::defaultMousePressEvent
++ kvs::qt::Screen::defaultMouseMoveEvent
++ kvs::qt::Screen::defaultMouseReleaseEvent
++ kvs::qt::Screen::defaultWheelEvent
++ kvs::qt::Screen::defaultKeyPressEvent
+
+**Removed examples**
++ Example/Utility/AnyValue
++ Example/SupportGLUT/CheckBox
++ Example/SupportGLUT/LegendBar
++ Example/SupportGLUT/OrientationBox
++ Example/SupportGLUT/PushButton
++ Example/SupportGLUT/RadioButton
++ Example/SupportGLUT/Slider
++ Example/SupportGLUT/TransferFunctionEditor
++ Example/Visualization/StochasticMultivariateTetrahedraRenderer
+
+**Added new option in KVS**
++ Environment parameter KVS_COLOR_MODE for changing color mode (Dark or Light)
++ Environment parameters KVS_APP_USE_GLUT, KVS_APP_USE_GLFW, and KVS_APP_USE_QT for specifying Application and Screen class APIs.
+
+**kvsconv command**
++ Removed '-fld2kvsml' option (use '-fld_conv')
++ Removed '-ucd2kvsml' option (use '-ucd_conv')
++ Removed '-tet2tet' option (use '-tet_conv')
++ Removed '-img2img' option (use '-img_conv')
++ Added cube mapping option '-cube' to '-img_conv'
++ Added sphere mapping option '-sphere' to '-img_conv'
+
 ### Version 2.9.0 Released (2020.5.10)
 **Added new classes and functions**
 + kvs::Stat::Sum
@@ -12,7 +593,7 @@
 + kvs::Stat::AutoCorr
 + kvs::Stat::CrossCorr
 + kvs::Stat::Standardize
-+ kvs::StudentTDistributiion
++ kvs::StudentTDistribution
 + kvs::FisherFDistribution
 + kvs::ChiSquaredDistribution
 + kvs::GaussDistribution

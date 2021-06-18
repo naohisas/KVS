@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   Axis3D.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <string>
 #include <kvs/RendererBase>
@@ -5,6 +11,7 @@
 #include <kvs/Vector3>
 #include <kvs/RGBColor>
 #include <kvs/Painter>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -80,10 +87,10 @@ public:
     void setLabelColor( const kvs::RGBColor& color ) { m_label_color = color; }
     void setValueColor( const kvs::RGBColor& color ) { m_value_color = color; }
     void setBackgroundColor( const kvs::RGBAColor color ) { m_background_color = color; }
-    void setEnabledAntiAliasing( const bool enable ) { m_enable_anti_aliasing = enable; }
+    void setAntiAliasingEnabled( const bool enable = true ) { m_enable_anti_aliasing = enable; }
 
-    void enableAntiAliasing() { this->setEnabledAntiAliasing( true ); }
-    void disableAntiAliasing() { this->setEnabledAntiAliasing( false ); }
+    void enableAntiAliasing() { this->setAntiAliasingEnabled( true ); }
+    void disableAntiAliasing() { this->setAntiAliasingEnabled( false ); }
     void showLabels() { m_show_labels = true; }
     void showValues() { m_show_values = true; }
     void showGridlines() { m_show_gridlines = true; }
@@ -120,6 +127,9 @@ private:
     void draw_yz_gridlines( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord, const kvs::Real32 depth_x );
     void draw_zx_gridlines( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord, const kvs::Real32 depth_y );
     void draw_labels( const kvs::Vec3& min_coord, const kvs::Vec3& max_coord );
+
+public:
+    KVS_DEPRECATED( void setEnabledAntiAliasing( const bool enable ) ) { this->setAntiAliasingEnabled( enable ); }
 };
 
 } // end of namespace kvs

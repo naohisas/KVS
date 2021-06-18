@@ -3,14 +3,6 @@
  *  @file   PushButton.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "PushButton.h"
 #include <kvs/OpenGL>
@@ -49,7 +41,11 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
     m_grad_top_color( kvs::RGBColor::White() ),
     m_grad_bottom_color( kvs::RGBColor::Black() ),
     m_border_light_color( kvs::RGBColor( 250, 250, 250 ) ),
-    m_border_dark_color( kvs::RGBColor( 0, 0, 0 ) )
+    m_border_dark_color( kvs::RGBColor( 0, 0, 0 ) ),
+    m_pressed( nullptr ),
+    m_released( nullptr ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
@@ -58,7 +54,7 @@ PushButton::PushButton( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::ButtonMargin );
-    this->setCaption( "PushButton " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "PushButton " + kvs::String::From( ::InstanceCounter++ ) );
     this->setTextMargin( ::Default::TextMargin );
     this->setButtonColor( ::Default::ButtonColor );
 
@@ -203,7 +199,7 @@ void PushButton::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -235,6 +231,8 @@ void PushButton::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -247,13 +245,13 @@ void PushButton::resizeEvent( int width, int height )
 /*===========================================================================*/
 void PushButton::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::contains( event->x(), event->y() ) )
     {
         m_pushed = true;
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
         this->pressed();
         BaseClass::screen()->redraw();
     }
@@ -269,13 +267,13 @@ void PushButton::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
         m_pushed = false;
         this->released();
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

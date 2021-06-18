@@ -3,40 +3,99 @@
  *  @file   RayCastingRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RayCastingRenderer.cpp 1517 2013-04-09 11:55:49Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "RayCastingRenderer.h"
 #include <kvs/DebugNew>
-#include <kvs/IgnoreUnusedVariable>
-#include <kvs/File>
-#include <kvs/KVSMLStructuredVolumeObject>
-#include <kvs/AVSField>
 #include <kvs/PipelineModule>
 #include <kvs/VisualizationPipeline>
 #include <kvs/RayCastingRenderer>
 #include <kvs/Bounds>
-#include <kvs/PaintEventListener>
 #include <kvs/MouseDoubleClickEventListener>
 #include <kvs/KeyPressEventListener>
-#include <kvs/Key>
 #include <kvs/RendererManager>
 #include <kvs/LineObject>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
-#include <kvs/glut/TransferFunctionEditor>
+#include <kvs/Application>
+#include <kvs/Screen>
+#include <kvs/TransferFunctionEditor>
+#include <kvs/TargetChangeEvent>
+#include <kvs/Label>
+#include <kvs/ColorMapBar>
+#include <kvs/OrientationAxis>
 #include "CommandName.h"
 #include "FileChecker.h"
-#include "Widget.h"
 
-namespace { bool Shown = false; }
-namespace { const std::string RendererName( "RayCastingRenderer" ); }
+
+namespace
+{
+
+const std::string RendererName( "RayCastingRenderer" );
+
+/*===========================================================================*/
+/**
+ *  @brief  Create a ray casting renderer.
+ *  @param  arg [in] command line argument
+ *  @param  tfunc [in] transfer function
+ */
+/*===========================================================================*/
+kvs::VolumeRendererBase* CreateRenderer(
+    const kvsview::RayCastingRenderer::Argument& arg,
+    const kvs::TransferFunction& tfunc )
+{
+    kvs::VolumeRendererBase* renderer = nullptr;
+    if ( arg.nogpu() ) { renderer = new kvs::RayCastingRenderer(); }
+    else { renderer = new kvs::glsl::RayCastingRenderer(); }
+
+    renderer->setName( RendererName );
+    renderer->setTransferFunction( tfunc );
+
+    if ( arg.nogpu() )
+    {
+        auto* r = kvs::RayCastingRenderer::DownCast( renderer );
+        r->setSamplingStep( arg.step() );
+        if ( !arg.nolod() ) { r->enableLODControl(); }
+    }
+    else
+    {
+        auto* r = kvs::glsl::RayCastingRenderer::DownCast( renderer );
+        r->setSamplingStep( arg.step() );
+        if ( arg.jittering() ) { r->enableJittering(); }
+    }
+
+    if ( arg.noshading() ) { renderer->disableShading(); }
+    else { renderer->enableShading(); }
+
+    // Shader type.
+    const float ka = arg.ambient();
+    const float kd = arg.diffuse();
+    const float ks = arg.specular();
+    const float n = arg.shininess();
+    switch ( arg.shader() )
+    {
+    case 0:
+    {
+        auto shader = kvs::Shader::Lambert( ka, kd );
+        renderer->setShader( shader );
+        break;
+    }
+    case 1:
+    {
+        auto shader = kvs::Shader::Phong( ka, kd, ks, n );
+        renderer->setShader( shader );
+        break;
+    }
+    case 2:
+    {
+        auto shader = kvs::Shader::BlinnPhong( ka, kd, ks, n );
+        renderer->setShader( shader );
+        break;
+    }
+    default: break;
+    }
+
+    return renderer;
+}
+
+} // end of namespace
 
 
 namespace kvsview
@@ -44,166 +103,6 @@ namespace kvsview
 
 namespace RayCastingRenderer
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Set shader and transfer function to ray casting renderer.
- *  @param  arg [in] command line argument
- *  @param  tfunc [in] transfer function
- *  @param  renderer [in] renderer module
- */
-/*===========================================================================*/
-template <typename Renderer>
-const void SetupRenderer(
-    const kvsview::RayCastingRenderer::Argument& arg,
-    const kvs::TransferFunction& tfunc,
-    kvs::PipelineModule& renderer )
-{
-    // Renderer name.
-    renderer.template get<Renderer>()->setName( ::RendererName );
-
-    // Sampling step.
-    const float step = arg.step();
-    renderer.template get<Renderer>()->setSamplingStep( step );
-
-    // Transfer function.
-    renderer.template get<Renderer>()->setTransferFunction( tfunc );
-
-    // Shading on/off.
-    const bool noshading = arg.noShading();
-    if ( noshading ) renderer.template get<Renderer>()->disableShading();
-    else renderer.template get<Renderer>()->enableShading();
-
-    // Shader type.
-    const float ka = arg.ambient();
-    const float kd = arg.diffuse();
-    const float ks = arg.specular();
-    const float n = arg.shininess();
-    const int shader = arg.shader();
-    switch ( shader )
-    {
-    case 0: // Lamber shading
-    {
-        renderer.template get<Renderer>()->setShader( kvs::Shader::Lambert( ka, kd ) );
-        break;
-    }
-    case 1: // Phong shading
-    {
-        renderer.template get<Renderer>()->setShader( kvs::Shader::Phong( ka, kd, ks, n ) );
-        break;
-    }
-    case 2: // Blinn-phong shading
-    {
-        renderer.template get<Renderer>()->setShader( kvs::Shader::BlinnPhong( ka, kd, ks, n ) );
-        break;
-    }
-    default: break;
-    }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Transfer function editor class.
- */
-/*===========================================================================*/
-class TransferFunctionEditor : public kvs::glut::TransferFunctionEditor
-{
-    bool m_no_gpu; ///!< flag to check if the GPU shader is enabled
-    kvs::ColorMapBar* m_colormap_bar; ///!< pointer to the colormap bar
-
-public:
-
-    TransferFunctionEditor( kvs::glut::Screen* screen, const bool no_gpu ):
-        kvs::glut::TransferFunctionEditor( screen ),
-        m_no_gpu( no_gpu ) {}
-
-    void apply()
-    {
-        kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-        const kvs::RendererBase* base = glut_screen->scene()->rendererManager()->renderer( ::RendererName );
-        if ( m_no_gpu )
-        {
-            kvs::RayCastingRenderer* renderer = (kvs::RayCastingRenderer*)base;
-            renderer->setTransferFunction( transferFunction() );
-        }
-        else
-        {
-            kvs::glsl::RayCastingRenderer* renderer = (kvs::glsl::RayCastingRenderer*)base;
-            renderer->setTransferFunction( transferFunction() );
-        }
-
-        m_colormap_bar->setColorMap( transferFunction().colorMap() );
-
-        screen()->redraw();
-    }
-
-    void attachColorMapBar( kvs::ColorMapBar* colormap_bar )
-    {
-        m_colormap_bar = colormap_bar;
-    }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Key press event.
- */
-/*===========================================================================*/
-class KeyPressEvent : public kvs::KeyPressEventListener
-{
-    TransferFunctionEditor* m_editor; ///!< pointer to the transfer function
-
-public:
-
-    void update( kvs::KeyEvent* event )
-    {
-        kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-        switch ( event->key() )
-        {
-        case kvs::Key::o: glut_screen->scene()->controlTarget() = kvs::Scene::TargetObject; break;
-        case kvs::Key::l: glut_screen->scene()->controlTarget() = kvs::Scene::TargetLight; break;
-        case kvs::Key::c: glut_screen->scene()->controlTarget() = kvs::Scene::TargetCamera; break;
-        case kvs::Key::t:
-        {
-            if ( ::Shown ) m_editor->hide();
-            else m_editor->show();
-
-            ::Shown = !::Shown;
-            break;
-        }
-        default: break;
-        }
-    }
-
-    void attachTransferFunctionEditor( TransferFunctionEditor* editor )
-    {
-        m_editor = editor;
-    }
-};
-
-/*===========================================================================*/
-/**
- *  @brief  Mouse double-click event.
- */
-/*===========================================================================*/
-class MouseDoubleClickEvent : public kvs::MouseDoubleClickEventListener
-{
-    TransferFunctionEditor* m_editor; ///!< pointer to the transfer function
-
-public:
-
-    void update( kvs::MouseEvent* event )
-    {
-        if ( ::Shown ) m_editor->hide();
-        else m_editor->show();
-
-        ::Shown = !::Shown;
-    }
-
-    void attachTransferFunctionEditor( TransferFunctionEditor* editor )
-    {
-        m_editor = editor;
-    }
-};
 
 /*===========================================================================*/
 /**
@@ -216,7 +115,7 @@ Argument::Argument( int argc, char** argv ):
     kvsview::Argument::Common( argc, argv, "RayCastingRenderer")
 {
     // Parameters for the RayCastingRenderer class.
-    addOption( kvsview::RayCastingRenderer::CommandName, kvsview::RayCastingRenderer::Description, 0 );
+    addOption( RayCastingRenderer::CommandName, RayCastingRenderer::Description, 0 );
     addOption( "t", "Transfer function file. (optional: <filename>)", 1, false );
     addOption( "T", "Transfer function file with range adjustment. (optional: <filename>)", 1, false );
     addOption( "noshading", "Disable shading. (optional)", 0, false );
@@ -236,125 +135,22 @@ Argument::Argument( int argc, char** argv ):
 
 /*===========================================================================*/
 /**
- *  @brief  Returns the shader number.
- *  @return shader number
- */
-/*===========================================================================*/
-const int Argument::shader() const
-{
-    const int default_value = 0;
-
-    if ( this->hasOption("shader") ) return this->optionValue<int>("shader");
-    else return default_value;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Check whether the "noshading" option is specified or not.
- *  @return true, if the "noshading" option is specified
- */
-/*===========================================================================*/
-const bool Argument::noShading() const
-{
-    return this->hasOption("noshading");
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Check whether the "nolod" option is specified or not.
- *  @return true, if the "nolod" option is specified
- */
-/*===========================================================================*/
-const bool Argument::noLOD() const
-{
-    return this->hasOption("nolod");
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Check whether the "nogpu" option is specified or not.
- *  @return true, if the "nogpu" option is specified
- */
-/*===========================================================================*/
-const bool Argument::noGPU() const
-{
-    return this->hasOption("nogpu");
-}
-
-const bool Argument::jittering() const
-{
-    return this->hasOption("jittering");
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the coefficient for ambient color.
- *  @return coefficient for ambient color
- */
-/*===========================================================================*/
-const float Argument::ambient() const
-{
-    const float default_value = this->shader() == 0 ? 0.4f : 0.3f;
-    if ( this->hasOption("ka") ) return this->optionValue<float>("ka");
-    else return default_value;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the coefficient for diffuse color.
- *  @return coefficient for diffuse color
- */
-/*===========================================================================*/
-const float Argument::diffuse() const
-{
-    const float default_value = this->shader() == 0 ? 0.6f : 0.5f;
-    if ( this->hasOption("kd") ) return this->optionValue<float>("kd");
-    else return default_value;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the coefficient for specular color.
- *  @return coefficient for specular color
- */
-/*===========================================================================*/
-const float Argument::specular() const
-{
-    const float default_value = 0.8f;
-    if ( this->hasOption("ks") ) return this->optionValue<float>("ks");
-    else return default_value;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the coefficient for shininess.
- *  @return coefficient for shininess
- */
-/*===========================================================================*/
-const float Argument::shininess() const
-{
-    const float default_value = 100.0f;
-    if ( this->hasOption("n") ) return this->optionValue<float>("n");
-    else return default_value;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Returns a transfer function.
  *  @param  volume [in] pointer to the volume object
  *  @return transfer function
  */
 /*===========================================================================*/
-const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectBase* volume ) const
+kvs::TransferFunction Argument::transferFunction(
+    const kvs::VolumeObjectBase* volume ) const
 {
     if ( this->hasOption("t") )
     {
-        const std::string filename = this->optionValue<std::string>("t");
+        const auto filename = this->optionValue<std::string>("t");
         return kvs::TransferFunction( filename );
     }
     else if ( this->hasOption("T") )
     {
-        const std::string filename = this->optionValue<std::string>("T");
+        const auto filename = this->optionValue<std::string>("T");
         kvs::TransferFunction tfunc( filename );
         tfunc.adjustRange( volume );
         return tfunc;
@@ -368,147 +164,58 @@ const kvs::TransferFunction Argument::transferFunction( const kvs::VolumeObjectB
 
 /*===========================================================================*/
 /**
- *  @brief  Returns sampling step.
- *  @return sampling step
- */
-/*===========================================================================*/
-const float Argument::step() const
-{
-    const float default_value = 0.5f;
-    if ( this->hasOption("step") ) return this->optionValue<float>("step");
-    else return default_value;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
-    // GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
-
     // Parse specified arguments.
-    kvsview::RayCastingRenderer::Argument arg( argc, argv );
-    if( !arg.parse() ) return( false );
+    RayCastingRenderer::Argument arg( m_argc, m_argv );
+    if ( !arg.parse() ) return ( false );
 
-    // Events.
-    kvsview::RayCastingRenderer::KeyPressEvent key_press_event;
-    kvsview::RayCastingRenderer::MouseDoubleClickEvent mouse_double_click_event;
-
-    // Create screen.
-    kvs::glut::Screen screen( &app );
+    // Viewer application.
+    kvs::Application app( m_argc, m_argv );
+    kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
-    screen.addEvent( &key_press_event );
-    screen.addEvent( &mouse_double_click_event );
-    screen.setTitle( kvsview::CommandName + " - " + kvsview::RayCastingRenderer::CommandName );
-    screen.show();
+    screen.setTitle( kvsview::CommandName + " - " + RayCastingRenderer::CommandName );
+    screen.create();
 
-    // Check the input point data.
+    // Check the input data.
     m_input_name = arg.value<std::string>();
     if ( !( kvsview::FileChecker::ImportableStructuredVolume( m_input_name ) ||
             kvsview::FileChecker::ImportableUnstructuredVolume( m_input_name ) ) )
     {
-        kvsMessageError("%s is not volume data.", m_input_name.c_str());
-        return( false );
+        kvsMessageError() << m_input_name << " is not volume data." << std::endl;;
+        return ( false );
     }
 
     // Visualization pipeline.
     kvs::VisualizationPipeline pipe( m_input_name );
     pipe.import();
 
-    // Verbose information.
+    const kvs::Indent indent(4);
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "IMPORTED OBJECT" << std::endl, indent );
     }
 
-    // Pointer to the volume object data.
-    const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
+    // Create ray casting renderer module.
+    const auto* volume = kvs::VolumeObjectBase::DownCast( pipe.object() );
+    const auto tfunc = arg.transferFunction( volume );
+    kvs::PipelineModule renderer_module( ::CreateRenderer( arg, tfunc ) );
+    pipe.connect( renderer_module );
 
-    // Transfer function.
-    const kvs::TransferFunction tfunc = arg.transferFunction( volume );
-
-    // Label (fps).
-    kvsview::Widget::FPSLabel label( &screen, ::RendererName );
-    label.show();
-
-    // Colormap bar.
-    kvsview::Widget::ColorMapBar colormap_bar( &screen );
-    colormap_bar.setColorMap( tfunc.colorMap() );
-    if ( !tfunc.hasRange() )
-    {
-        const kvs::Real32 min_value = static_cast<kvs::Real32>( volume->minValue() );
-        const kvs::Real32 max_value = static_cast<kvs::Real32>( volume->maxValue() );
-        colormap_bar.setRange( min_value, max_value );
-    }
-    colormap_bar.show();
-
-    // Orientation axis.
-    kvsview::Widget::OrientationAxis orientation_axis( &screen );
-    orientation_axis.show();
-
-    // Bounding box.
-    if ( arg.hasOption("bounds") )
-    {
-        kvs::Bounds* bounds = new kvs::Bounds();
-        kvs::LineObject* line = bounds->outputLineObject( pipe.object() );
-        delete bounds;
-
-        line->setColor( kvs::RGBColor( 0, 0, 0 ) );
-        if ( arg.hasOption("bounds_color") )
-        {
-            const kvs::UInt8 r( static_cast<kvs::UInt8>(arg.optionValue<int>("bounds_color",0)) );
-            const kvs::UInt8 g( static_cast<kvs::UInt8>(arg.optionValue<int>("bounds_color",1)) );
-            const kvs::UInt8 b( static_cast<kvs::UInt8>(arg.optionValue<int>("bounds_color",2)) );
-            line->setColor( kvs::RGBColor( r, g, b ) );
-        }
-
-        kvs::VisualizationPipeline p( line );
-        p.exec();
-        p.renderer()->disableShading();
-
-        screen.registerObject( &p );
-    }
-
-    // Set up a RayCastingRenderer class.
-    if ( arg.noGPU() )
-    {
-        kvs::PipelineModule renderer( new kvs::RayCastingRenderer );
-        kvsview::RayCastingRenderer::SetupRenderer<kvs::RayCastingRenderer>( arg, tfunc, renderer );
-
-        if ( !arg.noLOD() )
-        {
-            renderer.get<kvs::RayCastingRenderer>()->enableLODControl();
-        }
-
-        pipe.connect( renderer );
-    }
-    else
-    {
-        kvs::PipelineModule renderer( new kvs::glsl::RayCastingRenderer );
-        kvsview::RayCastingRenderer::SetupRenderer<kvs::glsl::RayCastingRenderer>( arg, tfunc, renderer );
-
-        if ( arg.jittering() )
-        {
-            renderer.get<kvs::glsl::RayCastingRenderer>()->enableJittering();
-        }
-        pipe.connect( renderer );
-    }
-
-    // Construct the visualization pipeline.
+    // Execute the visualization pipeline.
     if ( !pipe.exec() )
     {
         kvsMessageError("Cannot execute the visulization pipeline.");
-        return( false );
+        return ( false );
     }
 
-    // Verbose information.
     if ( arg.verboseMode() )
     {
-        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, kvs::Indent(4) );
-        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, kvs::Indent(4) );
+        pipe.object()->print( std::cout << std::endl << "RENDERERED OBJECT" << std::endl, indent );
+        pipe.print( std::cout << std::endl << "VISUALIZATION PIPELINE" << std::endl, indent );
     }
 
     // Apply the specified parameters to the global and the visualization pipeline.
@@ -516,20 +223,102 @@ int Main::exec( int argc, char** argv )
     arg.applyTo( screen );
 
     // The ray casting renderer should be registered after the axis and bounds are registered.
-    screen.registerObject( const_cast<kvs::ObjectBase*>(pipe.object()), const_cast<kvs::RendererBase*>(pipe.renderer()) );
+    auto* object = const_cast<kvs::ObjectBase*>( pipe.object() );
+    auto* renderer = const_cast<kvs::RendererBase*>( pipe.renderer() );
+    screen.registerObject( object, renderer );
+
+    // Label (fps).
+    kvs::Label label( &screen );
+    label.setMargin( 10 );
+    label.anchorToTopLeft();
+    label.screenUpdated(
+        [&]()
+        {
+            const auto* renderer = screen.scene()->renderer( ::RendererName );
+            const auto fps = kvs::String::From( renderer->timer().fps(), 4 );
+            label.setText( std::string( "FPS: " + fps ).c_str() );
+        } );
+    label.show();
+
+    // Colormap bar.
+    kvs::ColorMapBar colormap_bar( &screen );
+    colormap_bar.setWidth( 150 );
+    colormap_bar.setHeight( 60 );
+    colormap_bar.setColorMap( tfunc.colorMap() );
+    if ( !tfunc.hasRange() )
+    {
+        const auto min_value = static_cast<kvs::Real32>( volume->minValue() );
+        const auto max_value = static_cast<kvs::Real32>( volume->maxValue() );
+        colormap_bar.setRange( min_value, max_value );
+    }
+    colormap_bar.anchorToBottomRight();
+    colormap_bar.show();
+
+    // Orientation axis.
+    kvs::OrientationAxis orientation_axis( &screen, screen.scene() );
+    orientation_axis.setMargin( 0 );
+    orientation_axis.setSize( 100 );
+    orientation_axis.setAxisLength( 3.2f );
+    orientation_axis.setBoxTypeToSolid();
+    orientation_axis.enableAntiAliasing();
+    orientation_axis.anchorToBottomLeft();
+    orientation_axis.show();
 
     // Create transfer function editor.
-    kvsview::RayCastingRenderer::TransferFunctionEditor editor( &screen, arg.noGPU() );
+    kvs::TransferFunctionEditor editor( &screen );
     editor.setVolumeObject( kvs::VolumeObjectBase::DownCast( pipe.object() ) );
     editor.setTransferFunction( tfunc );
-    editor.attachColorMapBar( &colormap_bar );
+    editor.apply(
+        [&]( kvs::TransferFunction t )
+        {
+            auto* r = screen.scene()->renderer( ::RendererName );
+            if ( arg.nogpu() )
+            {
+                using Renderer = kvs::RayCastingRenderer;
+                Renderer::DownCast(r)->setTransferFunction(t);
+            }
+            else
+            {
+                using Renderer = kvs::glsl::RayCastingRenderer;
+                Renderer::DownCast(r)->setTransferFunction(t);
+            }
+            colormap_bar.setColorMap( t.colorMap() );
+            screen.redraw();
+        } );
     editor.show();
-    editor.hide();
-    ::Shown = false;
 
-    // Attach the transfer function editor to the key press event and the mouse double-click event.
-    mouse_double_click_event.attachTransferFunctionEditor( &editor );
-    key_press_event.attachTransferFunctionEditor( &editor );
+    // Double click event
+    kvs::MouseDoubleClickEventListener mouse_double_click_event;
+    mouse_double_click_event.update(
+        [&]( kvs::MouseEvent* )
+        {
+            if ( editor.isVisible() ) { editor.hide(); }
+            else { editor.show(); }
+        } );
+    screen.addEvent( &mouse_double_click_event );
+
+    // Key press event
+    kvs::KeyPressEventListener key_press_event;
+    key_press_event.update(
+        [&]( kvs::KeyEvent* e )
+        {
+            switch ( e->key() )
+            {
+            case kvs::Key::t:
+            {
+                if ( editor.isVisible() ) { editor.hide(); }
+                else { editor.show(); }
+                break;
+            }
+            default: break;
+            }
+        } );
+    screen.addEvent( &key_press_event );
+    editor.addEvent( &key_press_event );
+
+    // Target change event
+    kvs::TargetChangeEvent target_change_event;
+    screen.addEvent( &target_change_event );
 
     return ( arg.clear(), app.run() );
 }

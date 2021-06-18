@@ -3,14 +3,6 @@
  *  @file   HistogramBar.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <string>
@@ -38,7 +30,9 @@ class MouseEvent;
 class HistogramBar : public kvs::WidgetBase
 {
 public:
-    typedef kvs::WidgetBase BaseClass;
+    using BaseClass = kvs::WidgetBase;
+    using ScreenUpdatedFunc = std::function<void()>;
+    using ScreenResizedFunc = std::function<void()>;
 
 private:
     std::string m_caption; ///< caption
@@ -47,14 +41,19 @@ private:
     float m_bias_parameter; ///< bias parameter
     kvs::Texture2D m_texture; ///< histogram texture
     kvs::WidgetBase m_palette; ///< palette
-    kvs::Vector2i m_previous_position; ///< mouse previous position
+    kvs::Vec2i m_previous_position; ///< mouse previous position
+    ScreenUpdatedFunc m_screen_updated;
+    ScreenResizedFunc m_screen_resized;
 
 public:
     HistogramBar( kvs::ScreenBase* screen = 0 );
     virtual ~HistogramBar();
 
-    virtual void screenUpdated() {}
-    virtual void screenResized() {}
+    void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
+    void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
+
+    virtual void screenUpdated() { if ( m_screen_updated ) m_screen_updated(); }
+    virtual void screenResized() { if ( m_screen_resized ) m_screen_resized(); }
 
     const std::string& caption() const { return m_caption; }
     const kvs::FrequencyTable& table() const { return m_table; }

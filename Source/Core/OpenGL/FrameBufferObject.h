@@ -3,14 +3,6 @@
  *  @file   FrameBufferObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FrameBufferObject.h 634 2010-10-13 07:04:05Z naohisa.sakamoto $
- */
 /****************************************************************************/
 #pragma once
 #include <string>
@@ -26,20 +18,27 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Frame buffer object class.
+ *  @brief  Frame buffer object class.
  */
 /*===========================================================================*/
 class FrameBufferObject
 {
 private:
-    GLuint m_id; ///< object ID
+    GLuint m_id = 0; ///< object ID
 
 public:
     class Binder;
     class GuardedBinder;
 
+private:
+    static GLuint m_unbind_id; ///< Initial frame buffer id.
+
 public:
-    FrameBufferObject(): m_id( 0 ) {}
+    static void SetUnbindID( const GLuint id ) { m_unbind_id = id; }
+    static GLuint UnbindID() { return m_unbind_id; }
+
+public:
+    FrameBufferObject() = default;
     virtual ~FrameBufferObject() { this->release(); }
 
     GLuint id() const { return m_id; }
@@ -70,36 +69,37 @@ protected:
     void createID();
     void deleteID();
     GLenum checkFramebufferStatus() const;
-
-public:
-    KVS_DEPRECATED( void disable() const ) { this->unbind(); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Binder class for FrameBufferObject.
+ */
+/*===========================================================================*/
 class FrameBufferObject::Binder
 {
-    const kvs::FrameBufferObject& m_fbo;
-
+    const kvs::FrameBufferObject& m_fbo; ///< target frame buffer object
 public:
-    Binder( const kvs::FrameBufferObject& fbo );
-    ~Binder();
-
-private:
-    Binder( const Binder& );
-    Binder& operator =( const Binder& );
+    Binder( const kvs::FrameBufferObject& fbo ): m_fbo( fbo ) { m_fbo.bind(); }
+    ~Binder() { m_fbo.unbind(); }
+    Binder( const Binder& ) = delete;
+    Binder& operator =( const Binder& ) = delete;
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Guarded binder class for FrameBufferObject.
+ */
+/*===========================================================================*/
 class FrameBufferObject::GuardedBinder
 {
-    const kvs::FrameBufferObject& m_fbo;
-    GLint m_id;
-
+    const kvs::FrameBufferObject& m_fbo; ///< target frame buffer object
+    GLint m_id = 0; ///< target binding ID
 public:
     GuardedBinder( const kvs::FrameBufferObject& fbo );
     ~GuardedBinder();
-
-private:
-    GuardedBinder( const GuardedBinder& );
-    GuardedBinder& operator =( const GuardedBinder& );
+    GuardedBinder( const GuardedBinder& ) = delete;
+    GuardedBinder& operator =( const GuardedBinder& ) = delete;
 };
 
 } // end of namespace kvs

@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   DataArrayTag.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: DataArrayTag.cpp 1810 2014-09-03 01:03:41Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #include "DataArrayTag.h"
@@ -17,6 +10,7 @@
 #include <kvs/XMLElement>
 #include <kvs/XMLDocument>
 #include <kvs/File>
+#include <kvs/Directory>
 #include <kvs/ValueArray>
 #include <kvs/AnyValueArray>
 #include <kvs/IgnoreUnusedVariable>
@@ -172,7 +166,7 @@ bool DataArrayTag::write(
         parent->InsertEndChild( element );
 
         // Write the data to the external data file.
-        const std::string filename = pathname + kvs::File::Separator() + m_file;
+        const std::string filename = pathname + kvs::Directory::Separator() + m_file;
         return kvs::kvsml::DataArray::WriteExternalData( data, filename, m_format );
     }
 }
@@ -342,7 +336,7 @@ bool DataArrayTag::read_data( const size_t nelements, kvs::AnyValueArray* data )
         const kvs::XMLDocument* document
             = reinterpret_cast<kvs::XMLDocument*>( m_node->GetDocument() );
         const std::string path = kvs::File( document->filename() ).pathName( true );
-        const std::string filename = path + kvs::File::Separator() + m_file;
+        const std::string filename = path + kvs::Directory::Separator() + m_file;
 
         if( m_type == "char" )
         {

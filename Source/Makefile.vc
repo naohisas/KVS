@@ -27,6 +27,10 @@ SUBDIRS = Core
 !IF "$(KVS_SUPPORT_GLUT)" == "1"
 SUBDIRS = $(SUBDIRS) SupportGLUT
 !ENDIF
+
+!IF "$(KVS_SUPPORT_GLFW)" == "1"
+SUBDIRS = $(SUBDIRS) SupportGLFW
+!ENDIF
 !ENDIF
 
 !IF "$(KVS_SUPPORT_QT)" == "1"
@@ -47,6 +51,10 @@ SUBDIRS = $(SUBDIRS) SupportCUDA
 
 !IF "$(KVS_SUPPORT_PYTHON)" == "1"
 SUBDIRS = $(SUBDIRS) SupportPython
+!ENDIF
+
+!IF "$(KVS_SUPPORT_MPI)" == "1"
+SUBDIRS = $(SUBDIRS) SupportMPI
 !ENDIF
 
 !IF "$(KVS_SUPPORT_EGL)" == "1"
@@ -86,6 +94,11 @@ install:
 	$(INSTALL) kvsSupportGLUT "$(INSTALL_DIR)\include"
 	$(INSTALL) kvs\glut\* "$(INSTALL_DIR)\include\kvs\glut"
 !ENDIF
+!IF "$(KVS_SUPPORT_GLFW)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\glfw" $(MKDIR) "$(INSTALL_DIR)\include\kvs\glfw"
+	$(INSTALL) kvsSupportGLFW "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\glfw\* "$(INSTALL_DIR)\include\kvs\glfw"
+!ENDIF
 !IF "$(KVS_SUPPORT_QT)" == "1"
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\qt" $(MKDIR) "$(INSTALL_DIR)\include\kvs\qt"
 	$(INSTALL) kvsSupportQt "$(INSTALL_DIR)\include"
@@ -110,6 +123,11 @@ install:
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\python" $(MKDIR) "$(INSTALL_DIR)\include\kvs\python"
 	$(INSTALL) kvsSupportPython "$(INSTALL_DIR)\include"
 	$(INSTALL) kvs\python\* "$(INSTALL_DIR)\include\kvs\python"
+!ENDIF
+!IF "$(KVS_SUPPORT_MPI)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\mpi" $(MKDIR) "$(INSTALL_DIR)\include\kvs\mpi"
+	$(INSTALL) kvsSupportMPI "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\mpi\* "$(INSTALL_DIR)\include\kvs\mpi"
 !ENDIF
 !IF "$(KVS_SUPPORT_EGL)" == "1"
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\egl" $(MKDIR) "$(INSTALL_DIR)\include\kvs\egl"

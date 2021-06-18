@@ -5,10 +5,10 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/Message>
 #include <kvs/VisualizationPipeline>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
 
 
 /*===========================================================================*/
@@ -21,7 +21,7 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     // Visualization pipeline.
     const std::string filename( argc > 1 ? argv[1] : "" );
@@ -57,14 +57,14 @@ int main( int argc, char** argv )
     }
 
     // Output the visualization pipeline as a string.
-    pipeline.print();
+    pipeline.print( std::cout );
 
     // Screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.registerObject( &pipeline );
     screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "kvs::VisualizationPipeline" );
-    screen.show();
+    screen.create();
 
     return( app.run() );
 }

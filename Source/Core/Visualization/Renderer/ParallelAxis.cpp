@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ParallelAxis.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ParallelAxis.h"
 #include <kvs/OpenGL>
 #include <kvs/Camera>
@@ -80,13 +86,13 @@ void ParallelAxis::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
             std::string min_value;
             if ( std::ceil( table->maxValue(i) ) == std::floor( table->maxValue(i) ) )
             {
-                max_value = kvs::String::ToString( int(table->maxValue(i)) );
-                min_value = kvs::String::ToString( int(table->minValue(i)) );
+                max_value = kvs::String::From( int(table->maxValue(i)) );
+                min_value = kvs::String::From( int(table->minValue(i)) );
             }
             else
             {
-                max_value = kvs::String::ToString( table->maxValue(i) );
-                min_value = kvs::String::ToString( table->minValue(i) );
+                max_value = kvs::String::From( table->maxValue(i) );
+                min_value = kvs::String::From( table->minValue(i) );
             }
 
             const size_t max_width = metrics.width( max_value );

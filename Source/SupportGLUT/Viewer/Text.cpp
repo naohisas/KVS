@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Text.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Text.cpp 1138 2012-05-10 04:35:42Z s.yamada0808@gmail.com $
+ *  @file   Text.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Text.h"

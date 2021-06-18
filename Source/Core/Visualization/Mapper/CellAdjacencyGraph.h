@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   CellAdjacencyGraph.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #ifndef KVS__CELL_ADJACENCY_GRAPH_H_INCLUDE

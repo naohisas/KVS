@@ -3,14 +3,6 @@
  *  @file   ParticleBufferAccumulator.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ParticleBufferAccumulator.h 1642 2013-09-15 12:41:47Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__PARTICLE_BUFFER_ACCUMULATOR_H_INCLUDE
 #define KVS__PARTICLE_BUFFER_ACCUMULATOR_H_INCLUDE

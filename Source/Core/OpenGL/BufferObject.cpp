@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   BufferObject.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: BufferObject.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #include "BufferObject.h"
@@ -21,83 +14,37 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Constructs a new BufferObject class.
+ *  @brief  Returns the padded buffer size for input size.
+ *  @return buffer size
+ */
+/*===========================================================================*/
+GLsizei BufferObject::PaddedBufferSize( GLsizei size )
+{
+     int x = size;
+     return (x + 15) & ~15;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new BufferObject class.
  *  @param  target [in] bind target
  *  @param  target_binding [in] target binding
  *  @param  usage [in] buffer usage
  */
 /*===========================================================================*/
-BufferObject::BufferObject( const GLenum target, const GLenum target_binding, const GLenum usage ):
+BufferObject::BufferObject(
+    const GLenum target,
+    const GLenum target_binding,
+    const GLenum usage ):
     m_target( target ),
     m_target_binding( target_binding ),
-    m_id( 0 ),
-    m_usage( usage ),
-    m_size( 0 ),
-    m_is_loaded( false )
+    m_usage( usage )
 {
 }
 
 /*===========================================================================*/
 /**
- *  Destroys the BufferObject class.
- */
-/*===========================================================================*/
-BufferObject::~BufferObject()
-{
-    this->release();
-}
-
-GLenum BufferObject::target() const
-{
-    return m_target;
-}
-
-GLenum BufferObject::targetBinding() const
-{
-    return m_target_binding;
-}
-
-/*===========================================================================*/
-/**
- *  Returns the buffer ID.
- *  @return buffer ID
- */
-/*===========================================================================*/
-GLuint BufferObject::id() const
-{
-    return m_id;
-}
-
-/*===========================================================================*/
-/**
- *  Returns the buffer size.
- *  @return buufer size
- */
-/*===========================================================================*/
-size_t BufferObject::size() const
-{
-    return m_size;
-}
-
-/*===========================================================================*/
-/**
- *  Sets buffer usage.
- *  @param  usage [in] buffer usage
- */
-/*===========================================================================*/
-void BufferObject::setUsage( const GLenum usage )
-{
-    m_usage = usage;
-}
-
-void BufferObject::setSize( const size_t size )
-{
-    m_size = size;
-}
-
-/*===========================================================================*/
-/**
- *  Create buffer.
+ *  @brief  Create buffer.
  *  @param  size [in] buffer size
  *  @param  data [in] pointer to loaded buffer data
  */
@@ -112,7 +59,7 @@ void BufferObject::create( const size_t size, const void* data )
 
 /*===========================================================================*/
 /**
- *  Release buffer.
+ *  @brief  Release buffer.
  */
 /*===========================================================================*/
 void BufferObject::release()
@@ -123,7 +70,7 @@ void BufferObject::release()
 
 /*===========================================================================*/
 /**
- *  Bind buffer.
+ *  @brief  Bind buffer.
  */
 /*===========================================================================*/
 void BufferObject::bind() const
@@ -134,7 +81,7 @@ void BufferObject::bind() const
 
 /*===========================================================================*/
 /**
- *  Unbind buffer.
+ *  @brief  Unbind buffer.
  */
 /*===========================================================================*/
 void BufferObject::unbind() const
@@ -143,11 +90,23 @@ void BufferObject::unbind() const
     KVS_GL_CALL( glBindBuffer( m_target, 0 ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determins if a buffer object is created.
+ *  @return true if the buffer object has been already created
+ */
+/*===========================================================================*/
 bool BufferObject::isCreated() const
 {
     return m_id > 0;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determins if a buffer object is valid.
+ *  @return true if the buffer object has been already allocated
+ */
+/*===========================================================================*/
 bool BufferObject::isValid() const
 {
     GLboolean result = GL_FALSE;
@@ -155,6 +114,12 @@ bool BufferObject::isValid() const
     return result == GL_TRUE;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Determines if a buffer object is bound.
+ *  @return true if the buffer object has been already bound
+ */
+/*===========================================================================*/
 bool BufferObject::isBound() const
 {
     if ( !this->isCreated() ) return false;
@@ -165,13 +130,13 @@ bool BufferObject::isBound() const
 
 /*===========================================================================*/
 /**
- *  Load buffer data from CPU to GPU.
+ *  @brief  Load buffer data from CPU to GPU.
  *  @param  size [in] buffer data size
  *  @param  data [in] pointer to loaded buffer data
  *  @param  offset [in] texel offset within the existing buffer data array
  */
 /*===========================================================================*/
-void BufferObject::load( const size_t size, const void* data, const size_t offset )
+GLsizei BufferObject::load( const size_t size, const void* data, const size_t offset )
 {
     if ( !m_is_loaded )
     {
@@ -182,59 +147,73 @@ void BufferObject::load( const size_t size, const void* data, const size_t offse
     {
         this->setBufferSubData( size, data, offset );
     }
+    return BufferObject::PaddedBufferSize( size );
 }
 
 /*===========================================================================*/
 /**
- *  Map buffer data.
- *  @param  access_type [in] access policy
- *  @return NULL if an error is generated
+ *  @brief  Creates bufffer object ID.
  */
 /*===========================================================================*/
-void* BufferObject::map( const GLenum access_type )
-{
-    return this->mapBuffer( access_type );
-}
-
-/*===========================================================================*/
-/**
- *  Unmap buffer object data.
- */
-/*===========================================================================*/
-void BufferObject::unmap()
-{
-    this->unmapBuffer();
-}
-
 void BufferObject::createID()
 {
-    if ( !this->isValid() )
+//    if ( !this->isValid() )
+    if ( !this->isCreated() )
     {
         KVS_GL_CALL( glGenBuffers( 1, &m_id ) );
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Deletes buffer object ID.
+ */
+/*===========================================================================*/
 void BufferObject::deleteID()
 {
-    if ( this->isValid() )
+//    if ( this->isValid() )
+    if ( this->isCreated() )
     {
+        if ( this->isBound() ) { this->unbind(); }
         KVS_GL_CALL( glDeleteBuffers( 1, &m_id ) );
+        m_id = 0;
     }
-    m_id = 0;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets data for buffer object.
+ *  @param  size [in] data size in bytes
+ *  @param  data [in] pointer to data that will be copied
+ */
+/*===========================================================================*/
 void BufferObject::setBufferData( GLsizei size, const GLvoid* data )
 {
     KVS_ASSERT( this->isBound() );
     KVS_GL_CALL( glBufferData( m_target, size, data, m_usage ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets subset of data for buffer object.
+ *  @param  size [in] data size in bytes
+ *  @param  data [in] pointer to data that will be copied
+ *  @param  offset [in] offset into the buffer object's data in bytes
+ */
+/*===========================================================================*/
 void BufferObject::setBufferSubData( GLsizei size, const GLvoid* data, GLint offset )
 {
     KVS_ASSERT( this->isBound() );
     KVS_GL_CALL( glBufferSubData( m_target, offset, size, data ) );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Maps buffer object'data into the client's address space and returns it.
+ *  @param  access_type [in] access type (ReadOnly, WriteOnly or ReadWrite)
+ *  @return Mapped address of the buffer object's data
+ */
+/*===========================================================================*/
 void* BufferObject::mapBuffer( const GLenum access_type )
 {
     KVS_ASSERT( this->isBound() );
@@ -243,34 +222,36 @@ void* BufferObject::mapBuffer( const GLenum access_type )
     return result;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Releases the mapped address of the buffer object's data.
+ */
+/*===========================================================================*/
 void BufferObject::unmapBuffer()
 {
     KVS_ASSERT( this->isBound() );
     KVS_GL_CALL( glUnmapBuffer( m_target ) );
 }
 
-BufferObject::Binder::Binder( const BufferObject& bo ) :
-    m_bo( bo )
-{
-    KVS_ASSERT( bo.isCreated() );
-    bo.bind();
-}
-
-BufferObject::Binder::~Binder()
-{
-    KVS_ASSERT( m_bo.isCreated() );
-    KVS_GL_CALL( glBindBuffer( m_bo.target(), 0 ) );
-}
-
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new GuardedBinder class.
+ *  @param  bo [in] target buffer object that will be bound
+ */
+/*===========================================================================*/
 BufferObject::GuardedBinder::GuardedBinder( const kvs::BufferObject& bo ):
     m_bo( bo ),
-    m_id( 0 )
+    m_id( kvs::OpenGL::Integer( bo.targetBinding() ) )
 {
     KVS_ASSERT( bo.isCreated() );
-    m_id = kvs::OpenGL::Integer( bo.targetBinding() );
     if ( bo.id() != static_cast<GLuint>( m_id ) ) { bo.bind(); }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Destroy the GuardedBinder class.
+ */
+/*===========================================================================*/
 BufferObject::GuardedBinder::~GuardedBinder()
 {
     KVS_ASSERT( m_bo.isCreated() );

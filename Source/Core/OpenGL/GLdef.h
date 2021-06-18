@@ -3,17 +3,8 @@
  *  @file   GLdef.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS__GL_DEF_H_INCLUDE
-#define KVS__GL_DEF_H_INCLUDE
+#pragma once
 
 /*
 ** The OpenGL Extension Wrangler Library
@@ -8663,5 +8654,3 @@ typedef int GLclampx;
 #ifdef __cplusplus
 }
 #endif
-
-#endif // KVS__GL_DEF_H_INCLUDE

@@ -3,14 +3,6 @@
  *  @file   RadioButton.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "RadioButton.h"
 #include <kvs/OpenGL>
@@ -48,7 +40,12 @@ namespace kvs
 /*===========================================================================*/
 RadioButton::RadioButton( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
-    m_group( NULL )
+    m_group( NULL ),
+    m_pressed( nullptr ),
+    m_released( nullptr ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr ),
+    m_state_changed( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
@@ -57,7 +54,7 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::CircleMargin );
-    this->setCaption( "RadioButton " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "RadioButton " + kvs::String::From( ::InstanceCounter++ ) );
     this->setState( false );
 }
 
@@ -190,7 +187,7 @@ void RadioButton::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -216,6 +213,8 @@ void RadioButton::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -228,12 +227,12 @@ void RadioButton::resizeEvent( int width, int height )
 /*===========================================================================*/
 void RadioButton::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( this->contains( event->x(), event->y() ) )
     {
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
         this->pressed();
         BaseClass::screen()->redraw();
     }
@@ -247,7 +246,7 @@ void RadioButton::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void RadioButton::mouseReleaseEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -276,7 +275,7 @@ void RadioButton::mouseReleaseEvent( kvs::MouseEvent* event )
         }
 
         this->released();
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

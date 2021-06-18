@@ -3,14 +3,6 @@
  *  @file   VolumeRayIntersector.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VolumeRayIntersector.cpp 1698 2014-01-16 10:49:03Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "VolumeRayIntersector.h"
 #include <cfloat>
@@ -37,12 +29,12 @@ VolumeRayIntersector::VolumeRayIntersector(
 {
     const float epsilon = 0.003f; // 1e-3
 
-    const kvs::Vector3f min(
+    const kvs::Vec3 min(
         volume->minExternalCoord().x() + epsilon,
         volume->minExternalCoord().y() + epsilon,
         volume->minExternalCoord().z() + epsilon );
 
-    const kvs::Vector3f max(
+    const kvs::Vec3 max(
         volume->maxExternalCoord().x() - epsilon,
         volume->maxExternalCoord().y() - epsilon,
         volume->maxExternalCoord().z() - epsilon );

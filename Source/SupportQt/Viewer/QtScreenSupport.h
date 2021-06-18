@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file QtScreenSupport.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: QtScreenSupport.h 634 2010-10-13 07:04:05Z naohisa.sakamoto $
+ *  @file   QtScreenSupport.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__QT_SCREEN_SUPPORT_H_INCLUDE

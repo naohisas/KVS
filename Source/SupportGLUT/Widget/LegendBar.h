@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file LegendBar.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LegendBar.h 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
+ *  @file   LegendBar.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #ifndef KVS__GLUT__LEGEND_BAR_H_INCLUDE
@@ -20,6 +13,7 @@
 #include <kvs/Texture2D>
 #include <kvs/ScreenBase>
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -61,7 +55,7 @@ private:
     bool m_texture_downloaded; ///< check flag for texture
 
 public:
-    LegendBar( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( LegendBar( kvs::ScreenBase* screen = 0 ) );
     virtual ~LegendBar();
 
     virtual void screenUpdated(){};

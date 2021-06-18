@@ -3,14 +3,6 @@
  *  @file   PointObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PointObject.h 1815 2014-10-02 01:17:28Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <ostream>
@@ -41,11 +33,9 @@ class PointObject : public kvs::GeometryObjectBase
     kvsModuleBaseClass( kvs::GeometryObjectBase );
 
 private:
-
     kvs::ValueArray<kvs::Real32> m_sizes; ///< size array
 
 public:
-
     PointObject();
     explicit PointObject( const kvs::LineObject& line );
     explicit PointObject( const kvs::PolygonObject& polygon );

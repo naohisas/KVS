@@ -3,18 +3,8 @@
  *  @file   InitializeEventListener.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: InitializeEventListener.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__INTITALIZE_EVENT_LISTENER_H_INCLUDE
-#define KVS__INTITALIZE_EVENT_LISTENER_H_INCLUDE
-
+#pragma once
 #include <kvs/EventListener>
 #include <kvs/EventBase>
 
@@ -30,17 +20,16 @@ namespace kvs
 class InitializeEventListener : public kvs::EventListener
 {
 public:
+    InitializeEventListener(): kvs::EventListener( kvs::EventBase::InitializeEvent ) {}
+    InitializeEventListener( InitializeEventFunc func ):
+        kvs::EventListener( kvs::EventBase::InitializeEvent ) { this->update( func ); }
+    virtual ~InitializeEventListener() {}
 
-    InitializeEventListener();
-    virtual ~InitializeEventListener();
-
-    virtual void update() = 0;
+    void update( InitializeEventFunc func ) { initializeEvent( func ); }
+    virtual void update() { initializeEvent(); }
 
 private:
-
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* /* event */ ) { this->update(); }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__INTITALIZE_EVENT_LISTENER_H_INCLUDE

@@ -41,6 +41,26 @@ ifndef KVS_LD
   KVS_LD := $(KVS_CPP)
 endif
 
+ifndef KVS_MPI_CPP
+  KVS_MPI_CPP := mpicxx
+endif
+
+ifndef KVS_MPI_CC
+  KVS_MPI_CC := mpicc
+endif
+
+ifndef KVS_MPI_FC
+  KVS_MPI_FC := mpif90
+endif
+
+ifndef KVS_MPI_LD
+  KVS_MPI_LD := $(KVS_MPI_CPP)
+endif
+
+ifndef KVS_PY
+  KVS_PY := python
+endif
+
 
 SHELL  := /bin/bash
 CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
@@ -48,6 +68,12 @@ CPP    := $(CCACHE) $(KVS_CPP)
 CC     := $(CCACHE) $(KVS_CC)
 FC     := $(CCACHE) $(KVS_FC)
 LD     := $(KVS_LD)
+MPICPP := $(CCACHE) $(KVS_MPI_CPP)
+MPICC  := $(CCACHE) $(KVS_MPI_CC)
+MPIFC  := $(CCACHE) $(KVS_MPI_FC)
+MPILD  := $(KVS_MPI_LD)
+PY     := $(KVS_PY)
+PYCONF := $(KVS_PY)-config
 AR     := ar -ru
 RANLIB := ranlib
 MAKE   := make
@@ -87,9 +113,11 @@ LIB_KVS_CORE := libkvsCore.a
 LIB_KVS_SUPPORT_CAVE      := libkvsSupportCAVE.a
 LIB_KVS_SUPPORT_CUDA      := libkvsSupportCUDA.a
 LIB_KVS_SUPPORT_GLUT      := libkvsSupportGLUT.a
+LIB_KVS_SUPPORT_GLFW      := libkvsSupportGLFW.a
 LIB_KVS_SUPPORT_OPENCV    := libkvsSupportOpenCV.a
 LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
 LIB_KVS_SUPPORT_PYTHON    := libkvsSupportPython.a
+LIB_KVS_SUPPORT_MPI       := libkvsSupportMPI.a
 LIB_KVS_SUPPORT_EGL       := libkvsSupportEGL.a
 LIB_KVS_SUPPORT_OSMESA    := libkvsSupportOSMesa.a
 
@@ -270,7 +298,7 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
       OPENMP_LINK_LIBRARY +=
     # For Intel C++ compiler (icpc/mpiicpc)
     else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
-      OPENMP_LINK_LIBRARY += -liomp
+      OPENMP_LINK_LIBRARY += -liomp5
     # For g++
     else
       OPENMP_LINK_LIBRARY += -lgomp
@@ -320,6 +348,32 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
     else
       GLUT_LINK_LIBRARY += -lglut
     endif
+  endif
+endif
+
+
+#=============================================================================
+#  GLFW_INCLUDE_PATH, GLFW_LIBRARY_PATH, GLFW_LINK_LIBRARY
+#=============================================================================
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+  GLFW_INCLUDE_PATH :=
+  GLFW_LIBRARY_PATH :=
+  GLFW_LINK_LIBRARY :=
+  ifdef KVS_GLFW_DIR
+    GLFW_INCLUDE_PATH += -I$(KVS_GLFW_DIR)/include
+    GLFW_LIBRARY_PATH += -L$(KVS_GLFW_DIR)/lib
+  else
+    ifdef KVS_GLFW_INCLUDE_PATH
+      GLFW_INCLUDE_PATH += -I$(KVS_GLFW_INCLUDE_PATH)
+    endif
+    ifdef KVS_GLFW_LIBRARY_PATH
+      GLFW_LIBRARY_PATH += -L$(KVS_GLFW_LIBRARY_PATH)
+    endif
+  endif
+  ifdef KVS_GLFW_LINK_LIBRARY
+    GLFW_LINK_LIBRARY += $(KVS_GLFW_LINK_LIBRARY)
+  else
+    GLFW_LINK_LIBRARY += -lglfw
   endif
 endif
 
@@ -393,18 +447,47 @@ endif
 #  NUMPY_INCLUDE_PATH, NUMPY_LIBRARY_PATH
 #=============================================================================
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
-  PYTHON_INCLUDE_PATH := $(shell python-config --includes)
-  PYTHON_LIBRARY_PATH := $(shell python-config --ldflags)
-  PYTHON_LINK_LIBRARY := $(shell python-config --libs)
+  PYTHON_VER := $(shell $(PY) -c "from __future__ import print_function; import sys; print( sys.version_info[0] )")
+  PYTHON_INCLUDE_PATH := $(shell $(PYCONF) --includes)
+  PYTHON_LIBRARY_PATH := $(shell $(PYCONF) --ldflags)
+  ifeq "$(PYTHON_VER)" "3"
+    PYTHON_LINK_LIBRARY := $(shell $(PYCONF) --libs --embed)
+  else
+    PYTHON_LINK_LIBRARY := $(shell $(PYCONF) --libs)
+  endif
   ifdef KVS_PYTHON_DIR
     PYTHON_INCLUDE_PATH := -I$(KVS_PYTHON_DIR)/include
     PYTHON_LIBRARY_PATH := -L$(KVS_PYTHON_DIR)/lib
   endif
-  NUMPY_INCLUDE_PATH := -I$(shell python -c "import numpy; print numpy.get_include()")
+  NUMPY_INCLUDE_PATH := -I$(shell $(PY) -c "import numpy; print( numpy.get_include() )")
   NUMPY_LIBRARY_PATH :=
   ifdef KVS_NUMPY_DIR
     NUMPY_INCLUDE_PATH := -I$(KVS_NUMPY_DIR)/include
     NUMPY_LIBRARY_PATH := -L$(KVS_NUMPY_DIR)/lib
+  endif
+endif
+
+
+#=============================================================================
+#  MPI_INCLUDE_PATH, MPI_LIBRARY_PATH, MPI_LINK_LIBRARY
+#=============================================================================
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+  MPI_INCLUDE_PATH :=
+  MPI_LIBRARY_PATH :=
+  MPI_LINK_LIBRARY :=
+  ifdef KVS_MPI_DIR
+    MPI_INCLUDE_PATH += -I$(KVS_MPI_DIR)/include
+    MPI_LIBRARY_PATH += -L$(KVS_MPI_DIR)/lib
+  else
+    ifdef KVS_MPI_INCLUDE_PATH
+      MPI_INCLUDE_PATH += -I$(KVS_MPI_INCLUDE_PATH)
+    endif
+    ifdef KVS_MPI_LIBRARY_PATH
+      MPI_LIBRARY_PATH += -L$(KVS_MPI_LIBRARY_PATH)
+    endif
+  endif
+  ifdef KVS_MPI_LINK_LIBRARY
+    MPI_LINK_LIBRARY += $(KVS_MPI_LINK_LIBRARY)
   endif
 endif
 
@@ -490,7 +573,7 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
     CPPFLAGS += -Kopenmp
   # For Intel C++ compiler (icpc mpiicpc)
   else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
-    CPPFLAGS += -openmp
+    CPPFLAGS += -qopenmp
   # For g++
   else
     CPPFLAGS += -fopenmp
@@ -545,6 +628,10 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
   ifeq "$(KVS_SUPPORT_GLUT)" "1"
     DEFINITIONS += -DKVS_SUPPORT_GLUT
   endif
+
+  ifeq "$(KVS_SUPPORT_GLFW)" "1"
+    DEFINITIONS += -DKVS_SUPPORT_GLFW
+  endif
 endif
 
 ifeq "$(KVS_SUPPORT_QT)" "1"
@@ -561,6 +648,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
   DEFINITIONS += -DKVS_SUPPORT_PYTHON
+endif
+
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+  DEFINITIONS += -DKVS_SUPPORT_MPI
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"

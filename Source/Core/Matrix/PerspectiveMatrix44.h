@@ -3,14 +3,6 @@
  *  @file   PerspectiveMatrix44.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PerspectiveMatrix44.h 1421 2013-02-27 17:31:12Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <cmath>

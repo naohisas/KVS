@@ -3,18 +3,8 @@
  *  @file   VertexBufferObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: VertexBufferObject.h 634 2010-10-13 07:04:05Z naohisa.sakamoto $
- */
 /*****************************************************************************/
-#ifndef KVS__VERTEX_BUFFER_OBJECT_H_INCLUDE
-#define KVS__VERTEX_BUFFER_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/BufferObject>
 
 
@@ -29,10 +19,11 @@ namespace kvs
 class VertexBufferObject : public kvs::BufferObject
 {
 public:
-
-    VertexBufferObject();
+    VertexBufferObject():
+        kvs::BufferObject(
+            GL_ARRAY_BUFFER,
+            GL_ARRAY_BUFFER_BINDING,
+            GL_DYNAMIC_DRAW ) {}
 };
 
 } // end of namespace kvs
-
-#endif // KVS__GLEW__VERTEX_BUFFER_OBJECT_H_INCLUDE

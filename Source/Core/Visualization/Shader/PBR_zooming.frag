@@ -3,14 +3,6 @@
  *  @file   zooming.frag
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright 2007 Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: zooming.frag 490 2010-03-22 12:00:41Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include "shading.h"
 

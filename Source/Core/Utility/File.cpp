@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file File.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: File.cpp 1140 2012-05-10 05:10:05Z s.yamada0808@gmail.com $
+ *  @file   File.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "File.h"
@@ -67,21 +60,6 @@ namespace
 
 namespace kvs
 {
-
-/*==========================================================================*/
-/**
- *  @brief  Returns file separator.
- *  @return file separator
- */
-/*==========================================================================*/
-std::string File::Separator()
-{
-#if defined ( KVS_PLATFORM_WINDOWS )
-    return "\\";
-#else
-    return "/";
-#endif
-}
 
 /*===========================================================================*/
 /**
@@ -163,26 +141,28 @@ std::string File::pathName( bool absolute ) const
     return absolute ? kvs::Directory::Absolute( m_path_name ) : m_path_name;
 }
 
-/*==========================================================================*/
+/*===========================================================================*/
 /**
- *  Get file name.
- *  @return file name
+ *  @brief  Returns basename of the file name.
+ *  @param  complete [in] if true, complete basename will be returned
+ *  @return basename of the file name
  */
-/*==========================================================================*/
-std::string File::fileName() const
+/*===========================================================================*/
+std::string File::baseName( bool complete ) const
 {
-    return m_file_name;
-}
-
-/*==========================================================================*/
-/**
- *  Get base name.
- *  @return base name
- */
-/*==========================================================================*/
-std::string File::baseName() const
-{
-    return m_base_name;
+    // e.g) "xyz.tar.gz"
+    if ( complete )
+    {
+        // Return "xyz.tar"
+        const auto p = m_file_name.find_last_of(".");
+        return ( p == std::string::npos ) ? m_file_name : m_file_name.substr( 0, p );
+    }
+    else
+    {
+        // Return "xyz"
+        const auto p = m_file_name.find_first_of( '.' );
+        return ( p == std::string::npos ) ? m_file_name : m_file_name.substr( 0, p );
+    }
 }
 
 /*==========================================================================*/
@@ -194,14 +174,18 @@ std::string File::baseName() const
 /*==========================================================================*/
 std::string File::extension( bool complete ) const
 {
+    // e.g) "xyz.tar.gz"
     if ( complete )
     {
-        return m_extension;
+        // Return "tar.gz"
+        const auto p = m_file_name.find_first_of( '.' );
+        return ( p == std::string::npos ) ? "" : m_file_name.substr( p + 1 );
     }
     else
     {
-        int last_dot_pos = m_extension.find_last_of( '.' );
-        return m_extension.substr( last_dot_pos + 1 );
+        // Return "gz"
+        const auto p = m_file_name.find_last_of( '.' );
+        return ( p == std::string::npos ) ? "" : m_file_name.substr( p + 1 );
     }
 }
 
@@ -272,7 +256,7 @@ bool File::parse( const std::string& file_path )
     if ( path[0] == '~' ) { path = kvs::Directory::HomePath() + path.substr(1); }
     m_file_path = path;
 
-    int last_sep_pos = file_path.find_last_of( File::Separator() );
+    int last_sep_pos = file_path.find_last_of( kvs::Directory::Separator() );
     if ( last_sep_pos < 0 )
     {
         m_path_name = ".";
@@ -280,27 +264,13 @@ bool File::parse( const std::string& file_path )
     }
     else if ( last_sep_pos == 0 )
     {
-        m_path_name = File::Separator();
+        m_path_name = kvs::Directory::Separator();
         m_file_name = file_path.substr( last_sep_pos + 1 );
     }
     else
     {
         m_path_name = std::string( path.begin(), path.begin() + last_sep_pos );
         m_file_name = file_path.substr( last_sep_pos + 1 );
-    }
-
-    int first_dot_pos = m_file_name.find_first_of( '.' );
-    if ( first_dot_pos < 0 )
-    {
-        m_base_name = m_file_name;
-        m_extension = "";
-    }
-    else
-    {
-        m_base_name = std::string( m_file_name.begin(),
-                                   m_file_name.begin() + first_dot_pos );
-        m_extension = std::string( m_file_name.begin() + first_dot_pos + 1,
-                                   m_file_name.end() );
     }
 
     return true;

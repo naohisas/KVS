@@ -3,14 +3,6 @@
  *  @file   KMeansClustering.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "KMeansClustering.h"
 #include <kvs/KMeans>
@@ -150,6 +142,11 @@ void KMeansClustering::simple_kmeans( const kvs::TableObject* object )
     kmeans.run();
 
     this->setTable( object->table(), object->labels() );
+    this->setMinValues( object->minValues() );
+    this->setMaxValues( object->maxValues() );
+    this->setMinRanges( object->minRanges() );
+    this->setMaxRanges( object->maxRanges() );
+    this->setInsideRangeFlags( object->insideRangeFlags() );
     this->addColumn( kvs::AnyValueArray( kmeans.clusterIDs() ), "cluster ID" );
 
     if ( m_cluster_centers ) delete [] m_cluster_centers;
@@ -178,6 +175,11 @@ void KMeansClustering::fast_kmeans( const kvs::TableObject* object )
     kmeans.run();
 
     this->setTable( object->table(), object->labels() );
+    this->setMinValues( object->minValues() );
+    this->setMaxValues( object->maxValues() );
+    this->setMinRanges( object->minRanges() );
+    this->setMaxRanges( object->maxRanges() );
+    this->setInsideRangeFlags( object->insideRangeFlags() );
     this->addColumn( kvs::AnyValueArray( kmeans.clusterIDs() ), "cluster ID" );
 
     if ( m_cluster_centers ) delete [] m_cluster_centers;
@@ -208,6 +210,11 @@ void KMeansClustering::adaptive_kmeans( const kvs::TableObject* object )
     kmeans.run();
 
     this->setTable( object->table(), object->labels() );
+    this->setMinValues( object->minValues() );
+    this->setMaxValues( object->maxValues() );
+    this->setMinRanges( object->minRanges() );
+    this->setMaxRanges( object->maxRanges() );
+    this->setInsideRangeFlags( object->insideRangeFlags() );
     this->addColumn( kvs::AnyValueArray( kmeans.clusterIDs() ), "cluster ID" );
 
     // 'm_nclusters' is set to the estimated number of clusters after

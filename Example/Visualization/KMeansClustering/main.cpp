@@ -5,15 +5,16 @@
  *  @brief  Example program for kvs::KMeansClustering class.
  */
 /*****************************************************************************/
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/ValueTable>
 #include <kvs/ValueArray>
 #include <kvs/MersenneTwister>
 #include <kvs/KMeansClustering>
 #include <kvs/TableObject>
 #include <kvs/ScatterPlotRenderer>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
-#include <kvs/glut/Axis2D>
+#include <kvs/ResizeEventListener>
+#include <kvs/Axis2D>
 
 
 /*===========================================================================*/
@@ -66,80 +67,82 @@ kvs::ValueTable<kvs::Real32> CreateValueTable( const size_t nrows )
 
 /*===========================================================================*/
 /**
- *  @brief  Executes clustering process with random seeding.
- *  @param  screen [in] screen
- *  @param  table [in] pointer to the table object
- *  @param  nclusters [in] number of clusters
+ *  @brief  Layout event class.
  */
 /*===========================================================================*/
-void RandomSeeding( kvs::glut::Screen& screen, kvs::TableObject* table, size_t nclusters )
+class LayoutEvent : public kvs::ResizeEventListener
 {
-    kvs::KMeansClustering* kmeans = new kvs::KMeansClustering();
-    kmeans->setClusteringMethod( kvs::KMeansClustering::FastKMeans );
-    kmeans->setSeedingMethod( kvs::KMeansClustering::RandomSeeding );
-    kmeans->setNumberOfClusters( nclusters );
+private:
+    int m_margin;
 
-    kvs::TableObject* object = kmeans->exec( table );
-    kvs::ScatterPlotRenderer* renderer = new kvs::ScatterPlotRenderer();
-    renderer->setPointSize( 15.0 );
+public:
+    LayoutEvent( const int margin ): m_margin( margin ) {}
 
-    screen.setTitle( "k-means (random seeding)" );
-    screen.setBackgroundColor( kvs::RGBColor( 255, 255, 255 ) );
-    screen.registerObject( object, new kvs::glut::Axis2D() );
-    screen.registerObject( object, renderer );
-    screen.show();
-}
+    void update( int width, int height )
+    {
+        this->update_margin_original( width, height );
+        this->update_margin_random( width, height );
+        this->update_margin_smart( width, height );
+        this->update_margin_auto( width, height );
+    }
 
-/*===========================================================================*/
-/**
- *  @brief  Executes clustering process with smart seeding.
- *  @param  screen [in] screen
- *  @param  table [in] pointer to the table object
- *  @param  nclusters [in] number of clusters
- */
-/*===========================================================================*/
-void SmartSeeding( kvs::glut::Screen& screen, kvs::TableObject* table, size_t nclusters )
-{
-    kvs::KMeansClustering* kmeans = new kvs::KMeansClustering();
-    kmeans->setClusteringMethod( kvs::KMeansClustering::FastKMeans );
-    kmeans->setSeedingMethod( kvs::KMeansClustering::SmartSeeding );
-    kmeans->setNumberOfClusters( nclusters );
+private:
+    void update_margin_original( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Original" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "OriginalAxis" ) );
 
-    kvs::TableObject* object = kmeans->exec( table );
-    kvs::ScatterPlotRenderer* renderer = new kvs::ScatterPlotRenderer();
-    renderer->setPointSize( 15.0 );
+        const int left = m_margin;
+        const int top = m_margin;
+        const int right = width / 2 + m_margin;
+        const int bottom = height / 2 + m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
+    }
 
-    screen.setTitle( "k-means (smart seeding)" );
-    screen.setBackgroundColor( kvs::RGBColor( 255, 255, 255 ) );
-    screen.registerObject( object, new kvs::glut::Axis2D() );
-    screen.registerObject( object, renderer );
-    screen.show();
-}
+    void update_margin_random( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Random" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "RandomAxis" ) );
 
-/*===========================================================================*/
-/**
- *  @brief  Executes clustering process with k auto-estimation.
- *  @param  screen [in] screen
- *  @param  table [in] pointer to the table object
- *  @param  nclusters [in] number of clusters
- */
-/*===========================================================================*/
-void KAutoEstimation( kvs::glut::Screen& screen, kvs::TableObject* table, size_t max_nclusters )
-{
-    kvs::KMeansClustering* kmeans = new kvs::KMeansClustering();
-    kmeans->setClusteringMethod( kvs::KMeansClustering::AdaptiveKMeans );
-    kmeans->setNumberOfClusters( max_nclusters );
+        const int left = width / 2 + m_margin;
+        const int top = m_margin;
+        const int right = m_margin;
+        const int bottom = height / 2 + m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
+    }
 
-    kvs::TableObject* object = kmeans->exec( table );
-    kvs::ScatterPlotRenderer* renderer = new kvs::ScatterPlotRenderer();
-    renderer->setPointSize( 15.0 );
+    void update_margin_smart( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Smart" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "SmartAxis" ) );
 
-    screen.setTitle( "k-means (k auto-estimation)" );
-    screen.setBackgroundColor( kvs::RGBColor( 255, 255, 255 ) );
-    screen.registerObject( object, new kvs::glut::Axis2D() );
-    screen.registerObject( object, renderer );
-    screen.show();
-}
+        const int left = m_margin;
+        const int top = height / 2 + m_margin;
+        const int right = width / 2 + m_margin;
+        const int bottom = m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
+    }
+
+    void update_margin_auto( int width, int height )
+    {
+        auto* renderer = kvs::ScatterPlotRenderer::DownCast( scene()->renderer( "Auto" ) );
+        auto* axis = kvs::Axis2D::DownCast( scene()->renderer( "AutoAxis" ) );
+
+        const int left = width / 2 + m_margin;
+        const int top = height / 2 + m_margin;
+        const int right = m_margin;
+        const int bottom = m_margin;
+        const kvs::Margins margins( left, top, right, bottom );
+        renderer->setMargins( margins );
+        axis->setMargins( margins );
+    }
+};
 
 /*===========================================================================*/
 /**
@@ -150,26 +153,120 @@ void KAutoEstimation( kvs::glut::Screen& screen, kvs::TableObject* table, size_t
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
-    kvs::glut::Screen screen1( &app );
-    kvs::glut::Screen screen2( &app );
-    kvs::glut::Screen screen3( &app );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
+    screen.setTitle( "k-means clsutering" );
+    screen.setSize( 600, 600 );
+    screen.create();
 
-    screen1.setPosition(   0, 0 );
-    screen2.setPosition(  50, 0 );
-    screen3.setPosition( 100, 0 );
-
-    size_t nrows = 1000;
-    kvs::ValueTable<kvs::Real32> data = CreateValueTable( nrows );
-
-    kvs::TableObject* table = new kvs::TableObject();
+    const size_t nrows = 1000;
+    const float min_value = -7.0f;
+    const float max_value =  7.0f;
+    auto data = CreateValueTable( nrows );
+    auto* table = new kvs::TableObject();
     table->setTable( data );
+    table->setMinMaxValues( 0, min_value, max_value );
+    table->setMinMaxValues( 1, min_value, max_value );
 
-    RandomSeeding( screen1, table, 4 );
-    SmartSeeding( screen2, table, 4 );
-    KAutoEstimation( screen3, table, 10 );
+    kvs::ColorMap cmap( 4 );
+    cmap.addPoint( 0, kvs::UIColor::Red() );
+    cmap.addPoint( 1, kvs::UIColor::Green() );
+    cmap.addPoint( 2, kvs::UIColor::Yellow() );
+    cmap.addPoint( 3, kvs::UIColor::Indigo() );
+    cmap.create();
 
-    delete table;
+    // Original
+    {
+        auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Original" );
+        renderer->setPointSize( 4.0 );
+        renderer->setPointColor( kvs::UIColor::Gray() );
+
+        auto* axis = new kvs::Axis2D();
+        axis->setName( "OriginalAxis" );
+        axis->setTitle( "Original" );
+        axis->xAxis().setNumberOfTicks( 3 );
+        axis->yAxis().setNumberOfTicks( 3 );
+
+        screen.registerObject( table, axis );
+        screen.registerObject( table, renderer );
+    }
+
+    // Random Seeding.
+    {
+        const int nclusters = 4;
+        auto* kmeans = new kvs::KMeansClustering();
+        kmeans->setClusteringMethod( kvs::KMeansClustering::FastKMeans );
+        kmeans->setSeedingMethod( kvs::KMeansClustering::RandomSeeding );
+        kmeans->setNumberOfClusters( nclusters );
+
+        auto* object = kmeans->exec( table );
+        auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Random" );
+        renderer->setPointSize( 4.0 );
+        renderer->setColorMap( cmap );
+
+        auto* axis = new kvs::Axis2D();
+        axis->setName( "RandomAxis" );
+        axis->setTitle( "Random Seeding" );
+        axis->xAxis().setNumberOfTicks( 3 );
+        axis->yAxis().setNumberOfTicks( 3 );
+
+        screen.registerObject( object, axis );
+        screen.registerObject( object, renderer );
+    }
+
+    // Smart Seeding.
+    {
+        const int nclusters = 4;
+        auto* kmeans = new kvs::KMeansClustering();
+        kmeans->setClusteringMethod( kvs::KMeansClustering::FastKMeans );
+        kmeans->setSeedingMethod( kvs::KMeansClustering::SmartSeeding );
+        kmeans->setNumberOfClusters( nclusters );
+
+        auto* object = kmeans->exec( table );
+        auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Smart" );
+        renderer->setPointSize( 4.0 );
+        renderer->setColorMap( cmap );
+
+        auto* axis = new kvs::Axis2D();
+        axis->setName( "SmartAxis" );
+        axis->setTitle( "Smart Seeding" );
+        axis->xAxis().setNumberOfTicks( 3 );
+        axis->yAxis().setNumberOfTicks( 3 );
+
+        screen.registerObject( object, axis );
+        screen.registerObject( object, renderer );
+    }
+
+    // Auto-estimation
+    {
+        const int max_nclusters = 10;
+        auto* kmeans = new kvs::KMeansClustering();
+        kmeans->setClusteringMethod( kvs::KMeansClustering::AdaptiveKMeans );
+        kmeans->setNumberOfClusters( max_nclusters );
+
+        auto* object = kmeans->exec( table );
+        auto* renderer = new kvs::ScatterPlotRenderer();
+        renderer->setName( "Auto" );
+        renderer->setPointSize( 4.0 );
+        renderer->setColorMap( cmap );
+
+        auto* axis = new kvs::Axis2D();
+        axis->setName( "AutoAxis" );
+        axis->setTitle( "Auto-estimation" );
+        axis->xAxis().setNumberOfTicks( 3 );
+        axis->yAxis().setNumberOfTicks( 3 );
+
+        screen.registerObject( object, axis );
+        screen.registerObject( object, renderer );
+    }
+
+    const int global_margin = 30;
+    LayoutEvent layout( global_margin );
+    screen.addEvent( &layout );
+    layout.update( screen.width(), screen.height() );
 
     return app.run();
 }

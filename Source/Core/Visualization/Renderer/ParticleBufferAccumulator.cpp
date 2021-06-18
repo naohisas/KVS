@@ -3,14 +3,6 @@
  *  @file   ParticleBufferAccumulator.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ParticleBufferAccumulator.cpp 1644 2013-09-17 08:25:37Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ParticleBufferAccumulator.h"
 
@@ -195,7 +187,7 @@ void ParticleBufferAccumulator::createImage(
                         const size_t point_index3 = 3 * m_index_buffer[bindex];
 
                         kvs::RGBColor color( object->colors().data() + point_index3 );
-                        if( renderer->isEnabledShading() )
+                        if( renderer->isShadingEnabled() )
                         {
                             const kvs::Shader::ShadingModel* shader = renderer->particleBuffer()->shader();
                             const kvs::Vector3f vertex( object->coords().data() + point_index3 );

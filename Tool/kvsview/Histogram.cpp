@@ -3,14 +3,6 @@
  *  @file   Histogram.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Histogram.cpp 1690 2014-01-01 08:14:08Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "Histogram.h"
 #include <string>
@@ -30,8 +22,8 @@
 #include <kvs/MouseMoveEventListener>
 #include <kvs/KeyPressEventListener>
 #include <kvs/Background>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include "CommandName.h"
 #include "FileChecker.h"
 
@@ -187,8 +179,8 @@ public:
 
     void update()
     {
-        kvs::glut::Screen* glut_screen = static_cast<kvs::glut::Screen*>( screen() );
-        glut_screen->scene()->background()->setColor( ::DefaultBackgroundColor );
+        kvs::Screen* s = static_cast<kvs::Screen*>( screen() );
+        s->scene()->background()->setColor( ::DefaultBackgroundColor );
 
         GLint vp[4]; glGetIntegerv( GL_VIEWPORT, vp );
         const GLint left = vp[0];
@@ -349,13 +341,13 @@ const float Argument::biasParameter( void )
  *  @brief  Executes main process.
  */
 /*===========================================================================*/
-int Main::exec( int argc, char** argv )
+int Main::exec()
 {
-    // Setup GLUT viewer application.
-    kvs::glut::Application app( argc, argv );
+    // Setup viewer application.
+    kvs::Application app( m_argc, m_argv );
 
     // Commandline arguments.
-    kvsview::Histogram::Argument arg( argc, argv );
+    kvsview::Histogram::Argument arg( m_argc, m_argv );
     if ( !arg.parse() ) exit( EXIT_FAILURE );
     m_input_name = arg.value<std::string>();
 
@@ -382,7 +374,7 @@ int Main::exec( int argc, char** argv )
     kvsview::Histogram::KeyPressEvent key_press_event( &params );
 
     // Rendering screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
     screen.addEvent( &initialize_event );
     screen.addEvent( &paint_event );
     screen.setEvent( &mouse_press_event );

@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ParallelAxis.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/RendererBase>
 #include <kvs/Module>

@@ -6,7 +6,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = KVS
-PROJECT_NUMBER         = 2.9.0
+PROJECT_NUMBER         = 3.0.0
 OUTPUT_DIRECTORY       = ./Document
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English

@@ -29,8 +29,8 @@
 #include "Event.h"
 #include "Widget.h"
 #include <kvs/Message>
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 
 
 /*===========================================================================*/
@@ -42,14 +42,14 @@
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
 
     // Parse command line arguments.
     Argument arg( argc, argv );
     if( !arg.parse() ) exit( EXIT_FAILURE );
 
     // Setup a rendering screen.
-    kvs::glut::Screen screen( &app );
+    kvs::Screen screen( &app );
 
     // Read parameters from the arguments.
     Parameter parameter;

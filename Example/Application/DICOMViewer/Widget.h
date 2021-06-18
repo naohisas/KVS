@@ -13,12 +13,10 @@
  *  $Id: Widget.h 602 2010-08-19 02:43:34Z naohisa.sakamoto $
  */
 /*****************************************************************************/
-#ifndef __WIDGET_H__
-#define __WIDGET_H__
-
+#pragma once
 #include "Parameter.h"
-#include <kvs/glut/Label>
-#include <kvs/glut/Screen>
+#include <kvs/Label>
+#include <kvs/Screen>
 
 
 namespace Widget
@@ -29,17 +27,14 @@ namespace Widget
  *  @brief  Counter label class.
  */
 /*===========================================================================*/
-class CounterLabel : public kvs::glut::Label
+class CounterLabel : public kvs::Label
 {
     Parameter* m_parameter; ///< parameters
 
 public:
-
-    CounterLabel( Parameter* parameter, kvs::glut::Screen* screen );
-
-    void screenUpdated( void );
-
-    void screenResized( void );
+    CounterLabel( Parameter* parameter, kvs::Screen* screen );
+    void screenUpdated();
+    void screenResized();
 };
 
 /*===========================================================================*/
@@ -47,17 +42,14 @@ public:
  *  @brief  Modality label class.
  */
 /*===========================================================================*/
-class ModalityLabel : public kvs::glut::Label
+class ModalityLabel : public kvs::Label
 {
     Parameter* m_parameter; ///< parameters
 
 public:
-
-    ModalityLabel( Parameter* parameter, kvs::glut::Screen* screen );
-
-    void screenUpdated( void );
-
-    void screenResized( void );
+    ModalityLabel( Parameter* parameter, kvs::Screen* screen );
+    void screenUpdated();
+    void screenResized();
 };
 
 /*===========================================================================*/
@@ -65,19 +57,14 @@ public:
  *  @brief  Image information label class.
  */
 /*===========================================================================*/
-class ImageInfoLabel : public kvs::glut::Label
+class ImageInfoLabel : public kvs::Label
 {
     Parameter* m_parameter; ///< parameters
 
 public:
-
-    ImageInfoLabel( Parameter* parameter, kvs::glut::Screen* screen );
-
-    void screenUpdated( void );
-
-    void screenResized( void );
+    ImageInfoLabel( Parameter* parameter, kvs::Screen* screen );
+    void screenUpdated();
+    void screenResized();
 };
 
 } // end of namespace Widget
-
-#endif // __WIDGET_H__

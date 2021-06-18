@@ -7,9 +7,11 @@ printf 'configure BuildRule... '
 
 ./configure_BuildRule.py Core
 ./configure_BuildRule.py SupportGLUT
+./configure_BuildRule.py SupportGLFW
 ./configure_BuildRule.py SupportOpenCV
 ./configure_BuildRule.py SupportCUDA
 ./configure_BuildRule.py SupportPython
+./configure_BuildRule.py SupportMPI
 ./configure_BuildRule.py SupportEGL
 ./configure_BuildRule.py SupportOSMesa
 
@@ -38,10 +40,12 @@ rm -f $( find ../Source/kvs -type f -not -path '*/.git/*' )
 
 ./configure_header_list.py Core             kvs
 ./configure_header_list.py SupportGLUT      kvs/glut
+./configure_header_list.py SupportGLFW      kvs/glfw
 ./configure_header_list.py SupportOpenCV    kvs/opencv
 ./configure_header_list.py SupportQt        kvs/qt
 ./configure_header_list.py SupportCUDA      kvs/cuda
 ./configure_header_list.py SupportPython    kvs/python
+./configure_header_list.py SupportMPI       kvs/mpi
 ./configure_header_list.py SupportEGL       kvs/egl
 ./configure_header_list.py SupportOSMesa    kvs/osmesa
 

@@ -3,14 +3,6 @@
  *  @file   ObjectBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ObjectBase.h 1804 2014-08-08 14:46:45Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #pragma once
 #include <iostream>
@@ -26,8 +18,6 @@
 namespace kvs
 {
 
-class Camera;
-
 /*==========================================================================*/
 /**
  *  Object base class.
@@ -38,7 +28,6 @@ class ObjectBase : public kvs::XformControl
     kvsModuleBase( kvs::ObjectBase );
 
 public:
-
     enum ObjectType
     {
         Geometry = 0, ///< Geometric object.
@@ -50,7 +39,6 @@ public:
     };
 
 private:
-
     ObjectType m_object_type; ///< object type
     std::string m_name; ///< object name
     kvs::Vec3 m_min_object_coord; ///< min coord in the object coordinate system
@@ -65,7 +53,6 @@ private:
     bool m_show_flag; ///< flag for showing object
 
 public:
-
     ObjectBase();
     virtual ~ObjectBase();
 
@@ -95,10 +82,9 @@ public:
     bool isShown() const { return m_show_flag; }
 
     void updateNormalizeParameters();
-    virtual void updateMinMaxCoords(){};
+    virtual void updateMinMaxCoords() {};
 
 protected:
-
     void setObjectType( ObjectType object_type ) { m_object_type = object_type; }
     void setObjectCenter( const kvs::Vec3& object_center ) { m_object_center = object_center; }
     void setNormalize( const kvs::Vec3& normalize ) { m_normalize = normalize; }

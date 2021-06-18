@@ -3,14 +3,6 @@
  *  @file   VCProject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: WriteVCProject.cpp 1498 2013-04-04 07:30:41Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "VCProject.h"
 #include "Constant.h"
@@ -125,7 +117,7 @@ namespace kvsmake
  *  @return 0 if the project file is generated successfully
  */
 /*===========================================================================*/
-int VCProject::exec( int /* argc */, char** /* argv */ )
+int VCProject::exec()
 {
     //  Open a template file.
     std::ifstream in( kvsmake::VCProjectTemplate.c_str() );

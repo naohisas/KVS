@@ -3,14 +3,6 @@
  *  @file   Streamline.h
  *  @author Yukio Yasuhara, Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Streamline.h 1778 2014-05-28 10:16:57Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__STREAMLINE_H_INCLUDE
 #define KVS__STREAMLINE_H_INCLUDE

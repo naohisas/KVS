@@ -3,14 +3,6 @@
  *  @file   ray_caster.frag
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright 2007 Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ray_caster.frag 1041 2012-03-14 15:28:49Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #version 120
 #include "shading.h"
@@ -27,7 +19,7 @@ FragIn vec3 position_ndc;
 uniform sampler2D entry_points; // entry points (front face)
 uniform sampler2D exit_points; // exit points (back face)
 uniform vec3 offset; // offset width for the gradient
-uniform float dt; // sampling step
+uniform float sampling_step; // sampling step
 uniform float opaque; // opaque value
 uniform vec3 light_position; // light position in the object coordinate
 uniform vec3 camera_position; // camera position in the object coordinate
@@ -121,9 +113,9 @@ void main()
     vec3 color0 = LookupTexture2D( color_texture, index ).rgb;
 
     // Front face clipping.
-    if ( entry_depth == 1.0 )
+    if ( entry_depth == 0.0 )
     {
-        entry_point = NDC2Obj( vec3( position_ndc.xy, -1.0 ) );;
+        entry_point = NDC2Obj( vec3( position_ndc.xy, -1.0 ) );
         entry_depth = 0.0;
     }
 
@@ -131,19 +123,15 @@ void main()
     float segment = distance( exit_point, entry_point );
 #if defined( ENABLE_ALPHA_CORRECTION )
     int nsteps = 300;
-    float dT = segment / float( nsteps );
-    float dTdt = dT / dt;
+    float dt = segment / float( nsteps );
+    float dT = dt / sampling_step;
 #else
+    float dt = sampling_step;
     int nsteps = int( floor( segment / dt ) );
-    if ( nsteps == 0 ) nsteps++;
 #endif
 
     // Ray direction.
-#if defined( ENABLE_ALPHA_CORRECTION )
-    vec3 direction = dT * normalize( exit_point - entry_point );
-#else
     vec3 direction = dt * normalize( exit_point - entry_point );
-#endif
 
     // Stochastic jittering.
 #if defined( ENABLE_JITTERING )
@@ -155,8 +143,10 @@ void main()
     // Ray traversal.
     vec3 position = entry_point;
     vec4 color = vec4( 0.0, 0.0, 0.0, 0.0 );
-    float depth = entry_depth;
-    for ( int i = 0; i < nsteps; i++ )
+    float depth = 1.0;
+    float w = 0.0;
+    float dd = dt / segment;
+    for ( int i = 0; i < nsteps; i++, w += dd )
     {
         // Get the scalar value from the 3D texture.
         // NOTE: The volume index which is a index to access the volume data
@@ -176,9 +166,10 @@ void main()
         vec4 c = LookupTexture1D( transfer_function_data, tfunc_index );
 
 #if defined( ENABLE_ALPHA_CORRECTION )
-        c.a = 1.0 - pow( 1.0 - c.a, dTdt );
+        c.a = 1.0 - pow( 1.0 - c.a, dT );
 #endif
 
+        float d = RayDepth( w, entry_depth, exit_depth );
         if ( c.a != 0.0 )
         {
             // Get the normal vector in object coordinate.
@@ -207,6 +198,7 @@ void main()
             // Front-to-back composition.
             color.rgb += ( 1.0 - color.a ) * c.a * c.rgb;
             color.a += ( 1.0 - color.a ) * c.a;
+            depth = d;
 
             // Early ray termination.
             if ( color.a > opaque )
@@ -218,12 +210,11 @@ void main()
 
         // Depth comparison between the depth at the sampling point
         // and depth stored in the depth buffer.
-        float w = float(i) / float( nsteps - 1 );
-        depth = RayDepth( w, entry_depth, exit_depth );
-        if ( depth > depth0 )
+        if ( d > depth0 )
         {
             color.rgb += ( 1.0 - color.a ) * color0.rgb;
             color.a = 1.0;
+            depth = d;
             break;
         }
 

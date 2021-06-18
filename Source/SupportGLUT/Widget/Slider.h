@@ -3,20 +3,13 @@
  *  @file   Slider.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Slider.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GLUT__SLIDER_H_INCLUDE
 #define KVS__GLUT__SLIDER_H_INCLUDE
 
 #include "WidgetBase.h"
 #include <kvs/RGBColor>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -50,7 +43,7 @@ private:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-    Slider( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( Slider( kvs::ScreenBase* screen = 0 ) );
 
     virtual void sliderPressed(){};
     virtual void sliderMoved(){};

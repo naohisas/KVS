@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file Url.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Url.cpp 1317 2012-09-25 03:13:02Z naohisa.sakamoto@gmail.com $
+ *  @file   Url.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "Socket.h"

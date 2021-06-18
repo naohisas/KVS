@@ -3,18 +3,8 @@
  *  @file   MemoryDebugger.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: MemoryDebugger.h 630 2010-10-10 02:05:28Z naohisa.sakamoto $
- */
 /*****************************************************************************/
-#ifndef KVS__MEMORY_DEBUGGER_H_INCLUDE
-#define KVS__MEMORY_DEBUGGER_H_INCLUDE
-
+#pragma once
 #if defined ( KVS_ENABLE_MEM_DEBUG )
 
 #include <kvs/MemoryTracer>
@@ -41,5 +31,3 @@
 #define KVS_MEMORY_DEBUGGER__SET_ARGUMENT(argc,argv)
 
 #endif
-
-#endif // KVS__MEMORY_DEBUGGER_H_INCLUDE

@@ -3,14 +3,6 @@
  *  @file   RotationMatrix33.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RotationMatrix33.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include "RotationMatrix33.h"
 

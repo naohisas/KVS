@@ -3,14 +3,6 @@
  *  @file   ObjectManager.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ObjectManager.cpp 1802 2014-08-07 09:22:11Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ObjectManager.h"
 #include <iostream>

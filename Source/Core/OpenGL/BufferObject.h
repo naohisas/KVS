@@ -3,18 +3,8 @@
  *  @file   BufferObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: BufferObject.h 634 2010-10-13 07:04:05Z naohisa.sakamoto $
- */
 /*****************************************************************************/
-#ifndef KVS__BUFFER_OBJECT_H_INCLUDE
-#define KVS__BUFFER_OBJECT_H_INCLUDE
-
+#pragma once
 #include <kvs/GL>
 #include <kvs/Deprecated>
 #include <cstddef>
@@ -25,13 +15,12 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  Buffer object class.
+ *  @brief  Buffer object class.
  */
 /*===========================================================================*/
 class BufferObject
 {
 public:
-
     enum AccessType
     {
         ReadOnly  = GL_READ_ONLY,  ///< reading pixel data from PBO
@@ -53,31 +42,32 @@ public:
     };
 
 private:
-
-    GLenum m_target; ///< target (GL_ARRAY_BUFFER or GL_ELEMENT_ARRAY_BUFFER)
-    GLenum m_target_binding; ///< target binding
-    GLuint m_id; ///< buffer ID
-    GLenum m_usage; ///< usage
-    size_t m_size; ///< buffer size [byte]
-    bool m_is_loaded; ///< test whether the memory is allocated on the GPU or not
+    GLenum m_target = 0; ///< target (GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, etc.)
+    GLenum m_target_binding = 0; ///< target binding
+    GLenum m_usage = 0; ///< usage
+    GLuint m_id = 0; ///< buffer ID
+    size_t m_size = 0; ///< buffer size [byte]
+    bool m_is_loaded = false; ///< test whether the memory is allocated on the GPU or not
 
 public:
-
     class Binder;
     class GuardedBinder;
 
+    static GLsizei PaddedBufferSize( GLsizei size );
+
 public:
-
     BufferObject( const GLenum target, const GLenum target_binding, const GLenum usage );
-    virtual ~BufferObject();
+    virtual ~BufferObject() { this->release(); }
+    BufferObject( const BufferObject& ) = delete;
+    BufferObject& operator =( const BufferObject& ) = delete;
 
-    GLuint id() const;
-    GLenum target() const;
-    GLenum targetBinding() const;
-    size_t size() const;
+    GLuint id() const { return m_id; }
+    GLenum target() const { return m_target; }
+    GLenum targetBinding() const { return m_target_binding; }
+    size_t size() const { return m_size; }
 
-    void setUsage( const GLenum usage );
-    void setSize( const size_t size );
+    void setUsage( const GLenum usage ) { m_usage = usage; }
+    void setSize( const size_t size ) { m_size = size; }
 
     void create( const size_t size, const void* data = NULL );
     void release();
@@ -87,57 +77,48 @@ public:
     bool isValid() const;
     bool isBound() const;
 
-    void load( const size_t size, const void* data, const size_t offset = 0 );
-    void* map( const GLenum access_type = kvs::BufferObject::ReadWrite );
-    void unmap();
+    GLsizei load( const size_t size, const void* data, const size_t offset = 0 );
+    void* map( const GLenum type = AccessType::ReadWrite ) { return this->mapBuffer( type ); }
+    void unmap() { this->unmapBuffer(); }
 
-    KVS_DEPRECATED( void download( const size_t size, const void* data, const size_t offset = 0 ) ) { this->load( size, data, offset ); }
 protected:
-
     void createID();
     void deleteID();
     void setBufferData( GLsizei width, const GLvoid* data );
     void setBufferSubData( GLsizei width, const GLvoid* data, GLint xoffset = 0 );
     void* mapBuffer( const GLenum access_type );
     void unmapBuffer();
-
-private:
-
-    BufferObject( const BufferObject& );
-    BufferObject& operator =( const BufferObject& );
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Binder class for BufferObject.
+ */
+/*===========================================================================*/
 class BufferObject::Binder
 {
-    const kvs::BufferObject& m_bo;
-
+    const kvs::BufferObject& m_bo; ///< target buffer object (reference)
 public:
-
-    Binder( const kvs::BufferObject& bo );
-    ~Binder();
-
-private:
-
-    Binder( const Binder& );
-    Binder& operator =( const Binder& );
+    Binder( const kvs::BufferObject& bo ): m_bo( bo ) { m_bo.bind(); }
+    ~Binder() { m_bo.unbind(); }
+    Binder( const Binder& ) = delete;
+    Binder& operator =( const Binder& ) = delete;
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Guarded binder class for BufferObject.
+ */
+/*===========================================================================*/
 class BufferObject::GuardedBinder
 {
-    const kvs::BufferObject& m_bo;
-    GLint m_id;
-
+    const kvs::BufferObject& m_bo; ///< target buffer object (reference)
+    GLint m_id = 0; ///< target binding ID
 public:
-
     GuardedBinder( const kvs::BufferObject& bo );
     ~GuardedBinder();
-
-private:
-
-    GuardedBinder( const GuardedBinder& );
-    GuardedBinder& operator =( const GuardedBinder& );
+    GuardedBinder( const GuardedBinder& ) = delete;
+    GuardedBinder& operator =( const GuardedBinder& ) = delete;
 };
 
 } // end of namespace kvs
-
-#endif // KVS__BUFFER_OBJECT_H_INCLUDE

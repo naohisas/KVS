@@ -3,17 +3,8 @@
  *  @file   Scene.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
-
 #include <kvs/Mouse>
 #include <kvs/ScreenBase>
 #include <kvs/CubicImage>
@@ -130,7 +121,7 @@ public:
 
     void initializeFunction();
     void paintFunction();
-    void resizeFunction( int width, int height );
+    void resizeFunction( int width, int height, float dpr );
     void mouseReleaseFunction( int x, int y );
     void mousePressFunction( int x, int y, kvs::Mouse::OperationMode mode );
     void mouseMoveFunction( int x, int y );

@@ -3,18 +3,8 @@
  *  @file   Deprecated.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
-#ifndef KVS__DEPRECATED_H_INCLUDE
-#define KVS__DEPRECATED_H_INCLUDE
-
+#pragma once
 #include "Compiler.h"
 
 // MS VC compiler.
@@ -37,5 +27,3 @@
 #else
 #    define KVS_DEPRECATED( function ) function
 #endif
-
-#endif // KVS__DEPRECATED_H_INCLUDE

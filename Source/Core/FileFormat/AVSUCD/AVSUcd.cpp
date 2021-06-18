@@ -13,6 +13,7 @@
 /****************************************************************************/
 #include "AVSUcd.h"
 #include <kvs/File>
+#include <kvs/Directory>
 #include <kvs/Message>
 #include <kvs/ValueArray>
 #include <kvs/IgnoreUnusedVariable>
@@ -556,7 +557,7 @@ void AVSUcd::read_control_file( FILE* const ifs )
         size_t last = strlen(buffer) - 1;
         if ( buffer[last] == '\n' ) buffer[last] = '\0';
 
-        const std::string filename = path + kvs::File::Separator() + std::string( buffer );
+        const std::string filename = path + kvs::Directory::Separator() + std::string( buffer );
         filenames.push_back( filename );
     }
 

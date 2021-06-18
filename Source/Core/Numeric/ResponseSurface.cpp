@@ -1,17 +1,7 @@
 /*****************************************************************************/
 /**
- *  @file   response_surface.cpp
- *  @brief  Response surface method class
- *
- *  @author Yukio YASUHARA
- *  @date   2019/09/22 10:26:16
- */
-/*----------------------------------------------------------------------------
- *
- *  $Author: naohisa $
- *  $Date: 2007/11/16 11:38:50 $
- *  $Source: /home/Repository/viz-server2/cvsroot/KVS/Library/Numeric/response_surface.cpp,v $
- *  $Revision: 1.7 $
+ *  @file   ResponseSurface.cpp
+ *  @author Naohisa Sakamoto, Yukio Yasuhara
  */
 /*****************************************************************************/
 #include "ResponseSurface.h"

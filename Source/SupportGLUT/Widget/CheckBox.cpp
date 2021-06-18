@@ -3,14 +3,6 @@
  *  @file   CheckBox.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: CheckBox.cpp 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "CheckBox.h"
 #include <kvs/OpenGL>
@@ -59,7 +51,7 @@ CheckBox::CheckBox( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::BoxMargin );
-    this->setCaption( "CheckBox " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "CheckBox " + kvs::String::From( ::InstanceCounter++ ) );
     this->setState( false );
 
     m_upper_edge_color = BaseClass::darkenedColor( ::Default::BoxColor, 0.6f );

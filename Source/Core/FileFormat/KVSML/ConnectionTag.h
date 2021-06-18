@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   ConnectionTag.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ConnectionTag.h 1812 2014-09-11 07:34:35Z naohisa.sakamoto@gmail.com $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #pragma once
@@ -29,7 +22,7 @@ namespace kvsml
 class ConnectionTag : public kvs::kvsml::TagBase
 {
 public:
-    typedef kvs::kvsml::TagBase BaseClass;
+    using BaseClass = kvs::kvsml::TagBase;
 
 public:
     ConnectionTag();

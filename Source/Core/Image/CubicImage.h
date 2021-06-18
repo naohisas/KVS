@@ -1,7 +1,14 @@
+/*****************************************************************************/
+/**
+ *  @file   CubicImage.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/ColorImage>
 #include <kvs/Vector3>
 #include <string>
+#include <array>
 
 
 namespace kvs
@@ -41,7 +48,7 @@ public:
 
 private:
     Layout m_layout;
-    kvs::ColorImage m_images[NumberOfDirections];
+    std::array<kvs::ColorImage,NumberOfDirections> m_images;
 
 public:
     CubicImage(): m_layout( Cross ) {}

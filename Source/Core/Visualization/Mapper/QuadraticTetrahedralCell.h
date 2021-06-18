@@ -3,14 +3,6 @@
  *  @file   QuadraticTetrahedralCell.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: QuadraticTetrahedralCell.h 1792 2014-07-31 04:50:42Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__QUADRATIC_TETRAHEDRAL_CELL_H_INCLUDE
 #define KVS__QUADRATIC_TETRAHEDRAL_CELL_H_INCLUDE

@@ -3,14 +3,6 @@
  *  @file   Slider.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #include "Slider.h"
 #include <kvs/OpenGL>
@@ -53,7 +45,13 @@ Slider::Slider( kvs::ScreenBase* screen ):
     kvs::WidgetBase( screen ),
     m_change_value( false ),
     m_show_range_value( true ),
-    m_pushed( false )
+    m_pushed( false ),
+    m_slider_pressed( nullptr ),
+    m_slider_moved( nullptr ),
+    m_slider_released( nullptr ),
+    m_value_changed( nullptr ),
+    m_screen_updated( nullptr ),
+    m_screen_resized( nullptr )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
@@ -63,7 +61,7 @@ Slider::Slider( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::SliderMargin );
-    this->setCaption( "Slider " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "Slider " + kvs::String::From( ::InstanceCounter++ ) );
     this->setValue( ::Default::Value );
     this->setRange( ::Default::MinValue, ::Default::MaxValue );
     this->setSliderColor( ::Default::SliderColor );
@@ -342,7 +340,7 @@ void Slider::paintEvent()
 {
     this->screenUpdated();
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     BaseClass::painter().begin( BaseClass::screen() );
     BaseClass::drawBackground();
@@ -372,7 +370,7 @@ void Slider::paintEvent()
     if ( m_show_range_value )
     {
         {
-            const std::string min_value = kvs::String::ToString( m_min_value );
+            const std::string min_value = kvs::String::From( m_min_value );
             const int x = BaseClass::x0() + BaseClass::margin();
             const int y = BaseClass::y0() + BaseClass::margin() + height + ::Default::SliderHeight;
             const kvs::Vec2 p( x, y + height );
@@ -380,7 +378,7 @@ void Slider::paintEvent()
         }
 
         {
-            const std::string max_value = kvs::String::ToString( m_max_value );
+            const std::string max_value = kvs::String::From( m_max_value );
             const size_t text_width = BaseClass::painter().fontMetrics().width( max_value );
             const int x = BaseClass::x1() - BaseClass::margin() - text_width;
             const int y = BaseClass::y0() + BaseClass::margin() + height + ::Default::SliderHeight;
@@ -405,6 +403,8 @@ void Slider::resizeEvent( int width, int height )
 {
     kvs::IgnoreUnusedVariable( width );
     kvs::IgnoreUnusedVariable( height );
+    const auto p = BaseClass::anchorPosition();
+    Rectangle::setPosition( p.x(), p.y() );
 
     this->screenResized();
 }
@@ -417,13 +417,13 @@ void Slider::resizeEvent( int width, int height )
 /*===========================================================================*/
 void Slider::mousePressEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( this->is_in_cursor( event->x(), event->y() ) )
     {
         m_pushed = true;
         BaseClass::screen()->disable();
-        BaseClass::activate();
+        BaseClass::setActive( true );
         this->sliderPressed();
         BaseClass::screen()->redraw();
     }
@@ -443,7 +443,7 @@ void Slider::mousePressEvent( kvs::MouseEvent* event )
              * called here.
              */
             BaseClass::screen()->disable();
-            BaseClass::activate();
+            BaseClass::setActive( true );
             this->sliderMoved();
             BaseClass::screen()->redraw();
         }
@@ -458,7 +458,7 @@ void Slider::mousePressEvent( kvs::MouseEvent* event )
 /*===========================================================================*/
 void Slider::mouseMoveEvent( kvs::MouseEvent* event )
 {
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -483,7 +483,7 @@ void Slider::mouseReleaseEvent( kvs::MouseEvent* event )
 {
     kvs::IgnoreUnusedVariable( event );
 
-    if ( !BaseClass::isShown() ) return;
+    if ( !BaseClass::isVisible() ) return;
 
     if ( BaseClass::isActive() )
     {
@@ -496,7 +496,7 @@ void Slider::mouseReleaseEvent( kvs::MouseEvent* event )
             m_change_value = false;
         }
 
-        BaseClass::deactivate();
+        BaseClass::setActive( false );
         BaseClass::screen()->redraw();
     }
 }

@@ -3,14 +3,6 @@
  *  @file   PolygonRenderer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PolygonRenderer.cpp 1634 2013-09-06 08:55:47Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "PolygonRenderer.h"
 #include "PolygonRenderingFunction.h"
@@ -27,28 +19,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  Constructor.
- */
-/*==========================================================================*/
-PolygonRenderer::PolygonRenderer():
-    m_enable_anti_aliasing( false ),
-    m_enable_multisample_anti_aliasing( false ),
-    m_enable_two_side_lighting( true ),
-    m_polygon_offset( 0.0f )
-{
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-PolygonRenderer::~PolygonRenderer()
-{
-}
-
-/*==========================================================================*/
-/**
  *  Polygon rendering method.
  *  @param object [in] pointer to the object
  *  @param camera [in] pointer to the camera
@@ -60,26 +30,122 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
     kvs::IgnoreUnusedVariable( light );
     kvs::IgnoreUnusedVariable( camera );
 
-    kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
-
     BaseClass::startTimer();
+    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
 
-    kvs::OpenGL::WithPushedAttrib attrib( GL_CURRENT_BIT | GL_ENABLE_BIT );
-
-/*
-    if ( this->isEnabledShading() )
-    {
-        if ( polygon->normals().size() == 0 )
-        {
-            glEnable( GL_AUTO_NORMAL );
-        }
-    }
-*/
+    auto* polygon = kvs::PolygonObject::DownCast( object );
 
     this->initialize();
-#if KVS_ENABLE_DEPRECATED
-    polygon->applyMaterial();
-#endif
+
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    ::PolygonRenderingFunction( polygon );
+
+    BaseClass::stopTimer();
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Sets depth offset.
+ *  @param  factor [in] scale factor
+ *  @param  units [in] constant depth offset
+ */
+/*===========================================================================*/
+void PolygonRenderer::setDepthOffset( const float factor, const float units )
+{
+    m_depth_offset = kvs::Vec2( factor, units );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Enables anti-aliasing option.
+ *  @param  enable [in] if true, anti-aliasing is enabled
+ *  @param  multisample [in] if true, multi-sample anti-aliasing is enabled
+ */
+/*===========================================================================*/
+void PolygonRenderer::setAntiAliasingEnabled( const bool enable, const bool multisample ) const
+{
+    m_enable_anti_aliasing = enable;
+    m_enable_multisample_anti_aliasing = multisample;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Enables two-side lighting option.
+ *  @param  enable [in] if true, two-side lighting is enabled
+ */
+/*===========================================================================*/
+void PolygonRenderer::setTwoSideLightingEnabled( const bool enable ) const
+{
+    m_enable_two_side_lighting = enable;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Enables anti-aliasing option.
+ *  @param  multisample [in] if true, multi-sample anti-aliasing is enabled
+ */
+/*===========================================================================*/
+void PolygonRenderer::enableAntiAliasing( const bool multisample ) const
+{
+    this->setAntiAliasingEnabled( true, multisample );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Disables anti-aliasing option.
+ */
+/*===========================================================================*/
+void PolygonRenderer::disableAntiAliasing() const
+{
+    this->setAntiAliasingEnabled( false, false );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Enables two-side lighting option.
+ */
+/*===========================================================================*/
+void PolygonRenderer::enableTwoSideLighting() const
+{
+    this->setTwoSideLightingEnabled( true );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Disables two-side lighting option.
+ */
+/*===========================================================================*/
+void PolygonRenderer::disableTwoSideLighting() const
+{
+    this->setTwoSideLightingEnabled( false );
+}
+
+/*==========================================================================*/
+/**
+ *  Initialize OpenGL status for the rendering.
+ */
+/*==========================================================================*/
+void PolygonRenderer::initialize()
+{
+    // Lighting
+    kvs::Light::SetModelTwoSide( this->isTwoSideLightingEnabled() );
+    if( !this->isShadingEnabled() )
+    {
+        kvs::OpenGL::Disable( GL_NORMALIZE );
+        kvs::OpenGL::Disable( GL_LIGHTING );
+    }
+    else
+    {
+        kvs::OpenGL::Enable( GL_NORMALIZE );
+        kvs::OpenGL::Enable( GL_LIGHTING );
+    }
+
+    // Depth offset
+    if ( !kvs::Math::IsZero( m_depth_offset[0] ) )
+    {
+        kvs::OpenGL::SetPolygonOffset( m_depth_offset[0], m_depth_offset[1] );
+        kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
+    }
 
     // Anti-aliasing.
     if ( m_enable_anti_aliasing )
@@ -103,85 +169,23 @@ void PolygonRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::L
         }
     }
 
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    ::PolygonRenderingFunction( polygon );
-    kvs::OpenGL::Disable( GL_DEPTH_TEST );
-
-    BaseClass::stopTimer();
-}
-
-/*===========================================================================*/
-/**
- *  Enables anti-aliasing.
- */
-/*===========================================================================*/
-void PolygonRenderer::enableAntiAliasing( const bool multisample ) const
-{
-    m_enable_anti_aliasing = true;
-    m_enable_multisample_anti_aliasing = multisample;
-}
-
-/*===========================================================================*/
-/**
- *  Disables anti-aliasing.
- */
-/*===========================================================================*/
-void PolygonRenderer::disableAntiAliasing() const
-{
-    m_enable_anti_aliasing = false;
-    m_enable_multisample_anti_aliasing = false;
-}
-
-void PolygonRenderer::enableTwoSideLighting() const
-{
-    m_enable_two_side_lighting = true;
-}
-
-void PolygonRenderer::disableTwoSideLighting() const
-{
-    m_enable_two_side_lighting = false;
-}
-
-bool PolygonRenderer::isTwoSideLighting() const
-{
-    return( m_enable_two_side_lighting );
-}
-
-/*==========================================================================*/
-/**
- *  Initialize OpenGL status for the rendering.
- */
-/*==========================================================================*/
-void PolygonRenderer::initialize()
-{
-    kvs::OpenGL::Disable( GL_LINE_SMOOTH );
-
-    kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
     kvs::OpenGL::SetPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
     kvs::OpenGL::SetShadeModel( GL_SMOOTH );
-
     kvs::OpenGL::SetColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+    kvs::OpenGL::Disable( GL_LINE_SMOOTH );
+    kvs::OpenGL::Enable( GL_BLEND );
     kvs::OpenGL::Enable( GL_COLOR_MATERIAL );
 
-    // Polygon offset.
-    kvs::OpenGL::SetPolygonOffset( m_polygon_offset, 0.0 );
-    kvs::OpenGL::Enable( GL_POLYGON_OFFSET_FILL );
-
-    if( !this->isEnabledShading() )
+#if 0
+    if ( this->isShadingEnabled() )
     {
-        kvs::OpenGL::Disable( GL_NORMALIZE );
-        kvs::OpenGL::Disable( GL_LIGHTING );
+        if ( polygon->normals().size() == 0 )
+        {
+            glEnable( GL_AUTO_NORMAL );
+        }
     }
-    else
-    {
-        kvs::OpenGL::Enable( GL_NORMALIZE );
-        kvs::OpenGL::Enable( GL_LIGHTING );
-    }
-
-    kvs::Light::SetModelTwoSide( this->isTwoSideLighting() );
+#endif
 }
 
 } // end of namespace kvs

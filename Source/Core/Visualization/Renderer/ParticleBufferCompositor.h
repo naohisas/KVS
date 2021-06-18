@@ -3,14 +3,6 @@
  *  @file   ParticleBufferCompositor.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ParticleBufferCompositor.h 1641 2013-09-11 06:39:57Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__PARTICLE_BUFFER_COMPOSITOR_H_INCLUDE
 #define KVS__PARTICLE_BUFFER_COMPOSITOR_H_INCLUDE
@@ -37,13 +29,11 @@ namespace kvs
 class ParticleBufferCompositor : public kvs::VolumeRendererBase
 {
 public:
-
     typedef kvs::VolumeRendererBase BaseClass;
     typedef ParticleBufferAccumulator::ObjectList ObjectList;
     typedef ParticleBufferAccumulator::RendererList RendererList;
 
 private:
-
     double m_accumulation_time; ///< accumulation time
     size_t m_num_projected_particles; ///< number of projected points
     size_t m_num_stored_particles; ///< number of stored points
@@ -56,7 +46,6 @@ private:
     kvs::ParticleBufferAccumulator* m_accumulator; ///< pointer to the accumulator
 
 public:
-
     ParticleBufferCompositor(
         kvs::ObjectManager* object_manager,
         kvs::RendererManager* renderer_manager,
@@ -71,7 +60,6 @@ public:
     void clearList();
 
 private:
-
     bool create_accumulator();
     void clean_accumulator();
     void delete_accumulator();

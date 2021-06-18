@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   LinearRegression.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "LinearRegression.h"
 #include <kvs/Assert>
 #include <kvs/Vector>

@@ -3,14 +3,6 @@
  *  @file   ColorMap.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ColorMap.h 1756 2014-05-02 02:28:45Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #include <list>
@@ -42,6 +34,12 @@ public:
     static kvs::ColorMap BrewerRdYlBu( const size_t resolution = 256 );
     static kvs::ColorMap BrewerRdYlGn( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSpectral( const size_t resolution = 256 );
+
+    static kvs::ColorMap Viridis( const size_t resolution = 256 );
+    static kvs::ColorMap Plasma( const size_t resolution = 256 );
+    static kvs::ColorMap Inferno( const size_t resolution = 256 );
+    static kvs::ColorMap Magma( const size_t resolution = 256 );
+    static kvs::ColorMap Cividis( const size_t resolution = 256 );
 
 public:
     typedef kvs::ValueArray<kvs::UInt8> Table;

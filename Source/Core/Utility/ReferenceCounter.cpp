@@ -1,14 +1,7 @@
 /****************************************************************************/
 /**
- *  @file ReferenceCounter.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ReferenceCounter.cpp 631 2010-10-10 02:15:35Z naohisa.sakamoto $
+ *  @file   ReferenceCounter.cpp
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
 #include "ReferenceCounter.h"
@@ -37,7 +30,7 @@ ReferenceCounter::ReferenceCounter( size_t value )
  *  Destructor.
  */
 /*==========================================================================*/
-ReferenceCounter::~ReferenceCounter( void )
+ReferenceCounter::~ReferenceCounter()
 {
 }
 
@@ -58,7 +51,7 @@ void ReferenceCounter::setValue( size_t value )
  *  @return counter value
  */
 /*==========================================================================*/
-size_t ReferenceCounter::value( void ) const
+size_t ReferenceCounter::value() const
 {
     return( m_value );
 }
@@ -70,7 +63,7 @@ size_t ReferenceCounter::value( void ) const
  *  @return mutex lock key
  */
 /*==========================================================================*/
-kvs::Mutex& ReferenceCounter::key( void ) const
+kvs::Mutex& ReferenceCounter::key() const
 {
     return( m_key );
 }
@@ -81,7 +74,7 @@ kvs::Mutex& ReferenceCounter::key( void ) const
  *  Increment the renference counter.
  */
 /*==========================================================================*/
-void ReferenceCounter::increment( void )
+void ReferenceCounter::increment()
 {
 #if defined ( KVS_ENABLE_THREAD_SAFE )
     kvs::MutexLocker lock( &m_key );
@@ -94,7 +87,7 @@ void ReferenceCounter::increment( void )
  *  Decrement the reference counter.
  */
 /*==========================================================================*/
-void ReferenceCounter::decrement( void )
+void ReferenceCounter::decrement()
 {
 #if defined ( KVS_ENABLE_THREAD_SAFE )
     kvs::MutexLocker lock( &m_key );

@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   UnstructuredQCriterion.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "UnstructuredQCriterion.h"
 #include "InverseDistanceWeighting.h"
 #include <kvs/PrismaticCell>

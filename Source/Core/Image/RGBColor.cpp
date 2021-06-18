@@ -3,14 +3,6 @@
  *  @file   RGBColor.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RGBColor.cpp 1798 2014-08-04 05:25:10Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include <kvs/Math>
 #include <kvs/Type>

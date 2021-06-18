@@ -3,14 +3,6 @@
  *  @file   shader.frag
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright 2007 Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: shading.frag 485 2010-03-09 05:44:44Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #version 120
 #include "shading.h"
@@ -37,13 +29,16 @@ uniform vec3 outline_color;
 void main()
 {
     // Outline.
-    float center_line_width = line_width * 0.5 - outline_width;
-    if ( distance( gl_FragCoord.xy, center ) >= center_line_width )
+    if ( outline_width > 0.0 )
     {
-        // The opacity value is set to 0.9 for diminishing aliasing.
-        float opacity = 0.9;
-        gl_FragColor = vec4( outline_color, opacity );
-        return;
+        float center_line_width = line_width * 0.5 - outline_width;
+        if ( distance( gl_FragCoord.xy, center ) >= center_line_width )
+        {
+            // The opacity value is set to 0.9 for diminishing aliasing.
+            float opacity = 0.9;
+            gl_FragColor = vec4( outline_color, opacity );
+            return;
+        }
     }
 
     vec3 color = gl_Color.rgb;

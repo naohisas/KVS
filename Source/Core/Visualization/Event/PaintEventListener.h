@@ -3,18 +3,8 @@
  *  @file   PaintEventListener.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PaintEventListener.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__PAINT_EVENT_LISTENER_H_INCLUDE
-#define KVS__PAINT_EVENT_LISTENER_H_INCLUDE
-
+#pragma once
 #include <kvs/EventListener>
 #include <kvs/EventBase>
 
@@ -30,17 +20,16 @@ namespace kvs
 class PaintEventListener : public kvs::EventListener
 {
 public:
+    PaintEventListener(): kvs::EventListener( kvs::EventBase::PaintEvent ) {}
+    PaintEventListener( PaintEventFunc func ):
+        kvs::EventListener( kvs::EventBase::PaintEvent ) { this->update( func ); }
+    virtual ~PaintEventListener() {}
 
-    PaintEventListener();
-    virtual ~PaintEventListener();
-
-    virtual void update() = 0;
+    void update( PaintEventFunc func ) { paintEvent( func ); }
+    virtual void update() { paintEvent(); }
 
 private:
-
-    void onEvent( kvs::EventBase* event = 0 );
+    void onEvent( kvs::EventBase* event = 0 ) { this->update(); }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__PAINT_EVENT_LISTENER_H_INCLUDE

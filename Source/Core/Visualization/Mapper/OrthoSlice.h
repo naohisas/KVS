@@ -3,18 +3,8 @@
  *  @file   OrthoSlice.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OrthoSlice.h 1721 2014-03-12 15:27:38Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__ORTHO_SLICE_H_INCLUDE
-#define KVS__ORTHO_SLICE_H_INCLUDE
-
+#pragma once
 #include <kvs/SlicePlane>
 #include <kvs/VolumeObjectBase>
 #include <kvs/Module>
@@ -34,7 +24,6 @@ class OrthoSlice : public kvs::SlicePlane
     kvsModuleSuperClass( kvs::SlicePlane );
 
 public:
-
     enum AlignedAxis
     {
         XAxis = 0,
@@ -43,11 +32,9 @@ public:
     };
 
 protected:
-
     AlignedAxis m_aligned_axis; ///< aligned axis
 
 public:
-
     OrthoSlice();
     OrthoSlice(
         const kvs::VolumeObjectBase* volume,
@@ -59,5 +46,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__ORTHO_SLICE_H_INCLUDE

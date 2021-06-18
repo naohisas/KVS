@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   BetaFunction.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "BetaFunction.h"
 #include "GammaFunction.h"
 #include <kvs/Assert>

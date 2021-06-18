@@ -3,14 +3,6 @@
  *  @file   EventHandler.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: EventHandler.cpp 1574 2013-05-21 10:28:12Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "EventHandler.h"
 #include <algorithm>
@@ -21,22 +13,14 @@
 namespace kvs
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new EventHandler class.
- */
-/*===========================================================================*/
-EventHandler::EventHandler()
+kvs::EventListener* EventHandler::listener( const std::string& name )
 {
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the EventHandler class.
- */
-/*===========================================================================*/
-EventHandler::~EventHandler()
-{
+    auto it = std::find_if(
+        m_listeners.begin(),
+        m_listeners.end(),
+        [&] ( kvs::EventListener* l ) { return l->name() == name; } );
+    if ( it == m_listeners.end() ) { return nullptr; }
+    return *it;
 }
 
 /*===========================================================================*/
@@ -58,9 +42,8 @@ void EventHandler::attach( kvs::EventListener* listener )
 /*===========================================================================*/
 void EventHandler::detach( const kvs::EventListener* listener )
 {
-    std::vector<kvs::EventListener*>::iterator p;
-    p = std::find( m_listeners.begin(), m_listeners.end(), listener );
-    if ( p != m_listeners.end() ) { m_listeners.erase( p ); }
+    auto result = std::remove( m_listeners.begin(), m_listeners.end(), listener );
+    m_listeners.erase( result, m_listeners.end() );
 }
 
 /*===========================================================================*/
@@ -71,15 +54,10 @@ void EventHandler::detach( const kvs::EventListener* listener )
 /*===========================================================================*/
 void EventHandler::detach( const std::string& name )
 {
-    std::vector<kvs::EventListener*>::iterator listener = m_listeners.begin();
-    std::vector<kvs::EventListener*>::iterator end = m_listeners.end();
-    while ( listener != end )
-    {
-        if ( (*listener)->name() == name ) break;
-        ++listener;
-    }
-
-    if ( listener != end ) { m_listeners.erase( listener ); }
+    auto result = std::remove_if(
+        m_listeners.begin(), m_listeners.end(),
+        [&]( kvs::EventListener* l ) { return l->name() == name; } );
+    m_listeners.erase( result, m_listeners.end() );
 }
 
 /*===========================================================================*/
@@ -90,15 +68,12 @@ void EventHandler::detach( const std::string& name )
 /*===========================================================================*/
 void EventHandler::notify( kvs::EventBase* event )
 {
-    std::vector<kvs::EventListener*>::iterator listener = m_listeners.begin();
-    std::vector<kvs::EventListener*>::iterator end = m_listeners.end();
-    while ( listener != end )
+    for ( auto& l : m_listeners )
     {
-        if ( (*listener)->eventType() & event->type() )
+        if ( l->eventType() & event->type() )
         {
-            (*listener)->onEvent( event );
+            l->onEvent( event );
         }
-        ++listener;
     }
 }
 
@@ -110,6 +85,7 @@ void EventHandler::notify( kvs::EventBase* event )
 void EventHandler::clear()
 {
     m_listeners.clear();
+    m_listeners.shrink_to_fit();
 }
 
 } // end of namespace kvs

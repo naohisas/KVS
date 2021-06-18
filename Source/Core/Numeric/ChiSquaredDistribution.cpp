@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   ChiSquaredDistribution.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "ChiSquaredDistribution.h"
 #include "GammaFunction.h"
 #include <kvs/Assert>

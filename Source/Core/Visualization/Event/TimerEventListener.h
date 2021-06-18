@@ -2,20 +2,9 @@
 /**
  *  @file   TimerEventListener.h
  *  @author Naohisa Sakamoto
- *  @brief  
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TimerEventListener.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#ifndef KVS__TIMER_EVENT_LISTENER_H_INCLUDE
-#define KVS__TIMER_EVENT_LISTENER_H_INCLUDE
-
+#pragma once
 #include <kvs/EventListener>
 #include <kvs/TimeEvent>
 
@@ -31,17 +20,16 @@ namespace kvs
 class TimerEventListener : public kvs::EventListener
 {
 public:
+    TimerEventListener( const int msec = -1 ): kvs::EventListener( kvs::EventBase::TimerEvent, msec ) {}
+    TimerEventListener( TimerEventFunc func, const int msec = -1 ):
+        kvs::EventListener( kvs::EventBase::TimerEvent, msec ) { this->update( func ); }
+    virtual ~TimerEventListener() {}
 
-    TimerEventListener();
-    virtual ~TimerEventListener();
-
-    virtual void update( kvs::TimeEvent* event ) = 0;
+    void update( TimerEventFunc func ) { timerEvent( func ); }
+    virtual void update( kvs::TimeEvent* event ) { timerEvent( event ); }
 
 private:
-
-    void onEvent( kvs::EventBase* event );
+    void onEvent( kvs::EventBase* event ) { this->update( static_cast<kvs::TimeEvent*>(event) ); }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__TIMER_EVENT_LISTENER_H_INCLUDE

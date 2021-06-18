@@ -3,14 +3,6 @@
  *  @file   OpacityMapPalette.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OpacityMapPalette.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GLUT__OPACITY_MAP_PALETTE_H_INCLUDE
 #define KVS__GLUT__OPACITY_MAP_PALETTE_H_INCLUDE
@@ -20,6 +12,7 @@
 #include <kvs/Texture2D>
 #include <kvs/OpacityMap>
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -53,7 +46,7 @@ private:
     kvs::Vec2i m_previous_position; ///< mouse previous position
 
 public:
-    OpacityMapPalette( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( OpacityMapPalette( kvs::ScreenBase* screen = 0 ) );
     virtual ~OpacityMapPalette();
 
     virtual void screenUpdated() {};

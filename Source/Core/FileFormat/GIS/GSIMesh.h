@@ -5,14 +5,6 @@
  */
 /*----------------------------------------------------------------------------
  *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
-/*----------------------------------------------------------------------------
- *
  * Format information:
  * Degital Elevation Model (DEM) data from Geospatial Information Authority
  * of Japan (http://www.gsi.go.jp/index.html).

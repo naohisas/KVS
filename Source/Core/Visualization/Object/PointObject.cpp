@@ -3,14 +3,6 @@
  *  @file   PointObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PointObject.cpp 1759 2014-05-05 06:14:18Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "PointObject.h"
 #include <cstring>

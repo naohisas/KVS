@@ -1,27 +1,20 @@
 /****************************************************************************/
 /**
- *  @file String.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: String.h 1349 2012-11-13 07:09:38Z s.yamada0808@gmail.com $
+ *  @file   String.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__STRING_H_INCLUDE
-#define KVS__STRING_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <sstream>
-#include <kvs/Type>
-#if KVS_ENABLE_DEPRECATED
-#include <cstdarg>
+#include <iomanip>
+#include <memory>
+#include <locale>
 #include <cstdio>
 #include <iostream>
-#endif
+#include <kvs/Type>
+#include <kvs/Deprecated>
+
 
 namespace kvs
 {
@@ -34,192 +27,140 @@ namespace kvs
 class String
 {
 public:
-
     template <typename T>
     static T To( const std::string& str )
     {
-        T ret;
-        std::istringstream ss( str );
-        ss >> ret;
+        T ret; std::istringstream ss( str ); ss >> ret;
         return ret;
     }
 
     template <typename T>
-    static std::string ToString( const T& src )
+    static std::string From( const T& val )
     {
-        std::ostringstream ss;
-        ss << src;
+        std::ostringstream ss; ss << val;
         return ss.str();
     }
 
+    template <typename T>
+    static std::string From( const T& val, const char thousands_sep )
+    {
+        struct Seprator : std::numpunct<char>
+        {
+            char m_sep;
+            Seprator( const char sep ): m_sep( sep ) {}
+            char do_thousands_sep() const { return m_sep; }
+            std::string do_grouping() const { return "\3"; }
+        };
+        std::unique_ptr<Seprator> seprator( new Seprator( thousands_sep ) );
+        std::ostringstream ss;
+        ss.imbue( std::locale( std::cout.getloc(), seprator.release() ) );
+        ss << std::fixed << val;
+        return ss.str();
+    }
+
+    template <typename... Args>
+    static std::string Format( const std::string& format, Args... args )
+    {
+        const auto size = std::snprintf( nullptr, 0, format.c_str(), args... ) + 1;
+        std::unique_ptr<char[]> buffer( new char [ size ] );
+        std::snprintf( buffer.get(), size, format.c_str(), args... );
+        return std::string( buffer.get(), buffer.get() + size );
+    }
+
+    static std::string From( const kvs::Int8 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::Int16 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::Int32 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::Int64 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt8 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt16 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt32 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::UInt64 val, const int width, const char fill = 0 );
+    static std::string From( const kvs::Real32 val, const int precision, const bool fixed = false, const bool scientific = false );
+    static std::string From( const kvs::Real64 val, const int precision, const bool fixed = false, const bool scientific = false );
+    static std::string FromFile( const std::string& filename );
     static std::string ToUpper( const std::string& str );
-
     static std::string ToLower( const std::string& str );
-
     static std::string Replace( const std::string& source, const std::string& pattern, const std::string& placement );
 
-    //static std::string Format( const char* str, ... );
-
-    static std::string FromFile( const std::string& filename );
-
-
-#if KVS_ENABLE_DEPRECATED
-private:
-
-    char*  m_data; ///< string data
-    size_t m_size; ///< string size (not include '\0')
-
-public:
-
-    String( void );
-
-    String( const String& str );
-
-    explicit String( const std::string& str );
-
-    template<typename T>
-    explicit String( T number );
-
-    ~String( void );
-
-public:
-
-    char& operator []( size_t index );
-
-    const char operator []( size_t index ) const;
-
-    String& operator =( const std::string& str );
-
-    String& operator =( const String& str );
-
-    String& operator +=( const std::string& str );
-
-    String& operator +=( const String& str );
-
-    const bool operator ==( const String& str );
-
-    const bool operator !=( const String& str );
-
-    const bool operator <( const String& str );
-
-    const bool operator >( const String& str );
-
-    const bool operator <=( const String& str );
-
-    const bool operator >=( const String& str );
-
-    friend const String operator +( const String& str1, const String& str2 );
-
-    friend std::ostream& operator <<( std::ostream& os, const String& str );
-
-public:
-
-    char* data( void );
-
-    const char* data( void ) const;
-
-    const size_t size( void ) const;
-
-    char& at( size_t index );
-
-    const char at( size_t index ) const;
-
-    void upper( void );
-
-    void upper( size_t index );
-
-    void lower( void );
-
-    void lower( size_t index );
-
-    void format( const char* str, ... );
-
-    void replace( const std::string& pattern, const std::string& placement );
-
-    template<typename T>
-    void setNumber( T number );
-
-    template<typename T>
-    const T toNumber( int base = 10 ) const;
-
-    template<typename T>
-    static const T toNumber( const std::string& str, int base = 10 );
-
-    const std::string toStdString( void ) const;
-#else
 private:
     String();
-#endif
+
+public:
+    // KVS_DEPRECATED
+    template <typename T>
+    static std::string ToString( const T& val ) { return From<T>( val ); }
+
+    // KVS_DEPRECATED
+    template <typename T>
+    static std::string ToString(
+        const T& val,
+        const int precision,
+        const bool fixed = false,
+        const bool scientific = false )
+    {
+        return From( val, precision, fixed, scientific );
+    }
+
+    // KVS_DEPRECATED
+    template <typename T>
+    static std::string ToString( const T& val, const std::string& format )
+    {
+        return Format( format, val );
+    }
 };
-
-template <>
-inline std::string String::ToString( const kvs::Int8& src )
-{
-    std::ostringstream ss;
-    ss << (int)src;
-    return ss.str();
-}
-
-template <>
-inline std::string String::ToString( const kvs::UInt8& src )
-{
-    std::ostringstream ss;
-    ss << (int)src;
-    return ss.str();
-}
-
-template <>
-inline std::string String::ToString( const std::string& src )
-{
-    return src;
-}
 
 template <>
 inline kvs::Int8 String::To( const std::string& str )
 {
-    int ret;
-    std::istringstream ss( str );
-    ss >> ret;
+    int ret; std::istringstream ss( str ); ss >> ret;
     return static_cast<kvs::Int8>( ret );
 }
 
 template <>
 inline kvs::UInt8 String::To( const std::string& str )
 {
-    int ret;
-    std::istringstream ss( str );
-    ss >> ret;
+    int ret; std::istringstream ss( str ); ss >> ret;
     return static_cast<kvs::UInt8>( ret );
 }
 
 template <>
-inline std::string String::To( const std::string& src )
+inline std::string String::To( const std::string& str )
 {
-    return src;
+    return str;
 }
 
-#if KVS_ENABLE_DEPRECATED
-template<typename T>
-String::String( T number )
+template <>
+inline std::string String::From( const kvs::Int8& val )
 {
-    this->setNumber<T>( number );
+    std::ostringstream ss; ss << static_cast<int>(val);
+    return ss.str();
 }
 
-template<typename T>
-void String::setNumber( T number )
+template <>
+inline std::string String::From( const kvs::UInt8& val )
 {
-    std::stringstream s;
-    s << number;
-
-    *this = s.str();
+    std::ostringstream ss; ss << static_cast<int>(val);
+    return ss.str();
 }
 
-template<typename T>
-const T String::toNumber( const std::string& str, int base )
+template <>
+inline std::string String::From( const std::string& val )
 {
-    return( String( str ).toNumber<T>( base ) );
+    return val;
 }
-#endif
+
+template <>
+inline std::string String::From( const kvs::Int8& val, const char )
+{
+    std::ostringstream ss; ss << static_cast<int>(val);
+    return ss.str();
+}
+
+template <>
+inline std::string String::From( const kvs::UInt8& val, const char )
+{
+    std::ostringstream ss; ss << static_cast<int>(val);
+    return ss.str();
+}
+
 } // end of namespace kvs
-
-#endif // KVS__STRING_H_INCLUDE

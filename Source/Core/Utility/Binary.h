@@ -1,18 +1,10 @@
 /****************************************************************************/
 /**
- *  @file Binary.h
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Binary.h 631 2010-10-10 02:15:35Z naohisa.sakamoto $
+ *  @file   Binary.h
+ *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__BINARY_H_INCLUDE
-#define KVS__BINARY_H_INCLUDE
+#pragma once
 
 #define KVS_BINARY_0000_TO_HEX 0
 #define KVS_BINARY_0001_TO_HEX 1
@@ -73,5 +65,3 @@
                   KVS_HEX_DIGIT(f), \
                   KVS_HEX_DIGIT(g), \
                   KVS_HEX_DIGIT(h) )
-
-#endif // KVS__BINARY_H_INCLUDE

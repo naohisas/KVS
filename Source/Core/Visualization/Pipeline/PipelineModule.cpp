@@ -3,14 +3,6 @@
  *  @file   PipelineModule.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PipelineModule.cpp 1720 2014-03-12 14:22:04Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "PipelineModule.h"
 #include <cstring>

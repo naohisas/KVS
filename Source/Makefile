@@ -27,6 +27,10 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
 SUBDIRS += SupportGLUT
 endif
+
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+SUBDIRS += SupportGLFW
+endif
 endif
 
 ifeq "$(KVS_SUPPORT_QT)" "1"
@@ -51,6 +55,10 @@ endif
 
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 SUBDIRS += SupportPython
+endif
+
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+SUBDIRS += SupportMPI
 endif
 
 ifeq "$(KVS_SUPPORT_EGL)" "1"
@@ -90,6 +98,11 @@ ifeq "$(KVS_SUPPORT_GLUT)" "1"
 	$(INSTALL) kvsSupportGLUT $(INSTALL_DIR)/include
 	$(INSTALL) $(shell find kvs/glut -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/glut
 endif
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/glfw
+	$(INSTALL) kvsSupportGLFW $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/glfw -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/glfw
+endif
 ifeq "$(KVS_SUPPORT_QT)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/qt
 	$(INSTALL) kvsSupportQt $(INSTALL_DIR)/include
@@ -119,6 +132,11 @@ ifeq "$(KVS_SUPPORT_PYTHON)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/python
 	$(INSTALL) kvsSupportPython $(INSTALL_DIR)/include
 	$(INSTALL) $(shell find kvs/python -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/python
+endif
+ifeq "$(KVS_SUPPORT_MPI)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/mpi
+	$(INSTALL) kvsSupportMPI $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/mpi -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/mpi
 endif
 ifeq "$(KVS_SUPPORT_EGL)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/egl

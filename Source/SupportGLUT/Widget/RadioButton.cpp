@@ -3,14 +3,6 @@
  *  @file   RadioButton.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: RadioButton.cpp 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "RadioButton.h"
 #include <kvs/OpenGL>
@@ -78,7 +70,7 @@ RadioButton::RadioButton( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseReleaseEvent );
 
     BaseClass::setMargin( ::Default::CircleMargin );
-    this->setCaption( "RadioButton " + kvs::String::ToString( ::InstanceCounter++ ) );
+    this->setCaption( "RadioButton " + kvs::String::From( ::InstanceCounter++ ) );
     this->setState( false );
 
     m_upper_edge_color = BaseClass::darkenedColor( ::Default::CircleColor, 0.6f );

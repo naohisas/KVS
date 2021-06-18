@@ -3,34 +3,14 @@
  *  @file   ScreenBase.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ScreenBase.h 1570 2013-05-09 08:32:56Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
-
 #include <string>
 #include <kvs/DisplayFormat>
 #include <kvs/Deprecated>
 #include <kvs/EventHandler>
 #include <kvs/PaintDevice>
 #include <kvs/ColorImage>
-
-/*KVS_DEPRECATED*/
-#include <kvs/InitializeEventListener>
-#include <kvs/PaintEventListener>
-#include <kvs/ResizeEventListener>
-#include <kvs/MousePressEventListener>
-#include <kvs/MouseMoveEventListener>
-#include <kvs/MouseReleaseEventListener>
-#include <kvs/MouseDoubleClickEventListener>
-#include <kvs/WheelEventListener>
-#include <kvs/KeyPressEventListener>
 
 
 namespace kvs
@@ -53,6 +33,8 @@ private:
     kvs::EventHandler* m_event_handler; ///< event handler
     kvs::PaintDevice* m_paint_device; ///< paint device
     float m_device_pixel_ratio; ///< device pixel ratio
+    bool m_visible; ///< visibility of the screen
+    bool m_fullscreen; ///< flag for fullscreen display mode
 
 public:
     ScreenBase();
@@ -74,35 +56,28 @@ public:
     void setTitle( const std::string& title ) { m_title = title; }
     void setDisplayFormat( const kvs::DisplayFormat& display_format ) { m_display_format = display_format; }
 
-    void addEvent( kvs::EventListener* event, const std::string& name = "" );
-    void removeEvent( const kvs::EventListener* event );
-    void removeEvent( const std::string& name );
+    virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
+    virtual void removeEvent( const kvs::EventListener* event );
+    virtual void removeEvent( const std::string& name );
 
     virtual void create() {}
-    virtual void show() {}
-    virtual void hide() {}
-    virtual void showFullScreen() {}
-    virtual void showNormal() {}
+    virtual void show() { m_visible = true; }
+    virtual void hide() { m_visible = false; }
+    virtual void showFullScreen() { m_visible = true; m_fullscreen = true; }
+    virtual void showNormal() { m_visible = true; m_fullscreen = false; }
     virtual void popUp() {}
     virtual void pushDown() {}
     virtual void redraw() {}
     virtual void resize( int, int ) {}
     virtual void draw() {}
-    virtual bool isFullScreen() const { return false; }
+    virtual bool isFullScreen() const { return m_fullscreen; }
+    virtual bool isVisible() const { return m_visible; }
     virtual kvs::ColorImage capture() const { return kvs::ColorImage( this->width(), this->height() ); }
+
     virtual void enable() {}
     virtual void disable() {}
     virtual void reset() {}
-
-    KVS_DEPRECATED( void addInitializeEvent( kvs::InitializeEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addPaintEvent( kvs::PaintEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addResizeEvent( kvs::ResizeEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMousePressEvent( kvs::MousePressEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMouseMoveEvent( kvs::MouseMoveEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMouseReleaseEvent( kvs::MouseReleaseEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addMouseDoubleClickEvent( kvs::MouseDoubleClickEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addWheelEvent( kvs::WheelEventListener* event ) ) { this->addEvent( event ); }
-    KVS_DEPRECATED( void addKeyPressEvent( kvs::KeyPressEventListener* event ) ) { this->addEvent( event ); }
 
 protected:
     void setDevicePixelRatio( const float ratio ) { m_device_pixel_ratio = ratio; }

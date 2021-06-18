@@ -3,14 +3,6 @@
  *  @file   OpacityMap.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OpacityMap.h 1619 2013-07-18 05:12:08Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__OPACITY_MAP_H_INCLUDE
 #define KVS__OPACITY_MAP_H_INCLUDE

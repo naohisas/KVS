@@ -24,6 +24,10 @@ INSTALL_DIR  :=
 SUBDIRS := kvscheck kvsconv kvsmake
 ifeq "$(KVS_SUPPORT_GLUT)" "1"
 SUBDIRS += kvsview
+else
+ifeq "$(KVS_SUPPORT_GLFW)" "1"
+SUBDIRS += kvsview
+endif
 endif
 
 

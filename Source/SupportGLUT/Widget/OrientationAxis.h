@@ -3,14 +3,6 @@
  *  @file   OrientationAxis.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: OrientationAxis.h 1719 2014-03-12 06:42:32Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__GLUT__ORIENTATION_AXIS_H_INCLUDE
 #define KVS__GLUT__ORIENTATION_AXIS_H_INCLUDE
@@ -24,6 +16,7 @@
 #include <kvs/glut/Screen>
 #endif
 #include <kvs/glut/WidgetBase>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -80,10 +73,9 @@ private:
     ProjectionType m_projection_type; ///< projection type
 
 public:
-    OrientationAxis( kvs::glut::Screen* screen );
-
-    OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene );
-    OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase* object );
+    KVS_DEPRECATED( OrientationAxis( kvs::glut::Screen* screen ) );
+    KVS_DEPRECATED( OrientationAxis( kvs::ScreenBase* screen, const kvs::Scene* scene ) );
+    KVS_DEPRECATED( OrientationAxis( kvs::ScreenBase* screen, const kvs::ObjectBase* object ) );
     virtual ~OrientationAxis();
 
 public:

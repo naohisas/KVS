@@ -3,14 +3,6 @@
  *  @file   LineObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: LineObject.cpp 1763 2014-05-07 04:58:07Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include "LineObject.h"
 #include <string>

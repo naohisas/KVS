@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   CubicImage.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #include "CubicImage.h"
 #include <kvs/Assert>
 #include <kvs/RGBColor>
@@ -92,13 +98,14 @@ void CubicImage::stitch()
         //  [-X] [-Z] [+X] [+Z]
         //       [-Y]
         //
-        this->create( w * 4, h * 3, kvs::ImageBase::Color );
+        this->create( w * 4, h * 3 );
         ::Draw( this->topImage(), w, 0, this ); // +Y
         ::Draw( this->leftImage(), 0, h, this ); // -X
         ::Draw( this->frontImage(), w, h, this ); // -Z
         ::Draw( this->rightImage(), w * 2, h, this ); // +X
         ::Draw( this->backImage(), w * 3, h, this ); // +Z
         ::Draw( this->bottomImage(), w, h * 2, this ); // -Y
+        break;
     }
     case Rectangle:
     {
@@ -107,13 +114,14 @@ void CubicImage::stitch()
         // [+X] [+Y] [+Z]
         // [-X] [-Y] [-Z]
         //
-        this->create( w * 3, h * 2, kvs::ImageBase::Color );
+        this->create( w * 3, h * 2 );
         ::Draw( this->rightImage(), 0, 0, this ); // +X
         ::Draw( this->leftImage(), 0, h, this ); // -X
         ::Draw( this->topImage(), w, 0, this ); // +Y
         ::Draw( this->bottomImage(), w, h, this ); // -Y
         ::Draw( this->backImage(), w * 2, 0, this ); // +Z
         ::Draw( this->frontImage(), w * 2, h, this ); // -Z
+        break;
     }
     case Vertical:
     {
@@ -126,13 +134,14 @@ void CubicImage::stitch()
         // [+Z]
         // [-Z]
         //
-        this->create( w, h * 6, kvs::ImageBase::Color );
+        this->create( w, h * 6 );
         ::Draw( this->rightImage(), 0, 0, this ); // +X
         ::Draw( this->leftImage(), 0, h, this ); // -X
         ::Draw( this->topImage(), 0, h * 2, this ); // +Y
         ::Draw( this->bottomImage(), 0, h * 3, this ); // -Y
         ::Draw( this->backImage(), 0, h * 4, this ); // +Z
         ::Draw( this->frontImage(), 0, h * 5, this ); // -Z
+        break;
     }
     case Horizontal:
     {
@@ -140,13 +149,14 @@ void CubicImage::stitch()
         //
         // [+X] [-X] [+Y] [-Y] [+Z] [-Z]
         //
-        this->create( w * 6, h, kvs::ImageBase::Color );
+        this->create( w * 6, h );
         ::Draw( this->rightImage(), 0, 0, this ); // +X
         ::Draw( this->leftImage(), w, 0, this ); // -X
         ::Draw( this->topImage(), w * 2, 0, this ); // +Y
         ::Draw( this->bottomImage(), w * 3, 0, this ); // -Y
         ::Draw( this->backImage(), w * 4, 0, this ); // +Z
         ::Draw( this->frontImage(), w * 5, 0, this ); // -Z
+        break;
     }
     default:
         break;

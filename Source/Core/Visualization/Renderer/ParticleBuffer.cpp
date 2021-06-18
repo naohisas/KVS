@@ -3,14 +3,6 @@
  *  @file   ParticleBuffer.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ParticleBuffer.cpp 1642 2013-09-15 12:41:47Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ParticleBuffer.h"
 #include <kvs/Type>

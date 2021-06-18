@@ -3,14 +3,6 @@
  *  @file   TransferFunction.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: TransferFunction.h 1620 2013-07-21 09:29:00Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #ifndef KVS__TRANSFER_FUNCTION_H_INCLUDE
 #define KVS__TRANSFER_FUNCTION_H_INCLUDE

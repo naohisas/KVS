@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   FontMetrics.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/PaintDevice>
 #include <kvs/Font>
@@ -7,11 +13,16 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Font metric class.
+ */
+/*===========================================================================*/
 class FontMetrics
 {
 private:
-    const kvs::Font& m_font;
-    kvs::PaintDevice* m_device;
+    const kvs::Font& m_font; ///< reference to the font data
+    kvs::PaintDevice* m_device; ///< pointer to the paint device
 
 public:
     FontMetrics( const kvs::Font& font, kvs::PaintDevice* device );

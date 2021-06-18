@@ -3,14 +3,6 @@
  *  @file   ScreenBase.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ScreenBase.cpp 1570 2013-05-09 08:32:56Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #include "ScreenBase.h"
 #include <kvs/EventHandler>
@@ -26,14 +18,16 @@ namespace kvs
  */
 /*===========================================================================*/
 ScreenBase::ScreenBase():
-    m_x( 0 ),
-    m_y( 0 ),
+    m_x( -1 ),
+    m_y( -1 ),
     m_width( 512 ),
     m_height( 512 ),
     m_title(""),
     m_event_handler( new kvs::EventHandler() ),
     m_paint_device( new kvs::PaintDevice() ),
-    m_device_pixel_ratio( 1.0f )
+    m_device_pixel_ratio( 1.0f ),
+    m_visible( true ),
+    m_fullscreen( false )
 {
 }
 
@@ -50,6 +44,19 @@ ScreenBase::~ScreenBase()
 
 /*===========================================================================*/
 /**
+ *  @brief  Sets an event to the event handler.
+ *  @param  event [in] pointer to an event
+ *  @param  name [in] event name
+ */
+/*===========================================================================*/
+void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
+{
+    m_event_handler->clear();
+    this->addEvent( event, name );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Adds an event to the event handler.
  *  @param  event [in] pointer to an event
  *  @param  name [in] event name
@@ -58,7 +65,7 @@ ScreenBase::~ScreenBase()
 void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
 {
     event->setScreen( this );
-    if ( name != "" ) { event->setName( event->name() ); }
+    if ( name != "" ) { event->setName( name ); }
     m_event_handler->attach( event );
 }
 

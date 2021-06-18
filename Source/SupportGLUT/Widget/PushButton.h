@@ -3,20 +3,13 @@
  *  @file   PushButton.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: PushButton.h 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #ifndef KVS__GLUT__PUSH_BUTTON_H_INCLUDE
 #define KVS__GLUT__PUSH_BUTTON_H_INCLUDE
 
 #include "WidgetBase.h"
 #include <kvs/glut/Screen>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -44,7 +37,7 @@ private:
     kvs::RGBColor m_lower_edge_color; ///< lower edge color
 
 public:
-    PushButton( kvs::ScreenBase* screen = 0 );
+    KVS_DEPRECATED( PushButton( kvs::ScreenBase* screen = 0 ) );
 
     virtual void pressed(){};
     virtual void released(){};

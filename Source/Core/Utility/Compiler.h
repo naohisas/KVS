@@ -3,14 +3,6 @@
  *  @file   Compiler.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Compiler.h 1582 2013-06-03 01:31:06Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
 #pragma once
 #define KVS_COMPILER_NUMBER( x )           # x
@@ -345,6 +337,60 @@
     ( 16 > ( major ) || ( 16 == ( major ) && 6 > ( minor ) ) )
 #define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
     ( 16 > ( major ) || ( 16 == ( major ) && 6 >= ( minor ) ) )
+
+// Visual Studio 2019 Update 7
+#elif ( _MSC_VER == 1927 )
+#define KVS_COMPILER_VERSION "16.7"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 7 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 7 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 7 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 7 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 7 >= ( minor ) ) )
+
+#elif ( _MSC_VER == 1928 )
+// Visual Studio 2019 Update 8
+#if ( _MSC_FULL_VER == 192829333 ) || ( _MSC_FULL_VER == 192829334 )
+#define KVS_COMPILER_VERSION "16.8"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 8 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 8 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 8 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 8 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 8 >= ( minor ) ) )
+
+// Visual Studio 2019 Update 9
+#else
+#define KVS_COMPILER_VERSION "16.9"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 9 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 9 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 9 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 9 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 9 >= ( minor ) ) )
+#endif
+
+// Visual Studio 2019 Update 10
+#elif ( _MSC_VER == 1929 )
+#define KVS_COMPILER_VERSION "16.10"
+#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 10 == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 10 < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
+    ( 16 < ( major ) || ( 16 == ( major ) && 10 <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 10 > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
+    ( 16 > ( major ) || ( 16 == ( major ) && 10 >= ( minor ) ) )
 
 #else
 #define KVS_COMPILER_VERSION "unknown"

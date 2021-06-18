@@ -3,18 +3,8 @@
  *  @file   ResizeEvent.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: ResizeEvent.h 1325 2012-10-04 10:34:52Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
-#ifndef KVS__RESIZE_EVENT_H_INCLUDE
-#define KVS__RESIZE_EVENT_H_INCLUDE
-
+#pragma once
 #include <kvs/EventBase>
 
 
@@ -28,25 +18,25 @@ namespace kvs
 /*===========================================================================*/
 class ResizeEvent : public kvs::EventBase
 {
-protected:
-
+private:
     int m_width; ///< window width
     int m_height; ///< window height
 
 public:
+    ResizeEvent( const ResizeEvent& e ):
+        m_width( e.width() ),
+        m_height( e.height() ) {}
+    ResizeEvent( int width, int height ):
+        m_width( width ),
+        m_height( height ) {}
+    ResizeEvent() {}
+    virtual ~ResizeEvent() {}
 
-    ResizeEvent();
-    ResizeEvent( const ResizeEvent& event );
-    ResizeEvent( int width, int height );
-    virtual ~ResizeEvent();
+    int width() const { return m_width; }
+    int height() const { return m_height; }
+    void setSize( int width, int height ) { m_width = width; m_height = height; }
 
-    int width() const;
-    int height() const;
-    int type() const;
-
-    void setSize( int width, int height );
+    int type() const { return kvs::EventBase::ResizeEvent; }
 };
 
 } // end of namespace kvs
-
-#endif // KVS__RESIZE_EVENT_H_INCLUDE

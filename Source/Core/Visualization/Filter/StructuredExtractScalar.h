@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   StructuredExtractScalar.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/VolumeObjectBase>
 #include <kvs/StructuredVolumeObject>
