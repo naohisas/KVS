@@ -12,93 +12,40 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Saves the current xform.
- */
-/*===========================================================================*/
-void XformControl::saveXform()
-{
-    m_initial_xform = m_current_xform;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Resets xform.
- */
-/*===========================================================================*/
-void XformControl::resetXform()
-{
-    m_current_xform = m_initial_xform;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets an xform to the current xform
- *  @param  xform [in] xform
- */
-/*===========================================================================*/
-void XformControl::setXform( const kvs::Xform& xform )
-{
-    m_current_xform = xform;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Multiplies an xform to the current xform.
- *  @param  xform [in] xform
- */
-/*===========================================================================*/
-void XformControl::multiplyXform( const kvs::Xform& xform )
-{
-    this->setXform( xform * this->xform() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the current xform.
- *  @return the current xform
- */
-/*===========================================================================*/
-const kvs::Xform XformControl::xform() const
-{
-    return m_current_xform;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Rotates the current xform.
- *  @param  rotation [in] rotation matrix
+ *  @param  R [in] rotation matrix
  */
 /*===========================================================================*/
-void XformControl::rotate( const kvs::Mat3& rotation )
+void XformControl::rotate( const kvs::Mat3& R )
 {
-    const kvs::Vec3 t = this->xform().translation();
-    const kvs::Xform x =
-        kvs::Xform::Translation( t ) *
-        kvs::Xform::Rotation( rotation ) *
-        kvs::Xform::Translation( -t );
-    this->multiplyXform( x );
+    const auto T = this->xform().translation();
+    const auto X =
+        kvs::Xform::Translation( T ) *
+        kvs::Xform::Rotation( R ) *
+        kvs::Xform::Translation( -T );
+    this->multiplyXform( X );
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Translates the current xform.
- *  @param  translation [in] translation vector
+ *  @param  T [in] translation vector
  */
 /*===========================================================================*/
-void XformControl::translate( const kvs::Vec3& translation )
+void XformControl::translate( const kvs::Vec3& T )
 {
-    this->multiplyXform( kvs::Xform::Translation( translation ) );
+    this->multiplyXform( kvs::Xform::Translation( T ) );
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Scales the current xform.
- *  @param  scaling [in] scaling vector
+ *  @param  S [in] scaling vector
  */
 /*===========================================================================*/
-void XformControl::scale( const kvs::Vec3& scaling )
+void XformControl::scale( const kvs::Vec3& S )
 {
-    this->multiplyXform( kvs::Xform::Scaling( scaling ) );
+    this->multiplyXform( kvs::Xform::Scaling( S ) );
 }
 
 } // end of namespace kvs

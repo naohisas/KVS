@@ -10,15 +10,6 @@
 namespace kvs
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new xform matrix.
- */
-/*===========================================================================*/
-Xform::Xform(): m_matrix( kvs::Mat4::Identity() )
-{
-}
-
 /*==========================================================================*/
 /**
  *  @brief Constructs a new xform matrix.
@@ -33,17 +24,6 @@ Xform::Xform( const kvs::Vec3& t, const kvs::Vec3& s, const kvs::Mat3& r ):
         s[0] * r[1][0], s[1] * r[1][1], s[2] * r[1][2], t[1],
         s[0] * r[2][0], s[1] * r[2][1], s[2] * r[2][2], t[2],
         0, 0, 0, 1 )
-{
-}
-
-/*==========================================================================*/
-/**
- *  @brief Constructs a new xform matrix.
- *  @param m [in] xform matrix
- */
-/*==========================================================================*/
-Xform::Xform( const kvs::Mat4& m ):
-    m_matrix( m )
 {
 }
 
@@ -138,22 +118,6 @@ const kvs::Vec3 Xform::project( const kvs::Vec3& position ) const
 {
     kvs::Vec4 p = m_matrix * kvs::Vec4( position, 1 );
     return kvs::Vec3( p.x(), p.y(), p.z() ) / p.w();
-}
-
-const kvs::Xform Xform::inverse() const
-{
-    return kvs::Xform( m_matrix.inverted() );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the xform matrix.
- *  @return xform matrix
- */
-/*===========================================================================*/
-const kvs::Mat4 Xform::toMatrix() const
-{
-    return m_matrix;
 }
 
 /*===========================================================================*/

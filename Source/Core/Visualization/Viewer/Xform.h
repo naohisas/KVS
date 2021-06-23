@@ -63,12 +63,12 @@ namespace kvs
 class Xform
 {
 private:
-    kvs::Mat4 m_matrix; ///< xform matrix
+    kvs::Mat4 m_matrix = kvs::Mat4::Identity(); ///< xform matrix
 
 public:
-    Xform();
+    Xform() = default;
     Xform( const kvs::Vec3& t, const kvs::Vec3& s, const kvs::Mat3& r );
-    explicit Xform( const kvs::Mat4& mat );
+    explicit Xform( const kvs::Mat4& mat ): m_matrix( mat ) {}
 
     const kvs::Vec3 translation() const;
     const kvs::Mat3 rotation() const;
@@ -79,8 +79,8 @@ public:
     const kvs::Vec3 transformNormal( const kvs::Vec3& normal ) const;
     const kvs::Vec3 project( const kvs::Vec3& pos ) const;
 
-    const kvs::Xform inverse() const;
-    const kvs::Mat4 toMatrix() const;
+    const kvs::Xform inverse() const { return kvs::Xform( m_matrix.inverted() ); }
+    const kvs::Mat4 toMatrix() const { return m_matrix; }
     void toArray( float array[16] ) const;
 
     static const kvs::Xform FromArray( const float ary[16] );
