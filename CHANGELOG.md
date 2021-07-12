@@ -1,3 +1,38 @@
+### Version 3.x.x Released (2021.xx.xx)
+
+**Added new method**
++ kvs::ColorStream::isBoldEnabled
++ kvs::ColorStream::isDimEnabled
++ kvs::ColorStream::isUnderlineEnabled
++ kvs::ColorStream::isBlinkEnabled
++ kvs::ColorStream::isReverseEnabled
++ kvs::ColorStream::isHideEnabled
+
+**Deprecated method**
++ kvs::ColorStream::setEnabledBold (use kvs::ColorStream::setBoldEnabled)
++ kvs::ColorStream::setEnabledBold (use kvs::ColorStream::setBoldEnabled)
++ kvs::ColorStream::setEnabledDimsetDimEnabled)
++ kvs::ColorStream::setEnabledUnderline (use kvs::ColorStream::setUnderlineEnabled)
++ kvs::ColorStream::setEnabledBlink (use kvs::ColorStream::setBlinkEnabled)
++ kvs::ColorStream::setEnabledReverse (use kvs::ColorStream::setReverseEnabled)
++ kvs::ColorStream::setEnabledHide (use kvs::ColorStream::setHideEnabled)
++ kvs::ColorStream::enableBold (use kvs::ColorStream::setBoldEnabled)
++ kvs::ColorStream::enableDim (use kvs::ColorStream::setDimEnabled)
++ kvs::ColorStream::enableUnderline (use kvs::ColorStream::setUnderlineEnabled)
++ kvs::ColorStream::enableBlink (use kvs::ColorStream::setBlinkEnabled)
++ kvs::ColorStream::enableReverse (use kvs::ColorStream::setReverseEnabled)
++ kvs::ColorStream::enableHide (use kvs::ColorStream::setHideEnabled)
++ kvs::ColorStream::disableBold (use kvs::ColorStream::setBoldEnabled)
++ kvs::ColorStream::disableDim (use kvs::ColorStream::setDimEnabled)
++ kvs::ColorStream::disableUnderline (use kvs::ColorStream::setUnderlineEnabled)
++ kvs::ColorStream::disableBlink (use kvs::ColorStream::setBlinkEnabled)
++ kvs::ColorStream::disableReverse (use kvs::ColorStream::setReverseEnabled)
++ kvs::ColorStream::disableHide (use kvs::ColorStream::setHideEnabled)
+
+**Added new example**
++ Example/Utility/ColorStream
+
+
 ### Version 3.0.0 Released (2021.06.18)
 **Added new classes and functions**
 + kvs::ValueAxis

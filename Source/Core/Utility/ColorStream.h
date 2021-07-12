@@ -6,6 +6,7 @@
 /*****************************************************************************/
 #pragma once
 #include <kvs/String>
+#include <kvs/Deprecated>
 
 
 #define KVS_COLOR_STREAM__STATIC_COLOR_FUNCTIONS( color_name )          \
@@ -24,10 +25,10 @@
 
 #define KVS_COLOR_STREAM__STATIC_FORMAT_FUNCTIONS( format_name )        \
     template <typename T>                                               \
-    static std::string (format_name)( const T t )                        \
+    static std::string (format_name)( const T t )                       \
     {                                                                   \
         return std::string( CodeString( Format##format_name##On ) ).append( t ).append( CodeString( FormatResetAll ) ); \
-    } \
+    }                                                                   \
     static std::ostream& (format_name)( std::ostream& os ) { return os << CodeString( Format##format_name##On ); } \
     static std::ostream& Reset##format_name( std::ostream& os ) { return os << CodeString( Format##format_name##Off ); } \
 
@@ -115,46 +116,34 @@ public:
     KVS_COLOR_STREAM__STATIC_FORMAT_FUNCTIONS( Hide );
 
 private:
-    Color m_foreground_color; ///< foreground color
-    Color m_background_color; ///< background color
-    Format m_format_bold; ///< bold format
-    Format m_format_dim; ///< dim format
-    Format m_format_underline; ///< underline format
-    Format m_format_blink; ///< blink format
-    Format m_format_reverse; ///< reverse format
-    Format m_format_hide; ///< hide format
+    Color m_foreground_color{ ColorDefault }; ///< foreground color
+    Color m_background_color{ Color( ColorDefault + 10 ) }; ///< background color
+    Format m_format_bold{ FormatBoldOff }; ///< bold format
+    Format m_format_dim{ FormatDimOff }; ///< dim format
+    Format m_format_underline{ FormatUnderlineOff }; ///< underline format
+    Format m_format_blink{ FormatBlinkOff }; ///< blink format
+    Format m_format_reverse{ FormatReverseOff }; ///< reverse format
+    Format m_format_hide{ FormatHideOff }; ///< hide format
 
 public:
-    ColorStream():
-        m_foreground_color( ColorDefault ),
-        m_background_color( Color( ColorDefault + 10 ) ),
-        m_format_bold( FormatBoldOff ),
-        m_format_dim( FormatDimOff ),
-        m_format_underline( FormatUnderlineOff ),
-        m_format_blink( FormatBlinkOff ),
-        m_format_reverse( FormatReverseOff ),
-        m_format_hide( FormatHideOff ) {}
+    ColorStream() = default;
 
     void setForegroundColor( const Color color ) { m_foreground_color = color; }
     void setBackgroundColor( const Color color ) { m_background_color = Color( color + 10 ); }
-    void setEnabledBold( const bool on ) { m_format_bold = ( on ) ? FormatBoldOn : FormatBoldOff; }
-    void setEnabledDim( const bool on ) { m_format_dim = ( on ) ? FormatDimOn : FormatDimOff; }
-    void setEnabledUnderline( const bool on ) { m_format_underline = ( on ) ? FormatUnderlineOn : FormatUnderlineOff; }
-    void setEnabledBlink( const bool on ) { m_format_blink = ( on ) ? FormatBlinkOn : FormatBlinkOff; }
-    void setEnabledReverse( const bool on ) { m_format_reverse = ( on ) ? FormatReverseOn : FormatReverseOff; }
-    void setEnabledHide( const bool on ) { m_format_hide = ( on ) ? FormatHideOn : FormatHideOff; }
-    void enableBold() { this->setEnabledBold( true ); }
-    void enableDim() { this->setEnabledDim( true ); }
-    void enableUnderline() { this->setEnabledUnderline( true ); }
-    void enableBlink() { this->setEnabledBlink( true ); }
-    void enableReverse() { this->setEnabledReverse( true ); }
-    void enableHide() { this->setEnabledHide( true ); }
-    void disableBold() { this->setEnabledBold( false ); }
-    void disableDim() { this->setEnabledDim( false ); }
-    void disableUnderline() { this->setEnabledUnderline( false ); }
-    void disableBlink() { this->setEnabledBlink( false ); }
-    void disableReverse() { this->setEnabledReverse( false ); }
-    void disableHide() { this->setEnabledHide( false ); }
+
+    void setBoldEnabled( const bool enabled ) { m_format_bold = ( enabled ) ? FormatBoldOn : FormatBoldOff; }
+    void setDimEnabled( const bool enabled ) { m_format_dim = ( enabled ) ? FormatDimOn : FormatDimOff; }
+    void setUnderlineEnabled( const bool enabled ) { m_format_underline = ( enabled ) ? FormatUnderlineOn : FormatUnderlineOff; }
+    void setBlinkEnabled( const bool enabled ) { m_format_blink = ( enabled ) ? FormatBlinkOn : FormatBlinkOff; }
+    void setReverseEnabled( const bool enabled ) { m_format_reverse = ( enabled ) ? FormatReverseOn : FormatReverseOff; }
+    void setHideEnabled( const bool enabled ) { m_format_hide = ( enabled ) ? FormatHideOn : FormatHideOff; }
+
+    bool isBoldEnabled() const { return m_format_bold == FormatBoldOn; }
+    bool isDimEnabled() const { return m_format_dim == FormatDimOn; }
+    bool isUnderlineEnabled() const { return m_format_underline == FormatUnderlineOn; }
+    bool isBlinkEnabled() const { return m_format_blink == FormatBlinkOn; }
+    bool isReverseEnabled() const { return m_format_reverse == FormatReverseOn; }
+    bool isHideEnabled() const { return m_format_hide == FormatHideOn; }
 
     ColorStream& reset()
     {
@@ -180,6 +169,26 @@ public:
                   << CodeString( cs.m_format_reverse )
                   << CodeString( cs.m_format_hide );
     }
+
+public:
+    KVS_DEPRECATED( void setEnabledBold( const bool on ) ) { this->setBoldEnabled( on ); }
+    KVS_DEPRECATED( void setEnabledDim( const bool on ) ) { this->setDimEnabled( on ); }
+    KVS_DEPRECATED( void setEnabledUnderline( const bool on ) ) { this->setUnderlineEnabled( on ); }
+    KVS_DEPRECATED( void setEnabledBlink( const bool on ) ) { this->setBlinkEnabled( on ); }
+    KVS_DEPRECATED( void setEnabledReverse( const bool on ) ) { this->setReverseEnabled( on ); }
+    KVS_DEPRECATED( void setEnabledHide( const bool on ) ) { this->setHideEnabled( on ); }
+    KVS_DEPRECATED( void enableBold() ) { this->setBoldEnabled( true ); }
+    KVS_DEPRECATED( void enableDim() ) { this->setDimEnabled( true ); }
+    KVS_DEPRECATED( void enableUnderline() ) { this->setUnderlineEnabled( true ); }
+    KVS_DEPRECATED( void enableBlink() ) { this->setBlinkEnabled( true ); }
+    KVS_DEPRECATED( void enableReverse() ) { this->setReverseEnabled( true ); }
+    KVS_DEPRECATED( void enableHide() ) { this->setHideEnabled( true ); }
+    KVS_DEPRECATED( void disableBold() ) { this->setBoldEnabled( false ); }
+    KVS_DEPRECATED( void disableDim() ) { this->setDimEnabled( false ); }
+    KVS_DEPRECATED( void disableUnderline() ) { this->setUnderlineEnabled( false ); }
+    KVS_DEPRECATED( void disableBlink() ) { this->setBlinkEnabled( false ); }
+    KVS_DEPRECATED( void disableReverse() ) { this->setReverseEnabled( false ); }
+    KVS_DEPRECATED( void disableHide() ) { this->setHideEnabled( false ); }
 };
 
 } // end of namespace kvs
