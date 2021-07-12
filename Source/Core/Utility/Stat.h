@@ -47,27 +47,42 @@ T Mean( const kvs::ValueArray<T>& values )
     return std::accumulate( values.begin(), values.end(), T(0) ) / values.size();
 }
 
+template <typename T>
+T OnlineMean( const kvs::ValueArray<T>& values )
+{
+    KVS_ASSERT( values.size() != 0 );
+    T mean = 0;
+    size_t i = 1;
+    for ( const auto& value : values )
+    {
+        const auto delta = value - mean;
+        mean += delta / i++;
+    }
+    return mean;
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Returns variance of the given array.
- *  @param  values [in] array
+ *  @param  values [in] value array
+ *  @param  mean [in/out] mean value
  *  @return variance
  */
 /*===========================================================================*/
 template <typename T>
-T Var( const kvs::ValueArray<T>& values )
+T Var( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
-    KVS_ASSERT( values.size() - 1 != 0 );
+    KVS_ASSERT( values.size() > 1 );
 
-    const size_t n = values.size();
-    T sum = T(0);
-    T sum2 = T(0);
-    for ( size_t i = 0; i < n; i++ )
+    T sum = T(0), sum2 = T(0);
+    for ( const auto& value : values )
     {
-        sum += values[i];
-        sum2 += values[i] * values[i];
+        sum += value;
+        sum2 += value * value;
     }
 
+    const auto n = values.size();
+    if ( mean ) *mean = sum / n;
     return ( sum2 - ( sum * sum ) / n ) / ( n - 1 );
 }
 
@@ -75,39 +90,42 @@ T Var( const kvs::ValueArray<T>& values )
 /**
  *  @brief  Returns population variance of the given array.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return population variance
  */
 /*===========================================================================*/
 template <typename T>
-T VarP( const kvs::ValueArray<T>& values )
+T VarP( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() != 0 );
-    const size_t n = values.size();
-    return ( n == 1 ) ? T(0) : Var( values ) * ( n - 1 ) / n;
+    const auto n = values.size();
+    if ( n == 1 ) { if ( mean ) *mean = values[0]; return T(0); }
+    return Var( values, mean ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Returns variance of the given array with shifting data.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return variance
  */
 /*===========================================================================*/
 template <typename T>
-T ShiftedVar( const kvs::ValueArray<T>& values )
+T ShiftedVar( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() - 1 != 0 );
 
     const T k = values[0];
-    const size_t n = values.size();
-    T sum = T(0);
-    T sum2 = T(0);
-    for ( size_t i = 0; i < n; i++ )
+    T sum = T(0), sum2 = T(0);
+    for ( const auto& value : values )
     {
-        sum += values[i] - k;
-        sum2 += ( values[i] - k ) * ( values[i] - k );
+        sum += value - k;
+        sum2 += ( value - k ) * ( value - k );
     }
 
+    const auto n = values.size();
+    if ( mean ) *mean = sum / n;
     return ( sum2 - ( sum * sum ) / n ) / ( n - 1 );
 }
 
@@ -115,37 +133,41 @@ T ShiftedVar( const kvs::ValueArray<T>& values )
 /**
  *  @brief  Returns population variance of the given array with shifting data.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return population variance
  */
 /*===========================================================================*/
 template <typename T>
-T ShiftedVarP( const kvs::ValueArray<T>& values )
+T ShiftedVarP( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() != 0 );
-    const size_t n = values.size();
-    return ( n == 1 ) ? T(0) : ShiftedVar( values ) * ( n - 1 ) / n;
+    const auto n = values.size();
+    if ( n == 1 ) { if ( mean ) *mean = values[0]; return T(0); }
+    return ShiftedVar( values, mean ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Returns variance calculated by using two-pass algorithm.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return variance
  */
 /*===========================================================================*/
 template <typename T>
-T TwoPassVar( const kvs::ValueArray<T>& values )
+T TwoPassVar( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() - 1 != 0 );
 
-    const T mean = Mean( values );
-    const size_t n = values.size();
+    const auto m = Mean<T>( values );
     T sum = T(0);
-    for ( size_t i = 0; i < n; i++ )
+    for ( const auto& value : values )
     {
-        sum += ( values[i] - mean ) * ( values[i] - mean );
+        sum += ( value - m ) * ( value - m );
     }
 
+    const auto n = values.size();
+    if ( mean ) *mean = m;
     return sum / ( n - 1 );
 }
 
@@ -153,39 +175,42 @@ T TwoPassVar( const kvs::ValueArray<T>& values )
 /**
  *  @brief  Returns population variance calculated by using two-pass algorithm.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return population variance
  */
 /*===========================================================================*/
 template <typename T>
-T TwoPassVarP( const kvs::ValueArray<T>& values )
+T TwoPassVarP( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() != 0 );
-    const size_t n = values.size();
-    return ( n == 1 ) ? T(0) : TwoPassVar( values ) * ( n - 1 ) / n;
+    const auto n = values.size();
+    if ( n == 1 ) { if ( mean ) *mean = values[0]; return T(0); }
+    return TwoPassVar( values, mean ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Returns compensated variance for the roundoff error.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return compensated variance
  */
 /*===========================================================================*/
 template <typename T>
-T CompensatedVar( const kvs::ValueArray<T>& values )
+T CompensatedVar( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() - 1 != 0 );
 
-    const T mean = Mean( values );
-    const size_t n = values.size();
-    T sum = T(0);
-    T sum2 = T(0);
-    for ( size_t i = 0; i < n; i++ )
+    const auto m = Mean<T>( values );
+    T sum = T(0), sum2 = T(0);
+    for ( const auto& value : values )
     {
-        sum += values[i] - mean;
-        sum2 += ( values[i] - mean ) * ( values[i] - mean );
+        sum += value - m;
+        sum2 += ( value - m ) * ( value - m );
     }
 
+    const auto n = values.size();
+    if ( mean ) *mean = m;
     return ( sum2 - ( sum * sum ) / n ) / ( n - 1 );
 }
 
@@ -193,39 +218,43 @@ T CompensatedVar( const kvs::ValueArray<T>& values )
 /**
  *  @brief  Returns compensated variance of population for the roundoff error.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return compensated population variance
  */
 /*===========================================================================*/
 template <typename T>
-T CompensatedVarP( const kvs::ValueArray<T>& values )
+T CompensatedVarP( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() != 0 );
-    const size_t n = values.size();
-    return ( n == 1 ) ? T(0) : CompensatedVar( values ) * ( n - 1 ) / n;
+    const auto n = values.size();
+    if ( n == 1 ) { if ( mean ) *mean = values[0]; return T(0); }
+    return CompensatedVar( values, mean ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Returns variance calculated by using Welford's online algorithm.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return variance
  */
 /*===========================================================================*/
 template <typename T>
-T OnlineVar( const kvs::ValueArray<T>& values )
+T OnlineVar( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() - 1 != 0 );
 
     const size_t n = values.size();
-    T mean = T(0);
-    T m2 = T(0);
-    for ( size_t i = 0; i < n; i++ )
+    T m = T(0), m2 = T(0);
+    size_t i = 1;
+    for ( const auto& value : values )
     {
-        const T delta = values[i] - mean;
-        mean += delta / ( i + 1 );
-        m2 += delta * ( values[i] - mean );
+        const T delta = value - m;
+        m += delta / i++;
+        m2 += delta * ( value - m );
     }
 
+    if ( mean ) *mean = m;
     return m2 / ( n - 1 );
 }
 
@@ -233,15 +262,17 @@ T OnlineVar( const kvs::ValueArray<T>& values )
 /**
  *  @brief  Returns population variance calculated by using Welford's online algorithm.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return population variance
  */
 /*===========================================================================*/
 template <typename T>
-T OnlineVarP( const kvs::ValueArray<T>& values )
+T OnlineVarP( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
     KVS_ASSERT( values.size() != 0 );
-    const size_t n = values.size();
-    return ( n == 1 ) ? T(0) : OnlineVar( values ) * ( n - 1 ) / n;
+    const auto n = values.size();
+    if ( n == 1 ) { if ( mean ) *mean = values[0]; return T(0); }
+    return OnlineVar( values, mean ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
@@ -430,26 +461,28 @@ T OnlineCovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& value
 /**
  *  @brief  Returns standard deviation of the given array.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return standard deviation
  */
 /*===========================================================================*/
 template <typename T>
-T StdDev( const kvs::ValueArray<T>& values )
+T StdDev( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
-    return T( std::sqrt( Var( values ) ) );
+    return T( std::sqrt( Var( values, mean ) ) );
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Returns standard deviation of the given array using population variance.
  *  @param  values [in] array
+ *  @param  mean [in/out] mean value
  *  @return standard deviation
  */
 /*===========================================================================*/
 template <typename T>
-T StdDevP( const kvs::ValueArray<T>& values )
+T StdDevP( const kvs::ValueArray<T>& values, T* mean = nullptr )
 {
-    return T( std::sqrt( VarP( values ) ) );
+    return T( std::sqrt( VarP( values, mean ) ) );
 }
 
 /*===========================================================================*/
@@ -457,13 +490,14 @@ T StdDevP( const kvs::ValueArray<T>& values )
  *  @brief  Returns standard deviation of the given array using the specified variance calculation function.
  *  @param  values [in] array
  *  @param  VarF [in] variance calculation function
+ *  @param  mean [in/out] mean value
  *  @return standard deviation
  */
 /*===========================================================================*/
 template <typename T, typename F>
-T StdDev( const kvs::ValueArray<T>& values, F VarF )
+T StdDev( const kvs::ValueArray<T>& values, F VarF, T* mean = nullptr )
 {
-    return T( std::sqrt( VarF( values ) ) );
+    return T( std::sqrt( VarF( values, mean ) ) );
 }
 
 /*===========================================================================*/
@@ -574,22 +608,9 @@ template <typename T>
 void Standardize( kvs::ValueArray<T>& values )
 {
     KVS_ASSERT( values.size() - 1 != 0 );
-
-    const size_t n = values.size();
-    T sum = T(0), sum2 = T(0);
-    for ( size_t i = 0; i < n; i++ )
-    {
-        sum += values[i];
-        sum2 += values[i] * values[i];
-    }
-
-    const kvs::Real64 var = kvs::Real64( ( sum2 - ( sum * sum ) / n ) ) / ( n - 1 );
-    const kvs::Real64 stddev = std::sqrt( var );
-    const kvs::Real64 mean = kvs::Real64( sum ) / n;
-    for ( size_t i = 0; i < n; i++ )
-    {
-        values[i] = ( values[i] - mean ) / stddev;
-    }
+    auto mean = T(0);
+    auto sdev = StdDev( values, OnlineVar<T>, &mean );
+    for ( auto& value : values ) { value = ( value - mean ) / sdev; }
 }
 
 } // end of namespace Stat

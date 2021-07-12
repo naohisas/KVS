@@ -1,3 +1,10 @@
+/*****************************************************************************/
+/**
+ *  @file   main.cpp
+ *  @author Naohisa Sakamoto
+ *  @brief  Example program for kvs::Stat
+ */
+/*****************************************************************************/
 #include <iostream>
 #include <kvs/Indent>
 #include <kvs/Stat>
@@ -7,8 +14,8 @@
 int main( int argc, char** argv )
 {
     const size_t n = 10;
-    kvs::ValueArray<float> X = kvs::ValueArray<float>::Random( n );
-    kvs::ValueArray<float> Y = kvs::ValueArray<float>::Random( n );
+    auto X = kvs::ValueArray<float>::Random( n );
+    auto Y = kvs::ValueArray<float>::Random( n );
     std::cout << "X = " << X << std::endl;
     std::cout << "Y = " << Y << std::endl;
 
@@ -17,6 +24,8 @@ int main( int argc, char** argv )
     std::cout << std::endl;
     std::cout << "Sum(X): " << kvs::Stat::Sum( X ) << std::endl;
     std::cout << "Mean(X): " << kvs::Stat::Mean( X ) << std::endl;
+    std::cout << indent << "OnlineMean(X): " << kvs::Stat::OnlineMean( X ) << std::endl;
+
     std::cout << "Var(X): " << kvs::Stat::Var( X ) << std::endl;
     std::cout << indent << "ShiftedVar(X): " << kvs::Stat::ShiftedVar( X ) << std::endl;
     std::cout << indent << "TwoPassVar(X): " << kvs::Stat::TwoPassVar( X ) << std::endl;

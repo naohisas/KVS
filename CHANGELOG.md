@@ -7,6 +7,19 @@
 + kvs::ColorStream::isBlinkEnabled
 + kvs::ColorStream::isReverseEnabled
 + kvs::ColorStream::isHideEnabled
++ kvs::Stat::OnlineMean
++ kvs::Stat::Var( values, &mean )
++ kvs::Stat::VarP( values, &mean )
++ kvs::Stat::ShiftedVar( values, &mean )
++ kvs::Stat::ShiftedVarP( values, &mean )
++ kvs::Stat::TwoPassVar( values, &mean )
++ kvs::Stat::TwoPassVarP( values, &mean )
++ kvs::Stat::CompensatedVar( values, &mean )
++ kvs::Stat::CompensatedVarP( values, &mean )
++ kvs::Stat::OnlineVar( values, &mean )
++ kvs::Stat::OnlineVarP( values, &mean )
++ kvs::Stat::StdDev( values, &mean )
++ kvs::Stat::StdDev( values, varf, &mean )
 
 **Deprecated method**
 + kvs::ColorStream::setEnabledBold (use kvs::ColorStream::setBoldEnabled)
