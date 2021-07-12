@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::Endian functions.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1070 2012-04-09 12:14:30Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #include <iostream>
 #include <kvs/Endian>

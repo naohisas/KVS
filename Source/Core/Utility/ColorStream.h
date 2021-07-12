@@ -118,12 +118,12 @@ public:
 private:
     Color m_foreground_color{ ColorDefault }; ///< foreground color
     Color m_background_color{ Color( ColorDefault + 10 ) }; ///< background color
-    Format m_format_bold{ FormatBoldOff }; ///< bold format
-    Format m_format_dim{ FormatDimOff }; ///< dim format
-    Format m_format_underline{ FormatUnderlineOff }; ///< underline format
-    Format m_format_blink{ FormatBlinkOff }; ///< blink format
-    Format m_format_reverse{ FormatReverseOff }; ///< reverse format
-    Format m_format_hide{ FormatHideOff }; ///< hide format
+    bool m_bold_enabled = false; ///< bold format flag
+    bool m_dim_enabled = false; ///< dim format flag
+    bool m_underline_enabled = false; // underline format flag
+    bool m_blink_enabled = false; // blink format flag
+    bool m_reverse_enabled = false; // reverse format flag
+    bool m_hide_enabled = false; // hide format flag
 
 public:
     ColorStream() = default;
@@ -131,30 +131,23 @@ public:
     void setForegroundColor( const Color color ) { m_foreground_color = color; }
     void setBackgroundColor( const Color color ) { m_background_color = Color( color + 10 ); }
 
-    void setBoldEnabled( const bool enabled ) { m_format_bold = ( enabled ) ? FormatBoldOn : FormatBoldOff; }
-    void setDimEnabled( const bool enabled ) { m_format_dim = ( enabled ) ? FormatDimOn : FormatDimOff; }
-    void setUnderlineEnabled( const bool enabled ) { m_format_underline = ( enabled ) ? FormatUnderlineOn : FormatUnderlineOff; }
-    void setBlinkEnabled( const bool enabled ) { m_format_blink = ( enabled ) ? FormatBlinkOn : FormatBlinkOff; }
-    void setReverseEnabled( const bool enabled ) { m_format_reverse = ( enabled ) ? FormatReverseOn : FormatReverseOff; }
-    void setHideEnabled( const bool enabled ) { m_format_hide = ( enabled ) ? FormatHideOn : FormatHideOff; }
+    void setBoldEnabled( const bool enabled ) { m_bold_enabled = enabled; }
+    void setDimEnabled( const bool enabled ) { m_dim_enabled = enabled; }
+    void setUnderlineEnabled( const bool enabled ) { m_underline_enabled = enabled; }
+    void setBlinkEnabled( const bool enabled ) { m_blink_enabled = enabled; }
+    void setReverseEnabled( const bool enabled ) { m_reverse_enabled = enabled; }
+    void setHideEnabled( const bool enabled ) { m_hide_enabled = enabled; }
 
-    bool isBoldEnabled() const { return m_format_bold == FormatBoldOn; }
-    bool isDimEnabled() const { return m_format_dim == FormatDimOn; }
-    bool isUnderlineEnabled() const { return m_format_underline == FormatUnderlineOn; }
-    bool isBlinkEnabled() const { return m_format_blink == FormatBlinkOn; }
-    bool isReverseEnabled() const { return m_format_reverse == FormatReverseOn; }
-    bool isHideEnabled() const { return m_format_hide == FormatHideOn; }
+    bool isBoldEnabled() const { return m_bold_enabled; }
+    bool isDimEnabled() const { return m_dim_enabled; }
+    bool isUnderlineEnabled() const { return m_underline_enabled; }
+    bool isBlinkEnabled() const { return m_blink_enabled; }
+    bool isReverseEnabled() const { return m_reverse_enabled; }
+    bool isHideEnabled() const { return m_hide_enabled; }
 
     ColorStream& reset()
     {
-        m_foreground_color = ColorDefault;
-        m_background_color = Color( ColorDefault + 10 );
-        m_format_bold = FormatBoldOff;
-        m_format_dim = FormatDimOff;
-        m_format_underline = FormatUnderlineOff;
-        m_format_blink = FormatBlinkOff;
-        m_format_reverse = FormatReverseOff;
-        m_format_hide = FormatHideOff;
+        *this = ColorStream();
         return *this;
     }
 
@@ -162,12 +155,12 @@ public:
     {
         return os << CodeString( cs.m_foreground_color )
                   << CodeString( cs.m_background_color )
-                  << CodeString( cs.m_format_bold )
-                  << CodeString( cs.m_format_dim )
-                  << CodeString( cs.m_format_underline )
-                  << CodeString( cs.m_format_blink )
-                  << CodeString( cs.m_format_reverse )
-                  << CodeString( cs.m_format_hide );
+                  << CodeString( cs.m_bold_enabled ? FormatBoldOn : FormatBoldOff )
+                  << CodeString( cs.m_dim_enabled ? FormatDimOn : FormatDimOff )
+                  << CodeString( cs.m_underline_enabled ? FormatUnderlineOn : FormatUnderlineOff )
+                  << CodeString( cs.m_blink_enabled ? FormatBlinkOn : FormatBlinkOff )
+                  << CodeString( cs.m_reverse_enabled ? FormatReverseOn : FormatReverseOff )
+                  << CodeString( cs.m_hide_enabled ? FormatHideOn : FormatHideOff );
     }
 
 public:

@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::File class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1205 2012-06-15 07:16:47Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <iostream>
 #include <kvs/File>

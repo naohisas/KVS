@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::Directory class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1209 2012-06-15 07:57:38Z naohisa.sakamoto@gmail.com $
- */
 /*****************************************************************************/
 #include <iostream>
 #include <kvs/Directory>
@@ -63,12 +55,11 @@ int main( int argc, char** argv )
     kvs::FileList files = directory.fileList();
     std::cout << "Number of files in the directory: " << files.size() << std::endl;
 
-    kvs::FileList::iterator file = files.begin();
-    kvs::FileList::iterator end = files.end();
-    while ( file != end )
+    for ( const auto& file : files )
     {
-        std::cout << "\t" << file->fileName() << " [" << file->byteSize() << " bytes]" << std::endl;
-        ++file;
+        const auto name = file.fileName();
+        const auto size = file.byteSize();
+        std::cout << "\t" << name << " [" << size << " bytes]" << std::endl;
     }
 
     return 0;

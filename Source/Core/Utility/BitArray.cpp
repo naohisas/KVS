@@ -71,16 +71,6 @@ size_t CountBits( kvs::UInt8 val )
 namespace kvs
 {
 
-BitArray::BitArray()
-{
-    m_size = 0;
-}
-
-BitArray::BitArray( size_t size )
-{
-    this->allocate( size );
-}
-
 BitArray::BitArray( const size_t size, const bool flag )
 {
     this->allocate( size );
@@ -103,45 +93,6 @@ BitArray::BitArray( const bool* values, const size_t size )
         if ( values[ index ] ) this->set( index );
         else                   this->reset( index );
     }
-}
-
-bool BitArray::operator [] ( size_t index ) const
-{
-    KVS_ASSERT( index < this->size() );
-    return ( m_values[ ::BitToByte( index ) ] & ::SetBitMask[ index % 8 ] ) != 0;
-}
-
-BitArray& BitArray::operator &= ( const BitArray& other ) // AND
-{
-    KVS_ASSERT( this->size() == other.size() );
-    const size_t size = m_values.size();
-    for ( size_t index = 0; index < size; index++ )
-    {
-        m_values[ index ] &= other.m_values[ index ];
-    }
-    return *this;
-}
-
-BitArray& BitArray::operator |= ( const BitArray& other ) // OR
-{
-    KVS_ASSERT( this->size() == other.size() );
-    const size_t size = m_values.size();
-    for ( size_t index = 0; index < size; index++ )
-    {
-        m_values[ index ] |= other.m_values[ index ];
-    }
-    return *this;
-}
-
-BitArray& BitArray::operator ^= ( const BitArray& other ) // XOR
-{
-    KVS_ASSERT( this->size() == other.size() );
-    const size_t size = m_values.size();
-    for ( size_t index = 0; index < size; index++ )
-    {
-        m_values[ index ] ^= other.m_values[ index ];
-    }
-    return *this;
 }
 
 // set all 1 to table
@@ -218,11 +169,6 @@ bool BitArray::test( size_t index ) const
     return (*this)[ index ];
 }
 
-size_t BitArray::size() const
-{
-    return m_size;
-}
-
 size_t BitArray::byteSize() const
 {
     return ::BitToByte( this->size() + 7 );
@@ -256,11 +202,6 @@ void BitArray::swap( BitArray& other )
     std::swap( m_values, other.m_values );
 }
 
-ValueArray<kvs::UInt8> BitArray::asValueArray() const
-{
-    return m_values;
-}
-
 BitArray BitArray::clone() const
 {
     BitArray ret;
@@ -269,14 +210,43 @@ BitArray BitArray::clone() const
     return ret;
 }
 
-const kvs::UInt8* BitArray::data() const
+bool BitArray::operator [] ( size_t index ) const
 {
-    return m_values.data();
+    KVS_ASSERT( index < this->size() );
+    return ( m_values[ ::BitToByte( index ) ] & ::SetBitMask[ index % 8 ] ) != 0;
 }
 
-kvs::UInt8* BitArray::data()
+BitArray& BitArray::operator &= ( const BitArray& other ) // AND
 {
-    return m_values.data();
+    KVS_ASSERT( this->size() == other.size() );
+    const size_t size = m_values.size();
+    for ( size_t index = 0; index < size; index++ )
+    {
+        m_values[ index ] &= other.m_values[ index ];
+    }
+    return *this;
+}
+
+BitArray& BitArray::operator |= ( const BitArray& other ) // OR
+{
+    KVS_ASSERT( this->size() == other.size() );
+    const size_t size = m_values.size();
+    for ( size_t index = 0; index < size; index++ )
+    {
+        m_values[ index ] |= other.m_values[ index ];
+    }
+    return *this;
+}
+
+BitArray& BitArray::operator ^= ( const BitArray& other ) // XOR
+{
+    KVS_ASSERT( this->size() == other.size() );
+    const size_t size = m_values.size();
+    for ( size_t index = 0; index < size; index++ )
+    {
+        m_values[ index ] ^= other.m_values[ index ];
+    }
+    return *this;
 }
 
 } // end of namespace kvs

@@ -4,14 +4,6 @@
  *  @brief  Example program for kvs::Message class.
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: main.cpp 1221 2012-06-18 10:51:25Z s.yamada0808@gmail.com $
- */
 /*****************************************************************************/
 #include <iostream>
 #include <cstdio>
