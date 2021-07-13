@@ -166,13 +166,12 @@ int Main::exec()
     kvs::Label label( &screen );
     label.setMargin( 10 );
     label.anchorToTopLeft();
-    label.screenUpdated(
-        [&]()
-        {
-            const auto* r = screen.scene()->renderer();
-            const auto f = kvs::String::From( r->timer().fps(), 4 );
-            label.setText( std::string( "FPS: " + f ).c_str() );
-        } );
+    label.screenUpdated( [&] ()
+    {
+        const auto* r = screen.scene()->renderer();
+        const auto f = kvs::String::From( r->timer().fps(), 4 );
+        label.setText( std::string( "FPS: " + f ).c_str() );
+    } );
     label.show();
 
     const auto min_value = static_cast<kvs::Real32>( volume->minValue() );

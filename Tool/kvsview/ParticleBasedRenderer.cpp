@@ -358,13 +358,12 @@ int Main::exec()
     kvs::Label label( &screen );
     label.setMargin( 10 );
     label.anchorToTopLeft();
-    label.screenUpdated(
-        [&]()
-        {
-            const auto* renderer = screen.scene()->renderer( ::RendererName );
-            const auto fps = kvs::String::From( renderer->timer().fps(), 4 );
-            label.setText( std::string( "FPS: " + fps ).c_str() );
-        } );
+    label.screenUpdated( [&] ()
+    {
+        const auto* renderer = screen.scene()->renderer( ::RendererName );
+        const auto fps = kvs::String::From( renderer->timer().fps(), 4 );
+        label.setText( std::string( "FPS: " + fps ).c_str() );
+    } );
     label.show();
 
     // Colormap bar.
@@ -394,102 +393,99 @@ int Main::exec()
     // Create transfer function editor.
     kvs::TransferFunctionEditor editor( &screen );
     editor.setTransferFunction( tfunc );
-    editor.apply(
-        [&]( kvs::TransferFunction t )
+    editor.apply( [&] ( kvs::TransferFunction t )
+    {
+        // Set mapper (CellByCellXXXSampling).
+        kvs::PointObject* object = nullptr;
+        switch ( arg.sampling() )
         {
-            // Set mapper (CellByCellXXXSampling).
-            kvs::PointObject* object = nullptr;
-            switch ( arg.sampling() )
-            {
-            case 1: // Metropolis sampling
-            {
-                auto* mapper = new kvs::CellByCellMetropolisSampling();
-                ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
-                object = mapper->exec( volume );
-                break;
-            }
-            case 2: // Rejection sampling
-            {
-                auto* mapper = new kvs::CellByCellRejectionSampling();
-                ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
-                object = mapper->exec( volume );
-                break;
-            }
-            case 3: // Layered sampling
-            {
-                auto* mapper = new kvs::CellByCellLayeredSampling();
-                ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
-                object = mapper->exec( volume );
-                break;
-            }
-            default: // Uniform sampling
-            {
-                auto* mapper = new kvs::CellByCellUniformSampling();
-                ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
-                object = mapper->exec( volume );
-                break;
-            }
-            }
+        case 1: // Metropolis sampling
+        {
+            auto* mapper = new kvs::CellByCellMetropolisSampling();
+            ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
+            object = mapper->exec( volume );
+            break;
+        }
+        case 2: // Rejection sampling
+        {
+            auto* mapper = new kvs::CellByCellRejectionSampling();
+            ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
+            object = mapper->exec( volume );
+            break;
+        }
+        case 3: // Layered sampling
+        {
+            auto* mapper = new kvs::CellByCellLayeredSampling();
+            ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
+            object = mapper->exec( volume );
+            break;
+        }
+        default: // Uniform sampling
+        {
+            auto* mapper = new kvs::CellByCellUniformSampling();
+            ParticleBasedRenderer::SetupMapper( arg, t, screen, mapper );
+            object = mapper->exec( volume );
+            break;
+        }
+        }
 
-            object->setName( ::ObjectName );
-            screen.scene()->replaceObject( ::ObjectName, object );
+        object->setName( ::ObjectName );
+        screen.scene()->replaceObject( ::ObjectName, object );
 
-            // Create new particle volume renderer.
-            if ( arg.nogpu() )
-            {
-                auto* renderer = new kvs::ParticleBasedRenderer();
-                ParticleBasedRenderer::SetupRenderer( arg, renderer );
+        // Create new particle volume renderer.
+        if ( arg.nogpu() )
+        {
+            auto* renderer = new kvs::ParticleBasedRenderer();
+            ParticleBasedRenderer::SetupRenderer( arg, renderer );
 
-                // Subpixel level.
-                const size_t repetition_level = arg.repetitionLevel();
-                const size_t subpixel_level = ::GetSubpixelLevel( repetition_level );
-                renderer->setSubpixelLevel( subpixel_level );
+            // Subpixel level.
+            const size_t repetition_level = arg.repetitionLevel();
+            const size_t subpixel_level = ::GetSubpixelLevel( repetition_level );
+            renderer->setSubpixelLevel( subpixel_level );
 
-                screen.scene()->replaceRenderer( ::RendererName, renderer );
-            }
-            else
-            {
-                auto* renderer = new kvs::glsl::ParticleBasedRenderer();
-                ParticleBasedRenderer::SetupRenderer( arg, renderer );
+            screen.scene()->replaceRenderer( ::RendererName, renderer );
+        }
+        else
+        {
+            auto* renderer = new kvs::glsl::ParticleBasedRenderer();
+            ParticleBasedRenderer::SetupRenderer( arg, renderer );
 
-                // repetition level.
-                const size_t repetition_level = arg.repetitionLevel();
-                renderer->setRepetitionLevel( repetition_level );
-                if ( !arg.nolod() ) { renderer->enableLODControl(); }
+            // repetition level.
+            const size_t repetition_level = arg.repetitionLevel();
+            renderer->setRepetitionLevel( repetition_level );
+            if ( !arg.nolod() ) { renderer->enableLODControl(); }
 
-                screen.scene()->replaceRenderer( ::RendererName, renderer );
-            }
-            colormap_bar.setColorMap( t.colorMap() );
-            screen.redraw();
-        } );
+            screen.scene()->replaceRenderer( ::RendererName, renderer );
+        }
+        colormap_bar.setColorMap( t.colorMap() );
+        screen.redraw();
+    } );
     editor.show();
 
     // Double click event
     kvs::MouseDoubleClickEventListener mouse_double_click_event;
-    mouse_double_click_event.update(
-        [&]( kvs::MouseEvent* )
-        {
-            if ( editor.isVisible() ) { editor.hide(); }
-            else { editor.show(); }
-        } );
+    mouse_double_click_event.update( [&] ( kvs::MouseEvent* )
+    {
+        if ( editor.isVisible() ) { editor.hide(); }
+        else { editor.show(); }
+    } );
     screen.addEvent( &mouse_double_click_event );
 
     // Key press event
     kvs::KeyPressEventListener key_press_event;
-    key_press_event.update(
-        [&]( kvs::KeyEvent* e )
+    key_press_event.update( [&] ( kvs::KeyEvent* e )
+    {
+        switch ( e->key() )
         {
-            switch ( e->key() )
-            {
-            case kvs::Key::t:
-            {
-                if ( editor.isVisible() ) { editor.hide(); }
-                else { editor.show(); }
-                break;
-            }
-            default: break;
-            }
-        } );
+        case kvs::Key::t:
+        {
+            if ( editor.isVisible() ) { editor.hide(); }
+            else { editor.show(); }
+            break;
+        }
+        default: break;
+        }
+    } );
     screen.addEvent( &key_press_event );
     editor.addEvent( &key_press_event );
 

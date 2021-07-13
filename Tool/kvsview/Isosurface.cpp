@@ -201,13 +201,12 @@ int Main::exec()
     kvs::Label label( &screen );
     label.setMargin( 10 );
     label.anchorToTopLeft();
-    label.screenUpdated(
-        [&]()
-        {
-            const auto* r = screen.scene()->renderer();
-            const auto f = kvs::String::From( r->timer().fps(), 4 );
-            label.setText( std::string( "FPS: " + f ).c_str() );
-        } );
+    label.screenUpdated( [&] ()
+    {
+        const auto* r = screen.scene()->renderer();
+        const auto f = kvs::String::From( r->timer().fps(), 4 );
+        label.setText( std::string( "FPS: " + f ).c_str() );
+    } );
     label.show();
 
     const auto min_value = static_cast<kvs::Real32>( volume->minValue() );
@@ -241,14 +240,13 @@ int Main::exec()
     slider.setCaption("Isolevel");
     slider.setValue( static_cast<float>( level ) );
     slider.setRange( min_value, max_value );
-    slider.valueChanged(
-        [&]()
-        {
-            const double level = slider.value();
-            const bool d = true;
-            auto* object = new kvs::Isosurface( volume, level, normal, d, tfunc );
-            if ( object ) { screen.scene()->objectManager()->change( 1, object ); }
-        } );
+    slider.valueChanged( [&] ()
+    {
+        const double level = slider.value();
+        const bool d = true;
+        auto* object = new kvs::Isosurface( volume, level, normal, d, tfunc );
+        if ( object ) { screen.scene()->objectManager()->change( 1, object ); }
+    } );
     slider.anchorToTopRight();
     slider.show();
 

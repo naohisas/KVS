@@ -175,13 +175,12 @@ int Main::exec()
     kvs::Label label( &screen );
     label.setMargin( 10 );
     label.anchorToTopLeft();
-    label.screenUpdated(
-        [&]()
-        {
-            const auto* r = screen.scene()->renderer();
-            const auto f = kvs::String::From( r->timer().fps(), 4 );
-            label.setText( std::string( "FPS: " + f ).c_str() );
-        } );
+    label.screenUpdated( [&] ()
+    {
+        const auto* r = screen.scene()->renderer();
+        const auto f = kvs::String::From( r->timer().fps(), 4 );
+        label.setText( std::string( "FPS: " + f ).c_str() );
+    } );
     label.show();
 
     const auto min_value = static_cast<kvs::Real32>( volume->minValue() );
@@ -217,13 +216,12 @@ int Main::exec()
     slider.setCaption("Slice");
     slider.setValue( position );
     slider.setRange( min_coord, max_coord );
-    slider.valueChanged(
-        [&]()
-        {
-            const float p = static_cast<float>( slider.value() );
-            auto* o = new kvs::OrthoSlice( volume, p, axis, tfunc );
-            if ( o ) { screen.scene()->objectManager()->change( 1, o ); }
-        } );
+    slider.valueChanged( [&] ()
+    {
+        const float p = static_cast<float>( slider.value() );
+        auto* o = new kvs::OrthoSlice( volume, p, axis, tfunc );
+        if ( o ) { screen.scene()->objectManager()->change( 1, o ); }
+    } );
     slider.anchorToTopRight();
     slider.show();
 
