@@ -154,14 +154,17 @@ void Text::draw()
     attrib.disable( GL_LIGHTING );
     attrib.disable( GL_TEXTURE_2D );
 
-    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
-
     kvs::OpenGL::WithPushedMatrix p0( GL_PROJECTION );
     p0.loadIdentity();
     {
-        const float front = 0.0f;
-        const float back = 2000.0f;
-        kvs::OpenGL::SetOrtho( vp, front, back );
+        const auto vp = kvs::OpenGL::Viewport();
+        const auto left = vp[0];
+        const auto right = vp[1];
+        const auto bottom = vp[2];
+        const auto top = vp[3];
+        const auto front = 0.0f;
+        const auto back = 2000.0f;
+        kvs::OpenGL::SetOrtho( left, right, bottom, top, front, back );
 
         kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
         p1.loadIdentity();

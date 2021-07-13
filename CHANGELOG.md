@@ -29,10 +29,13 @@
 + kvs::OpenGL::ComponentsIn( format )
 + kvs::OpenGL::BytesPerPixel( format, type )
 
+**Deprecated class**
++ kvs::glut::Text
+
 **Deprecated method**
 + kvs::ColorStream::setEnabledBold (use kvs::ColorStream::setBoldEnabled)
 + kvs::ColorStream::setEnabledBold (use kvs::ColorStream::setBoldEnabled)
-+ kvs::ColorStream::setEnabledDimsetDimEnabled)
++ kvs::ColorStream::setEnabledDim (use kvs::ColorStream::setDimEnabled)
 + kvs::ColorStream::setEnabledUnderline (use kvs::ColorStream::setUnderlineEnabled)
 + kvs::ColorStream::setEnabledBlink (use kvs::ColorStream::setBlinkEnabled)
 + kvs::ColorStream::setEnabledReverse (use kvs::ColorStream::setReverseEnabled)

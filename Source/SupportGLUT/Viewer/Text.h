@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <kvs/RGBColor>
+#include <kvs/Deprecated>
 
 
 namespace kvs
@@ -30,7 +31,7 @@ protected:
     std::vector<std::string> m_text;  ///< text string
 
 public:
-    Text();
+    KVS_DEPRECATED( Text() );
 
     void setPosition( const size_t x, const size_t y );
     void setColor( const kvs::RGBColor& color );
