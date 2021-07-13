@@ -20,6 +20,14 @@
 + kvs::Stat::OnlineVarP( values, &mean )
 + kvs::Stat::StdDev( values, &mean )
 + kvs::Stat::StdDev( values, varf, &mean )
++ kvs::XXXObject::DownCast( YYYObjectBase& )
++ kvs::XXXObject::DownCast( const YYYObjectBase& )
+
+**Added new function**
++ kvs::OpenGL::TypeOf<T>()
++ kvs::OpenGL::SizeOf( type )
++ kvs::OpenGL::ComponentsIn( format )
++ kvs::OpenGL::BytesPerPixel( format, type )
 
 **Deprecated method**
 + kvs::ColorStream::setEnabledBold (use kvs::ColorStream::setBoldEnabled)

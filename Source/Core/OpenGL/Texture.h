@@ -160,8 +160,8 @@ protected:
     void setPixelStorageMode( GLenum pname, GLint param );
 
 private:
-    size_t get_nchannels( const GLenum external_format ) const;
-    size_t get_channel_size( const GLenum external_type ) const;
+//    size_t get_nchannels( const GLenum external_format ) const;
+//    size_t get_channel_size( const GLenum external_type ) const;
     void estimate_pixel_format( const size_t nchannels, const size_t bytes_per_channel );
     void determine_pixel_format_for_1_channel( const size_t bytes_per_channel );
     void determine_pixel_format_for_2_channel( const size_t bytes_per_channel );

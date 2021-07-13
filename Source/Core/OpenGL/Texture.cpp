@@ -589,6 +589,7 @@ void Texture::setPixelStorageMode( GLenum pname, GLint param )
  *  @param external_format [in] external pixel format
  */
 /*==========================================================================*/
+/*
 size_t Texture::get_nchannels( const GLenum external_format ) const
 {
     size_t nchannels = 0;
@@ -629,6 +630,7 @@ size_t Texture::get_nchannels( const GLenum external_format ) const
 
     return nchannels;
 }
+*/
 
 /*==========================================================================*/
 /**
@@ -636,6 +638,7 @@ size_t Texture::get_nchannels( const GLenum external_format ) const
  *  @param external_type [in] external_pixel data type
  */
 /*==========================================================================*/
+/*
 size_t Texture::get_channel_size( const GLenum external_type ) const
 {
     size_t channel_size = 0;
@@ -663,6 +666,7 @@ size_t Texture::get_channel_size( const GLenum external_type ) const
 
     return channel_size;
 }
+*/
 
 /*==========================================================================*/
 /**

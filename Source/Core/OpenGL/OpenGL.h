@@ -37,6 +37,20 @@ GLenum ErrorCode();
 bool HasError();
 std::string ErrorString( const GLenum error_code );
 
+template <typename T> inline GLenum TypeOf() { return 0; }
+template <> inline GLenum TypeOf<GLbyte>() { return GL_BYTE; }
+template <> inline GLenum TypeOf<GLshort>() { return GL_SHORT; }
+template <> inline GLenum TypeOf<GLint>() { return GL_INT; }
+template <> inline GLenum TypeOf<GLubyte>() { return GL_UNSIGNED_BYTE; }
+template <> inline GLenum TypeOf<GLushort>() { return GL_UNSIGNED_SHORT; }
+template <> inline GLenum TypeOf<GLuint>() { return GL_UNSIGNED_INT; }
+template <> inline GLenum TypeOf<GLfloat>() { return GL_FLOAT; }
+template <> inline GLenum TypeOf<GLdouble>() { return GL_DOUBLE; }
+
+GLint SizeOf( const GLenum type );
+GLint ComponentsIn( const GLenum format );
+GLint BytesPerPixel( const GLenum format, const GLenum type );
+
 void GetBooleanv( GLenum pname, GLboolean* params );
 void GetDoublev( GLenum pname, GLdouble* params );
 void GetFloatv( GLenum pname, GLfloat* params );

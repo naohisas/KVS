@@ -3,18 +3,8 @@
  *  @file   Module.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: Module.h 1795 2014-08-01 08:38:08Z naohisa.sakamoto@gmail.com $
- */
 /****************************************************************************/
-#ifndef KVS__MODULE_H_INCLUDE
-#define KVS__MODULE_H_INCLUDE
-
+#pragma once
 #include <cstring>
 #include <kvs/SharedPointer>
 
@@ -48,6 +38,14 @@
         typedef this_class T_;                                          \
         typedef kvs:: category##Base U_;                                \
         return kvs::dynamic_pointer_cast<T_,U_>( kvs::const_pointer_cast<U_,U_>( m ) ); \
+    };                                                                  \
+    static this_class& DownCast( kvs:: category##Base& m )              \
+    {                                                                   \
+        return dynamic_cast<this_class &>( m );                         \
+    };                                                                  \
+    static const this_class& DownCast( const kvs:: category##Base& m )  \
+    {                                                                   \
+        return dynamic_cast<this_class &>( const_cast<kvs:: category##Base &>( m ) ); \
     };                                                                  \
     static this_class* DownCast( kvs:: category##Base* m )              \
     {                                                                   \
@@ -106,5 +104,3 @@ struct ModuleTraits
 };
 
 } // end of namespace kvs
-
-#endif // KVS__MODULE_H_INCLUDE

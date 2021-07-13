@@ -400,6 +400,150 @@ std::string ErrorString( const GLenum error_code )
     return error_string;
 }
 
+GLint SizeOf( const GLenum type )
+{
+    switch ( type )
+    {
+    case GL_BITMAP: return 0;
+    case GL_BYTE: return sizeof(GLbyte);
+    case GL_UNSIGNED_BYTE: return sizeof(GLubyte);
+    case GL_SHORT: return sizeof(GLshort);
+    case GL_UNSIGNED_SHORT: return sizeof(GLushort);
+    case GL_INT: return sizeof(GLint);
+    case GL_UNSIGNED_INT: return sizeof(GLuint);
+    case GL_FLOAT: return sizeof(GLfloat);
+    case GL_DOUBLE: return sizeof(GLdouble);
+    case GL_UNSIGNED_BYTE_3_3_2:
+    case GL_UNSIGNED_BYTE_2_3_3_REV:
+        return sizeof(GLubyte);
+    case GL_UNSIGNED_SHORT_5_6_5:
+    case GL_UNSIGNED_SHORT_5_6_5_REV:
+    case GL_UNSIGNED_SHORT_4_4_4_4:
+    case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+    case GL_UNSIGNED_SHORT_5_5_5_1:
+    case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+        return sizeof(GLushort);
+    case GL_UNSIGNED_INT_8_8_8_8:
+    case GL_UNSIGNED_INT_8_8_8_8_REV:
+    case GL_UNSIGNED_INT_10_10_10_2:
+    case GL_UNSIGNED_INT_2_10_10_10_REV:
+        return sizeof(GLuint);
+    default:
+        return -1;
+    }
+}
+
+GLint ComponentsIn( const GLenum format )
+{
+    switch ( format )
+    {
+    // 1
+    case GL_COLOR_INDEX:
+    case GL_STENCIL_INDEX:
+    case GL_DEPTH_COMPONENT:
+    case GL_RED:
+    case GL_GREEN:
+    case GL_BLUE:
+    case GL_ALPHA:
+    case GL_LUMINANCE:
+        return 1;
+    // 2
+    case GL_LUMINANCE_ALPHA:
+#ifdef GL_DEPTH_STENCIL_EXT
+    case GL_DEPTH_STENCIL_EXT:
+#endif
+        return 2;
+    // 3
+    case GL_RGB:
+#ifdef GL_BGR_EXT
+    case GL_BGR_EXT:
+#endif
+        return 3;
+    // 4
+    case GL_RGBA:
+#ifdef GL_BGRA_EXT
+    case GL_BGRA_EXT:
+#endif
+#ifdef GL_ABGR_EXT
+    case GL_ABGR_EXT:
+#endif
+        return 4;
+    default:
+        return -1;
+    }
+}
+
+GLint BytesPerPixel( const GLenum format, const GLenum type )
+{
+    const auto comps = ComponentsIn( format );
+    if ( comps < 0 ) return -1; // error
+
+    switch ( type )
+    {
+    case GL_BITMAP: return 0;
+    case GL_BYTE: return comps * sizeof(GLbyte);
+    case GL_UNSIGNED_BYTE: return comps * sizeof(GLubyte);
+    case GL_SHORT: return comps * sizeof(GLshort);
+    case GL_UNSIGNED_SHORT: return comps * sizeof(GLushort);
+    case GL_INT: return comps * sizeof(GLint);
+    case GL_UNSIGNED_INT: return comps * sizeof(GLuint);
+    case GL_FLOAT: return comps * sizeof(GLfloat);
+    case GL_DOUBLE: return comps * sizeof(GLdouble);
+    case GL_UNSIGNED_BYTE_3_3_2:
+    case GL_UNSIGNED_BYTE_2_3_3_REV:
+        if ( format == GL_RGB
+#ifdef GL_BGR_EXT
+             || format == GL_BGR_EXT
+#endif
+            )
+            return sizeof(GLubyte);
+        else
+            return -1; // error
+    case GL_UNSIGNED_SHORT_5_6_5:
+    case GL_UNSIGNED_SHORT_5_6_5_REV:
+        if ( format == GL_RGB
+#ifdef GL_BGR_EXT
+             || format == GL_BGR_EXT
+#endif
+            )
+            return sizeof(GLushort);
+        else
+            return -1; // error
+    case GL_UNSIGNED_SHORT_4_4_4_4:
+    case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+    case GL_UNSIGNED_SHORT_5_5_5_1:
+    case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+        if ( format == GL_RGBA
+#ifdef GL_BGRA_EXT
+             || format == GL_BGRA_EXT
+#endif
+#ifdef GL_ABGR_EXT
+             || format == GL_ABGR_EXT
+#endif
+            )
+            return sizeof(GLushort);
+        else
+            return -1; // error
+    case GL_UNSIGNED_INT_8_8_8_8:
+    case GL_UNSIGNED_INT_8_8_8_8_REV:
+    case GL_UNSIGNED_INT_10_10_10_2:
+    case GL_UNSIGNED_INT_2_10_10_10_REV:
+        if ( format == GL_RGB || format == GL_RGBA
+#ifdef GL_BGRA_EXT
+             || format == GL_BGRA_EXT
+#endif
+#ifdef GL_ABGR_EXT
+             || format == GL_ABGR_EXT
+#endif
+            )
+            return sizeof(GLuint);
+        else
+            return -1; // error
+    default:
+        return -1;
+    }
+}
+
 void GetBooleanv( GLenum pname, GLboolean* params )
 {
     KVS_GL_CALL( glGetBooleanv( pname, params ) );
