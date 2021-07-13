@@ -231,13 +231,12 @@ int Main::exec()
     kvs::Label label( &screen );
     label.setMargin( 10 );
     label.anchorToTopLeft();
-    label.screenUpdated(
-        [&]()
-        {
-            const auto* renderer = screen.scene()->renderer( ::RendererName );
-            const auto fps = kvs::String::From( renderer->timer().fps(), 4 );
-            label.setText( std::string( "FPS: " + fps ).c_str() );
-        } );
+    label.screenUpdated( [&] ()
+    {
+        const auto* renderer = screen.scene()->renderer( ::RendererName );
+        const auto fps = kvs::String::From( renderer->timer().fps(), 4 );
+        label.setText( std::string( "FPS: " + fps ).c_str() );
+    } );
     label.show();
 
     // Colormap bar.
@@ -265,26 +264,26 @@ int Main::exec()
     orientation_axis.show();
 
     // Create transfer function editor.
+    const auto nogpu = arg.nogpu();
     kvs::TransferFunctionEditor editor( &screen );
     editor.setVolumeObject( kvs::VolumeObjectBase::DownCast( pipe.object() ) );
     editor.setTransferFunction( tfunc );
-    editor.apply(
-        [&]( kvs::TransferFunction t )
+    editor.apply( [&] ( kvs::TransferFunction t )
+    {
+        auto* r = screen.scene()->renderer( ::RendererName );
+        if ( nogpu )
         {
-            auto* r = screen.scene()->renderer( ::RendererName );
-            if ( arg.nogpu() )
-            {
-                using Renderer = kvs::RayCastingRenderer;
-                Renderer::DownCast(r)->setTransferFunction(t);
-            }
-            else
-            {
-                using Renderer = kvs::glsl::RayCastingRenderer;
-                Renderer::DownCast(r)->setTransferFunction(t);
-            }
-            colormap_bar.setColorMap( t.colorMap() );
-            screen.redraw();
-        } );
+            using Renderer = kvs::RayCastingRenderer;
+            Renderer::DownCast(r)->setTransferFunction(t);
+        }
+        else
+        {
+            using Renderer = kvs::glsl::RayCastingRenderer;
+            Renderer::DownCast(r)->setTransferFunction(t);
+        }
+        colormap_bar.setColorMap( t.colorMap() );
+        screen.redraw();
+    } );
     editor.show();
 
     // Double click event
@@ -299,20 +298,19 @@ int Main::exec()
 
     // Key press event
     kvs::KeyPressEventListener key_press_event;
-    key_press_event.update(
-        [&]( kvs::KeyEvent* e )
+    key_press_event.update( [&] ( kvs::KeyEvent* e )
+    {
+        switch ( e->key() )
         {
-            switch ( e->key() )
-            {
-            case kvs::Key::t:
-            {
-                if ( editor.isVisible() ) { editor.hide(); }
-                else { editor.show(); }
-                break;
-            }
-            default: break;
-            }
-        } );
+        case kvs::Key::t:
+        {
+            if ( editor.isVisible() ) { editor.hide(); }
+            else { editor.show(); }
+            break;
+        }
+        default: break;
+        }
+    } );
     screen.addEvent( &key_press_event );
     editor.addEvent( &key_press_event );
 
