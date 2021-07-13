@@ -801,15 +801,10 @@ void SetViewport( GLint x, GLint y, GLsizei width, GLsizei height )
 
 void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble front, GLdouble back )
 {
-    KVS_GL_CALL( glOrtho( left, right, bottom, top, front, back ) );
-}
-
-void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top )
-{
 #if defined( KVS_ENABLE_GLU )
     KVS_GL_CALL( gluOrtho2D( left, right, bottom, top ) );
 #else
-    KVS_GL_CALL( glOrtho( left, right, bottom, top, -1, 1 ) );
+    KVS_GL_CALL( glOrtho( left, right, bottom, top, front, back ) );
 #endif
 }
 
@@ -901,24 +896,18 @@ void SetViewport( const kvs::Vec4& v )
     kvs::OpenGL::SetViewport( x, y, width, height );
 }
 
-void SetOrtho( const kvs::Vec4& v )
+void SetOrtho( const kvs::Vec4& v, const bool upside_down )
 {
-    const GLdouble left = v[0];
-    const GLdouble right = v[1];
-    const GLdouble bottom = v[2];
-    const GLdouble top = v[3];
-    kvs::OpenGL::SetOrtho( left, right, bottom, top );
+    kvs::OpenGL::SetOrtho( v, -1.0f, 1.0f, upside_down );
 }
 
-void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far )
+void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far, const bool upside_down )
 {
-    const GLdouble left = v[0];
-    const GLdouble right = v[1];
-    const GLdouble bottom = v[2];
-    const GLdouble top = v[3];
-    const GLdouble dnear = GLdouble( near );
-    const GLdouble dfar = GLdouble( far );
-    kvs::OpenGL::SetOrtho( left, right, bottom, top, dnear, dfar );
+    const auto left = v[0];
+    const auto bottom = ( upside_down ) ? v[1] + v[3] : v[1];
+    const auto right = v[0] + v[2];
+    const auto top = ( upside_down ) ? v[1] : v[1] + v[3];
+    kvs::OpenGL::SetOrtho( left, right, bottom, top, near, far );
 }
 
 void SetLookAt( const kvs::Vec3& eye, const kvs::Vec3& center, const kvs::Vec3& up )
@@ -2198,7 +2187,7 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
     needCache2 = GL_TRUE;
     needCache3 = GL_FALSE;
 
-    for (i = 0; i < slices; i++)
+    for (i = 0; i <= slices; i++)
     {
         angle = 2 * Pi * i / slices;
         sinCache1a[i] = std::sin(angle);
@@ -2226,7 +2215,7 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
     sinCache1b[stacks] = 0;
 
     if (needCache3) {
-        for (i = 0; i < slices; i++)
+        for (i = 0; i <= slices; i++)
         {
             angle = 2.0f * Pi * (i-0.5f) / slices;
             sinCache3a[i] = std::sin(angle);
@@ -2259,7 +2248,7 @@ void DrawSphere( GLdouble radius, GLint slices, GLint stacks )
     ** it isn't a constant for that point)
     */
     start = 1;
-    finish = stacks - 1;
+    finish = stacks;
 
     /* Low end first (j == 0 iteration) */
     sintemp2 = sinCache1b[1];

@@ -24,8 +24,8 @@ private:
     GLenum m_type = 0; ///< pixel data type
 
 public:
-    FrameBuffer( const GLenum format, const GLenum type ): m_format( format ), m_type( type ) {}
     FrameBuffer() = default;
+    FrameBuffer( const GLenum format, const GLenum type ): m_format( format ), m_type( type ) {}
 
     GLenum format() const { return m_format; }
     GLenum type() const { return m_type; }

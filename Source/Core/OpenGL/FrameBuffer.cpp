@@ -74,8 +74,6 @@ void FrameBuffer::readPixels(
     void* pixels,
     const GLenum buffer ) const
 {
-    kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, 1 );
-
     if ( buffer != 0 )
     {
         GLint current_buffer = kvs::OpenGL::Integer( GL_READ_BUFFER );
@@ -108,6 +106,10 @@ void FrameBuffer::drawPixels(
     const void* pixels,
     const GLenum buffer ) const
 {
+    kvs::OpenGL::WithDisabled d1( GL_TEXTURE_1D );
+    kvs::OpenGL::WithDisabled d2( GL_TEXTURE_2D );
+    kvs::OpenGL::WithDisabled d3( GL_TEXTURE_3D );
+
     GLint current_buffer = 0;
     if ( buffer != 0 )
     {
@@ -115,28 +117,16 @@ void FrameBuffer::drawPixels(
         kvs::OpenGL::SetDrawBuffer( buffer );
     }
 
-    kvs::OpenGL::WithDisabled d1( GL_TEXTURE_1D );
-    kvs::OpenGL::WithDisabled d2( GL_TEXTURE_2D );
-    kvs::OpenGL::WithDisabled d3( GL_TEXTURE_3D );
+    kvs::OpenGL::WithPushedMatrix p1( GL_PROJECTION );
+    p1.loadIdentity();
     {
-        GLint viewport[4];
-        kvs::OpenGL::GetViewport( viewport );
-        const int left = viewport[0];
-        const int bottom = viewport[1];
-        const int right = viewport[0] + viewport[2];
-        const int top = viewport[1] + viewport[3];
-
-        kvs::OpenGL::WithPushedMatrix p1( GL_PROJECTION );
-        p1.loadIdentity();
+        kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );
+        p2.loadIdentity();
         {
-            kvs::OpenGL::WithPushedMatrix p2( GL_MODELVIEW );
-            p2.loadIdentity();
-            {
-                kvs::OpenGL::SetOrtho( left, right, bottom, top, -1, 1 );
-                kvs::OpenGL::SetPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
-                kvs::OpenGL::SetRasterPos( x, y );
-                kvs::OpenGL::DrawPixels( width, height, m_format, m_type, pixels );
-            }
+            kvs::OpenGL::SetOrtho( kvs::OpenGL::Viewport() );
+            kvs::OpenGL::SetPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
+            kvs::OpenGL::SetRasterPos( x, y );
+            kvs::OpenGL::DrawPixels( width, height, m_format, m_type, pixels );
         }
     }
 

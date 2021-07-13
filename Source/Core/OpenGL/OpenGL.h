@@ -109,8 +109,7 @@ void SetPixelStorageMode( GLenum pname, GLfloat param );
 void SetPixelStorageMode( GLenum pname, GLint param );
 
 void SetViewport( GLint x, GLint y, GLsizei width, GLsizei height );
-void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble far );
-void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top );
+void SetOrtho( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near = -1.0, GLdouble far = 1.0 );
 void SetPerspective( GLdouble fovy, GLdouble aspect, GLdouble near, GLdouble far );
 void SetFrustum( GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble far );
 void SetLookAt(
@@ -119,8 +118,8 @@ void SetLookAt(
     GLdouble upx, GLdouble upy, GLdouble upz );
 
 void SetViewport( const kvs::Vec4& v );
-void SetOrtho( const kvs::Vec4& v );
-void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far );
+void SetOrtho( const kvs::Vec4& v, const bool upside_down = false );
+void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far, const bool upside_down = false );
 void SetLookAt( const kvs::Vec3& eye, const kvs::Vec3& center, const kvs::Vec3& up );
 
 void SetLight( GLenum light, GLenum pname, GLfloat param );
