@@ -119,7 +119,7 @@ void SetLookAt(
 
 void SetViewport( const kvs::Vec4& v );
 void SetOrtho( const kvs::Vec4& v, const bool upside_down = false );
-void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far, const bool upside_down = false );
+void SetOrtho( const kvs::Vec4& v, const kvs::Real32 front, const kvs::Real32 back, const bool upside_down = false );
 void SetLookAt( const kvs::Vec3& eye, const kvs::Vec3& center, const kvs::Vec3& up );
 
 void SetLight( GLenum light, GLenum pname, GLfloat param );

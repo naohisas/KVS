@@ -901,13 +901,13 @@ void SetOrtho( const kvs::Vec4& v, const bool upside_down )
     kvs::OpenGL::SetOrtho( v, -1.0f, 1.0f, upside_down );
 }
 
-void SetOrtho( const kvs::Vec4& v, const kvs::Real32 near, const kvs::Real32 far, const bool upside_down )
+void SetOrtho( const kvs::Vec4& v, const kvs::Real32 front, const kvs::Real32 back, const bool upside_down )
 {
     const auto left = v[0];
     const auto bottom = ( upside_down ) ? v[1] + v[3] : v[1];
     const auto right = v[0] + v[2];
     const auto top = ( upside_down ) ? v[1] : v[1] + v[3];
-    kvs::OpenGL::SetOrtho( left, right, bottom, top, near, far );
+    kvs::OpenGL::SetOrtho( left, right, bottom, top, front, back );
 }
 
 void SetLookAt( const kvs::Vec3& eye, const kvs::Vec3& center, const kvs::Vec3& up )
