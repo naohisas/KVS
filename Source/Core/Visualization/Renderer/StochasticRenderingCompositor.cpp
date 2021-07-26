@@ -145,26 +145,6 @@ void StochasticRenderingCompositor::setupEngines()
         renderer->engine().setup( object, m_scene->camera(), m_scene->light() );
         kvs::OpenGL::PopMatrix();
     } );
-
-    /*
-    using Renderer = kvs::StochasticRendererBase;
-    const auto reset_count = !m_enable_refinement;
-    const auto size = m_scene->IDManager()->size();
-    for ( size_t i = 0; i < size; i++ )
-    {
-        auto id = m_scene->IDManager()->id( i );
-        auto* object = m_scene->objectManager()->object( id.first );
-        auto* renderer = m_scene->rendererManager()->renderer( id.second );
-        if ( auto* r = Renderer::DownCast( renderer ) )
-        {
-            kvs::OpenGL::PushMatrix();
-            m_scene->updateGLModelingMatrix( object );
-            if ( reset_count ) r->engine().resetRepetitions();
-            r->engine().setup( object, m_scene->camera(), m_scene->light() );
-            kvs::OpenGL::PopMatrix();
-        }
-    }
-    */
 }
 
 void StochasticRenderingCompositor::drawEngines()
