@@ -5,11 +5,13 @@
  */
 /*****************************************************************************/
 #pragma once
+#include <functional>
 #include <kvs/Timer>
 #include <kvs/TrackballInteractor>
 #include <kvs/Matrix44>
 #include <kvs/Vector3>
 #include <kvs/Deprecated>
+#include <kvs/StochasticRendererBase>
 #include "EnsembleAverageBuffer.h"
 
 
@@ -25,22 +27,28 @@ class Scene;
 /*===========================================================================*/
 class StochasticRenderingCompositor : public kvs::TrackballInteractor
 {
+protected:
+    using Object = kvs::ObjectBase;
+    using Renderer = kvs::StochasticRendererBase;
+    using Function = std::function<void(Object*,Renderer*)>;
+
 private:
-    kvs::Timer m_timer;
-    kvs::Scene* m_scene; ///< pointer to the scene
-    size_t m_window_width; ///< window width
-    size_t m_window_height; ///< window height
-    size_t m_repetition_level; ///< repetition level
-    size_t m_coarse_level; ///< repetition level for the coarse rendering (LOD)
-    bool m_enable_lod; ///< flag for LOD rendering
-    bool m_enable_refinement; ///< flag for progressive refinement rendering
-    kvs::Mat4 m_object_xform; ///< object xform matrix used for LOD control
-    kvs::Vec3 m_light_position; ///< light position used for LOD control
-    kvs::Vec3 m_camera_position; ///< camera position used for LOD control
-    kvs::EnsembleAverageBuffer m_ensemble_buffer; ///< ensemble averaging buffer
+    kvs::Timer m_timer; ///< timer for measuring rendering speed
+    kvs::Scene* m_scene = nullptr; ///< pointer to the scene
+    size_t m_window_width = 0; ///< window width
+    size_t m_window_height = 0; ///< window height
+    size_t m_repetition_level = 1; ///< repetition level
+    size_t m_coarse_level = 1; ///< repetition level for the coarse rendering (LOD)
+    bool m_enable_lod = false; ///< flag for LOD rendering
+    bool m_enable_refinement = false; ///< flag for progressive refinement rendering
+    kvs::Mat4 m_object_xform{}; ///< object xform matrix used for LOD control
+    kvs::Vec3 m_light_position{}; ///< light position used for LOD control
+    kvs::Vec3 m_camera_position{}; ///< camera position used for LOD control
+    kvs::EnsembleAverageBuffer m_ensemble_buffer{}; ///< ensemble averaging buffer
 
 public:
-    StochasticRenderingCompositor( kvs::Scene* scene );
+    StochasticRenderingCompositor() = delete;
+    StochasticRenderingCompositor( kvs::Scene* scene ): m_scene( scene ) {}
     virtual ~StochasticRenderingCompositor() {}
     const kvs::Timer& timer() const { return m_timer; }
     size_t repetitionLevel() const { return m_repetition_level; }
@@ -55,17 +63,25 @@ public:
     void disableRefinement() { this->setRefinementEnabled( false ); }
     void update();
 
+protected:
+    kvs::Scene* scene() { return m_scene; }
+    virtual void onWindowCreated();
+    virtual void onWindowResized();
+    virtual void onObjectChanged( Object* object, Renderer* renderer );
+    virtual void createEngines();
+    virtual void updateEngines();
+    virtual void setupEngines();
+    virtual void drawEngines();
+    virtual void setupBuffer();
+    virtual void bindBuffer();
+    virtual void unbindBuffer();
+    virtual void drawBuffer();
+
 private:
-    StochasticRenderingCompositor();
     void draw();
-    void check_window_created();
-    void check_window_resized();
-    void check_object_changed();
+    void for_each_renderer( Function function );
+    size_t lod_control();
     kvs::Mat4 object_xform();
-    void engines_create();
-    void engines_update();
-    void engines_setup();
-    void engines_draw();
 
 private:
     void paintEvent() { this->update(); }
