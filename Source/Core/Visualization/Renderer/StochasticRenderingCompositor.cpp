@@ -14,9 +14,6 @@
 #include <kvs/Camera>
 #include <kvs/Light>
 #include <kvs/Background>
-#include <kvs/ObjectManager>
-#include <kvs/RendererManager>
-#include <kvs/IDManager>
 #include "StochasticRendererBase.h"
 #include "ParticleBasedRenderer.h"
 
@@ -43,13 +40,46 @@ void StochasticRenderingCompositor::update()
 
         if ( m_scene->objectManager()->hasObject() )
         {
-            this->draw();
+            this->render_objects();
         }
         else
         {
             m_scene->updateGLModelingMatrix();
         }
     }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Renders the objects with stochastic renderers.
+ */
+/*===========================================================================*/
+void StochasticRenderingCompositor::render_objects()
+{
+    m_timer.start();
+    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
+
+    // Check for window/object state changes
+    if ( this->is_window_created() ) { this->onWindowCreated(); }
+    if ( this->is_window_resized() ) { this->onWindowResized(); }
+    this->for_each_object( [&] ( Object* object, Renderer* renderer )
+    {
+        if ( this->is_object_changed( object, renderer ) )
+        {
+            this->onObjectChanged( object, renderer );
+        }
+    } );
+
+    // Ensemble rendering.
+    this->firstRenderPass( m_ensemble_buffer );
+    this->for_each_ensemble( [&] ( kvs::EnsembleAverageBuffer& buffer )
+    {
+        this->ensembleRenderPass( buffer );
+    } );
+    this->lastRenderPass( m_ensemble_buffer );
+
+    kvs::OpenGL::Finish();
+    m_timer.stop();
 }
 
 void StochasticRenderingCompositor::onWindowCreated()
@@ -106,9 +136,29 @@ void StochasticRenderingCompositor::onObjectChanged( Object* object, Renderer* r
     kvs::OpenGL::PopMatrix();
 }
 
+void StochasticRenderingCompositor::firstRenderPass( kvs::EnsembleAverageBuffer& buffer )
+{
+    this->setupEngines();
+    const auto reset_count = !this->isRefinementEnabled();
+    if ( reset_count ) buffer.clear();
+}
+
+void StochasticRenderingCompositor::ensembleRenderPass( kvs::EnsembleAverageBuffer& buffer )
+{
+    buffer.bind();
+    this->drawEngines();
+    buffer.unbind();
+    buffer.add();
+}
+
+void StochasticRenderingCompositor::lastRenderPass( kvs::EnsembleAverageBuffer& buffer )
+{
+    buffer.draw();
+}
+
 void StochasticRenderingCompositor::createEngines()
 {
-    this->for_each_renderer( [&] ( Object* object, Renderer* renderer )
+    this->for_each_object( [&] ( Object* object, Renderer* renderer )
     {
         auto& engine = renderer->engine();
         engine.setDepthTexture( m_ensemble_buffer.currentDepthTexture() );
@@ -125,7 +175,7 @@ void StochasticRenderingCompositor::createEngines()
 
 void StochasticRenderingCompositor::updateEngines()
 {
-    this->for_each_renderer( [&] ( Object* object, Renderer* renderer )
+    this->for_each_object( [&] ( Object* object, Renderer* renderer )
     {
         kvs::OpenGL::PushMatrix();
         m_scene->updateGLModelingMatrix( object );
@@ -136,7 +186,7 @@ void StochasticRenderingCompositor::updateEngines()
 
 void StochasticRenderingCompositor::setupEngines()
 {
-    this->for_each_renderer( [&] ( Object* object, Renderer* renderer )
+    this->for_each_object( [&] ( Object* object, Renderer* renderer )
     {
         const auto reset_count = !m_enable_refinement;
         kvs::OpenGL::PushMatrix();
@@ -149,7 +199,7 @@ void StochasticRenderingCompositor::setupEngines()
 
 void StochasticRenderingCompositor::drawEngines()
 {
-    this->for_each_renderer( [&] ( Object* object, Renderer* renderer )
+    this->for_each_object( [&] ( Object* object, Renderer* renderer )
     {
         kvs::OpenGL::PushMatrix();
         m_scene->updateGLModelingMatrix( object );
@@ -159,89 +209,21 @@ void StochasticRenderingCompositor::drawEngines()
     } );
 }
 
-void StochasticRenderingCompositor::setupBuffer()
+bool StochasticRenderingCompositor::is_window_created() const
 {
-    const bool reset_count = !m_enable_refinement;
-    if ( reset_count ) m_ensemble_buffer.clear();
+    return m_window_width == 0 && m_window_height == 0;
 }
 
-void StochasticRenderingCompositor::bindBuffer()
+bool StochasticRenderingCompositor::is_window_resized() const
 {
-    m_ensemble_buffer.bind();
-}
-
-void StochasticRenderingCompositor::unbindBuffer()
-{
-    m_ensemble_buffer.unbind();
-    m_ensemble_buffer.add();
-}
-
-void StochasticRenderingCompositor::drawBuffer()
-{
-    m_ensemble_buffer.draw();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Draws the objects with stochastic renderers.
- */
-/*===========================================================================*/
-void StochasticRenderingCompositor::draw()
-{
-    m_timer.start();
-    kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
-
-    // Window created
-    const bool window_created = m_window_width == 0 && m_window_height == 0;
-    if ( window_created ) { this->onWindowCreated(); }
-
-    // Window resized
     const auto width = m_scene->camera()->windowWidth();
     const auto height = m_scene->camera()->windowHeight();
-    const bool window_resized = m_window_width != width || m_window_height != height;
-    if ( window_resized ) { this->onWindowResized(); }
-
-    // Object changed
-    this->for_each_renderer( [&] ( Object* object, Renderer* renderer )
-    {
-        const bool object_changed = renderer->engine().object() != object;
-        if ( object_changed )
-        {
-            this->onObjectChanged( object, renderer );
-        }
-    } );
-
-    // LOD control.
-    const auto repetitions = this->lod_control();
-
-    // Ensemble rendering.
-    this->setupEngines();
-    this->setupBuffer();
-    for ( size_t i = 0; i < repetitions; i++ )
-    {
-        this->bindBuffer();
-        this->drawEngines();
-        this->unbindBuffer();
-    }
-    this->drawBuffer();
-
-    kvs::OpenGL::Finish();
-    m_timer.stop();
+    return m_window_width != width || m_window_height != height;
 }
 
-void StochasticRenderingCompositor::for_each_renderer( Function function )
+bool StochasticRenderingCompositor::is_object_changed( Object* object, Renderer* renderer )
 {
-    const auto size = m_scene->IDManager()->size();
-    for ( size_t i = 0; i < size; i++ )
-    {
-        auto id = m_scene->IDManager()->id( i );
-        auto* object = m_scene->objectManager()->object( id.first );
-        auto* r = m_scene->rendererManager()->renderer( id.second );
-        if ( auto* renderer = Renderer::DownCast( r ) )
-        {
-            function( object, renderer );
-        }
-    }
+    return renderer->engine().object() != object;
 }
 
 /*===========================================================================*/

@@ -12,6 +12,9 @@
 #include <kvs/Vector3>
 #include <kvs/Deprecated>
 #include <kvs/StochasticRendererBase>
+#include <kvs/ObjectManager>
+#include <kvs/RendererManager>
+#include <kvs/IDManager>
 #include "EnsembleAverageBuffer.h"
 
 
@@ -30,7 +33,6 @@ class StochasticRenderingCompositor : public kvs::TrackballInteractor
 protected:
     using Object = kvs::ObjectBase;
     using Renderer = kvs::StochasticRendererBase;
-    using Function = std::function<void(Object*,Renderer*)>;
 
 private:
     kvs::Timer m_timer; ///< timer for measuring rendering speed
@@ -64,24 +66,26 @@ public:
     void update();
 
 protected:
-    kvs::Scene* scene() { return m_scene; }
     virtual void onWindowCreated();
     virtual void onWindowResized();
     virtual void onObjectChanged( Object* object, Renderer* renderer );
+    virtual void firstRenderPass( kvs::EnsembleAverageBuffer& buffer );
+    virtual void ensembleRenderPass( kvs::EnsembleAverageBuffer& buffer );
+    virtual void lastRenderPass( kvs::EnsembleAverageBuffer& buffer );
     virtual void createEngines();
     virtual void updateEngines();
     virtual void setupEngines();
     virtual void drawEngines();
-    virtual void setupBuffer();
-    virtual void bindBuffer();
-    virtual void unbindBuffer();
-    virtual void drawBuffer();
 
 private:
-    void draw();
-    void for_each_renderer( Function function );
+    void render_objects();
+    bool is_window_created() const;
+    bool is_window_resized() const;
+    bool is_object_changed( Object* object, Renderer* renderer );
     size_t lod_control();
     kvs::Mat4 object_xform();
+    template <class Function> void for_each_object( Function function );
+    template <class Function> void for_each_ensemble( Function function );
 
 private:
     void paintEvent() { this->update(); }
@@ -92,5 +96,31 @@ public:
     KVS_DEPRECATED( void setEnabledLODControl( const bool enable ) ) { this->setLODControlEnabled( enable ); }
     KVS_DEPRECATED( void setEnabledRefinement( const bool enable ) ) { this->setRefinementEnabled( enable ); }
 };
+
+template <class Function>
+inline void StochasticRenderingCompositor::for_each_object( Function function )
+{
+    const auto size = m_scene->IDManager()->size();
+    for ( size_t i = 0; i < size; i++ )
+    {
+        auto id = m_scene->IDManager()->id( i );
+        auto* object = m_scene->objectManager()->object( id.first );
+        auto* r = m_scene->rendererManager()->renderer( id.second );
+        if ( auto* renderer = Renderer::DownCast( r ) )
+        {
+            function( object, renderer );
+        }
+    }
+}
+
+template <class Function>
+inline void StochasticRenderingCompositor::for_each_ensemble( Function function )
+{
+    const auto repetitions = this->lod_control();
+    for ( size_t i = 0; i < repetitions; i++ )
+    {
+        function( m_ensemble_buffer );
+    }
+}
 
 } // end of namespace kvs

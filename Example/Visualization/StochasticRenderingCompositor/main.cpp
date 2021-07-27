@@ -10,6 +10,7 @@
 #include <kvs/TransferFunctionEditor>
 #include <kvs/Slider>
 #include <kvs/CheckBox>
+#include <kvs/Label>
 #include <kvs/PolygonObject>
 #include <kvs/ExternalFaces>
 #include <kvs/UnstructuredVolumeObject>
@@ -112,6 +113,18 @@ int main( int argc, char** argv )
         screen.redraw();
     } );
     repetition.show();
+
+    // Label (fps).
+    kvs::Label label( &screen );
+    label.setMargin( 10 );
+    label.setWidth( 90 );
+    label.anchorToTopRight();
+    label.screenUpdated( [&] ()
+    {
+        const auto fps = kvs::String::From( compositor.timer().fps(), 4 );
+        label.setText( std::string( "FPS: " + fps ).c_str() );
+    } );
+    label.show();
 
     return app.run();
 }
