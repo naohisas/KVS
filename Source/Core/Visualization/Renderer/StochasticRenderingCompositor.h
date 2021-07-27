@@ -63,7 +63,7 @@ public:
     void enableRefinement() { this->setRefinementEnabled( true ); }
     void disableLODControl() { this->setLODControlEnabled( false ); }
     void disableRefinement() { this->setRefinementEnabled( false ); }
-    void update();
+    void draw();
 
 protected:
     virtual void onWindowCreated();
@@ -88,7 +88,7 @@ private:
     template <class Function> void for_each_ensemble( Function function );
 
 private:
-    void paintEvent() { this->update(); }
+    void paintEvent() { this->draw(); }
 
 public:
     KVS_DEPRECATED( bool isEnabledLODControl() const ) { return this->isLODControlEnabled(); }

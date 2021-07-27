@@ -26,7 +26,7 @@ namespace kvs
  *  @brief  Updates the scene.
  */
 /*===========================================================================*/
-void StochasticRenderingCompositor::update()
+void StochasticRenderingCompositor::draw()
 {
     KVS_ASSERT( m_scene );
 
