@@ -702,7 +702,7 @@ void Scene::paintFunction()
             kvs::IDManager::IDPair id = m_id_manager->id( index );
             kvs::ObjectBase* object = m_object_manager->object( id.first );
             kvs::RendererBase* renderer = m_renderer_manager->renderer( id.second );
-            if ( object->isShown() )
+            if ( object->isVisible() )
             {
                 kvs::OpenGL::PushMatrix();
                 this->updateGLModelingMatrix( object );

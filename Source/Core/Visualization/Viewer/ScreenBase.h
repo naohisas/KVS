@@ -55,6 +55,7 @@ public:
     void setGeometry( const int x, const int y, const int width, const int height ) { m_x = x; m_y = y; m_width = width; m_height = height; }
     void setTitle( const std::string& title ) { m_title = title; }
     void setDisplayFormat( const kvs::DisplayFormat& display_format ) { m_display_format = display_format; }
+    void setVisible( const bool visible = true ) { m_visible = visible; }
 
     virtual void setEvent( kvs::EventListener* event, const std::string& name = "" );
     virtual void addEvent( kvs::EventListener* event, const std::string& name = "" );
@@ -62,8 +63,8 @@ public:
     virtual void removeEvent( const std::string& name );
 
     virtual void create() {}
-    virtual void show() { m_visible = true; }
-    virtual void hide() { m_visible = false; }
+    virtual void show() { this->setVisible( true ); }
+    virtual void hide() { this->setVisible( false ); }
     virtual void showFullScreen() { m_visible = true; m_fullscreen = true; }
     virtual void showNormal() { m_visible = true; m_fullscreen = false; }
     virtual void popUp() {}

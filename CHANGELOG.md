@@ -22,6 +22,9 @@
 + kvs::Stat::StdDev( values, varf, &mean )
 + kvs::XXXObject::DownCast( YYYObjectBase& )
 + kvs::XXXObject::DownCast( const YYYObjectBase& )
++ kvs::ScreenBase::setVisible
++ kvs::ObjectBase::setVisible
++ kvs::ObjectBase::isVisible
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()
@@ -52,6 +55,7 @@
 + kvs::ColorStream::disableBlink (use kvs::ColorStream::setBlinkEnabled)
 + kvs::ColorStream::disableReverse (use kvs::ColorStream::setReverseEnabled)
 + kvs::ColorStream::disableHide (use kvs::ColorStream::setHideEnabled)
++ kvs::ObjectBase::isShown (use kvs::ObjectBase::isVisible)
 
 **Added new example**
 + Example/Utility/ColorStream

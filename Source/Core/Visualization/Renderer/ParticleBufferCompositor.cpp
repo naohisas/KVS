@@ -261,7 +261,7 @@ void ParticleBufferCompositor::accumulate( kvs::Camera* camera, kvs::Light* ligh
         kvs::PointObject* object = m_point_object_list[id];
         kvs::ParticleVolumeRenderer* renderer = m_point_renderer_list[id];
 
-        if ( !object->isShown() ) continue;
+        if ( !object->isVisible() ) continue;
 
         // Update the point buffer of the renderer.
         if ( m_object_manager->hasActiveObject() )

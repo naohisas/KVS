@@ -15,34 +15,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new ObjectBase class.
- */
-/*===========================================================================*/
-ObjectBase::ObjectBase():
-    kvs::XformControl(),
-    m_object_type( UnknownObject ),
-    m_name( "unknown" ),
-    m_min_object_coord( kvs::Vec3::Constant( -3.0 ) ),
-    m_max_object_coord( kvs::Vec3::Constant(  3.0 ) ),
-    m_min_external_coord( kvs::Vec3::Constant( -3.0 ) ),
-    m_max_external_coord( kvs::Vec3::Constant(  3.0 ) ),
-    m_has_min_max_object_coords( false ),
-    m_has_min_max_external_coords( false ),
-    m_show_flag( true )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the ObjectBase class.
- */
-/*===========================================================================*/
-ObjectBase::~ObjectBase()
-{
-}
-
-/*===========================================================================*/
-/**
  *  @brief  '=' operator.
  */
 /*===========================================================================*/
@@ -60,7 +32,7 @@ ObjectBase& ObjectBase::operator = ( const ObjectBase& object )
     m_object_center = object.m_object_center;
     m_external_center = object.m_external_center;
     m_normalize = object.m_normalize;
-    m_show_flag = object.m_show_flag;
+    m_visible = object.m_visible;
 
     return *this;
 }
