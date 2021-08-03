@@ -25,7 +25,7 @@ public:
         kvs::EventListener( kvs::EventBase::TimerEvent, msec ) { this->update( func ); }
     virtual ~TimerEventListener() {}
 
-    void update( TimerEventFunc func ) { timerEvent( func ); }
+    void update( TimerEventFunc func ) { timerEvent( func, kvs::EventListener::timerInterval() ); }
     virtual void update( kvs::TimeEvent* event ) { timerEvent( event ); }
 
 private:
