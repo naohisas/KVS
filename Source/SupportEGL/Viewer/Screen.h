@@ -37,6 +37,8 @@ public:
     kvs::Scene* scene() { return m_scene; }
     const kvs::Scene* scene() const { return m_scene; }
 
+    void setSize( const int width, const int height );
+    void setGeometry( const int x, const int y, const int width, const int height );
     void setBackgroundColor( const kvs::RGBColor& color );
     void setBackgroundColor( const kvs::RGBColor& color1, const kvs::RGBColor& color2 );
     void setBackgroundImage( const kvs::ColorImage& image );

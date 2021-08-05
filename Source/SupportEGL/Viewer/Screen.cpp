@@ -18,6 +18,7 @@
 #include <kvs/ObjectManager>
 #include <kvs/RendererManager>
 #include <kvs/IDManager>
+#include <kvs/Camera>
 
 
 namespace kvs
@@ -39,6 +40,20 @@ Screen::~Screen()
         delete m_scene;
         m_scene = NULL;
     }
+}
+
+void Screen::setSize( const int width, const int height )
+{
+    BaseClass::setSize( width, height );
+
+    auto* c = m_scene->camera();
+    if ( c ) { c->setWindowSize( width, height ); }
+}
+
+void Screen::setGeometry( const int x, const int y, const int width, const int height )
+{
+    BaseClass::setPosition( x, y );
+    this->setSize( width, height );
 }
 
 void Screen::setBackgroundColor( const kvs::RGBColor& color )
