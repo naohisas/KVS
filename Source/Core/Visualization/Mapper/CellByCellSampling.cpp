@@ -203,14 +203,11 @@ namespace CellByCellSampling
 /*===========================================================================*/
 kvs::Real32 ParticleDensityMap::at( const float value ) const
 {
-    if ( value == m_min_value ) { return m_table[0]; }
-    if ( value == m_max_value ) { return m_table[ m_resolution - 1 ]; }
-    if ( value < m_min_value || m_max_value < value ) { return 0.0f; }
-
+    const float v0 = kvs::Math::Clamp( value, m_min_value, m_max_value );
     const float r = static_cast<float>( m_resolution - 1 );
-    const float v = ( value - m_min_value ) / ( m_max_value - m_min_value ) * r;
+    const float v = ( v0 - m_min_value ) / ( m_max_value - m_min_value ) * r;
     const size_t s0 = static_cast<size_t>( v );
-    const size_t s1 = s0 + 1;
+    const size_t s1 = kvs::Math::Min( s0 + 1, m_resolution - 1 );
 
     const kvs::Real32 d0 = m_table[ s0 ];
     const kvs::Real32 d1 = m_table[ s1 ];
