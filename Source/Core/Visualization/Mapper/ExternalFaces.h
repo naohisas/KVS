@@ -50,6 +50,8 @@ private:
     template <typename T> void calculate_quadratic_tetrahedral_faces( const kvs::UnstructuredVolumeObject* volume );
     template <typename T> void calculate_hexahedral_faces( const kvs::UnstructuredVolumeObject* volume );
     template <typename T> void calculate_quadratic_hexahedral_faces( const kvs::UnstructuredVolumeObject* volume );
+    template <typename T> void calculate_prism_faces( const kvs::UnstructuredVolumeObject* volume );
+    template <typename T> void calculate_pyramid_faces( const kvs::UnstructuredVolumeObject* volume );
 };
 
 } // end of namespace kvs

@@ -432,6 +432,64 @@ inline void CreateQuadraticHexahedraFaceMap(
     }
 }
 
+inline void CreatePrismFaceMap(
+    const kvs::UnstructuredVolumeObject* volume,
+    TriangleFaceMap* tri_face_map,
+    QuadrangleFaceMap* quad_face_map )
+{
+    const auto* connections = volume->connections().data();
+    const auto ncells = volume->numberOfCells();
+    for ( size_t cell_index = 0, connection_index = 0; cell_index < ncells; cell_index++ )
+    {
+        // Local vertices of the prism cell.
+        const auto v0  = connections[ connection_index      ];
+        const auto v1  = connections[ connection_index +  1 ];
+        const auto v2  = connections[ connection_index +  2 ];
+        const auto v3  = connections[ connection_index +  3 ];
+        const auto v4  = connections[ connection_index +  4 ];
+        const auto v5  = connections[ connection_index +  5 ];
+        connection_index += 6;
+
+        // Local triangle faces of the cell.
+        tri_face_map->insert( v0, v1, v2 );
+        tri_face_map->insert( v3, v4, v5 );
+
+        // Local quadrangle faces of the cell.
+        quad_face_map->insert( v0, v3, v4, v1 );
+        quad_face_map->insert( v1, v4, v5, v2 );
+        quad_face_map->insert( v2, v5, v3, v0 );
+    }
+}
+
+inline void CreatePyramidFaceMap(
+    const kvs::UnstructuredVolumeObject* volume,
+    TriangleFaceMap* tri_face_map,
+    QuadrangleFaceMap* quad_face_map )
+{
+    const auto* connections = volume->connections().data();
+    const auto ncells = volume->numberOfCells();
+    for ( size_t cell_index = 0, connection_index = 0; cell_index < ncells; cell_index++ )
+    {
+        // Local vertices of the prism cell.
+        const auto v0  = connections[ connection_index      ];
+        const auto v1  = connections[ connection_index +  1 ];
+        const auto v2  = connections[ connection_index +  2 ];
+        const auto v3  = connections[ connection_index +  3 ];
+        const auto v4  = connections[ connection_index +  4 ];
+        connection_index += 5;
+
+        // Local triangle faces of the cell.
+        tri_face_map->insert( v0, v1, v2 );
+        tri_face_map->insert( v0, v2, v3 );
+        tri_face_map->insert( v0, v3, v4 );
+        tri_face_map->insert( v0, v4, v1 );
+
+        // Local quadrangle faces of the cell.
+        quad_face_map->insert( v4, v3, v2, v1 );
+    }
+}
+
+
 /*===========================================================================*/
 /**
  *  @brief  Calculates external faces using the face map.
@@ -642,6 +700,177 @@ void CalculateFaces(
         *( normal++ ) = n.z();
 
         f++;
+    }
+}
+
+template <typename T>
+void CalculateFaces(
+    const kvs::UnstructuredVolumeObject* volume,
+    const kvs::ColorMap cmap,
+    const TriangleFaceMap& tri_face_map,
+    const QuadrangleFaceMap& quad_face_map,
+    kvs::ValueArray<kvs::Real32>* coords,
+    kvs::ValueArray<kvs::UInt8>* colors,
+    kvs::ValueArray<kvs::Real32>* normals )
+{
+    // Parameters of the volume data.
+    if ( !volume->hasMinMaxValues() ) { volume->updateMinMaxValues(); }
+    const kvs::Real64 min_value = volume->minValue();
+    const kvs::Real64 max_value = volume->maxValue();
+    const size_t veclen = volume->veclen();
+    const T* value = reinterpret_cast<const T*>( volume->values().data() );
+
+    const size_t tri_nfaces = tri_face_map.bucket().size();
+    const size_t quad_nfaces = quad_face_map.bucket().size() * 2; // div into two tri faces.
+
+    const size_t nfaces = tri_nfaces + quad_nfaces;
+    const size_t nvertices = nfaces * 3;
+    const kvs::Real32* volume_coord = volume->coords().data();
+
+    coords->allocate( nvertices * 3 );
+    colors->allocate( nvertices * 3 );
+    normals->allocate( nfaces * 3 );
+    kvs::Real32* coord = coords->data();
+    kvs::UInt8* color = colors->data();
+    kvs::Real32* normal = normals->data();
+
+    // For triangle faces
+    {
+        kvs::UInt32 node_index[3] = { 0, 0, 0 };
+        kvs::UInt32 color_level[3] = { 0, 0, 0 };
+
+        TriangleFaceMap::Bucket::const_iterator f = tri_face_map.bucket().begin();
+        TriangleFaceMap::Bucket::const_iterator last = tri_face_map.bucket().end();
+        while ( f != last )
+        {
+            node_index[0] = f->second.id(0);
+            node_index[1] = f->second.id(1);
+            node_index[2] = f->second.id(2);
+
+            const kvs::Vec3 v0( volume_coord + 3 * node_index[0] );
+            const kvs::Vec3 v1( volume_coord + 3 * node_index[1] );
+            const kvs::Vec3 v2( volume_coord + 3 * node_index[2] );
+            // v0
+            *( coord++ ) = v0.x();
+            *( coord++ ) = v0.y();
+            *( coord++ ) = v0.z();
+            // v1
+            *( coord++ ) = v1.x();
+            *( coord++ ) = v1.y();
+            *( coord++ ) = v1.z();
+            // v2
+            *( coord++ ) = v2.x();
+            *( coord++ ) = v2.y();
+            *( coord++ ) = v2.z();
+
+            GetColorIndices<3>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
+            // c0
+            *( color++ ) = cmap[ color_level[0] ].r();
+            *( color++ ) = cmap[ color_level[0] ].g();
+            *( color++ ) = cmap[ color_level[0] ].b();
+            // c1
+            *( color++ ) = cmap[ color_level[1] ].r();
+            *( color++ ) = cmap[ color_level[1] ].g();
+            *( color++ ) = cmap[ color_level[1] ].b();
+            // c2
+            *( color++ ) = cmap[ color_level[2] ].r();
+            *( color++ ) = cmap[ color_level[2] ].g();
+            *( color++ ) = cmap[ color_level[2] ].b();
+
+            const kvs::Vec3 n( ( v1 - v0 ).cross( v2 - v0 ) );
+            // n0
+            *( normal++ ) = n.x();
+            *( normal++ ) = n.y();
+            *( normal++ ) = n.z();
+
+            f++;
+        }
+    }
+
+    // For quadrangle faces
+    {
+        kvs::UInt32 node_index[4] = { 0, 0, 0, 0 };
+        kvs::UInt32 color_level[4] = { 0, 0, 0, 0 };
+
+        QuadrangleFaceMap::Bucket::const_iterator f = quad_face_map.bucket().begin();
+        QuadrangleFaceMap::Bucket::const_iterator last = quad_face_map.bucket().end();
+        while ( f != last )
+        {
+            node_index[0] = f->second.id(0);
+            node_index[1] = f->second.id(1);
+            node_index[2] = f->second.id(2);
+            node_index[3] = f->second.id(3);
+
+            const kvs::Vec3 v0( volume_coord + 3 * node_index[0] );
+            const kvs::Vec3 v1( volume_coord + 3 * node_index[1] );
+            const kvs::Vec3 v2( volume_coord + 3 * node_index[2] );
+            const kvs::Vec3 v3( volume_coord + 3 * node_index[3] );
+            // v0
+            *( coord++ ) = v0.x();
+            *( coord++ ) = v0.y();
+            *( coord++ ) = v0.z();
+            // v1
+            *( coord++ ) = v1.x();
+            *( coord++ ) = v1.y();
+            *( coord++ ) = v1.z();
+            // v2
+            *( coord++ ) = v2.x();
+            *( coord++ ) = v2.y();
+            *( coord++ ) = v2.z();
+
+            // v2
+            *( coord++ ) = v2.x();
+            *( coord++ ) = v2.y();
+            *( coord++ ) = v2.z();
+            // v3
+            *( coord++ ) = v3.x();
+            *( coord++ ) = v3.y();
+            *( coord++ ) = v3.z();
+            // v0
+            *( coord++ ) = v0.x();
+            *( coord++ ) = v0.y();
+            *( coord++ ) = v0.z();
+
+            GetColorIndices<4>( value, min_value, max_value, veclen, cmap.resolution(), node_index, &color_level );
+            // c0
+            *( color++ ) = cmap[ color_level[0] ].r();
+            *( color++ ) = cmap[ color_level[0] ].g();
+            *( color++ ) = cmap[ color_level[0] ].b();
+            // c1
+            *( color++ ) = cmap[ color_level[1] ].r();
+            *( color++ ) = cmap[ color_level[1] ].g();
+            *( color++ ) = cmap[ color_level[1] ].b();
+            // c2
+            *( color++ ) = cmap[ color_level[2] ].r();
+            *( color++ ) = cmap[ color_level[2] ].g();
+            *( color++ ) = cmap[ color_level[2] ].b();
+
+            // c2
+            *( color++ ) = cmap[ color_level[2] ].r();
+            *( color++ ) = cmap[ color_level[2] ].g();
+            *( color++ ) = cmap[ color_level[2] ].b();
+            // c3
+            *( color++ ) = cmap[ color_level[3] ].r();
+            *( color++ ) = cmap[ color_level[3] ].g();
+            *( color++ ) = cmap[ color_level[3] ].b();
+            // c0
+            *( color++ ) = cmap[ color_level[0] ].r();
+            *( color++ ) = cmap[ color_level[0] ].g();
+            *( color++ ) = cmap[ color_level[0] ].b();
+
+            const kvs::Vec3 n( ( v1 - v0 ).cross( v2 - v0 ) );
+            // n0
+            *( normal++ ) = n.x();
+            *( normal++ ) = n.y();
+            *( normal++ ) = n.z();
+
+            // n0
+            *( normal++ ) = n.x();
+            *( normal++ ) = n.y();
+            *( normal++ ) = n.z();
+
+            f++;
+        }
     }
 }
 
@@ -1814,19 +2043,34 @@ void ExternalFaces::mapping( const kvs::UnstructuredVolumeObject* volume )
         else if ( type == typeid( kvs::Real64 ) ) { this->calculate_hexahedral_faces<kvs::Real64>( volume ); }
         break;
     }
-    case kvs::UnstructuredVolumeObject::QuadraticHexahedra:
+    case kvs::UnstructuredVolumeObject::Prism:
     {
         const std::type_info& type = volume->values().typeInfo()->type();
-        if (      type == typeid( kvs::Int8   ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int8  >( volume ); }
-        else if ( type == typeid( kvs::Int16  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int16 >( volume ); }
-        else if ( type == typeid( kvs::Int32  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int32 >( volume ); }
-        else if ( type == typeid( kvs::Int64  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int64 >( volume ); }
-        else if ( type == typeid( kvs::UInt8  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt8 >( volume ); }
-        else if ( type == typeid( kvs::UInt16 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt16>( volume ); }
-        else if ( type == typeid( kvs::UInt32 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt32>( volume ); }
-        else if ( type == typeid( kvs::UInt64 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt64>( volume ); }
-        else if ( type == typeid( kvs::Real32 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Real32>( volume ); }
-        else if ( type == typeid( kvs::Real64 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Real64>( volume ); }
+        if (      type == typeid( kvs::Int8   ) ) { this->calculate_prism_faces<kvs::Int8  >( volume ); }
+        else if ( type == typeid( kvs::Int16  ) ) { this->calculate_prism_faces<kvs::Int16 >( volume ); }
+        else if ( type == typeid( kvs::Int32  ) ) { this->calculate_prism_faces<kvs::Int32 >( volume ); }
+        else if ( type == typeid( kvs::Int64  ) ) { this->calculate_prism_faces<kvs::Int64 >( volume ); }
+        else if ( type == typeid( kvs::UInt8  ) ) { this->calculate_prism_faces<kvs::UInt8 >( volume ); }
+        else if ( type == typeid( kvs::UInt16 ) ) { this->calculate_prism_faces<kvs::UInt16>( volume ); }
+        else if ( type == typeid( kvs::UInt32 ) ) { this->calculate_prism_faces<kvs::UInt32>( volume ); }
+        else if ( type == typeid( kvs::UInt64 ) ) { this->calculate_prism_faces<kvs::UInt64>( volume ); }
+        else if ( type == typeid( kvs::Real32 ) ) { this->calculate_prism_faces<kvs::Real32>( volume ); }
+        else if ( type == typeid( kvs::Real64 ) ) { this->calculate_prism_faces<kvs::Real64>( volume ); }
+        break;
+    }
+    case kvs::UnstructuredVolumeObject::Pyramid:
+    {
+        const std::type_info& type = volume->values().typeInfo()->type();
+        if (      type == typeid( kvs::Int8   ) ) { this->calculate_pyramid_faces<kvs::Int8  >( volume ); }
+        else if ( type == typeid( kvs::Int16  ) ) { this->calculate_pyramid_faces<kvs::Int16 >( volume ); }
+        else if ( type == typeid( kvs::Int32  ) ) { this->calculate_pyramid_faces<kvs::Int32 >( volume ); }
+        else if ( type == typeid( kvs::Int64  ) ) { this->calculate_pyramid_faces<kvs::Int64 >( volume ); }
+        else if ( type == typeid( kvs::UInt8  ) ) { this->calculate_pyramid_faces<kvs::UInt8 >( volume ); }
+        else if ( type == typeid( kvs::UInt16 ) ) { this->calculate_pyramid_faces<kvs::UInt16>( volume ); }
+        else if ( type == typeid( kvs::UInt32 ) ) { this->calculate_pyramid_faces<kvs::UInt32>( volume ); }
+        else if ( type == typeid( kvs::UInt64 ) ) { this->calculate_pyramid_faces<kvs::UInt64>( volume ); }
+        else if ( type == typeid( kvs::Real32 ) ) { this->calculate_pyramid_faces<kvs::Real32>( volume ); }
+        else if ( type == typeid( kvs::Real64 ) ) { this->calculate_pyramid_faces<kvs::Real64>( volume ); }
         break;
     }
     default:
@@ -1905,7 +2149,6 @@ void ExternalFaces::calculate_hexahedral_faces( const kvs::UnstructuredVolumeObj
     kvs::ValueArray<kvs::Real32> normals;
     ::CalculateFaces<T>( volume, BaseClass::colorMap(), face_map, &coords, &colors, &normals );
 
-//    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
     SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
     SuperClass::setCoords( coords );
     SuperClass::setColors( colors );
@@ -1929,7 +2172,42 @@ void ExternalFaces::calculate_quadratic_hexahedral_faces( const kvs::Unstructure
     kvs::ValueArray<kvs::Real32> normals;
     ::CalculateFaces<T>( volume, BaseClass::colorMap(), face_map, &coords, &colors, &normals );
 
-//    SuperClass::setPolygonType( kvs::PolygonObject::Quadrangle );
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+    SuperClass::setCoords( coords );
+    SuperClass::setColors( colors );
+    SuperClass::setNormals( normals );
+}
+
+template <typename T>
+void ExternalFaces::calculate_prism_faces( const kvs::UnstructuredVolumeObject* volume )
+{
+    ::TriangleFaceMap tri_face_map( volume->numberOfNodes() );
+    ::QuadrangleFaceMap quad_face_map( volume->numberOfNodes() );
+    CreatePrismFaceMap( volume, &tri_face_map, &quad_face_map );
+
+    kvs::ValueArray<kvs::Real32> coords;
+    kvs::ValueArray<kvs::UInt8> colors;
+    kvs::ValueArray<kvs::Real32> normals;
+    ::CalculateFaces<T>( volume, BaseClass::colorMap(), tri_face_map, quad_face_map, &coords, &colors, &normals );
+
+    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
+    SuperClass::setCoords( coords );
+    SuperClass::setColors( colors );
+    SuperClass::setNormals( normals );
+}
+
+template <typename T>
+void ExternalFaces::calculate_pyramid_faces( const kvs::UnstructuredVolumeObject* volume )
+{
+    ::TriangleFaceMap tri_face_map( volume->numberOfNodes() );
+    ::QuadrangleFaceMap quad_face_map( volume->numberOfNodes() );
+    CreatePyramidFaceMap( volume, &tri_face_map, &quad_face_map );
+
+    kvs::ValueArray<kvs::Real32> coords;
+    kvs::ValueArray<kvs::UInt8> colors;
+    kvs::ValueArray<kvs::Real32> normals;
+    ::CalculateFaces<T>( volume, BaseClass::colorMap(), tri_face_map, quad_face_map, &coords, &colors, &normals );
+
     SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
     SuperClass::setCoords( coords );
     SuperClass::setColors( colors );
