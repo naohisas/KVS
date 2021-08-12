@@ -29,11 +29,13 @@ namespace mpi
 class Communicator
 {
 private:
-    MPI_Comm m_handler; ///< communicator handler
-    int m_root; ///< root node
+    MPI_Comm m_handler = MPI_COMM_WORLD; ///< communicator handler
+    int m_root = 0; ///< root node
 
 public:
-    Communicator( const MPI_Comm handler = MPI_COMM_WORLD, const int root = 0 );
+    Communicator() = default;
+    Communicator( const MPI_Comm handler ): m_handler( handler ) {}
+    Communicator( const MPI_Comm handler, const int root ): m_handler( handler ), m_root( root ) {}
 
     const MPI_Comm& handler() const { return m_handler; }
     int root() const { return m_root; }
