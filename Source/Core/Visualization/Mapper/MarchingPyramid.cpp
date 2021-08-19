@@ -13,19 +13,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  Constructs a new MarchingPyramid class.
- */
-/*==========================================================================*/
-MarchingPyramid::MarchingPyramid():
-    kvs::MapperBase(),
-    kvs::PolygonObject(),
-    m_isolevel( 0 ),
-    m_duplication( true )
-{
-}
-
-/*==========================================================================*/
-/**
  *  Constructs and creates a polygon object.
  *  @param volume [in] pointer to the volume object
  *  @param isolevel [in] level of the isosurfaces
@@ -50,15 +37,6 @@ MarchingPyramid::MarchingPyramid(
 
     // Extract the surfaces.
     this->exec( volume );
-}
-
-/*==========================================================================*/
-/**
- *  Destructs.
- */
-/*==========================================================================*/
-MarchingPyramid::~MarchingPyramid()
-{
 }
 
 /*===========================================================================*/
@@ -241,7 +219,7 @@ void MarchingPyramid::extract_surfaces_with_duplication(
     if ( coords.size() > 0 )
     {
         SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
-        SuperClass::setColor( this->calculate_color<T>() );
+        SuperClass::setColor( BaseClass::transferFunction().colorMap().at( m_isolevel ) );
         SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
         SuperClass::setOpacity( 255 );
     }
@@ -293,32 +271,17 @@ const kvs::Vec3 MarchingPyramid::interpolate_vertex(
     const size_t coord0_index = 3 * vertex0;
     const size_t coord1_index = 3 * vertex1;
 
-    const double v0 = static_cast<double>( values[ vertex0 ] );
-    const double v1 = static_cast<double>( values[ vertex1 ] );
-    const float ratio = static_cast<float>( kvs::Math::Abs( ( m_isolevel - v0 ) / ( v1 - v0 ) ) );
+    auto v0 = static_cast<double>( values[ vertex0 ] );
+    auto v1 = static_cast<double>( values[ vertex1 ] );
+    v0 = kvs::Math::Clamp( v0, BaseClass::volume()->minValue(), BaseClass::volume()->maxValue() );
+    v1 = kvs::Math::Clamp( v1, BaseClass::volume()->minValue(), BaseClass::volume()->maxValue() );
+    const auto ratio = kvs::Math::Abs( ( m_isolevel - v0 ) / ( v1 - v0 ) );
 
-    const float x = coords[coord0_index]   + ratio * ( coords[coord1_index]   - coords[coord0_index] );
-    const float y = coords[coord0_index+1] + ratio * ( coords[coord1_index+1] - coords[coord0_index+1] );
-    const float z = coords[coord0_index+2] + ratio * ( coords[coord1_index+2] - coords[coord0_index+2] );
+    const auto x = coords[coord0_index]   + ratio * ( coords[coord1_index]   - coords[coord0_index] );
+    const auto y = coords[coord0_index+1] + ratio * ( coords[coord1_index+1] - coords[coord0_index+1] );
+    const auto z = coords[coord0_index+2] + ratio * ( coords[coord1_index+2] - coords[coord0_index+2] );
 
-    return kvs::Vec3( x, y, z );
-}
-
-/*==========================================================================*/
-/**
- *  Calculates a color of the surfaces from the isolevel.
- *  @return surface color
- */
-/*==========================================================================*/
-template <typename T>
-const kvs::RGBColor MarchingPyramid::calculate_color()
-{
-    const kvs::Real64 min_value = BaseClass::volume()->minValue();
-    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
-    const kvs::Real64 normalize_factor = 255.0 / ( max_value - min_value );
-    const kvs::UInt8  index = static_cast<kvs::UInt8>( normalize_factor * ( m_isolevel - min_value ) );
-
-    return BaseClass::transferFunction().colorMap()[ index ];
+    return { float(x), float(y), float(z) };
 }
 
 /*==========================================================================*/

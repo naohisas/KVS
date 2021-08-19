@@ -14,19 +14,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  @brief  Constructs a new MarchingCubes class.
- */
-/*==========================================================================*/
-MarchingCubes::MarchingCubes():
-    kvs::MapperBase(),
-    kvs::PolygonObject(),
-    m_isolevel( 0 ),
-    m_duplication( true )
-{
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Constructs and creates a polygon object.
  *  @param  volume [in] pointer to the volume object
  *  @param  isolevel [in] level of the isosurfaces
@@ -50,15 +37,6 @@ MarchingCubes::MarchingCubes(
     this->exec( volume );
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Destroys the MarchingCubes class.
- */
-/*==========================================================================*/
-MarchingCubes::~MarchingCubes()
-{
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Executes the mapper process.
@@ -72,15 +50,15 @@ MarchingCubes::SuperClass* MarchingCubes::exec( const kvs::ObjectBase* object )
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
-    const kvs::StructuredVolumeObject* volume = kvs::StructuredVolumeObject::DownCast( object );
+    const auto* volume = kvs::StructuredVolumeObject::DownCast( object );
     if ( !volume )
     {
         BaseClass::setSuccess( false );
-        kvsMessageError("Input object is not volume dat.");
-        return NULL;
+        kvsMessageError("Input object is not structured volume object.");
+        return nullptr;
     }
 
     // In the case of VertexNormal-type, the duplicated vertices are forcibly deleted.
@@ -127,12 +105,12 @@ void MarchingCubes::mapping( const kvs::StructuredVolumeObject* volume )
         SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
     }
 
-    const kvs::Real64 min_value = BaseClass::volume()->minValue();
-    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    const auto min_value = BaseClass::volume()->minValue();
+    const auto max_value = BaseClass::volume()->maxValue();
     if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
-    const std::type_info& type = volume->values().typeInfo()->type();
+    const auto& type = volume->values().typeInfo()->type();
     if (      type == typeid( kvs::Int8   ) ) this->extract_surfaces<kvs::Int8>( volume );
     else if ( type == typeid( kvs::Int16  ) ) this->extract_surfaces<kvs::Int16>( volume );
     else if ( type == typeid( kvs::Int32  ) ) this->extract_surfaces<kvs::Int32>( volume );
@@ -274,20 +252,13 @@ void MarchingCubes::extract_surfaces_with_duplication(
         index += line_size;
     } // end of loop-z
 
-    // Calculate the polygon color for the isolevel.
-    const kvs::RGBColor color = this->calculate_color<T>();
-
     if ( coords.size() > 0 )
     {
         SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
-        SuperClass::setColor( color );
+        SuperClass::setColor( BaseClass::transferFunction().colorMap().at( m_isolevel ) );
         SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
         SuperClass::setOpacity( 255 );
     }
-
-//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/
@@ -328,17 +299,14 @@ void MarchingCubes::extract_surfaces_without_duplication(
         this->calculate_normals_on_vertex( coords, connections, normals );
     }
 
-    // Calculate the polygon color for the isolevel.
-    const kvs::RGBColor color = this->calculate_color<T>();
-
-    SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
-    SuperClass::setConnections( kvs::ValueArray<kvs::UInt32>( connections ) );
-    SuperClass::setColor( color );
-    SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
-    SuperClass::setOpacity( 255 );
-
-//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+    if ( coords.size() > 0 )
+    {
+        SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
+        SuperClass::setConnections( kvs::ValueArray<kvs::UInt32>( connections ) );
+        SuperClass::setColor( BaseClass::transferFunction().colorMap().at( m_isolevel ) );
+        SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
+        SuperClass::setOpacity( 255 );
+    }
 }
 
 /*==========================================================================*/
@@ -381,8 +349,7 @@ const kvs::Vec3 MarchingCubes::interpolate_vertex(
     const kvs::Vec3& vertex1 ) const
 {
     const T* const values = static_cast<const T*>( BaseClass::volume()->values().data() );
-    const kvs::StructuredVolumeObject* volume =
-        reinterpret_cast<const kvs::StructuredVolumeObject*>( BaseClass::volume() );
+    const auto* volume = kvs::StructuredVolumeObject::DownCast( BaseClass::volume() );
 
     const double x0 = vertex0.x();
     const double y0 = vertex0.y();
@@ -395,32 +362,17 @@ const kvs::Vec3 MarchingCubes::interpolate_vertex(
     const size_t v0_index = static_cast<size_t>( x0 + y0 * line_size + z0 * slice_size );
     const size_t v1_index = static_cast<size_t>( x1 + y1 * line_size + z1 * slice_size );
 
-    const double v0 = static_cast<double>( values[ v0_index ] );
-    const double v1 = static_cast<double>( values[ v1_index ] );
-    const float ratio = static_cast<float>( kvs::Math::Abs( ( m_isolevel - v0 ) / ( v1 - v0 ) ) );
+    auto v0 = static_cast<double>( values[ v0_index ] );
+    auto v1 = static_cast<double>( values[ v1_index ] );
+    v0 = kvs::Math::Clamp( v0, BaseClass::volume()->minValue(), BaseClass::volume()->maxValue() );
+    v1 = kvs::Math::Clamp( v1, BaseClass::volume()->minValue(), BaseClass::volume()->maxValue() );
+    const auto ratio = kvs::Math::Abs( ( m_isolevel - v0 ) / ( v1 - v0 ) );
 
-    const float x = ( 1.0f - ratio ) * vertex0.x() + ratio * vertex1.x();
-    const float y = ( 1.0f - ratio ) * vertex0.y() + ratio * vertex1.y();
-    const float z = ( 1.0f - ratio ) * vertex0.z() + ratio * vertex1.z();
+    const auto x = ( 1.0f - ratio ) * vertex0.x() + ratio * vertex1.x();
+    const auto y = ( 1.0f - ratio ) * vertex0.y() + ratio * vertex1.y();
+    const auto z = ( 1.0f - ratio ) * vertex0.z() + ratio * vertex1.z();
 
-    return kvs::Vec3( x, y, z );
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Calculates a color of the surfaces from the isolevel.
- *  @return surface color
- */
-/*==========================================================================*/
-template <typename T>
-const kvs::RGBColor MarchingCubes::calculate_color()
-{
-    const kvs::Real64 min_value = BaseClass::volume()->minValue();
-    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
-    const kvs::Real64 normalize_factor = 255.0 / ( max_value - min_value );
-    const kvs::UInt8  index = static_cast<kvs::UInt8>( normalize_factor * ( m_isolevel - min_value ) );
-
-    return BaseClass::transferFunction().colorMap()[ index ];
+    return { float(x), float(y), float(z) };
 }
 
 /*==========================================================================*/
@@ -436,8 +388,7 @@ void MarchingCubes::calculate_isopoints(
     std::vector<kvs::Real32>& coords )
 {
     const T* const values = static_cast<const T*>( BaseClass::volume()->values().data() );
-    const kvs::StructuredVolumeObject* volume =
-        reinterpret_cast<const kvs::StructuredVolumeObject*>( BaseClass::volume() );
+    const auto* volume = kvs::StructuredVolumeObject::DownCast( BaseClass::volume() );
 
     const kvs::Vec3u resolution( volume->resolution() );
     const kvs::Vec3u ncells( resolution - kvs::Vec3u::Constant(1) );

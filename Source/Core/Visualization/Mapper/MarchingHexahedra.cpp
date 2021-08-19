@@ -13,19 +13,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  Constructs a new MarchingHexahedra class.
- */
-/*==========================================================================*/
-MarchingHexahedra::MarchingHexahedra():
-    kvs::MapperBase(),
-    kvs::PolygonObject(),
-    m_isolevel( 0 ),
-    m_duplication( true )
-{
-}
-
-/*==========================================================================*/
-/**
  *  Constructs and creates a polygon object.
  *  @param volume [in] pointer to the volume object
  *  @param isolevel [in] level of the isosurfaces
@@ -52,15 +39,6 @@ MarchingHexahedra::MarchingHexahedra(
     this->exec( volume );
 }
 
-/*==========================================================================*/
-/**
- *  Destructs.
- */
-/*==========================================================================*/
-MarchingHexahedra::~MarchingHexahedra()
-{
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Executes the mapper process.
@@ -70,11 +48,19 @@ MarchingHexahedra::~MarchingHexahedra()
 /*===========================================================================*/
 kvs::ObjectBase* MarchingHexahedra::exec( const kvs::ObjectBase* object )
 {
-    const kvs::ObjectBase::ObjectType object_type = object->objectType();
-    if ( object_type == kvs::ObjectBase::Geometry )
+    if ( !object )
     {
-        kvsMessageError("Geometry object is not supported.");
-        return NULL;
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input object is NULL.");
+        return nullptr;
+    }
+
+    const auto* volume = kvs::UnstructuredVolumeObject::DownCast( object );
+    if ( !volume )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input object is not unstructured volume object.");
+        return nullptr;
     }
 
     // In the case of VertexNormal-type, the duplicated vertices are forcibly deleted.
@@ -83,17 +69,7 @@ kvs::ObjectBase* MarchingHexahedra::exec( const kvs::ObjectBase* object )
         m_duplication = false;
     }
 
-    const kvs::VolumeObjectBase* volume = reinterpret_cast<const kvs::VolumeObjectBase*>( object );
-    const kvs::VolumeObjectBase::VolumeType volume_type = volume->volumeType();
-    if ( volume_type == kvs::VolumeObjectBase::Unstructured )
-    {
-        this->mapping( reinterpret_cast<const kvs::UnstructuredVolumeObject*>( object ) );
-    }
-    else // volume_type == kvs::VolumeObjectBase::Unstructured
-    {
-        kvsMessageError("Unstructured volume object is not supported.");
-        return NULL;
-    }
+    this->mapping( volume );
 
     return this;
 }
@@ -109,6 +85,7 @@ void MarchingHexahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
     // Check whether the volume can be processed or not.
     if ( volume->veclen() != 1 )
     {
+        BaseClass::setSuccess( false );
         kvsMessageError("The input volume is not a sclar field data.");
         return;
     }
@@ -122,12 +99,12 @@ void MarchingHexahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
     SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
     SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 
-    const kvs::Real64 min_value = BaseClass::volume()->minValue();
-    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    const auto min_value = BaseClass::volume()->minValue();
+    const auto max_value = BaseClass::volume()->maxValue();
     if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
-    const std::type_info& type = volume->values().typeInfo()->type();
+    const auto& type = volume->values().typeInfo()->type();
     if (      type == typeid( kvs::Int8   ) ) this->extract_surfaces<kvs::Int8>( volume );
     else if ( type == typeid( kvs::Int16  ) ) this->extract_surfaces<kvs::Int16>( volume );
     else if ( type == typeid( kvs::Int32  ) ) this->extract_surfaces<kvs::Int32>( volume );
@@ -140,6 +117,7 @@ void MarchingHexahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
     else if ( type == typeid( kvs::Real64 ) ) this->extract_surfaces<kvs::Real64>( volume );
     else
     {
+        BaseClass::setSuccess( false );
         kvsMessageError("Unsupported data type '%s' of the volume.",
                         volume->values().typeInfo()->typeName() );
     }
@@ -241,14 +219,10 @@ void MarchingHexahedra::extract_surfaces_with_duplication(
     if ( coords.size() > 0 )
     {
         SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );
-        SuperClass::setColor( this->calculate_color<T>() );
+        SuperClass::setColor( BaseClass::transferFunction().colorMap().at( m_isolevel ) );
         SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
         SuperClass::setOpacity( 255 );
     }
-
-//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/
@@ -296,32 +270,17 @@ const kvs::Vec3 MarchingHexahedra::interpolate_vertex(
     const size_t coord0_index = 3 * vertex0;
     const size_t coord1_index = 3 * vertex1;
 
-    const double v0 = static_cast<double>( values[ vertex0 ] );
-    const double v1 = static_cast<double>( values[ vertex1 ] );
-    const float ratio = static_cast<float>( kvs::Math::Abs( ( m_isolevel - v0 ) / ( v1 - v0 ) ) );
+    auto v0 = static_cast<double>( values[ vertex0 ] );
+    auto v1 = static_cast<double>( values[ vertex1 ] );
+    v0 = kvs::Math::Clamp( v0, BaseClass::volume()->minValue(), BaseClass::volume()->maxValue() );
+    v1 = kvs::Math::Clamp( v1, BaseClass::volume()->minValue(), BaseClass::volume()->maxValue() );
+    const auto ratio = kvs::Math::Abs( ( m_isolevel - v0 ) / ( v1 - v0 ) );
 
-    const float x = coords[coord0_index]   + ratio * ( coords[coord1_index]   - coords[coord0_index] );
-    const float y = coords[coord0_index+1] + ratio * ( coords[coord1_index+1] - coords[coord0_index+1] );
-    const float z = coords[coord0_index+2] + ratio * ( coords[coord1_index+2] - coords[coord0_index+2] );
+    const auto x = coords[coord0_index]   + ratio * ( coords[coord1_index]   - coords[coord0_index] );
+    const auto y = coords[coord0_index+1] + ratio * ( coords[coord1_index+1] - coords[coord0_index+1] );
+    const auto z = coords[coord0_index+2] + ratio * ( coords[coord1_index+2] - coords[coord0_index+2] );
 
-    return kvs::Vec3( x, y, z );
-}
-
-/*==========================================================================*/
-/**
- *  Calculates a color of the surfaces from the isolevel.
- *  @return surface color
- */
-/*==========================================================================*/
-template <typename T>
-const kvs::RGBColor MarchingHexahedra::calculate_color()
-{
-    const kvs::Real64 min_value = BaseClass::volume()->minValue();
-    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
-    const kvs::Real64 normalize_factor = 255.0 / ( max_value - min_value );
-    const kvs::UInt8  index = static_cast<kvs::UInt8>( normalize_factor * ( m_isolevel - min_value ) );
-
-    return BaseClass::transferFunction().colorMap()[ index ];
+    return { float(x), float(y), float(z) };
 }
 
 } // end of namesapce kvs
