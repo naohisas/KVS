@@ -294,6 +294,10 @@ inline kvs::Real32 ParticleDensityMap::maxValueInGrid(
         smax = kvs::Math::Max( smax, s );
     }
 
+    const auto min_value = kvs::Real32( volume->minValue() );
+    const auto max_value = kvs::Real32( volume->maxValue() );
+    smin = kvs::Math::Clamp( smin, min_value, max_value );
+    smax = kvs::Math::Clamp( smax, min_value, max_value );
     return this->max_density( smin, smax );
 }
 
@@ -318,6 +322,11 @@ inline kvs::Real32 ParticleDensityMap::maxValueInCell(
         smin = kvs::Math::Min( smin, s[i] );
         smax = kvs::Math::Max( smax, s[i] );
     }
+
+    const auto min_value = kvs::Real32( volume->minValue() );
+    const auto max_value = kvs::Real32( volume->maxValue() );
+    smin = kvs::Math::Clamp( smin, min_value, max_value );
+    smax = kvs::Math::Clamp( smax, min_value, max_value );
     return this->max_density( smin, smax );
 }
 
