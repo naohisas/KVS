@@ -29,11 +29,10 @@ MarchingCubes::MarchingCubes(
     const bool duplication,
     const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
-    kvs::PolygonObject(),
+    m_isolevel( isolevel ),
     m_duplication( duplication )
 {
     SuperClass::setNormalType( normal_type );
-    this->setIsolevel( isolevel );
     this->exec( volume );
 }
 
@@ -61,6 +60,13 @@ MarchingCubes::SuperClass* MarchingCubes::exec( const kvs::ObjectBase* object )
         return nullptr;
     }
 
+    if ( volume->veclen() != 1 )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input volume is not sclar field data.");
+        return nullptr;
+    }
+
     // In the case of VertexNormal-type, the duplicated vertices are forcibly deleted.
     if ( SuperClass::normalType() == kvs::PolygonObject::VertexNormal )
     {
@@ -80,14 +86,6 @@ MarchingCubes::SuperClass* MarchingCubes::exec( const kvs::ObjectBase* object )
 /*==========================================================================*/
 void MarchingCubes::mapping( const kvs::StructuredVolumeObject* volume )
 {
-    // Check whether the volume can be processed or not.
-    if ( volume->veclen() != 1 )
-    {
-        BaseClass::setSuccess( false );
-        kvsMessageError("The input volume is not a sclar field data.");
-        return;
-    }
-
     // Attach the pointer to the volume object.
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );

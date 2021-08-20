@@ -29,19 +29,10 @@ MarchingTetrahedra::MarchingTetrahedra(
     const bool duplication,
     const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
-    kvs::PolygonObject(),
     m_isolevel( isolevel ),
     m_duplication( duplication )
 {
     SuperClass::setNormalType( normal_type );
-
-    // In the case of VertexNormal-type, the duplicated vertices are forcibly deleted.
-    if ( normal_type == kvs::PolygonObject::VertexNormal )
-    {
-        m_duplication = false;
-    }
-
-    // Extract the surfaces.
     this->exec( volume );
 }
 
@@ -58,15 +49,35 @@ MarchingTetrahedra::SuperClass* MarchingTetrahedra::exec( const kvs::ObjectBase*
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
-    const kvs::UnstructuredVolumeObject* volume = kvs::UnstructuredVolumeObject::DownCast( object );
+    const auto* volume = kvs::UnstructuredVolumeObject::DownCast( object );
     if ( !volume )
     {
         BaseClass::setSuccess( false );
-        kvsMessageError("Input object is not volume dat.");
-        return NULL;
+        kvsMessageError("Input object is not unstructured volume object.");
+        return nullptr;
+    }
+
+    if ( volume->veclen() != 1 )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input volume is not sclar field data.");
+        return nullptr;
+    }
+
+    if ( volume->cellType() != kvs::UnstructuredVolumeObject::Tetrahedra )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input volume is not tetrahedra-cell data.");
+        return nullptr;
+    }
+
+    // In the case of VertexNormal-type, the duplicated vertices are forcibly deleted.
+    if ( SuperClass::normalType() == kvs::PolygonObject::VertexNormal )
+    {
+        m_duplication = false;
     }
 
     this->mapping( volume );
@@ -82,21 +93,6 @@ MarchingTetrahedra::SuperClass* MarchingTetrahedra::exec( const kvs::ObjectBase*
 /*==========================================================================*/
 void MarchingTetrahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
 {
-    // Check whether the volume can be processed or not.
-    if ( volume->veclen() != 1 )
-    {
-        BaseClass::setSuccess( false );
-        kvsMessageError("Input volume is not sclar field data.");
-        return;
-    }
-
-    if ( volume->cellType() != kvs::UnstructuredVolumeObject::Tetrahedra )
-    {
-        BaseClass::setSuccess( false );
-        kvsMessageError("Input volume is not tetrahedra cell data.");
-        return;
-    }
-
     // Attach the pointer to the volume object.
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );
@@ -116,12 +112,12 @@ void MarchingTetrahedra::mapping( const kvs::UnstructuredVolumeObject* volume )
     }
 #endif
 
-    const kvs::Real64 min_value = BaseClass::volume()->minValue();
-    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    const auto min_value = BaseClass::volume()->minValue();
+    const auto max_value = BaseClass::volume()->maxValue();
     if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
-    const std::type_info& type = volume->values().typeInfo()->type();
+    const auto& type = volume->values().typeInfo()->type();
     if (      type == typeid( kvs::Int8   ) ) this->extract_surfaces<kvs::Int8>( volume );
     else if ( type == typeid( kvs::Int16  ) ) this->extract_surfaces<kvs::Int16>( volume );
     else if ( type == typeid( kvs::Int32  ) ) this->extract_surfaces<kvs::Int32>( volume );
@@ -238,10 +234,6 @@ void MarchingTetrahedra::extract_surfaces_with_duplication(
         SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
         SuperClass::setOpacity( 255 );
     }
-
-//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/

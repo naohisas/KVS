@@ -28,14 +28,10 @@ MarchingPrism::MarchingPrism(
     const bool duplication,
     const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
-    kvs::PolygonObject(),
+    m_isolevel( isolevel ),
     m_duplication( duplication )
 {
     SuperClass::setNormalType( normal_type );
-
-    this->setIsolevel( isolevel );
-
-    // Extract the surfaces.
     this->exec( volume );
 }
 
@@ -48,11 +44,33 @@ MarchingPrism::MarchingPrism(
 /*===========================================================================*/
 kvs::ObjectBase* MarchingPrism::exec( const kvs::ObjectBase* object )
 {
-    const kvs::ObjectBase::ObjectType object_type = object->objectType();
-    if ( object_type == kvs::ObjectBase::Geometry )
+    if ( !object )
     {
-        kvsMessageError("Geometry object is not supported.");
-        return NULL;
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input object is NULL.");
+        return nullptr;
+    }
+
+    const auto* volume = kvs::UnstructuredVolumeObject::DownCast( object );
+    if ( !volume )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input object is not unstructured volume object.");
+        return nullptr;
+    }
+
+    if ( volume->veclen() != 1 )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input volume is not sclar field data.");
+        return nullptr;
+    }
+
+    if ( volume->cellType() != kvs::UnstructuredVolumeObject::Prism )
+    {
+        BaseClass::setSuccess( false );
+        kvsMessageError("Input volume is not prism-cell data.");
+        return nullptr;
     }
 
     // In the case of VertexNormal-type, the duplicated vertices are forcibly deleted.
@@ -61,17 +79,7 @@ kvs::ObjectBase* MarchingPrism::exec( const kvs::ObjectBase* object )
         m_duplication = false;
     }
 
-    const kvs::VolumeObjectBase* volume = reinterpret_cast<const kvs::VolumeObjectBase*>( object );
-    const kvs::VolumeObjectBase::VolumeType volume_type = volume->volumeType();
-    if ( volume_type == kvs::VolumeObjectBase::Unstructured )
-    {
-        this->mapping( reinterpret_cast<const kvs::UnstructuredVolumeObject*>( object ) );
-    }
-    else // volume_type != kvs::VolumeObjectBase::Unstructured
-    {
-        kvsMessageError("Input object is not an unstructured volume object.");
-        return NULL;
-    }
+    this->mapping( volume );
 
     return this;
 }
@@ -84,13 +92,6 @@ kvs::ObjectBase* MarchingPrism::exec( const kvs::ObjectBase* object )
 /*==========================================================================*/
 void MarchingPrism::mapping( const kvs::UnstructuredVolumeObject* volume )
 {
-    // Check whether the volume can be processed or not.
-    if ( volume->veclen() != 1 )
-    {
-        kvsMessageError("Input volume is not a sclar field data.");
-        return;
-    }
-
     // Attach the pointer to the volume object.
     BaseClass::attachVolume( volume );
     BaseClass::setRange( volume );
@@ -100,12 +101,12 @@ void MarchingPrism::mapping( const kvs::UnstructuredVolumeObject* volume )
     SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
     SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 
-    const kvs::Real64 min_value = BaseClass::volume()->minValue();
-    const kvs::Real64 max_value = BaseClass::volume()->maxValue();
+    const auto min_value = BaseClass::volume()->minValue();
+    const auto max_value = BaseClass::volume()->maxValue();
     if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
-    const std::type_info& type = volume->values().typeInfo()->type();
+    const auto& type = volume->values().typeInfo()->type();
     if (      type == typeid( kvs::Int8   ) ) this->extract_surfaces<kvs::Int8>( volume );
     else if ( type == typeid( kvs::Int16  ) ) this->extract_surfaces<kvs::Int16>( volume );
     else if ( type == typeid( kvs::Int32  ) ) this->extract_surfaces<kvs::Int32>( volume );
@@ -118,6 +119,7 @@ void MarchingPrism::mapping( const kvs::UnstructuredVolumeObject* volume )
     else if ( type == typeid( kvs::Real64 ) ) this->extract_surfaces<kvs::Real64>( volume );
     else
     {
+        BaseClass::setSuccess( false );
         kvsMessageError("Unsupported data type '%s' of the volume.",
                         volume->values().typeInfo()->typeName() );
     }
@@ -220,10 +222,6 @@ void MarchingPrism::extract_surfaces_with_duplication(
         SuperClass::setNormals( kvs::ValueArray<kvs::Real32>( normals ) );
         SuperClass::setOpacity( 255 );
     }
-
-//    SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-//    SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
-//    SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
 }
 
 /*==========================================================================*/
