@@ -24,6 +24,7 @@ uniform ShadingParameter shading;
 void main()
 {
     vec3 color = gl_Color.rgb;
+    float alpha = gl_Color.a;
 
     // Light position in camera coordinate.
     vec3 light_position = gl_LightSource[0].position.xyz;
@@ -48,5 +49,5 @@ void main()
     vec3 shaded_color = ShadingNone( shading, color );
 #endif
 
-    gl_FragColor = vec4( shaded_color, 1.0 );
+    gl_FragColor = vec4( shaded_color, alpha );
 }

@@ -37,6 +37,7 @@ public:
 
 public:
     StochasticUniformGridRenderer();
+    void setEdgeFactor( const float factor );
     void setSamplingStep( const float step );
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
     const kvs::TransferFunction& transferFunction() const;
@@ -61,6 +62,7 @@ public:
 private:
     // Variable
     float m_step = 0.5f; ///< sampling step
+    float m_edge_factor = 0.0f; ///< edge enhancement factor
 
     // Transfer function
     bool m_transfer_function_changed = true; ///< flag for changin transfer function
@@ -89,6 +91,7 @@ public:
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
+    void setEdgeFactor( const float factor ) { m_edge_factor = factor; }
     void setSamplingStep( const float step ) { m_step = step; }
     void setTransferFunction( const kvs::TransferFunction& transfer_function )
     {

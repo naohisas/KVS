@@ -34,6 +34,7 @@ public:
 public:
     StochasticPolygonRenderer();
 
+    void setEdgeFactor( const float factor );
     void setDepthOffset( const kvs::Vec2& offset );
     void setDepthOffset( const float factor, const float units = 0.0f );
 
@@ -65,12 +66,13 @@ public:
     };
 
 private:
+    float m_edge_factor = 0.0f; ///< edge enhancement factor
     kvs::Vec2 m_depth_offset{ 0.0f, 0.0f }; ///< depth offset {factor, units}
-    RenderPass m_render_pass; ///< render pass
-    BufferObject m_buffer_object; ///< buffer object
+    BufferObject m_buffer_object{}; ///< buffer object
+    RenderPass m_render_pass{ m_buffer_object, this }; ///< render pass
 
 public:
-    Engine(): m_render_pass( m_buffer_object, this ) {}
+    Engine() = default;
     virtual ~Engine() { this->release(); }
     void release() { m_render_pass.release(); m_buffer_object.release(); }
     void create( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
@@ -78,6 +80,7 @@ public:
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
+    void setEdgeFactor( const float factor ) { m_edge_factor = factor; }
     void setDepthOffset( const kvs::Vec2& offset ) { m_depth_offset = offset; }
     void setDepthOffset( const float factor, const float units = 0.0f ) { m_depth_offset = kvs::Vec2( factor, units ); }
 

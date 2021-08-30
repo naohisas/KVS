@@ -25,6 +25,9 @@
 + kvs::ScreenBase::setVisible
 + kvs::ObjectBase::setVisible
 + kvs::ObjectBase::isVisible
++ kvs::StochasticPolygonRenderer::setEdgeFactor
++ kvs::StochasticTetrahedraRenderer::setEdgeFactor
++ kvs::StochasticUniformGridRenderer::setEdgeFactor
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

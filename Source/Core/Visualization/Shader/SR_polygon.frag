@@ -20,6 +20,7 @@ uniform sampler2D random_texture; // random texture to generate random number
 uniform float random_texture_size_inv; // reciprocal value of the random texture size
 uniform vec2 random_offset; // offset values for accessing to the random texture
 uniform ShadingParameter shading; // shading parameters
+uniform float edge_factor; // edge enhacement factor
 
 
 /*===========================================================================*/
@@ -46,6 +47,14 @@ void main()
     vec3 color = gl_Color.rgb;
     float alpha = gl_Color.a;
     if ( alpha == 0.0 ) { discard; return; }
+
+    // Edge enhancement
+    if ( edge_factor > 0.0 )
+    {
+        vec3 n = normalize( normal );
+        vec3 v = normalize( -position );
+        alpha = min( 1.0, alpha / pow( abs( dot( n, v ) ), edge_factor ) );
+    }
 
     // Stochastic color assignment.
     float R = LookupTexture2D( random_texture, RandomIndex( gl_FragCoord.xy ) ).a;

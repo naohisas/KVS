@@ -53,6 +53,11 @@ StochasticUniformGridRenderer::StochasticUniformGridRenderer():
 {
 }
 
+void StochasticUniformGridRenderer::setEdgeFactor( const float factor )
+{
+    static_cast<Engine&>( engine() ).setEdgeFactor( factor );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Sets a sampling step.
@@ -287,6 +292,7 @@ void StochasticUniformGridRenderer::Engine::setup_shader_program(
         m_render_pass.setup( shading_model, object, camera, light );
         m_render_pass.shaderProgram().bind();
         m_render_pass.shaderProgram().setUniform( "random_texture_size_inv", 1.0f / randomTextureSize() );
+        m_render_pass.shaderProgram().setUniform( "edge_factor", m_edge_factor );
         m_render_pass.shaderProgram().unbind();
     }
 

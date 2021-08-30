@@ -44,6 +44,7 @@ public:
     StochasticTetrahedraRenderer();
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
     void setSamplingStep( const float sampling_step );
+    void setEdgeFactor( const float factor );
     const kvs::TransferFunction& transferFunction() const;
     float samplingStep() const;
 };
@@ -161,6 +162,7 @@ private:
     DecompositionBuffer m_decomposition_buffer{}; ///< decomposition buffer
     BufferObject m_buffer_object{ this }; ///< buffer object
     RenderPass m_render_pass{ m_buffer_object }; ///< render pass
+    kvs::Real32 m_edge_factor = 0.0f; ///< edge enhancement factor
 
 public:
     Engine() = default;
@@ -171,6 +173,7 @@ public:
     void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
     void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
+    void setEdgeFactor( const float factor ) { m_edge_factor = factor; }
     void setSamplingStep( const float step ) { m_render_pass.setSamplingStep( step ); }
     void setTransferFunction( const kvs::TransferFunction& transfer_function )
     {

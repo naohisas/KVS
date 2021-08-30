@@ -231,6 +231,17 @@ void StochasticTetrahedraRenderer::setSamplingStep( const float sampling_step )
     static_cast<Engine&>( engine() ).setSamplingStep( sampling_step );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets edge factor.
+ *  @param  factor [in] edge factor
+ */
+/*===========================================================================*/
+void StochasticTetrahedraRenderer::setEdgeFactor( const float factor )
+{
+    static_cast<Engine&>( engine() ).setEdgeFactor( factor );
+}
+
 const kvs::TransferFunction& StochasticTetrahedraRenderer::transferFunction() const
 {
     return static_cast<const Engine&>( engine() ).transferFunction();
@@ -240,7 +251,6 @@ float StochasticTetrahedraRenderer::samplingStep() const
 {
     return static_cast<const Engine&>( engine() ).samplingStep();
 }
-
 
 void StochasticTetrahedraRenderer::Engine::TransferFunctionBuffer::create(
     const kvs::TransferFunction& tfunc )
@@ -536,6 +546,7 @@ void StochasticTetrahedraRenderer::Engine::setup(
     shader_program.bind();
     shader_program.setUniform( "maxT", m_preintegration_buffer.Tmax() );
     shader_program.setUniform( "delta", 0.5f / m_transfer_function.resolution() );
+    shader_program.setUniform( "edge_factor", m_edge_factor );
     shader_program.unbind();
 }
 

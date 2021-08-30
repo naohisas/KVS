@@ -69,6 +69,17 @@ StochasticPolygonRenderer::StochasticPolygonRenderer():
 
 /*===========================================================================*/
 /**
+ *  @brief  Sets edge factor.
+ *  @param  factor [in] edge factor
+ */
+/*===========================================================================*/
+void StochasticPolygonRenderer::setEdgeFactor( const float factor )
+{
+    static_cast<Engine&>( engine() ).setEdgeFactor( factor );
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Sets depth offset.
  *  @param  offset [in] depth offset
  */
@@ -202,6 +213,10 @@ void StochasticPolygonRenderer::Engine::setup(
     kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
     m_render_pass.setup( BaseClass::shader() );
+
+    m_render_pass.shaderProgram().bind();
+    m_render_pass.shaderProgram().setUniform( "edge_factor", m_edge_factor );
+    m_render_pass.shaderProgram().unbind();
 }
 
 /*===========================================================================*/
