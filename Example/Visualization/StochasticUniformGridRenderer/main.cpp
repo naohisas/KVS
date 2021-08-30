@@ -33,21 +33,16 @@ int main( int argc, char** argv )
     // Read volume data from the specified data file. If the data file is not
     // specified, scalar hydrogen volume data will be created by using
     // kvs::HydrogenVolumeData class.
-    kvs::StructuredVolumeObject* object = NULL;
-    if ( argc > 1 )
+    auto* object = [&]() -> kvs::StructuredVolumeObject*
     {
-        object = new kvs::StructuredVolumeImporter( std::string( argv[1] ) );
-        object->print( std::cout );
-    }
-    else
-    {
-        object = new kvs::HydrogenVolumeData( kvs::Vec3u::Constant( 64 ) );
-        object->print( std::cout );
-    }
+        if ( argc > 1 ) return new kvs::StructuredVolumeImporter( argv[1] );
+        else return new kvs::HydrogenVolumeData( { 64, 64, 64 } );
+    }();
+    object->print( std::cout );
 
     // Parameters for the ray casting renderer.
-    kvs::Real32 sampling_step = 0.5f;
-    kvs::TransferFunction transfer_function( 256 );
+    auto sampling_step = 0.5f;
+    auto transfer_function = kvs::TransferFunction( 256 );
 
     auto* renderer = new kvs::StochasticUniformGridRenderer();
     renderer->setRepetitionLevel( 10 );
