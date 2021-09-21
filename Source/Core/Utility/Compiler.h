@@ -9,16 +9,38 @@
 #define KVS_COMPILER_NUMBER_TO_STRING( x ) KVS_COMPILER_NUMBER( x )
 
 
+#if defined ( __GNUC__ )
+#define KVS_COMPILER_GCC
+
+/*----------------------------------------------------------------------------
+ * Fujitsu C/C++ compiler
+ *----------------------------------------------------------------------------*/
+#if defined ( __FCC_version__ )
+#define KVS_COMPILER_FCC
+#define KVS_COMPILER_NAME "Fujitsu C/C++"
+#define KVS_COMPILER_VERSION __FCC_version__
+#define KVS_COMPILER_VERSION_MAJOR __FCC_major__
+#define KVS_COMPILER_VERSION_MINOR __FCC_minor__
+#define KVS_COMPILER_VERSION_PATCH __FCC_patchlevel__
+
+#elif defined ( __FCC_VERSION )
+#define KVS_COMPILER_FCC
+#define KVS_COMPILER_NAME "Fujitsu C/C++"
+#define KVS_COMPILER_VERSION KVS_COMPILER_NUMBER_TO_STRING( __FCC_VERSION )
+#define KVS_COMPILER_VERSION_UNKNOWN
+#define KVS_COMPILER_VERSION_MAJOR 0
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
+
 /*----------------------------------------------------------------------------
  * GNU C/C++ compiler
  *----------------------------------------------------------------------------*/
-#if defined ( __GNUC__ )
-#define KVS_COMPILER_GCC
+#else
 #define KVS_COMPILER_NAME "GNU C/C++"
 #define KVS_COMPILER_VERSION_MAJOR __GNUC__
 #define KVS_COMPILER_VERSION_MINOR __GNUC_MINOR__
 #define KVS_COMPILER_VERSION_PATCH __GNUC_PATCHLEVEL__
-
+#endif
 
 /*----------------------------------------------------------------------------
  * Microsoft Visual C/C++ compiler
@@ -215,27 +237,6 @@
 #define KVS_COMPILER_VERSION_MINOR 0
 #define KVS_COMPILER_VERSION_PATCH 0
 #endif
-
-
-/*----------------------------------------------------------------------------
- * Fujitsu C/C++ compiler
- *----------------------------------------------------------------------------*/
-#elif defined ( __FCC_version__ )
-#define KVS_COMPILER_FCC
-#define KVS_COMPILER_NAME "Fujitsu C/C++"
-#define KVS_COMPILER_VERSION __FCC_version__
-#define KVS_COMPILER_VERSION_MAJOR __FCC_major__
-#define KVS_COMPILER_VERSION_MINOR __FCC_minor__
-#define KVS_COMPILER_VERSION_PATCH __FCC_patchlevel__
-
-#elif defined ( __FCC_VERSION )
-#define KVS_COMPILER_FCC
-#define KVS_COMPILER_NAME "Fujitsu C/C++"
-#define KVS_COMPILER_VERSION KVS_COMPILER_NUMBER_TO_STRING( __FCC_VERSION )
-#define KVS_COMPILER_VERSION_UNKNOWN
-#define KVS_COMPILER_VERSION_MAJOR 0
-#define KVS_COMPILER_VERSION_MINOR 0
-#define KVS_COMPILER_VERSION_PATCH 0
 
 
 /*----------------------------------------------------------------------------
