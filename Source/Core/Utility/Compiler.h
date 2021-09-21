@@ -8,412 +8,235 @@
 #define KVS_COMPILER_NUMBER( x )           # x
 #define KVS_COMPILER_NUMBER_TO_STRING( x ) KVS_COMPILER_NUMBER( x )
 
+
 /*----------------------------------------------------------------------------
  * GNU C/C++ compiler
  *----------------------------------------------------------------------------*/
 #if defined ( __GNUC__ )
 #define KVS_COMPILER_GCC
-
 #define KVS_COMPILER_NAME "GNU C/C++"
-#define KVS_COMPILER_VERSION                            \
-    KVS_COMPILER_NUMBER_TO_STRING( __GNUC__ ) "."       \
-    KVS_COMPILER_NUMBER_TO_STRING( __GNUC_MINOR__ ) "." \
-    KVS_COMPILER_NUMBER_TO_STRING( __GNUC_PATCHLEVEL__ )
+#define KVS_COMPILER_VERSION_MAJOR __GNUC__
+#define KVS_COMPILER_VERSION_MINOR __GNUC_MINOR__
+#define KVS_COMPILER_VERSION_PATCH __GNUC_PATCHLEVEL__
 
-#define KVS_COMPILER_VERSION_IS( major, minor ) \
-    ( __GNUC__ == ( major ) && __GNUC_MINOR__ == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( __GNUC__ < ( major ) || ( __GNUC__ == ( major ) && __GNUC_MINOR__ < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( __GNUC__ < ( major ) || ( __GNUC__ == ( major ) && __GNUC_MINOR__ <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( __GNUC__ > ( major ) || ( __GNUC__ == ( major ) && __GNUC_MINOR__ > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( __GNUC__ > ( major ) || ( __GNUC__ == ( major ) && __GNUC_MINOR__ >= ( minor ) ) )
 
 /*----------------------------------------------------------------------------
  * Microsoft Visual C/C++ compiler
  *----------------------------------------------------------------------------*/
 #elif defined ( _MSC_VER )
 #define KVS_COMPILER_VC
-
 #define KVS_COMPILER_NAME "Microsoft Visual C/C++"
 
 // Visual Studio 6.0
 #if   ( _MSC_VER == 1200 )
-#define KVS_COMPILER_VERSION "6.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 6 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 6 < ( major ) || ( 6 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 6 < ( major ) || ( 6 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 6 > ( major ) || ( 6 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 6 > ( major ) || ( 6 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 6
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2002
 #elif ( _MSC_VER == 1300 )
-#define KVS_COMPILER_VERSION "7.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 7 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 7 < ( major ) || ( 7 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 7 < ( major ) || ( 7 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 7 > ( major ) || ( 7 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 7 > ( major ) || ( 7 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 7
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2003
 #elif ( _MSC_VER == 1310 )
-#define KVS_COMPILER_VERSION "7.1"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 7 == ( major ) && 1 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 7 < ( major ) || ( 7 == ( major ) && 1 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 7 < ( major ) || ( 7 == ( major ) && 1 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 7 > ( major ) || ( 7 == ( major ) && 1 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 7 > ( major ) || ( 7 == ( major ) && 1 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 7
+#define KVS_COMPILER_VERSION_MINOR 1
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2005
 #elif ( _MSC_VER == 1400 )
-#define KVS_COMPILER_VERSION "8.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 8 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 8 < ( major ) || ( 8 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 8 < ( major ) || ( 8 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 8 > ( major ) || ( 8 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 8 > ( major ) || ( 8 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 8
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2008
 #elif ( _MSC_VER == 1500 )
-#define KVS_COMPILER_VERSION "9.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 9 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 9 < ( major ) || ( 9 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 9 < ( major ) || ( 9 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 9 > ( major ) || ( 9 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 9 > ( major ) || ( 9 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 9
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2010
 #elif ( _MSC_VER == 1600 )
-#define KVS_COMPILER_VERSION "10.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 10 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 10 < ( major ) || ( 10 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 10 < ( major ) || ( 10 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 10 > ( major ) || ( 10 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 10 > ( major ) || ( 10 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 10
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2012
 #elif ( _MSC_VER == 1700 )
-#define KVS_COMPILER_VERSION "11.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 11 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 11 < ( major ) || ( 11 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 11 < ( major ) || ( 11 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 11 > ( major ) || ( 11 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 11 > ( major ) || ( 11 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 11
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2013
 #elif ( _MSC_VER == 1800 )
-#define KVS_COMPILER_VERSION "12.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 12 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 12 < ( major ) || ( 12 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 12 < ( major ) || ( 12 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 12 > ( major ) || ( 12 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 12 > ( major ) || ( 12 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 12
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2015
 #elif ( _MSC_VER == 1900 )
-#define KVS_COMPILER_VERSION "14.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 14 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 14 < ( major ) || ( 14 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 14 < ( major ) || ( 14 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 14 > ( major ) || ( 14 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 14 > ( major ) || ( 14 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 14
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2017
 #elif ( _MSC_VER == 1910 )
-#define KVS_COMPILER_VERSION "15.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 15
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2017 Update 3
 #elif ( _MSC_VER == 1911 )
-#define KVS_COMPILER_VERSION "15.3"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 3 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 3 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 3 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 3 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 3 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 15
+#define KVS_COMPILER_VERSION_MINOR 3
+#define KVS_COMPILER_VERSION_PATCH 3
 
 // Visual Studio 2017 Update 5
 #elif ( _MSC_VER == 1912 )
-#define KVS_COMPILER_VERSION "15.5"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 5 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 5 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 5 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 5 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 5 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 15
+#define KVS_COMPILER_VERSION_MINOR 5
+#define KVS_COMPILER_VERSION_PATCH 2
 
 // Visual Studio 2017 Update 6
 #elif ( _MSC_VER == 1913 )
-#define KVS_COMPILER_VERSION "15.6"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 6 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 6 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 6 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 6 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 5 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 15
+#define KVS_COMPILER_VERSION_MINOR 6
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2017 Update 7
 #elif ( _MSC_VER == 1914 )
-#define KVS_COMPILER_VERSION "15.7"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 7 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 7 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 7 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 7 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 7 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 15
+#define KVS_COMPILER_VERSION_MINOR 7
+#define KVS_COMPILER_VERSION_PATCH 1
 
 // Visual Studio 2017 Update 8
 #elif ( _MSC_VER == 1915 )
-#define KVS_COMPILER_VERSION "15.8"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 8 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 8 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 8 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 8 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 8 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 15
+#define KVS_COMPILER_VERSION_MINOR 8
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2017 Update 9
 #elif ( _MSC_VER == 1916 )
-#define KVS_COMPILER_VERSION "15.9"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 15 == ( major ) && 9 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 9 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 15 < ( major ) || ( 15 == ( major ) && 9 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 9 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 15 > ( major ) || ( 15 == ( major ) && 9 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 15
+#define KVS_COMPILER_VERSION_MINOR 9
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2019
 #elif ( _MSC_VER == 1920 )
-#define KVS_COMPILER_VERSION "16.0"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 0 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 0 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 0 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 0 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 0 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2019 Update 1
 #elif ( _MSC_VER == 1921 )
-#define KVS_COMPILER_VERSION "16.1"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 1 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 1 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 1 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 1 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 1 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 1
+#define KVS_COMPILER_VERSION_PATCH 2
 
 // Visual Studio 2019 Update 2
 #elif ( _MSC_VER == 1922 )
-#define KVS_COMPILER_VERSION "16.2"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 2 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 2 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 2 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 2 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 2 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 2
+#define KVS_COMPILER_VERSION_PATCH 3
 
 // Visual Studio 2019 Update 3
 #elif ( _MSC_VER == 1923 )
-#define KVS_COMPILER_VERSION "16.3"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 3 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 3 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 3 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 3 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 3 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 3
+#define KVS_COMPILER_VERSION_PATCH 2
 
 // Visual Studio 2019 Update 4
 #elif ( _MSC_VER == 1924 )
-#define KVS_COMPILER_VERSION "16.4"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 4 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 4 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 4 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 4 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 4 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 4
+#define KVS_COMPILER_VERSION_PATCH 0
 
 // Visual Studio 2019 Update 5
 #elif ( _MSC_VER == 1925 )
-#define KVS_COMPILER_VERSION "16.5"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 5 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 5 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 5 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 5 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 5 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 5
+#define KVS_COMPILER_VERSION_PATCH 1
 
 // Visual Studio 2019 Update 6
 #elif ( _MSC_VER == 1926 )
-#define KVS_COMPILER_VERSION "16.6"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 6 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 6 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 6 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 6 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 6 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 6
+#define KVS_COMPILER_VERSION_PATCH 2
 
 // Visual Studio 2019 Update 7
 #elif ( _MSC_VER == 1927 )
-#define KVS_COMPILER_VERSION "16.7"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 7 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 7 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 7 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 7 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 7 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 7
+#define KVS_COMPILER_VERSION_PATCH 0
 
-#elif ( _MSC_VER == 1928 )
 // Visual Studio 2019 Update 8
-#if ( _MSC_FULL_VER == 192829333 ) || ( _MSC_FULL_VER == 192829334 )
-#define KVS_COMPILER_VERSION "16.8"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 8 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 8 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 8 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 8 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 8 >= ( minor ) ) )
+#elif ( _MSC_VER == 1928 )
+#if ( _MSC_FULL_VER < 192829333 )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 8
+#define KVS_COMPILER_VERSION_PATCH 0
 
-// Visual Studio 2019 Update 9
+#elif ( _MSC_FULL_VER < 192829334 )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 8
+#define KVS_COMPILER_VERSION_PATCH 1
+
+#elif ( _MSC_FULL_VER < 192829913 )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 8
+#define KVS_COMPILER_VERSION_PATCH 2
+
+// Visual Studio 2019 Update 9 (_MSC_FULL_VER == 192829913)
 #else
-#define KVS_COMPILER_VERSION "16.9"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 9 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 9 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 9 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 9 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 9 >= ( minor ) ) )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 9
+#define KVS_COMPILER_VERSION_PATCH 2
 #endif
 
 // Visual Studio 2019 Update 10
 #elif ( _MSC_VER == 1929 )
-#define KVS_COMPILER_VERSION "16.10"
-#define KVS_COMPILER_VERSION_IS( major, minor ) ( 16 == ( major ) && 10 == ( minor ) )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 10 < ( minor ) ) )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor ) \
-    ( 16 < ( major ) || ( 16 == ( major ) && 10 <= ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 10 > ( minor ) ) )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor ) \
-    ( 16 > ( major ) || ( 16 == ( major ) && 10 >= ( minor ) ) )
+#if ( _MSC_FULL_VER < 192930133 )
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 10
+#define KVS_COMPILER_VERSION_PATCH 0
+
+// Visual Studio 2019 Update 11 (_MSC_FULL_VER == 192930133)
+#else
+#define KVS_COMPILER_VERSION_MAJOR 16
+#define KVS_COMPILER_VERSION_MINOR 11
+#define KVS_COMPILER_VERSION_PATCH 2
+#endif
 
 #else
-#define KVS_COMPILER_VERSION "unknown"
-#define KVS_COMPILER_VERSION_IS( major, minor )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor )
+#define KVS_COMPILER_VERSION_UNKNOWN
+#define KVS_COMPILER_VERSION_MAJOR 0
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
 #endif
+
 
 /*----------------------------------------------------------------------------
  * Fujitsu C/C++ compiler
  *----------------------------------------------------------------------------*/
+#elif defined ( __FCC_version__ )
+#define KVS_COMPILER_FCC
+#define KVS_COMPILER_NAME "Fujitsu C/C++"
+#define KVS_COMPILER_VERSION __FCC_version__
+#define KVS_COMPILER_VERSION_MAJOR __FCC_major__
+#define KVS_COMPILER_VERSION_MINOR __FCC_minor__
+#define KVS_COMPILER_VERSION_PATCH __FCC_patchlevel__
+
 #elif defined ( __FCC_VERSION )
 #define KVS_COMPILER_FCC
-
 #define KVS_COMPILER_NAME "Fujitsu C/C++"
 #define KVS_COMPILER_VERSION KVS_COMPILER_NUMBER_TO_STRING( __FCC_VERSION )
-#define KVS_COMPILER_VERSION_IS( major, minor )
-#define KVS_COMPILER_VERSION_LESS_THAN( major, minor )
-#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor )
-#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor )
-#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor )
+#define KVS_COMPILER_VERSION_UNKNOWN
+#define KVS_COMPILER_VERSION_MAJOR 0
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
+
 
 /*----------------------------------------------------------------------------
  * Unknown compiler
@@ -421,6 +244,53 @@
 #else
 #define KVS_COMPILER_UNKNOWN
 #define KVS_COMPILER_NAME "Unknown"
+#define KVS_COMPILER_VERSION_UNKNOWN
+#define KVS_COMPILER_VERSION_MAJOR 0
+#define KVS_COMPILER_VERSION_MINOR 0
+#define KVS_COMPILER_VERSION_PATCH 0
+#endif
+
+
+/*----------------------------------------------------------------------------
+ * Compiler version string
+ *----------------------------------------------------------------------------*/
+#if !defined( KVS_COMPILER_VERSION )
+#define KVS_COMPILER_VERSION                                            \
+    KVS_COMPILER_NUMBER_TO_STRING( KVS_COMPILER_VERSION_MAJOR ) "."     \
+    KVS_COMPILER_NUMBER_TO_STRING( KVS_COMPILER_VERSION_MINOR ) "."     \
+    KVS_COMPILER_NUMBER_TO_STRING( KVS_COMPILER_VERSION_PATCH )
+#endif
+
+
+/*----------------------------------------------------------------------------
+ * Compiler version comparison functions
+ *----------------------------------------------------------------------------*/
+#if defined( KVS_COMPILER_VERSION_UNKNOWN )
+#define KVS_COMPILER_VERSION_IS( major, minor )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor )
+#else
+#define KVS_COMPILER_VERSION_IS( major, minor )                         \
+    ( KVS_COMPILER_VERSION_MAJOR == ( major ) &&                        \
+      KVS_COMPILER_VERSION_MINOR == ( minor ) )
+#define KVS_COMPILER_VERSION_LESS_THAN( major, minor )                  \
+    ( KVS_COMPILER_VERSION_MAJOR < ( major ) ||                         \
+      ( KVS_COMPILER_VERSION_MAJOR == ( major ) &&                      \
+        KVS_COMPILER_VERSION_MINOR < ( minor ) ) )
+#define KVS_COMPILER_VERSION_LESS_OR_EQUAL( major, minor )              \
+    ( KVS_COMPILER_VERSION_MAJOR < ( major ) ||                         \
+      ( KVS_COMPILER_VERSION_MAJOR == ( major ) &&                      \
+        KVS_COMPILER_VERSION_MINOR <= ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_THAN( major, minor )               \
+    ( KVS_COMPILER_VERSION_MAJOR > ( major ) ||                         \
+      ( KVS_COMPILER_VERSION_MAJOR == ( major ) &&                      \
+        KVS_COMPILER_VERSION_MINOR > ( minor ) ) )
+#define KVS_COMPILER_VERSION_GREATER_OR_EQUAL( major, minor )           \
+    ( KVS_COMPILER_VERSION_MAJOR > ( major ) ||                         \
+      ( KVS_COMPILER_VERSION_MAJOR == ( major ) &&                      \
+        KVS_COMPILER_VERSION_MINOR >= ( minor ) ) )
 #endif
 
 
