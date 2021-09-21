@@ -293,8 +293,8 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
   ifdef KVS_OPENMP_LINK_LIBRARY
     OPENMP_LINK_LIBRARY += $(KVS_OPENMP_LINK_LIBRARY)
   else
-    # For Fujitsu C++ compiler (FCCpx/mpiFCCpx)
-    ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+    # For Fujitsu C++ compiler (FCC/mpiFCC/FCCpx/mpiFCCpx)
+    ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCC FCCpx mpiFCC mpiFCCpx))
       OPENMP_LINK_LIBRARY +=
     # For Intel C++ compiler (icpc/mpiicpc)
     else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
@@ -523,13 +523,17 @@ endif
 #=============================================================================
 CPPFLAGS :=
 
-# For Fujitsu C++ compiler (FCCpx/mpiFCCpx)
-ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
+# For Fujitsu C++ compiler (FCC/mpiFCC/FCCpx/mpiFCCpx)
+ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCC FCCpx mpiFCC mpiFCCpx))
   CPPFLAGS += -std=c++11
   ifdef DEBUG
     CPPFLAGS += -O0 -g
   else
     CPPFLAGS += -O3
+  endif
+  # Tentative solution to the error ("Unknown ARM CPU") that occurs in npy_cpu.h
+  ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+    CPPFLAGS += -D__AARCH64EL__ -D__ARM_64BIT_STATE
   endif
 
 # For Intel C++ compiler (icpc/mpiicpc)
