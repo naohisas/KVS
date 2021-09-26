@@ -101,6 +101,21 @@ void StochasticPolygonRenderer::setDepthOffset( const float factor, const float 
     static_cast<Engine&>( engine() ).setDepthOffset( factor, units );
 }
 
+void StochasticPolygonRenderer::setVertexShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setVertexShaderFile( file );
+}
+
+void StochasticPolygonRenderer::setFragmentShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setFragmentShaderFile( file );
+}
+
+void StochasticPolygonRenderer::setShaderFiles( const std::string& vert_file, const std::string& frag_file )
+{
+    static_cast<Engine&>( engine() ).setShaderFiles( vert_file, frag_file );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new RenderPass class.

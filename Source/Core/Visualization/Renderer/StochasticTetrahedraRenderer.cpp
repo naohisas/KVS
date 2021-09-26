@@ -252,6 +252,26 @@ float StochasticTetrahedraRenderer::samplingStep() const
     return static_cast<const Engine&>( engine() ).samplingStep();
 }
 
+void StochasticTetrahedraRenderer::setVertexShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setVertexShaderFile( file );
+}
+
+void StochasticTetrahedraRenderer::setGeometryShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setGeometryShaderFile( file );
+}
+
+void StochasticTetrahedraRenderer::setFragmentShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setFragmentShaderFile( file );
+}
+
+void StochasticTetrahedraRenderer::setShaderFiles( const std::string& vert_file, const std::string& geom_file, const std::string& frag_file )
+{
+    static_cast<Engine&>( engine() ).setShaderFiles( vert_file, geom_file, frag_file );
+}
+
 void StochasticTetrahedraRenderer::Engine::TransferFunctionBuffer::create(
     const kvs::TransferFunction& tfunc )
 {

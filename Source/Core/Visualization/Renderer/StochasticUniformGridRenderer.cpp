@@ -103,6 +103,21 @@ float StochasticUniformGridRenderer::samplingStep() const
     return static_cast<const Engine&>( engine() ).samplingStep();
 }
 
+void StochasticUniformGridRenderer::setVertexShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setVertexShaderFile( file );
+}
+
+void StochasticUniformGridRenderer::setFragmentShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setFragmentShaderFile( file );
+}
+
+void StochasticUniformGridRenderer::setShaderFiles( const std::string& vert_file, const std::string& frag_file )
+{
+    static_cast<Engine&>( engine() ).setShaderFiles( vert_file, frag_file );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Engine class.

@@ -28,6 +28,25 @@
 + kvs::StochasticPolygonRenderer::setEdgeFactor
 + kvs::StochasticTetrahedraRenderer::setEdgeFactor
 + kvs::StochasticUniformGridRenderer::setEdgeFactor
++ kvs::glsl::ParticleBasedRenderer::setVertexShaderFile
++ kvs::glsl::ParticleBasedRenderer::setFragmentShaderFile
++ kvs::glsl::ParticleBasedRenderer::setShaderFiles
++ kvs::StochasticPointRenderer::setVertexShaderFile
++ kvs::StochasticPointRenderer::setFragmentShaderFile
++ kvs::StochasticPointRenderer::setShaderFiles
++ kvs::StochasticLineRenderer::setVertexShaderFile
++ kvs::StochasticLineRenderer::setFragmentShaderFile
++ kvs::StochasticLineRenderer::setShaderFiles
++ kvs::StochasticPolygonRenderer::setVertexShaderFile
++ kvs::StochasticPolygonRenderer::setFragmentShaderFile
++ kvs::StochasticPolygonRenderer::setShaderFiles
++ kvs::StochasticTetrahedraRenderer::setVertexShaderFile
++ kvs::StochasticTetrahedraRenderer::setGeometryShaderFile
++ kvs::StochasticTetrahedraRenderer::setFragmentShaderFile
++ kvs::StochasticTetrahedraRenderer::setShaderFiles
++ kvs::StochasticUniformRenderer::setVertexShaderFile
++ kvs::StochasticUniformRenderer::setFragmentShaderFile
++ kvs::StochasticUniformRenderer::setShaderFiles
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

@@ -80,6 +80,21 @@ void StochasticLineRenderer::setOpacity( const kvs::UInt8 opacity )
     static_cast<Engine&>( engine() ).setOpacity( opacity );
 }
 
+void StochasticLineRenderer::setVertexShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setVertexShaderFile( file );
+}
+
+void StochasticLineRenderer::setFragmentShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setFragmentShaderFile( file );
+}
+
+void StochasticLineRenderer::setShaderFiles( const std::string& vert_file, const std::string& frag_file )
+{
+    static_cast<Engine&>( engine() ).setShaderFiles( vert_file, frag_file );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new RenderPass class.

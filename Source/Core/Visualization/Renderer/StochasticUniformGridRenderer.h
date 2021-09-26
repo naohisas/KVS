@@ -42,6 +42,9 @@ public:
     void setTransferFunction( const kvs::TransferFunction& transfer_function );
     const kvs::TransferFunction& transferFunction() const;
     float samplingStep() const;
+    void setVertexShaderFile( const std::string& file );
+    void setFragmentShaderFile( const std::string& file );
+    void setShaderFiles( const std::string& vert_file, const std::string& frag_file );
 };
 
 /*===========================================================================*/
@@ -101,6 +104,15 @@ public:
 
     float samplingStep() const { return m_step; }
     const kvs::TransferFunction& transferFunction() const { return m_transfer_function; }
+
+    const std::string& vertexShaderFile() const { return m_render_pass.vertexShaderFile(); }
+    const std::string& fragmentShaderFile() const { return m_render_pass.fragmentShaderFile(); }
+    void setVertexShaderFile( const std::string& file ) { m_render_pass.setVertexShaderFile( file ); }
+    void setFragmentShaderFile( const std::string& file ) { m_render_pass.setFragmentShaderFile( file ); }
+    void setShaderFiles( const std::string& vert, const std::string& frag )
+    {
+        m_render_pass.setShaderFiles( vert, frag );
+    }
 
 private:
     void create_shader_program( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );

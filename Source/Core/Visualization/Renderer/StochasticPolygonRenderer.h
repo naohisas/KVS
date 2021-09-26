@@ -37,6 +37,9 @@ public:
     void setEdgeFactor( const float factor );
     void setDepthOffset( const kvs::Vec2& offset );
     void setDepthOffset( const float factor, const float units = 0.0f );
+    void setVertexShaderFile( const std::string& file );
+    void setFragmentShaderFile( const std::string& file );
+    void setShaderFiles( const std::string& vert_file, const std::string& frag_file );
 
 public:
     KVS_DEPRECATED( void setPolygonOffset( const float offset ) ) { this->setDepthOffset( offset ); }
@@ -83,6 +86,15 @@ public:
     void setEdgeFactor( const float factor ) { m_edge_factor = factor; }
     void setDepthOffset( const kvs::Vec2& offset ) { m_depth_offset = offset; }
     void setDepthOffset( const float factor, const float units = 0.0f ) { m_depth_offset = kvs::Vec2( factor, units ); }
+
+    const std::string& vertexShaderFile() const { return m_render_pass.vertexShaderFile(); }
+    const std::string& fragmentShaderFile() const { return m_render_pass.fragmentShaderFile(); }
+    void setVertexShaderFile( const std::string& file ) { m_render_pass.setVertexShaderFile( file ); }
+    void setFragmentShaderFile( const std::string& file ) { m_render_pass.setFragmentShaderFile( file ); }
+    void setShaderFiles( const std::string& vert_file, const std::string& frag_file )
+    {
+        m_render_pass.setShaderFiles( vert_file, frag_file );
+    }
 
 public:
     KVS_DEPRECATED( void setPolygonOffset( const float offset ) ) { this->setDepthOffset( offset ); }

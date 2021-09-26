@@ -163,6 +163,15 @@ public:
     void enableJittering() { m_render_pass.setJitteringEnabled( true ); }
     void disableJittering() { m_render_pass.setJitteringEnabled( false ); }
 
+    const std::string& vertexShaderFile() const { return m_render_pass.vertexShaderFile(); }
+    const std::string& fragmentShaderFile() const { return m_render_pass.fragmentShaderFile(); }
+    void setVertexShaderFile( const std::string& file ) { m_render_pass.setVertexShaderFile( file ); }
+    void setFragmentShaderFile( const std::string& file ) { m_render_pass.setFragmentShaderFile( file ); }
+    void setShaderFiles( const std::string& vert, const std::string& frag )
+    {
+        m_render_pass.setShaderFiles( vert, frag );
+    }
+
 private:
     void create_shader_program( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );
     void update_shader_program( const kvs::Shader::ShadingModel& shading_model, const bool shading_enabled );

@@ -200,6 +200,21 @@ const kvs::Vec4& ParticleBasedRenderer::initialViewport() const
     return static_cast<const Engine&>( engine() ).initialViewport();
 }
 
+void ParticleBasedRenderer::setVertexShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setVertexShaderFile( file );
+}
+
+void ParticleBasedRenderer::setFragmentShaderFile( const std::string& file )
+{
+    static_cast<Engine&>( engine() ).setFragmentShaderFile( file );
+}
+
+void ParticleBasedRenderer::setShaderFiles( const std::string& vert_file, const std::string& frag_file )
+{
+    static_cast<Engine&>( engine() ).setShaderFiles( vert_file, frag_file );
+}
+
 void ParticleBasedRenderer::Engine::BufferObject::create(
     const kvs::ObjectBase* object,
     const size_t nmanagers )

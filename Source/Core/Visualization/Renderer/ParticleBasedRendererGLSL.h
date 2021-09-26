@@ -51,6 +51,9 @@ public:
     const kvs::Mat4& initialModelViewMatrix() const;
     const kvs::Mat4& initialProjectionMatrix() const;
     const kvs::Vec4& initialViewport() const;
+    void setVertexShaderFile( const std::string& file );
+    void setFragmentShaderFile( const std::string& file );
+    void setShaderFiles( const std::string& vert_file, const std::string& frag_file );
 
 public:
     // Deprecated method
@@ -165,6 +168,15 @@ public:
     const kvs::Mat4& initialModelViewMatrix() const { return m_initial_modelview; }
     const kvs::Mat4& initialProjectionMatrix() const { return m_initial_projection; }
     const kvs::Vec4& initialViewport() const { return m_initial_viewport; }
+
+    const std::string& vertexShaderFile() const { return m_render_pass.vertexShaderFile(); }
+    const std::string& fragmentShaderFile() const { return m_render_pass.fragmentShaderFile(); }
+    void setVertexShaderFile( const std::string& file ) { m_render_pass.setVertexShaderFile( file ); }
+    void setFragmentShaderFile( const std::string& file ) { m_render_pass.setFragmentShaderFile( file ); }
+    void setShaderFiles( const std::string& vert_file, const std::string& frag_file )
+    {
+        m_render_pass.setShaderFiles( vert_file, frag_file );
+    }
 
 private:
     void create_shader_program();
