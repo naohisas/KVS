@@ -40,17 +40,17 @@ public:
     };
 
 private:
-    kvs::ScreenBase* m_screen; ///< screen
-    kvs::Camera* m_camera; ///< camera
-    kvs::Light* m_light; ///< light
-    kvs::Mouse* m_mouse; ///< mouse
-    kvs::Background* m_background; ///< background
-    kvs::ObjectManager* m_object_manager; ///< object manager
-    kvs::RendererManager* m_renderer_manager; ///< renderer manager
-    kvs::IDManager* m_id_manager; ///< ID manager ( object_id, renderer_id )
-    ControlTarget m_target; ///< control target
-    bool m_enable_object_operation;  ///< flag for object operation
-    bool m_enable_collision_detection; ///< flag for collision detection
+    kvs::ScreenBase* m_screen = nullptr; ///< screen (reference)
+    kvs::Camera* m_camera = nullptr; ///< camera
+    kvs::Light* m_light = nullptr; ///< light
+    kvs::Mouse* m_mouse = nullptr; ///< mouse
+    kvs::Background* m_background = nullptr; ///< background
+    kvs::ObjectManager* m_object_manager = nullptr; ///< object manager
+    kvs::RendererManager* m_renderer_manager = nullptr; ///< renderer manager
+    kvs::IDManager* m_id_manager = nullptr; ///< ID manager ( object_id, renderer_id )
+    ControlTarget m_target = ControlTarget::TargetObject; ///< control target
+    bool m_enable_object_operation = true;  ///< flag for object operation
+    bool m_enable_collision_detection = false; ///< flag for collision detection
 
 public:
     Scene( kvs::ScreenBase* screen );

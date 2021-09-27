@@ -24,17 +24,17 @@ namespace kvs
 class ScreenBase
 {
 private:
-    int m_x; ///< window position (y position)
-    int m_y; ///< window position (x position)
-    int m_width; ///< window size (width)
-    int m_height; ///< window size (height)
-    std::string m_title; ///< window title
-    kvs::DisplayFormat m_display_format; ///< display format
-    kvs::EventHandler* m_event_handler; ///< event handler
-    kvs::PaintDevice* m_paint_device; ///< paint device
-    float m_device_pixel_ratio; ///< device pixel ratio
-    bool m_visible; ///< visibility of the screen
-    bool m_fullscreen; ///< flag for fullscreen display mode
+    int m_x = -1; ///< window position (y position)
+    int m_y = -1; ///< window position (x position)
+    int m_width = 512; ///< window size (width)
+    int m_height = 512; ///< window size (height)
+    std::string m_title = ""; ///< window title
+    kvs::DisplayFormat m_display_format{}; ///< display format
+    kvs::EventHandler* m_event_handler = nullptr; ///< event handler
+    kvs::PaintDevice* m_paint_device = nullptr; ///< paint device
+    float m_device_pixel_ratio = 1.0f; ///< device pixel ratio
+    bool m_visible = true; ///< visibility of the screen
+    bool m_fullscreen = false; ///< flag for fullscreen display mode
 
 public:
     ScreenBase();

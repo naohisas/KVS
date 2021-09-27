@@ -50,16 +50,11 @@ namespace kvs
 /*==========================================================================*/
 Camera::Camera()
 {
-    this->initialize();
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-Camera::~Camera()
-{
+    const auto p = kvs::Vec3( 0, 0, 12 ); // initial camera position
+    const auto a = kvs::Vec3( 0, 0, 0 ); // initial camera look-at
+    const auto u = kvs::Vec3( 0, 1, 0 ); // initial camera up-vector
+    this->setPosition( p, a, u );
+    this->saveXform();
 }
 
 /*==========================================================================*/
@@ -254,34 +249,6 @@ const kvs::Vec2 Camera::lookAtInDevice() const
 
 /*==========================================================================*/
 /**
- *  Initialize the member parameters.
- */
-/*==========================================================================*/
-void Camera::initialize()
-{
-    m_projection_type = Camera::Perspective;
-
-    const kvs::Vec3 init_pos( 0, 0, 12 );
-    const kvs::Vec3 init_look_at( 0, 0, 0 );
-    const kvs::Vec3 init_up( 0, 1, 0 );
-
-    this->setPosition( init_pos, init_look_at, init_up );
-    this->saveXform();
-    m_transform_center = init_look_at;
-
-    m_field_of_view = 45.0;
-    m_front = 1.0;
-    m_back = 2000.0;
-    m_left = -5.0;
-    m_right = 5.0;
-    m_bottom = -5.0;
-    m_top = 5.0;
-    m_window_width = 512;
-    m_window_height = 512;
-}
-
-/*==========================================================================*/
-/**
  *  Update the camera.
  */
 /*==========================================================================*/
@@ -311,6 +278,7 @@ kvs::ColorImage Camera::snapshot()
     const int width = static_cast<int>( m_window_width );
     const int height = static_cast<int>( m_window_height );
     const float dpr = this->devicePixelRatio();
+
     const int buffer_width = static_cast<int>( width * dpr );
     const int buffer_height = static_cast<int>( height * dpr );
     const int buffer_size = buffer_width * buffer_height * 3;

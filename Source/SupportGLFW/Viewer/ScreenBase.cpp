@@ -243,17 +243,23 @@ void KeyCallback( GLFWwindow* handler, int key, int scancode, int action, int mo
     switch ( action )
     {
     case GLFW_PRESS:
+    {
         this_screen->m_key_event->setAction( kvs::Key::Pressed );
         this_screen->keyPressEvent( this_screen->m_key_event );
         break;
+    }
     case GLFW_REPEAT:
+    {
         this_screen->m_key_event->setAction( kvs::Key::Repeated );
         this_screen->keyRepeatEvent( this_screen->m_key_event );
         break;
+    }
     case GLFW_RELEASE:
+    {
         this_screen->m_key_event->setAction( kvs::Key::Released );
         this_screen->keyReleaseEvent( this_screen->m_key_event );
         break;
+    }
     default:
         break;
     }
@@ -273,7 +279,6 @@ ScreenBase::ScreenBase( kvs::glfw::Application* application ):
     m_mouse_event( new kvs::MouseEvent() ),
     m_key_event( new kvs::KeyEvent() ),
     m_wheel_event( new kvs::WheelEvent() )
-//    m_is_fullscreen( false )
 {
     if ( application ) { application->attach( this ); }
     m_elapse_time_counter.start();
@@ -390,7 +395,7 @@ void ScreenBase::create()
     const kvs::Vec4 vp = kvs::OpenGL::Viewport();
     BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
 
-    glfwMakeContextCurrent( NULL );
+    glfwMakeContextCurrent( nullptr );
 }
 
 /*===========================================================================*/
@@ -428,8 +433,6 @@ void ScreenBase::hide()
 /*===========================================================================*/
 void ScreenBase::showFullScreen()
 {
-//    if ( m_is_fullscreen ) return;
-//    m_is_fullscreen = true;
     if ( BaseClass::isFullScreen() ) { return; }
     BaseClass::showFullScreen();
 
@@ -449,8 +452,6 @@ void ScreenBase::showFullScreen()
 /*===========================================================================*/
 void ScreenBase::showNormal()
 {
-//    if ( !m_is_fullscreen ) return;
-//    m_is_fullscreen = false;
     if ( !BaseClass::isFullScreen() ) { return; }
     BaseClass::showNormal();
 
@@ -488,9 +489,11 @@ void ScreenBase::pushDown()
 /*===========================================================================*/
 void ScreenBase::redraw()
 {
+    auto* context = glfwGetCurrentContext();
     this->aquireContext();
     this->paintEvent();
     this->releaseContext();
+    glfwMakeContextCurrent( context );
 }
 
 /*===========================================================================*/
@@ -504,17 +507,6 @@ void ScreenBase::resize( int width, int height )
 {
     glfwSetWindowSize( m_handler, width, height );
 }
-
-/*===========================================================================*/
-/**
- *  @brief  Returns true if the screen is shown as fullscreen size.
- *  @return true if the screen is fullscreen.
- */
-/*===========================================================================*/
-//bool ScreenBase::isFullScreen() const
-//{
-//    return m_is_fullscreen;
-//}
 
 } // end of namespace glfw
 

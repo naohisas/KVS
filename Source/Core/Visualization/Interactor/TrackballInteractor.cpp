@@ -149,7 +149,6 @@ void TrackballInteractor::keyPressEvent( kvs::KeyEvent* e )
     KVS_ASSERT( s != nullptr );
 
     BaseClass::keyPressEvent( e );
-
     switch ( e->key() )
     {
     case kvs::Key::Tab:
@@ -158,7 +157,6 @@ void TrackballInteractor::keyPressEvent( kvs::KeyEvent* e )
     default:
         break;
     }
-    BaseClass::screen()->redraw();
 }
 
 /*===========================================================================*/

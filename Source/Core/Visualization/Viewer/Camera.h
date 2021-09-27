@@ -32,21 +32,21 @@ public:
     };
 
 private:
-    kvs::Vec3 m_transform_center; // transform center
-    ProjectionType m_projection_type; ///< projection type
-    float m_field_of_view; ///< field of view [deg]
-    float m_front; ///< front plane position
-    float m_back; ///< back plane position
-    float m_left; ///< left plane position
-    float m_right; ///< right plane position
-    float m_bottom; ///< bottom plane position
-    float m_top; ///< top plane position
-    size_t m_window_width; ///< window width
-    size_t m_window_height; ///< window height
+    kvs::Vec3 m_transform_center{ 0.0f, 0.0f, 0.0f }; // transform center
+    ProjectionType m_projection_type = ProjectionType::Perspective; ///< projection type
+    float m_field_of_view = 45.0f; ///< field of view [deg]
+    float m_front = 1.0f; ///< front plane position
+    float m_back = 2000.0f; ///< back plane position
+    float m_left = -5.0f; ///< left plane position
+    float m_right = 5.0f; ///< right plane position
+    float m_bottom = -5.0f; ///< bottom plane position
+    float m_top = 5.0f; ///< top plane position
+    size_t m_window_width = 512; ///< window width
+    size_t m_window_height = 512; ///< window height
 
 public:
     Camera();
-    virtual ~Camera();
+    virtual ~Camera() = default;
 
     void setProjectionType( const ProjectionType type ) { m_projection_type = type; }
     void setProjectionTypeToPerspective() { this->setProjectionType( Perspective ); }
@@ -85,7 +85,6 @@ public:
     const kvs::Mat4 viewingMatrix() const;
     const kvs::Vec2 lookAtInDevice() const;
 
-    virtual void initialize();
     virtual void update();
     virtual kvs::ColorImage snapshot();
 
@@ -93,6 +92,8 @@ public:
     void rotate( const kvs::Mat3& rotation );
     void translate( const kvs::Vec3& translation );
     void scale( const kvs::Vec3& scaling );
+
+    KVS_DEPRECATED( virtual void initialize() ) { *this = Camera(); }
 };
 
 } // end of namespace kvs

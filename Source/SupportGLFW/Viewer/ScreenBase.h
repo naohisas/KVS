@@ -36,13 +36,12 @@ public:
     static const ScreenBase* DownCast( const kvs::ScreenBase* screen );
 
 private:
-    GLFWwindow* m_handler; ///< glfw window handler
-    int m_id; ///< window ID
-    kvs::MouseEvent* m_mouse_event; ///< mouse event
-    kvs::KeyEvent* m_key_event; ///< key event
-    kvs::WheelEvent* m_wheel_event; ///< wheel event
-    kvs::Timer m_elapse_time_counter; ///< elapse time counter for double click event
-//    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
+    GLFWwindow* m_handler = nullptr; ///< glfw window handler
+    int m_id = -1; ///< window ID
+    kvs::MouseEvent* m_mouse_event = nullptr; ///< mouse event
+    kvs::KeyEvent* m_key_event = nullptr; ///< key event
+    kvs::WheelEvent* m_wheel_event = nullptr; ///< wheel event
+    kvs::Timer m_elapse_time_counter{}; ///< elapse time counter for double click event
 
 public:
     ScreenBase( kvs::glfw::Application* application );
@@ -63,7 +62,6 @@ public:
     virtual void pushDown();
     virtual void redraw();
     virtual void resize( int width, int height );
-//    virtual bool isFullScreen() const;
 
     virtual void enable() {}
     virtual void disable() {}
@@ -83,7 +81,7 @@ public:
 
 protected:
     void aquireContext() { glfwMakeContextCurrent( m_handler ); }
-    void releaseContext() { glfwMakeContextCurrent( NULL ); }
+    void releaseContext() { glfwMakeContextCurrent( nullptr ); }
 
 private:
     friend void WindowSizeCallback( GLFWwindow* handler, int width, int height );

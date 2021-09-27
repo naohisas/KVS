@@ -18,16 +18,8 @@ namespace kvs
  */
 /*===========================================================================*/
 ScreenBase::ScreenBase():
-    m_x( -1 ),
-    m_y( -1 ),
-    m_width( 512 ),
-    m_height( 512 ),
-    m_title(""),
     m_event_handler( new kvs::EventHandler() ),
-    m_paint_device( new kvs::PaintDevice() ),
-    m_device_pixel_ratio( 1.0f ),
-    m_visible( true ),
-    m_fullscreen( false )
+    m_paint_device( new kvs::PaintDevice() )
 {
 }
 

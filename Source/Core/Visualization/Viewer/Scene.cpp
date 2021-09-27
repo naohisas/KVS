@@ -66,17 +66,14 @@ namespace kvs
 /*===========================================================================*/
 Scene::Scene( kvs::ScreenBase* screen ):
     m_screen( screen ),
-    m_target( Scene::TargetObject ),
-    m_enable_object_operation( true ),
-    m_enable_collision_detection( false )
+    m_camera( new kvs::Camera() ),
+    m_light( new kvs::Light() ),
+    m_mouse( new kvs::Mouse() ),
+    m_background( new kvs::Background( kvs::UIColor::Background() ) ),
+    m_object_manager( new kvs::ObjectManager() ),
+    m_renderer_manager( new kvs::RendererManager() ),
+    m_id_manager( new kvs::IDManager() )
 {
-    m_camera = new kvs::Camera();
-    m_light = new kvs::Light();
-    m_mouse = new kvs::Mouse();
-    m_background = new kvs::Background( kvs::UIColor::Background() );
-    m_object_manager = new kvs::ObjectManager();
-    m_renderer_manager = new kvs::RendererManager();
-    m_id_manager = new kvs::IDManager();
 }
 
 /*===========================================================================*/
@@ -86,13 +83,13 @@ Scene::Scene( kvs::ScreenBase* screen ):
 /*===========================================================================*/
 Scene::~Scene()
 {
-    delete m_camera;
-    delete m_light;
-    delete m_mouse;
-    delete m_background;
-    delete m_object_manager;
-    delete m_renderer_manager;
-    delete m_id_manager;
+    if ( m_camera ) { delete m_camera; }
+    if ( m_light ) { delete m_light; }
+    if ( m_mouse ) { delete m_mouse; }
+    if ( m_background ) { delete m_background; }
+    if ( m_object_manager ) { delete m_object_manager; }
+    if ( m_renderer_manager ) { delete m_renderer_manager; }
+    if ( m_id_manager ) { delete m_id_manager; }
 }
 
 /*===========================================================================*/
