@@ -19,6 +19,10 @@ In case of Mac, the OpenCV can be installed by using Homebrew on a terminal as f
 ```
 $ brew install oepncv@3
 ```
+For pkg-config to find opencv@3 you may need to set:
+```
+export PKG_CONFIG_PATH="/opt/homebrew/opt/opencv@3/lib/pkgconfig"
+```
 If OpenCV 3 and 4 are installed together, OpenCV4 will be selected when KVS is compiled. Therefore, if you have OpenCV4 installed, you need to uninstall it beforehand as follows.
 ```
 $ brew uinstall opencv
