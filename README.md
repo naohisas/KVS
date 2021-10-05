@@ -40,8 +40,8 @@ KVS supports the following software packages. By checking (changing 0:disable to
 |(Deprecated functions)|KVS_ENABLE_DEPRECATED|Flag for enabling the deprecated functions and classes in KVS. Note: Although the deprecated functions and classes can be available by checking this flag, but not recommended.|
 |GLUT|KVS_SUPPORT_GLUT|Flag for supporting GLUT functions. The screen class based on the GLUT is provided. See [SupportGLUT](Source/SupportGLUT) for setting information.|
 |GLFW|KVS_SUPPORT_GLFW|Flag for supporting GLFW functions. The screen class based on the GLFW is provided. Note: GLUT or GLFW is required for developing viewer application with KVS. See [SupportGLFW](Source/SupportGLFW) for setting information.|
-|OpenCV|KVS_SUPPORT_OPENCV|Flag for supporting OpenCV functions. Note: OpenCV4 is not supported.|
-|Qt|KVS_SUPPORT_QT|Flag for supporting Qt classes. The screen class based on the Qt. Note: Qt6 is not supported.|
+|OpenCV|KVS_SUPPORT_OPENCV|Flag for supporting OpenCV functions. Note: OpenCV4 is not supported.　See [SupportOpenCV](Source/SupportOpenCV) for setting information.|
+|Qt|KVS_SUPPORT_QT|Flag for supporting Qt classes. The screen class based on the Qt. Note: Qt6 is not supported. See [SupportQt](Source/SupportQt) for setting information.|
 |Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes. See [SupportPython](Source/SupportPython) for setting information.|
 |MPI|KVS_SUPPORT_MPI|Flag for supporting MPI functions. Note: MPI compiler is required. See [SupportMPI](Source/SupportMPI) for setting information.|
 |EGL|KVS_SUPPORT_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided. See [SupportEGL](Source/SupportEGL) for setting information.|
