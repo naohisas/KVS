@@ -45,7 +45,7 @@ KVS supports the following software packages. By checking (changing 0:disable to
 |Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes. See [SupportPython](Source/SupportPython) for setting information.|
 |MPI|KVS_SUPPORT_MPI|Flag for supporting MPI functions. Note: MPI compiler is required. See [SupportMPI](Source/SupportMPI) for setting information.|
 |EGL|KVS_SUPPORT_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided. See [SupportEGL](Source/SupportEGL) for setting information.|
-|OSMesa|KVS_SUPPORT_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided. See See [SupportOSMesa](Source/SupportOSMesa) for setting information.|
+|OSMesa|KVS_SUPPORT_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided. See [SupportOSMesa](Source/SupportOSMesa) for setting information.|
 
 ## Build and install
 By using the make command, KVS can be easily build and install to ```KVS_DIR```.
