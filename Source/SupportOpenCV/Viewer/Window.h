@@ -51,8 +51,8 @@ public:
         FullScreen = CV_WINDOW_FULLSCREEN,
         FreeRatio = CV_WINDOW_FREERATIO,
         KeepRatio = CV_WINDOW_KEEPRATIO,
-        GUIExpanded = CV_WINDOW_GUI_EXPANDED,
-        GUINormal = CV_WINDOW_GUI_NORMAL
+        GUIExpanded = CV_GUI_EXPANDED,
+        GUINormal = CV_GUI_NORMAL
     };
 #endif
 
