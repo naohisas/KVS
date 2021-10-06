@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__OPENCV__CAPTURE_DEVICE_H_INCLUDE
-#define KVS__OPENCV__CAPTURE_DEVICE_H_INCLUDE
-
+#pragma once
 #include <kvs/opencv/OpenCV>
 #include <kvs/ClassName>
 
@@ -26,14 +24,34 @@ class CaptureDevice
 {
     kvsClassName_without_virtual( kvs::opencv::CaptureDevice );
 
+public:
+#if ( CV_MAJOR_VERSION > 3 )
+    using Handler = cv::VideoCapture;
+    struct Frame
+    {
+        cv::Mat mat{};
+        int width = 0;
+        int height = 0;
+        int nChannels = 0;
+        int depth = 0;
+        unsigned char* imageData = nullptr;
+    };
+#else
+    using Handler = CvCapture;
+    using Frame = IplImage;
+#endif
+
 private:
-    CvCapture* m_handler; ///< handler
+    Handler* m_handler = nullptr; ///< handler
+#if ( CV_MAJOR_VERSION > 3 )
+    mutable Frame m_frame{}; ///< captured frame
+#endif
 
 public:
-    CaptureDevice();
-    ~CaptureDevice( );
+    CaptureDevice() = default;
+    ~CaptureDevice() { this->release(); }
 
-    const CvCapture* handler();
+    const Handler* handler() { return m_handler; }
     double property( const int property_id ) const;
     int setProperty( const int property_id, const double value ) const;
 
@@ -50,17 +68,15 @@ public:
     int setRelativePosition( const double pos ) const;
     int setNextFrameIndex( const double index ) const;
 
-    bool create( const int index );
+    bool create( const int index = 0 );
     bool create( const std::string filename );
     void release();
 
     int grabFrame() const;
-    const IplImage* retrieveFrame() const;
-    const IplImage* queryFrame() const;
+    const Frame* retrieveFrame() const;
+    const Frame* queryFrame() const;
 };
 
 } // end of namespace opencv
 
 } // end of namespace kvs
-
-#endif // KVS__OPENCV__CAPTURE_DEVICE_H_INCLUDE

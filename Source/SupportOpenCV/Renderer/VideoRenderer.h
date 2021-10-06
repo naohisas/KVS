@@ -32,17 +32,17 @@ class VideoRenderer : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
-    double m_initial_aspect_ratio; ///< initial aspect ratio
-    double m_left; ///< screen left position
-    double m_right; ///< screen right position
-    double m_bottom; ///< screen bottom position
-    double m_top; ///< screen top position
-    bool m_enable_centering; ///< enable center alignment
-    bool m_enable_mirroring; ///< enable mirror mapping
-    kvs::Texture2D m_texture; ///< texture image
+    double m_initial_aspect_ratio = 1.0; ///< initial aspect ratio
+    double m_left = 0.0; ///< screen left position
+    double m_right = 0.0; ///< screen right position
+    double m_bottom = 0.0; ///< screen bottom position
+    double m_top = 0.0; ///< screen top position
+    bool m_enable_centering = true; ///< enable center alignment
+    bool m_enable_mirroring = true; ///< enable mirror mapping
+    kvs::Texture2D m_texture{}; ///< texture image
 
 public:
-    VideoRenderer();
+    VideoRenderer() = default;
 
     bool isEnabledCentering() const { return m_enable_centering; }
     bool isEnabledMirroring() const { return m_enable_mirroring; }

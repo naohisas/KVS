@@ -29,7 +29,7 @@ int main()
 {
     // Initialize capture device.
     kvs::opencv::CaptureDevice device;
-    if ( !device.create( CV_CAP_ANY ) )
+    if ( !device.create() )
     {
         kvsMessageError("Capture device is NULL.");
         return 1;
@@ -42,7 +42,7 @@ int main()
     for ( ; ; )
     {
         // Capture frame.
-        const IplImage* frame = device.queryFrame();
+        const auto* frame = device.queryFrame();
         if ( !frame )
         {
             kvsMessageError("Frame is NULL.");

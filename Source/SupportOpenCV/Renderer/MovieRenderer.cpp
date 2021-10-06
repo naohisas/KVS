@@ -18,12 +18,7 @@ namespace kvs
 namespace opencv
 {
 
-MovieRenderer::MovieRenderer():
-    m_enable_auto_play( false ),
-    m_enable_loop_play( false ),
-    m_enable_reverse_play( false ),
-    m_frame_index( 0 ),
-    m_current_frame_index( 0 )
+MovieRenderer::MovieRenderer()
 {
     BaseClass::setEnabledCentering( true );
     BaseClass::setEnabledMirroring( false );
@@ -33,8 +28,8 @@ void MovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
 {
     kvs::IgnoreUnusedVariable( light );
 
-    kvs::opencv::VideoObject* video = kvs::opencv::VideoObject::DownCast( object );
-    const IplImage* frame = video->device().queryFrame();
+    auto* video = kvs::opencv::VideoObject::DownCast( object );
+    const auto* frame = video->device().queryFrame();
     if ( !frame ) { return; }
 
     BaseClass::startTimer();
@@ -46,9 +41,9 @@ void MovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     if ( !BaseClass::texture().isValid() ) { BaseClass::createTexture( video ); }
     if ( BaseClass::isEnabledCentering() ) { BaseClass::alignCenter( camera ); }
 
-    const int width = frame->width;
-    const int height = frame->height;
-    const char* data = frame->imageData; // BGRBGRBGR...
+    const auto width = frame->width;
+    const auto height = frame->height;
+    const auto* data = frame->imageData; // BGRBGRBGR...
     BaseClass::texture().bind();
     BaseClass::texture().load( width, height, data );
     BaseClass::textureMapping();

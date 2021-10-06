@@ -4,14 +4,18 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__OPENCV__OPENCV_H_INCLUDE
-#define KVS__OPENCV__OPENCV_H_INCLUDE
+#pragma once
 
 #if defined( KVS_OPENCV4 )
 #include <opencv2/opencv.hpp>
-#include <opencv2/imgproc/imgproc_c.h> // for IplImage
-#include <opencv2/videoio/videoio_c.h> // for CV_CAP_ANY
-#include <opencv2/highgui/highgui_c.h> // for CV_WINDOW_AUTOSIZE etc.
+// C APIs
+//#include <opencv2/imgproc/imgproc_c.h> // for IplImage
+//#include <opencv2/videoio/videoio_c.h> // for CV_CAP_ANY
+//#include <opencv2/highgui/highgui_c.h> // for CV_WINDOW_AUTOSIZE etc.
+// C++ APIs
+//#include <opencv2/imgproc/imgproc.hpp> // for IplImage
+//#include <opencv2/videoio/videoio.hpp> // for CV_CAP_ANY
+//#include <opencv2/highgui/highgui.hpp> // for CV_WINDOW_AUTOSIZE etc.
 #else
 #include <cv.h>
 #include <highgui.h>
@@ -52,5 +56,3 @@ inline const std::string Version()
 } // end of namespace opencv
 
 } // end of namespace kvs
-
-#endif // KVS__OPENCV__OPENCV_H_INCLUDE

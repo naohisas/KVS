@@ -30,19 +30,19 @@ class VideoObject : public kvs::ObjectBase
 public:
     enum PixelType
     {
-        Gray8   =  8, ///< 8 bit gray pixel
+        Gray8 =  8, ///< 8 bit gray pixel
         Color24 = 24  ///< 24 bit RGB color pixel (8x8x8 bits)
     };
 
 private:
     kvs::opencv::CaptureDevice m_device; ///< video capture device
-    PixelType m_type; ///< pixel type
-    size_t m_width; ///< capture widht
-    size_t m_height; ///< capture height
-    size_t m_nchannels; ///< number of channels
+    PixelType m_type = PixelType::Color24; ///< pixel type
+    size_t m_width = 0; ///< capture widht
+    size_t m_height = 0; ///< capture height
+    size_t m_nchannels = 0; ///< number of channels
 
 public:
-    VideoObject();
+    VideoObject() = default;
     VideoObject( const int device_id );
     virtual ~VideoObject() {}
 

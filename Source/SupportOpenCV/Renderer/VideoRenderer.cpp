@@ -20,17 +20,6 @@ namespace opencv
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new VideoRenderer class.
- */
-/*===========================================================================*/
-VideoRenderer::VideoRenderer():
-    m_enable_centering( true ),
-    m_enable_mirroring( true )
-{
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Renders the grabbed frame.
  *  @param  object [in] pointer to the video object
  *  @param  camera [in] pointer to the camera in KVS
@@ -41,8 +30,8 @@ void VideoRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
 {
     kvs::IgnoreUnusedVariable( light );
 
-    kvs::opencv::VideoObject* video = kvs::opencv::VideoObject::DownCast( object );
-    const IplImage* frame = video->device().queryFrame();
+    auto* video = kvs::opencv::VideoObject::DownCast( object );
+    const auto* frame = video->device().queryFrame();
     if ( !frame ) { return; }
 
     BaseClass::startTimer();
@@ -54,9 +43,9 @@ void VideoRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     if ( !this->texture().isValid() ) { this->createTexture( video ); }
     if ( this->isEnabledCentering() ) { this->alignCenter( camera ); }
 
-    const int width = frame->width;
-    const int height = frame->height;
-    const char* data = frame->imageData; // BGRBGRBGR...
+    const auto width = frame->width;
+    const auto height = frame->height;
+    const auto* data = frame->imageData; // BGRBGRBGR...
     this->texture().bind();
     this->texture().load( width, height, data );
     this->textureMapping();
@@ -99,8 +88,10 @@ void VideoRenderer::createTexture( const kvs::opencv::VideoObject* video )
         kvsMessageError("Unknown pixel color type.");
     }
 
-    const IplImage* frame = video->device().queryFrame();
-    m_texture.create( frame->width, frame->height );
+    const auto frame = video->device().queryFrame();
+    const int frame_width = frame->width;
+    const int frame_height = frame->height;
+    m_texture.create( frame_width, frame_height );
 }
 
 /*===========================================================================*/

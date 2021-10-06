@@ -15,37 +15,6 @@ namespace opencv
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new CaptureDevice class.
- */
-/*===========================================================================*/
-CaptureDevice::CaptureDevice():
-    m_handler( 0 )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the capture device handler.
- *  @return capture device handler
- */
-/*===========================================================================*/
-const CvCapture* CaptureDevice::handler()
-{
-    return m_handler;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the CaptureDevice class.
- */
-/*===========================================================================*/
-CaptureDevice::~CaptureDevice()
-{
-    this->release();
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Returns the specified capture property.
  *  @param  property_id [i] property ID
  *  @return specified capture property
@@ -53,7 +22,11 @@ CaptureDevice::~CaptureDevice()
 /*===========================================================================*/
 double CaptureDevice::property( const int property_id ) const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return m_handler->get( property_id );
+#else
     return cvGetCaptureProperty( m_handler, property_id );
+#endif
 }
 
 /*===========================================================================*/
@@ -66,7 +39,11 @@ double CaptureDevice::property( const int property_id ) const
 /*===========================================================================*/
 int CaptureDevice::setProperty( const int property_id, const double value ) const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return m_handler->set( property_id, value );
+#else
     return cvSetCaptureProperty( m_handler, property_id, value );
+#endif
 }
 
 /*===========================================================================*/
@@ -77,7 +54,11 @@ int CaptureDevice::setProperty( const int property_id, const double value ) cons
 /*===========================================================================*/
 double CaptureDevice::frameWidth() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->property( cv::CAP_PROP_FRAME_WIDTH );
+#else
     return this->property( CV_CAP_PROP_FRAME_WIDTH );
+#endif
 }
 
 /*===========================================================================*/
@@ -88,7 +69,11 @@ double CaptureDevice::frameWidth() const
 /*===========================================================================*/
 double CaptureDevice::frameHeight() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->property( cv::CAP_PROP_FRAME_HEIGHT );
+#else
     return this->property( CV_CAP_PROP_FRAME_HEIGHT );
+#endif
 }
 
 /*===========================================================================*/
@@ -99,42 +84,74 @@ double CaptureDevice::frameHeight() const
 /*===========================================================================*/
 double CaptureDevice::frameRate() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->property( cv::CAP_PROP_FPS );
+#else
     return this->property( CV_CAP_PROP_FPS );
+#endif
 }
 
 double CaptureDevice::numberOfFrames() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->property( cv::CAP_PROP_FRAME_COUNT );
+#else
     return this->property( CV_CAP_PROP_FRAME_COUNT );
+#endif
 }
 
 double CaptureDevice::currentPosition() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->property( cv::CAP_PROP_POS_MSEC );
+#else
     return this->property( CV_CAP_PROP_POS_MSEC );
+#endif
 }
 
 double CaptureDevice::relativePosition() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->property( cv::CAP_PROP_POS_AVI_RATIO );
+#else
     return this->property( CV_CAP_PROP_POS_AVI_RATIO );
+#endif
 }
 
 double CaptureDevice::nextFrameIndex() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->property( cv::CAP_PROP_POS_FRAMES );
+#else
     return this->property( CV_CAP_PROP_POS_FRAMES );
+#endif
 }
 
 int CaptureDevice::setCurrentPosition( const double msec ) const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->setProperty( cv::CAP_PROP_POS_MSEC, msec );
+#else
     return this->setProperty( CV_CAP_PROP_POS_MSEC, msec );
+#endif
 }
 
 int CaptureDevice::setRelativePosition( const double pos ) const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->setProperty( cv::CAP_PROP_POS_AVI_RATIO, pos );
+#else
     return this->setProperty( CV_CAP_PROP_POS_AVI_RATIO, pos );
+#endif
 }
 
 int CaptureDevice::setNextFrameIndex( const double index ) const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return this->setProperty( cv::CAP_PROP_POS_FRAMES, index );
+#else
     return this->setProperty( CV_CAP_PROP_POS_FRAMES, index );
+#endif
 }
 
 /*===========================================================================*/
@@ -146,7 +163,11 @@ int CaptureDevice::setNextFrameIndex( const double index ) const
 /*===========================================================================*/
 bool CaptureDevice::create( const int index )
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    m_handler = new Handler( index );
+#else
     m_handler = cvCreateCameraCapture( index );
+#endif
     return m_handler != NULL;
 }
 
@@ -159,7 +180,11 @@ bool CaptureDevice::create( const int index )
 /*===========================================================================*/
 bool CaptureDevice::create( const std::string filename )
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    m_handler = new Handler( filename );
+#else
     m_handler = cvCreateFileCapture( filename.c_str() );
+#endif
     return m_handler != NULL;
 }
 
@@ -170,7 +195,11 @@ bool CaptureDevice::create( const std::string filename )
 /*===========================================================================*/
 void CaptureDevice::release()
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    if ( m_handler ) { m_handler->release(); delete m_handler; }
+#else
     if ( m_handler ) cvReleaseCapture( &m_handler );
+#endif
 }
 
 /*===========================================================================*/
@@ -180,7 +209,11 @@ void CaptureDevice::release()
 /*===========================================================================*/
 int CaptureDevice::grabFrame() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return m_handler->grab();
+#else
     return cvGrabFrame( m_handler );
+#endif
 }
 
 /*===========================================================================*/
@@ -189,9 +222,21 @@ int CaptureDevice::grabFrame() const
  *  @return pointer to the grabbed image
  */
 /*===========================================================================*/
-const IplImage* CaptureDevice::retrieveFrame() const
+const CaptureDevice::Frame* CaptureDevice::retrieveFrame() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    m_handler->retrieve( m_frame.mat );
+    if ( m_frame.mat.empty() ) return nullptr;
+
+    m_frame.width = m_frame.mat.cols;
+    m_frame.height = m_frame.mat.rows;
+    m_frame.nChannels = m_frame.mat.channels();
+    m_frame.depth = m_frame.mat.depth();
+    m_frame.imageData = m_frame.mat.data;
+    return &m_frame;
+#else
     return cvRetrieveFrame( m_handler );
+#endif
 }
 
 /*===========================================================================*/
@@ -200,9 +245,21 @@ const IplImage* CaptureDevice::retrieveFrame() const
  *  @return pointer to the grabbed image
  */
 /*===========================================================================*/
-const IplImage* CaptureDevice::queryFrame() const
+const CaptureDevice::Frame* CaptureDevice::queryFrame() const
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    m_handler->read( m_frame.mat );
+    if ( m_frame.mat.empty() ) return nullptr;
+
+    m_frame.width = m_frame.mat.cols;
+    m_frame.height = m_frame.mat.rows;
+    m_frame.nChannels = m_frame.mat.channels();
+    m_frame.depth = m_frame.mat.depth();
+    m_frame.imageData = m_frame.mat.data;
+    return &m_frame;
+#else
     return cvQueryFrame( m_handler );
+#endif
 }
 
 } // end of namespace opencv

@@ -23,8 +23,8 @@ void SphericalMovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera,
 {
     kvs::IgnoreUnusedVariable( light );
 
-    kvs::opencv::VideoObject* video = kvs::opencv::VideoObject::DownCast( object );
-    const IplImage* frame = video->device().queryFrame();
+    auto* video = kvs::opencv::VideoObject::DownCast( object );
+    const auto* frame = video->device().queryFrame();
     if ( !frame ) { return; }
 
     BaseClass::startTimer();
@@ -42,9 +42,9 @@ void SphericalMovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     const kvs::Vec2 image_size( video->width(), video->height() );
     const kvs::Vec2 screen_size( camera->windowWidth(), camera->windowHeight() );
 
-    const int width = frame->width;
-    const int height = frame->height;
-    const char* data = frame->imageData; // BGRBGRBGR...
+    const auto width = frame->width;
+    const auto height = frame->height;
+    const auto* data = frame->imageData; // BGRBGRBGR...
 
     BaseClass::texture().bind();
     BaseClass::texture().load( width, height, data );

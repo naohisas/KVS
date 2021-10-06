@@ -13,17 +13,12 @@
  *  $Id: main.cpp 1319 2012-10-02 10:32:10Z naohisa.sakamoto@gmail.com $
  */
 /*****************************************************************************/
-#include <kvs/glut/Application>
-#include <kvs/glut/Screen>
+#include <kvs/Application>
+#include <kvs/Screen>
 #include <kvs/opencv/VideoObject>
 #include <kvs/opencv/VideoRenderer>
-#include <kvs/IdleEventListener>
+#include <kvs/TimerEventListener>
 
-
-class IdleEvent : public kvs::IdleEventListener
-{
-    void update() { screen()->redraw(); }
-};
 
 /*===========================================================================*/
 /**
@@ -32,17 +27,23 @@ class IdleEvent : public kvs::IdleEventListener
 /*===========================================================================*/
 int main( int argc, char** argv )
 {
-    kvs::glut::Application app( argc, argv );
+    kvs::Application app( argc, argv );
+    kvs::Screen screen( &app );
 
-    kvs::opencv::VideoObject* object = new kvs::opencv::VideoObject( CV_CAP_ANY );
-    kvs::opencv::VideoRenderer* renderer = new kvs::opencv::VideoRenderer();
+    const auto device_id = 0;
+    auto* object = new kvs::opencv::VideoObject( device_id );
+    auto* renderer = new kvs::opencv::VideoRenderer();
 
-    kvs::glut::Screen screen( &app );
+    auto msec = 0;
+    auto redraw = kvs::TimerEventListener(
+        [&] ( kvs::TimeEvent* ) { screen.redraw(); },
+        msec );
+
     screen.setTitle( "kvs::opencv::VideoRenderer" );
     screen.setSize( object->width(), object->height() );
     screen.registerObject( object, renderer );
-    screen.addEvent( new IdleEvent() );
-    screen.show();
+    screen.addEvent( &redraw );
+    screen.create();
 
     return app.run();
 }

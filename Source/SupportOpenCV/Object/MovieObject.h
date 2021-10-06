@@ -29,7 +29,7 @@ class MovieObject : public kvs::opencv::VideoObject
     kvsModuleBaseClass( kvs::opencv::VideoObject );
 
 public:
-    MovieObject() {}
+    MovieObject() = default;
     MovieObject( const std::string& filename );
 
     bool read( const std::string& filename );

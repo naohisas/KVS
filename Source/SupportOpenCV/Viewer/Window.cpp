@@ -20,10 +20,12 @@ namespace opencv
  *  @return window handle
  */
 /*===========================================================================*/
+#if ( CV_MAJOR_VERSION <= 3 )
 void* Window::Handle( const std::string name )
 {
     return cvGetWindowHandle( name.c_str() );
 }
+#endif
 
 /*===========================================================================*/
 /**
@@ -32,10 +34,12 @@ void* Window::Handle( const std::string name )
  *  @return window name
  */
 /*===========================================================================*/
+#if ( CV_MAJOR_VERSION <= 3 )
 const char* Window::Name( void* handle )
 {
     return cvGetWindowName( handle );
 }
+#endif
 
 /*===========================================================================*/
 /**
@@ -46,7 +50,11 @@ const char* Window::Name( void* handle )
 /*===========================================================================*/
 int Window::WaitKey( const int delay )
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    return cv::waitKey( delay );
+#else
     return cvWaitKey( delay );
+#endif
 }
 
 /*===========================================================================*/
@@ -56,40 +64,29 @@ int Window::WaitKey( const int delay )
 /*===========================================================================*/
 void Window::DestroyAll()
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    cv::destroyAllWindows();
+#else
     cvDestroyAllWindows();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new OpenCV window class.
- */
-/*===========================================================================*/
-Window::Window():
-    m_name("")
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the OpenCV window class.
- */
-/*===========================================================================*/
-Window::~Window()
-{
-    this->destroy();
+#endif
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Creates new window.
  *  @param  name [in] window name
- *  @param  flag [in] window flag (CV_WINDOW_AUTOSIZE)
+ *  @param  flag [in] window flag (Falg::AutoSize)
  */
 /*===========================================================================*/
-int Window::create( const std::string name, int flag )
+int Window::create( const std::string name, Flag flag )
 {
     m_name = name;
+#if ( CV_MAJOR_VERSION > 3 )
+    cv::namedWindow( m_name, flag );
+    return 1;
+#else
     return cvNamedWindow( m_name.c_str(), flag );
+#endif
 }
 
 /*===========================================================================*/
@@ -99,7 +96,11 @@ int Window::create( const std::string name, int flag )
 /*===========================================================================*/
 void Window::destroy()
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    cv::destroyWindow( m_name );
+#else
     cvDestroyWindow( m_name.c_str() );
+#endif
 }
 
 /*===========================================================================*/
@@ -108,9 +109,13 @@ void Window::destroy()
  *  @param  image [in] pointer to the image
  */
 /*===========================================================================*/
-void Window::show( const CvArr* image )
+void Window::show( const Window::Image* image )
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    cv::imshow( m_name, image->mat );
+#else
     cvShowImage( m_name.c_str(), image );
+#endif
 }
 
 /*===========================================================================*/
@@ -122,7 +127,11 @@ void Window::show( const CvArr* image )
 /*===========================================================================*/
 void Window::resize( const int width, const int height )
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    cv::resizeWindow( m_name, width, height );
+#else
     cvResizeWindow( m_name.c_str(), width, height );
+#endif
 }
 
 /*===========================================================================*/
@@ -134,7 +143,11 @@ void Window::resize( const int width, const int height )
 /*===========================================================================*/
 void Window::move( const int x, const int y )
 {
+#if ( CV_MAJOR_VERSION > 3 )
+    cv::moveWindow( m_name, x, y );
+#else
     cvMoveWindow( m_name.c_str(), x, y );
+#endif
 }
 
 } // end of namespace opencv

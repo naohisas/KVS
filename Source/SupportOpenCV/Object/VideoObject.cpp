@@ -16,16 +16,6 @@ namespace opencv
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new VideoObject class.
- */
-/*===========================================================================*/
-VideoObject::VideoObject():
-    m_type( kvs::opencv::VideoObject::Color24 )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new VideoObject class.
  *  @param  device_id [in] device ID
  */
 /*===========================================================================*/
@@ -105,7 +95,7 @@ bool VideoObject::createCaptureDevice( const std::string& filename )
 /*===========================================================================*/
 bool VideoObject::initialize( const kvs::opencv::CaptureDevice& device )
 {
-    const IplImage* frame = device.queryFrame();
+    const auto* frame = device.queryFrame();
     if ( !frame )
     {
         kvsMessageError("Cannot query a new frame from the capture device.");
@@ -117,7 +107,11 @@ bool VideoObject::initialize( const kvs::opencv::CaptureDevice& device )
     m_nchannels = static_cast<size_t>( frame->nChannels );
 
     const int depth = frame->depth;
+#if ( CV_MAJOR_VERSION > 3 )
+    if ( depth != CV_8U )
+#else
     if ( depth != IPL_DEPTH_8U )
+#endif
     {
         kvsMessageError("The depth of the grabbed image isn't 'IPL_DEPTH_8U'.");
         return false;

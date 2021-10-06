@@ -26,10 +26,10 @@ class SphericalMovieRenderer : public kvs::opencv::MovieRenderer
     kvsModuleBaseClass( kvs::opencv::MovieRenderer );
 
 private:
-    kvs::ProgramObject m_shader_program; ///< shader program
+    kvs::ProgramObject m_shader_program{}; ///< shader program
 
 public:
-    SphericalMovieRenderer() {}
+    SphericalMovieRenderer() = default;
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
 private:

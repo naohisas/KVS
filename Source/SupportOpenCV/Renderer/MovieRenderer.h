@@ -28,11 +28,11 @@ class MovieRenderer : public kvs::opencv::VideoRenderer
     kvsModuleBaseClass( kvs::opencv::VideoRenderer );
 
 private:
-    bool m_enable_auto_play; ///< enabled auto-play mode
-    bool m_enable_loop_play; ///< enabled loop-play mode
-    bool m_enable_reverse_play; ///< enabled reverse-play mode
-    int m_frame_index; ///< frame index will be rendered in next frame
-    int m_current_frame_index; ///< current frame index
+    bool m_enable_auto_play = false; ///< enabled auto-play mode
+    bool m_enable_loop_play = false; ///< enabled loop-play mode
+    bool m_enable_reverse_play = false; ///< enabled reverse-play mode
+    int m_frame_index = 0; ///< frame index will be rendered in next frame
+    int m_current_frame_index = 0; ///< current frame index
 
 public:
     MovieRenderer();
