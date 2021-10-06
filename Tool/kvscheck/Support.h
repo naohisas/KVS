@@ -71,10 +71,12 @@ class Support : public kvs::Program
 #endif
 
 #if defined( KVS_SUPPORT_QT )
+#define KVSCHECK_TO_STR(s) KVSCHECK_STR(s)
+#define KVSCHECK_STR(s) #s
         {
             libraries.push_back( "KVS_SUPPORT_QT" );
             descriptions.push_back( "Qt - Cross-Platform Rich Client Development Framework" );
-            versions.push_back( "please type 'qmake -query QT_VERSION'" );
+            versions.push_back( KVSCHECK_TO_STR( KVSCHECK_QT_VERSION ) );
         }
 #endif
 
