@@ -18,25 +18,17 @@ namespace kvs
 class DisplayFormat
 {
 private:
-    bool m_double_buffer; ///< double buffering (true:double buffering, false:single buffering, default:true)
-    bool m_color_buffer; ///< color buffer mode (true:RGBA mode, false:color index mode, default:true)
-    bool m_depth_buffer; ///< depth buffer (true:enable, false:disable, default:true)
-    bool m_accumulation_buffer; ///< accumulation buffer (true:enable, false:disable, default:false)
-    bool m_stencil_buffer; ///< stencil buffer (true:enable, false:disable, default:false)
-    bool m_stereo_buffer; ///< stereo buffer (true:enable, false:disable, default:false)
-    bool m_multisample_buffer; ///< multisample buffer (true:enable, false:disable, default:false)
-    bool m_alpha_channel; ///< alpha channel (true:enable, false:disable, default:false)
+    bool m_double_buffer = true; ///< double buffering (true:double buffering, false:single buffering)
+    bool m_color_buffer = true; ///< color buffer mode (true:RGBA mode, false:color index mode)
+    bool m_depth_buffer = true; ///< depth buffer (true:enable, false:disable)
+    bool m_accumulation_buffer = false; ///< accumulation buffer (true:enable, false:disable)
+    bool m_stencil_buffer = false; ///< stencil buffer (true:enable, false:disable)
+    bool m_stereo_buffer = false; ///< stereo buffer (true:enable, false:disable)
+    bool m_multisample_buffer = false; ///< multisample buffer (true:enable, false:disable)
+    bool m_alpha_channel = false; ///< alpha channel (true:enable, false:disable)
 
 public:
-    DisplayFormat():
-        m_double_buffer( true ),
-        m_color_buffer( true ),
-        m_depth_buffer( true ),
-        m_accumulation_buffer( false ),
-        m_stencil_buffer( false ),
-        m_stereo_buffer( false ),
-        m_multisample_buffer( false ),
-        m_alpha_channel( false ) {}
+    DisplayFormat() = default;
 
     bool doubleBuffer() const { return m_double_buffer; }
     bool colorBuffer() const { return m_color_buffer; }
