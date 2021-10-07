@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__QT_SCREEN_SUPPORT_H_INCLUDE
-#define KVS__QT_SCREEN_SUPPORT_H_INCLUDE
-
+#pragma once
 #include "../Qt.h"
 #include <kvs/ClassName>
 
@@ -24,108 +22,30 @@ class QtScreenSupport
     kvsClassName( kvs::QtScreenSupport );
 
 protected:
-
-    QGLWidget* m_device; ///< reference to the screen device (not allocated)
-
-public:
-
-    QtScreenSupport( QGLWidget* device );
-
-    virtual ~QtScreenSupport( void );
+    QGLWidget* m_device = nullptr; ///< reference to the screen device (not allocated)
 
 public:
+    QtScreenSupport( QGLWidget* device ) { this->attachDevice( device ); }
+    virtual ~QtScreenSupport() {}
 
-    void attachDevice( QGLWidget* device );
-
-    QGLWidget* device( void );
-
-    const QPoint position( void );
-
-    const QSize size( void );
-
-    void redraw( void );
-
-    void showFullScreen( void );
-
-    void showNormal( void );
-
-    void activateWindow( void );
-
-    void clearFocus( void );
-
-    void resize( int w, int h );
-
-    void move( int x, int y );
+    void attachDevice( QGLWidget* device ) { m_device = device; }
+    QGLWidget* device() { return m_device; }
+    const QPoint position() { return m_device->pos(); }
+    const QSize size() { return m_device->size(); }
+    void redraw() { m_device->updateGL(); }
+    void showFullScreen() { m_device->QWidget::showFullScreen(); }
+    void showNormal() { m_device->QWidget::showNormal(); }
+    void clearFocus() { m_device->QWidget::clearFocus(); }
+    void resize( int w, int h ) { m_device->QWidget::resize( w, h ); }
+    void move( int x, int y ) { m_device->QWidget::move( x, y ); }
+    void activateWindow()
+    {
+#if ( KVS_QT_VERSION >= 4 )
+        m_device->QWidget::activateWindow();
+#else
+        m_device->QWidget::setActiveWindow();
+#endif
+    }
 };
 
-inline QtScreenSupport::QtScreenSupport( QGLWidget* device )
-{
-    attachDevice( device );
-}
-
-inline QtScreenSupport::~QtScreenSupport( void )
-{
-}
-
-inline void QtScreenSupport::attachDevice( QGLWidget* device )
-{
-    m_device = device;
-}
-
-inline QGLWidget* QtScreenSupport::device( void )
-{
-    return( m_device );
-}
-
-inline const QPoint QtScreenSupport::position( void )
-{
-    return( m_device->pos() );
-}
-
-inline const QSize QtScreenSupport::size( void )
-{
-    return( m_device->size() );
-}
-
-inline void QtScreenSupport::redraw( void )
-{
-    m_device->updateGL();
-}
-
-inline void QtScreenSupport::showFullScreen( void )
-{
-    m_device->QWidget::showFullScreen();
-}
-
-inline void QtScreenSupport::showNormal( void )
-{
-    m_device->QWidget::showNormal();
-}
-
-inline void QtScreenSupport::activateWindow( void )
-{
-#if ( KVS_QT_VERSION >= 4 )
-    m_device->QWidget::activateWindow();
-#else
-    m_device->QWidget::setActiveWindow();
-#endif
-}
-
-inline void QtScreenSupport::clearFocus( void )
-{
-    m_device->QWidget::clearFocus();
-}
-
-inline void QtScreenSupport::resize( int w, int h )
-{
-    m_device->QWidget::resize( w, h );
-}
-
-inline void QtScreenSupport::move( int x, int y )
-{
-    m_device->QWidget::move( x, y );
-}
-
 } // end of namespace kvs
-
-#endif // KVS__QT_SCREEN_SUPPORT_H_INCLUDE

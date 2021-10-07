@@ -28,7 +28,7 @@ class Application : public kvs::ApplicationBase
     kvsClassName( kvs::qt::Application );
 
 private:
-    QApplication* m_app; ///< Qt application
+    QApplication* m_app = nullptr; ///< Qt application
 
 public:
     Application( int& argc, char** argv );

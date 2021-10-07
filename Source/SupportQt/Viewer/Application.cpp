@@ -23,9 +23,9 @@ namespace qt
  */
 /*===========================================================================*/
 Application::Application( int& argc, char** argv ):
-    kvs::ApplicationBase( argc, argv )
+    kvs::ApplicationBase( argc, argv ),
+    m_app( new QApplication( argc, argv ) )
 {
-    m_app = new QApplication( argc, argv );
 }
 
 /*===========================================================================*/

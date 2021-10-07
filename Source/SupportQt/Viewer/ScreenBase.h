@@ -37,11 +37,10 @@ public:
     static const ScreenBase* DownCast( const kvs::ScreenBase* screen );
 
 private:
-    int m_id; ///< window ID
-    kvs::MouseEvent* m_mouse_event; ///< mouse event
-    kvs::KeyEvent* m_key_event; ///< key event
-    kvs::WheelEvent* m_wheel_event; ///< wheel event
-//    bool m_is_fullscreen; ///< check flag whether the window is fullscreen
+    int m_id = -1; ///< window ID
+    kvs::MouseEvent* m_mouse_event = nullptr; ///< mouse event
+    kvs::KeyEvent* m_key_event = nullptr; ///< key event
+    kvs::WheelEvent* m_wheel_event = nullptr; ///< wheel event
 
 public:
     ScreenBase( kvs::qt::Application* application = 0, QWidget* parent = 0 );
@@ -65,7 +64,6 @@ public:
     virtual void pushDown();
     virtual void redraw();
     virtual void resize( int width, int height );
-//    virtual bool isFullScreen() const;
 
     virtual void enable() {}
     virtual void disable() {}

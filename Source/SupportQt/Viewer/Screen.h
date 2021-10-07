@@ -35,22 +35,21 @@ class Screen : public kvs::qt::ScreenBase
     Q_OBJECT
 
 public:
-    typedef kvs::qt::ScreenBase BaseClass;
-    typedef kvs::Scene::ControlTarget ControlTarget;
+    using BaseClass = kvs::qt::ScreenBase;
+    using ControlTarget = kvs::Scene::ControlTarget;
 
     static Screen* DownCast( kvs::ScreenBase* screen );
     static const Screen* DownCast( const kvs::ScreenBase* screen );
 
 private:
-    kvs::Scene* m_scene; ///< scene
-    kvs::InteractorBase* m_interactor; ///< interactor
+    kvs::Scene* m_scene = nullptr; ///< scene
+    kvs::InteractorBase* m_interactor = nullptr; ///< interactor
 
 public:
-
     Screen( kvs::qt::Application* application = 0, QWidget* parent = 0 );
     virtual ~Screen();
 
-    kvs::Scene* scene();
+    kvs::Scene* scene() { return m_scene; }
 
     void setTitle( const std::string& title );
     void setPosition( const int x, const int y );

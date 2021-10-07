@@ -107,17 +107,11 @@ const ScreenBase* ScreenBase::DownCast( const kvs::ScreenBase* screen )
 /*===========================================================================*/
 ScreenBase::ScreenBase( kvs::qt::Application* application, QWidget* parent ):
     QGLWidget( parent ),
-    m_id( -1 ),
-    m_mouse_event( 0 ),
-    m_key_event( 0 ),
-    m_wheel_event( 0 )
-//    m_is_fullscreen( false )
+    m_mouse_event( new kvs::MouseEvent() ),
+    m_key_event( new kvs::KeyEvent() ),
+    m_wheel_event( new kvs::WheelEvent() )
 {
     if ( application ) application->attach( this );
-
-    m_mouse_event = new kvs::MouseEvent();
-    m_key_event = new kvs::KeyEvent();
-    m_wheel_event = new kvs::WheelEvent();
 }
 
 /*===========================================================================*/
@@ -127,9 +121,9 @@ ScreenBase::ScreenBase( kvs::qt::Application* application, QWidget* parent ):
 /*===========================================================================*/
 ScreenBase::~ScreenBase()
 {
-    delete m_mouse_event;
-    delete m_key_event;
-    delete m_wheel_event;
+    if ( m_mouse_event ) { delete m_mouse_event; }
+    if ( m_key_event ) { delete m_key_event; }
+    if ( m_wheel_event ) { delete m_wheel_event; }
 }
 
 void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
@@ -241,8 +235,6 @@ void ScreenBase::showFullScreen()
 /*===========================================================================*/
 void ScreenBase::showNormal()
 {
-//    if ( !m_is_fullscreen ) return;
-//    m_is_fullscreen = false;
     if ( !BaseClass::isFullScreen() ) { return; }
     BaseClass::showNormal();
 
@@ -308,17 +300,6 @@ void ScreenBase::resize( int width, int height )
     BaseClass::setSize( width, height );
     QGLWidget::resize( width, height );
 }
-
-/*===========================================================================*/
-/**
- *  @brief  Checks whether the window is full-screen or not.
- *  @return true, if the window is full-screen
- */
-/*===========================================================================*/
-//bool ScreenBase::isFullScreen() const
-//{
-//    return m_is_fullscreen;
-//}
 
 /*===========================================================================*/
 /**

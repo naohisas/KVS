@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__QT__KVS_MOUSE_BUTTON_H_INCLUDE
-#define KVS__QT__KVS_MOUSE_BUTTON_H_INCLUDE
-
+#pragma once
 #include "../Qt.h"
 #include <kvs/MouseButton>
 
@@ -25,7 +23,6 @@ namespace qt
 class KVSMouseButton
 {
 public:
-
 #if ( KVS_QT_VERSION >= 4 )
     static int Button( Qt::MouseButton button );
 #else
@@ -60,5 +57,3 @@ inline int KVSMouseButton::Button( Qt::ButtonState button )
 } // end of namespace qt
 
 } // end of namespace kvs
-
-#endif // KVS__QT__KVS_MOUSE_BUTTON_H_INCLUDE

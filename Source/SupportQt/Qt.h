@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__QT__QT_H_INCLUDE
-#define KVS__QT__QT_H_INCLUDE
-
+#pragma once
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -32,6 +30,8 @@
 #define KVS_QT_VERSION 4
 #elif ( QT_VERSION >= 0x050000 && QT_VERSION < 0x060000 )
 #define KVS_QT_VERSION 5
+#elif ( QT_VERSION >= 0x060000 && QT_VERSION < 0x070000 )
+#define KVS_QT_VERSION 6
 #else
 #define KVS_QT_VERSION 0
 #endif
@@ -41,6 +41,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtOpenGL>
+
 #else
 #if ( KVS_QT_VERSION == 4 )
 #include <QtCore>
@@ -51,6 +52,7 @@
 #if QT_VERSION >= 0x040700
 #include <QGLBuffer>
 #endif
+
 #else // KVS_QT_VERSION <= 3
 #include <qapplication.h>
 #include <qnamespace.h>
@@ -94,5 +96,3 @@ inline std::string Version()
 } // end of namespace qt
 
 } // end of namespace kvs
-
-#endif // KVS__QT__QT_H_INCLUDE

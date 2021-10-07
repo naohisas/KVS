@@ -66,10 +66,10 @@ const Screen* Screen::DownCast( const kvs::ScreenBase* screen )
  */
 /*===========================================================================*/
 Screen::Screen( kvs::qt::Application* application, QWidget* parent ):
-    kvs::qt::ScreenBase( application, parent )
+    kvs::qt::ScreenBase( application, parent ),
+    m_scene( new kvs::Scene( this ) ),
+    m_interactor( new kvs::TrackballInteractor() )
 {
-    m_scene = new kvs::Scene( this );
-    m_interactor = new kvs::TrackballInteractor();
     BaseClass::setEvent( m_interactor, "DefaultInteractor" );
 
     // Change default focus policy to Qt::StrongFocus from Qt::NoFocus.
@@ -85,17 +85,6 @@ Screen::~Screen()
 {
     if ( m_scene ) { delete m_scene; }
     if ( m_interactor ) { delete m_interactor; }
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return pointer to the scene.
- *  @return pointer to the scene
- */
-/*===========================================================================*/
-kvs::Scene* Screen::scene()
-{
-    return m_scene;
 }
 
 /*===========================================================================*/

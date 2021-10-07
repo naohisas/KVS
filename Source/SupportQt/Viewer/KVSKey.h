@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__QT__KVS_KEY_H_INCLUDE
-#define KVS__QT__KVS_KEY_H_INCLUDE
-
+#pragma once
 #include "../Qt.h"
 #include <kvs/Key>
 
@@ -165,5 +163,3 @@ inline int KVSKey::Modifier( Qt::ButtonState modifier )
 } // end of namespace qt
 
 } // end of namespace kvs
-
-#endif // KVS__QT__KVS_KEY_H_INCLUDE
