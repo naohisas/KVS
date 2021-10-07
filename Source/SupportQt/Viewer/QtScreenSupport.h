@@ -22,14 +22,18 @@ class QtScreenSupport
     kvsClassName( kvs::QtScreenSupport );
 
 protected:
-    QGLWidget* m_device = nullptr; ///< reference to the screen device (not allocated)
+//    QGLWidget* m_device = nullptr; ///< reference to the screen device (not allocated)
+    QOpenGLWidget* m_device = nullptr; ///< reference to the screen device (not allocated)
 
 public:
-    QtScreenSupport( QGLWidget* device ) { this->attachDevice( device ); }
+//    QtScreenSupport( QGLWidget* device ) { this->attachDevice( device ); }
+    QtScreenSupport( QOpenGLWidget* device ) { this->attachDevice( device ); }
     virtual ~QtScreenSupport() {}
 
-    void attachDevice( QGLWidget* device ) { m_device = device; }
-    QGLWidget* device() { return m_device; }
+//    void attachDevice( QGLWidget* device ) { m_device = device; }
+    void attachDevice( QOpenGLWidget* device ) { m_device = device; }
+//    QGLWidget* device() { return m_device; }
+    QOpenGLWidget* device() { return m_device; }
     const QPoint position() { return m_device->pos(); }
     const QSize size() { return m_device->size(); }
     void redraw() { m_device->updateGL(); }

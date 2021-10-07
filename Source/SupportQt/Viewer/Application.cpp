@@ -35,7 +35,7 @@ Application::Application( int& argc, char** argv ):
 /*===========================================================================*/
 Application::~Application()
 {
-    if ( m_app ) delete m_app;
+    if ( m_app ) { delete m_app; }
 }
 
 /*===========================================================================*/

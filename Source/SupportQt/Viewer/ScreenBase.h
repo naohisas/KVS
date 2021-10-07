@@ -26,7 +26,8 @@ class Application;
  *  @brief  Qt screen base class.
  */
 /*===========================================================================*/
-class ScreenBase : public QGLWidget, public kvs::ScreenBase
+//class ScreenBase : public QGLWidget, public kvs::ScreenBase
+class ScreenBase : public QOpenGLWidget, public kvs::ScreenBase
 {
     Q_OBJECT
 

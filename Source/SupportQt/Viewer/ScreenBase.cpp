@@ -106,7 +106,8 @@ const ScreenBase* ScreenBase::DownCast( const kvs::ScreenBase* screen )
  */
 /*===========================================================================*/
 ScreenBase::ScreenBase( kvs::qt::Application* application, QWidget* parent ):
-    QGLWidget( parent ),
+//    QGLWidget( parent ),
+    QOpenGLWidget( parent ),
     m_mouse_event( new kvs::MouseEvent() ),
     m_key_event( new kvs::KeyEvent() ),
     m_wheel_event( new kvs::WheelEvent() )
@@ -156,16 +157,18 @@ void ScreenBase::create()
     m_id = id++;
 
     // Initialize display mode.
-    QGLFormat f = QGLFormat::defaultFormat();
-    f.setDoubleBuffer( displayFormat().doubleBuffer() );
-    f.setRgba( displayFormat().colorBuffer() );
-    f.setDepth( displayFormat().depthBuffer() );
-    f.setAccum( displayFormat().accumulationBuffer() );
-    f.setStencil( displayFormat().stencilBuffer() );
-    f.setStereo( displayFormat().stereoBuffer() );
-    f.setSampleBuffers( displayFormat().multisampleBuffer() );
-    f.setAlpha( displayFormat().alphaChannel() );
-    QGLFormat::setDefaultFormat( f );
+//    QGLFormat f = QGLFormat::defaultFormat();
+    QSurfaceFormat f = QSurfaceFormat::defaultFormat();
+//    f.setDoubleBuffer( displayFormat().doubleBuffer() );
+//    f.setRgba( displayFormat().colorBuffer() );
+//    f.setDepth( displayFormat().depthBuffer() );
+//    f.setAccum( displayFormat().accumulationBuffer() );
+//    f.setStencil( displayFormat().stencilBuffer() );
+//    f.setStereo( displayFormat().stereoBuffer() );
+//    f.setSampleBuffers( displayFormat().multisampleBuffer() );
+//    f.setAlpha( displayFormat().alphaChannel() );
+//    QGLFormat::setDefaultFormat( f );
+    QSurfaceFormat::setDefaultFormat( f );
 
     // Set screen geometry.
     if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
@@ -183,7 +186,8 @@ void ScreenBase::create()
         QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
     }
 
-    QGLWidget::makeCurrent();
+//    QGLWidget::makeCurrent();
+    QOpenGLWidget::makeCurrent();
     QWidget::show();
 }
 
@@ -216,13 +220,13 @@ void ScreenBase::show()
 /*===========================================================================*/
 void ScreenBase::showFullScreen()
 {
-//    if ( m_is_fullscreen ) return;
-//    m_is_fullscreen = true;
     if ( BaseClass::isFullScreen() ) { return; }
     BaseClass::showFullScreen();
 
-    const int x = QGLWidget::pos().x();
-    const int y = QGLWidget::pos().y();
+//    const int x = QGLWidget::pos().x();
+//    const int y = QGLWidget::pos().y();
+    const int x = QOpenGLWidget::pos().x();
+    const int y = QOpenGLWidget::pos().y();
     BaseClass::setPosition( x, y );
 
     QWidget::showFullScreen();
@@ -285,7 +289,8 @@ void ScreenBase::pushDown()
 /*===========================================================================*/
 void ScreenBase::redraw()
 {
-    QGLWidget::updateGL();
+//    QGLWidget::updateGL();
+    QOpenGLWidget::update();
 }
 
 /*===========================================================================*/
@@ -298,7 +303,8 @@ void ScreenBase::redraw()
 void ScreenBase::resize( int width, int height )
 {
     BaseClass::setSize( width, height );
-    QGLWidget::resize( width, height );
+//    QGLWidget::resize( width, height );
+    QOpenGLWidget::resize( width, height );
 }
 
 /*===========================================================================*/
@@ -369,7 +375,8 @@ void ScreenBase::resizeGL( int width, int height )
     // 2.9. In KVS with SupportQt, the width and height which are not scaled
     // are passed to the resizeEvent method in order to keep the compatibility
     // with the previous version of KVS-based applications.
-    const qreal scale = QGLWidget::devicePixelRatio();
+//    const qreal scale = QGLWidget::devicePixelRatio();
+    const qreal scale = QOpenGLWidget::devicePixelRatio();
     width = static_cast<size_t>( width / scale + 0.5 );
     height = static_cast<size_t>( height / scale + 0.5 );
 //#endif
