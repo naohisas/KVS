@@ -13,19 +13,19 @@ Not tested.
 ### Mac
 In case of Mac, the Qt can be installed by using Homebrew on a terminal as follows.
 ```
-$ brew install qt@5
+$ brew install qt
 ```
 In order to use qmake command, you may need to set:
 ```
-export PATH="/usr/local/opt/qt@5/bin:$PATH"     (intel mac)
-export PATH="/opt/homebrew/opt/qt@5/bin:$PATH"  (m1 mac)
+export PATH="/usr/local/opt/qt/bin:$PATH"     (intel mac)
+export PATH="/opt/homebrew/opt/qt/bin:$PATH"  (m1 mac)
 ```
-And mac SDK version in the mkspecs
+And check mac SDK version in the mkspecs
 ```
-$ vi /usr/local/opt/qt@5/mkspecs/common/macx.conf     (intel mac)
-$ vi /opt/homebrew/opt/qt@5/mkspecs/common/macx.conf  (m1 mac)
+$ vi /usr/local/opt/qt/mkspecs/common/macx.conf     (intel mac)
+$ vi /opt/homebrew/opt/qt/mkspecs/common/macx.conf  (m1 mac)
 
-Modify 'QMAKE_MACOSX_DEPLOYMENT_TARGET' and 'QT_MAC_SDK_VERSION_MAX'
+Modify 'QMAKE_MACOSX_DEPLOYMENT_TARGET' and 'QT_MAC_SDK_VERSION_MAX' (* Not required for Qt6?)
 e.g.)
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.3
 QT_MAC_SDK_VERSION_MAX = 11.3
