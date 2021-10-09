@@ -34,6 +34,10 @@ win32 {
 CONFIG += warn_off opengl staticlib
 QT     += opengl
 
+greaterThan( QT_MAJOR_VERSION, 5 ) {
+QT += openglwidgets
+}
+
 
 #=============================================================================
 #  definition

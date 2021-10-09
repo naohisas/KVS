@@ -42,6 +42,10 @@
 #include <QtGui>
 #include <QtOpenGL>
 
+#if ( KVS_QT_VERSION >= 6 )
+#include <QOpenGLWidget>
+#endif
+
 #else
 #if ( KVS_QT_VERSION == 4 )
 #include <QtCore>

@@ -203,7 +203,11 @@ void ScreenBase::create()
     if ( BaseClass::x() < 0 && BaseClass::y() < 0 )
     {
         // Centering
+#if ( KVS_QT_VERSION >= 6 )
+        const QRect desk = QGuiApplication::primaryScreen()->geometry();
+#else
         const QRect desk = QApplication::desktop()->screenGeometry();
+#endif
         const int px = ( desk.width() - BaseClass::width() ) / 2;
         const int py = ( desk.height() - BaseClass::height() ) / 2;
         const int offset = 20;
@@ -516,8 +520,13 @@ void ScreenBase::mouseDoubleClickEvent( QMouseEvent* event )
 /*===========================================================================*/
 void ScreenBase::wheelEvent( QWheelEvent* event )
 {
+#if ( KVS_QT_VERSION >= 6 )
+    m_wheel_event->setDirection( event->angleDelta().y() > 0 ? 1 : -1 );
+    m_wheel_event->setPosition( event->position().x(), event->position().y() );
+#else
     m_wheel_event->setDirection( event->delta() > 0 ? 1 : -1 );
     m_wheel_event->setPosition( event->x(), event->y() );
+#endif
 
     this->wheelEvent( m_wheel_event );
 }

@@ -47,7 +47,11 @@ TARGET = PROJECT_NAME_REPLACED_BY_KVSMAKE
 #=============================================================================
 #CONFIG += release warn_off opengl
 CONFIG += warn_off opengl
-QT     += opengl
+QT += opengl
+
+greaterThan( QT_MAJOR_VERSION, 5 ) {
+QT += openglwidgets
+}
 
 
 #=============================================================================

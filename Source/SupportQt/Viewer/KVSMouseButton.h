@@ -45,10 +45,14 @@ inline int KVSMouseButton::Button( Qt::ButtonState button )
 {
     switch( button )
     {
-    case Qt::LeftButton:  return( kvs::MouseButton::Left );
-    case Qt::MidButton:   return( kvs::MouseButton::Middle );
+    case Qt::LeftButton: return( kvs::MouseButton::Left );
+#if ( KVS_QT_VERSION >= 6 )
+    case Qt::MiddleButton: return( kvs::MouseButton::Middle );
+#else
+    case Qt::MidButton: return( kvs::MouseButton::Middle );
+#endif
     case Qt::RightButton: return( kvs::MouseButton::Right );
-    default:              break;
+    default: break;
     }
 
     return( button );
