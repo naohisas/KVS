@@ -62,6 +62,9 @@
 #endif
 #endif
 
+#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 ) )
+#define KVS_QT_QOPENGL_ENABLED
+#endif
 
 namespace kvs
 {
