@@ -58,7 +58,6 @@ bool Options::find( const Options::Keyword keyword ) const
 {
     std::list<Keyword>::const_iterator begin = this->values.begin();
     std::list<Keyword>::const_iterator end = this->values.end();
-
     return std::find( begin, end, keyword ) != end;
 }
 

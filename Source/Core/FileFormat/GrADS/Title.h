@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GRADS__TITLE_H_INCLUDE
-#define KVS__GRADS__TITLE_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <fstream>
 
@@ -24,7 +22,7 @@ namespace grads
 /*===========================================================================*/
 struct Title
 {
-    std::string name; ///< name
+    std::string name = ""; ///< name
 
     bool read( std::string line, std::ifstream& ifs );
 };
@@ -32,5 +30,3 @@ struct Title
 } // end of namespace grads
 
 } // end of namespace kvs
-
-#endif // KVS__GRADS__TITLE_H_INCLUDE

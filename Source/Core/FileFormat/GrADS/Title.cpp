@@ -26,9 +26,7 @@ bool Title::read( std::string line, std::ifstream& )
 {
     kvs::Tokenizer t( line, " \t\n" );
     t.token(); // TITLE
-
     this->name = t.token();
-
     return true;
 }
 

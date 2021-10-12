@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GRADS__OPTIONS_H_INCLUDE
-#define KVS__GRADS__OPTIONS_H_INCLUDE
-
+#pragma once
 #include <list>
 #include <string>
 #include <fstream>
@@ -39,7 +37,7 @@ struct Options
         Cray32bitIEEE
     };
 
-    std::list<Keyword> values; ///< keyword list
+    std::list<Keyword> values{}; ///< keyword list
 
     bool read( std::string line, std::ifstream& ifs );
     bool find( const Keyword keyword ) const;
@@ -48,5 +46,3 @@ struct Options
 } // end of namespace grads
 
 } // end of namespace kvs
-
-#endif // KVS__GRADS__OPTIONS_H_INCLUDE

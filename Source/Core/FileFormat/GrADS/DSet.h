@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GRADS__DSET_H_INCLUDE
-#define KVS__GRADS__DSET_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <fstream>
 
@@ -24,13 +22,10 @@ namespace grads
 /*===========================================================================*/
 struct DSet
 {
-    std::string name; ///< data filename
-
+    std::string name = ""; ///< data filename
     bool read( std::string line, std::ifstream& ifs );
 };
 
 } // end of namespace grads
 
 } // end of namespace kvs
-
-#endif // KVS__GRADS__DSET_H_INCLUDE

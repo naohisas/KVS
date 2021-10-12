@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GRADS__TDEF_H_INCLUDE
-#define KVS__GRADS__TDEF_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <fstream>
 
@@ -26,22 +24,22 @@ struct TDef
 {
     struct Start
     {
-        int hour; ///< hour
-        int minute; ///< minute
-        int day; ///< day
-        int month; ///< month
-        int year; ///< year
+        int hour = 0; ///< hour
+        int minute = 0; ///< minute
+        int day = 1; ///< day
+        int month = 1; ///< month
+        int year = 0; ///< year
     };
 
     struct Increment
     {
-        int value; ///< value
-        int unit; ///< unit (0:mn, 1:hr, 2:dy, 3:mo, 4:yr)
+        int value = 0; ///< value
+        int unit = 0; ///< unit (0:mn, 1:hr, 2:dy, 3:mo, 4:yr)
     };
 
-    size_t num; ///< number of the time steps
-    Start start; ///< start time/date
-    Increment increment; ///< increment time
+    size_t num = 0; ///< number of the time steps
+    Start start{}; ///< start time/date
+    Increment increment{}; ///< increment time
 
     bool read( std::string line, std::ifstream& ifs );
 
@@ -51,5 +49,3 @@ struct TDef
 } // end of namespace grads
 
 } // end of namespace kvs
-
-#endif // KVS__GRADS__TDEF_H_INCLUDE

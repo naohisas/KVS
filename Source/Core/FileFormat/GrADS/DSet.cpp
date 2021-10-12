@@ -26,9 +26,7 @@ bool DSet::read( std::string line, std::ifstream& )
 {
     kvs::Tokenizer t( line, " \t\n" );
     t.token(); // DSET
-
     this->name = t.token();
-
     return true;
 }
 

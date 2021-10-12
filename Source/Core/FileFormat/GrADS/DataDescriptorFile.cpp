@@ -45,112 +45,11 @@ namespace grads
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new DataDescriptorFile class.
+ *  @brief  Prints data information.
+ *  @param  os [in] output stream
+ *  @param  indent [in] indent
  */
 /*===========================================================================*/
-DataDescriptorFile::DataDescriptorFile( void )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns DSET entry information.
- *  @return DSET entry information
- */
-/*===========================================================================*/
-const kvs::grads::DSet& DataDescriptorFile::dset( void ) const
-{
-    return( m_dset );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns UNDEF entry information.
- *  @return UNDEF entry information
- */
-/*===========================================================================*/
-const kvs::grads::Undef& DataDescriptorFile::undef( void ) const
-{
-    return( m_undef );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns TITLE entry information.
- *  @return TITLE entry information
- */
-/*===========================================================================*/
-const kvs::grads::Title& DataDescriptorFile::title( void ) const
-{
-    return( m_title );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns OPTIONS entry information.
- *  @return OPTIONS entry information
- */
-/*===========================================================================*/
-const kvs::grads::Options& DataDescriptorFile::options( void ) const
-{
-    return( m_options );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns XDEF entry information.
- *  @return XDEF entry information
- */
-/*===========================================================================*/
-const kvs::grads::XDef& DataDescriptorFile::xdef( void ) const
-{
-    return( m_xdef );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns YDEF entry information.
- *  @return YDEF entry information
- */
-/*===========================================================================*/
-const kvs::grads::YDef& DataDescriptorFile::ydef( void ) const
-{
-    return( m_ydef );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns ZDEF entry information.
- *  @return ZDEF entry information
- */
-/*===========================================================================*/
-const kvs::grads::ZDef& DataDescriptorFile::zdef( void ) const
-{
-    return( m_zdef );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns TDEF entry information.
- *  @return TDEF entry information
- */
-/*===========================================================================*/
-const kvs::grads::TDef& DataDescriptorFile::tdef( void ) const
-{
-    return( m_tdef );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns VARS entry information.
- *  @return VARS entry information
- */
-/*===========================================================================*/
-const kvs::grads::Vars& DataDescriptorFile::vars( void ) const
-{
-    return( m_vars );
-}
-
 void DataDescriptorFile::print( std::ostream& os, const kvs::Indent& indent ) const
 {
     os << indent << "Data filename (DSET) : " << m_dset.name << std::endl;

@@ -27,9 +27,7 @@ bool Undef::read( std::string line, std::ifstream& )
 {
     kvs::Tokenizer t( line, " \t\n" );
     t.token(); // UNDEF
-
     this->value = static_cast<float>( atof( t.token().c_str() ) );
-
     return true;
 }
 

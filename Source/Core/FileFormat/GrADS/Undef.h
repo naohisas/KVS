@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GRADS__UNDEF_H_INCLUDE
-#define KVS__GRADS__UNDEF_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <fstream>
 #include <kvs/Type>
@@ -25,7 +23,7 @@ namespace grads
 /*===========================================================================*/
 struct Undef
 {
-    kvs::Real32 value; ///< undefined value
+    kvs::Real32 value = 0.0f; ///< undefined value
 
     bool read( std::string line, std::ifstream& ifs );
 };
@@ -33,5 +31,3 @@ struct Undef
 } // end of namespace grads
 
 } // end of namespace kvs
-
-#endif // KVS__GRADS__UNDEF_H_INCLUDE

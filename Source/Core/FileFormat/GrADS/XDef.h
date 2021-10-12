@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GRADS__XDEF_H_INCLUDE
-#define KVS__GRADS__XDEF_H_INCLUDE
-
+#pragma once
 #include "XYZDef.h"
 
 
@@ -16,10 +14,8 @@ namespace kvs
 namespace grads
 {
 
-typedef XYZDef XDef;
+using XDef = XYZDef;
 
 } // end of namespace grads
 
 } // end of namespace kvs
-
-#endif // KVS__GRADS__XDEF_H_INCLUDE

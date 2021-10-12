@@ -137,66 +137,11 @@ bool GrADS::CheckExtension( const std::string& filename )
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new GrADS class.
+ *  @brief  Prints data information.
+ *  @param  os [in] output stream
+ *  @param  indent [in] indent
  */
 /*===========================================================================*/
-GrADS::GrADS()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new GrADS class.
- *  @param  filename [in] filename
- */
-/*===========================================================================*/
-GrADS::GrADS( const std::string& filename )
-{
-    this->read( filename );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the GrADS class.
- */
-/*===========================================================================*/
-GrADS::~GrADS()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns data descriptor file.
- *  @return data descriptor file
- */
-/*===========================================================================*/
-const GrADS::DataDescriptorFile& GrADS::dataDescriptor() const
-{
-    return m_data_descriptor;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns gridded binary data list.
- *  @return gridded binary data list
- */
-/*===========================================================================*/
-const GrADS::GriddedBinaryDataFileList& GrADS::dataList() const
-{
-    return m_data_list;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns gridded binary data specified by the index.
- *  @return gridded binary data
- */
-/*===========================================================================*/
-const GrADS::GriddedBinaryDataFile& GrADS::data( const size_t index ) const
-{
-    return m_data_list[index];
-}
-
 void GrADS::print( std::ostream& os, const kvs::Indent& indent ) const
 {
     m_data_descriptor.print( os, indent );
@@ -315,7 +260,6 @@ void GrADS::print( std::ostream& os, const kvs::Indent& indent ) const
 bool GrADS::write( const std::string& filename )
 {
     kvs::IgnoreUnusedVariable( filename );
-
     return false;
 }
 

@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
-#ifndef KVS__GRADS__XYZDEF_H_INCLUDE
-#define KVS__GRADS__XYZDEF_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <fstream>
 #include <kvs/ValueArray>
@@ -37,9 +35,9 @@ struct XYZDef
         GausR40
     };
 
-    size_t num; ///< number of grid points
-    MappingMethod mapping; ///< mapping method
-    kvs::ValueArray<kvs::Real32> values; ///< values
+    size_t num = 0; ///< number of grid points
+    MappingMethod mapping = MappingMethod::Linear; ///< mapping method
+    kvs::ValueArray<kvs::Real32> values{}; ///< values
 
     bool read( std::string line, std::ifstream& ifs );
 };
@@ -47,5 +45,3 @@ struct XYZDef
 } // end of namespace grads
 
 } // end of namespace kvs
-
-#endif // KVS__GRADS__XYZDEF_H_INCLUDE
