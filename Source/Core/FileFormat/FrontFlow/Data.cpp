@@ -157,15 +157,24 @@ bool Data::readAscii( FILE* fp, const std::string tag )
     }
 
     // Read a keyword.
-    fgets( line, line_size, fp );
+    if ( !fgets( line, line_size, fp ) )
+    {
+        kvsMessageError() << "Cannot read a line for keyword." << std::endl;
+    }
     m_keyword = std::string( line, 8 );
 
     // Read a commnet (data name).
-    fgets( line, line_size, fp );
+    if ( !fgets( line, line_size, fp ) )
+    {
+        kvsMessageError() << "Cannot read a line for comment." << std::endl;
+    }
     m_comment = std::string( line, 30 );
 
     // Read a num (vector length) and a num2 (number of elements).
-    fgets( line, line_size, fp );
+    if ( !fgets( line, line_size, fp ) )
+    {
+        kvsMessageError() << "Cannot read a line for num and num2." << std::endl;
+    }
     sscanf( line, "%d %d", &m_num, &m_num2 );
 
     // Read 2D array.
@@ -179,7 +188,10 @@ bool Data::readAscii( FILE* fp, const std::string tag )
         size_t counter = 0;
         while ( counter < size )
         {
-            fgets( line, line_size, fp );
+            if ( !fgets( line, line_size, fp ) )
+            {
+                kvsMessageError() << "Cannot read a line for values." << std::endl;
+            }
             char* value = strtok( line, delim );
             for ( ; ; )
             {
@@ -201,7 +213,10 @@ bool Data::readAscii( FILE* fp, const std::string tag )
         size_t counter = 0;
         while ( counter < size )
         {
-            fgets( line, line_size, fp );
+            if ( !fgets( line, line_size, fp ) )
+            {
+                kvsMessageError() << "Cannot read a line for values." << std::endl;
+            }
             char* value = strtok( line, delim );
             for ( ; ; )
             {
@@ -230,7 +245,7 @@ bool Data::readBinary( FILE* fp, const bool swap )
     // Read an array-type-header (#FLT_ARY or #INT_ARY).
     char array_type_header[8];
     fseek( fp, 4, SEEK_CUR );
-    fread( array_type_header, 1, 8, fp );
+    if ( fread( array_type_header, 1, 8, fp ) );
     fseek( fp, 4, SEEK_CUR );
     m_array_type_header = std::string( array_type_header, 8 );
     if ( !( m_array_type_header == "#FLT_ARY" ||
@@ -243,7 +258,7 @@ bool Data::readBinary( FILE* fp, const bool swap )
     // Read a keyword.
     char keyword[8];
     fseek( fp, 4, SEEK_CUR );
-    fread( keyword, 1, 8, fp );
+    if ( fread( keyword, 1, 8, fp ) );
     fseek( fp, 4, SEEK_CUR );
     m_keyword = std::string( keyword, 8 );
 
@@ -251,14 +266,14 @@ bool Data::readBinary( FILE* fp, const bool swap )
     char comment[30];
     for ( size_t i = 0; i < 30; i++ ) comment[i] = '\0';
     fseek( fp, 4, SEEK_CUR );
-    fread( comment, 1, 30, fp );
+    if ( fread( comment, 1, 30, fp ) );
     fseek( fp, 4, SEEK_CUR );
     m_comment = std::string( comment );
 
     // Read a num (vector length) and a num2 (number of elements).
     fseek( fp, 4, SEEK_CUR );
-    fread( &m_num, 4, 1, fp );
-    fread( &m_num2, 4, 1, fp );
+    if ( fread( &m_num, 4, 1, fp ) );
+    if ( fread( &m_num2, 4, 1, fp ) );
     fseek( fp, 4, SEEK_CUR );
     if ( swap ) kvs::Endian::Swap( &m_num );
     if ( swap ) kvs::Endian::Swap( &m_num2 );
@@ -270,7 +285,7 @@ bool Data::readBinary( FILE* fp, const bool swap )
         m_flt_array.allocate( size );
         kvs::Real32* pointer = m_flt_array.data();
         fseek( fp, 4, SEEK_CUR );
-        fread( pointer, sizeof(kvs::Real32), size, fp );
+        if ( fread( pointer, sizeof(kvs::Real32), size, fp ) );
         fseek( fp, 4, SEEK_CUR );
         if ( swap ) kvs::Endian::Swap( pointer, size );
     }
@@ -280,7 +295,7 @@ bool Data::readBinary( FILE* fp, const bool swap )
         m_int_array.allocate( size );
         kvs::Int32* pointer = m_int_array.data();
         fseek( fp, 4, SEEK_CUR );
-        fread( pointer, sizeof(kvs::Int32), size, fp );
+        if ( fread( pointer, sizeof(kvs::Int32), size, fp ) );
         fseek( fp, 4, SEEK_CUR );
         if ( swap ) kvs::Endian::Swap( pointer, size );
     }

@@ -131,13 +131,19 @@ bool DataSet::readAscii( FILE* fp )
 
     // Read a number of comments.
     kvs::Int32 ncomments = 0;
-    fgets( line, line_size, fp );
+    if ( !fgets( line, line_size, fp ) )
+    {
+        kvsMessageError() << "Cannot read a line for number of comments." << std::endl;
+    }
     sscanf( line, "%d", &ncomments );
 
     // Read commnets.
     for ( size_t i = 0; i < size_t( ncomments ); i++ )
     {
-        fgets( line, line_size, fp );
+        if ( !fgets( line, line_size, fp ) )
+        {
+            kvsMessageError() << "Cannot read a line for comments." << std::endl;
+        }
         if ( line[ strlen(line) - 1 ] == '\n' ) line[ strlen(line) - 1 ] = '\0';
 
         const std::string comment( line );
@@ -147,7 +153,10 @@ bool DataSet::readAscii( FILE* fp )
     // Read data set.
     for ( ; ; )
     {
-        fgets( line, line_size, fp );
+        if ( !fgets( line, line_size, fp ) )
+        {
+            kvsMessageError() << "Cannot read a line for data set." << std::endl;
+        }
         const std::string tag( line, 8 );
         if ( tag == "#ENDFILE" || tag == "#NEW_SET" ) { break; }
 
@@ -172,7 +181,7 @@ bool DataSet::readBinary( FILE* fp, const bool swap )
     // Read a number of comments.
     kvs::Int32 ncomments = 0;
     fseek( fp, 4, SEEK_CUR );
-    fread( &ncomments, 4, 1, fp );
+    if ( fread( &ncomments, 4, 1, fp ) );
     fseek( fp, 4, SEEK_CUR );
     if ( swap ) kvs::Endian::Swap( &ncomments );
 
@@ -183,7 +192,7 @@ bool DataSet::readBinary( FILE* fp, const bool swap )
     {
         memcpy( comment, initialize, 60 );
         fseek( fp, 4, SEEK_CUR );
-        fread( comment, 1, 60, fp );
+        if ( fread( comment, 1, 60, fp ) );
         fseek( fp, 4, SEEK_CUR );
 
         m_comment_list.push_back( std::string( comment, 60 ) );
@@ -197,7 +206,7 @@ bool DataSet::readBinary( FILE* fp, const bool swap )
         fpos_t fpos;
         fgetpos( fp, &fpos );
         fseek( fp, 4, SEEK_CUR );
-        fread( buffer, 1, 8, fp );
+        if ( fread( buffer, 1, 8, fp ) );
         fseek( fp, 4, SEEK_CUR );
         fsetpos( fp, &fpos );
 

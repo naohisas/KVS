@@ -195,7 +195,7 @@ bool File::is_ascii( const std::string filename )
 
     // Read 8 characters (8 bytes).
     char buffer[8];
-    fread( buffer, 1, 8, fp );
+    if ( fread( buffer, 1, 8, fp ) );
 
     fclose( fp );
 
@@ -221,7 +221,7 @@ bool File::is_binary( const std::string filename )
     // Read 8 characters (8 bytes).
     char buffer[8];
     fseek( fp, 4, SEEK_SET );
-    fread( buffer, 1, 8, fp );
+    if (fread( buffer, 1, 8, fp ) );
 
     fclose( fp );
 
@@ -249,18 +249,27 @@ bool File::read_ascii( const std::string filename )
     memset( line, 0, line_size );
 
     // Read a file-type-header (#A_GF_V1).
-    fgets( line, line_size, fp );
+    if ( !fgets( line, line_size, fp ) )
+    {
+        kvsMessageError() << "Cannot read a line for file-type-header." << std::endl;
+    }
     m_file_type_header = std::string( line, 8 );
 
     // Read a number of comments.
     kvs::Int32 ncomments = 0;
-    fgets( line, line_size, fp );
+    if ( !fgets( line, line_size, fp ) )
+    {
+        kvsMessageError() << "Cannot read a line for number of comments." << std::endl;
+    }
     sscanf( line, "%d", &ncomments );
 
     // Read commnets.
     for ( size_t i = 0; i < size_t( ncomments ); i++ )
     {
-        fgets( line, line_size, fp );
+        if ( !fgets( line, line_size, fp ) )
+        {
+            kvsMessageError() << "Cannot read a line for comments." << std::endl;
+        }
         if ( line[ strlen(line) - 1 ] == '\n' ) line[ strlen(line) - 1 ] = '\0';
 
         const std::string comment( line );
@@ -306,14 +315,14 @@ bool File::read_binary( const std::string filename, const bool swap )
     // Read a file-type-header (#U_GF_V1).
     char file_type_header[8];
     fseek( fp, 4, SEEK_SET );
-    fread( file_type_header, 1, 8, fp );
+    if ( fread( file_type_header, 1, 8, fp ) );
     fseek( fp, 4, SEEK_CUR );
     m_file_type_header = std::string( file_type_header, 8 );
 
     // Read a number of comments.
     kvs::Int32 ncomments = 0;
     fseek( fp, 4, SEEK_CUR );
-    fread( &ncomments, 4, 1, fp );
+    if ( fread( &ncomments, 4, 1, fp ) );
     fseek( fp, 4, SEEK_CUR );
     if ( swap ) kvs::Endian::Swap( &ncomments );
 
@@ -324,7 +333,7 @@ bool File::read_binary( const std::string filename, const bool swap )
     {
         memcpy( comment, initialize, 60 );
         fseek( fp, 4, SEEK_CUR );
-        fread( comment, 1, 60, fp );
+        if ( fread( comment, 1, 60, fp ) );
         fseek( fp, 4, SEEK_CUR );
 
         m_comment_list.push_back( std::string( comment, 60 ) );
@@ -335,7 +344,7 @@ bool File::read_binary( const std::string filename, const bool swap )
     {
         char buffer[8];
         fseek( fp, 4, SEEK_CUR );
-        fread( buffer, 1, 8, fp );
+        if ( fread( buffer, 1, 8, fp ) );
         fseek( fp, 4, SEEK_CUR );
 
         if ( strncmp( buffer, "#ENDFILE", 8 ) == 0 ) break;

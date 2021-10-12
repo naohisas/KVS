@@ -903,7 +903,11 @@ void FieldViewData::read_variables( FILE* fp, size_t gindex )
                 variable.data.allocate( grid.nodes.size() );
                 for ( size_t j = 0; j < grid.nodes.size(); j++ )
                 {
-                    float data; fscanf( fp, "%f", &data );
+                    float data = 0.0f;
+                    if ( fscanf( fp, "%f", &data ) == -1 )
+                    {
+                        kvsMessageError() << "Cannot read data in VARIABLES." << std::endl;
+                    }
                     variable.data[j] = data;
                 }
 

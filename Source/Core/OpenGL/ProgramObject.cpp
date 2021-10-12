@@ -598,7 +598,11 @@ void ProgramObject::create(
     }
 
     // Link the shaders.
-    if ( !this->link( vertex_shader, fragment_shader ) )
+//    if ( !this->link( vertex_shader, fragment_shader ) )
+    this->create();
+    this->attach( fragment_shader );
+    this->attach( vertex_shader );
+    if ( this->link() )
     {
         kvsMessageError() << "Program object link failed.\n" << this->log() << std::endl;
         KVS_THROW( kvs::OpenGLException, "Program object link failed" );

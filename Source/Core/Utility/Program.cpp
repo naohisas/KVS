@@ -45,11 +45,13 @@ int Program::run()
  *  @return retur 0 if the process is done successfully
  */
 /*===========================================================================*/
-int Program::start( int argc, char** argv )
+//int Program::start( int argc, char** argv )
+int Program::start( int /* argc */, char** /* argv */ )
 {
     try
     {
-        return this->exec( argc, argv );
+//        return this->exec( argc, argv );
+        return this->exec();
     }
     catch ( const std::exception& err )
     {
