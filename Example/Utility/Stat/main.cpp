@@ -23,20 +23,33 @@ int main( int argc, char** argv )
 
     std::cout << std::endl;
     std::cout << "Sum(X): " << kvs::Stat::Sum( X ) << std::endl;
+
     std::cout << "Mean(X): " << kvs::Stat::Mean( X ) << std::endl;
     std::cout << indent << "OnlineMean(X): " << kvs::Stat::OnlineMean( X ) << std::endl;
+    kvs::Stat::IncrementalMean mean;
+    for ( auto&& x : X ) { mean.add( x ); }
+    std::cout << indent << "IncrementalMean(X): " << mean.value() << std::endl;
 
     std::cout << "Var(X): " << kvs::Stat::Var( X ) << std::endl;
     std::cout << indent << "ShiftedVar(X): " << kvs::Stat::ShiftedVar( X ) << std::endl;
     std::cout << indent << "TwoPassVar(X): " << kvs::Stat::TwoPassVar( X ) << std::endl;
     std::cout << indent << "CompensatedVar(X): " << kvs::Stat::CompensatedVar( X ) << std::endl;
     std::cout << indent << "OnlineVar(X): " << kvs::Stat::OnlineVar( X ) << std::endl;
+    kvs::Stat::IncrementalVar var;
+    for ( auto&& x : X ) { var.add( x ); }
+    std::cout << indent << "IncrementalVar(X): " << var.value() << std::endl;
+
     std::cout << "Cov(X,Y): " << kvs::Stat::Cov( X, Y ) << std::endl;
     std::cout << indent << "ShiftedCov(X,Y): " << kvs::Stat::ShiftedCov( X, Y ) << std::endl;
     std::cout << indent << "TwoPassCov(X,Y): " << kvs::Stat::TwoPassCov( X, Y ) << std::endl;
     std::cout << indent << "OnlineCov(X,Y): " << kvs::Stat::OnlineCov( X, Y ) << std::endl;
+    kvs::Stat::IncrementalCoV cov;
+    for ( size_t i = 0; i < X.size(); ++i ) { cov.add( X[i], Y[i] ); }
+    std::cout << indent << "IncrementalCoV(X): " << cov.value() << std::endl;
+
     std::cout << "StdDev(X): " << kvs::Stat::StdDev( X ) << std::endl;
     std::cout << indent << "StdDev(X,ShiftedVar): " << kvs::Stat::StdDev( X, kvs::Stat::ShiftedVar<float> ) << std::endl;
+
     std::cout << "Corr(X,Y): " << kvs::Stat::Corr( X, Y ) << std::endl;
     std::cout << "AutoCorr(X): " << kvs::Stat::AutoCorr( X ) << std::endl;
     std::cout << indent << "AutoCorr(X,0): " << kvs::Stat::AutoCorr( X, 0 ) << std::endl;
