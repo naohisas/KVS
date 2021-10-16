@@ -47,6 +47,13 @@ T Mean( const kvs::ValueArray<T>& values )
     return std::accumulate( values.begin(), values.end(), T(0) ) / values.size();
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns mean value of elements of the given array using online algorithm.
+ *  @param  values [in] array
+ *  @return mean value
+ */
+/*===========================================================================*/
 template <typename T>
 T OnlineMean( const kvs::ValueArray<T>& values )
 {
@@ -60,6 +67,30 @@ T OnlineMean( const kvs::ValueArray<T>& values )
     }
     return mean;
 }
+
+/*===========================================================================*/
+/**
+ *  @brief Mean value calculation class with incremental updating.
+ */
+/*===========================================================================*/
+class IncrementalMean
+{
+private:
+    double m_value = 0.0; ///< mean
+    size_t m_count = 0; ///< number of samples (added values)
+
+public:
+    IncrementalMean() = default;
+    double value() const { return m_value; }
+    size_t count() const { return m_count; }
+    template <typename T>
+    void add( const T v )
+    {
+        m_count++;
+        const auto delta = static_cast<double>( v ) - m_value;
+        m_value += delta / m_count;
+    }
+};
 
 /*===========================================================================*/
 /**
@@ -260,6 +291,33 @@ T OnlineVar( const kvs::ValueArray<T>& values, T* mean = nullptr )
 
 /*===========================================================================*/
 /**
+ *  @brief Variance calculation class with incremental updating.
+ */
+/*===========================================================================*/
+class IncrementalVar
+{
+private:
+    double m_mean = 0.0; ///< mean
+    double m_m2 = 0.0; ///< squared distance from the mean
+    size_t m_count = 0; ///< counter for adding values
+
+public:
+    IncrementalVar() = default;
+    double value() const { return m_m2 / ( m_count - 1 ); }
+    double mean() const { return m_mean; }
+    size_t count() const { return m_count; }
+    template <typename T>
+    void add( const T v )
+    {
+        m_count++;
+        const auto delta = static_cast<double>( v ) - m_mean;
+        m_mean += delta / m_count;
+        m_m2 += delta * ( v - m_mean );
+    }
+};
+
+/*===========================================================================*/
+/**
  *  @brief  Returns population variance calculated by using Welford's online algorithm.
  *  @param  values [in] array
  *  @param  mean [in/out] mean value
@@ -280,11 +338,17 @@ T OnlineVarP( const kvs::ValueArray<T>& values, T* mean = nullptr )
  *  @brief  Returns covariance of the given arrays.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return covariance
  */
 /*===========================================================================*/
 template <typename T>
-T Cov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T Cov(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() - 1 != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
@@ -300,6 +364,8 @@ T Cov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
         sum12 += values1[i] * values2[i];
     }
 
+    if ( mean1 ) { *mean1 = sum1 / n; }
+    if ( mean2 ) { *mean2 = sum2 / n; }
     return ( sum12 - ( sum1 * sum2 ) / n ) / ( n - 1 );
 }
 
@@ -308,16 +374,22 @@ T Cov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
  *  @brief  Returns population covariance the given arrays.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return population covariance
  */
 /*===========================================================================*/
 template <typename T>
-T CovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T CovP(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
     const size_t n = values1.size();
-    return ( n == 1 ) ? T(0) : Cov( values1, values2 ) * ( n - 1 ) / n;
+    return ( n == 1 ) ? T(0) : Cov( values1, values2, mean1, mean2 ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
@@ -325,11 +397,17 @@ T CovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
  *  @brief  Returns covariance of the given arrays with shifting data.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return covariance
  */
 /*===========================================================================*/
 template <typename T>
-T ShiftedCov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T ShiftedCov(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() - 1 != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
@@ -347,6 +425,8 @@ T ShiftedCov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& value
         sum12 += ( values1[i] - k1 ) * ( values2[i] - k2 );
     }
 
+    if ( mean1 ) { *mean1 = sum1 / n + k1; }
+    if ( mean2 ) { *mean2 = sum2 / n + k2; }
     return ( sum12 - ( sum1 * sum2 ) / n ) / ( n - 1 );
 }
 
@@ -355,16 +435,22 @@ T ShiftedCov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& value
  *  @brief  Returns population covariance of the given arrays with shifting data.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return population covariance
  */
 /*===========================================================================*/
 template <typename T>
-T ShiftedCovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T ShiftedCovP(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
     const size_t n = values1.size();
-    return ( n == 1 ) ? T(0) : ShiftedCov( values1, values2 ) * ( n - 1 ) / n;
+    return ( n == 1 ) ? T(0) : ShiftedCov( values1, values2, mean1, mean2 ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
@@ -372,24 +458,32 @@ T ShiftedCovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& valu
  *  @brief  Returns covariance calculated by using two-pass algorithm.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return covariance
  */
 /*===========================================================================*/
 template <typename T>
-T TwoPassCov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T TwoPassCov(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() - 1 != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
 
     const size_t n = values1.size();
-    const T mean1 = Sum( values1 ) / n;
-    const T mean2 = Sum( values2 ) / n;
+    const T m1 = Sum( values1 ) / n;
+    const T m2 = Sum( values2 ) / n;
     T cov = T(0);
     for ( size_t i = 0; i < n; i++ )
     {
-        cov += ( values1[i] - mean1 ) * ( values2[i] - mean2 ) / ( n - 1 );
+        cov += ( values1[i] - m1 ) * ( values2[i] - m2 ) / ( n - 1 );
     }
 
+    if ( mean1 ) { *mean1 = m1; }
+    if ( mean2 ) { *mean2 = m2; }
     return cov;
 }
 
@@ -398,16 +492,22 @@ T TwoPassCov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& value
  *  @brief  Returns population covariance calculated by using two-pass algorithm.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return population covariance
  */
 /*===========================================================================*/
 template <typename T>
-T TwoPassCovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T TwoPassCovP(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
     const size_t n = values1.size();
-    return ( n == 1 ) ? T(0) : TwoPassCov( values1, values2 ) * ( n - 1 ) / n;
+    return ( n == 1 ) ? T(0) : TwoPassCov( values1, values2, mean1, mean2 ) * ( n - 1 ) / n;
 }
 
 /*===========================================================================*/
@@ -415,28 +515,36 @@ T TwoPassCovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& valu
  *  @brief  Returns covariance calculated by using Welford's online algorithm.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return covariance
  */
 /*===========================================================================*/
 template <typename T>
-T OnlineCov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T OnlineCov(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() - 1 != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
 
     const size_t n = values1.size();
-    T mean1 = T(0);
-    T mean2 = T(0);
+    T m1 = T(0);
+    T m2 = T(0);
     T cov = T(0);
     for ( size_t i = 0; i < n; i++ )
     {
-        const T delta1 = ( values1[i] - mean1 ) / ( i + 1 );
-        const T delta2 = ( values2[i] - mean2 ) / ( i + 1 );
-        mean1 += delta1;
-        mean2 += delta2;
+        const T delta1 = ( values1[i] - m1 ) / ( i + 1 );
+        const T delta2 = ( values2[i] - m2 ) / ( i + 1 );
+        m1 += delta1;
+        m2 += delta2;
         cov += i * delta1 * delta2 - cov / ( i + 1 );
     }
 
+    if ( mean1 ) { *mean1 = m1; }
+    if ( mean2 ) { *mean2 = m2; }
     return cov * n / ( n - 1 );
 }
 
@@ -445,17 +553,54 @@ T OnlineCov( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values
  *  @brief  Returns population covariance calculated by using Welford's online algorithm.
  *  @param  values1 [in] array1
  *  @param  values2 [in] array2
+ *  @param  mean1 [in/out] mean value1
+ *  @param  mean2 [in/out] mean value2
  *  @return population covariance
  */
 /*===========================================================================*/
 template <typename T>
-T OnlineCovP( const kvs::ValueArray<T>& values1, const kvs::ValueArray<T>& values2 )
+T OnlineCovP(
+    const kvs::ValueArray<T>& values1,
+    const kvs::ValueArray<T>& values2,
+    T* mean1 = nullptr,
+    T* mean2 = nullptr )
 {
     KVS_ASSERT( values1.size() != 0 );
     KVS_ASSERT( values1.size() == values2.size() );
     const size_t n = values1.size();
-    return ( n == 1 ) ? T(0) : OnlineCov( values1, values2 ) * ( n - 1 ) / n;
+    return ( n == 1 ) ? T(0) : OnlineCov( values1, values2, mean1, mean2 ) * ( n - 1 ) / n;
 }
+
+/*===========================================================================*/
+/**
+ *  @brief Covariance calculation class with incremental updating.
+ */
+/*===========================================================================*/
+class IncrementalCoV
+{
+private:
+    double m_value = 0.0; ///< covariance
+    double m_mean1 = 0.0; ///< mean
+    double m_mean2 = 0.0; ///< mean
+    size_t m_count = 0; ///< counter for adding values
+
+public:
+    IncrementalCoV() = default;
+    double value() const { return m_value * m_count / static_cast<double>( m_count - 1 ); }
+    double mean1() const { return m_mean1; }
+    double mean2() const { return m_mean2; }
+    size_t count() const { return m_count; }
+    template <typename T>
+    void add( const T v1, const T v2 )
+    {
+        m_count++;
+        const auto delta1 = ( static_cast<double>( v1 ) - m_mean1 ) / m_count;
+        const auto delta2 = ( static_cast<double>( v2 ) - m_mean2 ) / m_count;
+        m_mean1 += delta1;
+        m_mean2 += delta2;
+        m_value += ( m_count - 1 ) * delta1 * delta2 - m_value / m_count;
+    }
+};
 
 /*===========================================================================*/
 /**

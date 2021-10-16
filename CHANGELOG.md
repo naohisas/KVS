@@ -1,5 +1,10 @@
 ### Version 3.x.x Released (2021.xx.xx)
 
+**Added new class**
++ kvs::Stat::IncrementalMean
++ kvs::Stat::IncrementalVar
++ kvs::Stat::IncrementalCov
+
 **Added new method**
 + kvs::ColorStream::isBoldEnabled
 + kvs::ColorStream::isDimEnabled
