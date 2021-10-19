@@ -185,6 +185,8 @@ $(OUTDIR)\.\Numeric\LUSolver.obj \
 $(OUTDIR)\.\Numeric\LassoRegression.obj \
 $(OUTDIR)\.\Numeric\LinearRegression.obj \
 $(OUTDIR)\.\Numeric\MersenneTwister.obj \
+$(OUTDIR)\.\Numeric\MultiDimensionalScaling.obj \
+$(OUTDIR)\.\Numeric\PrincipalComponentAnalysis.obj \
 $(OUTDIR)\.\Numeric\QRDecomposition.obj \
 $(OUTDIR)\.\Numeric\QRSolver.obj \
 $(OUTDIR)\.\Numeric\Quaternion.obj \

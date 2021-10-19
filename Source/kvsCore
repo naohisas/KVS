@@ -98,6 +98,8 @@
 #include <Core/Numeric/LassoRegression.h>
 #include <Core/Numeric/LinearRegression.h>
 #include <Core/Numeric/MersenneTwister.h>
+#include <Core/Numeric/MultiDimensionalScaling.h>
+#include <Core/Numeric/PrincipalComponentAnalysis.h>
 #include <Core/Numeric/QRDecomposer.h>
 #include <Core/Numeric/QRDecomposition.h>
 #include <Core/Numeric/QRSolver.h>

@@ -98,6 +98,8 @@ Numeric/LUSolver
 Numeric/LassoRegression
 Numeric/LinearRegression
 Numeric/MersenneTwister
+Numeric/MultiDimensionalScaling
+Numeric/PrincipalComponentAnalysis
 Numeric/QRDecomposer
 Numeric/QRDecomposition
 Numeric/QRSolver

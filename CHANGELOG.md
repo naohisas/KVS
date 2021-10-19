@@ -4,6 +4,8 @@
 + kvs::Stat::IncrementalMean
 + kvs::Stat::IncrementalVar
 + kvs::Stat::IncrementalCov
++ kvs::MultiDimensionalScaling
++ kvs::PrincipalComponentAnalysis
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled

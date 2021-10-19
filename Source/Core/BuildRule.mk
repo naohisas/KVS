@@ -185,6 +185,8 @@ $(OUTDIR)/./Numeric/LUSolver.o \
 $(OUTDIR)/./Numeric/LassoRegression.o \
 $(OUTDIR)/./Numeric/LinearRegression.o \
 $(OUTDIR)/./Numeric/MersenneTwister.o \
+$(OUTDIR)/./Numeric/MultiDimensionalScaling.o \
+$(OUTDIR)/./Numeric/PrincipalComponentAnalysis.o \
 $(OUTDIR)/./Numeric/QRDecomposition.o \
 $(OUTDIR)/./Numeric/QRSolver.o \
 $(OUTDIR)/./Numeric/Quaternion.o \
