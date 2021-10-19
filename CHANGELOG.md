@@ -88,6 +88,8 @@
 
 **Added new example**
 + Example/Utility/ColorStream
++ Example/Numeric/MultiDimensionalScaling
++ Example/Numeric/PrincipalComponentAnalysis
 
 
 ### Version 3.0.0 Released (2021.06.18)
