@@ -17,10 +17,10 @@ namespace
 {
 
 // Default values.
-const size_t Resolution = 256;
 const size_t NumberOfChannels = 3;
+kvs::ColorMap::ColorMapFunction DefaultColorMap = kvs::ColorMap::BrewerRdBu;
 
- /*===========================================================================*/
+/*===========================================================================*/
  /**
   *  @brief  Returns a piecewise-linearly interpolated color map.
   *  @param  colors [in] color list
@@ -60,6 +60,26 @@ inline kvs::ColorMap Interpolate(
 
 namespace kvs
 {
+
+void ColorMap::SetDefaultColorMap( ColorMapFunction func )
+{
+    ::DefaultColorMap = func;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns rainbow colormap.
+ *  @param  resolution [in] table resolution
+ *  @return rainbow colormap
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Rainbow( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors;
+    colors.push_back( kvs::HSVColor(   0.0f, 0.0f, 0.0f ) );
+    colors.push_back( kvs::RGBColor( 240.0f, 0.0f, 0.0f ) );
+    return ::Interpolate( colors, resolution, kvs::ColorMap::HSVSpace );
+}
 
 /*===========================================================================*/
 /**
@@ -484,53 +504,6 @@ kvs::ColorMap ColorMap::Cividis( const size_t resolution )
 
 /*==========================================================================*/
 /**
- *  @brief  Constructs a new ColorMap class.
- */
-/*==========================================================================*/
-ColorMap::ColorMap():
-    m_color_space( RGBSpace ),
-    m_resolution( ::Resolution ),
-    m_min_value( 0.0f ),
-    m_max_value( 0.0f ),
-    m_points(),
-    m_table()
-{
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new ColorMap class.
- *  @param  resolution [in] resolution
- */
-/*==========================================================================*/
-ColorMap::ColorMap( const size_t resolution ):
-    m_color_space( RGBSpace ),
-    m_resolution( resolution ),
-    m_min_value( 0.0f ),
-    m_max_value( 0.0f ),
-    m_points(),
-    m_table()
-{
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new ColorMap class.
- *  @param  table [in] opacity value table
- */
-/*==========================================================================*/
-ColorMap::ColorMap( const ColorMap::Table& table ):
-    m_color_space( RGBSpace ),
-    m_resolution( table.size() / 3 ),
-    m_min_value( 0.0f ),
-    m_max_value( 0.0f ),
-    m_points(),
-    m_table( table )
-{
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Constructs a new ColoryMap class.
  *  @param  resolution [in] resolution
  *  @param  min_value [in] min value
@@ -562,22 +535,6 @@ ColorMap::ColorMap( const ColorMap::Table& table, const float min_value, const f
     m_max_value( max_value ),
     m_points(),
     m_table( table )
-{
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new ColorMap class.
- *  @param  color_map [in] color map
- */
-/*==========================================================================*/
-ColorMap::ColorMap( const ColorMap& other ):
-    m_color_space( other.m_color_space ),
-    m_resolution( other.m_resolution ),
-    m_min_value( other.m_min_value ),
-    m_max_value( other.m_max_value ),
-    m_points( other.m_points ),
-    m_table( other.m_table )
 {
 }
 
@@ -627,26 +584,6 @@ void ColorMap::removePoint( const float value )
     m_points.remove_if( [ value ]( Point& p ) { return kvs::Math::Equal( p.first, value ); } );
 }
 
-/*===========================================================================*/
-/**
- *  @brief  Clears all of the control points.
- */
-/*===========================================================================*/
-void ColorMap::clearPoints()
-{
-    m_points.clear();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Reverses the control points.
- */
-/*===========================================================================*/
-void ColorMap::reversePoints()
-{
-    m_points.reverse();
-}
-
 /*==========================================================================*/
 /**
  *  @brief  Creates the color map.
@@ -662,31 +599,13 @@ void ColorMap::create()
         max_value = this->maxValue();
     }
 
-    m_table.allocate( ::NumberOfChannels * m_resolution );
     if ( m_points.size() == 0 )
     {
-        const float min_hue = 0.0f;   // blue
-        const float max_hue = 240.0f; // red
-        const float increment = ( max_hue - min_hue ) / static_cast<float>( m_resolution - 1 );
-
-        kvs::UInt8* color = m_table.data();
-        for ( size_t i = 0; i < m_resolution; ++i )
-        {
-            // HSV to RGB
-            const kvs::HSVColor hsv(
-                ( max_hue - increment * static_cast<float>( i ) ) / 360.0f,
-                1.0f,
-                1.0f );
-            const kvs::RGBColor rgb( hsv );
-
-            *( color++ ) = rgb.r();
-            *( color++ ) = rgb.g();
-            *( color++ ) = rgb.b();
-        }
+        *this = ::DefaultColorMap( m_resolution );
     }
-
     else
     {
+        m_table.allocate( ::NumberOfChannels * m_resolution );
         m_points.sort( [] ( const Point& p1, const Point& p2 ) { return p1.first < p2.first; } );
 
         const kvs::RGBColor black( 0, 0, 0 );

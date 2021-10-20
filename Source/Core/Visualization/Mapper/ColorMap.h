@@ -7,6 +7,7 @@
 #pragma once
 #include <list>
 #include <utility>
+#include <functional>
 #include <kvs/ValueArray>
 #include <kvs/Type>
 #include <kvs/RGBColor>
@@ -24,6 +25,11 @@ namespace kvs
 class ColorMap
 {
 public:
+    using ColorMapFunction = std::function<kvs::ColorMap(const size_t)>;
+    static void SetDefaultColorMap( ColorMapFunction func );
+
+    static kvs::ColorMap Rainbow( const size_t resolution = 256 );
+
     static kvs::ColorMap CoolWarm( const size_t resolution = 256 );
     static kvs::ColorMap BrewerBrBG( const size_t resolution = 256 );
     static kvs::ColorMap BrewerPiYG( const size_t resolution = 256 );
@@ -42,9 +48,9 @@ public:
     static kvs::ColorMap Cividis( const size_t resolution = 256 );
 
 public:
-    typedef kvs::ValueArray<kvs::UInt8> Table;
-    typedef std::pair<float,kvs::RGBColor> Point;
-    typedef std::list<Point> Points;
+    using Table = kvs::ValueArray<kvs::UInt8>;
+    using Point = std::pair<float,kvs::RGBColor>;
+    using Points = std::list<Point>;
 
     enum ColorSpace
     {
@@ -55,21 +61,21 @@ public:
     };
 
 private:
-    ColorSpace m_color_space; ///< color space for interpolation
-    size_t m_resolution; ///< table resolution
-    float m_min_value; ///< min. value
-    float m_max_value; ///< max. value
-    Points m_points; ///< control point list
-    Table m_table; ///< value table
+    ColorSpace m_color_space = RGBSpace; ///< color space for interpolation
+    size_t m_resolution = 256; ///< table resolution
+    float m_min_value = 0.0f; ///< min. value
+    float m_max_value = 0.0f; ///< max. value
+    Points m_points{}; ///< control point list
+    Table m_table{}; ///< value table
 
 public:
-    ColorMap();
-    explicit ColorMap( const size_t resolution );
-    explicit ColorMap( const Table& table );
-    ColorMap( const ColorMap& other );
+    ColorMap() = default;
+    explicit ColorMap( const size_t resolution ): m_resolution( resolution ) {}
+    explicit ColorMap( const Table& table ): m_resolution( table.size() / 3 ), m_table( table ) {}
+    ColorMap( const ColorMap& other ) { *this = other; }
     ColorMap( const size_t resolution, const float min_value, const float max_value );
     ColorMap( const Table& table, const float min_value, const float max_value );
-    virtual ~ColorMap() {}
+    virtual ~ColorMap() = default;
 
     ColorSpace colorSpace() const { return m_color_space; }
     float minValue() const { return m_min_value; }
@@ -89,8 +95,8 @@ public:
     void addPoint( const float value, const kvs::RGBColor color );
     void addPoint( const float value, const kvs::HSVColor color );
     void removePoint( const float value );
-    void clearPoints();
-    void reversePoints();
+    void clearPoints() { m_points.clear(); }
+    void reversePoints() { m_points.reverse(); }
     void create();
 
     const kvs::RGBColor operator []( const size_t index ) const;
