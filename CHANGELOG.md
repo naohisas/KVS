@@ -1,5 +1,7 @@
 ### Version 3.x.x Released (2021.xx.xx)
 
+**Default color changed: Rainbow to BrewerRdBu
+
 **Added new class**
 + kvs::Stat::IncrementalMean
 + kvs::Stat::IncrementalVar
@@ -54,6 +56,7 @@
 + kvs::StochasticUniformRenderer::setVertexShaderFile
 + kvs::StochasticUniformRenderer::setFragmentShaderFile
 + kvs::StochasticUniformRenderer::setShaderFiles
++ kvs::ColorMap::SetDefaultColorMap( ColorMapFunction )
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()
