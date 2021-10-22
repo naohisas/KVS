@@ -252,6 +252,7 @@ Visualization/Importer/StructuredVolumeImporter
 Visualization/Importer/TableImporter
 Visualization/Importer/UnstructuredVolumeImporter
 Visualization/Interactor/InteractorBase
+Visualization/Interactor/ParallelAxisInteractor
 Visualization/Interactor/TrackballInteractor
 Visualization/Mapper/Cell
 Visualization/Mapper/CellAdjacencyGraph

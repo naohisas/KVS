@@ -273,6 +273,7 @@ $(OUTDIR)/./Visualization/Importer/StructuredVolumeImporter.o \
 $(OUTDIR)/./Visualization/Importer/TableImporter.o \
 $(OUTDIR)/./Visualization/Importer/UnstructuredVolumeImporter.o \
 $(OUTDIR)/./Visualization/Interactor/InteractorBase.o \
+$(OUTDIR)/./Visualization/Interactor/ParallelAxisInteractor.o \
 $(OUTDIR)/./Visualization/Interactor/TrackballInteractor.o \
 $(OUTDIR)/./Visualization/Mapper/Cell.o \
 $(OUTDIR)/./Visualization/Mapper/CellAdjacencyGraph.o \

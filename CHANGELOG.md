@@ -8,6 +8,7 @@
 + kvs::Stat::IncrementalCov
 + kvs::MultiDimensionalScaling
 + kvs::PrincipalComponentAnalysis
++ kvs::ParallelAxisInteractor
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled

@@ -10,6 +10,7 @@
 #include <kvs/TableObject>
 #include <kvs/ParallelCoordinatesRenderer>
 #include <kvs/ParallelAxis>
+#include <kvs/ParallelAxisInteractor>
 
 
 /*===========================================================================*/
@@ -24,6 +25,7 @@ int main( int argc, char** argv )
 {
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
+    screen.setSize( 800, 300 );
 
     const size_t nsamples = 100;
     const auto random_x = kvs::ValueArray<float>::Random( nsamples );
@@ -47,11 +49,13 @@ int main( int argc, char** argv )
     renderer->setRightMargin( 50 );
 
     auto* axis = new kvs::ParallelAxis();
-    axis->setAxisColor( kvs::RGBColor::Black() );
     axis->setTopMargin( 40 );
     axis->setBottomMargin( 50 );
     axis->setLeftMargin( 50 );
     axis->setRightMargin( 50 );
+
+    kvs::ParallelAxisInteractor axis_interactor( axis );
+    screen.addEvent( &axis_interactor );
 
     screen.registerObject( object, renderer );
     screen.registerObject( object, axis );
