@@ -8,7 +8,9 @@
 #include <kvs/RendererBase>
 #include <kvs/Module>
 #include <kvs/RGBColor>
+#include <kvs/UIColor>
 #include <kvs/Painter>
+#include <kvs/TableObject>
 
 
 namespace kvs
@@ -29,18 +31,18 @@ class ParallelAxis : public kvs::RendererBase
     kvsModuleBaseClass( kvs::RendererBase );
 
 private:
-    size_t m_top_margin; ///< top margin
-    size_t m_bottom_margin; ///< bottom margin
-    size_t m_left_margin; ///< left margin
-    size_t m_right_margin; ///< right margin
-    kvs::Real32   m_axis_width; ///< axis width
-    kvs::RGBColor m_axis_color; ///< axis color
-    kvs::RGBColor m_value_color; ///< value color
-    kvs::RGBColor m_label_color; ///< label color
-    kvs::Painter m_painter; ///< painter
+    size_t m_top_margin = 20; ///< top margin
+    size_t m_bottom_margin = 20; ///< bottom margin
+    size_t m_left_margin = 30; ///< left margin
+    size_t m_right_margin = 30; ///< right margin
+    kvs::Real32   m_axis_width = 2.0f; ///< axis width
+    kvs::RGBColor m_axis_color = kvs::UIColor::Label(); ///< axis color
+    kvs::RGBColor m_value_color = kvs::UIColor::Label(); ///< value color
+    kvs::RGBColor m_label_color = kvs::UIColor::Label(); ///< label color
+    kvs::Painter m_painter{}; ///< painter
 
 public:
-    ParallelAxis();
+    ParallelAxis() = default;
 
     size_t topMargin() const { return m_top_margin; }
     size_t bottomMargin() const { return m_bottom_margin; }

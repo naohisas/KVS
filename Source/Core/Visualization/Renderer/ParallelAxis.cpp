@@ -21,23 +21,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new ParallelAxis class.
- */
-/*===========================================================================*/
-ParallelAxis::ParallelAxis():
-    m_top_margin( 20 ),
-    m_bottom_margin( 20 ),
-    m_left_margin( 30 ),
-    m_right_margin( 30 ),
-    m_axis_width( 2.0f ),
-    m_axis_color( 0, 0, 0 ),
-    m_value_color( 0, 0, 0 ),
-    m_label_color( 0, 0, 0 )
-{
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Render parallel axis.
  *  @param  object [in] pointer to object
  *  @param  camera [in] pointer to camera
@@ -46,7 +29,7 @@ ParallelAxis::ParallelAxis():
 /*===========================================================================*/
 void ParallelAxis::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    kvs::TableObject* table = kvs::TableObject::DownCast( object );
+    auto* table = kvs::TableObject::DownCast( object );
 
     BaseClass::startTimer();
 
@@ -69,7 +52,7 @@ void ParallelAxis::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Ligh
         // Draw axes.
         kvs::OpenGL::SetLineWidth( m_axis_width * dpr );
         kvs::OpenGL::Begin( GL_LINES );
-        const size_t naxes = table->numberOfColumns();
+        const auto naxes = table->numberOfColumns();
         const float stride = float( x1 - x0 ) / ( naxes - 1 );
         for ( size_t i = 0; i < naxes; i++ )
         {
