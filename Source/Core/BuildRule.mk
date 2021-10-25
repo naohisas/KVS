@@ -272,6 +272,7 @@ $(OUTDIR)/./Visualization/Importer/PolygonImporter.o \
 $(OUTDIR)/./Visualization/Importer/StructuredVolumeImporter.o \
 $(OUTDIR)/./Visualization/Importer/TableImporter.o \
 $(OUTDIR)/./Visualization/Importer/UnstructuredVolumeImporter.o \
+$(OUTDIR)/./Visualization/Interactor/Axis2DInteractor.o \
 $(OUTDIR)/./Visualization/Interactor/InteractorBase.o \
 $(OUTDIR)/./Visualization/Interactor/ParallelAxisInteractor.o \
 $(OUTDIR)/./Visualization/Interactor/TrackballInteractor.o \

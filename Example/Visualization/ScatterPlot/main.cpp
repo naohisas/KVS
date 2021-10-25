@@ -10,6 +10,7 @@
 #include <kvs/TableObject>
 #include <kvs/ScatterPlotRenderer>
 #include <kvs/Axis2D>
+#include <kvs/Axis2DInteractor>
 
 
 /*===========================================================================*/
@@ -51,6 +52,9 @@ int main( int argc, char** argv )
     axis->setMargins( margins );
     axis->xAxis().setLabel( "X value" );
     axis->yAxis().setLabel( "Y value" );
+
+    kvs::Axis2DInteractor axi_interactor( axis );
+    screen.addEvent( &axi_interactor );
 
     screen.registerObject( object, axis );
     screen.registerObject( object, renderer );

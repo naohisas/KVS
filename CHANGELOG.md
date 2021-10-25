@@ -8,6 +8,7 @@
 + kvs::Stat::IncrementalCov
 + kvs::MultiDimensionalScaling
 + kvs::PrincipalComponentAnalysis
++ kvs::Axis2DInteractor
 + kvs::ParallelAxisInteractor
 
 **Added new method**

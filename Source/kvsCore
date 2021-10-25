@@ -251,6 +251,7 @@
 #include <Core/Visualization/Importer/StructuredVolumeImporter.h>
 #include <Core/Visualization/Importer/TableImporter.h>
 #include <Core/Visualization/Importer/UnstructuredVolumeImporter.h>
+#include <Core/Visualization/Interactor/Axis2DInteractor.h>
 #include <Core/Visualization/Interactor/InteractorBase.h>
 #include <Core/Visualization/Interactor/ParallelAxisInteractor.h>
 #include <Core/Visualization/Interactor/TrackballInteractor.h>
