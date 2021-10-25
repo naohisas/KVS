@@ -239,7 +239,7 @@ void ParallelAxisInteractor::paintEvent()
             kvs::OpenGL::End();
 
             // Range edge
-            kvs::OpenGL::SetLineWidth( 2.0f * dpr );
+            kvs::OpenGL::SetLineWidth( m_range_edge_width * dpr );
             kvs::OpenGL::Begin( GL_LINE_LOOP );
             kvs::OpenGL::Color( m_range_edge_color );
             kvs::OpenGL::Vertex( kvs::Vec2( X - 10, Y_min_range ) * dpr );
