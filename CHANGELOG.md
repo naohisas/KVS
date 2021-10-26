@@ -59,6 +59,10 @@
 + kvs::StochasticUniformRenderer::setFragmentShaderFile
 + kvs::StochasticUniformRenderer::setShaderFiles
 + kvs::ColorMap::SetDefaultColorMap( ColorMapFunction )
++ kvs::Range::contains( x, proper = false )
++ kvs::Range::equals( other )
++ kvs::Rectangle::p0()
++ kvs::Rectangle::p1()
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

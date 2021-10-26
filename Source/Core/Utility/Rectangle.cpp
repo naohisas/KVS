@@ -13,26 +13,11 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Rectangle class.
- */
-/*===========================================================================*/
-Rectangle::Rectangle():
-    m_x( 0 ),
-    m_y( 0 ),
-    m_width( 0 ),
-    m_height( 0 )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Rectangle class.
  *  @param  width [in] width
  *  @param  height [in] height
  */
 /*===========================================================================*/
 Rectangle::Rectangle( const int width, const int height ):
-    m_x( 0 ),
-    m_y( 0 ),
     m_width( width ),
     m_height( height )
 {
@@ -57,18 +42,24 @@ Rectangle::Rectangle( const int x, const int y, const int width, const int heigh
 
 /*===========================================================================*/
 /**
- *  @brief  Destructs the Rectangle class.
+ *  @brief  Constructs a new Rectangle class.
+ *  @param  p0 [in] top-left point
+ *  @param  p1 [in] bottom-right point
  */
 /*===========================================================================*/
-Rectangle::~Rectangle()
+Rectangle::Rectangle( const kvs::Vec2i& p0, const kvs::Vec2i& p1 ):
+    m_x( p0.x() ),
+    m_y( p0.y() ),
+    m_width( p1.x() - p0.x() ),
+    m_height( p1.y() - p0.y() )
 {
 }
 
 /*===========================================================================*/
 /**
  *  @brief  Check whether the given point is inside the rectangle or not.
- *  @param  x [in] x position in the window coordinate
- *  @param  y [in] y position in the window coordinate
+ *  @param  x [in] x position in the pixel coordinate
+ *  @param  y [in] y position in the pixel coordinate
  *  @param  proper [in] whether the edges are checked or not
  *  @return true if the given point is inside the width
  */

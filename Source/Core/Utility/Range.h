@@ -9,6 +9,7 @@
 #include <kvs/Value>
 #include <kvs/ValueArray>
 #include <kvs/AnyValueArray>
+#include <kvs/Math>
 
 
 namespace kvs
@@ -17,21 +18,36 @@ namespace kvs
 class Range
 {
 private:
-    double m_lower;
-    double m_upper;
+    double m_lower = kvs::Value<double>::Max();
+    double m_upper = kvs::Value<double>::Min();
 
 public:
-    Range()
-    {
-        m_lower = kvs::Value<double>::Max();
-        m_upper = kvs::Value<double>::Min();
-    }
+    Range() = default;
 
     Range( double lower, double upper )
     {
         KVS_ASSERT( lower <= upper );
         m_lower = lower;
         m_upper = upper;
+    }
+
+    bool contains( double x, bool proper = false ) const
+    {
+        if ( proper )
+        {
+            return m_lower < x && x < m_upper;
+        }
+        else
+        {
+            return m_lower <= x && x <= m_upper;
+        }
+    }
+
+    bool equals( const Range& other ) const
+    {
+        return
+            kvs::Math::Equal( m_lower, other.lower() ) &&
+            kvs::Math::Equal( m_upper, other.upper() );
     }
 
     void extend( double x )

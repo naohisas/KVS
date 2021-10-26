@@ -19,16 +19,27 @@ namespace kvs
 class Rectangle
 {
 private:
-    int m_x; ///< x position of widget on the window coordinate (org: upper-left)
-    int m_y; ///< y position of widet on the window coordinate (org: upper-left)
-    int m_width; ///< widget width
-    int m_height; ///< widget height
+    // Rectangle: {m_x, m_y, m_width, m_height}
+    //
+    //   p0 = {x0, y0} = {m_x, m_y}
+    //   p1 = {x1, y1} = {m_x + m_width, m_y + m_height}
+    //
+    //   p0-------------+
+    //   |              |
+    //   |              |
+    //   +--------------p1
+
+    int m_x = 0; ///< x position of widget on pixel coordinates (orgin: upper-left)
+    int m_y = 0; ///< y position of widet on pixel coordinates (orgin: upper-left)
+    int m_width = 0; ///< widget width
+    int m_height = 0; ///< widget height
 
 public:
-    Rectangle();
+    Rectangle() = default;
     Rectangle( const int width, const int height );
     Rectangle( const int x, const int y, const int width, const int height );
-    virtual ~Rectangle();
+    Rectangle( const kvs::Vec2i& p0, const kvs::Vec2i& p1 );
+    virtual ~Rectangle() = default;
 
     int x() const { return m_x; }
     int y() const { return m_y; }
@@ -42,10 +53,12 @@ public:
     int y0() const { return this->top(); }
     int x1() const { return this->right(); }
     int y1() const { return this->bottom(); }
-    kvs::Vec2i topLeft() const { return kvs::Vec2i( this->left(), this->top() ); }
-    kvs::Vec2i topRight() const { return kvs::Vec2i( this->right(), this->top() ); }
-    kvs::Vec2i bottomLeft() const { return kvs::Vec2i( this->left(), this->bottom() ); }
-    kvs::Vec2i bottomRight() const { return kvs::Vec2i( this->right(), this->bottom() ); }
+    kvs::Vec2i p0() const { return { this->left(), this->top() }; }
+    kvs::Vec2i p1() const { return { this->right(), this->bottom() }; }
+    kvs::Vec2i topLeft() const { return { this->left(), this->top() }; }
+    kvs::Vec2i topRight() const { return { this->right(), this->top() }; }
+    kvs::Vec2i bottomLeft() const { return { this->left(), this->bottom() }; }
+    kvs::Vec2i bottomRight() const { return { this->right(), this->bottom() }; }
 
     void setX( const int x ) { m_x = x; }
     void setY( const int y ) { m_y = y; }
