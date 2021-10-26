@@ -9,6 +9,7 @@
 #include <kvs/IDManager>
 #include <kvs/ObjectManager>
 #include <kvs/Camera>
+#include <kvs/Range>
 
 
 namespace kvs
@@ -47,12 +48,12 @@ kvs::TableObject* Axis2DInteractor::table()
 
 /*===========================================================================*/
 /**
- *  @brief  Returns a position of the point in viewport coordinates (origin: bottom-left)
+ *  @brief  Returns a position of the point in window coordinates (origin: bottom-left)
  *  @param  p [in] position of the point in pixel coordinates (orgin: top-left)
- *  @return position of the point in viewport coordinates (origin: bottom-left)
+ *  @return position of the point in window coordinates (origin: bottom-left)
  */
 /*===========================================================================*/
-kvs::Vec2i Axis2DInteractor::toBottomLeftOrigin( const kvs::Vec2i& p )
+kvs::Vec2i Axis2DInteractor::toWindowCoordinates( const kvs::Vec2i& p )
 {
     return { p.x(), BaseClass::screen()->height() - 1 - p.y() };
 }
@@ -68,53 +69,43 @@ void Axis2DInteractor::mousePressEvent( kvs::MouseEvent* e )
     auto* table = this->table();
     if ( !table ) { return; }
 
-    const auto naxes = table->numberOfColumns();
-    if ( naxes < 2 ) { return; }
+    const auto ncols = table->numberOfColumns();
+    if ( ncols < 2 ) { return; }
 
-    m_p0 = this->toBottomLeftOrigin( { e->x(), e->y() } );
+    m_p0 = { e->x(), e->y() };
     m_p = m_p0;
 
-    // X_min: left side of the plot region
-    // X_max: right side of the plot region
-    // Y_min: bottom side of the plot region
-    // Y_max: top side of the plot region
-    const auto X_min = m_axis->margins().left();
-    const auto X_max = BaseClass::screen()->width() - m_axis->margins().right();
-    const auto Y_min = m_axis->margins().top();
-    const auto Y_max = BaseClass::screen()->height() - m_axis->margins().bottom();
+    const auto width = BaseClass::screen()->width();
+    const auto height = BaseClass::screen()->height();
+    const auto content = m_axis->margins().content( width, height );
 
-    const auto x_min_value = table->minValue(0);
-    const auto x_max_value = table->maxValue(0);
-    const auto y_min_value = table->minValue(1);
-    const auto y_max_value = table->maxValue(1);
+    const size_t x_index = 0;
+    const size_t y_index = 1;
 
-    const auto x_value_width = x_max_value - x_min_value;
-    const auto y_value_width = y_max_value - y_min_value;
+    const auto x_min = table->minValue( x_index );
+    const auto x_max = table->maxValue( x_index );
+    const auto y_min = table->minValue( y_index );
+    const auto y_max = table->maxValue( y_index );
+    const auto dx = x_max - x_min;
+    const auto dy = y_max - y_min;
 
-    const auto x_value = x_min_value + x_value_width * ( m_p0.x() - X_min ) / ( X_max - X_min );
-    const auto y_value = y_min_value + y_value_width * ( m_p0.y() - Y_min ) / ( Y_max - Y_min );
+    const auto x0 = x_min + dx * ( m_p0.x() - content.x0() ) / content.width();
+    const auto y0 = y_min + dy * ( content.y1() - m_p0.y() ) / content.height();
 
-    const auto x_min_range = table->minRange(0);
-    const auto x_max_range = table->maxRange(0);
-    const auto y_min_range = table->minRange(1);
-    const auto y_max_range = table->maxRange(1);
+    const kvs::Range x_range( table->minRange( x_index ), table->maxRange( x_index ) );
+    const kvs::Range y_range( table->minRange( y_index ), table->maxRange( y_index ) );
 
     m_range_setting = true;
     m_range_moving = false;
-    if ( kvs::Math::Equal( x_min_range, x_min_value ) &&
-         kvs::Math::Equal( x_max_range, x_max_value ) &&
-         kvs::Math::Equal( y_min_range, y_min_value ) &&
-         kvs::Math::Equal( y_max_range, y_max_value ) )
+
+    if ( x_range.equals( { x_min, x_max } ) && y_range.equals( { y_min, y_max } ) )
     {
         return;
     }
-    else
+
+    if ( x_range.contains( x0 ) && y_range.contains( y0 ) )
     {
-        if ( x_min_range <= x_value && x_value <= x_max_range &&
-             y_min_range <= y_value && y_value <= y_max_range )
-        {
-            m_range_moving = true;
-        }
+        m_range_moving = true;
     }
 }
 
@@ -129,39 +120,34 @@ void Axis2DInteractor::mouseMoveEvent( kvs::MouseEvent* e )
     auto* table = this->table();
     if ( !table ) { return; }
 
-    const auto naxes = table->numberOfColumns();
-    if ( naxes < 2 ) { return; }
+    const auto ncols = table->numberOfColumns();
+    if ( ncols < 2 ) { return; }
 
-    m_p1 = this->toBottomLeftOrigin( { e->x(), e->y() } );
+    m_p1 = { e->x(), e->y() };
 
-    // X_min: left side of the plot region
-    // X_max: right side of the plot region
-    // Y_min: bottom side of the plot region
-    // Y_max: top side of the plot region
-    const auto X_min = m_axis->margins().left();
-    const auto X_max = BaseClass::screen()->width() - m_axis->margins().right();
-    const auto Y_min = m_axis->margins().top();
-    const auto Y_max = BaseClass::screen()->height() - m_axis->margins().bottom();
+    const auto width = BaseClass::screen()->width();
+    const auto height = BaseClass::screen()->height();
+    const auto content = m_axis->margins().content( width, height );
+    kvs::Math::Clamp( m_p1.x(), content.x0(), content.x1() );
+    kvs::Math::Clamp( m_p1.y(), content.y0(), content.y1() );
 
-    // Adjust the mouse moving position.
-    if ( m_p1.x() <= X_min ) { m_p1.x() = X_min; }
-    if ( m_p1.x() >= X_max ) { m_p1.x() = X_max; }
-    if ( m_p1.y() <= Y_min ) { m_p1.y() = Y_min; }
-    if ( m_p1.y() >= Y_max ) { m_p1.y() = Y_max; }
+    const size_t x_index = 0;
+    const size_t y_index = 1;
 
-    const auto x_min = table->minValue(0);
-    const auto x_max = table->maxValue(0);
-    const auto y_min = table->minValue(1);
-    const auto y_max = table->maxValue(1);
+    const auto x_min = table->minValue( x_index );
+    const auto x_max = table->maxValue( x_index );
+    const auto y_min = table->minValue( y_index );
+    const auto y_max = table->maxValue( y_index );
+    const auto dx = x_max - x_min;
+    const auto dy = y_max - y_min;
 
     if ( m_range_moving )
     {
-        const auto X_delta = m_p1.x() - m_p.x();
-        const auto Y_delta = m_p1.y() - m_p.y();
-        const auto x_delta = ( x_max - x_min ) * X_delta / ( X_max - X_min );
-        const auto y_delta = ( y_max - y_min ) * Y_delta / ( Y_max - Y_min );
-        table->moveRange( 0, x_delta );
-        table->moveRange( 1, y_delta );
+        const auto D = m_p1 - m_p;
+        const auto x_delta = dx * D.x() / content.width();
+        const auto y_delta = dy * -D.y() / content.height();
+        table->moveRange( x_index, x_delta );
+        table->moveRange( y_index, y_delta );
         m_p = m_p1;
     }
     else
@@ -170,14 +156,16 @@ void Axis2DInteractor::mouseMoveEvent( kvs::MouseEvent* e )
         const auto X_rect_max = kvs::Math::Max( m_p0.x(), m_p1.x() );
         const auto Y_rect_min = kvs::Math::Min( m_p0.y(), m_p1.y() );
         const auto Y_rect_max = kvs::Math::Max( m_p0.y(), m_p1.y() );
-        const auto x_rect_min = x_min + ( x_max - x_min ) * ( X_rect_min - X_min ) / ( X_max - X_min );
-        const auto x_rect_max = x_min + ( x_max - x_min ) * ( X_rect_max - X_min ) / ( X_max - X_min );
-        const auto y_rect_min = y_min + ( y_max - y_min ) * ( Y_rect_min - Y_min ) / ( Y_max - Y_min );
-        const auto y_rect_max = y_min + ( y_max - y_min ) * ( Y_rect_max - Y_min ) / ( Y_max - Y_min );
-        table->setMinRange( 0, x_rect_min );
-        table->setMaxRange( 0, x_rect_max );
-        table->setMinRange( 1, y_rect_min );
-        table->setMaxRange( 1, y_rect_max );
+
+        const auto x_rect_min = x_min + dx * ( X_rect_min - content.x0() ) / content.width();
+        const auto x_rect_max = x_min + dx * ( X_rect_max - content.x0() ) / content.width();
+        const auto y_rect_min = y_min + dy * ( content.y1() - Y_rect_max ) / content.height();
+        const auto y_rect_max = y_min + dy * ( content.y1() - Y_rect_min ) / content.height();
+
+        table->setMinRange( x_index, x_rect_min );
+        table->setMaxRange( x_index, x_rect_max );
+        table->setMinRange( y_index, y_rect_min );
+        table->setMaxRange( y_index, y_rect_max );
     }
 }
 
@@ -236,24 +224,29 @@ void Axis2DInteractor::paintEvent()
 
         // Draw range bars for each axis.
         const auto dpr = BaseClass::scene()->camera()->devicePixelRatio();
-        const auto X_min = m_axis->margins().left();
-        const auto X_max = BaseClass::screen()->width() - m_axis->margins().right();
-        const auto Y_min = m_axis->margins().top();
-        const auto Y_max = BaseClass::screen()->height() - m_axis->margins().bottom();
+        const auto width = BaseClass::screen()->width();
+        const auto height = BaseClass::screen()->height();
+        const auto content = m_axis->margins().content( width, height );
 
-        const auto x_min_range = table->minRange(0);
-        const auto x_max_range = table->maxRange(0);
-        const auto y_min_range = table->minRange(1);
-        const auto y_max_range = table->maxRange(1);
+        const size_t x_index = 0;
+        const size_t y_index = 1;
 
-        const auto x_min_value = table->minValue(0);
-        const auto x_max_value = table->maxValue(0);
-        const auto y_min_value = table->minValue(1);
-        const auto y_max_value = table->maxValue(1);
-        const auto X_min_range = X_min + ( X_max - X_min ) * ( x_max_range - x_min_value ) / ( x_max_value - x_min_value );
-        const auto X_max_range = X_min + ( X_max - X_min ) * ( x_min_range - x_min_value ) / ( x_max_value - x_min_value );
-        const auto Y_min_range = Y_max - ( Y_max - Y_min ) * ( y_max_range - y_min_value ) / ( y_max_value - y_min_value );
-        const auto Y_max_range = Y_max - ( Y_max - Y_min ) * ( y_min_range - y_min_value ) / ( y_max_value - y_min_value );
+        const auto x_min_range = table->minRange( x_index );
+        const auto x_max_range = table->maxRange( x_index );
+        const auto y_min_range = table->minRange( y_index );
+        const auto y_max_range = table->maxRange( y_index );
+
+        const auto x_min = table->minValue( x_index );
+        const auto x_max = table->maxValue( x_index );
+        const auto y_min = table->minValue( y_index );
+        const auto y_max = table->maxValue( y_index );
+        const auto dx = x_max - x_min;
+        const auto dy = y_max - y_min;
+
+        const auto X_min_range = content.x0() + content.width() * ( x_max_range - x_min ) / dx;
+        const auto X_max_range = content.x0() + content.width() * ( x_min_range - x_min ) / dx;
+        const auto Y_min_range = content.y0() + content.height() * ( y_max - y_max_range ) / dy;
+        const auto Y_max_range = content.y0() + content.height() * ( y_max - y_min_range ) / dy;
 
         // Range box
         kvs::OpenGL::Begin( GL_QUADS );

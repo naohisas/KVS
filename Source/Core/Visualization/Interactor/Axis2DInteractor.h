@@ -28,9 +28,9 @@ public:
 private:
     kvs::TableObject* m_table = nullptr; ///< table object
     const kvs::Axis2D* m_axis = nullptr; ///< axis 2D (reference)
-    kvs::Vec2i m_p0{ 0, 0 }; ///< mouse pressing position
-    kvs::Vec2i m_p1{ 0, 0 }; ///< mouse moving position
-    kvs::Vec2i m_p{ 0, 0 };  ///< current mouse position
+    kvs::Vec2i m_p0{ 0, 0 }; ///< mouse pressing position in pixel coordinates
+    kvs::Vec2i m_p1{ 0, 0 }; ///< mouse moving position in pixel coordinates
+    kvs::Vec2i m_p{ 0, 0 };  ///< current mouse position in window coordinates
     bool m_range_setting = false; ///< range selecting mode if true
     bool m_range_moving = false; ///< range moving mode if true
     kvs::Painter m_painter{}; ///< painter
@@ -55,7 +55,7 @@ public:
 
 protected:
     kvs::TableObject* table();
-    kvs::Vec2i toBottomLeftOrigin( const kvs::Vec2i& p );
+    kvs::Vec2i toWindowCoordinates( const kvs::Vec2i& p );
     virtual void mousePressEvent( kvs::MouseEvent* e );
     virtual void mouseMoveEvent( kvs::MouseEvent* e );
     virtual void mouseReleaseEvent( kvs::MouseEvent* e );
