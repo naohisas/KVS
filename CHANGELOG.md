@@ -9,6 +9,7 @@
 + kvs::MultiDimensionalScaling
 + kvs::PrincipalComponentAnalysis
 + kvs::Axis2DInteractor
++ kvs::Axis2DMatrixInteractor
 + kvs::ParallelAxisInteractor
 
 **Added new method**

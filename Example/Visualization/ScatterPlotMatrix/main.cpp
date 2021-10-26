@@ -9,7 +9,7 @@
 #include <kvs/Screen>
 #include <kvs/TableObject>
 #include <kvs/ScatterPlotMatrixRenderer>
-#include <kvs/Axis2DMatrix>
+#include <kvs/Axis2DMatrixInteractor>
 
 
 /*===========================================================================*/
@@ -51,6 +51,9 @@ int main( int argc, char** argv )
     auto* axis = new kvs::Axis2DMatrix();
     axis->setTitle( "Title" );
     axis->setMargins( margins );
+
+    kvs::Axis2DMatrixInteractor axis_interactor( axis );
+    screen.addEvent( &axis_interactor );
 
     screen.registerObject( object, axis );
     screen.registerObject( object, renderer );

@@ -252,6 +252,7 @@ Visualization/Importer/StructuredVolumeImporter
 Visualization/Importer/TableImporter
 Visualization/Importer/UnstructuredVolumeImporter
 Visualization/Interactor/Axis2DInteractor
+Visualization/Interactor/Axis2DMatrixInteractor
 Visualization/Interactor/InteractorBase
 Visualization/Interactor/ParallelAxisInteractor
 Visualization/Interactor/TrackballInteractor
