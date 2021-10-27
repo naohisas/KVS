@@ -57,7 +57,6 @@ public:
 
 protected:
     kvs::TableObject* table();
-    kvs::Vec2i toBottomLeftOrigin( const kvs::Vec2i& p );
     virtual void mousePressEvent( kvs::MouseEvent* e );
     virtual void mouseMoveEvent( kvs::MouseEvent* e );
     virtual void mouseReleaseEvent( kvs::MouseEvent* e );

@@ -9,6 +9,7 @@
 #include <kvs/IDManager>
 #include <kvs/ObjectManager>
 #include <kvs/Camera>
+#include <kvs/Math>
 
 
 namespace kvs
@@ -47,18 +48,6 @@ kvs::TableObject* ParallelAxisInteractor::table()
 
 /*===========================================================================*/
 /**
- *  @brief  Returns a position of the point in viewport coordinates (origin: bottom-left)
- *  @param  p [in] position of the point in pixel coordinates (orgin: top-left)
- *  @return position of the point in viewport coordinates (origin: bottom-left)
- */
-/*===========================================================================*/
-kvs::Vec2i ParallelAxisInteractor::toBottomLeftOrigin( const kvs::Vec2i& p )
-{
-    return { p.x(), BaseClass::screen()->height() - 1 - p.y() };
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Mouse press event function.
  *  @param  e [in] pointer to the mouse event
  */
@@ -71,29 +60,33 @@ void ParallelAxisInteractor::mousePressEvent( kvs::MouseEvent* e )
     const auto naxes = table->numberOfColumns();
     if ( naxes < 2 ) { return; }
 
-    m_p0 = this->toBottomLeftOrigin( { e->x(), e->y() } );
+    // x_min: left side of the content region
+    // x_max: right side of the content region
+    const auto width = BaseClass::screen()->width();
+    const auto x_min = m_axis->margins().left();
+    const auto x_max = width - m_axis->margins().right();
+    const float cw = x_max - x_min; // content width
+
+    // Update mouse pressing position.
+    m_p0 = { e->x(), e->y() };
     m_p = m_p0;
 
-    // X_min: left side of the plot region
-    // X_max: right side of the plot region
-    const int X_min = m_axis->leftMargin();
-    const int X_max = BaseClass::screen()->width() - m_axis->rightMargin();
-    const float stride = float( X_max - X_min ) / ( naxes - 1 );
-
-    // Select the axis and determin the action (moving or setting) for its range bar
-    for ( size_t i = 0; i < naxes; ++i )
+    // Select the axis and determin the action (moving or setting)
+    // for its range bar
+    const float w = m_range_width * 0.5f;
+    const float w2 = w * 0.5f;
+    const float ex = static_cast<float>( e->x() );
+    const auto stride = cw / ( naxes - 1 );
+    auto x = static_cast<float>( x_min );
+    for ( size_t i = 0; i < naxes; ++i, x += stride )
     {
-        const float ex = static_cast<float>( e->x() );
-        const float x = m_axis->leftMargin() + stride * i;
-        const float dx = m_range_width * 0.5f;
-        const float ddx = dx * 0.5f;
-        if ( x - ddx < ex && ex < x + ddx )
+        if ( x - w2 < ex && ex < x + w2 )
         {
             // Moving the range
             m_selected_axis = i;
             m_range_moving = true;
         }
-        else if ( x - dx < ex && ex < x + dx )
+        else if ( x - w < ex && ex < x + w )
         {
             // Selecting the range
             m_selected_axis = i;
@@ -116,37 +109,38 @@ void ParallelAxisInteractor::mouseMoveEvent( kvs::MouseEvent* e )
     const auto naxes = table->numberOfColumns();
     if ( naxes < 2 ) { return; }
 
-    m_p1 = this->toBottomLeftOrigin( { e->x(), e->y() } );
+    // y_min: top side of the content region
+    // y_max: bottom side of the content region
+    const auto height = BaseClass::screen()->height();
+    const auto y_min = m_axis->margins().top();
+    const auto y_max = height - m_axis->margins().bottom();
+    const float ch = y_max - y_min; // content height
 
-    // Y_min: bottom side of the plot region
-    // Y_max: top side of the plot region
-    const int Y_min = m_axis->bottomMargin();
-    const int Y_max = BaseClass::screen()->height() - m_axis->topMargin();
-
-    // Adjust the mouse moving position.
-    if ( m_p1.y() <= Y_min ) { m_p1.y() = Y_min; }
-    if ( m_p1.y() >= Y_max ) { m_p1.y() = Y_max; }
+    // Update mouse moving position.
+    m_p1 = { e->x(), e->y() };
+    kvs::Math::Clamp( m_p1.y(), int( y_min ), int( y_max ) );
 
     const auto axis = m_selected_axis;
-    const auto y_min = table->minValue( axis );
-    const auto y_max = table->maxValue( axis );
-
-    if ( m_range_setting )
-    {
-        const auto Y_rect_min = kvs::Math::Min( m_p0.y(), m_p1.y() );
-        const auto Y_rect_max = kvs::Math::Max( m_p0.y(), m_p1.y() );
-        const auto y_rect_min = y_min + ( y_max - y_min ) * ( Y_rect_min - Y_min ) / ( Y_max - Y_min );
-        const auto y_rect_max = y_min + ( y_max - y_min ) * ( Y_rect_max - Y_min ) / ( Y_max - Y_min );
-        table->setMinRange( axis, y_rect_min );
-        table->setMaxRange( axis, y_rect_max );
-    }
+    const auto v_min = table->minValue( axis );
+    const auto v_max = table->maxValue( axis );
+    const auto dv = v_max - v_min;
 
     if ( m_range_moving )
     {
-        const auto Y_delta = m_p1.y() - m_p.y();
-        const auto y_delta = ( y_max - y_min ) * Y_delta / ( Y_max - Y_min );
-        table->moveRange( axis, y_delta );
+        const auto dy = m_p1.y() - m_p.y();
+        const auto v = dv * -dy / ch;
+        table->moveRange( axis, v );
         m_p = m_p1;
+    }
+
+    if ( m_range_setting )
+    {
+        const auto y0 = kvs::Math::Min( m_p0.y(), m_p1.y() );
+        const auto y1 = kvs::Math::Max( m_p0.y(), m_p1.y() );
+        const auto v0 = v_min + dv * ( y_max - y1 ) / ch;
+        const auto v1 = v_min + dv * ( y_max - y0 ) / ch;
+        table->setMinRange( axis, v0 );
+        table->setMaxRange( axis, v1 );
     }
 }
 
@@ -176,17 +170,29 @@ void ParallelAxisInteractor::mouseDoubleClickEvent( kvs::MouseEvent* e )
     const auto naxes = table->numberOfColumns();
     if ( naxes < 2 ) { return; }
 
-    const auto X_min = m_axis->leftMargin();
-    const auto X_max = BaseClass::screen()->width() - m_axis->rightMargin();
+    // x_min: left side of the content region
+    // x_max: right side of the content region
+    const auto width = BaseClass::screen()->width();
+    const auto x_min = m_axis->margins().left();
+    const auto x_max = width - m_axis->margins().right();
+    const float cw = x_max - x_min; // content width
 
-    const auto stride = float( X_max - X_min ) / ( naxes - 1 );
-    for ( size_t i = 0; i < naxes; i++ )
+    const float w = m_range_width * 0.5f;
+    const float w2 = w * 0.5f;
+    const auto ex = static_cast<float>( e->x() );
+    const auto stride = cw / ( naxes - 1 );
+    auto x = static_cast<float>( x_min );
+    for ( size_t i = 0; i < naxes; i++, x += stride )
     {
-        const auto ex = static_cast<float>( e->x() );
-        const auto x = m_axis->leftMargin() + stride * i;
-        if ( x - 5 < ex && ex < x + 5 ) { table->resetRange(i); return; }
+        // Reset the range of the axis clicked.
+        if ( x - w2 < ex && ex < x + w2 )
+        {
+            table->resetRange(i);
+            return;
+        }
     }
 
+    // Reset all ranges when clicking on the backgground.
     table->resetRange();
 
     m_range_setting = false;
@@ -206,46 +212,55 @@ void ParallelAxisInteractor::paintEvent()
     const auto naxes = table->numberOfColumns();
     if ( naxes < 2 ) { return; }
 
+    // Draw range rectangles for each axis.
     kvs::OpenGL::WithPushedAttrib attrib( GL_ALL_ATTRIB_BITS );
     m_painter.begin( BaseClass::screen() );
     {
         kvs::OpenGL::Enable( GL_BLEND );
         kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        // Draw range bars for each axis.
         const auto dpr = BaseClass::scene()->camera()->devicePixelRatio();
-        const auto X_min = m_axis->leftMargin();
-        const auto X_max = BaseClass::screen()->width() - m_axis->rightMargin();
-        const auto Y_min = m_axis->topMargin();
-        const auto Y_max = BaseClass::screen()->height() - m_axis->bottomMargin();
-        const auto stride = float( X_max - X_min ) / ( naxes - 1 );
-        for ( size_t i = 0; i < naxes; ++i )
-        {
-            const auto X = m_axis->leftMargin() + stride * i;
-            const auto y_min_range = table->minRange(i);
-            const auto y_max_range = table->maxRange(i);
-            const auto y_min_value = table->minValue(i);
-            const auto y_max_value = table->maxValue(i);
-            const auto Y_min_range = Y_max - ( Y_max - Y_min ) * ( y_max_range - y_min_value ) / ( y_max_value - y_min_value );
-            const auto Y_max_range = Y_max - ( Y_max - Y_min ) * ( y_min_range - y_min_value ) / ( y_max_value - y_min_value );
+        const auto width = BaseClass::screen()->width();
+        const auto height = BaseClass::screen()->height();
+        const auto content = m_axis->margins().content( width, height );
+        const float cw = content.width();
+        const float ch = content.height();
 
-            // Range box
+        const float stride = cw / ( naxes - 1 );
+        const float w = m_range_width * 0.5f;
+        auto x = static_cast<float>( content.x0() );
+        for ( size_t i = 0; i < naxes; ++i, x += stride )
+        {
+            // Min/max values for the axis.
+            const auto v_min = table->minValue(i);
+            const auto v_max = table->maxValue(i);
+            const auto dv = v_max - v_min;
+
+            // Value ranges for the axis.
+            const auto v0 = table->minRange(i);
+            const auto v1 = table->maxRange(i);
+
+            // Range rectangle for the axis.
+            const auto y0 = content.y0() + ch * ( v_max - v1 ) / dv;
+            const auto y1 = content.y0() + ch * ( v_max - v0 ) / dv;
+
+            // Draw background of the rectangle.
             kvs::OpenGL::Begin( GL_QUADS );
             kvs::OpenGL::Color( m_range_color );
-            kvs::OpenGL::Vertex( kvs::Vec2( X - 10, Y_min_range ) * dpr );
-            kvs::OpenGL::Vertex( kvs::Vec2( X + 10, Y_min_range ) * dpr );
-            kvs::OpenGL::Vertex( kvs::Vec2( X + 10, Y_max_range ) * dpr );
-            kvs::OpenGL::Vertex( kvs::Vec2( X - 10, Y_max_range ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x - w, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x + w, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x + w, y1 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x - w, y1 ) * dpr );
             kvs::OpenGL::End();
 
-            // Range edge
+            // Draw edges of the rectangle.
             kvs::OpenGL::SetLineWidth( m_range_edge_width * dpr );
             kvs::OpenGL::Begin( GL_LINE_LOOP );
             kvs::OpenGL::Color( m_range_edge_color );
-            kvs::OpenGL::Vertex( kvs::Vec2( X - 10, Y_min_range ) * dpr );
-            kvs::OpenGL::Vertex( kvs::Vec2( X + 10, Y_min_range ) * dpr );
-            kvs::OpenGL::Vertex( kvs::Vec2( X + 10, Y_max_range ) * dpr );
-            kvs::OpenGL::Vertex( kvs::Vec2( X - 10, Y_max_range ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x - w, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x + w, y0 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x + w, y1 ) * dpr );
+            kvs::OpenGL::Vertex( kvs::Vec2( x - w, y1 ) * dpr );
             kvs::OpenGL::End();
         }
     }

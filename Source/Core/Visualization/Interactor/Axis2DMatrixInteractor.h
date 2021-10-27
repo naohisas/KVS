@@ -25,7 +25,7 @@ private:
     kvs::Vec2i m_p0{ 0, 0 }; ///< mouse pressing position in pixel coordinates
     kvs::Vec2i m_p1{ 0, 0 }; ///< mouse moving position in pixel coordinates
     kvs::Vec2i m_p{ 0, 0 };  ///< current mouse position in pixel coordinates
-    kvs::Vec2i m_i{ 0, 0 };  ///< 
+    kvs::Vec2i m_indices{ 0, 0 }; ///< axis indices of the selecting rectangle
     bool m_range_setting = false; ///< range selecting mode if true
     bool m_range_moving = false; ///< range moving mode if true
     kvs::Painter m_painter{}; ///< painter
