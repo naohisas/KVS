@@ -33,6 +33,12 @@ int main( int argc, char** argv )
     const auto random_z = kvs::ValueArray<float>::Random( nsamples );
     const auto random_w = kvs::ValueArray<float>::Random( nsamples );
 
+    const int left = 50;
+    const int top = 60;
+    const int right = 50;
+    const int bottom = 50;
+    const kvs::Margins margins( left, top, right, bottom );
+
     auto* object = new kvs::TableObject();
     object->addColumn( kvs::AnyValueArray( random_x ), "Ramdom X" );
     object->addColumn( kvs::AnyValueArray( random_y ), "Random Y" );
@@ -43,22 +49,18 @@ int main( int argc, char** argv )
     renderer->enableAntiAliasing();
     renderer->setLineWidth( 2.0f );
     renderer->setLineOpacity( 128 );
-    renderer->setTopMargin( 40 );
-    renderer->setBottomMargin( 50 );
-    renderer->setLeftMargin( 50 );
-    renderer->setRightMargin( 50 );
+    renderer->setMargins( margins );
 
     auto* axis = new kvs::ParallelAxis();
-    axis->setTopMargin( 40 );
-    axis->setBottomMargin( 50 );
-    axis->setLeftMargin( 50 );
-    axis->setRightMargin( 50 );
+    axis->setTitle( "Sample Data" );
+    axis->setTitleOffset( 30 );
+    axis->setMargins( margins );
 
     kvs::ParallelAxisInteractor axis_interactor( axis );
     screen.addEvent( &axis_interactor );
 
-    screen.registerObject( object, renderer );
     screen.registerObject( object, axis );
+    screen.registerObject( object, renderer );
     screen.create();
 
     return app.run();

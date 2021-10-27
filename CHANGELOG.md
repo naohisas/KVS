@@ -95,6 +95,22 @@
 + kvs::ColorStream::disableReverse (use kvs::ColorStream::setReverseEnabled)
 + kvs::ColorStream::disableHide (use kvs::ColorStream::setHideEnabled)
 + kvs::ObjectBase::isShown (use kvs::ObjectBase::isVisible)
++ kvs::ParallelAxis::setTopMargin (use kvs::ParallelAxis::setMargins)
++ kvs::ParallelAxis::setBottomMargin (use kvs::ParallelAxis::setMargins)
++ kvs::ParallelAxis::setLeftMargin (use kvs::ParallelAxis::setMargins)
++ kvs::ParallelAxis::setRightMargin (use kvs::ParallelAxis::setMargins)
++ kvs::ParallelAxis::topMargin (use kvs::ParallelAxis::margins().top)
++ kvs::ParallelAxis::bottomMargin (use kvs::ParallelAxis::margins.bottom)
++ kvs::ParallelAxis::leftMargin (use kvs::ParallelAxis::margins().left)
++ kvs::ParallelAxis::rightMargin (use kvs::ParallelAxis::margins().right)
++ kvs::ParallelCoordinates::setTopMargin (use kvs::ParallelCoordinates::setMargins)
++ kvs::ParallelCoordinates::setBottomMargin (use kvs::ParallelCoordinates::setMargins)
++ kvs::ParallelCoordinates::setLeftMargin (use kvs::ParallelCoordinates::setMargins)
++ kvs::ParallelCoordinates::setRightMargin (use kvs::ParallelCoordinates::setMargins)
++ kvs::ParallelCoordinates::topMargin (use kvs::ParallelCoordinates::margins().top)
++ kvs::ParallelCoordinates::bottomMargin (use kvs::ParallelCoordinates::margins.bottom)
++ kvs::ParallelCoordinates::leftMargin (use kvs::ParallelCoordinates::margins().left)
++ kvs::ParallelCoordinates::rightMargin (use kvs::ParallelCoordinates::margins().right)
 
 **Added new example**
 + Example/Utility/ColorStream

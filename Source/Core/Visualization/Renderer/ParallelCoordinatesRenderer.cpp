@@ -22,10 +22,10 @@ namespace kvs
  */
 /*===========================================================================*/
 ParallelCoordinatesRenderer::ParallelCoordinatesRenderer():
-    m_top_margin( 20 ),
-    m_bottom_margin( 20 ),
-    m_left_margin( 30 ),
-    m_right_margin( 30 ),
+//    m_top_margin( 20 ),
+//    m_bottom_margin( 20 ),
+//    m_left_margin( 30 ),
+//    m_right_margin( 30 ),
     m_enable_anti_aliasing( false ),
     m_enable_multisample_anti_aliasing( false ),
     m_active_axis( 0 ),
@@ -109,10 +109,14 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
         m_color_map.setRange( color_axis_min_value, color_axis_max_value );
 
         const float dpr = camera->devicePixelRatio();
-        const int x0 = m_left_margin;
-        const int x1 = camera->windowWidth() - m_right_margin;
-        const int y0 = m_top_margin;
-        const int y1 = camera->windowHeight() - m_bottom_margin;
+//        const int x0 = m_left_margin;
+//        const int x1 = camera->windowWidth() - m_right_margin;
+//        const int y0 = m_top_margin;
+//        const int y1 = camera->windowHeight() - m_bottom_margin;
+        const int x0 = m_margins.left();
+        const int x1 = camera->windowWidth() - m_margins.right();
+        const int y0 = m_margins.top();
+        const int y1 = camera->windowHeight() - m_margins.bottom();
 
         const size_t nrows = table->column(0).size();
         const size_t naxes = table->numberOfColumns();
@@ -133,7 +137,8 @@ void ParallelCoordinatesRenderer::exec( kvs::ObjectBase* object, kvs::Camera* ca
                     const kvs::Real64 max_value = table->maxValue(j);
                     const kvs::Real64 value = table->column(j)[i].to<kvs::Real64>();
 
-                    const kvs::Real64 x = m_left_margin + stride * j;
+//                    const kvs::Real64 x = m_left_margin + stride * j;
+                    const kvs::Real64 x = m_margins.left() + stride * j;
                     const kvs::Real64 y = y1 - ( y1 - y0 ) * ( value - min_value ) / ( max_value - min_value );
                     kvs::OpenGL::Vertex( kvs::Vec2( x, y ) * dpr );
                 }
