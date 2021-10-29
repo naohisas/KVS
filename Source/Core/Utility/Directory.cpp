@@ -111,16 +111,19 @@ std::string Directory::Absolute( const std::string& directory_path )
     if ( path[0] == '~' ) { path = kvs::Directory::HomePath() + path.substr(1); }
 
 #if defined ( KVS_PLATFORM_WINDOWS )
-    char absolute_path[ _MAX_PATH ];
-    if ( _fullpath( absolute_path, path.c_str(), _MAX_PATH ) )
+    char abs_path[ _MAX_PATH ];
+    if ( _fullpath( abs_path, path.c_str(), _MAX_PATH ) ) { return abs_path; }
 #else
-    char absolute_path[ PATH_MAX ];
-    if ( realpath( path.c_str(), absolute_path ) )
-#endif
+    char abs_path[ PATH_MAX ];
+    if ( realpath( path.c_str(), abs_path ) ) { return abs_path; }
+    else
     {
-        return absolute_path;
+        // NOTE: On my Mac OS (BigSur@M1, 2021.10.27),  the function realpath
+        // can obtain the absolute path successfully even though NULL is returned.
+        // In order to solve this problem (bug?), run the following process.
+        if ( abs_path[0] == '/' ) { return abs_path; }
     }
-
+#endif
     return "";
 }
 
@@ -133,8 +136,15 @@ std::string Directory::Absolute( const std::string& directory_path )
 /*===========================================================================*/
 bool Directory::Exists( const std::string& directory_path )
 {
-    kvs::Directory dir( directory_path );
-    return dir.exists();
+#if defined ( KVS_PLATFORM_WINDOWS )
+    WIN32_FIND_DATAA find_data;
+    FindFirstFileA( directory_path.c_str(), &find_data );
+    return ( find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) != 0;
+#else
+    struct stat filestat;
+    if ( stat( directory_path.c_str(), &filestat ) ) { return false; }
+    return filestat.st_mode & S_IFDIR;
+#endif
 }
 
 /*==========================================================================*/
@@ -278,39 +288,6 @@ std::string Directory::CurrentPath()
 
 /*==========================================================================*/
 /**
- *  Constructor.
- */
-/*==========================================================================*/
-Directory::Directory():
-    m_path( "" ),
-    m_name( "" )
-{
-}
-
-/*==========================================================================*/
-/**
- *  Constructor.
- *  @param directory_path [in] directory path
- */
-/*==========================================================================*/
-Directory::Directory( const std::string& directory_path ):
-    m_path( "" ),
-    m_name( "" )
-{
-    this->parse( directory_path );
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-Directory::~Directory()
-{
-}
-
-/*==========================================================================*/
-/**
  *  Get directory path.
  *  @param absolute [in] flag for determing whether path is absolute-path
  *  @return directory path
@@ -319,17 +296,6 @@ Directory::~Directory()
 std::string Directory::path( bool absolute ) const
 {
     return absolute ? Directory::Absolute( m_path ) : m_path;
-}
-
-/*==========================================================================*/
-/**
- *  Get directory name.
- *  @return directory name
- */
-/*==========================================================================*/
-std::string Directory::name() const
-{
-    return m_name;
 }
 
 /*===========================================================================*/
@@ -402,36 +368,6 @@ kvs::FileList Directory::fileList( const bool sort ) const
 
     if ( sort ) { std::sort( file_list.begin(), file_list.end() ); }
     return file_list;
-}
-
-/*==========================================================================*/
-/**
- *  Test to determine whether given directory is a directory.
- *  @return true, if given directory is directory
- */
-/*==========================================================================*/
-bool Directory::isDirectory() const
-{
-#if defined ( KVS_PLATFORM_WINDOWS )
-    WIN32_FIND_DATAA find_data;
-    FindFirstFileA( m_path.c_str(), &find_data );
-    return ( find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) != 0;
-#else
-    struct stat filestat;
-    if ( stat( m_path.c_str(), &filestat ) ) { return false; }
-    return filestat.st_mode & S_IFDIR;
-#endif
-}
-
-/*==========================================================================*/
-/**
- *  Test to determin whether given directory is existed.
- *  @return true, if given directory is existed
- */
-/*==========================================================================*/
-bool Directory::exists() const
-{
-    return this->isDirectory();
 }
 
 /*==========================================================================*/

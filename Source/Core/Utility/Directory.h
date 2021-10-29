@@ -40,19 +40,19 @@ public:
     static Directory Current() { return Directory( CurrentPath() ); }
 
 private:
-    std::string m_path; ///< directory path (ex. "/tmp/abc/")
-    std::string m_name; ///< directory name (ex. "abc")
+    std::string m_path = ""; ///< directory path (ex. "/tmp/abc/")
+    std::string m_name = ""; ///< directory name (ex. "abc")
 
 public:
-    Directory();
-    explicit Directory( const std::string& directory_path );
-    virtual ~Directory();
+    Directory() = default;
+    explicit Directory( const std::string& path ) { this->parse( path ); }
+    virtual ~Directory() = default;
 
     std::string path( bool absolute = false ) const;
-    std::string name() const;
+    std::string name() const { return m_name; }
     kvs::FileList fileList( const bool sort = true ) const;
-    bool isDirectory() const;
-    bool exists() const;
+    bool isDirectory() const { return this->exists(); }
+    bool exists() const { return Exists( m_path ); }
     bool parse( const std::string& direcotry_path );
 
 public:
