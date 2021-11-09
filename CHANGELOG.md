@@ -117,6 +117,7 @@
 + Example/Numeric/MultiDimensionalScaling
 + Example/Numeric/PrincipalComponentAnalysis
 + Example/SupportFFmpeg/MoviePlayer
++ Example/SupportFFmpeg/SphericalMoviePlayer
 
 **Added SupportFFmpeg**
 + kvs::ffmpeg::MovieObject
