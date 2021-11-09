@@ -116,7 +116,12 @@
 + Example/Utility/ColorStream
 + Example/Numeric/MultiDimensionalScaling
 + Example/Numeric/PrincipalComponentAnalysis
++ Example/SupportFFmpeg/MoviePlayer
 
+**Added SupportFFmpeg**
++ kvs::ffmpeg::MovieObject
++ kvs::ffmpeg::MovieRenderer
++ kvs::ffmpeg::SphericalMovieRenderer
 
 ### Version 3.0.0 Released (2021.06.18)
 **Added new classes and functions**
