@@ -23,5 +23,7 @@ export KVS_FFMPEG_DIR=/usr/local/Cellar/ffmpeg/4.4.1_2      (intel mac)
 export KVS_FFMPEG_DIR=/opt/homebrew/Cellar/ffmpeg/4.4.1_2   (m1 mac)
 ```
 
+* The directory name "4.4.1_2" needs to be modified according to the installed version of the FFmpeg.
+
 ### Windows
 Not tested.
