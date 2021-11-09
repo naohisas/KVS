@@ -22,11 +22,11 @@ namespace temporal
 class TypeInfo
 {
 private:
-    kvs::Type::TypeID m_id;
+    kvs::Type::TypeID m_id = kvs::Type::UnknownType;
 
 public:
-    TypeInfo();
-    TypeInfo( kvs::Type::TypeID id );
+    TypeInfo() = default;
+    TypeInfo( kvs::Type::TypeID id ): m_id( id ) {}
 
 public:
     const std::type_info& type() const;
@@ -37,11 +37,13 @@ template <typename T, T Value>
 struct integral_constant
 {
     static const T value = Value;
-    typedef T value_type;
+    using value_type = T;
 };
 
-typedef integral_constant<bool, true> true_type;
-typedef integral_constant<bool, false> false_type;
+//typedef integral_constant<bool, true> true_type;
+//typedef integral_constant<bool, false> false_type;
+using true_type = integral_constant<bool, true>;
+using false_type = integral_constant<bool, false>;
 
 } // temporal
 
@@ -86,8 +88,8 @@ private:
 class AnyValueArrayElement
 {
 private:
-    const void* m_ptr;
-    kvs::Type::TypeID m_type_id;
+    const void* m_ptr = nullptr;
+    kvs::Type::TypeID m_type_id = kvs::Type::UnknownType;
 
 public:
     AnyValueArrayElement( const void* ptr, kvs::Type::TypeID type_id )
@@ -107,15 +109,15 @@ template <typename T>
 class AnyValueArrayIterator
 {
 public:
-    typedef AnyValueArrayIterator           this_type;
-    typedef const T                         value_type;
-    typedef std::ptrdiff_t                  difference_type;
-    typedef std::random_access_iterator_tag iterator_category;
+    using this_type = AnyValueArrayIterator;
+    using value_type = const T;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::random_access_iterator_tag;
 
 private:
-    char* m_ptr;
-    size_t m_size_of_value;
-    kvs::Type::TypeID m_id;
+    char* m_ptr = nullptr;
+    size_t m_size_of_value = 0;
+    kvs::Type::TypeID m_id = kvs::Type::UnknownType;
 
 public:
     AnyValueArrayIterator( void* ptr, size_t size_of_value, kvs::Type::TypeID id )
@@ -239,28 +241,28 @@ public:
 class AnyValueArray
 {
 public:
-    typedef kvs::temporal::TypeInfo TypeInfo;
-    typedef kvs::detail::AnyValueArrayElement value_type;
+    using TypeInfo = kvs::temporal::TypeInfo;
+    using value_type = kvs::detail::AnyValueArrayElement;
 
 private:
-    kvs::SharedPointer<void> m_values;       ///< value array
-    size_t    m_size_of_value; ///< byte size of a value
-    size_t    m_size;       ///< number of values
-    kvs::Type::TypeID m_type_id;
-    TypeInfo m_type_info;
+    kvs::SharedPointer<void> m_values{}; ///< value array
+    size_t m_size_of_value = 0; ///< byte size of a value
+    size_t m_size = 0; ///< number of values
+    kvs::Type::TypeID m_type_id = kvs::Type::UnknownType;
+    TypeInfo m_type_info{};
 
 public:
-    AnyValueArray();
+    AnyValueArray() = default;
 
     template<typename T>
     AnyValueArray( const kvs::ValueArray<T>& values ):
         m_type_info( kvs::Type::GetID<T>() )
     {
         KVS_STATIC_ASSERT( is_supported<T>::value, "not supported" );
-        m_values        = values.sharedPointer();
-        m_size          = values.size();
+        m_values = values.sharedPointer();
+        m_size = values.size();
         m_size_of_value = sizeof( T );
-        m_type_id       = kvs::Type::GetID<T>();
+        m_type_id = kvs::Type::GetID<T>();
     }
 
 public:
@@ -285,9 +287,15 @@ public:
         return m_size;
     }
 
-    size_t byteSize() const;
+    size_t byteSize() const
+    {
+        return this->size() * m_size_of_value;
+    }
 
-    const kvs::SharedPointer<void>& sharedPointer() const;
+    const kvs::SharedPointer<void>& sharedPointer() const
+    {
+        return m_values;
+    }
 
     const void* data() const
     {
@@ -299,24 +307,28 @@ public:
         return m_values.get();
     }
 
-    void swap( AnyValueArray& other );
-
-    AnyValueArray clone() const;
-
     bool empty() const
     {
         return this->size() == 0;
     }
 
+    kvs::Type::TypeID typeID() const
+    {
+        return m_type_id;
+    }
+
+    void swap( AnyValueArray& other );
+
+    AnyValueArray clone() const;
+
+    void release();
+
+    bool unique() const;
+
     const value_type operator []( size_t index ) const
     {
         const void* ptr = static_cast<const char*>( this->data() ) + m_size_of_value * index;
         return value_type( ptr, this->typeID() );
-    }
-
-    kvs::Type::TypeID typeID() const
-    {
-        return m_type_id;
     }
 
     template<typename T>
@@ -328,10 +340,7 @@ public:
 
     // for compatibility.
     // {
-    const TypeInfo* typeInfo() const
-    {
-        return &m_type_info;
-    }
+    const TypeInfo* typeInfo() const { return &m_type_info; }
 
     template<typename T>
     void allocate( const size_t size )
@@ -339,10 +348,6 @@ public:
         *this = AnyValueArray( kvs::ValueArray<T>( size ) );
     }
     // }
-
-    void release();
-
-    bool unique() const;
 
 private:
     template <typename T>

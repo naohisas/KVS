@@ -28,16 +28,6 @@ namespace kvs
 namespace temporal
 {
 
-TypeInfo::TypeInfo()
-{
-    m_id = kvs::Type::UnknownType;
-}
-
-TypeInfo::TypeInfo( kvs::Type::TypeID id )
-{
-    m_id = id;
-}
-
 const std::type_info& TypeInfo::type() const
 {
     switch ( m_id )
@@ -93,27 +83,10 @@ const char* TypeInfo::typeName() const
     default: break;
     }
     KVS_ASSERT( false );
-    return NULL;
+    return nullptr;
 }
 
 } // temporal
-
-AnyValueArray::AnyValueArray()
-{
-    m_size = 0;
-    m_size_of_value = 0;
-    m_type_id = kvs::Type::UnknownType;
-}
-
-size_t AnyValueArray::byteSize() const
-{
-    return this->size() * m_size_of_value;
-}
-
-const kvs::SharedPointer<void>& AnyValueArray::sharedPointer() const
-{
-    return m_values;
-}
 
 void AnyValueArray::swap( AnyValueArray& other )
 {

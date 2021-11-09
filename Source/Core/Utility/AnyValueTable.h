@@ -25,20 +25,20 @@ namespace kvs
 class AnyValueTable
 {
 public:
-    typedef kvs::AnyValueArray Column;
-    typedef std::vector<Column> Columns;
-    typedef Columns::iterator column_iterator;
-    typedef Columns::const_iterator const_column_iterator;
-    typedef Column& column_reference;
-    typedef const Column& const_column_reference;
-    typedef Columns::reverse_iterator column_reverse_iterator;
-    typedef Columns::const_reverse_iterator const_column_reverse_iterator;
+    using Column = kvs::AnyValueArray;
+    using Columns = std::vector<Column>;
+    using column_iterator = Columns::iterator;
+    using const_column_iterator = Columns::const_iterator;
+    using column_reference = Column&;
+    using const_column_reference = const Column&;
+    using column_reverse_iterator = Columns::reverse_iterator;
+    using const_column_reverse_iterator = Columns::const_reverse_iterator;
 
 private:
-    Columns m_columns;
+    Columns m_columns{};
 
 public:
-    AnyValueTable(){}
+    AnyValueTable() = default;
 
     template <typename T>
     AnyValueTable( const kvs::ValueTable<T>& table )
@@ -173,6 +173,17 @@ public:
         }
 
         return row;
+    }
+
+    template <typename T>
+    kvs::ValueTable<T> asValueTable() const
+    {
+        kvs::ValueTable<T> table;
+        for ( size_t i = 0; i < this->columnSize(); ++i )
+        {
+            table.pushBackColumn( this->column(i).asValueArray<T>() );
+        }
+        return table;
     }
 
     template <typename T>
