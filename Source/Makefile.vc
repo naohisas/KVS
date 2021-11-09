@@ -33,6 +33,11 @@ SUBDIRS = $(SUBDIRS) SupportGLFW
 !ENDIF
 !ENDIF
 
+!IF "$(KVS_SUPPORT_FFMPEG)" == "1"
+SUBDIRS = $(SUBDIRS) SupportFFmpeg
+!ENDIF
+!ENDIF
+
 !IF "$(KVS_SUPPORT_QT)" == "1"
 SUBDIRS = $(SUBDIRS) SupportQt
 !ENDIF
@@ -98,6 +103,11 @@ install:
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\glfw" $(MKDIR) "$(INSTALL_DIR)\include\kvs\glfw"
 	$(INSTALL) kvsSupportGLFW "$(INSTALL_DIR)\include"
 	$(INSTALL) kvs\glfw\* "$(INSTALL_DIR)\include\kvs\glfw"
+!ENDIF
+!IF "$(KVS_SUPPORT_FFMPEG)" == "1"
+	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\ffmpeg" $(MKDIR) "$(INSTALL_DIR)\include\kvs\ffmpeg"
+	$(INSTALL) kvsSupportFFmpeg "$(INSTALL_DIR)\include"
+	$(INSTALL) kvs\ffmpeg\* "$(INSTALL_DIR)\include\kvs\ffmpeg"
 !ENDIF
 !IF "$(KVS_SUPPORT_QT)" == "1"
 	IF NOT EXIST "$(INSTALL_DIR)\include\kvs\qt" $(MKDIR) "$(INSTALL_DIR)\include\kvs\qt"

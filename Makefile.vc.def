@@ -61,6 +61,7 @@ LIB_KVS_CORE = kvsCore.lib
 LIB_KVS_SUPPORT_CUDA   = libkvsSupportCUDA.lib
 LIB_KVS_SUPPORT_GLUT   = kvsSupportGLUT.lib
 LIB_KVS_SUPPORT_GLFW   = kvsSupportGLFW.lib
+LIB_KVS_SUPPORT_FFMPEG = kvsSupportFFmpeg.lib
 LIB_KVS_SUPPORT_QT     = kvsSupportQt.lib
 LIB_KVS_SUPPORT_OPENCV = kvsSupportOpenCV.lib
 LIB_KVS_SUPPORT_PYTHON = kvsSupportPython.lib
@@ -140,6 +141,20 @@ GLFW_LINK_LIBRARY = glfw3.lib
 !IFDEF KVS_GLFW_DIR
 GLFW_INCLUDE_PATH = $(GLFW_INCLUDE_PATH) /I"$(KVS_GLFW_DIR)\include"
 GLFW_LIBRARY_PATH = $(GLFW_LIBRARY_PATH) /LIBPATH:"$(KVS_GLFW_DIR)\lib"
+!ENDIF
+!ENDIF
+
+
+#=============================================================================
+#  FFMPEG_INCLUDE_PATH, FFMPEG_LIBRARY_PATH, FFMPEG_LINK_LIBRARY
+#=============================================================================
+!IF "$(KVS_SUPPORT_FFMPEG)" == "1"
+FFMPEG_INCLUDE_PATH =
+FFMPEG_LIBRARY_PATH =
+FFMPEG_LINK_LIBRARY = avcodec.lib avformat.lib avutil.lib avdevice.lib avfilter.lib swscale.lib
+!IFDEF KVS_FFMPEG_DIR
+FFMPEG_INCLUDE_PATH = $(FFMPEG_INCLUDE_PATH) /I"$(KVS_FFMPEG_DIR)\include"
+FFMPEG_LIBRARY_PATH = $(FFMPEG_LIBRARY_PATH) /LIBPATH:"$(KVS_FFMPEG_DIR)\lib"
 !ENDIF
 !ENDIF
 
@@ -305,6 +320,11 @@ DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_GLUT
 
 !IF "$(KVS_SUPPORT_GLFW)" == "1"
 DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_GLFW
+!ENDIF
+!ENDIF
+
+!IF "$(KVS_SUPPORT_FFMPEG)" == "1"
+DEFINITIONS = $(DEFINITIONS) /DKVS_SUPPORT_FFMPEG
 !ENDIF
 !ENDIF
 

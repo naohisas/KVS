@@ -33,6 +33,10 @@ SUBDIRS += SupportGLFW
 endif
 endif
 
+ifeq "$(KVS_SUPPORT_FFMPEG)" "1"
+SUBDIRS += SupportFFmpeg
+endif
+
 ifeq "$(KVS_SUPPORT_QT)" "1"
 SUBDIRS += SupportQt
 endif
@@ -102,6 +106,11 @@ ifeq "$(KVS_SUPPORT_GLFW)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/glfw
 	$(INSTALL) kvsSupportGLFW $(INSTALL_DIR)/include
 	$(INSTALL) $(shell find kvs/glfw -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/glfw
+endif
+ifeq "$(KVS_SUPPORT_FFMPEG)" "1"
+	$(MKDIR) $(INSTALL_DIR)/include/kvs/ffmpeg
+	$(INSTALL) kvsSupportFFmpeg $(INSTALL_DIR)/include
+	$(INSTALL) $(shell find kvs/ffmpeg -maxdepth 1 -type f) $(INSTALL_DIR)/include/kvs/ffmpeg
 endif
 ifeq "$(KVS_SUPPORT_QT)" "1"
 	$(MKDIR) $(INSTALL_DIR)/include/kvs/qt

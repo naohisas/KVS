@@ -114,6 +114,7 @@ LIB_KVS_SUPPORT_CAVE      := libkvsSupportCAVE.a
 LIB_KVS_SUPPORT_CUDA      := libkvsSupportCUDA.a
 LIB_KVS_SUPPORT_GLUT      := libkvsSupportGLUT.a
 LIB_KVS_SUPPORT_GLFW      := libkvsSupportGLFW.a
+LIB_KVS_SUPPORT_FFMPEG    := libkvsSupportFFmpeg.a
 LIB_KVS_SUPPORT_OPENCV    := libkvsSupportOpenCV.a
 LIB_KVS_SUPPORT_QT        := libkvsSupportQt.a
 LIB_KVS_SUPPORT_PYTHON    := libkvsSupportPython.a
@@ -379,6 +380,32 @@ endif
 
 
 #=============================================================================
+#  FFMPEG_INCLUDE_PATH, FFMPEG_LIBRARY_PATH, FFMPEG_LINK_LIBRARY
+#=============================================================================
+ifeq "$(KVS_SUPPORT_FFMPEG)" "1"
+  FFMPEG_INCLUDE_PATH :=
+  FFMPEG_LIBRARY_PATH :=
+  FFMPEG_LINK_LIBRARY :=
+  ifdef KVS_FFMPEG_DIR
+    FFMPEG_INCLUDE_PATH += -I$(KVS_FFMPEG_DIR)/include
+    FFMPEG_LIBRARY_PATH += -L$(KVS_FFMPEG_DIR)/lib
+  else
+    ifdef KVS_FFMPEG_INCLUDE_PATH
+      FFMPEG_INCLUDE_PATH += -I$(KVS_FFMPEG_INCLUDE_PATH)
+    endif
+    ifdef KVS_FFMPEG_LIBRARY_PATH
+      FFMPEG_LIBRARY_PATH += -L$(KVS_FFMPEG_LIBRARY_PATH)
+    endif
+  endif
+  ifdef KVS_FFMPEG_LINK_LIBRARY
+    FFMPEG_LINK_LIBRARY += $(KVS_FFMPEG_LINK_LIBRARY)
+  else
+    FFMPEG_LINK_LIBRARY += -lavcodec -lavformat -lavutil -lavdevice -lavfilter -lswscale
+  endif
+endif
+
+
+#=============================================================================
 #  CUDA_INCLUDE_PATH, CUDA_LIBRARY_PATH, CUDA_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_CUDA)" "1"
@@ -636,6 +663,10 @@ ifeq "$(KVS_ENABLE_OPENGL)" "1"
   ifeq "$(KVS_SUPPORT_GLFW)" "1"
     DEFINITIONS += -DKVS_SUPPORT_GLFW
   endif
+endif
+
+ifeq "$(KVS_SUPPORT_FFMPEG)" "1"
+  DEFINITIONS += -DKVS_SUPPORT_FFMPEG
 endif
 
 ifeq "$(KVS_SUPPORT_QT)" "1"

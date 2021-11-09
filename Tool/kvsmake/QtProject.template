@@ -75,6 +75,7 @@ win32 {
 equals( KVS_ENABLE_OPENGL, "1" ) { DEFINES += KVS_ENABLE_OPENGL }
 equals( KVS_ENABLE_GLU, "1" ) { DEFINES += KVS_ENABLE_GLU }
 equals( KVS_ENABLE_GLEW, "1" ) { DEFINES += KVS_ENABLE_GLEW }
+equals( KVS_ENABLE_FFMPEG, "1" ) { DEFINES += KVS_ENABLE_FFMPEG }
 equals( KVS_ENABLE_OPENMP, "1" ) { DEFINES += KVS_ENABLE_OPENMP }	
 equals( KVS_ENABLE_DEPRECATED, "1" ) { DEFINES += KVS_ENABLE_DEPRECATED }
 equals( KVS_SUPPORT_GLUT, "1" ) { DEFINES += KVS_SUPPORT_GLUT }
@@ -163,6 +164,28 @@ equals( KVS_SUPPORT_OPENCV, "1" ) {
 
 INCLUDEPATH += $$OPENCV_INCLUDE_PATH
 
+# FFmpeg environment variables
+KVS_FFMPEG_DIR = $$(KVS_FFMPEG_DIR)
+
+FFMPEG_INCLUDE_PATH = 
+FFMPEG_LIBRARY_PATH = 
+FFMPEG_LINK_LIBRARY =
+equals( KVS_SUPPORT_FFMPEG, "1" ) {
+    !isEmpty( KVS_FFMPEG_DIR ) {
+        FFMPEG_INCLUDE_PATH = $$KVS_FFMPEG_DIR/include
+        FFMPEG_LIBRARY_PATH = $$KVS_FFMPEG_DIR/lib
+    } else {
+        !isEmpty( KVS_FFMPEG_INCLUDE_PATH ) {
+            FFMPEG_INCLUDE_PATH = $$KVS_FFMPEG_INCLUDE_PATH
+        }
+        !isEmpty( KVS_FFMPEG_LIBRARY_PATH ) {
+            FFMPEG_LIBRARY_PATH = $$KVS_FFMPEG_LIBRARY_PATH
+        }
+    }
+}
+
+INCLUDEPATH += $$FFMPEG_INCLUDE_PATH
+
 # Python environment variables
 KVS_PYTHON_DIR = $$(KVS_PYTHON_DIR)
 KVS_NUMPY_DIR = $$(KVS_NUMPY_DIR)
@@ -201,29 +224,65 @@ exists( kvsmake.qt.conf ) { include( kvsmake.qt.conf ) }
 win32 {
     LIBS += $$KVS_DIR/lib/kvsSupportQt.lib
     LIBS += $$KVS_DIR/lib/kvsCore.lib
-    equals( KVS_ENABLE_GLEW, "1" ) { LIBS += glew32.lib }
-    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/kvsSupportGLUT.lib }
+    equals( KVS_ENABLE_GLEW, "1" ) {
+        LIBS += glew32.lib
+    }
+    equals( KVS_SUPPORT_GLUT, "1" ) {
+    	LIBS += $$KVS_DIR/lib/kvsSupportGLUT.lib
+    }
 }
 
 macx {
     LIBS += $$KVS_DIR/lib/libkvsSupportQt.a
     LIBS += $$KVS_DIR/lib/libkvsCore.a
-    equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
-    equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp }
-    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -framework GLUT }
-    equals( KVS_SUPPORT_OPENCV, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportOpenCV.a $$OPENCV_LIBRARY_PATH $$OPENCV_LINK_LIBRARY }
-    equals( KVS_SUPPORT_PYTHON, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH }
+    equals( KVS_ENABLE_GLEW, "1" ) {
+        LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW
+    }
+    equals( KVS_ENABLE_OPENMP, "1" ) {
+        LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp
+    }
+    equals( KVS_SUPPORT_GLUT, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -framework GLUT
+    }
+    equals( KVS_SUPPORT_FFMPEG, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportFFmpeg.a $$FFMPEG_LIBRARY_PATH
+	LIBS += -lavcodec -lavformat -lavutil -lavdevice -lavfilter -lswscale
+    }
+    equals( KVS_SUPPORT_OPENCV, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportOpenCV.a $$OPENCV_LIBRARY_PATH
+	LIBS += $$OPENCV_LINK_LIBRARY
+    }
+    equals( KVS_SUPPORT_PYTHON, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH
+    }
 }
 
 unix:!macx {
     LIBS += $$KVS_DIR/lib/libkvsSupportQt.a
     LIBS += $$KVS_DIR/lib/libkvsCore.a
-    equals( KVS_ENABLE_GLU, "1" ) { LIBS += -lGLU }
-    equals( KVS_ENABLE_GLEW, "1" ) { LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW }
-    equals( KVS_ENABLE_OPENMP, "1" ) { LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp }
-    equals( KVS_SUPPORT_GLUT, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -lglut }
-    equals( KVS_SUPPORT_OPENCV, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportOpenCV.a $$OPENCV_LIBRARY_PATH $$OPENCV_LINK_LIBRARY }
-    equals( KVS_SUPPORT_PYTHON, "1" ) { LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH }
+    equals( KVS_ENABLE_GLU, "1" ) {
+        LIBS += -lGLU
+    }
+    equals( KVS_ENABLE_GLEW, "1" ) {
+        LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW
+    }
+    equals( KVS_ENABLE_OPENMP, "1" ) {
+        LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp
+    }
+    equals( KVS_SUPPORT_GLUT, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -lglut
+    }
+    equals( KVS_SUPPORT_FFMPEG, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportFFmpeg.a $$FFMPEG_LIBRARY_PATH
+	LIBS += -lavcodec -lavformat -lavutil -lavdevice -lavfilter -lswscale
+    }
+    equals( KVS_SUPPORT_OPENCV, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportOpenCV.a $$OPENCV_LIBRARY_PATH
+	LIBS += $$OPENCV_LINK_LIBRARY
+    }
+    equals( KVS_SUPPORT_PYTHON, "1" ) {
+        LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH
+    }
 }
 
 
