@@ -8,19 +8,21 @@
 #include <string>
 #include <kvs/Compiler>
 #if KVS_COMPILER_SUPPORT_CXX11
-#if defined( KVS_COMPILER_GCC )
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-register"
-#include <Python.h>
-#pragma GCC diagnostic pop
+  #if defined( KVS_COMPILER_GCC )
+    #pragma GCC diagnostic push
+    #if (KVS_PYTHON_VERSION == 2)
+      #pragma GCC diagnostic ignored "-Wdeprecated-register"
+    #endif
+    #include <Python.h>
+    #pragma GCC diagnostic pop
+  #else
+    #include <Python.h>
+  #endif
 #else
-#include <Python.h>
-#endif
-#else
-#include <Python.h>
+  #include <Python.h>
 #endif
 
-#if (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 1) || PY_MAJOR_VERSION > 3
+#if (KVS_PYTHON_VERSION == 3)
 #define KVS_PYTHON3
 #endif
 
