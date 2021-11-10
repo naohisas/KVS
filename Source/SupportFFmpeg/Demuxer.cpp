@@ -10,6 +10,14 @@
 #include <kvs/MutexLocker>
 
 
+#if FF_API_CONVERGENCE_DURATION
+#define KVS_FFMPEG_DEMUXER__WARNING_OFF FF_DISABLE_DEPRECATION_WARNINGS
+#define KVS_FFMPEG_DEMUXER__WARNING_ON  FF_ENABLE_DEPRECATION_WARNINGS
+#else
+#define KVS_FFMPEG_DEMUXER__WARNING_OFF
+#define KVS_FFMPEG_DEMUXER__WARNING_ON
+#endif
+
 namespace kvs
 {
 
@@ -112,8 +120,10 @@ bool Demuxer::grab()
             continue;
         }
 
+        KVS_FFMPEG_DEMUXER__WARNING_OFF;
         m_current_frame = m_decoder.decode( packet, m_error );
         if ( m_error ) { valid = false; break; }
+        KVS_FFMPEG_DEMUXER__WARNING_ON;
 
         if ( m_current_frame.isValid() )
         {
