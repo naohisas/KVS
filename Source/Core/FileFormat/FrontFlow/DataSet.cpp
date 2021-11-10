@@ -7,6 +7,14 @@
 #include "DataSet.h"
 #include <cstring>
 #include <kvs/Endian>
+#include <kvs/FileFormatBase>
+
+
+namespace
+{
+auto& Read = kvs::FileFormatBase::Read;
+auto& Seek = kvs::FileFormatBase::Seek;
+}
 
 
 namespace kvs
@@ -14,15 +22,6 @@ namespace kvs
 
 namespace gf
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Construct a new DataSet class.
- */
-/*===========================================================================*/
-DataSet::DataSet()
-{
-}
 
 /*===========================================================================*/
 /**
@@ -44,52 +43,6 @@ std::ostream& operator << ( std::ostream& os, const DataSet& d )
     }
 
     return os;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return comment list.
- *  @return comment list
- */
-/*===========================================================================*/
-const std::vector<std::string>& DataSet::commentList() const
-{
-    return m_comment_list;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return comment specified by the index.
- *  @param  index [in] index of comment list
- *  @return comment
- */
-/*===========================================================================*/
-const std::string& DataSet::comment( const size_t index ) const
-{
-    return m_comment_list.at( index );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return data list.
- *  @return data list
- */
-/*===========================================================================*/
-const std::vector<kvs::gf::Data>& DataSet::dataList() const
-{
-    return m_data_list;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return data specified by the index.
- *  @param  index [in] index of data set list
- *  @return data
- */
-/*===========================================================================*/
-const kvs::gf::Data& DataSet::data( const size_t index ) const
-{
-    return m_data_list.at( index );
 }
 
 /*===========================================================================*/
@@ -180,9 +133,9 @@ bool DataSet::readBinary( FILE* fp, const bool swap )
 {
     // Read a number of comments.
     kvs::Int32 ncomments = 0;
-    fseek( fp, 4, SEEK_CUR );
-    if ( fread( &ncomments, 4, 1, fp ) );
-    fseek( fp, 4, SEEK_CUR );
+    ::Seek( fp, 4, SEEK_CUR );
+    ::Read( &ncomments, 4, 1, fp );
+    ::Seek( fp, 4, SEEK_CUR );
     if ( swap ) kvs::Endian::Swap( &ncomments );
 
     // Read commnets.
@@ -191,9 +144,9 @@ bool DataSet::readBinary( FILE* fp, const bool swap )
     for ( size_t i = 0; i < size_t( ncomments ); i++ )
     {
         memcpy( comment, initialize, 60 );
-        fseek( fp, 4, SEEK_CUR );
-        if ( fread( comment, 1, 60, fp ) );
-        fseek( fp, 4, SEEK_CUR );
+        ::Seek( fp, 4, SEEK_CUR );
+        ::Read( comment, 1, 60, fp );
+        ::Seek( fp, 4, SEEK_CUR );
 
         m_comment_list.push_back( std::string( comment, 60 ) );
     }
@@ -205,9 +158,9 @@ bool DataSet::readBinary( FILE* fp, const bool swap )
         char buffer[8];
         fpos_t fpos;
         fgetpos( fp, &fpos );
-        fseek( fp, 4, SEEK_CUR );
-        if ( fread( buffer, 1, 8, fp ) );
-        fseek( fp, 4, SEEK_CUR );
+        ::Seek( fp, 4, SEEK_CUR );
+        ::Read( buffer, 1, 8, fp );
+        ::Seek( fp, 4, SEEK_CUR );
         fsetpos( fp, &fpos );
 
         if ( strncmp( buffer, "#ENDFILE", 8 ) == 0 ||

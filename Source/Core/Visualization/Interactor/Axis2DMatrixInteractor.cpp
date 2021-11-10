@@ -258,8 +258,8 @@ void Axis2DMatrixInteractor::paintEvent()
                 const auto y_index = j;
                 if ( x_index == y_index ) { continue; }
 
-                const float x_max = x_min + dx;
-                const float y_max = y_min + dy;
+                //const float x_max = x_min + dx;
+                //const float y_max = y_min + dy;
 
                 // Min/max values for each axis.
                 const auto vx_min = table->minValue( x_index );

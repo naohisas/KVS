@@ -9,6 +9,14 @@
 #include <cstring>
 #include <kvs/Message>
 #include <kvs/Endian>
+#include <kvs/FileFormatBase>
+
+
+namespace
+{
+auto& Read = kvs::FileFormatBase::Read;
+auto& Seek = kvs::FileFormatBase::Seek;
+}
 
 
 namespace kvs
@@ -16,26 +24,6 @@ namespace kvs
 
 namespace gf
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Construct a new File class.
- */
-/*===========================================================================*/
-File::File()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Construct a new File class.
- *  @param  filename [in] filename
- */
-/*===========================================================================*/
-File::File( const std::string filename )
-{
-    this->read( filename );
-}
 
 /*===========================================================================*/
 /**
@@ -58,63 +46,6 @@ std::ostream& operator << ( std::ostream& os, const File& f )
     }
 
     return os;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return file type header.
- *  @return file type header
- */
-/*===========================================================================*/
-const std::string& File::fileTypeHeader() const
-{
-    return m_file_type_header;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return comment list.
- *  @return comment list
- */
-/*===========================================================================*/
-const std::vector<std::string>& File::commentList() const
-{
-    return m_comment_list;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return comment specified by the index.
- *  @param  index [in] index of comment list
- *  @return comment
- */
-/*===========================================================================*/
-const std::string& File::comment( const size_t index ) const
-{
-    return m_comment_list.at( index );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return data set list.
- *  @return data set list
- */
-/*===========================================================================*/
-const std::vector<kvs::gf::DataSet>& File::dataSetList() const
-{
-    return m_data_set_list;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Return data set specified by the index.
- *  @param  index [in] index of data set list
- *  @return data set
- */
-/*===========================================================================*/
-const kvs::gf::DataSet& File::dataSet( const size_t index ) const
-{
-    return m_data_set_list.at( index );
 }
 
 /*===========================================================================*/
@@ -195,7 +126,7 @@ bool File::is_ascii( const std::string filename )
 
     // Read 8 characters (8 bytes).
     char buffer[8];
-    if ( fread( buffer, 1, 8, fp ) );
+    ::Read( buffer, 1, 8, fp );
 
     fclose( fp );
 
@@ -221,7 +152,7 @@ bool File::is_binary( const std::string filename )
     // Read 8 characters (8 bytes).
     char buffer[8];
     fseek( fp, 4, SEEK_SET );
-    if (fread( buffer, 1, 8, fp ) );
+    ::Read( buffer, 1, 8, fp );
 
     fclose( fp );
 
@@ -314,16 +245,16 @@ bool File::read_binary( const std::string filename, const bool swap )
 
     // Read a file-type-header (#U_GF_V1).
     char file_type_header[8];
-    fseek( fp, 4, SEEK_SET );
-    if ( fread( file_type_header, 1, 8, fp ) );
-    fseek( fp, 4, SEEK_CUR );
+    ::Seek( fp, 4, SEEK_SET );
+    ::Read( file_type_header, 1, 8, fp );
+    ::Seek( fp, 4, SEEK_CUR );
     m_file_type_header = std::string( file_type_header, 8 );
 
     // Read a number of comments.
     kvs::Int32 ncomments = 0;
-    fseek( fp, 4, SEEK_CUR );
-    if ( fread( &ncomments, 4, 1, fp ) );
-    fseek( fp, 4, SEEK_CUR );
+    ::Seek( fp, 4, SEEK_CUR );
+    ::Read( &ncomments, 4, 1, fp );
+    ::Seek( fp, 4, SEEK_CUR );
     if ( swap ) kvs::Endian::Swap( &ncomments );
 
     // Read commnets.
@@ -332,9 +263,9 @@ bool File::read_binary( const std::string filename, const bool swap )
     for ( size_t i = 0; i < size_t( ncomments ); i++ )
     {
         memcpy( comment, initialize, 60 );
-        fseek( fp, 4, SEEK_CUR );
-        if ( fread( comment, 1, 60, fp ) );
-        fseek( fp, 4, SEEK_CUR );
+        ::Seek( fp, 4, SEEK_CUR );
+        ::Read( comment, 1, 60, fp );
+        ::Seek( fp, 4, SEEK_CUR );
 
         m_comment_list.push_back( std::string( comment, 60 ) );
     }
@@ -343,9 +274,9 @@ bool File::read_binary( const std::string filename, const bool swap )
     for ( ; ; )
     {
         char buffer[8];
-        fseek( fp, 4, SEEK_CUR );
-        if ( fread( buffer, 1, 8, fp ) );
-        fseek( fp, 4, SEEK_CUR );
+        ::Seek( fp, 4, SEEK_CUR );
+        ::Read( buffer, 1, 8, fp );
+        ::Seek( fp, 4, SEEK_CUR );
 
         if ( strncmp( buffer, "#ENDFILE", 8 ) == 0 ) break;
 

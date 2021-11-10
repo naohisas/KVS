@@ -10,7 +10,13 @@
 #include <kvs/Endian>
 #include <cstring>
 #include <cstdlib>
+#include <kvs/FileFormatBase>
 
+
+namespace
+{
+auto& Read = kvs::FileFormatBase::Read;
+}
 
 namespace kvs
 {
@@ -219,7 +225,7 @@ bool USGSMesh::read_data( FILE* fp, const kvs::gis::Area& area )
     const size_t latitude_dimension = BaseClass::latitudeDimension();
     const size_t longitude_dimension = BaseClass::longitudeDimension();
     short* data = new short [ latitude_dimension * longitude_dimension ];
-    if ( fread( data, sizeof(short) * latitude_dimension * longitude_dimension, 1, fp ) );
+    ::Read( data, sizeof(short) * latitude_dimension * longitude_dimension, 1, fp );
     fclose( fp );
 
     // Set data size.
