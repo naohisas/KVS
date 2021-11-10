@@ -7,14 +7,22 @@
 #pragma once
 #include <string>
 #include <kvs/Compiler>
+
 #if KVS_COMPILER_SUPPORT_CXX11
-  #if defined( KVS_COMPILER_GCC )
+  #if defined( __GNUC__ )
     #pragma GCC diagnostic push
-    #if (KVS_PYTHON_VERSION == 2)
-      #pragma GCC diagnostic ignored "-Wdeprecated-register"
+    #if (KVS_PYTHON_VERSION == 2) && ( __GNUC__ >= 7 )
+      #pragma GCC diagnostic ignored "-Wregister"
     #endif
     #include <Python.h>
     #pragma GCC diagnostic pop
+  #elif defined( __clang__ )
+    #pragma clang diagnostic push
+    #if (KVS_PYTHON_VERSION == 2)
+      #pragma clang diagnostic ignored "-Wdeprecated-register"
+    #endif
+    #include <Python.h>
+    #pragma clang diagnostic pop
   #else
     #include <Python.h>
   #endif
