@@ -465,7 +465,7 @@ public:
     ValueTable sliceRow( const kvs::SliceRange& row_range ) const
     {
         ValueTable ret;
-        for ( long i = 0; i < this->columnSize(); ++i )
+        for ( size_t i = 0; i < this->columnSize(); ++i )
         {
             ret.pushBackColumn( this->column(i).slice( row_range ) );
         }

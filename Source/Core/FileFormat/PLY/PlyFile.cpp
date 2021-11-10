@@ -52,7 +52,13 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <cstring>
 #include <kvs/Endian>
 #include <kvs/DebugNew>
+#include <kvs/FileFormatBase>
 
+
+namespace
+{
+auto& Read = kvs::FileFormatBase::Read;
+}
 
 namespace kvs
 {
@@ -2164,54 +2170,54 @@ void get_binary_item(
 
     switch (type) {
     case PLY_CHAR:
-        fread(ptr, 1, 1, plyfile->fp);
+        ::Read(ptr, 1, 1, plyfile->fp);
         *int_val = *((char *) ptr);
         *uint_val = *int_val;
         *double_val = *int_val;
         break;
     case PLY_UCHAR:
-        fread (ptr, 1, 1, plyfile->fp);
+        ::Read(ptr, 1, 1, plyfile->fp);
         *uint_val = *((unsigned char *) ptr);
         *int_val = *uint_val;
         *double_val = *uint_val;
         break;
     case PLY_SHORT:
-        fread(ptr, 2, 1, plyfile->fp);
+        ::Read(ptr, 2, 1, plyfile->fp);
         if( swap_byte ) kvs::Endian::Swap( (short*)ptr, 1 );
         *int_val = *((short int *) ptr);
         *uint_val = *int_val;
         *double_val = *int_val;
         break;
     case PLY_USHORT:
-        fread(ptr, 2, 1, plyfile->fp);
+        ::Read(ptr, 2, 1, plyfile->fp);
         if( swap_byte ) kvs::Endian::Swap( (unsigned short*)ptr, 1 );
         *uint_val = *((unsigned short int *) ptr);
         *int_val = *uint_val;
         *double_val = *uint_val;
         break;
     case PLY_INT:
-        fread(ptr, 4, 1, plyfile->fp);
+        ::Read(ptr, 4, 1, plyfile->fp);
         if( swap_byte ) kvs::Endian::Swap( (int*)ptr, 1 );
         *int_val = *((int *) ptr);
         *uint_val = *int_val;
         *double_val = *int_val;
         break;
     case PLY_UINT:
-        fread(ptr, 4, 1, plyfile->fp);
+        ::Read(ptr, 4, 1, plyfile->fp);
         if( swap_byte ) kvs::Endian::Swap( (unsigned int*)ptr, 1 );
         *uint_val = *((unsigned int *) ptr);
         *int_val = *uint_val;
         *double_val = *uint_val;
         break;
     case PLY_FLOAT:
-        fread(ptr, 4, 1, plyfile->fp);
+        ::Read(ptr, 4, 1, plyfile->fp);
         if( swap_byte ) kvs::Endian::Swap( (float*)ptr, 1 );
         *double_val = *((float *) ptr);
         *int_val = (int) *double_val;
         *uint_val = (unsigned int) *double_val;
         break;
     case PLY_DOUBLE:
-        fread(ptr, 8, 1, plyfile->fp);
+        ::Read(ptr, 8, 1, plyfile->fp);
         if( swap_byte ) kvs::Endian::Swap( (double*)ptr, 1 );
         *double_val = *((double *) ptr);
         *int_val = (int) *double_val;

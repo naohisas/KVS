@@ -305,7 +305,7 @@ void ColorPalette::draw_H_palette()
     const kvs::Vec2 p4 = kvs::Vec2( x0, y0 + stride * 2 ) * dpr + kvs::Vec2( dx, 0 );
     const kvs::Vec2 p5 = kvs::Vec2( x0, y0 + stride * 1 ) * dpr + kvs::Vec2( dx, 0 );
     const kvs::Vec2 p6 = kvs::Vec2( x0, y0 + stride * 0 ) * dpr + kvs::Vec2( dx, 0 );
-    for ( size_t i = 0; i < (int)dpr; i++ )
+    for ( size_t i = 0; i < size_t(dpr); i++ )
     {
         kvs::OpenGL::SetLineWidth( static_cast<GLfloat>( m_H_palette.width() ) );
         kvs::OpenGL::Begin( GL_LINE_STRIP );

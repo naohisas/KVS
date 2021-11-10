@@ -103,7 +103,7 @@ bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer, const kvs:
     // Sort color_buffer in back-to-front order
     const int send_rank = static_cast<int>( std::distance( rank_list.begin(), i ) );
     const int recv_rank = rank_list[ my_rank ];
-    if ( my_rank != send_rank )
+    if ( int( my_rank ) != send_rank )
     {
         kvs::ValueArray<kvs::UInt8> recv_buffer( m_width * m_height * 4 );
         auto recv_request = comm.immediateReceive( recv_rank, RECV_TAG, recv_buffer );

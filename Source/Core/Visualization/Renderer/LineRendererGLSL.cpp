@@ -336,7 +336,7 @@ void LineRenderer::BufferObject::draw( const kvs::ObjectBase* object )
         else
         {
             if ( line->lineType() == kvs::LineObject::Strip &&
-                 line->coords().byteSize() == m_manager.vertexArray().size )
+                 line->coords().byteSize() == size_t( m_manager.vertexArray().size ) )
             {
                 const size_t nvertices = line->numberOfVertices();
                 m_manager.drawArrays( GL_LINE_STRIP, 0, nvertices );

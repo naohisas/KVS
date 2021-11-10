@@ -199,7 +199,7 @@ int  Do_234ZComposition ( unsigned int my_rank, unsigned int nnodes,
 #endif
 
         i = 0;
-        while ( my_rank != BtoF_List[i].rank ) {
+        while ( my_rank != (unsigned int)BtoF_List[i].rank ) {
             i++;
         }
 
@@ -337,7 +337,7 @@ int  Do_234ZComposition ( unsigned int my_rank, unsigned int nnodes,
 #endif
 
         i = 0;
-        while ( my_rank != BtoF_List[i].rank ) {
+        while ( my_rank != (unsigned int)BtoF_List[i].rank ) {
             i++;
         }
 

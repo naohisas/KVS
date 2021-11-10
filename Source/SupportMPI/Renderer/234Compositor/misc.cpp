@@ -95,7 +95,7 @@ unsigned int get_nearest_pow2 (unsigned int nnodes )
 {
     int pow2 = 1;
 
-    while ( pow2 < nnodes )
+    while ( (unsigned int)pow2 < nnodes )
     {
         pow2 <<= 1;
     }

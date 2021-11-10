@@ -47,7 +47,9 @@ void nvgluDeleteFramebuffer(NVGLUframebuffer* fb);
 #	endif
 #endif
 
+#ifdef NANOVG_FBO_VALID
 static GLint defaultFBO = -1;
+#endif
 
 NVGLUframebuffer* nvgluCreateFramebuffer(NVGcontext* ctx, int w, int h, int imageFlags)
 {
