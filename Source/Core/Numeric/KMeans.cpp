@@ -20,7 +20,7 @@
 namespace
 {
 
-kvs::Real32 GetEuclideanDistance(
+inline kvs::Real32 GetEuclideanDistance(
     const kvs::AnyValueTable& table,
     const kvs::UInt32 row_index,
     const kvs::ValueArray<kvs::Real32>& center )
@@ -36,7 +36,7 @@ kvs::Real32 GetEuclideanDistance(
     return distance;
 }
 
-kvs::Real32 GetEuclideanDistance(
+inline kvs::Real32 GetEuclideanDistance(
     const kvs::AnyValueTable& table,
     const kvs::ValueArray<kvs::Real32>& center_old,
     const kvs::ValueArray<kvs::Real32>& center_new )
@@ -51,6 +51,7 @@ kvs::Real32 GetEuclideanDistance(
 
     return distance;
 }
+
 }
 
 namespace
@@ -65,7 +66,7 @@ namespace
  *  @param  center [out] cluster centroid
  */
 /*===========================================================================*/
-void CalculateCenter(
+inline void CalculateCenter(
     const kvs::AnyValueTable& table,
     const kvs::UInt32 cluster_id,
     const kvs::ValueArray<kvs::UInt32>& ids,
@@ -103,7 +104,7 @@ void CalculateCenter(
  *  @param  centers [in/out] pointer to center array
  */
 /*===========================================================================*/
-void InitializeCentersWithRandomSeeding(
+inline void InitializeCentersWithRandomSeeding(
     const kvs::AnyValueTable& table,
     const size_t nclusters,
     const kvs::ValueArray<kvs::UInt32>& ids,
@@ -124,7 +125,7 @@ void InitializeCentersWithRandomSeeding(
  *  @param  centers [in/out] pointer to center array
  */
 /*===========================================================================*/
-void InitializeCentersWithSmartSeeding(
+inline void InitializeCentersWithSmartSeeding(
     const kvs::AnyValueTable& table,
     const size_t nclusters,
     const kvs::ValueArray<kvs::UInt32>& ids,
@@ -176,30 +177,6 @@ void InitializeCentersWithSmartSeeding(
 
 namespace kvs
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new KMeans class.
- */
-/*===========================================================================*/
-KMeans::KMeans():
-    m_seeding_method( KMeans::SmartSeeding ),
-    m_nclusters( 1 ),
-    m_max_iterations( 100 ),
-    m_tolerance( float(1.e-6) ),
-    m_cluster_centers( NULL )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the KMeans class.
- */
-/*===========================================================================*/
-KMeans::~KMeans()
-{
-    if ( m_cluster_centers ) delete [] m_cluster_centers;
-}
 
 /*===========================================================================*/
 /**

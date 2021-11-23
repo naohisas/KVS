@@ -30,7 +30,7 @@ namespace
  *  @return distance
  */
 /*===========================================================================*/
-kvs::Real32 GetEuclideanDistance(
+inline kvs::Real32 GetEuclideanDistance(
     const kvs::ValueArray<kvs::Real32>& x0,
     const kvs::ValueArray<kvs::Real32>& x1 )
 {
@@ -54,7 +54,7 @@ kvs::Real32 GetEuclideanDistance(
  *  @param  center [out] cluster centers
  */
 /*===========================================================================*/
-void InitializeCenterWithRandomSeeding(
+inline void InitializeCenterWithRandomSeeding(
     const kvs::AnyValueTable& table,
     const size_t nclusters,
     kvs::MersenneTwister& random,
@@ -77,7 +77,7 @@ void InitializeCenterWithRandomSeeding(
  *  @param  center [out] cluster centers
  */
 /*===========================================================================*/
-void InitializeCenterWithSmartSeeding(
+inline void InitializeCenterWithSmartSeeding(
     const kvs::AnyValueTable& table,
     const size_t nclusters,
     kvs::MersenneTwister& random,
@@ -141,7 +141,7 @@ namespace
  *  @param  li [out] lower bound for xi
  */
 /*===========================================================================*/
-void PointAllCtrs(
+inline void PointAllCtrs(
     const size_t nclusters,
     const kvs::ValueArray<kvs::Real32>& xi,
     const kvs::ValueArray<kvs::Real32>* c,
@@ -191,7 +191,7 @@ void PointAllCtrs(
  *  @param  a [out] index of the center
  */
 /*===========================================================================*/
-void Initialize(
+inline void Initialize(
     const size_t nclusters,
     const kvs::AnyValueTable& table,
     const kvs::ValueArray<kvs::Real32>* c,
@@ -232,7 +232,7 @@ void Initialize(
  *  @param  p [out] array of the distance that the cluster center moved
  */
 /*===========================================================================*/
-void MoveCenters(
+inline void MoveCenters(
     const kvs::ValueArray<kvs::Real32>* cp,
     const kvs::ValueArray<kvs::UInt32>& q,
     kvs::ValueArray<kvs::Real32>* c,
@@ -264,7 +264,7 @@ void MoveCenters(
  *  @param  l [out] lower bound
  */
 /*===========================================================================*/
-void UpdateBounds(
+inline void UpdateBounds(
     const kvs::ValueArray<kvs::Real32>& p,
     const kvs::ValueArray<kvs::UInt32>& a,
     kvs::ValueArray<kvs::Real32>& u,
@@ -315,7 +315,7 @@ void UpdateBounds(
  *  @param  q [in/out] updated the array of the number of points
  */
 /*===========================================================================*/
-void Update(
+inline void Update(
     const size_t m,
     const kvs::ValueArray<kvs::UInt32>& a,
     kvs::ValueArray<kvs::UInt32>& q )
@@ -339,7 +339,7 @@ void Update(
  *  @param  cp [out] set of the vector sum of all points
  */
 /*===========================================================================*/
-void Update(
+inline void Update(
     const size_t m,
     const kvs::AnyValueTable& table,
     const kvs::ValueArray<kvs::UInt32>& a,
@@ -366,30 +366,6 @@ void Update(
 
 namespace kvs
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new FastKMeans class.
- */
-/*===========================================================================*/
-FastKMeans::FastKMeans():
-    m_seeding_method( FastKMeans::SmartSeeding ),
-    m_nclusters( 10 ),
-    m_max_iterations( 100 ),
-    m_tolerance( float(1.e-6) ),
-    m_cluster_centers( NULL )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the FastKMeans class.
- */
-/*===========================================================================*/
-FastKMeans::~FastKMeans()
-{
-    if ( m_cluster_centers ) delete [] m_cluster_centers;
-}
 
 /*===========================================================================*/
 /**

@@ -11,9 +11,7 @@
  *     Association, vol. 98, pp. 750-763, 2003.
  */
 /*****************************************************************************/
-#ifndef KVS__ADAPTIVE_KMEANS_H_INCLUDE
-#define KVS__ADAPTIVE_KMEANS_H_INCLUDE
-
+#pragma once
 #include <kvs/ValueArray>
 #include <kvs/AnyValueTable>
 
@@ -29,20 +27,18 @@ namespace kvs
 class AdaptiveKMeans
 {
 private:
-
-    size_t m_nclusters; ///< number of clusters
-    size_t m_max_iterations; ///< maximum number of interations
-    float m_tolerance; ///< tolerance of distance
-    size_t m_max_nclusters; ///< maximum number of clusters for finding the best k
-    kvs::AnyValueTable m_input_table; ///< input table data
-    kvs::ValueArray<kvs::UInt32> m_cluster_ids; ///< cluster IDs
-    kvs::ValueArray<kvs::Real32>* m_cluster_centers; ///< cluster centers
-    kvs::ValueArray<kvs::Real32> m_distortions; ///< distortions for finding the best k
+    size_t m_nclusters = 0; ///< number of clusters
+    size_t m_max_iterations = 100; ///< maximum number of interations
+    float m_tolerance = 1.e-6; ///< tolerance of distance
+    size_t m_max_nclusters = 10; ///< maximum number of clusters for finding the best k
+    kvs::AnyValueTable m_input_table{}; ///< input table data
+    kvs::ValueArray<kvs::UInt32> m_cluster_ids{}; ///< cluster IDs
+    kvs::ValueArray<kvs::Real32>* m_cluster_centers = nullptr; ///< cluster centers
+    kvs::ValueArray<kvs::Real32> m_distortions{}; ///< distortions for finding the best k
 
 public:
-
-    AdaptiveKMeans();
-    virtual ~AdaptiveKMeans();
+    AdaptiveKMeans() = default;
+    virtual ~AdaptiveKMeans() { if ( m_cluster_centers ) { delete [] m_cluster_centers; } }
 
     void setMaxNumberOfClusters( const size_t max_nclusters ) { m_max_nclusters = max_nclusters; }
     void setMaxIterations( const size_t max_iterations ) { m_max_iterations = max_iterations; }
@@ -62,5 +58,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__ADAPTIVE_KMEANS_H_INCLUDE

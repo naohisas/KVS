@@ -11,9 +11,7 @@
  *     Discrete algorithms, 2007, pp. 1027-1035.
  */
 /*****************************************************************************/
-#ifndef KVS__K_MEANS_H_INCLUDE
-#define KVS__K_MEANS_H_INCLUDE
-
+#pragma once
 #include <kvs/MersenneTwister>
 #include <kvs/ValueArray>
 #include <kvs/AnyValueTable>
@@ -30,7 +28,6 @@ namespace kvs
 class KMeans
 {
 public:
-
     enum SeedingMethod
     {
         RandomSeeding,
@@ -38,20 +35,18 @@ public:
     };
 
 private:
-
-    kvs::MersenneTwister m_random; ///< random number generator
-    SeedingMethod m_seeding_method; ///< seeding method
-    size_t m_nclusters; ///< number of clusters
-    size_t m_max_iterations; ///< maximum number of interations
-    float m_tolerance; ///< tolerance of distance
-    kvs::AnyValueTable m_input_table; ///< input table data
-    kvs::ValueArray<kvs::UInt32> m_cluster_ids; ///< cluster IDs
-    kvs::ValueArray<kvs::Real32>* m_cluster_centers; ///< cluster centers
+    kvs::MersenneTwister m_random{}; ///< random number generator
+    SeedingMethod m_seeding_method = SmartSeeding; ///< seeding method
+    size_t m_nclusters = 1; ///< number of clusters
+    size_t m_max_iterations = 100; ///< maximum number of interations
+    float m_tolerance = 1.e-6; ///< tolerance of distance
+    kvs::AnyValueTable m_input_table{}; ///< input table data
+    kvs::ValueArray<kvs::UInt32> m_cluster_ids{}; ///< cluster IDs
+    kvs::ValueArray<kvs::Real32>* m_cluster_centers = nullptr; ///< cluster centers
 
 public:
-
-    KMeans();
-    virtual ~KMeans();
+    KMeans() = default;
+    virtual ~KMeans() { if ( m_cluster_centers ) { delete [] m_cluster_centers; } }
 
     void setSeedingMethod( SeedingMethod seeding_method ) { m_seeding_method = seeding_method; }
     void setSeed( const size_t seed ) { m_random.setSeed( seed ); }
@@ -71,5 +66,3 @@ public:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__K_MEANS_H_INCLUDE

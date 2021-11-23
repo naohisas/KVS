@@ -28,7 +28,7 @@ namespace
  *  @return Mahalanobis distance
  */
 /*===========================================================================*/
-kvs::Real32 GetMahalanobisDistance(
+inline kvs::Real32 GetMahalanobisDistance(
     const kvs::ValueArray<kvs::Real32>& x,
     const kvs::ValueArray<kvs::Real32>& u )
 {
@@ -54,7 +54,7 @@ kvs::Real32 GetMahalanobisDistance(
  *  @return row array
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::Real32> GetRowArray(
+inline kvs::ValueArray<kvs::Real32> GetRowArray(
     const kvs::AnyValueTable& table,
     const size_t row_index )
 {
@@ -72,30 +72,6 @@ kvs::ValueArray<kvs::Real32> GetRowArray(
 
 namespace kvs
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new AdaptiveKMeans class.
- */
-/*===========================================================================*/
-AdaptiveKMeans::AdaptiveKMeans():
-    m_nclusters( 0 ),
-    m_max_iterations( 100 ),
-    m_tolerance( float( 1.e-6 ) ),
-    m_max_nclusters( 10 ),
-    m_cluster_centers( NULL )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the AdaptiveKMeans class.
- */
-/*===========================================================================*/
-AdaptiveKMeans::~AdaptiveKMeans()
-{
-    if ( m_cluster_centers ) delete [] m_cluster_centers;
-}
 
 /*===========================================================================*/
 /**
