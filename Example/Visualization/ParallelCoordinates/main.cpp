@@ -12,6 +12,8 @@
 #include <kvs/ParallelAxis>
 #include <kvs/ParallelAxisInteractor>
 
+#include <kvs/Label>
+
 
 /*===========================================================================*/
 /**
@@ -62,6 +64,14 @@ int main( int argc, char** argv )
     screen.registerObject( object, axis );
     screen.registerObject( object, renderer );
     screen.create();
+
+    kvs::Label fps( &screen );
+    fps.setMargin( 10 );
+    fps.screenUpdated( [&] ()
+    {
+        fps.setText( "%.3f fps", renderer->timer().fps() );
+    } );
+    fps.show();
 
     return app.run();
 }

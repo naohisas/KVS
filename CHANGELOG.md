@@ -64,6 +64,7 @@
 + kvs::Range::equals( other )
 + kvs::Rectangle::p0()
 + kvs::Rectangle::p1()
++ kvs::ParallelCoordinatesRenderer::setAntiAliasingEnabled
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()
