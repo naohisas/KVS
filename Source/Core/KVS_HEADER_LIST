@@ -324,6 +324,7 @@ Visualization/Renderer/Axis2D
 Visualization/Renderer/Axis2DMatrix
 Visualization/Renderer/Axis3D
 Visualization/Renderer/Bounds
+Visualization/Renderer/CurvedParallelCoordinatesRenderer
 Visualization/Renderer/DateAxis
 Visualization/Renderer/DiamondGlyph
 Visualization/Renderer/EnsembleAverageBuffer

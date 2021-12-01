@@ -343,6 +343,7 @@ $(OUTDIR)\.\Visualization\Renderer\Axis2D.obj \
 $(OUTDIR)\.\Visualization\Renderer\Axis2DMatrix.obj \
 $(OUTDIR)\.\Visualization\Renderer\Axis3D.obj \
 $(OUTDIR)\.\Visualization\Renderer\Bounds.obj \
+$(OUTDIR)\.\Visualization\Renderer\CurvedParallelCoordinatesRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\DateAxis.obj \
 $(OUTDIR)\.\Visualization\Renderer\DiamondGlyph.obj \
 $(OUTDIR)\.\Visualization\Renderer\EnsembleAverageBuffer.obj \

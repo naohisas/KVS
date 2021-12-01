@@ -11,6 +11,7 @@
 + kvs::Axis2DInteractor
 + kvs::Axis2DMatrixInteractor
 + kvs::ParallelAxisInteractor
++ kvs::CurvedParallelCoordinatesRenderer
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled
@@ -119,6 +120,7 @@
 + Example/Numeric/PrincipalComponentAnalysis
 + Example/SupportFFmpeg/MoviePlayer
 + Example/SupportFFmpeg/SphericalMoviePlayer
++ Example/Visualization/CurvedParallelCoordinates
 
 **Added SupportFFmpeg**
 + kvs::ffmpeg::MovieObject

@@ -324,6 +324,7 @@
 #include <Core/Visualization/Renderer/Axis2DMatrix.h>
 #include <Core/Visualization/Renderer/Axis3D.h>
 #include <Core/Visualization/Renderer/Bounds.h>
+#include <Core/Visualization/Renderer/CurvedParallelCoordinatesRenderer.h>
 #include <Core/Visualization/Renderer/DateAxis.h>
 #include <Core/Visualization/Renderer/DiamondGlyph.h>
 #include <Core/Visualization/Renderer/EnsembleAverageBuffer.h>
