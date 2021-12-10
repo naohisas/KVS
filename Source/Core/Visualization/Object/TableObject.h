@@ -87,7 +87,7 @@ public:
     kvs::Real64 minRange( const size_t column_index ) const { return m_min_ranges[column_index]; }
     kvs::Real64 maxRange( const size_t column_index ) const { return m_max_ranges[column_index]; }
     bool insideRange( const size_t row_index ) const { return m_inside_range_flags[row_index] == 1; }
-    template <typename T> const T& at( const size_t row, const size_t column ) const;
+    template <typename T> T at( const size_t row, const size_t col ) const { return m_table.column(col).at<T>(row); }
 
 protected:
     void setNumberOfRows( const size_t nrows ) { m_nrows = nrows; }
@@ -114,18 +114,5 @@ public:
     KVS_DEPRECATED( const Values& maxRangeList() const ) { return this->maxRanges(); }
     KVS_DEPRECATED( const InsideRangeFlags& insideRangeList() const ) { return this->insideRangeFlags(); }
 };
-
-/*===========================================================================*/
-/**
- *  @brief  Returns value specified by indices.
- *  @param  row [in] row index
- *  @param  column [in] column index
- */
-/*===========================================================================*/
-template <typename T>
-inline const T& TableObject::at( const size_t row, const size_t column ) const
-{
-    return( this->column( column ).template at<T>( row ) );
-}
 
 } // end of namespace kvs

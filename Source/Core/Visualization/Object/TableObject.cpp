@@ -633,16 +633,4 @@ void TableObject::resetRange()
     std::fill( m_inside_range_flags.begin(), m_inside_range_flags.end(), 1 );
 }
 
-template<> const kvs::Int8& TableObject::at<kvs::Int8>( const size_t row, const size_t column ) const;
-template<> const kvs::UInt8& TableObject::at<kvs::UInt8>( const size_t row, const size_t column ) const;
-template<> const kvs::Int16& TableObject::at<kvs::Int16>( const size_t row, const size_t column ) const;
-template<> const kvs::UInt16& TableObject::at<kvs::UInt16>( const size_t row, const size_t column ) const;
-template<> const kvs::Int32& TableObject::at<kvs::Int32>( const size_t row, const size_t column ) const;
-template<> const kvs::UInt32& TableObject::at<kvs::UInt32>( const size_t row, const size_t column ) const;
-template<> const kvs::Int64& TableObject::at<kvs::Int64>( const size_t row, const size_t column ) const;
-template<> const kvs::UInt64& TableObject::at<kvs::UInt64>( const size_t row, const size_t column ) const;
-template<> const kvs::Real32& TableObject::at<kvs::Real32>( const size_t row, const size_t column ) const;
-template<> const kvs::Real64& TableObject::at<kvs::Real64>( const size_t row, const size_t column ) const;
-template<> const std::string& TableObject::at<std::string>( const size_t row, const size_t column ) const;
-
 } // end of namespace kvs
