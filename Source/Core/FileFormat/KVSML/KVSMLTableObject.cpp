@@ -153,6 +153,15 @@ void KVSMLTableObject::addColumn( const kvs::AnyValueArray& column, const std::s
     m_columns.push_back( column );
     m_labels.push_back( label );
 
+    m_has_min_values.push_back( false );
+    m_has_max_values.push_back( false );
+    m_has_min_ranges.push_back( false );
+    m_has_max_ranges.push_back( false );
+    m_min_values.push_back( 0 );
+    m_max_values.push_back( 0 );
+    m_min_ranges.push_back( 0 );
+    m_max_ranges.push_back( 0 );
+
     m_ncolumns++;
     m_nrows = m_nrows > column.size() ? m_nrows : column.size();
 }
