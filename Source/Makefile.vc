@@ -36,7 +36,6 @@ SUBDIRS = $(SUBDIRS) SupportGLFW
 !IF "$(KVS_SUPPORT_FFMPEG)" == "1"
 SUBDIRS = $(SUBDIRS) SupportFFmpeg
 !ENDIF
-!ENDIF
 
 !IF "$(KVS_SUPPORT_QT)" == "1"
 SUBDIRS = $(SUBDIRS) SupportQt
