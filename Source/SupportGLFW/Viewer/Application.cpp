@@ -55,16 +55,10 @@ Application::Application( int argc, char** argv ):
         }
         flag = false;
         atexit( glfwTerminate );
-    }
-}
 
-/*===========================================================================*/
-/**
- *  @brief  Destructs the application class.
- */
-/*===========================================================================*/
-Application::~Application()
-{
+        const GLFWvidmode* mode = glfwGetVideoMode( glfwGetPrimaryMonitor() );
+        BaseClass::setDesktop( { mode->width, mode->height } );
+    }
 }
 
 /*===========================================================================*/

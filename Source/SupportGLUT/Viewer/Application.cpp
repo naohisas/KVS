@@ -33,16 +33,11 @@ Application::Application( int argc, char** argv ):
     {
         glutInit( &argc, argv );
         flag = false;
-    }
-}
 
-/*===========================================================================*/
-/**
- *  @brief  Destructs the Application class.
- */
-/*===========================================================================*/
-Application::~Application()
-{
+        const int width = glutGet( GLUT_SCREEN_WIDTH );
+        const int height = glutGet( GLUT_SCREEN_HEIGHT );
+        BaseClass::setDesktop( { width, height } );
+    }
 }
 
 /*===========================================================================*/

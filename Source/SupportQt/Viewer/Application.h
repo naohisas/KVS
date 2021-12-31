@@ -27,6 +27,8 @@ class Application : public kvs::ApplicationBase
 {
     kvsClassName( kvs::qt::Application );
 
+    using BaseClass = kvs::ApplicationBase;
+
 private:
     QApplication* m_app = nullptr; ///< Qt application
 

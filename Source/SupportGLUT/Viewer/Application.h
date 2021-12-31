@@ -25,7 +25,7 @@ class Application : public kvs::ApplicationBase
 
 public:
     Application( int argc, char** argv );
-    virtual ~Application();
+    virtual ~Application() = default;
 
     virtual int run();
     virtual void quit();

@@ -19,10 +19,7 @@ namespace kvs
  *  @param  argv [in] argument values
  */
 /*===========================================================================*/
-ApplicationBase::ApplicationBase( int argc, char** argv ):
-    m_argc( argc ),
-    m_argv( argv ),
-    m_color( kvs::UIColor::Instance() )
+ApplicationBase::ApplicationBase( int argc, char** argv )
 {
     const char* kvs_color_mode = std::getenv( "KVS_COLOR_MODE" );
     if ( kvs_color_mode != NULL )

@@ -26,6 +26,12 @@ Application::Application( int& argc, char** argv ):
     kvs::ApplicationBase( argc, argv ),
     m_app( new QApplication( argc, argv ) )
 {
+#if ( KVS_QT_VERSION >= 6 )
+        const QRect desk = QGuiApplication::primaryScreen()->geometry();
+#else
+        const QRect desk = QApplication::desktop()->screenGeometry();
+#endif
+        BaseClass::setDesktop( { desk.width(), desk.height() } );
 }
 
 /*===========================================================================*/
