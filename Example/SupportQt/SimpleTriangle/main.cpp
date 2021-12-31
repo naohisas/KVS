@@ -19,29 +19,7 @@
 // KVS
 #include <kvs/OpenGL>
 #include <kvs/PaintEventListener>
-// SupportGLUT
-//#include <kvs/glut/Label>
 
-
-/*===========================================================================*/
-/**
- *  @brief  User-defined paint event.
- */
-/*===========================================================================*/
-class PaintEvent : public kvs::PaintEventListener
-{
-    void update( void )
-    {
-        /* This sample method draws a rainbow colored triangle in the screen by
-         * using GL_TRIANGLES.
-         */
-        glBegin( GL_TRIANGLES );
-        glColor3ub( 255,   0,   0 ); glVertex3d(  0.0,  3.0, 0.0 );
-        glColor3ub(   0, 255,   0 ); glVertex3d(  3.0, -3.0, 0.0 );
-        glColor3ub(   0,   0, 255 ); glVertex3d( -3.0, -3.0, 0.0 );
-        glEnd();
-    }
-};
 
 /*===========================================================================*/
 /**
@@ -55,15 +33,21 @@ int main( int argc, char** argv )
     // Application.
     kvs::qt::Application app( argc, argv );
 
-    // User specified event.
-    PaintEvent paint_event;
-
     // Screen.
     kvs::qt::Screen screen( &app );
-    screen.addEvent( &paint_event );
-    screen.setGeometry( 0, 0, 512, 512 );
     screen.setTitle( "SimpleTriangle" );
-    screen.show();
+    screen.create();
+
+    // User specified event.
+    kvs::PaintEventListener paint_event( [] ()
+    {
+        glBegin( GL_TRIANGLES );
+        glColor3ub( 255,   0,   0 ); glVertex3d(  0.0,  3.0, 0.0 );
+        glColor3ub(   0, 255,   0 ); glVertex3d(  3.0, -3.0, 0.0 );
+        glColor3ub(   0,   0, 255 ); glVertex3d( -3.0, -3.0, 0.0 );
+        glEnd();
+    } );
+    screen.addEvent( &paint_event );
 
     // Message.
     /*
@@ -76,5 +60,5 @@ int main( int argc, char** argv )
     message.show();
     */
 
-    return( app.run() );
+    return app.run();
 }
