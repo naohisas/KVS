@@ -219,6 +219,8 @@ void ScreenBase::create()
         QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
     }
 
+    BaseClass::setDevicePixelRatio( GLWidget::devicePixelRatio() );
+
 //    QGLWidget::makeCurrent();
 //    QOpenGLWidget::makeCurrent();
     GLWidget::makeCurrent();
@@ -366,8 +368,9 @@ void ScreenBase::initializeGL()
     BaseClass::paintDevice()->create();
 
     // Set device pixel ratio.
-    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
-    BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
+//    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
+//    BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
+//    BaseClass::setDevicePixelRatio( GLWidget::devicePixelRatio() );
 
     this->initializeEvent();
 
@@ -404,8 +407,7 @@ void ScreenBase::paintGL()
 /*===========================================================================*/
 void ScreenBase::resizeGL( int width, int height )
 {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-//#if ( KVS_VERSION_MAJOR > 2 || ( KVS_VERSION_MAJOR == 2 && KVS_VERSION_MINOR > 8 ) )
+#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) ) && ( QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 ) )
     // NOTE: High-dpi model such as retina display has been supported in Qt5.
     // Therefore, when using Qt5 on Mac with retina display, the 'width' and
     // 'height' specified as arguments of this method are scaled by a device
@@ -413,12 +415,9 @@ void ScreenBase::resizeGL( int width, int height )
     // 2.9. In KVS with SupportQt, the width and height which are not scaled
     // are passed to the resizeEvent method in order to keep the compatibility
     // with the previous version of KVS-based applications.
-//    const qreal scale = QGLWidget::devicePixelRatio();
-//    const qreal scale = QOpenGLWidget::devicePixelRatio();
     const qreal scale = GLWidget::devicePixelRatio();
     width = static_cast<size_t>( width / scale + 0.5 );
     height = static_cast<size_t>( height / scale + 0.5 );
-//#endif
 #endif
 
     this->resizeEvent( width, height );

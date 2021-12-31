@@ -190,18 +190,36 @@ INCLUDEPATH += $$FFMPEG_INCLUDE_PATH
 KVS_PYTHON_DIR = $$(KVS_PYTHON_DIR)
 KVS_NUMPY_DIR = $$(KVS_NUMPY_DIR)
 
+KVS_PY = $$(KVS_PY)
+isEmpty( KVS_PY ) {
+    PY = python
+    PYCONF = python-config
+}
+else {
+    PY = $KVS_PY
+    PYCONF = $KVS_PY-config
+}
+
 PYTHON_INCLUDE_PATH = .
 PYTHON_LIBRARY_PATH = .
+PYTHON_LINK_LIBRARY =
 NUMPY_INCLUDE_PATH = .
 NUMPY_LIBRARY_PATH = .
 equals( KVS_SUPPORT_PYTHON, "1" ) {
-    PYTHON_INCLUDE_PATH = $$system( "python-config --includes | sed -e 's/-I//g'" )
-    PYTHON_LIBRARY_PATH = $$system( "python-config --ldflags" )
+    PYTHON_VER = $$system( "$$PY -c \"from __future__ import print_function; import sys; print( sys.version_info[0] )\"")
+    PYTHON_INCLUDE_PATH = $$system( "$$PYCONF --includes | sed -e 's/-I//g'" )
+    PYTHON_LIBRARY_PATH = $$system( "$$PYCONF --ldflags" )
+    equals( PYTHON_VER, "2" ) {
+        PYTHON_LINK_LIBRARY = $$system( "$$PYCONF --libs" )
+    }
+    equals( PYTHON_VER, "3" ) {
+        PYTHON_LINK_LIBRARY = $$system( "$$PYCONF --libs --embed" )
+    }
     !isEmpty( KVS_PYTHON_DIR ) {
         PYTHON_INCLUDE_PATH = $$KVS_PYTHON_DIR/include
         PYTHON_LIBRARY_PATH = $$KVS_PYTHON_DIR/lib
     }
-    NUMPY_INCLUDE_PATH = $$system( "python -c \"import numpy; print numpy.get_include()\"" )
+    NUMPY_INCLUDE_PATH = $$system( "$$PY -c \"import numpy; print( numpy.get_include() )\"" )	
     !isEmpty( KVS_NUMPY_DIR ) {
         NUMPY_INCLUDE_PATH = $$KVS_NUMPY_DIR/include
         NUMPY_LIBRARY_PATH = $$KVS_NUMPY_DIR/lib
@@ -245,7 +263,7 @@ macx {
         LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -framework GLUT
     }
     equals( KVS_SUPPORT_FFMPEG, "1" ) {
-        LIBS += $$KVS_DIR/lib/libkvsSupportFFmpeg.a $$FFMPEG_LIBRARY_PATH
+        LIBS += $$KVS_DIR/lib/libkvsSupportFFmpeg.a -L$$FFMPEG_LIBRARY_PATH
 	LIBS += -lavcodec -lavformat -lavutil -lavdevice -lavfilter -lswscale
     }
     equals( KVS_SUPPORT_OPENCV, "1" ) {
