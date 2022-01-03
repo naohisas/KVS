@@ -219,12 +219,11 @@ void ScreenBase::create()
         QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
     }
 
-    BaseClass::setDevicePixelRatio( GLWidget::devicePixelRatio() );
-
 //    QGLWidget::makeCurrent();
 //    QOpenGLWidget::makeCurrent();
-    GLWidget::makeCurrent();
-    QWidget::show();
+//    GLWidget::makeCurrent();
+
+//    QWidget::show();
 }
 
 /*===========================================================================*/
@@ -235,18 +234,17 @@ void ScreenBase::create()
 /*===========================================================================*/
 void ScreenBase::show()
 {
-    BaseClass::show();
-
 #if 1 // KVS_ENABLE_DEPRECATED
     if ( m_id == -1 ) { this->create(); }
-    else {
+//    else {
 #endif
 
+    BaseClass::show();
     QWidget::show();
 
-#if 1 // KVS_ENABLE_DEPRECATED
-    }
-#endif
+//#if 1 // KVS_ENABLE_DEPRECATED
+//    }
+//#endif
 }
 
 /*===========================================================================*/
@@ -368,9 +366,12 @@ void ScreenBase::initializeGL()
     BaseClass::paintDevice()->create();
 
     // Set device pixel ratio.
-//    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
-//    BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
-//    BaseClass::setDevicePixelRatio( GLWidget::devicePixelRatio() );
+#if ( QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 ) )
+    BaseClass::setDevicePixelRatio( GLWidget::devicePixelRatio() );
+#else
+    const kvs::Vec4 vp = kvs::OpenGL::Viewport();
+    BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
+#endif
 
     this->initializeEvent();
 

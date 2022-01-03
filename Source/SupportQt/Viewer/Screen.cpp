@@ -308,6 +308,8 @@ void Screen::paintEvent()
 
     kvs::PaintEvent event;
     BaseClass::eventHandler()->notify( &event );
+
+//    BaseClass::frameSwapped();
 }
 
 /*===========================================================================*/
