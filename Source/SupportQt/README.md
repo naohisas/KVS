@@ -20,7 +20,7 @@ In order to use qmake command, you may need to set:
 export PATH="/usr/local/opt/qt/bin:$PATH"     (intel mac)
 export PATH="/opt/homebrew/opt/qt/bin:$PATH"  (m1 mac)
 ```
-And check mac SDK version in the mkspecs
+And check mac SDK version in the mkspecs in case of Qt5
 ```
 $ vi /usr/local/opt/qt/mkspecs/common/macx.conf     (intel mac)
 $ vi /opt/homebrew/opt/qt/mkspecs/common/macx.conf  (m1 mac)
