@@ -5,7 +5,7 @@ KVS_SUPPORT_QT = 1
 ```
 
 ## Prerequisite
-To compile the SupportQt, the Qt needs to be installed. NOTE: Currently, Qt6 is not supported. Therefore, Qt5 is required to compile the SupportQt.
+To compile the SupportQt, the Qt needs to be installed.
 
 ### Linux
 Not tested.
