@@ -17,6 +17,7 @@
 #include <SupportQt/Viewer/KVSKey.h>
 #include <kvs/OpenGL>
 #include <kvs/Version>
+#include <kvs/FrameBufferObject>
 
 
 namespace
@@ -218,12 +219,6 @@ void ScreenBase::create()
         // User specified geometry.
         QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
     }
-
-//    QGLWidget::makeCurrent();
-//    QOpenGLWidget::makeCurrent();
-//    GLWidget::makeCurrent();
-
-//    QWidget::show();
 }
 
 /*===========================================================================*/
@@ -236,15 +231,10 @@ void ScreenBase::show()
 {
 #if 1 // KVS_ENABLE_DEPRECATED
     if ( m_id == -1 ) { this->create(); }
-//    else {
 #endif
 
     BaseClass::show();
-    QWidget::show();
-
-//#if 1 // KVS_ENABLE_DEPRECATED
-//    }
-//#endif
+    QWidget::setVisible( true );
 }
 
 /*===========================================================================*/
@@ -396,6 +386,9 @@ void ScreenBase::initializeGL()
 /*===========================================================================*/
 void ScreenBase::paintGL()
 {
+#if ( KVS_QT_VERSION >= 6 )
+    kvs::FrameBufferObject::SetUnbindID( GLWidget::defaultFramebufferObject() );
+#endif
     this->paintEvent();
 }
 
