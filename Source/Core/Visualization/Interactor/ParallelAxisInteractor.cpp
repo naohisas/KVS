@@ -114,7 +114,7 @@ void ParallelAxisInteractor::mouseMoveEvent( kvs::MouseEvent* e )
     const auto height = BaseClass::screen()->height();
     const auto y_min = m_axis->margins().top();
     const auto y_max = height - m_axis->margins().bottom();
-    const float ch = y_max - y_min; // content height
+    const double ch = y_max - y_min; // content height
 
     // Update mouse moving position.
     m_p1 = { e->x(), e->y() };
@@ -128,7 +128,7 @@ void ParallelAxisInteractor::mouseMoveEvent( kvs::MouseEvent* e )
     if ( m_range_moving )
     {
         const auto dy = m_p1.y() - m_p.y();
-        const auto v = dv * -dy / ch;
+        const auto v = ( dv * -dy ) / ch;
         table->moveRange( axis, v );
         m_p = m_p1;
     }
@@ -137,8 +137,8 @@ void ParallelAxisInteractor::mouseMoveEvent( kvs::MouseEvent* e )
     {
         const auto y0 = kvs::Math::Min( m_p0.y(), m_p1.y() );
         const auto y1 = kvs::Math::Max( m_p0.y(), m_p1.y() );
-        const auto v0 = v_min + dv * ( y_max - y1 ) / ch;
-        const auto v1 = v_min + dv * ( y_max - y0 ) / ch;
+        const auto v0 = v_min + ( dv * y_max - dv * y1 ) / ch;
+        const auto v1 = v_min + ( dv * y_max - dv * y0 ) / ch;
         table->setMinRange( axis, v0 );
         table->setMaxRange( axis, v1 );
     }
@@ -223,12 +223,12 @@ void ParallelAxisInteractor::paintEvent()
         const auto width = BaseClass::screen()->width();
         const auto height = BaseClass::screen()->height();
         const auto content = m_axis->margins().content( width, height );
-        const float cw = content.width();
-        const float ch = content.height();
+        const double cw = content.width();
+        const double ch = content.height();
 
-        const float stride = cw / ( naxes - 1 );
-        const float w = m_range_width * 0.5f;
-        auto x = static_cast<float>( content.x0() );
+        const double stride = cw / ( naxes - 1 );
+        const double w = m_range_width * 0.5f;
+        auto x = static_cast<double>( content.x0() );
         for ( size_t i = 0; i < naxes; ++i, x += stride )
         {
             // Min/max values for the axis.
@@ -241,8 +241,8 @@ void ParallelAxisInteractor::paintEvent()
             const auto v1 = table->maxRange(i);
 
             // Range rectangle for the axis.
-            const auto y0 = content.y0() + ch * ( v_max - v1 ) / dv;
-            const auto y1 = content.y0() + ch * ( v_max - v0 ) / dv;
+            const auto y0 = content.y0() + ( ch * v_max - ch * v1 ) / dv;
+            const auto y1 = content.y0() + ( ch * v_max - ch * v0 ) / dv;
 
             // Draw background of the rectangle.
             kvs::OpenGL::Begin( GL_QUADS );
