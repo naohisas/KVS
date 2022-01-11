@@ -269,6 +269,7 @@ int  Do_234ZComposition ( unsigned int my_rank, unsigned int nnodes,
         if ( my_rank == ROOT_NODE ) {
 
             my_BYTE_image_ptr = (BYTE  *)my_image;
+            my_depth_ptr = (float*)my_depth; // ADD: sakamoto
 
             if ( nnodes != 3 )
             {
@@ -286,6 +287,7 @@ int  Do_234ZComposition ( unsigned int my_rank, unsigned int nnodes,
                     *my_BYTE_image_ptr++ = (unsigned char)*rgbaz64_byte_ptr++; // B
                     *my_BYTE_image_ptr++ = (unsigned char)*rgbaz64_byte_ptr++; // A
 
+                    *my_depth_ptr++ = *(float*)(rgbaz64_byte_ptr); // ADD: sakamoto
                     rgbaz64_byte_ptr += 4; // SKIP Z
                 }
             }
