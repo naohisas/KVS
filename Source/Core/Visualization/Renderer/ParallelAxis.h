@@ -75,6 +75,8 @@ public:
     void setBackgroundColor( const kvs::RGBAColor& color ) { m_background_color = color; }
 
     const kvs::Margins& margins() const { return m_margins; }
+    const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
+    bool isBackgroundVisible() const { return m_background_visible; }
 
     kvs::Real32 axisWidth() const { return m_axis_width; }
     const kvs::RGBColor& axisColor() const { return m_axis_color; }
@@ -86,8 +88,10 @@ public:
     void setValueColor( const kvs::RGBColor color ) { m_value_color = color; }
     void setLabelColor( const kvs::RGBColor color ) { m_label_color = color; }
 
-    void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+    virtual void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
+
 protected:
+    kvs::Painter& painter() { return m_painter; }
     void drawTitle( const kvs::Rectangle& content );
     void drawBackground( const kvs::Rectangle& content, const float dpr );
     void drawAxes( const kvs::TableObject* table,  const kvs::Rectangle& content, const float dpr );
