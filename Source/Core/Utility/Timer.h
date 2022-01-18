@@ -8,6 +8,7 @@
 #include <ctime>
 #include <iostream>
 #include <vector>
+#include <functional>
 #include <kvs/Compiler>
 #include <kvs/Platform>
 #if defined ( KVS_COMPILER_VC )
@@ -381,6 +382,7 @@ inline double TimeStampDiffInUSec( const TimeStamp& ts1, const TimeStamp& ts2 )
 class Timer
 {
 public:
+    using Func = std::function<void(void)>;
     enum Trigger { Start };
 
 private:
@@ -388,126 +390,40 @@ private:
     TimeStamp m_stop;  ///< stop time
 
 public:
-    Timer();
-    Timer( const Trigger trigger );
-    ~Timer();
+    Timer()
+    {
+#if defined ( KVS_TIMER_USE_CPU_COUNTER )
+        m_start.value = 0;
+        m_stop.value  = 0;
+#else
+        m_start.tv_sec  = 0;
+        m_start.tv_usec = 0;
+        m_stop.tv_sec   = 0;
+        m_stop.tv_usec  = 0;
+#endif
+    }
+
+    Timer( const Trigger trigger )
+    {
+        if ( trigger != Timer::Start )
+        {
+            kvsMessageError( "Unknown trigger." );
+            return;
+        }
+        this->start();
+    }
+
+    ~Timer() = default;
 
 public:
-    void start();
-    void stop();
+    void start() { m_start = GetStamp(); }
+    void stop() { m_stop = GetStamp(); }
+    void measure( Func f ) { this->start(); f(); this->stop(); }
 
-    double sec() const;
-    double msec() const;
-    double usec() const;
-
-    double fps() const;
+    double sec() const { return TimeStampDiffInSec( m_stop, m_start ); }
+    double msec() const { return TimeStampDiffInMSec( m_stop, m_start ); }
+    double usec() const { return TimeStampDiffInUSec( m_stop, m_start ); }
+    double fps() const { return 1.0 / this->sec(); }
 };
-
-/*==========================================================================*/
-/**
- *  Constructor.
- */
-/*==========================================================================*/
-inline Timer::Timer()
-{
-#if defined ( KVS_TIMER_USE_CPU_COUNTER )
-    m_start.value = 0;
-    m_stop.value  = 0;
-#else
-    m_start.tv_sec  = 0;
-    m_start.tv_usec = 0;
-    m_stop.tv_sec   = 0;
-    m_stop.tv_usec  = 0;
-#endif
-}
-
-/*==========================================================================*/
-/**
- *  Constructor.
- *  @param trigger [in] trigger ( 'kvs::Timer::Start' is given )
- */
-/*==========================================================================*/
-inline Timer::Timer( Trigger trigger )
-{
-    if ( trigger != Timer::Start )
-    {
-        kvsMessageError( "Unknown trigger." );
-        return;
-    }
-    this->start();
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-inline Timer::~Timer()
-{
-}
-
-/*==========================================================================*/
-/**
- *  Strat timer.
- */
-/*==========================================================================*/
-inline void Timer::start()
-{
-    m_start = GetStamp();
-}
-
-/*==========================================================================*/
-/**
- *  Stop timer.
- */
-/*==========================================================================*/
-inline void Timer::stop()
-{
-    m_stop = GetStamp();
-}
-
-/*==========================================================================*/
-/**
- *  Get elapse time.
- *  @return elapse time [sec]
- */
-/*==========================================================================*/
-inline double Timer::sec() const
-{
-    return TimeStampDiffInSec( m_stop, m_start );
-}
-
-/*==========================================================================*/
-/**
- *  Get elapse time.
- *  @return elapse time [msec]
- */
-/*==========================================================================*/
-inline double Timer::msec() const
-{
-    return TimeStampDiffInMSec( m_stop, m_start );
-}
-
-/*==========================================================================*/
-/**
- *  Get elapse time.
- *  @return elapse time [usec]
- */
-/*==========================================================================*/
-inline double Timer::usec() const
-{
-    return TimeStampDiffInUSec( m_stop, m_start );
-}
-
-/*==========================================================================*/
-/**
- *  Get frame rate.
- *  @return frame rate [fps]
- */
-/*==========================================================================*/
-inline double Timer::fps() const
-{
-    return 1.0 / TimeStampDiffInSec( m_stop, m_start );
-}
 
 } // end of namespace kvs

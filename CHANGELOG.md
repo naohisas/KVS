@@ -66,6 +66,7 @@
 + kvs::Rectangle::p0()
 + kvs::Rectangle::p1()
 + kvs::ParallelCoordinatesRenderer::setAntiAliasingEnabled
++ kvs::Timer::measure( func )
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()
