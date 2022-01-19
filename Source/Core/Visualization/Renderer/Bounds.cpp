@@ -68,8 +68,9 @@ void Bounds::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* lig
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
     {
+        const auto dpr = camera->devicePixelRatio();
         kvs::OpenGL::Color( m_line_color );
-        kvs::OpenGL::SetLineWidth( m_line_width );
+        kvs::OpenGL::SetLineWidth( m_line_width * dpr );
 
         switch( m_type )
         {
