@@ -6,6 +6,7 @@
 /*****************************************************************************/
 #include "Array.h"
 #include "NumPy.h"
+#include <kvs/Message>
 
 
 namespace
@@ -90,10 +91,18 @@ Array::Array( const kvs::python::Object& value ):
 Array::operator kvs::ValueArray<kvs::Int32>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_INT32 ) { throw ""; }
+    if ( type != NPY_INT32 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_INT32." << std::endl;
+        return kvs::ValueArray<kvs::Int32>(); // empty array
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 1 ) { throw ""; }
+    if ( ndim != 1 )
+    {
+        kvsMessageError() << "PyArray is not array." << std::endl;
+        return kvs::ValueArray<kvs::Int32>(); // empyt array
+    }
 
     return ::Convert<kvs::Int32>( (PyArrayObject*)( get() ) );
 }
@@ -101,10 +110,18 @@ Array::operator kvs::ValueArray<kvs::Int32>() const
 Array::operator kvs::ValueArray<kvs::Int64>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_INT64 ) { throw ""; }
+    if ( type != NPY_INT64 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_INT64." << std::endl;
+        return kvs::ValueArray<kvs::Int64>(); // empty array
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 1 ) { throw ""; }
+    if ( ndim != 1 )
+    {
+        kvsMessageError() << "PyArray is not array." << std::endl;
+        return kvs::ValueArray<kvs::Int64>(); // empyt array
+    }
 
     return ::Convert<kvs::Int64>( (PyArrayObject*)( get() ) );
 }
@@ -112,10 +129,18 @@ Array::operator kvs::ValueArray<kvs::Int64>() const
 Array::operator kvs::ValueArray<kvs::Real32>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_FLOAT32 ) { throw ""; }
+    if ( type != NPY_FLOAT32 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_FLOAT32." << std::endl;
+        return kvs::ValueArray<kvs::Real32>(); // empty array
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 1 ) { throw ""; }
+    if ( ndim != 1 )
+    {
+        kvsMessageError() << "PyArray is not array." << std::endl;
+        return kvs::ValueArray<kvs::Real32>(); // empyt array
+    }
 
     return ::Convert<kvs::Real32>( (PyArrayObject*)( get() ) );
 }
@@ -123,10 +148,18 @@ Array::operator kvs::ValueArray<kvs::Real32>() const
 Array::operator kvs::ValueArray<kvs::Real64>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_FLOAT64 ) { throw ""; }
+    if ( type != NPY_FLOAT64 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_FLOAT64." << std::endl;
+        return kvs::ValueArray<kvs::Real64>(); // empty array
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 1 ) { throw ""; }
+    if ( ndim != 1 )
+    {
+        kvsMessageError() << "PyArray is not array." << std::endl;
+        return kvs::ValueArray<kvs::Real64>(); // empyt array
+    }
 
     return ::Convert<kvs::Real64>( (PyArrayObject*)( get() ) );
 }

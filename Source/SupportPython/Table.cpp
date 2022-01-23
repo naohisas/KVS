@@ -6,6 +6,7 @@
 /*****************************************************************************/
 #include "Table.h"
 #include "NumPy.h"
+#include <kvs/Message>
 
 
 namespace
@@ -103,10 +104,18 @@ Table::Table( const kvs::python::Object& value ):
 Table::operator kvs::ValueTable<kvs::Int32>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_INT32 ) { throw ""; }
+    if ( type != NPY_INT32 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_INT32." << std::endl;
+        return kvs::ValueTable<kvs::Int32>(); // empty table
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 2 ) { throw ""; }
+    if ( ndim != 2 )
+    {
+        kvsMessageError() << "PyArray is not table." << std::endl;
+        return kvs::ValueTable<kvs::Int32>(); // empyt table
+    }
 
     return ::Convert<kvs::Int32>( (PyArrayObject*)( get() ) );
 }
@@ -114,10 +123,18 @@ Table::operator kvs::ValueTable<kvs::Int32>() const
 Table::operator kvs::ValueTable<kvs::Int64>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_INT64 ) { throw ""; }
+    if ( type != NPY_INT64 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_INT64." << std::endl;
+        return kvs::ValueTable<kvs::Int64>(); // empty table
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 2 ) { throw ""; }
+    if ( ndim != 2 )
+    {
+        kvsMessageError() << "PyArray is not table." << std::endl;
+        return kvs::ValueTable<kvs::Int64>(); // empyt table
+    }
 
     return ::Convert<kvs::Int64>( (PyArrayObject*)( get() ) );
 }
@@ -125,10 +142,18 @@ Table::operator kvs::ValueTable<kvs::Int64>() const
 Table::operator kvs::ValueTable<kvs::Real32>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_FLOAT32 ) { throw ""; }
+    if ( type != NPY_FLOAT32 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_FLOAT32." << std::endl;
+        return kvs::ValueTable<kvs::Real32>(); // empty table
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 2 ) { throw ""; }
+    if ( ndim != 2 )
+    {
+        kvsMessageError() << "PyArray is not table." << std::endl;
+        return kvs::ValueTable<kvs::Real32>(); // empyt table
+    }
 
     return ::Convert<kvs::Real32>( (PyArrayObject*)( get() ) );
 }
@@ -136,10 +161,18 @@ Table::operator kvs::ValueTable<kvs::Real32>() const
 Table::operator kvs::ValueTable<kvs::Real64>() const
 {
     const int type = PyArray_TYPE( (const PyArrayObject*)get() );
-    if ( type != NPY_FLOAT64 ) { throw ""; }
+    if ( type != NPY_FLOAT64 )
+    {
+        kvsMessageError() << "PyArray type is not NPY_FLOAT64." << std::endl;
+        return kvs::ValueTable<kvs::Real64>(); // empty table
+    }
 
     const int ndim = PyArray_NDIM( (const PyArrayObject*)get() );
-    if ( ndim != 2 ) { throw ""; }
+    if ( ndim != 2 )
+    {
+        kvsMessageError() << "PyArray is not table." << std::endl;
+        return kvs::ValueTable<kvs::Real64>(); // empyt table
+    }
 
     return ::Convert<kvs::Real64>( (PyArrayObject*)( get() ) );
 }
