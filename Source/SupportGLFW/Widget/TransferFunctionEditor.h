@@ -23,7 +23,7 @@ public:
     TransferFunctionEditor( kvs::ScreenBase* parent = 0 );
     virtual ~TransferFunctionEditor() {}
 
-    void show() { kvs::glfw::Screen::show(); this->redraw(); }
+    void show();
 
 protected:
     void update() { this->redraw(); }

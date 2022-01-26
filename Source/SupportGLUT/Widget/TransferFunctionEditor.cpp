@@ -28,6 +28,12 @@ TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
     l->disableEvent( kvs::EventBase::EventType::TimerEvent );
 }
 
+void TransferFunctionEditor::show()
+{
+    kvs::glut::Screen::show();
+    kvs::TransferFunctionEditorBase::layout();
+}
+
 } // end of namespace glut
 
 } // end of namespace kvs

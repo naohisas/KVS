@@ -33,23 +33,26 @@ private:
     size_t m_max_stack_size; ///< max. stack size
 
 private:
-    kvs::ScreenBase* m_parent; ///< pointer to screen
-    kvs::ColorPalette* m_color_palette; ///< color palette
-    kvs::ColorMapPalette* m_color_map_palette; ///< color map palette
-    kvs::OpacityMapPalette* m_opacity_map_palette; ///< opacity map palette
-    kvs::HistogramBar* m_histogram; ///< histogram
-    kvs::PushButton* m_reset_button; ///< reset button
-    kvs::PushButton* m_undo_button; ///< undo button
-    kvs::PushButton* m_redo_button; ///< redo button
-    kvs::PushButton* m_save_button; ///< save button
-    kvs::PushButton* m_apply_button; ///< apply button
-    kvs::TransferFunction m_initial_transfer_function; ///< initial transfer function
-    kvs::Real32 m_min_value; ///< min value
-    kvs::Real32 m_max_value; ///< max value
-    ApplyFunc m_apply_func;
+    kvs::ScreenBase* m_parent = nullptr; ///< pointer to screen
+    kvs::ColorPalette* m_color_palette = nullptr; ///< color palette
+    kvs::ColorMapPalette* m_color_map_palette = nullptr; ///< color map palette
+    kvs::OpacityMapPalette* m_opacity_map_palette = nullptr; ///< opacity map palette
+    kvs::HistogramBar* m_histogram = nullptr; ///< histogram
+    kvs::PushButton* m_reset_button = nullptr; ///< reset button
+    kvs::PushButton* m_undo_button = nullptr; ///< undo button
+    kvs::PushButton* m_redo_button = nullptr; ///< redo button
+    kvs::PushButton* m_save_button = nullptr; ///< save button
+    kvs::PushButton* m_apply_button = nullptr; ///< apply button
+    kvs::TransferFunction m_initial_transfer_function{}; ///< initial transfer function
+    kvs::Real32 m_min_value = 0.0f; ///< min value
+    kvs::Real32 m_max_value = 0.0f; ///< max value
+    ApplyFunc m_apply_func = nullptr;
+    int m_width = 350;
+    int m_height = 512;
+    int m_margin = 10;
 
 public:
-    TransferFunctionEditorBase( kvs::ScreenBase* parent = 0 );
+    TransferFunctionEditorBase( kvs::ScreenBase* parent = 0 ): m_parent( parent ) {}
     virtual ~TransferFunctionEditorBase();
 
     kvs::ScreenBase* screen() { return m_parent; }
@@ -77,6 +80,7 @@ public:
 
 protected:
     void setup( kvs::ScreenBase* screen );
+    void layout();
     virtual void update() = 0; // screen->redraw()
 };
 
@@ -87,10 +91,10 @@ protected:
 /*===========================================================================*/
 class TransferFunctionEditorBase::StackEvent : public kvs::MouseReleaseEventListener
 {
-    kvs::TransferFunctionEditorBase* m_editor;
+    kvs::TransferFunctionEditorBase* m_editor = nullptr;
 
 public:
-    StackEvent( kvs::TransferFunctionEditorBase* editor );
+    StackEvent( kvs::TransferFunctionEditorBase* editor ): m_editor( editor ) {}
     void update( kvs::MouseEvent* event );
 };
 

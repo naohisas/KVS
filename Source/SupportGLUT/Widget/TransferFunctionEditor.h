@@ -21,6 +21,8 @@ public:
     TransferFunctionEditor( kvs::ScreenBase* parent = 0 );
     virtual ~TransferFunctionEditor() {}
 
+    void show();
+
 protected:
     void update() { this->redraw(); }
 };

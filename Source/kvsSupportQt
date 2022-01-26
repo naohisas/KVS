@@ -3,3 +3,4 @@
 #include <SupportQt/Viewer/Screen.h>
 #include <SupportQt/Viewer/ScreenBase.h>
 #include <SupportQt/Viewer/Timer.h>
+#include <SupportQt/Widget/TransferFunctionEditor.h>

@@ -1,18 +1,11 @@
-/*****************************************************************************/
-/**
- *  @file   TransferFunctionEditor.cpp
- *  @author Naohisa Sakamoto
- */
-/*****************************************************************************/
 #include "TransferFunctionEditor.h"
-#include <kvs/RGBColor>
-#include <kvs/EventBase>
+#include <kvs/InitializeEventListener>
 
 
 namespace kvs
 {
 
-namespace glfw
+namespace qt
 {
 
 TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
@@ -26,15 +19,18 @@ TransferFunctionEditor::TransferFunctionEditor( kvs::ScreenBase* parent ):
     l->disableEvent( kvs::EventBase::EventType::WheelEvent );
     l->disableEvent( kvs::EventBase::EventType::MouseMoveEvent );
     l->disableEvent( kvs::EventBase::EventType::TimerEvent );
+
+    this->addEvent( new kvs::InitializeEventListener( [&]()
+    {
+        kvs::TransferFunctionEditorBase::layout();
+    } ) );
 }
 
 void TransferFunctionEditor::show()
 {
-    kvs::glfw::Screen::show();
-    kvs::TransferFunctionEditorBase::layout();
-    kvs::glfw::Screen::redraw();
+    kvs::qt::Screen::show();
 }
 
-} // end of namespace glfw
+} // end of namespace qt
 
 } // end of namespace kvs
