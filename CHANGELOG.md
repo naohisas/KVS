@@ -68,6 +68,12 @@
 + kvs::Rectangle::p1()
 + kvs::ParallelCoordinatesRenderer::setAntiAliasingEnabled
 + kvs::Timer::measure( func )
++ kvs::ParallelAxis::setAxisVisible( visible )
++ kvs::ParallelAxis::setRangeVisible( visible )
++ kvs::ParallelAxis::setLabelVisible( visible )
++ kvs::ParallelAxis::isAxisVisible()
++ kvs::ParallelAxis::isRangeVisible()
++ kvs::ParallelAxis::isLabelVisible()
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

@@ -52,6 +52,10 @@ private:
     // Axes
     std::vector<kvs::ValueAxis*> m_axes{}; ///< axes ([0]: x-axis, [1]: y-axis)
 
+    bool m_axis_visible = true;
+    bool m_range_visible = true;
+    bool m_label_visible = true;
+
     kvs::Real32 m_axis_width = 2.0f; ///< axis width
     kvs::RGBColor m_axis_color = kvs::UIColor::Label(); ///< axis color
     kvs::RGBColor m_value_color = kvs::UIColor::Label(); ///< value color
@@ -74,9 +78,16 @@ public:
     void setBackgroundVisible( const bool visible = true ) { m_background_visible = visible; }
     void setBackgroundColor( const kvs::RGBAColor& color ) { m_background_color = color; }
 
+    void setAxisVisible( const bool visible = true ) { m_axis_visible = visible; }
+    void setRangeVisible( const bool visible = true ) { m_range_visible = visible; }
+    void setLabelVisible( const bool visible = true ) { m_label_visible = visible; }
+
     const kvs::Margins& margins() const { return m_margins; }
     const kvs::RGBAColor& backgroundColor() const { return m_background_color; }
     bool isBackgroundVisible() const { return m_background_visible; }
+    bool isAxisVisible() const { return m_axis_visible; }
+    bool isRangeVisible() const { return m_range_visible; }
+    bool isLabelVisible() const { return m_label_visible; }
 
     kvs::Real32 axisWidth() const { return m_axis_width; }
     const kvs::RGBColor& axisColor() const { return m_axis_color; }

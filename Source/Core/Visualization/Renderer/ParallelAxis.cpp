@@ -107,17 +107,20 @@ void ParallelAxis::drawBackground( const kvs::Rectangle& content, const float dp
 void ParallelAxis::drawAxes( const kvs::TableObject* table,  const kvs::Rectangle& content, const float dpr )
 {
     // Draw axes.
-    kvs::OpenGL::SetLineWidth( m_axis_width * dpr );
-    kvs::OpenGL::Begin( GL_LINES );
     const auto naxes = table->numberOfColumns();
     const float stride = float( content.width() ) / ( naxes - 1 );
-    for ( size_t i = 0; i < naxes; i++ )
+    if ( m_axis_visible )
     {
-        const float x = content.x0() + stride * i;
-        kvs::OpenGL::Color( m_axis_color );
-        kvs::OpenGL::Vertices( kvs::Vec2( x, content.y0() ) * dpr, kvs::Vec2( x, content.y1() ) * dpr );
+        kvs::OpenGL::SetLineWidth( m_axis_width * dpr );
+        kvs::OpenGL::Begin( GL_LINES );
+        for ( size_t i = 0; i < naxes; i++ )
+        {
+            const float x = content.x0() + stride * i;
+            kvs::OpenGL::Color( m_axis_color );
+            kvs::OpenGL::Vertices( kvs::Vec2( x, content.y0() ) * dpr, kvs::Vec2( x, content.y1() ) * dpr );
+        }
+        kvs::OpenGL::End();
     }
-    kvs::OpenGL::End();
 
     bool has_label = false;
     for ( size_t i = 0; i < table->labels().size(); i++ )
@@ -152,11 +155,14 @@ void ParallelAxis::drawAxes( const kvs::TableObject* table,  const kvs::Rectangl
         const float min_x = ( content.x0() + stride * i ) - min_width * 0.5f;
         const float min_y = content.y1() + height;
 
-        m_painter.font().setColor( m_value_color );
-        m_painter.drawText( kvs::Vec2( kvs::Math::Max( 0.0f, max_x ), max_y ), max_value );
-        m_painter.drawText( kvs::Vec2( kvs::Math::Max( 0.0f, min_x ), min_y ), min_value );
+        if ( m_range_visible )
+        {
+            m_painter.font().setColor( m_value_color );
+            m_painter.drawText( kvs::Vec2( kvs::Math::Max( 0.0f, max_x ), max_y ), max_value );
+            m_painter.drawText( kvs::Vec2( kvs::Math::Max( 0.0f, min_x ), min_y ), min_value );
+        }
 
-        if ( has_label )
+        if ( has_label && m_label_visible )
         {
             const std::string label( table->label(i) );
             const size_t label_width = metrics.width( label );
