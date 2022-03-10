@@ -20,7 +20,8 @@ $ brew install oepncv
 ```
 For pkg-config to find opencv you may need to set:
 ```
-export PKG_CONFIG_PATH="/opt/homebrew/opt/opencv/lib/pkgconfig"
+export PKG_CONFIG_PATH="/usr/local/opt/opencv/lib/pkgconfig"     (intel mac)
+export PKG_CONFIG_PATH="/opt/homebrew/opt/opencv/lib/pkgconfig"  (m1 mac)
 ```
 
 ### Windows
