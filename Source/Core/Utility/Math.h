@@ -196,56 +196,24 @@ inline T Pythag( T a, T b )
 
 inline unsigned int Log2Largest( unsigned int n )
 {
-    /*
-       MessageAssert( sizeof( unsigned int ) == 4,
-       "UTIL_LOG2_LARGEST allows to use on 32 bit CPU only." );
-     */
-    unsigned int t;
-    unsigned int log2;
-
-    if ( n >= 0x10000 ) { log2 = 16; t = 0x1000000; }
-    else                { log2 = 0;  t = 0x100;     }
-
-    if ( n >= t ) { log2 += 8; t <<= 4; }
-    else          {            t >>= 4; }
-
-    if ( n >= t ) { log2 += 4; t <<= 2; }
-    else          {            t >>= 2; }
-
-    if ( n >= t ) { log2 += 2; t <<= 1; }
-    else          {            t >>= 1; }
-
-    if ( n >= t ) { log2 += 1; }
-
-    return t;
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    return n ^ ( n >> 1 );
 }
 
 inline unsigned int Log2Smallest( unsigned int n )
 {
-    /*
-       MessageAssert( sizeof( unsigned int ) == 4,
-       "UTIL_LOG2_SMALLEST allows to use on 32 bit CPU only." );
-     */
-    if ( n > 0x80000000 ) { return 32; }
-
-    unsigned int t;
-    unsigned int log2;
-
-    if ( n > 0x8000 ) { log2 = 16; t = 0x800000; }
-    else              { log2 = 0;  t = 0x80;     }
-
-    if ( n > t ) { log2 += 8; t <<= 4; }
-    else         {            t >>= 4; }
-
-    if ( n > t ) { log2 += 4; t <<= 2; }
-    else         {            t >>= 2; }
-
-    if ( n > t ) { log2 += 2; t <<= 1; }
-    else         {            t >>= 1; }
-
-    if ( n > t ) { log2 += 1; }
-
-    return log2;
+    n--;
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    n++;
+    return n;
 }
 
 inline unsigned int Power2Largest( unsigned int n )
