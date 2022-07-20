@@ -39,13 +39,13 @@ public:
     };
 
 private:
-    ArrowType m_arrow_type; ///< arrow type
-    const kvs::VolumeObjectBase* m_volume; ///< pointer to the volume object (reference)
+    ArrowType m_arrow_type = ArrowType::LineArrow; ///< arrow type
+    const kvs::VolumeObjectBase* m_volume = nullptr; ///< pointer to the volume object (reference)
 
 public:
-    ArrowGlyph();
-    ArrowGlyph( const kvs::VolumeObjectBase* volume );
-    ArrowGlyph( const kvs::VolumeObjectBase* volume, const kvs::TransferFunction& transfer_function );
+    ArrowGlyph() = default;
+    ArrowGlyph( const kvs::VolumeObjectBase* volume ) { this->attach_volume( volume ); }
+    ArrowGlyph( const kvs::VolumeObjectBase* volume, const kvs::TransferFunction& tfunc );
 
     void setArrowType( const ArrowType type ) { m_arrow_type = type; }
     void setArrowTypeToLine() { this->setArrowType( LineArrow ); }

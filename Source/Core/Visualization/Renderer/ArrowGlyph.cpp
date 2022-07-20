@@ -60,43 +60,15 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new ArrowGlyph class.
- */
-/*===========================================================================*/
-ArrowGlyph::ArrowGlyph():
-    kvs::GlyphBase(),
-    m_arrow_type( ArrowGlyph::LineArrow ),
-    m_volume( NULL )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new ArrowGlyph class.
- *  @param  volume [in] pointer to the volume object
- */
-/*===========================================================================*/
-ArrowGlyph::ArrowGlyph( const kvs::VolumeObjectBase* volume ):
-    kvs::GlyphBase(),
-    m_arrow_type( ArrowGlyph::LineArrow ),
-    m_volume( NULL )
-{
-    this->attach_volume( volume );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new ArrowGlyph class.
  *  @param  volume [in] pointer to the Volume object
- *  @param  transfer_function [in] transfer function
+ *  @param  tfunc [in] transfer function
  */
 /*===========================================================================*/
 ArrowGlyph::ArrowGlyph(
     const kvs::VolumeObjectBase* volume,
-    const kvs::TransferFunction& transfer_function ):
-    kvs::GlyphBase(),
-    m_arrow_type( ArrowGlyph::LineArrow )
+    const kvs::TransferFunction& tfunc )
 {
-    BaseClass::setTransferFunction( transfer_function );
+    BaseClass::setTransferFunction( tfunc );
     this->attach_volume( volume );
 }
 
@@ -108,12 +80,15 @@ ArrowGlyph::ArrowGlyph(
  *  @param  light [in] pointer to the light
  */
 /*===========================================================================*/
-void ArrowGlyph::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void ArrowGlyph::exec(
+    kvs::ObjectBase* object,
+    kvs::Camera* camera,
+    kvs::Light* light )
 {
     kvs::IgnoreUnusedVariable( light );
     kvs::IgnoreUnusedVariable( camera );
 
-    const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( object );
+    const auto* volume = kvs::VolumeObjectBase::DownCast( object );
     if ( !volume ) { kvsMessageError("Input object is not volume dat."); return; }
     if ( m_volume != volume ) { this->attach_volume( volume ); }
 
@@ -234,11 +209,11 @@ void ArrowGlyph::draw()
 /*===========================================================================*/
 void ArrowGlyph::draw_lines()
 {
-    const size_t npoints = BaseClass::coords().size() / 3;
-    const kvs::ValueArray<kvs::Real32> coords = BaseClass::coords();
-    const kvs::ValueArray<kvs::UInt8> colors = BaseClass::colors();
-    const kvs::ValueArray<kvs::Real32> sizes = BaseClass::sizes();
-    const kvs::ValueArray<kvs::UInt8> opacities = BaseClass::opacities();
+    const auto npoints = BaseClass::coords().size() / 3;
+    const auto coords = BaseClass::coords();
+    const auto colors = BaseClass::colors();
+    const auto sizes = BaseClass::sizes();
+    const auto opacities = BaseClass::opacities();
 
     if ( BaseClass::directions().size() == 0 )
     {
@@ -285,11 +260,11 @@ void ArrowGlyph::draw_lines()
 /*===========================================================================*/
 void ArrowGlyph::draw_tubes()
 {
-    const size_t npoints = BaseClass::coords().size() / 3;
-    const kvs::ValueArray<kvs::Real32> coords = BaseClass::coords();
-    const kvs::ValueArray<kvs::UInt8> colors = BaseClass::colors();
-    const kvs::ValueArray<kvs::Real32> sizes = BaseClass::sizes();
-    const kvs::ValueArray<kvs::UInt8> opacities = BaseClass::opacities();
+    const auto npoints = BaseClass::coords().size() / 3;
+    const auto coords = BaseClass::coords();
+    const auto colors = BaseClass::colors();
+    const auto sizes = BaseClass::sizes();
+    const auto opacities = BaseClass::opacities();
 
     if ( BaseClass::directions().size() == 0 )
     {
@@ -336,7 +311,9 @@ void ArrowGlyph::draw_tubes()
  *  @param  opacity [in] opacity value
  */
 /*===========================================================================*/
-void ArrowGlyph::draw_line_element( const kvs::RGBColor& color, const kvs::UInt8 opacity )
+void ArrowGlyph::draw_line_element(
+    const kvs::RGBColor& color,
+    const kvs::UInt8 opacity )
 {
     kvs::OpenGL::Begin( GL_LINES );
     kvs::OpenGL::Color( color.r(), color.g(), color.b(), opacity );
@@ -354,7 +331,9 @@ void ArrowGlyph::draw_line_element( const kvs::RGBColor& color, const kvs::UInt8
  *  @param  opacity [in] opacity value
  */
 /*===========================================================================*/
-void ArrowGlyph::draw_tube_element( const kvs::RGBColor& color, const kvs::UInt8 opacity )
+void ArrowGlyph::draw_tube_element(
+    const kvs::RGBColor& color,
+    const kvs::UInt8 opacity )
 {
     const kvs::Real32 R = -90.0f; // rotation angle
     const kvs::Vec3 V( 1.0f, 0.0f, 0.0f ); // rotation vector

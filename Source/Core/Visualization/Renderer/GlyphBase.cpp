@@ -10,41 +10,13 @@
 #include <kvs/StructuredVolumeObject>
 
 
-namespace
-{
-const kvs::Vec3 DefaultDirection = kvs::Vec3( 0.0, 1.0, 0.0 );
-const kvs::Real32 DefaultSize = 1.0f;
-const kvs::RGBColor DefaultColor = kvs::RGBColor( 255, 255, 255 );
-const kvs::UInt8 DefaultOpacity = 255;
-};
-
-
 namespace kvs
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new GlyphBase class.
- */
-/*===========================================================================*/
-GlyphBase::GlyphBase():
-    m_size_mode( GlyphBase::SizeByDefault ),
-    m_direction_mode( GlyphBase::DirectionByDefault ),
-    m_color_mode( GlyphBase::ColorByMagnitude ),
-    m_opacity_mode( GlyphBase::OpacityByDefault ),
-    m_scale( 1.0f, 1.0f, 1.0f ),
-    m_tfunc()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the GlyphBase class.
- */
-/*===========================================================================*/
-GlyphBase::~GlyphBase()
-{
-}
+kvs::Real32 GlyphBase::m_default_size = 1.0f;
+kvs::Vec3 GlyphBase::m_default_direction = kvs::Vec3{ 0.0, 1.0, 0.0 };
+kvs::RGBColor GlyphBase::m_default_color = kvs::RGBColor{ 255, 255, 255 };
+kvs::UInt8 GlyphBase::m_default_opacity = 255;
 
 /*===========================================================================*/
 /**
@@ -53,7 +25,7 @@ GlyphBase::~GlyphBase()
  *  @param  size [in] object size
  */
 /*===========================================================================*/
-void GlyphBase::transform( const kvs::Vector3f& position, const kvs::Real32 size )
+void GlyphBase::transform( const kvs::Vec3& position, const kvs::Real32 size )
 {
     kvs::OpenGL::Translate( position.x(), position.y(), position.z() );
     kvs::OpenGL::Scale( m_scale.x(), m_scale.y(), m_scale.z() );
@@ -74,8 +46,8 @@ void GlyphBase::transform(
     const kvs::Real32 size )
 {
     const kvs::Vec3 v = direction.normalized();
-    const kvs::Vec3 c = ::DefaultDirection.cross( v );
-    const float d = ::DefaultDirection.dot( v );
+    const kvs::Vec3 c = DefaultDirection().cross( v );
+    const float d = DefaultDirection().dot( v );
     const float s = static_cast<float>( std::sqrt( ( 1.0 + d ) * 2.0 ) );
     const kvs::Quaternion q( c.x()/s, c.y()/s, c.z()/s, s/2.0f );
     const kvs::Mat3 rot = q.toMatrix();
@@ -94,14 +66,19 @@ void GlyphBase::transform(
 /*===========================================================================*/
 void GlyphBase::calculateCoords( const kvs::VolumeObjectBase* volume )
 {
-    const kvs::VolumeObjectBase::VolumeType type = volume->volumeType();
-    if ( type == kvs::VolumeObjectBase::Structured )
+    const auto type = volume->volumeType();
+    switch ( type )
+    {
+    case kvs::VolumeObjectBase::Structured:
     {
         this->calculateCoords( kvs::StructuredVolumeObject::DownCast( volume ) );
+        break;
     }
-    else // type == kvs::VolumeObjectBase::Unstructured
+    default: // kvs::VolumeObjectBase::Unstructured
     {
         this->setCoords( volume->coords() );
+        break;
+    }
     }
 }
 
@@ -113,18 +90,24 @@ void GlyphBase::calculateCoords( const kvs::VolumeObjectBase* volume )
 /*===========================================================================*/
 void GlyphBase::calculateCoords( const kvs::StructuredVolumeObject* volume )
 {
-    const kvs::StructuredVolumeObject::GridType type = volume->gridType();
-    if ( type == kvs::StructuredVolumeObject::Uniform )
+    const auto type = volume->gridType();
+    switch ( type )
+    {
+    case kvs::StructuredVolumeObject::Uniform:
     {
        this->calculateUniformCoords( volume );
+       break;
     }
-    else if ( type == kvs::StructuredVolumeObject::Rectilinear )
+    case kvs::StructuredVolumeObject::Rectilinear:
     {
         this->calculateRectilinearCoords( volume );
+        break;
     }
-    else
+    default: // kvs::StructuredVolumeObject::Curvilinear
     {
         this->setCoords( volume->coords() );
+        break;
+    }
     }
 }
 
@@ -139,13 +122,16 @@ void GlyphBase::calculateUniformCoords( const kvs::StructuredVolumeObject* volum
     kvs::ValueArray<kvs::Real32> coords( 3 * volume->numberOfNodes() );
     kvs::Real32* coord = coords.data();
 
-    const kvs::Vec3ui resolution( volume->resolution() );
-    const kvs::Vec3 volume_size( volume->maxExternalCoord() - volume->minExternalCoord() );
-    const kvs::Vec3ui ngrids( resolution - kvs::Vec3ui( 1, 1, 1 ) );
-    const kvs::Vec3 grid_size(
-        ( ngrids.x() == 0 ) ? 0.0f : volume_size.x() / static_cast<float>( ngrids.x() ),
-        ( ngrids.y() == 0 ) ? 0.0f : volume_size.y() / static_cast<float>( ngrids.y() ),
-        ( ngrids.z() == 0 ) ? 0.0f : volume_size.z() / static_cast<float>( ngrids.z() ) );
+    const auto resolution( volume->resolution() );
+    const auto volume_size( volume->maxExternalCoord() - volume->minExternalCoord() );
+    const auto ngrids( resolution - kvs::Vec3ui( 1, 1, 1 ) );
+    const auto grid_size =
+        kvs::Vec3
+        {
+            ( ngrids.x() == 0 ) ? 0.0f : volume_size.x() / static_cast<float>( ngrids.x() ),
+            ( ngrids.y() == 0 ) ? 0.0f : volume_size.y() / static_cast<float>( ngrids.y() ),
+            ( ngrids.z() == 0 ) ? 0.0f : volume_size.z() / static_cast<float>( ngrids.z() )
+        };
 
     for ( size_t k = 0; k < resolution.z(); ++k )
     {
@@ -175,25 +161,25 @@ void GlyphBase::calculateUniformCoords( const kvs::StructuredVolumeObject* volum
 void GlyphBase::calculateRectilinearCoords( const kvs::StructuredVolumeObject* volume )
 {
     kvs::ValueArray<kvs::Real32> coords( 3 * volume->numberOfNodes() );
-    kvs::Real32* coord = coords.data();
+    auto* coord = coords.data();
 
-    const size_t dimx = volume->resolution().x();
-    const size_t dimy = volume->resolution().y();
-    const size_t dimz = volume->resolution().z();
+    const auto dimx = volume->resolution().x();
+    const auto dimy = volume->resolution().y();
+    const auto dimz = volume->resolution().z();
 
-    const kvs::Real32* xcoord = volume->coords().data();
-    const kvs::Real32* ycoord = xcoord + dimx;
-    const kvs::Real32* zcoord = ycoord + dimy;
+    const auto* xcoord = volume->coords().data();
+    const auto* ycoord = xcoord + dimx;
+    const auto* zcoord = ycoord + dimy;
 
     for ( size_t k = 0; k < dimz; ++k )
     {
-        const float z = zcoord[k];
+        const auto z = zcoord[k];
         for ( size_t j = 0; j < dimy; ++j )
         {
-            const float y = ycoord[j];
+            const auto y = ycoord[j];
             for ( size_t i = 0; i < dimx; ++i )
             {
-                const float x = xcoord[i];
+                const auto x = xcoord[i];
                 *( coord++ ) = x;
                 *( coord++ ) = y;
                 *( coord++ ) = z;
@@ -213,45 +199,50 @@ void GlyphBase::calculateRectilinearCoords( const kvs::StructuredVolumeObject* v
 template <typename T>
 void GlyphBase::calculateSizes( const kvs::VolumeObjectBase* volume )
 {
-    const T* value = reinterpret_cast<const T*>( volume->values().data() );
+    const auto values = volume->values().asValueArray<T>();
     const size_t veclen = volume->veclen();
     const size_t nnodes = volume->numberOfNodes();
 
     if ( !volume->hasMinMaxValues() ) { volume->updateMinMaxValues(); }
-    const kvs::Real32 min_value = static_cast<kvs::Real32>(volume->minValue());
-    const kvs::Real32 max_value = static_cast<kvs::Real32>(volume->maxValue());
+    const kvs::Real32 min_value = static_cast<kvs::Real32>( volume->minValue() );
+    const kvs::Real32 max_value = static_cast<kvs::Real32>( volume->maxValue() );
     const kvs::Real32 normalize = 1.0f / ( max_value - min_value );
 
     kvs::ValueArray<kvs::Real32> sizes( nnodes );
-    kvs::Real32* size = sizes.data();
+    auto* size = sizes.data();
 
-    switch( m_size_mode )
+    switch ( m_size_mode )
     {
     case GlyphBase::SizeByDefault:
-        for( size_t i = 0; i < nnodes; i++ ) size[i] = ::DefaultSize;
+    {
+        sizes.fill( DefaultSize() );
         break;
+    }
     case GlyphBase::SizeByMagnitude:
+    {
         if ( veclen == 1 )
         {
-            for( size_t i = 0; i < nnodes; i++ )
+            for ( size_t i = 0; i < nnodes; i++ )
             {
-                size[i] = ::DefaultSize * normalize * ( static_cast<float>(value[i]) - min_value );
+                size[i] = DefaultSize() * normalize * ( static_cast<float>(values[i]) - min_value );
             }
         }
         else if ( veclen == 3 )
         {
             for( size_t i = 0, index = 0; i < nnodes; i++, index += 3 )
             {
-                const kvs::Vector3f v(
-                    static_cast<float>(value[index]),
-                    static_cast<float>(value[index+1]),
-                    static_cast<float>(value[index+2]));
-                size[i] = ::DefaultSize * normalize * ( static_cast<float>(v.length()) - min_value );
+                const kvs::Vec3 v
+                {
+                    static_cast<float>(values[index]),
+                    static_cast<float>(values[index+1]),
+                    static_cast<float>(values[index+2])
+                };
+                size[i] = DefaultSize() * normalize * ( static_cast<float>(v.length()) - min_value );
             }
         }
         break;
-    default:
-        break;
+    }
+    default: break;
     }
 
     this->setSizes( sizes );
@@ -277,7 +268,7 @@ template void GlyphBase::calculateSizes<kvs::Real64>( const kvs::VolumeObjectBas
 template <typename T>
 void GlyphBase::calculateDirections( const kvs::VolumeObjectBase* volume )
 {
-    const T* value = reinterpret_cast<const T*>( volume->values().data() );
+    const auto values = volume->values().asValueArray<T>();
     const size_t veclen = volume->veclen();
     const size_t nnodes = volume->numberOfNodes();
     if ( veclen == 3 )
@@ -287,7 +278,7 @@ void GlyphBase::calculateDirections( const kvs::VolumeObjectBase* volume )
 
         for ( size_t i = 0; i < directions.size(); i++ )
         {
-            direction[i] = static_cast<kvs::Real32>( value[i] );
+            direction[i] = static_cast<kvs::Real32>( values[i] );
         }
 
         this->setDirections( directions );
@@ -314,7 +305,7 @@ template void GlyphBase::calculateDirections<kvs::Real64>( const kvs::VolumeObje
 template <typename T>
 void GlyphBase::calculateColors( const kvs::VolumeObjectBase* volume )
 {
-    const T* value = reinterpret_cast<const T*>( volume->values().data() );
+    const auto values = volume->values().asValueArray<T>();
     const size_t veclen = volume->veclen();
     const size_t nnodes = volume->numberOfNodes();
 
@@ -331,9 +322,9 @@ void GlyphBase::calculateColors( const kvs::VolumeObjectBase* volume )
     case GlyphBase::ColorByDefault:
         for ( size_t i = 0; i < nnodes; i++ )
         {
-            *( color++ ) = ::DefaultColor.r();
-            *( color++ ) = ::DefaultColor.r();
-            *( color++ ) = ::DefaultColor.r();
+            *( color++ ) = DefaultColor().r();
+            *( color++ ) = DefaultColor().r();
+            *( color++ ) = DefaultColor().r();
         }
         break;
     case GlyphBase::ColorByMagnitude:
@@ -343,7 +334,7 @@ void GlyphBase::calculateColors( const kvs::VolumeObjectBase* volume )
         {
             for ( size_t i = 0; i < nnodes; i++ )
             {
-                const float d = normalize * ( static_cast<float>(value[i]) - min_value );
+                const float d = normalize * ( static_cast<float>(values[i]) - min_value );
                 const size_t level = static_cast<size_t>( 255.0f * d );
                 const kvs::RGBColor c = color_map[ level ];
                 *( color++ ) = c.r();
@@ -355,10 +346,10 @@ void GlyphBase::calculateColors( const kvs::VolumeObjectBase* volume )
         {
             for ( size_t i = 0, index = 0; i < nnodes; i++, index += 3 )
             {
-                const kvs::Vector3f v(
-                    static_cast<float>(value[index]),
-                    static_cast<float>(value[index+1]),
-                    static_cast<float>(value[index+2]));
+                const kvs::Vec3 v(
+                    static_cast<float>(values[index]),
+                    static_cast<float>(values[index+1]),
+                    static_cast<float>(values[index+2]) );
                 const float d = normalize * ( static_cast<float>(v.length()) - min_value );
                 const size_t level = static_cast<size_t>( 255.0f * d );
                 const kvs::RGBColor c = color_map[ level ];
@@ -396,7 +387,7 @@ template void GlyphBase::calculateColors<kvs::Real64>( const kvs::VolumeObjectBa
 template <typename T>
 void GlyphBase::calculateOpacities( const kvs::VolumeObjectBase* volume )
 {
-    const T* value = reinterpret_cast<const T*>( volume->values().data() );
+    const auto values = volume->values().asValueArray<T>();
     const size_t veclen = volume->veclen();
     const size_t nnodes = volume->numberOfNodes();
 
@@ -411,14 +402,14 @@ void GlyphBase::calculateOpacities( const kvs::VolumeObjectBase* volume )
     switch( m_opacity_mode )
     {
     case GlyphBase::OpacityByDefault:
-        for( size_t i = 0; i < nnodes; i++ ) opacity[i] = ::DefaultOpacity;
+        for( size_t i = 0; i < nnodes; i++ ) opacity[i] = DefaultOpacity();
         break;
     case GlyphBase::OpacityByMagnitude:
         if ( veclen == 1 )
         {
             for( size_t i = 0; i < nnodes; i++ )
             {
-                opacity[i] = static_cast<kvs::UInt8>( normalize * ( static_cast<float>(value[i]) - min_value ) );
+                opacity[i] = static_cast<kvs::UInt8>( normalize * ( static_cast<float>(values[i]) - min_value ) );
             }
         }
         else if ( veclen == 3 )
@@ -426,9 +417,9 @@ void GlyphBase::calculateOpacities( const kvs::VolumeObjectBase* volume )
             for( size_t i = 0, index = 0; i < nnodes; i++, index += 3 )
             {
                 const kvs::Vector3f v(
-                    static_cast<float>(value[index]),
-                    static_cast<float>(value[index+1]),
-                    static_cast<float>(value[index+2]));
+                    static_cast<float>(values[index]),
+                    static_cast<float>(values[index+1]),
+                    static_cast<float>(values[index+2]));
                 opacity[i] = static_cast<kvs::UInt8>( normalize * ( v.length() - min_value ) );
             }
         }
