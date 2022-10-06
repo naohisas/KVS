@@ -453,14 +453,14 @@ endif
 #  OPENCV_INCLUDE_PATH, OPENCV_LIBRARY_PATH, OPENCV_LINK_LIBRARY
 #=============================================================================
 ifeq "$(KVS_SUPPORT_OPENCV)" "1"
-  ifeq "$(findstring opencv4,$(shell pkg-config --list-all))" "opencv4"
-    OPENCV_INCLUDE_PATH := `pkg-config --cflags opencv4` -std=c++11 -DKVS_OPENCV4
-    OPENCV_LIBRARY_PATH := `pkg-config --libs-only-L opencv4`
-    OPENCV_LINK_LIBRARY := `pkg-config --libs opencv4`
-  else
+  ifeq "$(findstring not,$(shell pkg-config --modversion opencv4))" "not"
     OPENCV_INCLUDE_PATH := `pkg-config --cflags opencv`
     OPENCV_LIBRARY_PATH := `pkg-config --libs-only-L opencv`
     OPENCV_LINK_LIBRARY := `pkg-config --libs opencv`
+  else
+    OPENCV_INCLUDE_PATH := `pkg-config --cflags opencv4` -std=c++11 -DKVS_OPENCV4
+    OPENCV_LIBRARY_PATH := `pkg-config --libs-only-L opencv4`
+    OPENCV_LINK_LIBRARY := `pkg-config --libs opencv4`
   endif
   ifdef KVS_OPENCV_DIR
     OPENCV_INCLUDE_PATH := -I$(KVS_OPENCV_DIR)/include
