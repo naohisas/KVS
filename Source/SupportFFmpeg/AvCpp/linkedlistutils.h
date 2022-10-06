@@ -1,5 +1,4 @@
-#ifndef LINKEDLISTUTILS_H
-#define LINKEDLISTUTILS_H
+#pragma once
 
 #include <iterator>
 
@@ -114,8 +113,18 @@ public:
     typedef I iterator_category;
 
     template<bool constIterator = false>
-    class base_iterator : public std::iterator<iterator_category, typename std::conditional<constIterator, const element_wrapper_type, element_wrapper_type>::type>
+    class base_iterator
     {
+    public:
+
+        std::iterator_traits<base_iterator> d;
+        // Iterator interface
+        using iterator_category = iterator_category;
+        using value_type = typename std::conditional<constIterator, const element_wrapper_type, element_wrapper_type>::type;
+        using difference_type = ptrdiff_t;
+        using pointer = value_type*;
+        using reference = value_type&;
+
     private:
         using ElementType = typename std::conditional<constIterator, const element_type, element_type>::type;
         using WrapperType = typename std::conditional<constIterator, const element_wrapper_type, element_wrapper_type>::type;
@@ -259,4 +268,3 @@ protected:
 };
 }
 
-#endif // LINKEDLISTUTILS_H

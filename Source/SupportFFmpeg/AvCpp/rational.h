@@ -1,9 +1,12 @@
-#ifndef RATIONAL_H
-#define RATIONAL_H
+#pragma once
 
 #include <utility>
 #include <iostream>
 #include <memory>
+
+#if __cplusplus > 201703L
+#include <compare>
+#endif
 
 #include "ffmpeg.h"
 
@@ -46,8 +49,16 @@ public:
     Rational& operator=  (double value) noexcept;
 
     bool      operator== (const Rational   &other) const noexcept;
+#if __cplusplus > 201703L
+    std::strong_ordering operator<=>(const Rational &other) const noexcept;
+#else
     bool      operator!= (const Rational   &other) const noexcept;
     bool      operator<  (const Rational   &other) const noexcept;
+    bool      operator>  (const Rational   &other) const noexcept;
+    bool      operator<= (const Rational   &other) const noexcept;
+    bool      operator>= (const Rational   &other) const noexcept;
+#endif
+
     Rational  operator+  (const Rational   &value) const noexcept;
     Rational  operator-  (const Rational   &value) const noexcept;
     Rational  operator*  (const Rational   &value) const noexcept;
@@ -63,21 +74,6 @@ public:
 private:
     AVRational m_value;
 };
-
-//inline
-//bool      operator== (const Rational &other) const noexcept;
-//inline
-//bool      operator!= (const Rational &other) const noexcept;
-//inline
-//bool      operator<  (const Rational &other) const noexcept;
-//inline
-//Rational  operator+(Rational left, const Rational &value) noexcept
-//inline
-//Rational  operator-(Rational left, const Rational &value) noexcept;
-//inline
-//Rational  operator*(Rational left, const Rational &value) noexcept;
-//inline
-//Rational  operator/(Rational left, const Rational &value) noexcept;
 
 
 inline std::ostream& operator<< (std::ostream &stream, const Rational &value)
@@ -109,5 +105,3 @@ inline std::istream& operator>> (std::istream &stream, Rational &value)
 
 
 } // ::av
-
-#endif // RATIONAL_H
