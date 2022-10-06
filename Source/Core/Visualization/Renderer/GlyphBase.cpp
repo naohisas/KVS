@@ -45,17 +45,27 @@ void GlyphBase::transform(
     const kvs::Vec3& direction,
     const kvs::Real32 size )
 {
-    const kvs::Vec3 v = direction.normalized();
-    const kvs::Vec3 c = DefaultDirection().cross( v );
-    const float d = DefaultDirection().dot( v );
-    const float s = static_cast<float>( std::sqrt( ( 1.0 + d ) * 2.0 ) );
-    const kvs::Quaternion q( c.x()/s, c.y()/s, c.z()/s, s/2.0f );
-    const kvs::Mat3 rot = q.toMatrix();
-    const kvs::Xform xform( position, m_scale * size, rot );
+    auto MultMat = []( const kvs::Xform& x )
+    {
+        float a[16]; x.toArray( a );
+        kvs::OpenGL::MultMatrix( a );
+    };
 
-    float array[16];
-    xform.toArray( array );
-    kvs::OpenGL::MultMatrix( array );
+    const auto v = direction.normalized();
+    if ( -v == DefaultDirection() )
+    {
+        const auto rot = kvs::Mat3::Identity();
+        MultMat( kvs::Xform( position, m_scale * size, -rot ) );
+    }
+    else
+    {
+        const auto c = DefaultDirection().cross( v );
+        const auto d = DefaultDirection().dot( v );
+        const auto s = static_cast<float>( std::sqrt( ( 1.0 + d ) * 2.0 ) );
+        const auto q = kvs::Quaternion( c.x()/s, c.y()/s, c.z()/s, s/2.0f );
+        const auto rot = q.toMatrix();
+        MultMat( kvs::Xform( position, m_scale * size, rot ) );
+    }
 }
 
 /*===========================================================================*/
