@@ -272,6 +272,7 @@ macx {
     }
     equals( KVS_SUPPORT_PYTHON, "1" ) {
         LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH
+	LIBS += $$PYTHON_LINK_LIBRARY
     }
 }
 
@@ -300,6 +301,7 @@ unix:!macx {
     }
     equals( KVS_SUPPORT_PYTHON, "1" ) {
         LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH
+	LIBS += $$PYTHON_LINK_LIBRARY
     }
 }
 
