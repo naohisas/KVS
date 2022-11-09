@@ -112,6 +112,18 @@ const Quaternion Quaternion::LinearInterpolation(
     return ret;
 }
 
+const Quaternion Quaternion::SplineInterpolation(
+    const Quaternion& qnm1,
+    const Quaternion& qn,
+    const Quaternion& qnp1 )
+{
+    Quaternion tmpm1 = qnm1; tmpm1.normalize();
+    Quaternion tmpp1 = qnp1; tmpp1.normalize();
+    Quaternion qni = qn.conjugated(); qni.normalize();
+
+    return qn * ( ( ( qni * tmpm1 ).log() + ( qni * tmpp1 ).log() ) / -4 ).exp();
+}
+
 const Quaternion Quaternion::SphericalLinearInterpolation(
     const Quaternion& q1,
     const Quaternion& q2,
@@ -168,7 +180,7 @@ const Quaternion Quaternion::SphericalCubicInterpolation(
     return Quaternion::SphericalLinearInterpolation( c, d, 2.0 * t * (1-t), false, for_rotation );
 }
 
-const Quaternion Quaternion::SplineInterpolation(
+const Quaternion Quaternion::SphericalQuadrangleInterpolation(
     const Quaternion& q1,
     const Quaternion& q2,
     const Quaternion& q3,
@@ -176,22 +188,10 @@ const Quaternion Quaternion::SplineInterpolation(
     double t,
     bool for_rotation )
 {
-    Quaternion a = Quaternion::Spline( q1, q2, q3 );
-    Quaternion b = Quaternion::Spline( q2, q3, q4 );
+    Quaternion a = Quaternion::SplineInterpolation( q1, q2, q3 );
+    Quaternion b = Quaternion::SplineInterpolation( q2, q3, q4 );
 
     return Quaternion::SphericalCubicInterpolation( q2, q3, a, b, t, for_rotation );
-}
-
-const Quaternion Quaternion::Spline(
-    const Quaternion& qnm1,
-    const Quaternion& qn,
-    const Quaternion& qnp1 )
-{
-    Quaternion tmpm1 = qnm1; tmpm1.normalize();
-    Quaternion tmpp1 = qnp1; tmpp1.normalize();
-    Quaternion qni = qn.conjugated(); qni.normalize();
-
-    return qn * ( ( ( qni * tmpm1 ).log() + ( qni * tmpp1 ).log() ) / -4 ).exp();
 }
 
 } // end of namespace kvs

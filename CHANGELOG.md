@@ -74,12 +74,17 @@
 + kvs::ParallelAxis::isAxisVisible()
 + kvs::ParallelAxis::isRangeVisible()
 + kvs::ParallelAxis::isLabelVisible()
++ kvs::Quaternion::Quaternion( Vec4 )
++ kvs::Quaternion::set( Vec4 )
++ kvs::Quaternion::xyz()
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()
 + kvs::OpenGL::SizeOf( type )
 + kvs::OpenGL::ComponentsIn( format )
 + kvs::OpenGL::BytesPerPixel( format, type )
++ kvs::Quaternion::SphericalQuadrangleInterpolation
++ kvs::Quaternion::SplineInterpolation
 
 **Deprecated class**
 + kvs::glut::Text
@@ -121,6 +126,8 @@
 + kvs::ParallelCoordinates::bottomMargin (use kvs::ParallelCoordinates::margins.bottom)
 + kvs::ParallelCoordinates::leftMargin (use kvs::ParallelCoordinates::margins().left)
 + kvs::ParallelCoordinates::rightMargin (use kvs::ParallelCoordinates::margins().right)
++ kvs::Quaternion::SplineInterpolation (use kvs::SphericalQuadrangleInterpolation)
++ kvs::Quaternion::Spline (use kvs::SplineInterpolation)
 
 **Added new example**
 + Example/Utility/ColorStream

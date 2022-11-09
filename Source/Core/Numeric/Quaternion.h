@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__QUATERNION_H_INCLUDE
-#define KVS__QUATERNION_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <iomanip>
 #include <kvs/Math>
@@ -28,38 +26,36 @@ namespace kvs
 class Quaternion
 {
 private:
-
     // Quaternion: Q = w + xi + yj + zk
     //    x = m_elements[0],
     //    y = m_elements[1],
     //    z = m_elements[2],
     //    w = m_elements[3]
-    kvs::Vec4 m_elements; ///< elements of quaternion
+    kvs::Vec4 m_elements{ 0, 0, 0, 0 }; ///< elements of quaternion
 
 public:
-
     static const Quaternion Zero();
     static const Quaternion Identity();
     static const kvs::Vec3 Rotate( const kvs::Vec3& pos, const kvs::Vec3& axis, float rad );
     static const kvs::Vec3 Rotate( const kvs::Vec3& pos, const Quaternion& q );
     static const Quaternion RotationQuaternion( kvs::Vec3 v0, kvs::Vec3 v1 );
     static const Quaternion LinearInterpolation( const Quaternion& q1, const Quaternion& q2, double t, bool for_rotation );
+    static const Quaternion SplineInterpolation( const Quaternion& qnm1, const Quaternion& qn, const Quaternion& qnp1 );
     static const Quaternion SphericalLinearInterpolation( const Quaternion& q1, const Quaternion& q2, double t, bool invert, bool for_rotation );
     static const Quaternion SphericalCubicInterpolation( const Quaternion& q1, const Quaternion& q2, const Quaternion& a, const Quaternion& b, double t, bool for_rotation );
-    static const Quaternion SplineInterpolation( const Quaternion& q1, const Quaternion& q2, const Quaternion& q3, const Quaternion& q4, double t, bool for_rotation );
-    static const Quaternion Spline( const Quaternion& qnm1, const Quaternion& qn, const Quaternion& qnp1 );
+    static const Quaternion SphericalQuadrangleInterpolation( const Quaternion& q1, const Quaternion& q2, const Quaternion& q3, const Quaternion& q4, double t, bool for_rotation );
 
 public:
-
-    Quaternion();
-    Quaternion( float x, float y, float z, float w );
+    Quaternion() = default;
+    Quaternion( float x, float y, float z, float w ): m_elements( x, y, z, w ) {}
+    Quaternion( const kvs::Vec4& elements ): m_elements( elements ) {}
     Quaternion( const kvs::Vec3& axis, float angle );
     explicit Quaternion( const kvs::Mat3& mat );
-    explicit Quaternion( const float elements[4] );
+    explicit Quaternion( const float elements[4] ): m_elements( elements ) {}
 
 public:
-
     void set( float x, float y, float z, float w ) { m_elements.set( x, y, z, w ); }
+    void set( const kvs::Vec4& xyzw ) { m_elements = xyzw; }
 
     float& x() { return m_elements[0]; }
     float& y() { return m_elements[1]; }
@@ -69,6 +65,7 @@ public:
     float y() const { return m_elements[1]; }
     float z() const { return m_elements[2]; }
     float w() const { return m_elements[3]; }
+    kvs::Vec3 xyz() const { return m_elements.xyz(); }
 
     void zero() { *this = Zero(); }
     void identity() { *this = Identity(); }
@@ -209,7 +206,6 @@ public:
     }
 
 public:
-
     KVS_DEPRECATED( static Vector3<float> rotate(
         const kvs::Vec3& pos,
         const kvs::Vec3& axis, float rad ) )
@@ -281,31 +277,26 @@ public:
     }
 
     KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
+
+    KVS_DEPRECATED( static const Quaternion SplineInterpolation(
+        const Quaternion& q1,
+        const Quaternion& q2,
+        const Quaternion& q3,
+        const Quaternion& q4,
+        double t,
+        bool for_rotation ) )
+    {
+        return Quaternion::SphericalQuadrangleInterpolation( q1, q2, q3, q4, t, for_rotation );
+    }
+
+    KVS_DEPRECATED( static const Quaternion Spline(
+        const Quaternion& qnm1,
+        const Quaternion& qn,
+        const Quaternion& qnp1 ) )
+    {
+        return Quaternion::SplineInterpolation( qnm1, qn, qnp1 );
+    }
 };
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Quaternion class.
- */
-/*===========================================================================*/
-inline Quaternion::Quaternion():
-    m_elements( 0, 0, 0, 0 )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Quaternion class.
- *  @param  x [in] element of i-term
- *  @param  y [in] element of j-term
- *  @param  z [in] element of k-term
- *  @param  w [in] real number
- */
-/*===========================================================================*/
-inline Quaternion::Quaternion( float x, float y, float z, float w ):
-    m_elements( x, y, z, w )
-{
-}
 
 /*===========================================================================*/
 /**
@@ -314,13 +305,13 @@ inline Quaternion::Quaternion( float x, float y, float z, float w ):
  *  @param  angle [in] rotation angle
  */
 /*===========================================================================*/
-inline Quaternion::Quaternion( const kvs::Vector3<float>& axis, float angle )
+inline Quaternion::Quaternion( const kvs::Vec3& axis, float angle )
 {
     float s = static_cast<float>( std::sin( angle * 0.5 ) );
     float w = static_cast<float>( std::cos( angle * 0.5 ) );
 
-    kvs::Vec3 n = axis.normalized();
-    kvs::Vec3 v = s * n;
+    auto n = axis.normalized();
+    auto v = s * n;
     m_elements.set( v, w );
 }
 
@@ -369,17 +360,6 @@ inline Quaternion::Quaternion( const kvs::Matrix33<float>& m )
         }
     }
     m_elements.set( x, y, z, w );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Quaternion class.
- *  @param  elements [in] elements of rotation matrix
- */
-/*===========================================================================*/
-inline Quaternion::Quaternion( const float elements[4] ) :
-    m_elements( elements )
-{
 }
 
 /*===========================================================================*/
@@ -463,26 +443,20 @@ inline Quaternion Quaternion::inverted() const
 /*===========================================================================*/
 inline Quaternion Quaternion::log() const
 {
-    Quaternion result( *this );
+    const auto xyz = this->xyz();
+    const auto w = this->w();
 
-    double theta = std::acos( double( result.w() ) );
-    double sin_theta = std::sin( theta );
-    if ( sin_theta > 0 )
+    const float norm = xyz.length();
+    const float theta = std::atan2( norm, w );
+    if ( std::abs( w ) < 1 )
     {
-        result.x() = float( theta * result.x() / sin_theta );
-        result.y() = float( theta * result.y() / sin_theta );
-        result.z() = float( theta * result.z() / sin_theta );
-        result.w() = 0;
-    }
-    else
-    {
-        result.x() = 0;
-        result.y() = 0;
-        result.z() = 0;
-        result.w() = 0;
+        if ( std::abs( theta ) > 0 )
+        {
+            return Quaternion( kvs::Vec4{ xyz * theta / std::sin( theta ), 0.0f } );
+        }
     }
 
-    return result;
+    return Quaternion( kvs::Vec4{ xyz, 0.0f } );
 }
 
 /*===========================================================================*/
@@ -493,28 +467,22 @@ inline Quaternion Quaternion::log() const
 /*===========================================================================*/
 inline Quaternion Quaternion::exp() const
 {
-    Quaternion result( *this );
+    const auto xyz = this->xyz();
+    const auto w = this->w();
 
-    double theta2 = m_elements.xyz().squaredLength();
-    double theta = std::sqrt( theta2 );
-    double cos_theta = std::cos( theta );
+    const float theta = xyz.length();
     if ( theta > 0 )
     {
-        double sin_theta = std::sin( theta );
-        result.x() = float( sin_theta * result.x() / theta );
-        result.y() = float( sin_theta * result.y() / theta );
-        result.z() = float( sin_theta * result.z() / theta );
-        result.w() = float( cos_theta );
+        return Quaternion( kvs::Vec4{
+                std::exp( w ) * xyz * std::sin( theta ) / theta,
+                std::exp( w ) * std::cos( theta ) } );
     }
     else
     {
-        result.x() = 0;
-        result.y() = 0;
-        result.z() = 0;
-        result.w() = float( cos_theta );
+        return Quaternion( kvs::Vec4{
+                std::exp( w ) * xyz,
+                std::exp( w ) * std::cos( theta ) } );
     }
-
-    return *this;
 }
 
 /*===========================================================================*/
@@ -671,5 +639,3 @@ inline float Quaternion::angle() const
 }
 
 } // end of namespace kvs
-
-#endif // KVS__QUATERNION_H_INCLUDE
