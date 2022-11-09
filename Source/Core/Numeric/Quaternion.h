@@ -265,7 +265,7 @@ public:
         double t,
         bool for_rotation ) )
     {
-        return Quaternion::SplineInterpolation( q1, q2, q3, q4, t, for_rotation );
+        return Quaternion::SphericalQuadrangleInterpolation( q1, q2, q3, q4, t, for_rotation );
     }
 
     KVS_DEPRECATED( static Quaternion spline(
@@ -273,7 +273,7 @@ public:
         const Quaternion& qn,
         const Quaternion& qnp1 ) )
     {
-        return Quaternion::Spline( qnm1, qn, qnp1 );
+        return Quaternion::SplineInterpolation( qnm1, qn, qnp1 );
     }
 
     KVS_DEPRECATED( double length2() const ) { return this->squaredLength(); }
