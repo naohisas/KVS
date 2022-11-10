@@ -104,24 +104,22 @@ const Quaternion Quaternion::LinearInterpolation(
     const Quaternion& q1,
     const Quaternion& q2,
     double t,
-    bool for_rotation )
+    bool normalize )
 {
-    Quaternion ret = q1 + float(t) * ( q2 - q1 );
-    if ( for_rotation ) { ret.normalize(); }
-
-    return ret;
+    auto q = q1 + float(t) * ( q2 - q1 );
+    if ( normalize ) { q.normalize(); }
+    return q;
 }
 
 const Quaternion Quaternion::SplineInterpolation(
-    const Quaternion& qnm1,
+    const Quaternion& qn_m1,
     const Quaternion& qn,
-    const Quaternion& qnp1 )
+    const Quaternion& qn_p1 )
 {
-    Quaternion tmpm1 = qnm1; tmpm1.normalize();
-    Quaternion tmpp1 = qnp1; tmpp1.normalize();
-    Quaternion qni = qn.conjugated(); qni.normalize();
-
-    return qn * ( ( ( qni * tmpm1 ).log() + ( qni * tmpp1 ).log() ) / -4 ).exp();
+    auto tmp_m1 = qn_m1; tmp_m1.normalize();
+    auto tmp_p1 = qn_p1; tmp_p1.normalize();
+    auto qn_i = qn.conjugated(); qn_i.normalize();
+    return qn * ( ( ( qn_i * tmp_m1 ).log() + ( qn_i * tmp_p1 ).log() ) * -0.25f ).exp();
 }
 
 const Quaternion Quaternion::SphericalLinearInterpolation(
@@ -129,40 +127,39 @@ const Quaternion Quaternion::SphericalLinearInterpolation(
     const Quaternion& q2,
     double t,
     bool invert,
-    bool for_rotation )
+    bool normalize )
 {
-    Quaternion tmp1 = q1; tmp1.normalize();
-    Quaternion tmp2 = q2; tmp2.normalize();
+    auto tmp1 = q1; tmp1.normalize();
+    auto tmp2 = q2; tmp2.normalize();
     double dot = tmp1.dot( tmp2 );
 
     // dot = cos( theta )
     // if (dot < 0), q1 and q2 are more than 90 degrees apart,
     // so we can invert one to reduce spining
     Quaternion q3;
-    if ( invert && dot < 0 )
-    {
-        dot = -dot;
-        q3  = -q2;
-    }
-    else
-    {
-        q3 = q2;
-    }
+    if ( invert && dot < 0 ) { q3 = -q2; dot = -dot; }
+    else { q3 = q2; }
 
-    if ( (  invert && dot < 0.95 ) ||
-         ( !invert && dot > -0.95 && dot < 0.95 ) )
+    const float phi = std::acos( dot );
+    if ( phi > 0 && phi < kvs::Math::pi )
+//    if ( (  invert && dot < 0.95 ) ||
+//         ( !invert && dot > -0.95 && dot < 0.95 ) )
     {
-        double angle   = std::acos( dot );
-        double sina    = std::sin( angle );
-        double sinat   = std::sin( angle * t );
-        double sinaomt = std::sin( angle * (1-t) );
-
-        return ( q1 * float( sinaomt ) + q3 * float( sinat ) ) / float( sina );
+//        double angle   = std::acos( dot );
+//        double sina    = std::sin( angle );
+//        double sinat   = std::sin( angle * t );
+//        double sinaomt = std::sin( angle * (1-t) );
+        const float sin_p = std::sin( phi );
+        const float sin_pt = std::sin( phi * t );
+        const float sin_p1t = std::sin( phi * ( 1 - t ) );
+        auto q = ( q1 * sin_p1t + q3 * sin_pt ) / sin_p;
+        if ( normalize ) { q.normalize(); }
+        return q;
     }
     // if the angle is small, use linear interpolation
     else
     {
-        return Quaternion::LinearInterpolation( q1, q3, t, for_rotation );
+        return Quaternion::LinearInterpolation( q1, q3, t, normalize );
     }
 }
 
@@ -172,12 +169,11 @@ const Quaternion Quaternion::SphericalCubicInterpolation(
     const Quaternion& a,
     const Quaternion& b,
     double t,
-    bool for_rotation )
+    bool normalize )
 {
-    Quaternion c = Quaternion::SphericalLinearInterpolation( q1, q2, t, false, for_rotation );
-    Quaternion d = Quaternion::SphericalLinearInterpolation(  a,  b, t, false, for_rotation );
-
-    return Quaternion::SphericalLinearInterpolation( c, d, 2.0 * t * (1-t), false, for_rotation );
+    auto c = Quaternion::SphericalLinearInterpolation( q1, q2, t, false, normalize );
+    auto d = Quaternion::SphericalLinearInterpolation(  a,  b, t, false, normalize );
+    return Quaternion::SphericalLinearInterpolation( c, d, 2.0 * t * ( 1 - t ), false, normalize );
 }
 
 const Quaternion Quaternion::SphericalQuadrangleInterpolation(
@@ -186,12 +182,11 @@ const Quaternion Quaternion::SphericalQuadrangleInterpolation(
     const Quaternion& q3,
     const Quaternion& q4,
     double t,
-    bool for_rotation )
+    bool normalize )
 {
-    Quaternion a = Quaternion::SplineInterpolation( q1, q2, q3 );
-    Quaternion b = Quaternion::SplineInterpolation( q2, q3, q4 );
-
-    return Quaternion::SphericalCubicInterpolation( q2, q3, a, b, t, for_rotation );
+    auto a = Quaternion::SplineInterpolation( q1, q2, q3 );
+    auto b = Quaternion::SplineInterpolation( q2, q3, q4 );
+    return Quaternion::SphericalCubicInterpolation( q2, q3, a, b, t, normalize );
 }
 
 } // end of namespace kvs
