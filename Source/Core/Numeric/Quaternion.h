@@ -39,11 +39,11 @@ public:
     static const kvs::Vec3 Rotate( const kvs::Vec3& pos, const kvs::Vec3& axis, float rad );
     static const kvs::Vec3 Rotate( const kvs::Vec3& pos, const Quaternion& q );
     static const Quaternion RotationQuaternion( kvs::Vec3 v0, kvs::Vec3 v1 );
-    static const Quaternion LinearInterpolation( const Quaternion& q1, const Quaternion& q2, double t, bool for_rotation );
+    static const Quaternion LinearInterpolation( const Quaternion& q1, const Quaternion& q2, double t, bool normalize );
     static const Quaternion SplineInterpolation( const Quaternion& qnm1, const Quaternion& qn, const Quaternion& qnp1 );
-    static const Quaternion SphericalLinearInterpolation( const Quaternion& q1, const Quaternion& q2, double t, bool invert, bool for_rotation );
-    static const Quaternion SphericalCubicInterpolation( const Quaternion& q1, const Quaternion& q2, const Quaternion& a, const Quaternion& b, double t, bool for_rotation );
-    static const Quaternion SphericalQuadrangleInterpolation( const Quaternion& q1, const Quaternion& q2, const Quaternion& q3, const Quaternion& q4, double t, bool for_rotation );
+    static const Quaternion SphericalLinearInterpolation( const Quaternion& q1, const Quaternion& q2, double t, bool invert, bool normalize );
+    static const Quaternion SphericalCubicInterpolation( const Quaternion& q1, const Quaternion& q2, const Quaternion& a, const Quaternion& b, double t, bool normalize );
+    static const Quaternion SphericalQuadrangleInterpolation( const Quaternion& q1, const Quaternion& q2, const Quaternion& q3, const Quaternion& q4, double t, bool normalize );
 
 public:
     Quaternion() = default;
