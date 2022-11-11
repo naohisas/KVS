@@ -24,6 +24,7 @@ int main( int argc, char** argv )
     auto height = object->height();
     screen.setSize( width, height );
     screen.create();
+    screen.scene()->mouse()->disableAutoUpdating();
 
     // Frame slider.
     kvs::Slider slider( &screen );

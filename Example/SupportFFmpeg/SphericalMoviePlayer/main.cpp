@@ -18,6 +18,7 @@ int main( int argc, char** argv )
     auto* object = new Object( argv[1] );
     auto* renderer = new Renderer();
     screen.create();
+    screen.scene()->mouse()->disableAutoUpdating();
 
     kvs::Label label( &screen );
     label.anchorToTopLeft();
