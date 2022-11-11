@@ -20,8 +20,8 @@ namespace kvs
 class IdleEventListener : public kvs::EventListener
 {
 public:
-    IdleEventListener(): kvs::EventListener( kvsBinary12(1111,1111,1111) ) {}
-    virtual ~IdleEventListener() {}
+    IdleEventListener(): kvs::EventListener( kvs::EventBase::AllEvents ) {}
+    virtual ~IdleEventListener() = default;
     virtual void update() = 0;
 
 private:

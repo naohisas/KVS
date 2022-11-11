@@ -13,6 +13,13 @@
 namespace kvs
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns the event listener specified by the name.
+ *  @param  name [in] event listener name
+ *  @return pointer to the event listener
+ */
+/*===========================================================================*/
 kvs::EventListener* EventHandler::listener( const std::string& name )
 {
     auto it = std::find_if(

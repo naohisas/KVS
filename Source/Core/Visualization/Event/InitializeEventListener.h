@@ -23,7 +23,7 @@ public:
     InitializeEventListener(): kvs::EventListener( kvs::EventBase::InitializeEvent ) {}
     InitializeEventListener( InitializeEventFunc func ):
         kvs::EventListener( kvs::EventBase::InitializeEvent ) { this->update( func ); }
-    virtual ~InitializeEventListener() {}
+    virtual ~InitializeEventListener() = default;
 
     void update( InitializeEventFunc func ) { initializeEvent( func ); }
     virtual void update() { initializeEvent(); }

@@ -20,21 +20,15 @@ namespace kvs
 class MouseEvent : public kvs::EventBase
 {
 private:
-    int m_button; ///< mouse button
-    int m_state; ///< mouse button state
-    int m_x; ///< mouse cursol position x
-    int m_y; ///< mouse cursol position y
-    int m_modifiers; ///< modifier keys
-    int m_action; ///< mouse action
+    int m_button = kvs::MouseButton::Left; ///< mouse button
+    int m_state = kvs::MouseButton::Up; ///< mouse button state
+    int m_x = 0; ///< mouse cursol position x
+    int m_y = 0; ///< mouse cursol position y
+    int m_modifiers = 0; ///< modifier keys
+    int m_action = kvs::MouseButton::NoAction; ///< mouse action
 
 public:
-    MouseEvent():
-        m_button( kvs::MouseButton::Left ),
-        m_state( kvs::MouseButton::Up ),
-        m_x( 0 ),
-        m_y( 0 ),
-        m_modifiers( 0 ),
-        m_action( kvs::MouseButton::NoAction ) {}
+    MouseEvent() = default;
     MouseEvent( const MouseEvent& e ):
         m_button( e.m_button ),
         m_state( e.m_state ),
@@ -49,7 +43,7 @@ public:
         m_y( y ),
         m_modifiers( modifiers ),
         m_action( kvs::MouseButton::NoAction ) {}
-    virtual ~MouseEvent() {}
+    virtual ~MouseEvent() = default;
 
     int button() const { return m_button; }
     int state() const { return m_state; }

@@ -24,8 +24,6 @@ namespace kvs
 /*===========================================================================*/
 ScreenCaptureEvent::ScreenCaptureEvent( const int key ):
     m_key( key ),
-    m_filename( "" ),
-    m_basename( "screenshot" ),
     m_capture_func( nullptr )
 {
 }
@@ -39,8 +37,6 @@ ScreenCaptureEvent::ScreenCaptureEvent( const int key ):
 /*===========================================================================*/
 ScreenCaptureEvent::ScreenCaptureEvent( CaptureFunc func, const int key ):
     m_key( key ),
-    m_filename( "" ),
-    m_basename( "screenshot" ),
     m_capture_func( func )
 {
 }

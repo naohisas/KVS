@@ -23,7 +23,7 @@ public:
     KeyReleaseEventListener(): kvs::EventListener( kvs::EventBase::KeyReleaseEvent ) {}
     KeyReleaseEventListener( KeyReleaseEventFunc func ):
         kvs::EventListener( kvs::EventBase::KeyReleaseEvent ) { this->update( func ); }
-    virtual ~KeyReleaseEventListener() {}
+    virtual ~KeyReleaseEventListener() = default;
 
     void update( KeyReleaseEventFunc func ) { keyReleaseEvent( func ); }
     virtual void update( kvs::KeyEvent* event ) { keyReleaseEvent( event ); }

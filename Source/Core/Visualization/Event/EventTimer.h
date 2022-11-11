@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   EventTimer.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 
 
@@ -7,14 +13,19 @@ namespace kvs
 class TimeEvent;
 class EventListener;
 
+/*===========================================================================*/
+/**
+ *  @brief  Event timer class
+ */
+/*===========================================================================*/
 class EventTimer
 {
 private:
-    int m_id; ///< timer ID
-    int m_interval; ///< interval time in millisecond
-    bool m_is_stopped; ///< check flag whether the time is stopped
-    kvs::TimeEvent* m_time_event;
-    kvs::EventListener* m_event_listener;
+    int m_id = 0; ///< timer ID
+    int m_interval = -1; ///< interval time in millisecond
+    bool m_is_stopped = true; ///< check flag whether the time is stopped
+    kvs::TimeEvent* m_time_event = nullptr;
+    kvs::EventListener* m_event_listener = nullptr;
 
 public:
     EventTimer( kvs::EventListener* listener );
@@ -22,9 +33,9 @@ public:
 
     bool isStopped() const { return m_is_stopped; }
 
-    virtual void stop();
-    virtual void start();
-    virtual void start( int msec );
+    virtual void stop() { if ( !m_is_stopped ) { m_is_stopped = true; } }
+    virtual void start() { this->start( m_interval ); }
+    virtual void start( int msec ) { this->setInterval( msec ); }
     virtual void nortify() {}
 
 protected:

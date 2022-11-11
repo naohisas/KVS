@@ -23,7 +23,7 @@ public:
     ResizeEventListener(): kvs::EventListener( kvs::EventBase::ResizeEvent ) {}
     ResizeEventListener( ResizeEventFunc func ):
         kvs::EventListener( kvs::EventBase::ResizeEvent ) { this->update( func ); }
-    virtual ~ResizeEventListener() {}
+    virtual ~ResizeEventListener() = default;
 
     void update( ResizeEventFunc func ) { resizeEvent( func ); }
     virtual void update( int width, int height ) { resizeEvent( width, height ); }

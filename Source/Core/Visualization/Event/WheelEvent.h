@@ -19,13 +19,13 @@ namespace kvs
 class WheelEvent : public kvs::EventBase
 {
 private:
-    int m_x; ///< x coordinate value of mouse cursor position
-    int m_y; ///< y coordinate value of mouse cursor position
-    int m_direction; ///< scroll direction
+    int m_x = 0; ///< x coordinate value of mouse cursor position
+    int m_y = 0; ///< y coordinate value of mouse cursor position
+    int m_direction = 0; ///< scroll direction
 
 public:
-    WheelEvent() {}
-    virtual ~WheelEvent() {}
+    WheelEvent() = default;
+    virtual ~WheelEvent() = default;
 
     int x() const { return m_x; }
     int y() const { return m_y; }

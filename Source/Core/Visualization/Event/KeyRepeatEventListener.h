@@ -23,7 +23,7 @@ public:
     KeyRepeatEventListener(): kvs::EventListener( kvs::EventBase::KeyRepeatEvent ) {}
     KeyRepeatEventListener( KeyRepeatEventFunc func ):
         kvs::EventListener( kvs::EventBase::KeyRepeatEvent ) { this->update( func ); }
-    virtual ~KeyRepeatEventListener() {}
+    virtual ~KeyRepeatEventListener() = default;
 
     void update( KeyRepeatEventFunc func ) { keyRepeatEvent( func ); }
     virtual void update( kvs::KeyEvent* event ) { keyRepeatEvent( event ); }

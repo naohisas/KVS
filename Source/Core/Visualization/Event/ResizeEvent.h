@@ -19,8 +19,8 @@ namespace kvs
 class ResizeEvent : public kvs::EventBase
 {
 private:
-    int m_width; ///< window width
-    int m_height; ///< window height
+    int m_width = 0; ///< window width
+    int m_height = 0; ///< window height
 
 public:
     ResizeEvent( const ResizeEvent& e ):
@@ -29,8 +29,8 @@ public:
     ResizeEvent( int width, int height ):
         m_width( width ),
         m_height( height ) {}
-    ResizeEvent() {}
-    virtual ~ResizeEvent() {}
+    ResizeEvent() = default;
+    virtual ~ResizeEvent() = default;
 
     int width() const { return m_width; }
     int height() const { return m_height; }

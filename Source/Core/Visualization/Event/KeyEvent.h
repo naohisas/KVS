@@ -20,19 +20,14 @@ namespace kvs
 class KeyEvent : public kvs::EventBase
 {
 private:
-    int m_key; ///< key code
-    int m_x; ///< mouse cursol position x
-    int m_y; ///< mouse cursol position y
-    int m_modifiers; ///< modifier keys
-    int m_action; ///< key action (pressed, released, or repeated)
+    int m_key = 0; ///< key code
+    int m_x = 0; ///< mouse cursol position x
+    int m_y = 0; ///< mouse cursol position y
+    int m_modifiers = 0; ///< modifier keys
+    int m_action = kvs::Key::NoAction; ///< key action (pressed, released, or repeated)
 
 public:
-    KeyEvent():
-        m_key( 0 ),
-        m_x( 0 ),
-        m_y( 0 ),
-        m_modifiers( 0 ),
-        m_action( kvs::Key::NoAction ) {}
+    KeyEvent() = default;
     KeyEvent( const KeyEvent& e ):
         m_key( e.m_key ),
         m_x( e.m_x ),
@@ -43,7 +38,7 @@ public:
         m_key( key ),
         m_x( x ),
         m_y( y ) {}
-    virtual ~KeyEvent() {}
+    virtual ~KeyEvent() = default;
 
     int key() const { return m_key; }
     int x() const { return m_x; }

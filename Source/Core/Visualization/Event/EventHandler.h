@@ -27,11 +27,11 @@ public:
     using EventListeners = std::vector<kvs::EventListener*>;
 
 private:
-    EventListeners m_listeners; ///< list of the event listener
+    EventListeners m_listeners{}; ///< list of the event listener
 
 public:
-    EventHandler() {}
-    virtual ~EventHandler() {}
+    EventHandler() = default;
+    virtual ~EventHandler() = default;
 
     EventListeners& listeners() { return m_listeners; }
     kvs::EventListener* listener( const std::string& name );

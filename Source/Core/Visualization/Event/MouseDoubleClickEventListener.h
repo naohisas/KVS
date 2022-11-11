@@ -23,7 +23,7 @@ public:
     MouseDoubleClickEventListener(): kvs::EventListener( kvs::EventBase::MouseDoubleClickEvent ) {}
     MouseDoubleClickEventListener( MouseDoubleClickEventFunc func ):
         kvs::EventListener( kvs::EventBase::MouseDoubleClickEvent ) { this->update( func ); }
-    virtual ~MouseDoubleClickEventListener() {}
+    virtual ~MouseDoubleClickEventListener() = default;
 
     void update( MouseDoubleClickEventFunc func ) { mouseDoubleClickEvent( func ); }
     virtual void update( kvs::MouseEvent* event ) { mouseDoubleClickEvent( event ); }

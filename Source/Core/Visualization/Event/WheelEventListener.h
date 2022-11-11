@@ -23,7 +23,7 @@ public:
     WheelEventListener(): kvs::EventListener( kvs::EventBase::WheelEvent ) {}
     WheelEventListener( WheelEventFunc func ):
         kvs::EventListener( kvs::EventBase::WheelEvent ) { this->update( func ); }
-    virtual ~WheelEventListener() {}
+    virtual ~WheelEventListener() = default;
 
     void update( WheelEventFunc func ) { wheelEvent( func ); }
     virtual void update( kvs::WheelEvent* event ) { wheelEvent( event ); }

@@ -37,8 +37,8 @@ public:
     };
 
 public:
-    EventBase() {}
-    virtual ~EventBase() {}
+    EventBase() = default;
+    virtual ~EventBase() = default;
     virtual int type() const = 0;
 };
 

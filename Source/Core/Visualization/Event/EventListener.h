@@ -41,30 +41,31 @@ public:
     using TimerEventFunc = std::function<void(kvs::TimeEvent*)>;
 
 private:
-    int m_event_type; ///< event type
-    std::string m_name; ///< name
-    kvs::ScreenBase* m_screen; ///< pointer to the screen (not allocated)
-    kvs::Scene* m_scene; ///< pointer to the scene (not allocated)
-    kvs::EventTimer* m_event_timer; ///< event timer
-    int m_timer_interval; ///< interval time in millisecond
+    int m_event_type = kvs::EventBase::AllEvents; ///< event type
+    std::string m_name = ""; ///< name
+    kvs::ScreenBase* m_screen = nullptr; ///< pointer to the screen (not allocated)
+    kvs::Scene* m_scene = nullptr; ///< pointer to the scene (not allocated)
+    kvs::EventTimer* m_event_timer = nullptr; ///< event timer
+    int m_timer_interval = -1; ///< interval time in millisecond
 
     // Event functions
-    InitializeEventFunc m_initialize_event;
-    PaintEventFunc m_paint_event;
-    ResizeEventFunc m_resize_event;
-    MousePressEventFunc m_mouse_press_event;
-    MouseMoveEventFunc m_mouse_move_event;
-    MouseReleaseEventFunc m_mouse_release_event;
-    MouseDoubleClickEventFunc m_mouse_double_click_event;
-    WheelEventFunc m_wheel_event;
-    KeyPressEventFunc m_key_press_event;
-    KeyRepeatEventFunc m_key_repeat_event;
-    KeyReleaseEventFunc m_key_release_event;
-    TimerEventFunc m_timer_event;
+    InitializeEventFunc m_initialize_event = nullptr;
+    PaintEventFunc m_paint_event = nullptr;
+    ResizeEventFunc m_resize_event = nullptr;
+    MousePressEventFunc m_mouse_press_event = nullptr;
+    MouseMoveEventFunc m_mouse_move_event = nullptr;
+    MouseReleaseEventFunc m_mouse_release_event = nullptr;
+    MouseDoubleClickEventFunc m_mouse_double_click_event = nullptr;
+    WheelEventFunc m_wheel_event = nullptr;
+    KeyPressEventFunc m_key_press_event = nullptr;
+    KeyRepeatEventFunc m_key_repeat_event = nullptr;
+    KeyReleaseEventFunc m_key_release_event = nullptr;
+    TimerEventFunc m_timer_event = nullptr;
 
 public:
-    EventListener( const int event_type = kvs::EventBase::AllEvents, const int msec = -1 );
-    virtual ~EventListener() {}
+    EventListener() = default;
+    EventListener( const int etype, const int msec = -1 ): m_event_type( etype ), m_timer_interval( msec ) {}
+    virtual ~EventListener() = default;
 
     int eventType() const { return m_event_type; }
     const std::string& name() const { return m_name; }

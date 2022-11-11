@@ -23,7 +23,7 @@ public:
     MouseReleaseEventListener(): kvs::EventListener( kvs::EventBase::MouseReleaseEvent ) {}
     MouseReleaseEventListener( MouseReleaseEventFunc func ):
         kvs::EventListener( kvs::EventBase::MouseReleaseEvent ) { this->update( func ); }
-    virtual ~MouseReleaseEventListener() {}
+    virtual ~MouseReleaseEventListener() = default;
 
     void update( MouseReleaseEventFunc func ) { mouseReleaseEvent( func ); }
     virtual void update( kvs::MouseEvent* event ) { mouseReleaseEvent( event ); }

@@ -25,10 +25,10 @@ public:
     using CaptureFunc = std::function<void(const kvs::ColorImage&)>;
 
 private:
-    int m_key; ///< key for capturing screen image
-    std::string m_filename; ///< filename of captured image
-    std::string m_basename; ///< basename of captured image
-    CaptureFunc m_capture_func;
+    int m_key = 0; ///< key for capturing screen image
+    std::string m_filename = ""; ///< filename of captured image
+    std::string m_basename = "screenshot"; ///< basename of captured image
+    CaptureFunc m_capture_func = nullptr;
 
 public:
     ScreenCaptureEvent( const int key = kvs::Key::s );

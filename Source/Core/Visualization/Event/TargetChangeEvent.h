@@ -19,12 +19,12 @@ namespace kvs
 class TargetChangeEvent : public kvs::KeyPressEventListener
 {
 private:
-    int m_object_key; ///< key for controlling object
-    int m_light_key; ///< key for controlling light
-    int m_camera_key; ///< key for controlling camera
+    int m_object_key = kvs::Key::o; ///< key for controlling object
+    int m_light_key = kvs::Key::l; ///< key for controlling light
+    int m_camera_key = kvs::Key::c; ///< key for controlling camera
 
 public:
-    TargetChangeEvent();
+    TargetChangeEvent() = default;
 
     void setObjectKey( const int object_key ) { m_object_key = object_key; }
     void setLightKey( const int light_key ) { m_light_key = light_key; }

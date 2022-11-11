@@ -23,7 +23,7 @@ public:
     PaintEventListener(): kvs::EventListener( kvs::EventBase::PaintEvent ) {}
     PaintEventListener( PaintEventFunc func ):
         kvs::EventListener( kvs::EventBase::PaintEvent ) { this->update( func ); }
-    virtual ~PaintEventListener() {}
+    virtual ~PaintEventListener() = default;
 
     void update( PaintEventFunc func ) { paintEvent( func ); }
     virtual void update() { paintEvent(); }

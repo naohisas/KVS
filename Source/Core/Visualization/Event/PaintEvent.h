@@ -19,8 +19,8 @@ namespace kvs
 class PaintEvent : public kvs::EventBase
 {
 public:
-    PaintEvent() {}
-    virtual ~PaintEvent() {}
+    PaintEvent() = default;
+    virtual ~PaintEvent() = default;
     int type() const { return kvs::EventBase::PaintEvent; }
 };
 

@@ -23,7 +23,7 @@ public:
     TimerEventListener( const int msec = -1 ): kvs::EventListener( kvs::EventBase::TimerEvent, msec ) {}
     TimerEventListener( TimerEventFunc func, const int msec = -1 ):
         kvs::EventListener( kvs::EventBase::TimerEvent, msec ) { this->update( func ); }
-    virtual ~TimerEventListener() {}
+    virtual ~TimerEventListener() = default;
 
     void update( TimerEventFunc func ) { timerEvent( func, kvs::EventListener::timerInterval() ); }
     virtual void update( kvs::TimeEvent* event ) { timerEvent( event ); }
