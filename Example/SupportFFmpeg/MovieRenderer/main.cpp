@@ -1,3 +1,5 @@
+//#define KVS_APP_USE_GLUT
+#define KVS_APP_USE_GLFW
 #include <kvs/Application>
 #include <kvs/Screen>
 #include <kvs/EventListener>
@@ -56,6 +58,10 @@ int main( int argc, char** argv )
     // Key-press and timer events.
     const int interval = 1000 / object->frameRate(); // msec
     kvs::EventListener event;
+    event.resizeEvent( [&]( int, int )
+    {
+        if ( renderer->isPlaying() ) { renderer->pause(); }
+    } );
     event.keyPressEvent( [&]( kvs::KeyEvent* e )
     {
         switch ( e->key() )
