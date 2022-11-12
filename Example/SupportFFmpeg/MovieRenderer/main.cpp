@@ -1,5 +1,3 @@
-//#define KVS_APP_USE_GLUT
-#define KVS_APP_USE_GLFW
 #include <kvs/Application>
 #include <kvs/Screen>
 #include <kvs/EventListener>
@@ -26,7 +24,9 @@ int main( int argc, char** argv )
     auto height = object->height();
     screen.setSize( width, height );
     screen.create();
-    screen.scene()->mouse()->disableAutoUpdating();
+
+    // Disable default mouse and wheel events.
+    screen.setEvent( new kvs::InteractorBase );
 
     // Frame slider.
     kvs::Slider slider( &screen );
@@ -43,7 +43,7 @@ int main( int argc, char** argv )
     } );
     slider.sliderPressed( [&]()
     {
-        renderer->pause();
+        if ( renderer->isPlaying() ) { renderer->pause(); }
     } );
     slider.sliderReleased( [&]()
     {
