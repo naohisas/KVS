@@ -172,7 +172,6 @@ void PointObject::add( const PointObject& other )
         // x,y,z, ... + x,y,z, ... = x,y,z, ... ,x,y,z, ...
         memcpy( pcoords, this->coords().data(), this->coords().byteSize() );
         memcpy( pcoords + this->coords().size(), other.coords().data(), other.coords().byteSize() );
-        BaseClass::setCoords( coords );
 
         // Integrate the normal vectors.
         kvs::ValueArray<kvs::Real32> normals;
@@ -209,13 +208,12 @@ void PointObject::add( const PointObject& other )
                 memcpy( pnormals + this->coords().size(), other.normals().data(), other.normals().byteSize() );
             }
         }
-        BaseClass::setNormals( normals );
 
         // Integrate the color values.
         kvs::ValueArray<kvs::UInt8> colors;
-        if ( this->colors().size() > 1 )
+        if ( this->colors().size() > 3 )
         {
-            if ( other.colors().size() > 1 )
+            if ( other.colors().size() > 3 )
             {
                 // r,g,b, ... + r,g,b, ... = r,g,b, ... ,r,g,b, ...
                 const size_t ncolors = this->colors().size() + other.colors().size();
@@ -243,7 +241,7 @@ void PointObject::add( const PointObject& other )
         }
         else
         {
-            if ( other.colors().size() > 1 )
+            if ( other.colors().size() > 3 )
             {
                 // R,G,B + r,g,b, ... = R,G,B, ... ,R,G,B, r,g,b, ...
                 const size_t ncolors = this->coords().size() + other.colors().size();
@@ -293,7 +291,6 @@ void PointObject::add( const PointObject& other )
                 }
             }
         }
-        BaseClass::setColors( colors );
 
         // Integrate the size values.
         kvs::ValueArray<kvs::Real32> sizes;
@@ -367,6 +364,10 @@ void PointObject::add( const PointObject& other )
                 }
             }
         }
+
+        BaseClass::setCoords( coords );
+        BaseClass::setNormals( normals );
+        BaseClass::setColors( colors );
         this->setSizes( sizes );
     }
 }
