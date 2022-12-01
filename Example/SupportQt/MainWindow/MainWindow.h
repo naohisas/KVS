@@ -3,14 +3,6 @@
  *  @file   MainWindow.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id$
- */
 /*****************************************************************************/
 #pragma once
 #include <kvs/qt/Screen>
@@ -19,6 +11,7 @@
 #include <kvs/RayCastingRenderer>
 #include <QMainWindow>
 #include <QMenu>
+#include <QMenuBar>
 #include <QAction>
 #include <QFileDialog>
 #include <QDir>
@@ -34,13 +27,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-
-    kvs::qt::Screen* m_screen; ///< pointer to the screen
-    QMenu* m_file_menu; ///< file menu
-    QAction* m_open_action; ///< action for file-open
+    kvs::qt::Screen* m_screen = nullptr; ///< pointer to the screen
+    QMenu* m_file_menu = nullptr; ///< file menu
+    QAction* m_open_action = nullptr; ///< action for file-open
 
 public:
-
     MainWindow( kvs::qt::Application* app )
     {
         m_screen = new kvs::qt::Screen( app );
@@ -63,7 +54,6 @@ public:
     }
 
 private slots:
-
     void open()
     {
         QFileDialog* dialog = new QFileDialog( this, "Open file ...", QDir::homePath() );
