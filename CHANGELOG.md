@@ -12,6 +12,7 @@
 + kvs::Axis2DMatrixInteractor
 + kvs::ParallelAxisInteractor
 + kvs::CurvedParallelCoordinatesRenderer
++ kvs::StructuredVolumeObjectList
 + kvs::qt::TransferFunctionEditor
 
 **Added new method**

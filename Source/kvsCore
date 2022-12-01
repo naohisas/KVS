@@ -313,6 +313,7 @@
 #include <Core/Visualization/Object/PointObject.h>
 #include <Core/Visualization/Object/PolygonObject.h>
 #include <Core/Visualization/Object/StructuredVolumeObject.h>
+#include <Core/Visualization/Object/StructuredVolumeObjectList.h>
 #include <Core/Visualization/Object/TableObject.h>
 #include <Core/Visualization/Object/UnstructuredVolumeObject.h>
 #include <Core/Visualization/Object/VolumeObjectBase.h>

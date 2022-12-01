@@ -313,6 +313,7 @@ Visualization/Object/ObjectBase
 Visualization/Object/PointObject
 Visualization/Object/PolygonObject
 Visualization/Object/StructuredVolumeObject
+Visualization/Object/StructuredVolumeObjectList
 Visualization/Object/TableObject
 Visualization/Object/UnstructuredVolumeObject
 Visualization/Object/VolumeObjectBase

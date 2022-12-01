@@ -332,6 +332,7 @@ $(OUTDIR)/./Visualization/Object/ObjectBase.o \
 $(OUTDIR)/./Visualization/Object/PointObject.o \
 $(OUTDIR)/./Visualization/Object/PolygonObject.o \
 $(OUTDIR)/./Visualization/Object/StructuredVolumeObject.o \
+$(OUTDIR)/./Visualization/Object/StructuredVolumeObjectList.o \
 $(OUTDIR)/./Visualization/Object/TableObject.o \
 $(OUTDIR)/./Visualization/Object/UnstructuredVolumeObject.o \
 $(OUTDIR)/./Visualization/Object/VolumeObjectBase.o \

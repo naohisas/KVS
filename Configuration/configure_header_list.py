@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 import os
@@ -26,7 +26,7 @@ for line in f.readlines():
 for header_path in header_list:
     header_name = os.path.basename( header_path )
     sys.stdout = open( "../Source/" + destination_path + "/" + header_name, "w" )
-    print "#include <%s/%s.h>" % ( source_path, header_path )
+    print( "#include <%s/%s.h>" % ( source_path, header_path ) )
 
 
 #=============================================================================
@@ -34,4 +34,4 @@ for header_path in header_list:
 #=============================================================================
 sys.stdout = open( "../Source/kvs" + source_path, "w" )
 for header_path in header_list:
-    print "#include <%s/%s.h>" % ( source_path, header_path )
+    print( "#include <%s/%s.h>" % ( source_path, header_path ) )
