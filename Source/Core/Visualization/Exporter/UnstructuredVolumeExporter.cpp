@@ -15,23 +15,12 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a KVSMLUnstructuredVolumeObject data from given object.
- *  @param  object [in] pointer to the unstructured volume object
- */
-/*===========================================================================*/
-UnstructuredVolumeExporter<kvs::KVSMLUnstructuredVolumeObject>::UnstructuredVolumeExporter(
-    const kvs::UnstructuredVolumeObject* object )
-{
-    this->exec( object );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Exports to a KVSMLUnstructuredVolumeObject data.
  *  @param  object [in] pointer to the unstructured volume object
  */
 /*===========================================================================*/
-kvs::KVSMLUnstructuredVolumeObject* UnstructuredVolumeExporter<kvs::KVSMLUnstructuredVolumeObject>::exec(
+kvs::KVSMLUnstructuredVolumeObject*
+UnstructuredVolumeExporter<kvs::KVSMLUnstructuredVolumeObject>::exec(
     const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );
@@ -40,16 +29,16 @@ kvs::KVSMLUnstructuredVolumeObject* UnstructuredVolumeExporter<kvs::KVSMLUnstruc
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
     // Cast to the structured volume object.
-    const kvs::UnstructuredVolumeObject* volume = kvs::UnstructuredVolumeObject::DownCast( object );
+    const auto* volume = kvs::UnstructuredVolumeObject::DownCast( object );
     if ( !volume )
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is not structured volume object.");
-        return NULL;
+        return nullptr;
     }
 
     if ( volume->label() != "" ) { this->setLabel( volume->label() ); }
@@ -124,18 +113,6 @@ kvs::KVSMLUnstructuredVolumeObject* UnstructuredVolumeExporter<kvs::KVSMLUnstruc
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a AVS UCD data from given object.
- *  @param  object [in] pointer to the unstructured volume object
- */
-/*===========================================================================*/
-UnstructuredVolumeExporter<kvs::AVSUcd>::UnstructuredVolumeExporter(
-    const kvs::UnstructuredVolumeObject* object )
-{
-    this->exec( object );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Exports to a AVS UCD data.
  *  @param  object [in] pointer to the unstructured volume object
  */
@@ -149,16 +126,16 @@ kvs::AVSUcd* UnstructuredVolumeExporter<kvs::AVSUcd>::exec(
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
     // Cast to the structured volume object.
-    const kvs::UnstructuredVolumeObject* volume = kvs::UnstructuredVolumeObject::DownCast( object );
+    const auto* volume = kvs::UnstructuredVolumeObject::DownCast( object );
     if ( !volume )
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is not structured volume object.");
-        return NULL;
+        return nullptr;
     }
 
     // Check the cell type of the given unstructured volume object.
@@ -201,7 +178,10 @@ kvs::AVSUcd* UnstructuredVolumeExporter<kvs::AVSUcd>::exec(
     std::vector<std::string> component_names; component_names.push_back( "value" );
     std::vector<std::string> component_units; component_units.push_back( "unit" );
     kvs::ValueArray<kvs::Real32> values( volume->values().size() );
-    for ( size_t i = 0; i < values.size(); i++ ) values[i] = volume->values()[i].to<kvs::Real32>();
+    for ( size_t i = 0; i < values.size(); i++ )
+    {
+        values[i] = volume->values()[i].to<kvs::Real32>();
+    }
 
     this->setNSteps( 1 );
     this->setNComponentsPerNode( 1 );

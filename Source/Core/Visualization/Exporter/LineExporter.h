@@ -25,7 +25,7 @@ class LineExporter : public kvs::ExporterBase, public FileFormatType
     kvsModuleBaseClass( kvs::ExporterBase );
 
 public:
-    FileFormatType* exec( const kvs::ObjectBase* ) { return NULL; }
+    FileFormatType* exec( const kvs::ObjectBase* ) { return nullptr; }
 };
 
 /*===========================================================================*/
@@ -39,7 +39,7 @@ class LineExporter<kvs::KVSMLLineObject> :
         public kvs::KVSMLLineObject
 {
 public:
-    LineExporter( const kvs::LineObject* object );
+    LineExporter( const kvs::LineObject* object ) { this->exec( object ); }
     kvs::KVSMLLineObject* exec( const kvs::ObjectBase* object );
 };
 

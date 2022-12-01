@@ -13,23 +13,13 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new PointExporter class for KVMLObjectPoint format.
- *  @param  object [in] pointer to the input point object
- */
-/*===========================================================================*/
-PointExporter<kvs::KVSMLPointObject>::PointExporter( const kvs::PointObject* object )
-{
-    this->exec( object );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes the export process.
  *  @param  object [in] pointer to the input object
  *  @return pointer to the KVSMLPointObject format
  */
 /*===========================================================================*/
-kvs::KVSMLPointObject* PointExporter<kvs::KVSMLPointObject>::exec( const kvs::ObjectBase* object )
+kvs::KVSMLPointObject*
+PointExporter<kvs::KVSMLPointObject>::exec( const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );
 
@@ -37,15 +27,15 @@ kvs::KVSMLPointObject* PointExporter<kvs::KVSMLPointObject>::exec( const kvs::Ob
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
-    const kvs::PointObject* point = kvs::PointObject::DownCast( object );
+    const auto* point = kvs::PointObject::DownCast( object );
     if ( !point )
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is not point object.");
-        return NULL;
+        return nullptr;
     }
 
     this->setCoords( point->coords() );

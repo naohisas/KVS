@@ -22,11 +22,11 @@ class ExporterBase
     kvsModuleBase( kvs::ExporterBase );
 
 private:
-    bool m_is_success; ///< check flag for exporting
+    bool m_is_success = true; ///< check flag for exporting
 
 public:
-    ExporterBase() {}
-    virtual ~ExporterBase() {}
+    ExporterBase() = default;
+    virtual ~ExporterBase() = default;
 
     bool isSuccess() const { return m_is_success; }
     bool isFailure() const { return !m_is_success; }

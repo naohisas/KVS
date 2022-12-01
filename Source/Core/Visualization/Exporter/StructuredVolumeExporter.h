@@ -27,7 +27,7 @@ class StructuredVolumeExporter : public kvs::ExporterBase, public FileFormatType
     kvsModuleBaseClass( kvs::ExporterBase );
 
 public:
-    FileFormatType* exec( const kvs::ObjectBase* ) { return NULL; }
+    FileFormatType* exec( const kvs::ObjectBase* ) { return nullptr; }
 };
 
 /*===========================================================================*/
@@ -41,7 +41,7 @@ class StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>:
         public kvs::KVSMLStructuredVolumeObject
 {
 public:
-    StructuredVolumeExporter( const kvs::StructuredVolumeObject* object );
+    StructuredVolumeExporter( const kvs::StructuredVolumeObject* object ) { this->exec( object ); }
     kvs::KVSMLStructuredVolumeObject* exec( const kvs::ObjectBase* object );
 };
 
@@ -56,7 +56,7 @@ class StructuredVolumeExporter<kvs::AVSField>:
         public kvs::AVSField
 {
 public:
-    StructuredVolumeExporter( const kvs::StructuredVolumeObject* object );
+    StructuredVolumeExporter( const kvs::StructuredVolumeObject* object ) { this->exec( object ); }
     kvs::AVSField* exec( const kvs::ObjectBase* object );
 };
 

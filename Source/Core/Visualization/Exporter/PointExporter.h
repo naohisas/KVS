@@ -25,7 +25,7 @@ class PointExporter : public kvs::ExporterBase, public FileFormatType
     kvsModuleBaseClass( kvs::ExporterBase );
 
 public:
-    FileFormatType* exec( const kvs::ObjectBase* ) { return NULL; }
+    FileFormatType* exec( const kvs::ObjectBase* ) { return nullptr; }
 };
 
 /*===========================================================================*/
@@ -39,7 +39,7 @@ class PointExporter<kvs::KVSMLPointObject> :
         public kvs::KVSMLPointObject
 {
 public:
-    PointExporter( const kvs::PointObject* object );
+    PointExporter( const kvs::PointObject* object ) { this->exec( object ); }
     kvs::KVSMLPointObject* exec( const kvs::ObjectBase* object );
 };
 

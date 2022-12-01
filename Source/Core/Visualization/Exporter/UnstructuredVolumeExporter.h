@@ -27,7 +27,7 @@ class UnstructuredVolumeExporter : public kvs::ExporterBase, public FileFormatTy
     kvsModuleBaseClass( kvs::ExporterBase );
 
 public:
-    FileFormatType* exec( const kvs::ObjectBase* ) { return NULL; }
+    FileFormatType* exec( const kvs::ObjectBase* ) { return nullptr; }
 };
 
 /*===========================================================================*/
@@ -41,7 +41,7 @@ class UnstructuredVolumeExporter<kvs::KVSMLUnstructuredVolumeObject> :
         public kvs::KVSMLUnstructuredVolumeObject
 {
 public:
-    UnstructuredVolumeExporter( const kvs::UnstructuredVolumeObject* object );
+    UnstructuredVolumeExporter( const kvs::UnstructuredVolumeObject* object ) { this->exec( object ); }
     kvs::KVSMLUnstructuredVolumeObject* exec( const kvs::ObjectBase* object );
 };
 
@@ -56,7 +56,7 @@ class UnstructuredVolumeExporter<kvs::AVSUcd> :
         public kvs::AVSUcd
 {
 public:
-    UnstructuredVolumeExporter( const kvs::UnstructuredVolumeObject* object );
+    UnstructuredVolumeExporter( const kvs::UnstructuredVolumeObject* object ) { this->exec( object ); }
     kvs::AVSUcd* exec( const kvs::ObjectBase* object );
 };
 

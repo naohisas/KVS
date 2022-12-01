@@ -15,23 +15,12 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a KVSMLStructuredVolumeObject data from given object.
- *  @param  object [in] pointer to the structured volume object
- */
-/*===========================================================================*/
-StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>::StructuredVolumeExporter(
-    const kvs::StructuredVolumeObject* object )
-{
-    this->exec( object );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Exports object to a KVSMLStructuredVolumeObject data.
  *  @param  object [in] pointer to the structured volume object
  */
 /*===========================================================================*/
-kvs::KVSMLStructuredVolumeObject* StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>::exec(
+kvs::KVSMLStructuredVolumeObject*
+StructuredVolumeExporter<kvs::KVSMLStructuredVolumeObject>::exec(
     const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );
@@ -40,16 +29,16 @@ kvs::KVSMLStructuredVolumeObject* StructuredVolumeExporter<kvs::KVSMLStructuredV
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
     // Cast to the structured volume object.
-    const kvs::StructuredVolumeObject* volume = kvs::StructuredVolumeObject::DownCast( object );
+    const auto* volume = kvs::StructuredVolumeObject::DownCast( object );
     if ( !volume )
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is not structured volume object.");
-        return NULL;
+        return nullptr;
     }
 
     if ( volume->label() != "" ) { this->setLabel( volume->label() ); }
@@ -100,18 +89,6 @@ kvs::KVSMLStructuredVolumeObject* StructuredVolumeExporter<kvs::KVSMLStructuredV
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a AVSField data from given object.
- *  @param  object [in] pointer to the structured volume object
- */
-/*===========================================================================*/
-StructuredVolumeExporter<kvs::AVSField>::StructuredVolumeExporter(
-    const kvs::StructuredVolumeObject* object )
-{
-    this->exec( object );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Exports object to a AVSField data.
  *  @param  object [in] pointer to the structured volume object
  */
@@ -125,16 +102,16 @@ kvs::AVSField* StructuredVolumeExporter<kvs::AVSField>::exec(
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
     // Cast to the structured volume object.
-    const kvs::StructuredVolumeObject* volume = kvs::StructuredVolumeObject::DownCast( object );
+    const auto* volume = kvs::StructuredVolumeObject::DownCast( object );
     if ( !volume )
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is not structured volume object.");
-        return NULL;
+        return nullptr;
     }
 
     const std::type_info& type = volume->values().typeInfo()->type();

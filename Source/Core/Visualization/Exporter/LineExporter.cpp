@@ -13,23 +13,13 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new LineExporter class for KVMLObjectLine format.
- *  @param  object [in] pointer to the input line object
- */
-/*===========================================================================*/
-LineExporter<kvs::KVSMLLineObject>::LineExporter( const kvs::LineObject* object )
-{
-    this->exec( object );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Executes the export process.
  *  @param  object [in] pointer to the input object
  *  @return pointer to the KVSMLLineObject format
  */
 /*===========================================================================*/
-kvs::KVSMLLineObject* LineExporter<kvs::KVSMLLineObject>::exec( const kvs::ObjectBase* object )
+kvs::KVSMLLineObject*
+LineExporter<kvs::KVSMLLineObject>::exec( const kvs::ObjectBase* object )
 {
     BaseClass::setSuccess( true );
 
@@ -37,15 +27,15 @@ kvs::KVSMLLineObject* LineExporter<kvs::KVSMLLineObject>::exec( const kvs::Objec
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
-        return NULL;
+        return nullptr;
     }
 
-    const kvs::LineObject* line = kvs::LineObject::DownCast( object );
+    const auto* line = kvs::LineObject::DownCast( object );
     if ( !line )
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Input object is not line object.");
-        return NULL;
+        return nullptr;
     }
 
     switch ( line->lineType() )
