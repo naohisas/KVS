@@ -13,6 +13,9 @@
 + kvs::ParallelAxisInteractor
 + kvs::CurvedParallelCoordinatesRenderer
 + kvs::StructuredVolumeObjectList
++ kvs::ProbabilisticMarchingCubes
++ kvs::FieldSimilarity
++ kvs::ProjectedFieldSimilarity
 + kvs::qt::TransferFunctionEditor
 
 **Added new method**

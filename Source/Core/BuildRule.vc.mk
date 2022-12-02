@@ -254,10 +254,13 @@ $(OUTDIR)\.\Visualization\Exporter\PointExporter.obj \
 $(OUTDIR)\.\Visualization\Exporter\PolygonExporter.obj \
 $(OUTDIR)\.\Visualization\Exporter\StructuredVolumeExporter.obj \
 $(OUTDIR)\.\Visualization\Exporter\UnstructuredVolumeExporter.obj \
+$(OUTDIR)\.\Visualization\Filter\FieldSimilarity.obj \
 $(OUTDIR)\.\Visualization\Filter\InverseDistanceWeighting.obj \
 $(OUTDIR)\.\Visualization\Filter\KMeansClustering.obj \
 $(OUTDIR)\.\Visualization\Filter\LineIntegralConvolution.obj \
 $(OUTDIR)\.\Visualization\Filter\PolygonToPolygon.obj \
+$(OUTDIR)\.\Visualization\Filter\ProbabilisticMarchingCubes.obj \
+$(OUTDIR)\.\Visualization\Filter\ProjectedFieldSimilarity.obj \
 $(OUTDIR)\.\Visualization\Filter\StructuredExtractScalar.obj \
 $(OUTDIR)\.\Visualization\Filter\StructuredVectorToScalar.obj \
 $(OUTDIR)\.\Visualization\Filter\TetrahedraToTetrahedra.obj \

@@ -230,11 +230,14 @@ Visualization/Exporter/PointExporter
 Visualization/Exporter/PolygonExporter
 Visualization/Exporter/StructuredVolumeExporter
 Visualization/Exporter/UnstructuredVolumeExporter
+Visualization/Filter/FieldSimilarity
 Visualization/Filter/FilterBase
 Visualization/Filter/InverseDistanceWeighting
 Visualization/Filter/KMeansClustering
 Visualization/Filter/LineIntegralConvolution
 Visualization/Filter/PolygonToPolygon
+Visualization/Filter/ProbabilisticMarchingCubes
+Visualization/Filter/ProjectedFieldSimilarity
 Visualization/Filter/StructuredExtractScalar
 Visualization/Filter/StructuredVectorToScalar
 Visualization/Filter/TetrahedraToTetrahedra
