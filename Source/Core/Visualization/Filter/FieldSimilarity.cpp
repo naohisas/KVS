@@ -81,70 +81,70 @@ float FieldSimilarity(
     {
         return ::Similarity(
             values0.asValueArray<kvs::Int8>(),
-            values0.asValueArray<kvs::Int8>(),
+            values1.asValueArray<kvs::Int8>(),
             min_value, max_value );
     }
     case kvs::Type::TypeInt16:
     {
         return ::Similarity(
             values0.asValueArray<kvs::Int16>(),
-            values0.asValueArray<kvs::Int16>(),
+            values1.asValueArray<kvs::Int16>(),
             min_value, max_value );
     }
     case kvs::Type::TypeInt32:
     {
         return ::Similarity(
             values0.asValueArray<kvs::Int32>(),
-            values0.asValueArray<kvs::Int32>(),
+            values1.asValueArray<kvs::Int32>(),
             min_value, max_value );
     }
     case kvs::Type::TypeInt64:
     {
         return ::Similarity(
             values0.asValueArray<kvs::Int64>(),
-            values0.asValueArray<kvs::Int64>(),
+            values1.asValueArray<kvs::Int64>(),
             min_value, max_value );
     }
     case kvs::Type::TypeUInt8:
     {
         return ::Similarity(
             values0.asValueArray<kvs::UInt8>(),
-            values0.asValueArray<kvs::UInt8>(),
+            values1.asValueArray<kvs::UInt8>(),
             min_value, max_value );
     }
     case kvs::Type::TypeUInt16:
     {
         return ::Similarity(
             values0.asValueArray<kvs::UInt16>(),
-            values0.asValueArray<kvs::UInt16>(),
+            values1.asValueArray<kvs::UInt16>(),
             min_value, max_value );
     }
     case kvs::Type::TypeUInt32:
     {
         return ::Similarity(
             values0.asValueArray<kvs::UInt32>(),
-            values0.asValueArray<kvs::UInt32>(),
+            values1.asValueArray<kvs::UInt32>(),
             min_value, max_value );
     }
     case kvs::Type::TypeUInt64:
     {
         return ::Similarity(
             values0.asValueArray<kvs::UInt64>(),
-            values0.asValueArray<kvs::UInt64>(),
+            values1.asValueArray<kvs::UInt64>(),
             min_value, max_value );
     }
     case kvs::Type::TypeReal32:
     {
         return ::Similarity(
             values0.asValueArray<kvs::Real32>(),
-            values0.asValueArray<kvs::Real32>(),
+            values1.asValueArray<kvs::Real32>(),
             min_value, max_value );
     }
     case kvs::Type::TypeReal64:
     {
         return ::Similarity(
             values0.asValueArray<kvs::Real64>(),
-            values0.asValueArray<kvs::Real64>(),
+            values1.asValueArray<kvs::Real64>(),
             min_value, max_value );
     }
     default: break;
