@@ -334,6 +334,7 @@ Visualization/Renderer/DiamondGlyph
 Visualization/Renderer/EnsembleAverageBuffer
 Visualization/Renderer/GlyphBase
 Visualization/Renderer/HAVSVolumeRenderer
+Visualization/Renderer/HeatmapRenderer
 Visualization/Renderer/ImageRenderer
 Visualization/Renderer/LineRenderer
 Visualization/Renderer/ParallelAxis

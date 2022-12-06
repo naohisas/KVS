@@ -334,6 +334,7 @@
 #include <Core/Visualization/Renderer/EnsembleAverageBuffer.h>
 #include <Core/Visualization/Renderer/GlyphBase.h>
 #include <Core/Visualization/Renderer/HAVSVolumeRenderer.h>
+#include <Core/Visualization/Renderer/HeatmapRenderer.h>
 #include <Core/Visualization/Renderer/ImageRenderer.h>
 #include <Core/Visualization/Renderer/LineRenderer.h>
 #include <Core/Visualization/Renderer/ParallelAxis.h>

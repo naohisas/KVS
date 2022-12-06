@@ -16,6 +16,7 @@
 + kvs::ProbabilisticMarchingCubes
 + kvs::FieldSimilarity
 + kvs::ProjectedFieldSimilarity
++ kvs::HeatmapRenderer
 + kvs::qt::TransferFunctionEditor
 
 **Added new method**

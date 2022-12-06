@@ -353,6 +353,7 @@ $(OUTDIR)\.\Visualization\Renderer\DiamondGlyph.obj \
 $(OUTDIR)\.\Visualization\Renderer\EnsembleAverageBuffer.obj \
 $(OUTDIR)\.\Visualization\Renderer\GlyphBase.obj \
 $(OUTDIR)\.\Visualization\Renderer\HAVSVolumeRenderer.obj \
+$(OUTDIR)\.\Visualization\Renderer\HeatmapRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\ImageRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\LineRenderer.obj \
 $(OUTDIR)\.\Visualization\Renderer\LineRendererGLSL.obj \
