@@ -53,6 +53,8 @@ greaterThan( QT_MAJOR_VERSION, 5 ) {
 QT += openglwidgets
 }
 
+equals( KVS_SUPPORT_PYTHON, "1" ) { CONFIG += no_keywords }
+
 
 #=============================================================================
 #  Definition.
