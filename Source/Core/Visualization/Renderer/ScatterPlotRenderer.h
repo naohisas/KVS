@@ -12,6 +12,7 @@
 #include <kvs/ColorMap>
 #include <kvs/Painter>
 #include <kvs/Margins>
+#include <kvs/UIColor>
 #include <kvs/Deprecated>
 
 
@@ -35,39 +36,33 @@ class ScatterPlotRenderer : public kvs::RendererBase
 
 private:
     // Margins
-    kvs::Margins m_margins;
-    /*
-    int m_top_margin; ///< top margin
-    int m_bottom_margin; ///< bottom margin
-    int m_left_margin; ///< left margin
-    int m_right_margin; ///< right margin
-    */
+    kvs::Margins m_margins{ 30 };
 
     // Point
-    kvs::RGBColor m_point_color; ///< point color
-    kvs::Real32 m_point_opacity; ///< point opacity
-    kvs::Real32 m_point_size; ///< point size
+    kvs::RGBColor m_point_color{ kvs::UIColor::Blue() }; ///< point color
+    kvs::Real32 m_point_opacity = 1.0f; ///< point opacity
+    kvs::Real32 m_point_size = 1.0f; ///< point size
 
     // Edge
-    kvs::RGBColor m_edge_color; ///< edge color
-    kvs::Real32 m_edge_opacity; ///< edge opacity
-    kvs::Real32 m_edge_width; ///< edge width
+    kvs::RGBColor m_edge_color{ kvs::UIColor::Label() }; ///< edge color
+    kvs::Real32 m_edge_opacity = 1.0f; ///< edge opacity
+    kvs::Real32 m_edge_width = 1.0f; ///< edge width
 
     // Polyline
-    kvs::RGBColor m_polyline_color; ///< polyline color
-    kvs::Real32 m_polyline_opacity; ///< polyline opacity
-    kvs::Real32 m_polyline_width; ///< polyline width
-    bool m_polyline_visible; ///< visibility of the polyline
+    kvs::RGBColor m_polyline_color{ kvs::UIColor::Label() }; ///< polyline color
+    kvs::Real32 m_polyline_opacity = 1.0f; ///< polyline opacity
+    kvs::Real32 m_polyline_width = 1.0f; ///< polyline width
+    bool m_polyline_visible = false; ///< visibility of the polyline
 
     // Background
-    kvs::RGBAColor m_background_color; ///< background color
-    bool m_background_visible; ///< visibility of the background
+    kvs::RGBAColor m_background_color{ kvs::UIColor::Gray5() }; ///< background color
+    bool m_background_visible = false; ///< visibility of the background
 
-    kvs::ColorMap m_color_map; ///< color map
-    kvs::Painter m_painter; ///< painter
+    kvs::ColorMap m_color_map{ 256 }; ///< color map
+    kvs::Painter m_painter{}; ///< painter
 
 public:
-    ScatterPlotRenderer();
+    ScatterPlotRenderer() { m_color_map.create(); }
 
     void setMargins( const kvs::Margins& margins ) { m_margins = margins; }
     void setPointColor( const kvs::RGBColor color ) { m_point_color = color; }

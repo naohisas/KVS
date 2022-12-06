@@ -12,35 +12,10 @@
 #include <kvs/RGBAColor>
 #include <kvs/TableObject>
 #include <kvs/IgnoreUnusedVariable>
-#include <kvs/UIColor>
 
 
 namespace kvs
 {
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new ScatterPlotRenderer class.
- */
-/*===========================================================================*/
-ScatterPlotRenderer::ScatterPlotRenderer():
-    m_margins( 30 ),
-    m_point_color( kvs::UIColor::Blue() ),
-    m_point_opacity( 1.0f ),
-    m_point_size( 1.0f ),
-    m_edge_color( kvs::UIColor::Label() ),
-    m_edge_opacity( 1.0f ),
-    m_edge_width( 1.0f ),
-    m_polyline_color( kvs::UIColor::Label() ),
-    m_polyline_opacity( 1.0f ),
-    m_polyline_width( 1.0f ),
-    m_polyline_visible( false ),
-    m_background_color( kvs::UIColor::Gray5() ),
-    m_background_visible( false ),
-    m_color_map( 256 )
-{
-    m_color_map.create();
-}
 
 /*===========================================================================*/
 /**
