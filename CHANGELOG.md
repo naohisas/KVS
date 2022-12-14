@@ -1,6 +1,6 @@
 ### Version 3.x.x Released (2021.xx.xx)
 
-**Default color changed: Rainbow to BrewerRdBu
+**Default colormap changed: Rainbow to BrewerRdBu
 
 **Added new class**
 + kvs::Stat::IncrementalMean
@@ -18,6 +18,7 @@
 + kvs::ProjectedFieldSimilarity
 + kvs::HeatmapRenderer
 + kvs::qt::TransferFunctionEditor
++ kvs::CategoryAxis
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled

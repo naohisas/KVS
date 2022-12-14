@@ -347,6 +347,7 @@ $(OUTDIR)/./Visualization/Renderer/Axis2D.o \
 $(OUTDIR)/./Visualization/Renderer/Axis2DMatrix.o \
 $(OUTDIR)/./Visualization/Renderer/Axis3D.o \
 $(OUTDIR)/./Visualization/Renderer/Bounds.o \
+$(OUTDIR)/./Visualization/Renderer/CategoryAxis.o \
 $(OUTDIR)/./Visualization/Renderer/CurvedParallelCoordinatesRenderer.o \
 $(OUTDIR)/./Visualization/Renderer/DateAxis.o \
 $(OUTDIR)/./Visualization/Renderer/DiamondGlyph.o \
