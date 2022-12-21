@@ -19,9 +19,12 @@ Tuple::Tuple( const size_t size ):
 }
 
 Tuple::Tuple( const kvs::python::Object& object ):
-    kvs::python::Object( PyTuple_New( 1 ) )
+    kvs::python::Object(
+        PyTuple_Check( object.get() ) ?
+        kvs::python::Object( object ) :
+        kvs::python::Object( PyTuple_New( 1 ) ) )
 {
-    this->set( 0, object );
+    if ( !PyTuple_Check( object.get() ) ) { this->set( 0, object ); }
 }
 
 Tuple::Tuple(
