@@ -12,7 +12,7 @@ include ../../Makefile.def
 #=============================================================================
 #  INCLUDE_PATH, LIBRARY_PATH, LINK_LIBRARY, INSTALL_DIR.
 #=============================================================================
-INCLUDE_PATH := -I.. $(OPENCV_INCLUDE_PATH)
+INCLUDE_PATH := -I.. $(OPENCV_INCLUDE_PATH) $(GL_INCLUDE_PATH)
 LIBRARY_PATH := $(OPENCV_LIBRARY_PATH)
 LINK_LIBRARY := $(OPENCV_LINK_LIBRARY)
 INSTALL_DIR  := $(KVS_DIR)
