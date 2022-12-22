@@ -9,6 +9,7 @@
 #include <iostream>
 #include <algorithm>
 #include <functional>
+#include <regex>
 #include <kvs/FileList>
 #include <kvs/Deprecated>
 
@@ -51,6 +52,7 @@ public:
     std::string path( bool absolute = false ) const;
     std::string name() const { return m_name; }
     kvs::FileList fileList( const bool sort = true ) const;
+    kvs::FileList fileList( const std::regex& pattern, const bool sort = true ) const;
     bool isDirectory() const { return this->exists(); }
     bool exists() const { return Exists( m_path ); }
     bool parse( const std::string& direcotry_path );

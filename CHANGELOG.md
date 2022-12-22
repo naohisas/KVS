@@ -83,6 +83,7 @@
 + kvs::Quaternion::Quaternion( Vec4 )
 + kvs::Quaternion::set( Vec4 )
 + kvs::Quaternion::xyz()
++ kvs::Directory::fileList( regex, sort )
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

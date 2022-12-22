@@ -307,6 +307,11 @@ std::string Directory::path( bool absolute ) const
 /*===========================================================================*/
 kvs::FileList Directory::fileList( const bool sort ) const
 {
+    return this->fileList( std::regex("(.*)"), sort );
+}
+
+kvs::FileList Directory::fileList( const std::regex& pattern, const bool sort ) const
+{
     kvs::FileList file_list;
 
 #if defined ( KVS_PLATFORM_WINDOWS )
@@ -333,11 +338,11 @@ kvs::FileList Directory::fileList( const bool sort ) const
     {
         const std::string path( m_path );
         const std::string filename( find_data.cFileName );
-        const kvs::File file( path + Directory::Separator() + filename );
 
-        if ( file.isFile() )
+        if ( std::regex_match( filename, pattern ) )
         {
-            file_list.push_back( file );
+            const kvs::File file( path + Directory::Separator() + filename );
+            if ( file.isFile() ) { file_list.push_back( file ); }
         }
     }
     while ( FindNextFileA( hFind, &find_data ) );
@@ -358,8 +363,11 @@ kvs::FileList Directory::fileList( const bool sort ) const
         {
             const std::string path( m_path );
             const std::string filename( ent->d_name );
-            const kvs::File file( path + Directory::Separator() + filename );
-            if ( file.isFile() ) { file_list.push_back( file ); }
+            if ( std::regex_match( filename, pattern ) )
+            {
+                const kvs::File file( path + Directory::Separator() + filename );
+                if ( file.isFile() ) { file_list.push_back( file ); }
+            }
         }
 
         closedir( dir );
