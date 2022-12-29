@@ -16,6 +16,7 @@
 #include <kvs/Margins>
 #include <kvs/UIColor>
 #include <kvs/Rectangle>
+#include <kvs/TableObject>
 
 
 namespace kvs
@@ -64,8 +65,11 @@ public:
 
     void exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light );
 
-private:
+protected:
+    kvs::Painter& painter() { return m_painter; }
+    void setupColorMapRange( const kvs::TableObject* table );
     void drawBackground( const kvs::Rectangle& rect, const float dpr );
+    void drawMap( const kvs::TableObject* table, const kvs::Rectangle& rect, const float dpr );
 };
 
 } // end of namespace kvs

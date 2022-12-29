@@ -8,6 +8,7 @@
 #include <string>
 #include <kvs/Vector2>
 #include <kvs/RGBAColor>
+#include <kvs/UIColor>
 
 
 namespace kvs
@@ -60,26 +61,26 @@ public:
     };
 
 private:
-    Family m_family; ///< font family
-    Style m_style; ///< font style
-    HorizontalAlign m_horizontal_align; ///< horizontal alignment
-    VerticalAlign m_vertical_align; ///< vertical alignment
-    float m_size; ///< font size
-    kvs::RGBAColor m_color; ///< font color
-    bool m_enabled_shadow; ///< flag for shadowing
-    kvs::RGBAColor m_shadow_color; ///< shadow color
-    float m_shadow_size_ratio; ///< shadow size
-    float m_shadow_distance; ///< shadow distance
-    float m_shadow_angle; ///< shadow angle [deg]
-    float m_shadow_blur; ///< shadow blur level
+    Family m_family = Family::Sans; ///< font family
+    Style m_style = Style::Regular; ///< font style
+    HorizontalAlign m_horizontal_align = HorizontalAlign::Left; ///< horizontal alignment
+    VerticalAlign m_vertical_align = VerticalAlign::Baseline; ///< vertical alignment
+    float m_size = 18.0f; ///< font size
+    kvs::RGBAColor m_color{ kvs::UIColor::Label() }; ///< font color
+    bool m_enabled_shadow = false; ///< flag for shadowing
+    kvs::RGBAColor m_shadow_color{ kvs::UIColor::Label() }; ///< shadow color
+    float m_shadow_size_ratio = 1.0f; ///< shadow size
+    float m_shadow_distance = 6.0f; ///< shadow distance
+    float m_shadow_angle = 45.0f; ///< shadow angle [deg]
+    float m_shadow_blur = 4.0f; ///< shadow blur level
 
 public:
-    Font();
+    Font() = default;
     Font( const Family& family, const float size );
     Font( const Family& family, const float size, const kvs::RGBAColor& color );
     Font( const Family& family, const Style& style, const float size );
     Font( const Family& family, const Style& style, const float size, const kvs::RGBAColor& color );
-    virtual ~Font();
+    virtual ~Font() = default;
 
     Family family() const { return m_family; }
     Style style() const { return m_style; }
