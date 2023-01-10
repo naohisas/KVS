@@ -84,6 +84,11 @@
 + kvs::Quaternion::set( Vec4 )
 + kvs::Quaternion::xyz()
 + kvs::Directory::fileList( regex, sort )
++ kvs::StampTimer::totalTime()
++ kvs::StampTimer::averageTime()
++ kvs::StampTimer::minTime()
++ kvs::StampTimer::maxTime()
++ kvs::StampTimer::unitString()
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

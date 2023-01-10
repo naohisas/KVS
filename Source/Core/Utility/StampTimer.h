@@ -6,10 +6,13 @@
 /*****************************************************************************/
 #pragma once
 #include <kvs/Timer>
+#include <kvs/Indent>
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <numeric>
+#include <array>
 
 
 namespace kvs
@@ -25,13 +28,15 @@ class StampTimer
 public:
     using Time = float;
     using Times = std::vector<Time>;
-    enum Unit { Sec, MSec, USec, Fps };
+    using UnitStrings = std::array<std::string, 4>;
+    enum Unit { Sec = 0, MSec, USec, Fps };
 
 private:
     std::string m_title = ""; ///< title of the stamped times
     Unit m_unit = Sec; ///< unit of time
     kvs::Timer m_timer{}; ///< timer
     Times m_times{}; ///< stamped times
+    UnitStrings m_unit_strings{ "sec", "msec", "usec", "fps" }; ///< unit string
 
 public:
     StampTimer() = default;
@@ -47,10 +52,16 @@ public:
 
     const std::string& title() const { return m_title; }
     Unit unit() const { return m_unit; }
+    const std::string& unitString() const { return m_unit_strings.at( this->unit() ); }
     const Times& times() const { return m_times; }
     Time time() const { return this->time( m_timer ); }
     size_t numberOfStamps() const { return m_times.size(); }
     Time last() const { return m_times.back(); }
+
+    Time totalTime() const { return std::accumulate( std::begin( m_times ), std::end( m_times ), 0.0 ); }
+    Time averageTime() const { return this->totalTime() / m_times.size(); }
+    Time minTime() const { return *std::min_element( std::begin( m_times ), std::end( m_times ) ); }
+    Time maxTime() const { return *std::max_element( std::begin( m_times ), std::end( m_times ) ); }
 
     void start() { m_timer.start(); }
     void stop() { m_timer.stop(); }
