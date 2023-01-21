@@ -128,6 +128,7 @@ $(OUTDIR)/./Image/ColorImage.o \
 $(OUTDIR)/./Image/CubicImage.o \
 $(OUTDIR)/./Image/GrayImage.o \
 $(OUTDIR)/./Image/HCLColor.o \
+$(OUTDIR)/./Image/HSLColor.o \
 $(OUTDIR)/./Image/HSVColor.o \
 $(OUTDIR)/./Image/ImageBase.o \
 $(OUTDIR)/./Image/LabColor.o \

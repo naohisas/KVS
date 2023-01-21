@@ -7,6 +7,7 @@
 #include "ColorMap.h"
 #include <kvs/Assert>
 #include <kvs/RGBColor>
+#include <kvs/HSLColor>
 #include <kvs/HSVColor>
 #include <kvs/LabColor>
 #include <kvs/MshColor>
@@ -643,6 +644,12 @@ void ColorMap::create()
                         const kvs::RGBColor c0 = p0.second;
                         const kvs::RGBColor c1 = p1.second;
                         color = kvs::RGBColor::Mix( c0, c1, ratio );
+                    }
+                    else if ( m_color_space == HSLSpace )
+                    {
+                        const kvs::HSLColor c0 = p0.second;
+                        const kvs::HSLColor c1 = p1.second;
+                        color = kvs::HSLColor::Mix( c0, c1, ratio );
                     }
                     else if ( m_color_space == HSVSpace )
                     {

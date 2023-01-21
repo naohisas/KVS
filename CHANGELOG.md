@@ -19,6 +19,7 @@
 + kvs::HeatmapRenderer
 + kvs::qt::TransferFunctionEditor
 + kvs::CategoryAxis
++ kvs::HSLColor
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled
@@ -89,6 +90,9 @@
 + kvs::StampTimer::minTime()
 + kvs::StampTimer::maxTime()
 + kvs::StampTimer::unitString()
++ kvs::RGBColor( const kvs::HSLColor& )
++ kvs::RGBColor::toHSLColor()
++ kvs::ColorMap::setColorSpaceToHSL()
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

@@ -128,6 +128,7 @@ $(OUTDIR)\.\Image\ColorImage.obj \
 $(OUTDIR)\.\Image\CubicImage.obj \
 $(OUTDIR)\.\Image\GrayImage.obj \
 $(OUTDIR)\.\Image\HCLColor.obj \
+$(OUTDIR)\.\Image\HSLColor.obj \
 $(OUTDIR)\.\Image\HSVColor.obj \
 $(OUTDIR)\.\Image\ImageBase.obj \
 $(OUTDIR)\.\Image\LabColor.obj \

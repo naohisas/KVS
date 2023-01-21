@@ -39,6 +39,7 @@
 #include <Core/Image/CubicImage.h>
 #include <Core/Image/GrayImage.h>
 #include <Core/Image/HCLColor.h>
+#include <Core/Image/HSLColor.h>
 #include <Core/Image/HSVColor.h>
 #include <Core/Image/ImageBase.h>
 #include <Core/Image/LabColor.h>

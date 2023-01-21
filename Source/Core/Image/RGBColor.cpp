@@ -8,6 +8,7 @@
 #include <kvs/Type>
 #include <kvs/Assert>
 #include "RGBColor.h"
+#include "HSLColor.h"
 #include "HSVColor.h"
 #include "MshColor.h"
 #include "RGBAColor.h"
@@ -60,6 +61,11 @@ RGBColor::RGBColor( const kvs::HSVColor& hsv )
     *this = hsv.toRGBColor();
 }
 
+RGBColor::RGBColor( const kvs::HSLColor& hsl )
+{
+    *this = hsl.toRGBColor();
+}
+
 RGBColor::RGBColor( const kvs::MshColor& msh )
 {
     *this = msh.toRGBColor();
@@ -104,6 +110,12 @@ kvs::RGBColor& RGBColor::operator = ( const kvs::RGBAColor& rgba )
     m_r = rgba.r();
     m_g = rgba.g();
     m_b = rgba.b();
+    return *this;
+}
+
+RGBColor& RGBColor::operator = ( const HSLColor& hsl )
+{
+    *this = hsl.toRGBColor();
     return *this;
 }
 
@@ -178,6 +190,11 @@ kvs::Vec3i RGBColor::toVec3i() const
     const int g = static_cast<int>( m_g );
     const int b = static_cast<int>( m_b );
     return kvs::Vec3i( r, g, b );
+}
+
+kvs::HSLColor RGBColor::toHSLColor() const
+{
+    return kvs::HSLColor( *this );
 }
 
 kvs::HSVColor RGBColor::toHSVColor() const

@@ -55,6 +55,7 @@ public:
     enum ColorSpace
     {
         RGBSpace,
+        HSLSpace,
         HSVSpace,
         LabSpace,
         MshSpace
@@ -87,6 +88,7 @@ public:
 
     void setColorSpace( const ColorSpace space ) { m_color_space = space; }
     void setColorSpaceToRGB() { this->setColorSpace( RGBSpace ); }
+    void setColorSpaceToHSL() { this->setColorSpace( HSLSpace ); }
     void setColorSpaceToHSV() { this->setColorSpace( HSVSpace ); }
     void setColorSpaceToLab() { this->setColorSpace( LabSpace ); }
     void setColorSpaceToMsh() { this->setColorSpace( MshSpace ); }

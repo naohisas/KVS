@@ -17,6 +17,7 @@ namespace kvs
 {
 
 class RGBAColor;
+class HSLColor;
 class HSVColor;
 class XYZColor;
 class MshColor;
@@ -49,6 +50,7 @@ public:
     RGBColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b );
     RGBColor( const kvs::UInt8 rgb[3] );
     RGBColor( const kvs::RGBColor& rgb );
+    RGBColor( const kvs::HSLColor& hsl );
     RGBColor( const kvs::HSVColor& hsv );
     RGBColor( const kvs::MshColor& msh );
     RGBColor( const kvs::Vec3& rgb );
@@ -60,6 +62,7 @@ public:
     kvs::UInt8 b() const { return m_b; }
     kvs::Vec3 toVec3() const;
     kvs::Vec3i toVec3i() const;
+    kvs::HSLColor toHSLColor() const;
     kvs::HSVColor toHSVColor() const;
     kvs::XYZColor toXYZColor() const;
     kvs::MshColor toMshColor() const;
@@ -68,6 +71,7 @@ public:
     kvs::RGBColor& operator -= ( const kvs::RGBColor& rgb );
     kvs::RGBColor& operator = ( const kvs::RGBColor& rgb );
     kvs::RGBColor& operator = ( const kvs::RGBAColor& rgba );
+    kvs::RGBColor& operator = ( const kvs::HSLColor& hsl );
     kvs::RGBColor& operator = ( const kvs::HSVColor& hsv );
     kvs::RGBColor& operator = ( const kvs::MshColor& hsv );
     kvs::RGBColor& operator = ( const kvs::Vec3& rgb );

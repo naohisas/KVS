@@ -39,6 +39,7 @@ Image/ColorImage
 Image/CubicImage
 Image/GrayImage
 Image/HCLColor
+Image/HSLColor
 Image/HSVColor
 Image/ImageBase
 Image/LabColor
