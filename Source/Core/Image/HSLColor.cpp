@@ -83,7 +83,7 @@ HSLColor HSLColor::Mix( const HSLColor& hsl1, const HSLColor& hsl2, const kvs::R
     const auto h = kvs::Math::Mix( hsl1.h(), hsl2.h(), t );
     const auto s = kvs::Math::Mix( hsl1.s(), hsl2.s(), t );
     const auto l = kvs::Math::Mix( hsl1.l(), hsl2.l(), t );
-    return HSLColor( h, s, l );
+    return { h, s, l };
 }
 
 HSLColor::HSLColor( const RGBColor& rgb )

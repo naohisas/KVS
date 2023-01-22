@@ -8,6 +8,7 @@
 #include "RGBColor.h"
 #include "XYZColor.h"
 #include "MshColor.h"
+#include "HCLColor.h"
 
 
 namespace
@@ -94,33 +95,12 @@ inline kvs::RGBColor Lab2RGB( const kvs::LabColor& lab )
 namespace kvs
 {
 
-kvs::LabColor LabColor::Mix( const kvs::LabColor& lab1, const kvs::LabColor& lab2, const kvs::Real32 t )
+LabColor LabColor::Mix( const LabColor& lab1, const LabColor& lab2, const kvs::Real32 t )
 {
     const kvs::Real32 l = kvs::Math::Mix( lab1.l(), lab2.l(), t );
     const kvs::Real32 a = kvs::Math::Mix( lab1.a(), lab2.a(), t );
     const kvs::Real32 b = kvs::Math::Mix( lab1.b(), lab2.b(), t );
     return kvs::LabColor( l, a, b );
-}
-
-LabColor::LabColor( kvs::Real32 l, kvs::Real32 a, kvs::Real32 b ):
-    m_l( l ),
-    m_a( a ),
-    m_b( b )
-{
-}
-
-LabColor::LabColor( const kvs::Vec3& lab ):
-    m_l( lab[0] ),
-    m_a( lab[1] ),
-    m_b( lab[2] )
-{
-}
-
-LabColor::LabColor( const kvs::LabColor& lab ):
-    m_l( lab.l() ),
-    m_a( lab.a() ),
-    m_b( lab.b() )
-{
 }
 
 LabColor::LabColor( const kvs::RGBColor& rgb )
@@ -146,6 +126,11 @@ kvs::XYZColor LabColor::toXYZColor() const
 kvs::MshColor LabColor::toMshColor() const
 {
     return kvs::MshColor( *this );
+}
+
+kvs::HCLColor LabColor::toHCLColor() const
+{
+    return kvs::HCLColor( *this );
 }
 
 kvs::LabColor& LabColor::operator += ( const kvs::LabColor& lab )

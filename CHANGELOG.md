@@ -92,7 +92,13 @@
 + kvs::StampTimer::unitString()
 + kvs::RGBColor( const kvs::HSLColor& )
 + kvs::RGBColor::toHSLColor()
++ kvs::RGBColor::toHCLColor()
++ kvs::LabColor::toHCLColor()
++ kvs::HCLColor::Mix( hcl1, hcl2, t )
++ kvs::HCLColor::toRGBColor()
 + kvs::ColorMap::setColorSpaceToHSL()
++ kvs::ColorMap::setPoints( const std::list<std::pair<float,kvs::RGBColor>>& )
++ kvs::ColorMap::setPoints( const std::list<kvs::RGBColor>& )
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

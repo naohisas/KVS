@@ -1,3 +1,9 @@
+/*****************************************************************************/
+/**
+ *  @file   HSLColor.h
+ *  @author Naohisa Sakamoto
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/Math>
 #include <kvs/Vector3>
@@ -9,6 +15,11 @@ namespace kvs
 
 class RGBColor;
 
+/*===========================================================================*/
+/**
+ *  @brief  HSL color class
+ */
+/*===========================================================================*/
 class HSLColor
 {
 private:
@@ -17,7 +28,7 @@ private:
     kvs::Real32 m_l = 0.0f; ///< lightness [0-1]
 
 public:
-    static kvs::HSLColor Mix( const kvs::HSLColor& hsl1, const kvs::HSLColor& hsl2, const kvs::Real32 t );
+    static HSLColor Mix( const HSLColor& hsl1, const HSLColor& hsl2, const kvs::Real32 t );
 
 public:
     HSLColor() = default;

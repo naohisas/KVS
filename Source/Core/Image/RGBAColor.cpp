@@ -11,27 +11,18 @@
 namespace kvs
 {
 
-RGBAColor::RGBAColor( kvs::Real32 a ):
-    kvs::RGBColor( 0, 0, 0 ),
-    m_a( a )
-{
-}
-
 RGBAColor::RGBAColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b, kvs::Real32 a ):
-    kvs::RGBColor( r, g, b ),
-    m_a( a )
+    kvs::RGBColor( r, g, b ), m_a( a )
 {
 }
 
 RGBAColor::RGBAColor( const kvs::UInt8 rgb[3], kvs::Real32 a ):
-    kvs::RGBColor( rgb[0], rgb[1], rgb[2] ),
-    m_a( a )
+    kvs::RGBColor( rgb[0], rgb[1], rgb[2] ), m_a( a )
 {
 }
 
 RGBAColor::RGBAColor( const kvs::RGBColor& rgb, kvs::Real32 a ):
-    kvs::RGBColor( rgb ),
-    m_a( a )
+    kvs::RGBColor( rgb ), m_a( a )
 {
 }
 

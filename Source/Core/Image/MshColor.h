@@ -23,17 +23,18 @@ class LabColor;
 class MshColor
 {
 private:
-    kvs::Real32 m_m; ///< magnitude of (L*, a*, b*)
-    kvs::Real32 m_s; ///< saturation
-    kvs::Real32 m_h; ///< hue
+    kvs::Real32 m_m = 0.0f; ///< magnitude of (L*, a*, b*)
+    kvs::Real32 m_s = 0.0f; ///< saturation
+    kvs::Real32 m_h = 0.0f; ///< hue
 
 public:
-    static kvs::MshColor Mix( const kvs::MshColor& msh1, const kvs::MshColor& msh2, const kvs::Real32 t );
+    static MshColor Mix( const MshColor& msh1, const MshColor& msh2, const kvs::Real32 t );
 
 public:
-    MshColor( kvs::Real32 m, kvs::Real32 s, kvs::Real32 h );
-    MshColor( const kvs::Vec3& msh );
-    MshColor( const kvs::MshColor& msh );
+    MshColor() = default;
+    MshColor( kvs::Real32 m, kvs::Real32 s, kvs::Real32 h ): m_m( m ), m_s( s ), m_h( h ) {}
+    MshColor( const kvs::Vec3& msh ): m_m( msh[0] ), m_s( msh[1] ), m_h( msh[2] ) {}
+    MshColor( const kvs::MshColor& msh ): m_m( msh.m_m ), m_s( msh.m_s ), m_h( msh.m_h ) {}
     MshColor( const kvs::RGBColor& rgb );
     MshColor( const kvs::LabColor& lab );
 

@@ -5,7 +5,9 @@
  */
 /*****************************************************************************/
 #include "HCLColor.h"
+#include <kvs/RGBColor>
 #include <kvs/LabColor>
+#include <kvs/XYZColor>
 #include <kvs/Math>
 #include <cmath>
 
@@ -51,28 +53,42 @@ inline kvs::LabColor HCL2Lab( const kvs::HCLColor& hcl )
     return kvs::LabColor( l, a, b );
 }
 
+inline kvs::HCLColor RGB2HCL( const kvs::RGBColor& rgb )
+{
+    return rgb.toXYZColor().toLabColor().toHCLColor();
+}
+
+inline kvs::RGBColor HCL2RGB( const kvs::HCLColor& hcl )
+{
+    return hcl.toLabColor().toXYZColor().toRGBColor();
+}
+
 }
 
 namespace kvs
 {
 
-HCLColor::HCLColor( kvs::Real32 h, kvs::Real32 c, kvs::Real32 l ):
-    m_h( h ),
-    m_c( c ),
-    m_l( l )
+HCLColor HCLColor::Mix( const HCLColor& hcl1, const HCLColor& hcl2, const kvs::Real32 t )
 {
-}
-
-HCLColor::HCLColor( const kvs::Vec3& hcl ):
-    m_h( hcl[0] ),
-    m_c( hcl[1] ),
-    m_l( hcl[2] )
-{
+    const auto h = kvs::Math::Mix( hcl1.h(), hcl2.h(), t );
+    const auto c = kvs::Math::Mix( hcl1.c(), hcl2.c(), t );
+    const auto l = kvs::Math::Mix( hcl1.l(), hcl2.l(), t );
+    return { h, c, l };
 }
 
 HCLColor::HCLColor( const kvs::LabColor& lab )
 {
     *this = ::Lab2HCL( lab );
+}
+
+HCLColor::HCLColor( const kvs::RGBColor& rgb )
+{
+    *this = ::RGB2HCL( rgb );
+}
+
+kvs::RGBColor HCLColor::toRGBColor() const
+{
+    return ::HCL2RGB( *this );
 }
 
 kvs::LabColor HCLColor::toLabColor() const
@@ -101,6 +117,12 @@ kvs::HCLColor& HCLColor::operator = ( const kvs::HCLColor& hcl )
     m_h = hcl.h();
     m_c = hcl.c();
     m_l = hcl.l();
+    return *this;
+}
+
+kvs::HCLColor& HCLColor::operator = ( const kvs::RGBColor& rgb )
+{
+    *this = ::RGB2HCL( rgb );
     return *this;
 }
 

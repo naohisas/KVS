@@ -176,27 +176,6 @@ kvs::MshColor MshColor::Mix(
     return kvs::MshColor( M, s, h );
 }
 
-MshColor::MshColor( kvs::Real32 m, kvs::Real32 s, kvs::Real32 h ):
-    m_m( m ),
-    m_s( s ),
-    m_h( h )
-{
-}
-
-MshColor::MshColor( const kvs::Vec3& msh ):
-    m_m( msh[0] ),
-    m_s( msh[1] ),
-    m_h( msh[2] )
-{
-}
-
-MshColor::MshColor( const kvs::MshColor& msh ):
-    m_m( msh.m() ),
-    m_s( msh.s() ),
-    m_h( msh.h() )
-{
-}
-
 MshColor::MshColor( const kvs::LabColor& lab )
 {
     *this = ::Lab2Msh( lab );

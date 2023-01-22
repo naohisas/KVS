@@ -15,6 +15,7 @@ namespace kvs
 class RGBColor;
 class XYZColor;
 class MshColor;
+class HCLColor;
 
 /*===========================================================================*/
 /**
@@ -24,17 +25,18 @@ class MshColor;
 class LabColor
 {
 private:
-    kvs::Real32 m_l; ///< L*
-    kvs::Real32 m_a; ///< a*
-    kvs::Real32 m_b; ///< b*
+    kvs::Real32 m_l = 0.0f; ///< L*: Lightness [0, 100]
+    kvs::Real32 m_a = 0.0f; ///< a*: Red/Green value
+    kvs::Real32 m_b = 0.0f; ///< b*: Blue/Yellow value
 
 public:
-    static kvs::LabColor Mix( const kvs::LabColor& lab1, const kvs::LabColor& lab2, const kvs::Real32 t );
+    static LabColor Mix( const LabColor& lab1, const LabColor& lab2, const kvs::Real32 t );
 
 public:
-    LabColor( kvs::Real32 l, kvs::Real32 a, kvs::Real32 b );
-    LabColor( const kvs::Vec3& lab );
-    LabColor( const kvs::LabColor& lab );
+    LabColor() = default;
+    LabColor( kvs::Real32 l, kvs::Real32 a, kvs::Real32 b ): m_l( l ), m_a( a ), m_b( b ) {}
+    LabColor( const kvs::Vec3& lab ): m_l( lab[0] ), m_a( lab[1] ), m_b( lab[2] ) {}
+    LabColor( const kvs::LabColor& lab ): m_l( lab.l() ), m_a( lab.a() ), m_b( lab.b() ) {}
     LabColor( const kvs::RGBColor& rgb );
     LabColor( const kvs::XYZColor& xyz );
 
@@ -46,6 +48,7 @@ public:
     kvs::RGBColor toRGBColor() const;
     kvs::XYZColor toXYZColor() const;
     kvs::MshColor toMshColor() const;
+    kvs::HCLColor toHCLColor() const;
 
     kvs::LabColor& operator += ( const kvs::LabColor& lab );
     kvs::LabColor& operator -= ( const kvs::LabColor& lab );

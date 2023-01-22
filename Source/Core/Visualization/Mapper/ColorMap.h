@@ -55,6 +55,7 @@ public:
     enum ColorSpace
     {
         RGBSpace,
+        HCLSpace,
         HSLSpace,
         HSVSpace,
         LabSpace,
@@ -88,6 +89,7 @@ public:
 
     void setColorSpace( const ColorSpace space ) { m_color_space = space; }
     void setColorSpaceToRGB() { this->setColorSpace( RGBSpace ); }
+    void setColorSpaceToHCL() { this->setColorSpace( HCLSpace ); }
     void setColorSpaceToHSL() { this->setColorSpace( HSLSpace ); }
     void setColorSpaceToHSV() { this->setColorSpace( HSVSpace ); }
     void setColorSpaceToLab() { this->setColorSpace( LabSpace ); }
@@ -96,6 +98,8 @@ public:
     void setResolution( const size_t resolution ) { m_resolution = resolution; }
     void addPoint( const float value, const kvs::RGBColor color );
     void addPoint( const float value, const kvs::HSVColor color );
+    void setPoints( const Points& points ) { m_points = points; }
+    void setPoints( const std::list<kvs::RGBColor>& colors );
     void removePoint( const float value );
     void clearPoints() { m_points.clear(); }
     void reversePoints() { m_points.reverse(); }

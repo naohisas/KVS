@@ -124,31 +124,10 @@ namespace kvs
 
 HSVColor HSVColor::Mix( const HSVColor& hsv1, const HSVColor& hsv2, const kvs::Real32 t )
 {
-    const kvs::Real32 h = kvs::Math::Mix( hsv1.h(), hsv2.h(), t );
-    const kvs::Real32 s = kvs::Math::Mix( hsv1.s(), hsv2.s(), t );
-    const kvs::Real32 v = kvs::Math::Mix( hsv1.v(), hsv2.v(), t );
-    return HSVColor( h, s, v );
-}
-
-HSVColor::HSVColor( float h, float s, float v ):
-    m_h( h ),
-    m_s( s ),
-    m_v( v )
-{
-}
-
-HSVColor::HSVColor( const kvs::Vec3& hsv ):
-    m_h( hsv[0] ),
-    m_s( hsv[1] ),
-    m_v( hsv[2] )
-{
-}
-
-HSVColor::HSVColor( const HSVColor& hsv ):
-    m_h( hsv.m_h ),
-    m_s( hsv.m_s ),
-    m_v( hsv.m_v )
-{
+    const auto h = kvs::Math::Mix( hsv1.h(), hsv2.h(), t );
+    const auto s = kvs::Math::Mix( hsv1.s(), hsv2.s(), t );
+    const auto v = kvs::Math::Mix( hsv1.v(), hsv2.v(), t );
+    return { h, s, v };
 }
 
 HSVColor::HSVColor( const RGBColor& rgb )

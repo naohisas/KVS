@@ -8,9 +8,11 @@
 #include <kvs/Type>
 #include <kvs/Assert>
 #include "RGBColor.h"
+#include "HCLColor.h"
 #include "HSLColor.h"
 #include "HSVColor.h"
 #include "MshColor.h"
+#include "LabColor.h"
 #include "RGBAColor.h"
 #include "XYZColor.h"
 
@@ -18,47 +20,14 @@
 namespace kvs
 {
 
-kvs::RGBColor RGBColor::Mix( const kvs::RGBColor& rgb1, const kvs::RGBColor& rgb2, const kvs::Real32 t )
+RGBColor RGBColor::Mix( const RGBColor& rgb1, const RGBColor& rgb2, const kvs::Real32 t )
 {
-    const kvs::Vec3 sRGB1 = rgb1.toVec3();
-    const kvs::Vec3 sRGB2 = rgb2.toVec3();
-    const kvs::Real32 sR = kvs::Math::Mix( sRGB1[0], sRGB2[0], t );
-    const kvs::Real32 sG = kvs::Math::Mix( sRGB1[1], sRGB2[1], t );
-    const kvs::Real32 sB = kvs::Math::Mix( sRGB1[2], sRGB2[2], t );
-    return kvs::RGBColor( kvs::Vec3( sR, sG, sB ) );
-}
-
-RGBColor::RGBColor():
-    m_r( 0 ),
-    m_g( 0 ),
-    m_b( 0 )
-{
-}
-
-RGBColor::RGBColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b ):
-    m_r( r ),
-    m_g( g ),
-    m_b( b )
-{
-}
-
-RGBColor::RGBColor( const kvs::UInt8 rgb[3] ):
-    m_r( rgb[0] ),
-    m_g( rgb[1] ),
-    m_b( rgb[2] )
-{
-}
-
-RGBColor::RGBColor( const kvs::RGBColor& rgb ):
-    m_r( rgb.m_r ),
-    m_g( rgb.m_g ),
-    m_b( rgb.m_b )
-{
-}
-
-RGBColor::RGBColor( const kvs::HSVColor& hsv )
-{
-    *this = hsv.toRGBColor();
+    const auto sRGB1 = rgb1.toVec3();
+    const auto sRGB2 = rgb2.toVec3();
+    const auto sR = kvs::Math::Mix( sRGB1[0], sRGB2[0], t );
+    const auto sG = kvs::Math::Mix( sRGB1[1], sRGB2[1], t );
+    const auto sB = kvs::Math::Mix( sRGB1[2], sRGB2[2], t );
+    return { kvs::Vec3( sR, sG, sB ) };
 }
 
 RGBColor::RGBColor( const kvs::HSLColor& hsl )
@@ -66,9 +35,19 @@ RGBColor::RGBColor( const kvs::HSLColor& hsl )
     *this = hsl.toRGBColor();
 }
 
+RGBColor::RGBColor( const kvs::HSVColor& hsv )
+{
+    *this = hsv.toRGBColor();
+}
+
 RGBColor::RGBColor( const kvs::MshColor& msh )
 {
     *this = msh.toRGBColor();
+}
+
+RGBColor::RGBColor( const kvs::HCLColor& hcl )
+{
+    *this = hcl.toRGBColor();
 }
 
 RGBColor::RGBColor( const kvs::Vec3& rgb )
@@ -131,6 +110,18 @@ RGBColor& RGBColor::operator = ( const MshColor& msh )
     return *this;
 }
 
+RGBColor& RGBColor::operator = ( const HCLColor& hcl )
+{
+    *this = hcl.toRGBColor();
+    return *this;
+}
+
+RGBColor& RGBColor::operator = ( const LabColor& lab )
+{
+    *this = lab.toRGBColor();
+    return *this;
+}
+
 RGBColor& RGBColor::operator = ( const kvs::Vec3& rgb )
 {
     const kvs::Real32 r = kvs::Math::Clamp( rgb.x(), 0.0f, 1.0f );
@@ -178,18 +169,16 @@ std::ostream& operator << ( std::ostream& os, const kvs::RGBColor& rgb )
 
 kvs::Vec3 RGBColor::toVec3() const
 {
-    const kvs::Real32 r = static_cast<kvs::Real32>( m_r ) / 255.0f;
-    const kvs::Real32 g = static_cast<kvs::Real32>( m_g ) / 255.0f;
-    const kvs::Real32 b = static_cast<kvs::Real32>( m_b ) / 255.0f;
-    return kvs::Vec3( r, g, b );
+    return { static_cast<kvs::Real32>( m_r ) / 255.0f,
+             static_cast<kvs::Real32>( m_g ) / 255.0f,
+             static_cast<kvs::Real32>( m_b ) / 255.0f };
 }
 
 kvs::Vec3i RGBColor::toVec3i() const
 {
-    const int r = static_cast<int>( m_r );
-    const int g = static_cast<int>( m_g );
-    const int b = static_cast<int>( m_b );
-    return kvs::Vec3i( r, g, b );
+    return { static_cast<int>( m_r ),
+             static_cast<int>( m_g ),
+             static_cast<int>( m_b ) };
 }
 
 kvs::HSLColor RGBColor::toHSLColor() const
@@ -210,6 +199,11 @@ kvs::XYZColor RGBColor::toXYZColor() const
 kvs::MshColor RGBColor::toMshColor() const
 {
     return kvs::MshColor( *this );
+}
+
+kvs::HCLColor RGBColor::toHCLColor() const
+{
+    return kvs::HCLColor( *this );
 }
 
 } // end of namespace kvs

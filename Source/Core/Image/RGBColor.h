@@ -17,10 +17,12 @@ namespace kvs
 {
 
 class RGBAColor;
+class HCLColor;
 class HSLColor;
 class HSVColor;
 class XYZColor;
 class MshColor;
+class LabColor;
 
 /*==========================================================================*/
 /**
@@ -30,28 +32,29 @@ class MshColor;
 class RGBColor
 {
 private:
-    kvs::UInt8 m_r; ///< red [0-255]
-    kvs::UInt8 m_g; ///< green [0-255]
-    kvs::UInt8 m_b; ///< blue [0-255]
+    kvs::UInt8 m_r = 0; ///< red [0-255]
+    kvs::UInt8 m_g = 0; ///< green [0-255]
+    kvs::UInt8 m_b = 0; ///< blue [0-255]
 
 public:
-    static RGBColor Black() { return kvs::RGBColor( 0, 0, 0 ); }
-    static RGBColor White() { return kvs::RGBColor( 255, 255, 255 ); }
-    static RGBColor Red() { return kvs::RGBColor( 255, 0, 0 ); }
-    static RGBColor Green() { return kvs::RGBColor( 0, 255, 0 ); }
-    static RGBColor Blue() { return kvs::RGBColor( 0, 0, 255 ); }
-    static RGBColor Yellow() { return kvs::RGBColor( 255, 255, 0 ); }
-    static RGBColor Cyan() { return kvs::RGBColor( 0, 255, 255 ); }
-    static RGBColor Magenta() { return kvs::RGBColor( 255, 0, 255 ); }
-    static RGBColor Mix( const kvs::RGBColor& rgb1, const kvs::RGBColor& rgb2, const kvs::Real32 t );
+    static RGBColor Black() { return { 0, 0, 0 }; }
+    static RGBColor White() { return { 255, 255, 255 }; }
+    static RGBColor Red() { return { 255, 0, 0 }; }
+    static RGBColor Green() { return { 0, 255, 0 }; }
+    static RGBColor Blue() { return { 0, 0, 255 }; }
+    static RGBColor Yellow() { return { 255, 255, 0 }; }
+    static RGBColor Cyan() { return { 0, 255, 255 }; }
+    static RGBColor Magenta() { return { 255, 0, 255 }; }
+    static RGBColor Mix( const RGBColor& rgb1, const RGBColor& rgb2, const kvs::Real32 t );
 
 public:
-    RGBColor();
-    RGBColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b );
-    RGBColor( const kvs::UInt8 rgb[3] );
-    RGBColor( const kvs::RGBColor& rgb );
+    RGBColor() = default;
+    RGBColor( kvs::UInt8 r, kvs::UInt8 g, kvs::UInt8 b ): m_r( r ), m_g( g ), m_b( b ) {}
+    RGBColor( const kvs::UInt8 rgb[3] ): m_r( rgb[0] ), m_g( rgb[1] ), m_b( rgb[2] ) {}
+    RGBColor( const kvs::RGBColor& rgb ): m_r( rgb.m_r ), m_g( rgb.m_g ), m_b( rgb.m_b ) {}
     RGBColor( const kvs::HSLColor& hsl );
     RGBColor( const kvs::HSVColor& hsv );
+    RGBColor( const kvs::HCLColor& hcl );
     RGBColor( const kvs::MshColor& msh );
     RGBColor( const kvs::Vec3& rgb );
     RGBColor( const kvs::Vec3i& rgb );
@@ -66,6 +69,7 @@ public:
     kvs::HSVColor toHSVColor() const;
     kvs::XYZColor toXYZColor() const;
     kvs::MshColor toMshColor() const;
+    kvs::HCLColor toHCLColor() const;
 
     kvs::RGBColor& operator += ( const kvs::RGBColor& rgb );
     kvs::RGBColor& operator -= ( const kvs::RGBColor& rgb );
@@ -73,7 +77,9 @@ public:
     kvs::RGBColor& operator = ( const kvs::RGBAColor& rgba );
     kvs::RGBColor& operator = ( const kvs::HSLColor& hsl );
     kvs::RGBColor& operator = ( const kvs::HSVColor& hsv );
+    kvs::RGBColor& operator = ( const kvs::HCLColor& hcl );
     kvs::RGBColor& operator = ( const kvs::MshColor& hsv );
+    kvs::RGBColor& operator = ( const kvs::LabColor& lab );
     kvs::RGBColor& operator = ( const kvs::Vec3& rgb );
     kvs::RGBColor& operator = ( const kvs::Vec3i& rgb );
     friend bool operator == ( const kvs::RGBColor& a, const kvs::RGBColor& b );

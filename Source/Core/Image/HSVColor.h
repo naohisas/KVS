@@ -24,17 +24,18 @@ class RGBColor;
 class HSVColor
 {
 private:
-    kvs::Real32 m_h; ///< hue angle [0-1]
-    kvs::Real32 m_s; ///< saturation [0-1]
-    kvs::Real32 m_v; ///< value (intensity) [0-1]
+    kvs::Real32 m_h = 0.0f; ///< hue angle [0-1]
+    kvs::Real32 m_s = 0.0f; ///< saturation [0-1]
+    kvs::Real32 m_v = 0.0f; ///< value (intensity) [0-1]
 
 public:
-    static kvs::HSVColor Mix( const kvs::HSVColor& hsv1, const kvs::HSVColor& hsv2, const kvs::Real32 t );
+    static HSVColor Mix( const HSVColor& hsv1, const HSVColor& hsv2, const kvs::Real32 t );
 
 public:
-    HSVColor( kvs::Real32 h = 0.0f, kvs::Real32 s = 0.0f, kvs::Real32 v = 0.0f );
-    HSVColor( const kvs::Vec3& hsv );
-    HSVColor( const kvs::HSVColor& hsv );
+    HSVColor() = default;
+    HSVColor( kvs::Real32 h, kvs::Real32 s, kvs::Real32 v ): m_h( h ), m_s( s ), m_v( v ) {}
+    HSVColor( const kvs::Vec3& hsv ): m_h( hsv[0] ), m_s( hsv[1] ), m_v( hsv[2] ) {}
+    HSVColor( const kvs::HSVColor& hsv ): m_h( hsv.m_h ), m_s( hsv.m_s ), m_v( hsv.m_v ) {}
     HSVColor( const kvs::RGBColor& rgb );
 
     void set( kvs::Real32 h, kvs::Real32 s, kvs::Real32 v ) { m_h = h; m_s = s; m_v = v; }
