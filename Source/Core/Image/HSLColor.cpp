@@ -80,7 +80,21 @@ namespace kvs
 
 HSLColor HSLColor::Mix( const HSLColor& hsl1, const HSLColor& hsl2, const kvs::Real32 t )
 {
-    const auto h = kvs::Math::Mix( hsl1.h(), hsl2.h(), t );
+    auto hue_mix = [&] ( float h1, float h2, float a )
+    {
+        float d = h2 - h1;
+        if ( h1 > h2 ) { std::swap( h1, h2 ); d = -d; a = 1 - a; }
+
+        if ( d > 0.5f )
+        {
+            h1 = h1 + 1.0f;
+            const auto h = h1 + a * ( h2 - h1 );
+            return h - static_cast<int>( h );
+        }
+        return h1 + a * d;
+    };
+
+    const auto h = hue_mix( hsl1.h(), hsl2.h(), t );
     const auto s = kvs::Math::Mix( hsl1.s(), hsl2.s(), t );
     const auto l = kvs::Math::Mix( hsl1.l(), hsl2.l(), t );
     return { h, s, l };

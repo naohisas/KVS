@@ -43,9 +43,11 @@ void ColorMap::SetDefaultColorMap( ColorMapFunction func )
 kvs::ColorMap ColorMap::Rainbow( const size_t resolution )
 {
     const auto hue_min = 0.0f;
+    const auto hue_mid = 120.0f / 360.0f;
     const auto hue_max = 240.0f / 360.0f;
     std::list<kvs::RGBColor> colors = {
         kvs::HSVColor( hue_max, 1.0f, 1.0f ), // blue
+        kvs::HSVColor( hue_mid, 1.0f, 1.0f ), // green
         kvs::HSVColor( hue_min, 1.0f, 1.0f )  // red
     };
 
