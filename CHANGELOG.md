@@ -107,6 +107,8 @@
 + kvs::OpenGL::BytesPerPixel( format, type )
 + kvs::Quaternion::SphericalQuadrangleInterpolation
 + kvs::Quaternion::SplineInterpolation
++ kvs::Math::ByteToBit( value )
++ kvs::Math::BitToByte( value )
 
 **Deprecated class**
 + kvs::glut::Text

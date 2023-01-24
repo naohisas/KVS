@@ -15,30 +15,6 @@
 namespace
 {
 
-/*==========================================================================*/
-/**
- *  Convert 'bit' to 'byte'.
- *  @param value [in] bit value
- *  @return converted byte value from bit value
- */
-/*==========================================================================*/
-inline size_t BitToByte( size_t value )
-{
-    return value >> 3;
-}
-
-/*==========================================================================*/
-/**
- *  Convert 'byte' to 'bit'.
- *  @param value [in] byte value
- *  @return converted bit value from byte value
- */
-/*==========================================================================*/
-inline size_t ByteToBit( size_t value )
-{
-    return value << 3;
-}
-
 inline kvs::UInt8 Lerp(
     const kvs::UInt8 p1,
     const kvs::UInt8 p2,
@@ -123,7 +99,7 @@ kvs::RGBColor ImageBase::ColorBilinear( double u, double v, const ColorImage& im
 /*===========================================================================*/
 void ImageBase::flip()
 {
-    const size_t stride = m_width * ::BitToByte( m_bpp );
+    const size_t stride = m_width * kvs::Math::BitToByte( m_bpp );
 
     kvs::UInt8* pdata = m_pixels.data();
     const size_t end_line = m_height / 2;
@@ -167,16 +143,16 @@ bool ImageBase::create( const size_t width, const size_t height, const ImageType
 
     if ( type == Bit )
     {
-        m_padding = ::ByteToBit( ::BitToByte( width + 7 ) ) - width;
+        m_padding = kvs::Math::ByteToBit( kvs::Math::BitToByte( width + 7 ) ) - width;
         m_bpp = 1;
-        m_bpl = ::BitToByte( width + 7 );
+        m_bpl = kvs::Math::BitToByte( width + 7 );
     }
     else
     {
         const size_t ncomponents = static_cast<size_t>( type );
         m_padding = 0;
-        m_bpp = ::ByteToBit( sizeof(kvs::UInt8) ) * ncomponents;
-        m_bpl = width * ::BitToByte( m_bpp );
+        m_bpp = kvs::Math::ByteToBit( sizeof( kvs::UInt8 ) ) * ncomponents;
+        m_bpl = width * kvs::Math::BitToByte( m_bpp );
     }
 
     m_size = height * m_bpl;
@@ -207,16 +183,16 @@ bool ImageBase::create(
 
     if ( type == Bit )
     {
-        m_padding = ::ByteToBit( ::BitToByte( width + 7 ) ) - width;
+        m_padding = kvs::Math::ByteToBit( kvs::Math::BitToByte( width + 7 ) ) - width;
         m_bpp = 1;
-        m_bpl = ::BitToByte( width + 7 );
+        m_bpl = kvs::Math::BitToByte( width + 7 );
     }
     else
     {
         const size_t ncomponents = static_cast<size_t>( type );
         m_padding = 0;
-        m_bpp = ::ByteToBit( sizeof( kvs::UInt8 ) ) * ncomponents;
-        m_bpl = width * ::BitToByte( m_bpp );
+        m_bpp = kvs::Math::ByteToBit( sizeof( kvs::UInt8 ) ) * ncomponents;
+        m_bpl = width * kvs::Math::BitToByte( m_bpp );
     }
 
     m_size = height * m_bpl;

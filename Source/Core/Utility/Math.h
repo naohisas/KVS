@@ -266,6 +266,16 @@ inline float PI()
     return 6 * std::asin( 0.5f );
 }
 
+inline size_t BitToByte( size_t value )
+{
+    return value >> 3;
+}
+
+inline size_t ByteToBit( size_t value )
+{
+    return value << 3;
+}
+
 } // end of namespace Math
 
 } // end of namespace kvs
