@@ -90,28 +90,28 @@ public:
     template <typename T>
     friend kvs::RGBColor operator * ( const T a, const kvs::RGBColor& rgb )
     {
-        const kvs::UInt8 r = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) );
-        const kvs::UInt8 g = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) );
-        const kvs::UInt8 b = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) );
-        return kvs::RGBColor( r, g, b );
+        const auto r = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) );
+        const auto g = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) );
+        const auto b = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) );
+        return { r, g, b };
     }
 
     template <typename T>
     friend RGBColor operator * ( const RGBColor& rgb, const T a )
     {
-        const kvs::UInt8 r = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) );
-        const kvs::UInt8 g = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) );
-        const kvs::UInt8 b = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) );
-        return kvs::RGBColor( r, g, b );
+        const auto r = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.r() ) );
+        const auto g = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.g() ) );
+        const auto b = static_cast<kvs::UInt8>( kvs::Math::Round( a * rgb.b() ) );
+        return { r, g, b };
     }
 
     template <typename T>
     friend RGBColor operator / ( const RGBColor& rgb, const T a )
     {
-        const kvs::UInt8 r = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.r() / a ) );
-        const kvs::UInt8 g = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.g() / a ) );
-        const kvs::UInt8 b = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.b() / a ) );
-        return kvs::RGBColor( r, g, b );
+        const auto r = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.r() / a ) );
+        const auto g = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.g() / a ) );
+        const auto b = static_cast<kvs::UInt8>( kvs::Math::Round( rgb.b() / a ) );
+        return { r, g, b };
     }
 
 public:

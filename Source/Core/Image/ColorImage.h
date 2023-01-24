@@ -24,10 +24,10 @@ class BitImage;
 class ColorImage : public kvs::ImageBase
 {
 public:
-    typedef kvs::ImageBase BaseClass;
-    typedef kvs::RGBColor PixelType;
-    typedef BaseClass::NearestNeighborInterpolatorColor NearestNeighbor;
-    typedef BaseClass::BilinearInterpolatorColor Bilinear;
+    using BaseClass = kvs::ImageBase;
+    using PixelType = kvs::RGBColor;
+    using NearestNeighbor = BaseClass::NearestNeighborInterpolator<ColorImage>;
+    using Bilinear = BaseClass::BilinearInterpolator<ColorImage>;
 
 public:
     ColorImage() {}

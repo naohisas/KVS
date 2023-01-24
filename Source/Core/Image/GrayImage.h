@@ -26,8 +26,8 @@ class GrayImage : public kvs::ImageBase
 public:
     using BaseClass = kvs::ImageBase;
     using PixelType = kvs::UInt8;
-    using NearestNeighbor = BaseClass::NearestNeighborInterpolatorGray;
-    using Bilinear = BaseClass::BilinearInterpolatorGray;
+    using NearestNeighbor = BaseClass::NearestNeighborInterpolator<GrayImage>;
+    using Bilinear = BaseClass::BilinearInterpolator<GrayImage>;
 
 public:
     // Gray-scaling method.

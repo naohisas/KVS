@@ -24,8 +24,8 @@ class ColorImage;
 class BitImage : public kvs::ImageBase
 {
 public:
-    typedef kvs::ImageBase BaseClass;
-    typedef bool PixelType;
+    using BaseClass = kvs::ImageBase;
+    using PixelType = bool;
 
 public:
     // Binarization method.

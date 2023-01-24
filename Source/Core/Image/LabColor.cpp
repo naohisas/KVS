@@ -43,7 +43,7 @@ kvs::LabColor XYZ2Lab( const kvs::XYZColor& xyz )
     const kvs::Real32 l = 116.0f * ( f( Y / Yn ) - 16.0f / 116.0f );
     const kvs::Real32 a = 500.0f * ( f( X / Xn ) - f( Y / Yn ) );
     const kvs::Real32 b = 200.0f * ( f( Y / Yn ) - f( Z / Zn ) );
-    return kvs::LabColor( l, a, b );
+    return { l, a, b };
 }
 
 kvs::XYZColor Lab2XYZ( const kvs::LabColor& lab )
@@ -63,7 +63,7 @@ kvs::XYZColor Lab2XYZ( const kvs::LabColor& lab )
     const kvs::Real32 X = Xn * finv( x );
     const kvs::Real32 Y = Yn * finv( y );
     const kvs::Real32 Z = Zn * finv( z );
-    return kvs::XYZColor( X, Y, Z );
+    return { X, Y, Z };
 }
 
 /*===========================================================================*/
@@ -100,7 +100,7 @@ LabColor LabColor::Mix( const LabColor& lab1, const LabColor& lab2, const kvs::R
     const kvs::Real32 l = kvs::Math::Mix( lab1.l(), lab2.l(), t );
     const kvs::Real32 a = kvs::Math::Mix( lab1.a(), lab2.a(), t );
     const kvs::Real32 b = kvs::Math::Mix( lab1.b(), lab2.b(), t );
-    return kvs::LabColor( l, a, b );
+    return { l, a, b };
 }
 
 LabColor::LabColor( const kvs::RGBColor& rgb )

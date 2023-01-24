@@ -15,60 +15,6 @@
 namespace
 {
 
-kvs::UInt8 BilinearInterpolate(
-    const kvs::UInt8 pixel1,
-    const kvs::UInt8 pixel2,
-    const kvs::UInt8 pixel3,
-    const kvs::UInt8 pixel4,
-    const double xrate,
-    const double yrate )
-{
-    const double d = pixel1 * ( 1.0 - xrate ) + pixel3 * xrate;
-    const double e = pixel2 * ( 1.0 - xrate ) + pixel4 * xrate;
-
-    int f = kvs::Math::Round( d * ( 1.0 - yrate ) + e * yrate );
-    kvs::Math::Clamp( f, 0, 255 );
-
-    return( static_cast<kvs::UInt8>( f ) );
-}
-
-kvs::RGBColor BilinearInterpolate(
-    const kvs::RGBColor pixel1,
-    const kvs::RGBColor pixel2,
-    const kvs::RGBColor pixel3,
-    const kvs::RGBColor pixel4,
-    const double xrate,
-    const double yrate )
-{
-    const double d[3] = {
-        pixel1.r() * ( 1.0 - xrate ) + pixel3.r() * xrate,
-        pixel1.g() * ( 1.0 - xrate ) + pixel3.g() * xrate,
-        pixel1.b() * ( 1.0 - xrate ) + pixel3.b() * xrate
-    };
-
-    const double e[3] = {
-        pixel2.r() * ( 1.0 - xrate ) + pixel4.r() * xrate,
-        pixel2.g() * ( 1.0 - xrate ) + pixel4.g() * xrate,
-        pixel2.b() * ( 1.0 - xrate ) + pixel4.b() * xrate
-    };
-
-    int f[3] = {
-        kvs::Math::Round( d[0] * ( 1.0 - yrate ) + e[0] * yrate ),
-        kvs::Math::Round( d[1] * ( 1.0 - yrate ) + e[1] * yrate ),
-        kvs::Math::Round( d[2] * ( 1.0 - yrate ) + e[2] * yrate )
-    };
-
-    kvs::Math::Clamp( f[0], 0, 255 );
-    kvs::Math::Clamp( f[1], 0, 255 );
-    kvs::Math::Clamp( f[2], 0, 255 );
-
-    const kvs::UInt8 r = static_cast<kvs::UInt8>( f[0] );
-    const kvs::UInt8 g = static_cast<kvs::UInt8>( f[1] );
-    const kvs::UInt8 b = static_cast<kvs::UInt8>( f[2] );
-
-    return( kvs::RGBColor( r, g, b ) );
-}
-
 /*==========================================================================*/
 /**
  *  Convert 'bit' to 'byte'.
@@ -78,7 +24,7 @@ kvs::RGBColor BilinearInterpolate(
 /*==========================================================================*/
 inline size_t BitToByte( size_t value )
 {
-    return( value >> 3 );
+    return value >> 3;
 }
 
 /*==========================================================================*/
@@ -90,7 +36,7 @@ inline size_t BitToByte( size_t value )
 /*==========================================================================*/
 inline size_t ByteToBit( size_t value )
 {
-    return( value << 3 );
+    return value << 3;
 }
 
 } // end of namespace
@@ -98,31 +44,6 @@ inline size_t ByteToBit( size_t value )
 
 namespace kvs
 {
-
-/*==========================================================================*/
-/**
- *  Default constructor.
- */
-/*==========================================================================*/
-ImageBase::ImageBase():
-    m_width( 0 ),
-    m_height( 0 ),
-    m_npixels( 0 ),
-    m_padding( 0 ),
-    m_bpp( 0 ),
-    m_bpl( 0 ),
-    m_size( 0 )
-{
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-ImageBase::~ImageBase()
-{
-}
 
 /*===========================================================================*/
 /**
@@ -173,7 +94,7 @@ bool ImageBase::create( const size_t width, const size_t height, const ImageType
     m_height = height;
     m_npixels = width * height;
 
-    if( type == Bit )
+    if ( type == Bit )
     {
         m_padding = ::ByteToBit( ::BitToByte( width + 7 ) ) - width;
         m_bpp = 1;
@@ -190,7 +111,7 @@ bool ImageBase::create( const size_t width, const size_t height, const ImageType
     m_size = height * m_bpl;
     m_pixels.allocate( m_size );
     m_pixels.fill( 0 );
-    return( true );
+    return true;
 }
 
 /*==========================================================================*/
@@ -228,11 +149,11 @@ bool ImageBase::create(
     }
 
     m_size = height * m_bpl;
-    if ( m_size != pixels.size() ) return( false );
+    if ( m_size != pixels.size() ) { return false; }
 
     m_pixels = pixels;
 
-    return( true );
+    return true;
 }
 
 template <typename ImageDataType, typename Interpolator>
@@ -266,106 +187,9 @@ void ImageBase::resizeImage( const size_t width, const size_t height, ImageDataT
 }
 
 // Specialization.
-template
-void ImageBase::resizeImage<kvs::GrayImage,ImageBase::NearestNeighborInterpolatorGray>(
-    const size_t width,
-    const size_t height,
-    kvs::GrayImage* image );
-
-template
-void ImageBase::resizeImage<kvs::ColorImage,ImageBase::NearestNeighborInterpolatorColor>(
-    const size_t  width,
-    const size_t  height,
-    kvs::ColorImage* image );
-
-template
-void ImageBase::resizeImage<kvs::GrayImage,ImageBase::BilinearInterpolatorGray>(
-    const size_t width,
-    const size_t height,
-    kvs::GrayImage* image );
-
-template
-void ImageBase::resizeImage<kvs::ColorImage,ImageBase::BilinearInterpolatorColor>(
-    const size_t width,
-    const size_t height,
-    kvs::ColorImage* image );
-
-template <typename ImageDataType>
-void ImageBase::NearestNeighborInterpolator<ImageDataType>::attach( const ImageDataType* image )
-{
-    m_reference_image = image;
-}
-
-template <typename ImageDataType>
-void ImageBase::NearestNeighborInterpolator<ImageDataType>::setU( const double u )
-{
-    m_p.x() = kvs::Math::Floor( u );
-}
-
-template <typename ImageDataType>
-void ImageBase::NearestNeighborInterpolator<ImageDataType>::setV( const double v )
-{
-    m_p.y() = kvs::Math::Floor( v );
-}
-
-template <typename ImageDataType>
-const typename ImageDataType::PixelType
-ImageBase::NearestNeighborInterpolator<ImageDataType>::operator () () const
-{
-    const size_t x = static_cast<size_t>( m_p.x() );
-    const size_t y = static_cast<size_t>( m_p.y() );
-    return( m_reference_image->pixel( x, y ) );
-}
-
-// Specialization.
 template class ImageBase::NearestNeighborInterpolator<kvs::GrayImage>;
 template class ImageBase::NearestNeighborInterpolator<kvs::ColorImage>;
 
-
-template <typename ImageDataType>
-void ImageBase::BilinearInterpolator<ImageDataType>::attach( const ImageDataType* image )
-{
-    m_reference_image = image;
-}
-
-template <typename ImageDataType>
-void ImageBase::BilinearInterpolator<ImageDataType>::setU( const double u )
-{
-    const double width = static_cast<double>( m_reference_image->width() - 1 );
-
-    m_pmin.x() = kvs::Math::Floor( u );
-    m_pmax.x() = m_pmin.x() + ( width > m_pmin.x() ? 1.0 : 0.0 );
-    m_rate.x() = u - static_cast<double>( m_pmin.x() );
-}
-
-template <typename ImageDataType>
-void ImageBase::BilinearInterpolator<ImageDataType>::setV( const double v )
-{
-    const double height = static_cast<double>( m_reference_image->height() - 1 );
-
-    m_pmin.y() = kvs::Math::Floor( v );
-    m_pmax.y() = m_pmin.y() + ( height > m_pmin.y() ? 1.0 : 0.0 );
-    m_rate.y() = v - static_cast<double>( m_pmin.y() );
-}
-
-template <typename ImageDataType>
-const typename ImageDataType::PixelType
-ImageBase::BilinearInterpolator<ImageDataType>::operator () () const
-{
-    const size_t pmin_x = static_cast<size_t>( m_pmin.x() );
-    const size_t pmin_y = static_cast<size_t>( m_pmin.y() );
-    const size_t pmax_x = static_cast<size_t>( m_pmax.x() );
-    const size_t pmax_y = static_cast<size_t>( m_pmax.y() );
-
-    typename ImageDataType::PixelType p1 = m_reference_image->pixel( pmin_x, pmin_y );
-    typename ImageDataType::PixelType p2 = m_reference_image->pixel( pmin_x, pmax_y );
-    typename ImageDataType::PixelType p3 = m_reference_image->pixel( pmax_x, pmin_y );
-    typename ImageDataType::PixelType p4 = m_reference_image->pixel( pmax_x, pmax_y );
-
-    return( BilinearInterpolate( p1, p2, p3, p4, m_rate.x(), m_rate.y() ) );
-}
-
-// Instantiation.
 template class ImageBase::BilinearInterpolator<kvs::GrayImage>;
 template class ImageBase::BilinearInterpolator<kvs::ColorImage>;
 

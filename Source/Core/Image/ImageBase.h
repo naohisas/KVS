@@ -8,6 +8,8 @@
 #include <kvs/ValueArray>
 #include <kvs/Type>
 #include <kvs/Vector2>
+#include <kvs/Math>
+#include <kvs/RGBColor>
 #include <kvs/Deprecated>
 
 
@@ -34,28 +36,24 @@ public:
     };
 
 public:
-    template <typename ImageDataType> class NearestNeighborInterpolator;
-    template <typename ImageDataType> class BilinearInterpolator;
-
-    using NearestNeighborInterpolatorGray = NearestNeighborInterpolator<kvs::GrayImage>;
-    using NearestNeighborInterpolatorColor = NearestNeighborInterpolator<kvs::ColorImage>;
-    using BilinearInterpolatorGray = BilinearInterpolator<kvs::GrayImage>;
-    using BilinearInterpolatorColor = BilinearInterpolator<kvs::ColorImage>;
     using PixelData = kvs::ValueArray<kvs::UInt8>;
 
+    template <typename ImageT> class NearestNeighborInterpolator;
+    template <typename ImageT> class BilinearInterpolator;
+
 private:
-    size_t m_width; ///< image width [pix]
-    size_t m_height; ///< image height [pix]
-    size_t m_npixels; ///< number of pixels
-    size_t m_padding; ///< padding bit for bit-image
-    size_t m_bpp; ///< bits per pixel [bit]
-    size_t m_bpl; ///< bytes per line [byte]
-    size_t m_size; ///< data size [byte]
-    PixelData m_pixels; ///< pixel data array
+    size_t m_width = 0; ///< image width [pix]
+    size_t m_height = 0; ///< image height [pix]
+    size_t m_npixels = 0; ///< number of pixels
+    size_t m_padding = 0; ///< padding bit for bit-image
+    size_t m_bpp = 0; ///< bits per pixel [bit]
+    size_t m_bpl = 0; ///< bytes per line [byte]
+    size_t m_size = 0; ///< data size [byte]
+    PixelData m_pixels{}; ///< pixel data array
 
 public:
-    ImageBase();
-    virtual ~ImageBase();
+    ImageBase() = default;
+    virtual ~ImageBase() = default;
 
     size_t width() const { return m_width; }
     size_t height() const { return m_height; }
@@ -81,34 +79,95 @@ public:
     KVS_DEPRECATED( kvs::ValueArray<kvs::UInt8>& data() ) { return this->pixelData(); }
 };
 
-template <typename ImageDataType>
+template <typename ImageT>
 class ImageBase::NearestNeighborInterpolator
 {
 protected:
-    const ImageDataType* m_reference_image;
-    kvs::Vector2d m_p;
+    const ImageT* m_reference_image = nullptr;
+    kvs::Vec2d m_p{ 0.0, 0.0 };
 
 public:
-    void attach( const ImageDataType* image );
-    void setU( const double u );
-    void setV( const double v );
-    const typename ImageDataType::PixelType operator () () const;
+    void attach( const ImageT* image ) { m_reference_image = image; }
+    void setU( const double u ) { m_p.x() = kvs::Math::Floor( u ); }
+    void setV( const double v ) { m_p.y() = kvs::Math::Floor( v ); }
+    const typename ImageT::PixelType operator () () const
+    {
+        const size_t x = static_cast<size_t>( m_p.x() );
+        const size_t y = static_cast<size_t>( m_p.y() );
+        return m_reference_image->pixel( x, y );
+    }
 };
 
-template <typename ImageDataType>
+template <typename ImageT>
 class ImageBase::BilinearInterpolator
 {
 protected:
-    const ImageDataType* m_reference_image;
-    kvs::Vector2d m_pmin;
-    kvs::Vector2d m_pmax;
-    kvs::Vector2d m_rate;
+    const ImageT* m_reference_image = nullptr;
+    kvs::Vec2d m_pmin{ 0.0, 0.0 };
+    kvs::Vec2d m_pmax{ 0.0, 0.0 };
+    kvs::Vec2d m_rate{ 0.0, 0.0 };
 
 public:
-    void attach( const ImageDataType* image );
-    void setU( const double u );
-    void setV( const double v );
-    const typename ImageDataType::PixelType operator () () const;
+    void attach( const ImageT* image ) { m_reference_image = image; }
+    void setU( const double u )
+    {
+        const auto width = static_cast<double>( m_reference_image->width() - 1 );
+        m_pmin.x() = kvs::Math::Floor( u );
+        m_pmax.x() = m_pmin.x() + ( width > m_pmin.x() ? 1.0 : 0.0 );
+        m_rate.x() = u - static_cast<double>( m_pmin.x() );
+    }
+    void setV( const double v )
+    {
+        const auto height = static_cast<double>( m_reference_image->height() - 1 );
+        m_pmin.y() = kvs::Math::Floor( v );
+        m_pmax.y() = m_pmin.y() + ( height > m_pmin.y() ? 1.0 : 0.0 );
+        m_rate.y() = v - static_cast<double>( m_pmin.y() );
+    }
+
+    const typename ImageT::PixelType operator () () const
+    {
+        const auto pmin_x = static_cast<size_t>( m_pmin.x() );
+        const auto pmin_y = static_cast<size_t>( m_pmin.y() );
+        const auto pmax_x = static_cast<size_t>( m_pmax.x() );
+        const auto pmax_y = static_cast<size_t>( m_pmax.y() );
+        const auto p1 = m_reference_image->pixel( pmin_x, pmin_y );
+        const auto p2 = m_reference_image->pixel( pmin_x, pmax_y );
+        const auto p3 = m_reference_image->pixel( pmax_x, pmin_y );
+        const auto p4 = m_reference_image->pixel( pmax_x, pmax_y );
+        return this->lerp( p1, p2, p3, p4, m_rate.x(), m_rate.y() );
+    }
+
+private:
+    kvs::UInt8 lerp(
+        const kvs::UInt8 p1,
+        const kvs::UInt8 p2,
+        const kvs::UInt8 p3,
+        const kvs::UInt8 p4,
+        const double xrate,
+        const double yrate ) const
+    {
+        const auto x0 = kvs::Math::Mix( static_cast<double>(p1), static_cast<double>(p3), xrate );
+        const auto x1 = kvs::Math::Mix( static_cast<double>(p2), static_cast<double>(p4), xrate );
+        auto y = kvs::Math::Round( kvs::Math::Mix( x0, x1, yrate ) );
+        kvs::Math::Clamp( y, 0, 255 );
+        return static_cast<kvs::UInt8>( y );
+    }
+
+    kvs::RGBColor lerp(
+        const kvs::RGBColor p1,
+        const kvs::RGBColor p2,
+        const kvs::RGBColor p3,
+        const kvs::RGBColor p4,
+        const double xrate,
+        const double yrate ) const
+    {
+        return {
+            this->lerp( p1.r(), p2.r(), p3.r(), p4.r(), xrate, yrate ),
+            this->lerp( p1.g(), p2.g(), p3.g(), p4.g(), xrate, yrate ),
+            this->lerp( p1.b(), p2.b(), p3.b(), p4.b(), xrate, yrate )
+        };
+    }
+
 };
 
 } // end of namespace kvs

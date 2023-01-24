@@ -75,7 +75,7 @@ inline kvs::MshColor Lab2Msh( const kvs::LabColor& lab )
     const kvs::Real32 m = std::sqrt( l * l + a * a + b * b );
     const kvs::Real32 s = ( m > 0.001f ) * std::acos( l / m );
     const kvs::Real32 h = ( s > 0.001f ) * std::atan2( b, a );
-    return kvs::MshColor( m, s, h );
+    return { m, s, h };
 }
 
 inline kvs::LabColor Msh2Lab( const kvs::MshColor& msh )
@@ -87,7 +87,7 @@ inline kvs::LabColor Msh2Lab( const kvs::MshColor& msh )
     const kvs::Real32 l = m * std::cos( s );
     const kvs::Real32 a = m * std::sin( s ) * std::cos( h );
     const kvs::Real32 b = m * std::sin( s ) * std::sin( h );
-    return kvs::LabColor( l, a, b );
+    return { l, a, b };
 }
 
 /*===========================================================================*/
@@ -173,7 +173,7 @@ kvs::MshColor MshColor::Mix(
     const kvs::Real32 M = kvs::Math::Mix( M1, M2, ratio );
     const kvs::Real32 s = kvs::Math::Mix( s1, s2, ratio );
     const kvs::Real32 h = kvs::Math::Mix( h1, h2, ratio );
-    return kvs::MshColor( M, s, h );
+    return { M, s, h };
 }
 
 MshColor::MshColor( const kvs::LabColor& lab )

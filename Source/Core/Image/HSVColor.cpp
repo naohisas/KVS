@@ -41,7 +41,7 @@ kvs::HSVColor RGB2HSV( const kvs::RGBColor& rgb )
         if ( h > 1 ) h -= 1;
     }
 
-    return kvs::HSVColor( h, s, v );
+    return { h, s, v };
 }
 
 kvs::RGBColor HSV2RGB( const kvs::HSVColor& hsv )
@@ -114,7 +114,7 @@ kvs::RGBColor HSV2RGB( const kvs::HSVColor& hsv )
         b = static_cast<kvs::UInt8>( tmp_b * 255.0f + 0.5f );
     }
 
-    return kvs::RGBColor( r, g, b );
+    return { r, g, b };
 }
 
 }
