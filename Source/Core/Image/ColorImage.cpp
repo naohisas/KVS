@@ -143,7 +143,7 @@ kvs::RGBColor ColorImage::pixel( const size_t index ) const
 {
     const size_t index3 = index * 3;
     const kvs::UInt8* pixels = BaseClass::pixels().data();
-    return( kvs::RGBColor( pixels[index3], pixels[index3+1], pixels[index3+2] ) );
+    return { pixels[index3], pixels[index3+1], pixels[index3+2] };
 }
 
 /*==========================================================================*/
@@ -158,7 +158,7 @@ kvs::RGBColor ColorImage::pixel( const size_t i, const size_t j ) const
 {
     const size_t index3 = ( BaseClass::width() * j + i ) * 3;
     const kvs::UInt8* pixels = BaseClass::pixels().data();
-    return( kvs::RGBColor( pixels[index3], pixels[index3+1], pixels[index3+2] ) );
+    return { pixels[index3], pixels[index3+1], pixels[index3+2] };
 }
 
 /*==========================================================================*/
@@ -198,73 +198,28 @@ void ColorImage::setPixel( const size_t i, const size_t j, const kvs::RGBColor& 
 /**
  *  @brief  Scales the image data.
  *  @param  ratio [in] scaling ratio
+ *  @param  interpolator [in] interpolation method
  */
 /*===========================================================================*/
-void ColorImage::scale( const double ratio )
+void ColorImage::scale( const double ratio, Interpolator interpolator )
 {
     const size_t width = static_cast<size_t>( BaseClass::width() * ratio );
     const size_t height = static_cast<size_t>( BaseClass::height() * ratio );
-    BaseClass::resizeImage<ColorImage,ColorImage::Bilinear>( width, height, this );
+    BaseClass::resizeImage( width, height, this, interpolator );
 }
-
-/*===========================================================================*/
-/**
- *  @brief  Scales the image data.
- *  @param  ratio [in] scaling ratio
- *  @param  method [in] Interpolation method
- */
-/*===========================================================================*/
-template <typename InterpolationMethod>
-void ColorImage::scale( const double ratio, InterpolationMethod method )
-{
-    kvs::IgnoreUnusedVariable( method );
-
-    const size_t width = static_cast<size_t>( BaseClass::width() * ratio );
-    const size_t height = static_cast<size_t>( BaseClass::height() * ratio );
-    BaseClass::resizeImage<ColorImage,InterpolationMethod>( width, height, this );
-}
-
-// Specialization.
-template
-void ColorImage::scale( const double ratio, ColorImage::NearestNeighbor method );
-
-template
-void ColorImage::scale( const double ratio, ColorImage::Bilinear method );
 
 /*===========================================================================*/
 /**
  *  @brief  Resizes the image data.
  *  @param  width  [in] resized width
  *  @param  height [in] resized height
+ *  @param  interpolator [in] interpolation method
  */
 /*===========================================================================*/
-void ColorImage::resize( const size_t width, const size_t height )
+void ColorImage::resize( const size_t width, const size_t height, Interpolator interpolator )
 {
-    BaseClass::resizeImage<ColorImage,ColorImage::Bilinear>( width, height, this );
+    BaseClass::resizeImage( width, height, this, interpolator );
 }
-
-/*===========================================================================*/
-/**
- *  @brief  Resizes the image data.
- *  @param  width [in] resized width
- *  @param  height [in] resized height
- *  @param  method [in] Interpolation method
- */
-/*===========================================================================*/
-template <typename InterpolationMethod>
-void ColorImage::resize( const size_t width, const size_t height, InterpolationMethod method )
-{
-    kvs::IgnoreUnusedVariable( method );
-
-    BaseClass::resizeImage<ColorImage,InterpolationMethod>( width, height, this );
-}
-
-// Specialization.
-template
-void ColorImage::resize( const size_t width, const size_t height, ColorImage::NearestNeighbor method );
-
-template
-void ColorImage::resize( const size_t width, const size_t height, ColorImage::Bilinear method );
 
 /*==========================================================================*/
 /**
@@ -282,12 +237,12 @@ bool ColorImage::read( const std::string& filename )
         if ( kvsml.pixelType() == "color" )
         {
             const BaseClass::ImageType type = BaseClass::Color;
-            return( BaseClass::create( kvsml.width(), kvsml.height(), type, kvsml.pixels() ) );
+            return BaseClass::create( kvsml.width(), kvsml.height(), type, kvsml.pixels() );
         }
         if ( kvsml.pixelType() == "gray" )
         {
             kvs::GrayImage image( kvsml.width(), kvsml.height(), kvsml.pixels() );
-            return( this->read_image( image ) );
+            return this->read_image( image );
         }
     }
 
@@ -296,7 +251,7 @@ bool ColorImage::read( const std::string& filename )
     {
         const kvs::Bmp bmp( filename );
         const BaseClass::ImageType type = BaseClass::Color;
-        return( BaseClass::create( bmp.width(), bmp.height(), type, bmp.pixels() ) );
+        return BaseClass::create( bmp.width(), bmp.height(), type, bmp.pixels() );
     }
 
     // PPM image.
@@ -304,21 +259,21 @@ bool ColorImage::read( const std::string& filename )
     {
         const kvs::Ppm ppm( filename );
         const BaseClass::ImageType type = BaseClass::Color;
-        return( BaseClass::create( ppm.width(), ppm.height(), type, ppm.pixels() ) );
+        return BaseClass::create( ppm.width(), ppm.height(), type, ppm.pixels() );
     }
 
     // PGM image.
     if ( kvs::Pgm::CheckExtension( filename ) )
     {
         kvs::GrayImage image; image.read( filename );
-        return( this->read_image( image ) );
+        return this->read_image( image );
     }
 
     // PBM image.
     if ( kvs::Pbm::CheckExtension( filename ) )
     {
         kvs::BitImage image; image.read( filename );
-        return( this->read_image( image ) );
+        return this->read_image( image );
     }
 
     // PNG image.
@@ -363,18 +318,18 @@ bool ColorImage::read( const std::string& filename )
         {
             const kvs::ValueArray<kvs::UInt8>& data = tiff.rawData().asValueArray<kvs::UInt8>();
             const BaseClass::ImageType type = BaseClass::Color;
-            return( BaseClass::create( tiff.width(), tiff.height(), type, data ) );
+            return BaseClass::create( tiff.width(), tiff.height(), type, data );
         }
         if ( tiff.colorMode() == kvs::Tiff::Gray8 )
         {
             const kvs::ValueArray<kvs::UInt8>& data = tiff.rawData().asValueArray<kvs::UInt8>();
             kvs::GrayImage image( tiff.width(), tiff.height(), data );
-            return( this->read_image( image ) );
+            return this->read_image( image );
         }
         if ( tiff.colorMode() == kvs::Tiff::Gray16 )
         {
             kvsMessageError( "TIFF image (16bits gray-scale) is not supported." );
-            return( false );
+            return false;
         }
     }
 
@@ -383,13 +338,13 @@ bool ColorImage::read( const std::string& filename )
     {
         const kvs::Dicom dcm( filename );
         kvs::GrayImage image( dcm.column(), dcm.row(), dcm.pixelData() );
-        return( this->read_image( image ) );
+        return this->read_image( image );
     }
 
     kvsMessageError( "Read-method for %s is not implemented.",
                      filename.c_str() );
 
-    return( false );
+    return false;
 }
 
 /*==========================================================================*/
@@ -410,48 +365,48 @@ bool ColorImage::write( const std::string& filename ) const
         kvsml.setPixelType( "color" );
         kvsml.setWritingDataType( kvs::KVSMLImageObject::Ascii );
         kvsml.setPixels( BaseClass::pixels() );
-        return( kvsml.write( filename ) );
+        return kvsml.write( filename );
     }
 
     // Bitmap image.
     if ( kvs::Bmp::CheckExtension( filename ) )
     {
         kvs::Bmp bmp( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
-        return( bmp.write( filename ) );
+        return bmp.write( filename );
     }
 
     // PNG image.
     if ( kvs::Png::CheckExtension( filename ) )
     {
         kvs::Png png( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
-        return( png.write( filename ) );
+        return png.write( filename );
     }
 
     // PPM image.
     if ( kvs::Ppm::CheckExtension( filename ) )
     {
         kvs::Ppm ppm( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
-        return( ppm.write( filename ) );
+        return ppm.write( filename );
     }
 
     // PGM image.
     if ( kvs::Pgm::CheckExtension( filename ) )
     {
         kvs::GrayImage image( *this );
-        return( image.write( filename ) );
+        return image.write( filename );
     }
 
     // PBM image.
     if ( kvs::Pbm::CheckExtension( filename ) )
     {
         kvs::BitImage image( kvs::GrayImage( *this ) );
-        return( image.write( filename ) );
+        return image.write( filename );
     }
 
     kvsMessageError( "Write-method for %s is not implemented.",
                      filename.c_str() );
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -465,7 +420,7 @@ bool ColorImage::read_image( const kvs::GrayImage& image )
 {
     if ( !BaseClass::create( image.width(), image.height(), kvs::ImageBase::Color ) )
     {
-        return( false );
+        return false;
     }
 
     kvs::UInt8* pixels = BaseClass::pixelData().data();
@@ -479,7 +434,7 @@ bool ColorImage::read_image( const kvs::GrayImage& image )
         pixels[ index3 + 2 ] = pixel;
     }
 
-    return( true );
+    return true;
 }
 
 /*===========================================================================*/
@@ -493,7 +448,7 @@ bool ColorImage::read_image( const kvs::BitImage& image )
 {
     if ( !BaseClass::create( image.width(), image.height(), kvs::ImageBase::Color ) )
     {
-        return( false );
+        return false;
     }
 
     kvs::UInt8* pixels = BaseClass::pixelData().data();
@@ -511,7 +466,7 @@ bool ColorImage::read_image( const kvs::BitImage& image )
         }
     }
 
-    return( true );
+    return true;
 }
 
 } // end of namespace kvs

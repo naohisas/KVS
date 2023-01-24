@@ -210,15 +210,6 @@ void GrayImage::HDTVWeightedMeanValue::operator () (
 /*==========================================================================*/
 /**
  *  Constructs a new gray-scale image.
- */
-/*==========================================================================*/
-GrayImage::GrayImage()
-{
-}
-
-/*==========================================================================*/
-/**
- *  Constructs a new gray-scale image.
  *  @param width [in] image width
  *  @param height [in] image height
  */
@@ -470,72 +461,28 @@ void GrayImage::setPixel( const size_t i, const size_t j, const kvs::UInt8 pixel
 /**
  *  @brief  Scales the image data.
  *  @param  ratio [in] scaling ratio
+ *  @param  interpolator [in] interpolation method
  */
 /*===========================================================================*/
-void GrayImage::scale( const double ratio )
+void GrayImage::scale( const double ratio, Interpolator interpolator )
 {
     const size_t width = static_cast<size_t>( BaseClass::width() * ratio );
     const size_t height = static_cast<size_t>( BaseClass::height() * ratio );
-    BaseClass::resizeImage<GrayImage,GrayImage::Bilinear>( width, height, this );
+    BaseClass::resizeImage( width, height, this, interpolator );
 }
-
-/*===========================================================================*/
-/**
- *  @brief  Scales the image data.
- *  @param  ratio [in] scaling ratio
- *  @param  method [in] Interpolation method
- */
-/*===========================================================================*/
-template <typename InterpolationMethod>
-void GrayImage::scale( const double ratio, InterpolationMethod method )
-{
-    kvs::IgnoreUnusedVariable( method );
-
-    const size_t width = static_cast<size_t>( this->width() * ratio );
-    const size_t height = static_cast<size_t>( this->height() * ratio );
-    BaseClass::resizeImage<GrayImage,InterpolationMethod>( width, height, this );
-}
-
-// Specialization.
-template
-void GrayImage::scale( const double ratio, GrayImage::NearestNeighbor method );
-
-template
-void GrayImage::scale( const double ratio, GrayImage::Bilinear method );
 
 /*===========================================================================*/
 /**
  *  @brief  Resizes the image data.
  *  @param  width  [in] resized width
  *  @param  height [in] resized height
+ *  @param  interpolator [in] interpolation method
  */
 /*===========================================================================*/
-void GrayImage::resize( const size_t width, const size_t height )
+void GrayImage::resize( const size_t width, const size_t height, Interpolator interpolator )
 {
-    BaseClass::resizeImage<GrayImage,GrayImage::Bilinear>( width, height, this );
+    BaseClass::resizeImage( width, height, this, interpolator );
 }
-
-/*===========================================================================*/
-/**
- *  @brief  Resizes the image data.
- *  @param  width [in] resized width
- *  @param  height [in] resized height
- *  @param  method [in] Interpolation method
- */
-/*===========================================================================*/
-template <typename InterpolationMethod>
-void GrayImage::resize( const size_t width, const size_t height, InterpolationMethod method )
-{
-    kvs::IgnoreUnusedVariable( method );
-    BaseClass::resizeImage<GrayImage,InterpolationMethod>( width, height, this );
-}
-
-// Specialization.
-template
-void GrayImage::resize( const size_t width, const size_t height, GrayImage::NearestNeighbor method );
-
-template
-void GrayImage::resize( const size_t width, const size_t height, GrayImage::Bilinear method );
 
 /*==========================================================================*/
 /**

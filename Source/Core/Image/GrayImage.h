@@ -26,8 +26,9 @@ class GrayImage : public kvs::ImageBase
 public:
     using BaseClass = kvs::ImageBase;
     using PixelType = kvs::UInt8;
-    using NearestNeighbor = BaseClass::NearestNeighborInterpolator<GrayImage>;
-    using Bilinear = BaseClass::BilinearInterpolator<GrayImage>;
+    using Interpolator = BaseClass::GrayInterpolator;
+    static Interpolator Nearest() { return BaseClass::GrayNearest; }
+    static Interpolator Bilinear() { return BaseClass::GrayBilinear; }
 
 public:
     // Gray-scaling method.
@@ -58,7 +59,7 @@ public:
     };
 
 public:
-    GrayImage();
+    GrayImage() = default;
     GrayImage( const size_t width, const size_t height );
     GrayImage( const size_t width, const size_t height, const PixelData& data );
     GrayImage( const size_t width, const size_t height, const PixelData& data, const int channel );
@@ -81,12 +82,8 @@ public:
     void setPixel( const size_t index, const kvs::UInt8 pixel );
     void setPixel( const size_t i, const size_t j, const kvs::UInt8 pixel );
 
-    void scale( const double ratio );
-    template <typename InterpolationMethod>
-    void scale( const double ratio, InterpolationMethod method );
-    void resize( const size_t width, const size_t height );
-    template <typename InterpolationMethod>
-    void resize( const size_t width, const size_t height, InterpolationMethod method );
+    void scale( const double ratio, Interpolator interpolator = Bilinear() );
+    void resize( const size_t width, const size_t height, Interpolator interpolator = Bilinear() );
     bool read( const std::string& filename );
     bool write( const std::string& filename ) const;
 
