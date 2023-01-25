@@ -160,6 +160,9 @@
 + Example/SupportFFmpeg/MoviePlayer
 + Example/SupportFFmpeg/SphericalMoviePlayer
 + Example/Visualization/CurvedParallelCoordinates
++ Example/Image/Resize
++ Example/Image/GrayScale
++ Example/Image/Binarize
 
 **Added SupportFFmpeg**
 + kvs::ffmpeg::MovieObject
