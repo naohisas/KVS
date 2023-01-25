@@ -26,6 +26,8 @@ class ColorImage : public kvs::ImageBase
 public:
     using BaseClass = kvs::ImageBase;
     using PixelType = kvs::RGBColor;
+
+    // Interpolator
     using Interpolator = BaseClass::ColorInterpolator;
     static Interpolator Nearest() { return BaseClass::ColorNearest; }
     static Interpolator Bilinear() { return BaseClass::ColorBilinear; }

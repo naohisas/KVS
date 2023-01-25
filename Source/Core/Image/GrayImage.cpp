@@ -26,185 +26,179 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Gray-scaling by the mean-value method.
- *  @param  image [in] color image
- *  @param  data [out] pixel data array
+ *  @brief  Returns gray-scaling method by the mean-value method.
  */
 /*===========================================================================*/
-void GrayImage::MeanValue::operator () (
-    const kvs::ColorImage& image,
-    PixelData& data )
+GrayImage::GrayScalingMethod GrayImage::MeanValue()
 {
-    const size_t width = image.width();
-    const size_t height = image.height();
-    const kvs::UInt8* image_data = image.pixels().data();
-    for( size_t j = 0; j < height; j++ )
+    return [] ( const kvs::ColorImage& image, BaseClass::PixelData& data )
     {
-        const size_t col_line_index = j * image.bytesPerLine();
-        const size_t gry_line_index = j * image.width();
-        for( size_t i = 0; i < width; i++ )
+        const size_t width = image.width();
+        const size_t height = image.height();
+        const kvs::UInt8* image_data = image.pixels().data();
+        for( size_t j = 0; j < height; j++ )
         {
-            const size_t col_pixel_index = col_line_index + 3 * i;
-            const size_t gry_pixel_index = gry_line_index + i;
+            const size_t col_line_index = j * image.bytesPerLine();
+            const size_t gry_line_index = j * image.width();
+            for( size_t i = 0; i < width; i++ )
+            {
+                const size_t col_pixel_index = col_line_index + 3 * i;
+                const size_t gry_pixel_index = gry_line_index + i;
 
-            unsigned int value = 0;
-            value += image_data[ col_pixel_index + 0 ];
-            value += image_data[ col_pixel_index + 1 ];
-            value += image_data[ col_pixel_index + 2 ];
+                unsigned int value = 0;
+                value += image_data[ col_pixel_index + 0 ];
+                value += image_data[ col_pixel_index + 1 ];
+                value += image_data[ col_pixel_index + 2 ];
 
-            data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value / 3);
+                data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value / 3);
+            }
         }
-    }
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Gray-scaling by the middle-value method.
- *  @param  image [in] color image
- *  @param  data [out] pixel data array
+ *  @brief  Returns gray-scaling method by the middle-value method.
  */
 /*===========================================================================*/
-void GrayImage::MiddleValue::operator () (
-    const kvs::ColorImage& image,
-    PixelData& data )
+GrayImage::GrayScalingMethod GrayImage::MiddleValue()
 {
-    const size_t width = image.width();
-    const size_t height = image.height();
-    const kvs::UInt8* image_data = image.pixels().data();
-    for( size_t j = 0; j < height; j++ )
+    return [] ( const kvs::ColorImage& image, BaseClass::PixelData& data )
     {
-        const size_t col_line_index = j * image.bytesPerLine();
-        const size_t gry_line_index = j * image.width();
-        for( size_t i = 0; i < width; i++ )
+        const size_t width = image.width();
+        const size_t height = image.height();
+        const kvs::UInt8* image_data = image.pixels().data();
+        for( size_t j = 0; j < height; j++ )
         {
-            const size_t col_pixel_index = col_line_index + 3 * i;
-            const size_t gry_pixel_index = gry_line_index + i;
+            const size_t col_line_index = j * image.bytesPerLine();
+            const size_t gry_line_index = j * image.width();
+            for( size_t i = 0; i < width; i++ )
+            {
+                const size_t col_pixel_index = col_line_index + 3 * i;
+                const size_t gry_pixel_index = gry_line_index + i;
 
-            const unsigned int r = image_data[ col_pixel_index + 0 ];
-            const unsigned int g = image_data[ col_pixel_index + 1 ];
-            const unsigned int b = image_data[ col_pixel_index + 2 ];
-            const unsigned int max = kvs::Math::Max( r, g, b );
-            const unsigned int min = kvs::Math::Min( r, g, b );
-            const unsigned int value = ( max + min ) / 2;
+                const unsigned int r = image_data[ col_pixel_index + 0 ];
+                const unsigned int g = image_data[ col_pixel_index + 1 ];
+                const unsigned int b = image_data[ col_pixel_index + 2 ];
+                const unsigned int max = kvs::Math::Max( r, g, b );
+                const unsigned int min = kvs::Math::Min( r, g, b );
+                const unsigned int value = ( max + min ) / 2;
 
-            data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value);
+                data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value);
+            }
         }
-    }
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Gray-scaling by the median-value method.
- *  @param  image [in] color image
- *  @param  data [out] pixel data array
+ *  @brief  Returns gray-scaling by the median-value method.
  */
 /*===========================================================================*/
-void GrayImage::MedianValue::operator () (
-    const kvs::ColorImage& image,
-    PixelData& data )
+GrayImage::GrayScalingMethod GrayImage::MedianValue()
 {
-    const size_t width = image.width();
-    const size_t height = image.height();
-    const kvs::UInt8* image_data = image.pixels().data();
-    for( size_t j = 0; j < height; j++ )
+    return [] ( const kvs::ColorImage& image, BaseClass::PixelData& data )
     {
-        const size_t col_line_index = j * image.bytesPerLine();
-        const size_t gry_line_index = j * image.width();
-        for( size_t i = 0; i < width; i ++ )
+        const size_t width = image.width();
+        const size_t height = image.height();
+        const kvs::UInt8* image_data = image.pixels().data();
+        for( size_t j = 0; j < height; j++ )
         {
-            const size_t col_pixel_index = col_line_index + 3 * i;
-            const size_t gry_pixel_index = gry_line_index + i;
+            const size_t col_line_index = j * image.bytesPerLine();
+            const size_t gry_line_index = j * image.width();
+            for( size_t i = 0; i < width; i ++ )
+            {
+                const size_t col_pixel_index = col_line_index + 3 * i;
+                const size_t gry_pixel_index = gry_line_index + i;
 
-            unsigned int pixel[3];
-            pixel[0] = image_data[ col_pixel_index + 0 ];
-            pixel[1] = image_data[ col_pixel_index + 1 ];
-            pixel[2] = image_data[ col_pixel_index + 2 ];
-            std::sort( pixel, pixel + 3 );
+                unsigned int pixel[3];
+                pixel[0] = image_data[ col_pixel_index + 0 ];
+                pixel[1] = image_data[ col_pixel_index + 1 ];
+                pixel[2] = image_data[ col_pixel_index + 2 ];
+                std::sort( pixel, pixel + 3 );
 
-            data[ gry_pixel_index ] = static_cast<kvs::UInt8>(pixel[1]);
+                data[ gry_pixel_index ] = static_cast<kvs::UInt8>(pixel[1]);
+            }
         }
-    }
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Gray-scaling by the NTSC weighted mean-value method.
- *  @param  image [in] color image
- *  @param  data [out] pixel data array
+ *  @brief  Returns gray-scaling by the NTSC weighted mean-value method.
  */
 /*===========================================================================*/
-void GrayImage::NTSCWeightedMeanValue::operator () (
-    const kvs::ColorImage& image,
-    PixelData& data )
+GrayImage::GrayScalingMethod GrayImage::NTSCWeightedMeanValue()
 {
-    const size_t width = image.width();
-    const size_t height = image.height();
-    const kvs::UInt8* image_data = image.pixels().data();
-    for( size_t j = 0; j < height; j++ )
+    return [] ( const kvs::ColorImage& image, BaseClass::PixelData& data )
     {
-        const size_t col_line_index = j * image.bytesPerLine();
-        const size_t gry_line_index = j * image.width();
-        for( size_t i = 0; i < width; i++ )
+        const size_t width = image.width();
+        const size_t height = image.height();
+        const kvs::UInt8* image_data = image.pixels().data();
+        for( size_t j = 0; j < height; j++ )
         {
-            const size_t col_pixel_index = col_line_index + 3 * i;
-            const size_t gry_pixel_index = gry_line_index + i;
+            const size_t col_line_index = j * image.bytesPerLine();
+            const size_t gry_line_index = j * image.width();
+            for( size_t i = 0; i < width; i++ )
+            {
+                const size_t col_pixel_index = col_line_index + 3 * i;
+                const size_t gry_pixel_index = gry_line_index + i;
 
-            const unsigned int r = image_data[ col_pixel_index + 0 ];
-            const unsigned int g = image_data[ col_pixel_index + 1 ];
-            const unsigned int b = image_data[ col_pixel_index + 2 ];
+                const unsigned int r = image_data[ col_pixel_index + 0 ];
+                const unsigned int g = image_data[ col_pixel_index + 1 ];
+                const unsigned int b = image_data[ col_pixel_index + 2 ];
 
-            /* value = ( 0.298912 * R + 0.586611 * G + 0.114478 * B )
-             *       = ( 2 * R + 4 * G + B ) / 7
-             */
-            const unsigned int value = ( 2 * r + 4 * g + b ) / 7;
+                // value = ( 0.298912 * R + 0.586611 * G + 0.114478 * B )
+                //       = ( 2 * R + 4 * G + B ) / 7
+                const unsigned int value = ( 2 * r + 4 * g + b ) / 7;
 
-            data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value);
+                data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value);
+            }
         }
-    }
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Gray-scaling by the HDTV weighted mean-value method.
- *  @param  image [in] color image
- *  @param  data [out] pixel data array
+ *  @brief  Returns gray-scaling by the HDTV weighted mean-value method.
  */
 /*===========================================================================*/
-void GrayImage::HDTVWeightedMeanValue::operator () (
-    const kvs::ColorImage& image,
-    PixelData& data )
+GrayImage::GrayScalingMethod GrayImage::HDTVWeightedMeanValue()
 {
-    const double gamma_value = 2.2;
-    const size_t width = image.width();
-    const size_t height = image.height();
-    const kvs::UInt8* image_data = image.pixels().data();
-    for( size_t j = 0; j < height; j++ )
+    return [] ( const kvs::ColorImage& image, BaseClass::PixelData& data )
     {
-        const size_t col_line_index = j * image.bytesPerLine();
-        const size_t gry_line_index = j * image.width();
-        for( size_t i = 0; i < width; i++ )
+        const double gamma_value = 2.2;
+        const size_t width = image.width();
+        const size_t height = image.height();
+        const kvs::UInt8* image_data = image.pixels().data();
+        for( size_t j = 0; j < height; j++ )
         {
-            const size_t col_pixel_index = col_line_index + 3 * i;
-            const size_t gry_pixel_index = gry_line_index + i;
+            const size_t col_line_index = j * image.bytesPerLine();
+            const size_t gry_line_index = j * image.width();
+            for( size_t i = 0; i < width; i++ )
+            {
+                const size_t col_pixel_index = col_line_index + 3 * i;
+                const size_t gry_pixel_index = gry_line_index + i;
 
-            const unsigned int r = image_data[ col_pixel_index + 0 ];
-            const unsigned int g = image_data[ col_pixel_index + 1 ];
-            const unsigned int b = image_data[ col_pixel_index + 2 ];
+                const unsigned int r = image_data[ col_pixel_index + 0 ];
+                const unsigned int g = image_data[ col_pixel_index + 1 ];
+                const unsigned int b = image_data[ col_pixel_index + 2 ];
 
-            const double R = static_cast<double>(r) / 255.0;
-            const double G = static_cast<double>(g) / 255.0;
-            const double B = static_cast<double>(b) / 255.0;
+                const double R = static_cast<double>(r) / 255.0;
+                const double G = static_cast<double>(g) / 255.0;
+                const double B = static_cast<double>(b) / 255.0;
 
-            const double RR = std::pow( R, gamma_value ) * 0.222015;
-            const double GG = std::pow( G, gamma_value ) * 0.706655;
-            const double BB = std::pow( B, gamma_value ) * 0.071330;
+                const double RR = std::pow( R, gamma_value ) * 0.222015;
+                const double GG = std::pow( G, gamma_value ) * 0.706655;
+                const double BB = std::pow( B, gamma_value ) * 0.071330;
 
-            const double V = std::pow( ( RR + GG + BB ), ( 1.0 / gamma_value ) );
-            const unsigned int value = kvs::Math::Round( V * 255.0 );
+                const double V = std::pow( ( RR + GG + BB ), ( 1.0 / gamma_value ) );
+                const unsigned int value = kvs::Math::Round( V * 255.0 );
 
-            data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value);
+                data[ gry_pixel_index ] = static_cast<kvs::UInt8>(value);
+            }
         }
-    }
+    };
 }
 
 /*==========================================================================*/
@@ -271,30 +265,6 @@ GrayImage::GrayImage(
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a copy of other bit image.
- *  @param  image [in] bit image
- */
-/*===========================================================================*/
-GrayImage::GrayImage( const kvs::BitImage& image )
-{
-    this->read_image( image );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new gray-scale image from the color image.
- *  @param  image [in] color image
- */
-/*===========================================================================*/
-GrayImage::GrayImage( const kvs::ColorImage& image )
-{
-    BaseClass::create( image.width(), image.height(), kvs::ImageBase::Gray );
-    GrayImage::MeanValue method;
-    method( image, BaseClass::pixelData() );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Constructs a new gray-scale image from the color image.
  *  @param  image [in] color image
  *  @param  channel [in] channel number
@@ -303,6 +273,30 @@ GrayImage::GrayImage( const kvs::ColorImage& image )
 GrayImage::GrayImage( const kvs::ColorImage& image, const int channel )
 {
     this->create( image.width(), image.height(), image.pixels(), channel );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new gray-scale image from the color image.
+ *  @param  image [in] color image
+ *  @param  method [in] gray scaling method
+ */
+/*===========================================================================*/
+GrayImage::GrayImage( const kvs::ColorImage& image, GrayScalingMethod method )
+{
+    BaseClass::create( image.width(), image.height(), kvs::ImageBase::Gray );
+    method( image, BaseClass::pixelData() );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a copy of other bit image.
+ *  @param  image [in] bit image
+ */
+/*===========================================================================*/
+GrayImage::GrayImage( const kvs::BitImage& image )
+{
+    this->read_image( image );
 }
 
 /*===========================================================================*/
@@ -413,7 +407,7 @@ bool GrayImage::create(
 kvs::UInt8 GrayImage::pixel( const size_t index ) const
 {
     const kvs::UInt8* pixels = BaseClass::pixels().data();
-    return( pixels[ index ] );
+    return pixels[ index ];
 }
 
 /*==========================================================================*/
@@ -427,7 +421,7 @@ kvs::UInt8 GrayImage::pixel( const size_t index ) const
 kvs::UInt8 GrayImage::pixel( const size_t i, const size_t j ) const
 {
     const kvs::UInt8* pixels = BaseClass::pixels().data();
-    return( pixels[ BaseClass::width() * j + i ] );
+    return pixels[ BaseClass::width() * j + i ];
 }
 
 /*==========================================================================*/
@@ -505,7 +499,7 @@ bool GrayImage::read( const std::string& filename )
         if ( kvsml.pixelType() == "gray" )
         {
             const BaseClass::ImageType type = BaseClass::Gray;
-            return( BaseClass::create( kvsml.width(), kvsml.height(), type, kvsml.pixels() ) );
+            return BaseClass::create( kvsml.width(), kvsml.height(), type, kvsml.pixels() );
         }
     }
 
@@ -515,7 +509,7 @@ bool GrayImage::read( const std::string& filename )
          kvs::Ppm::CheckExtension( filename ) )
     {
         kvs::ColorImage image; image.read( filename );
-        return( this->read_image( image ) );
+        return this->read_image( image );
     }
 
     // PGM image.
@@ -523,14 +517,14 @@ bool GrayImage::read( const std::string& filename )
     {
         const kvs::Pgm pgm( filename );
         const BaseClass::ImageType type = BaseClass::Gray;
-        return( BaseClass::create( pgm.width(), pgm.height(), type, pgm.pixels() ) );
+        return BaseClass::create( pgm.width(), pgm.height(), type, pgm.pixels() );
     }
 
     // PBM image.
     if ( kvs::Pbm::CheckExtension( filename ) )
     {
         kvs::BitImage image; image.read( filename );
-        return( this->read_image( image ) );
+        return this->read_image( image );
     }
 
     // TIFF image.
@@ -541,18 +535,18 @@ bool GrayImage::read( const std::string& filename )
         {
             const PixelData& data = tiff.rawData().asValueArray<kvs::UInt8>();
             kvs::ColorImage image( tiff.width(), tiff.height(), data );
-            return( this->read_image( image ) );
+            return this->read_image( image );
         }
         if ( tiff.colorMode() == kvs::Tiff::Gray8 )
         {
             const PixelData& data = tiff.rawData().asValueArray<kvs::UInt8>();
             const BaseClass::ImageType type = BaseClass::Gray;
-            return( BaseClass::create( tiff.width(), tiff.height(), type, data ) );
+            return BaseClass::create( tiff.width(), tiff.height(), type, data );
         }
         if ( tiff.colorMode() == kvs::Tiff::Gray16 )
         {
             kvsMessageError( "TIFF image (16bits gray-scale) is not supported." );
-            return( false );
+            return false;
         }
     }
 
@@ -561,13 +555,13 @@ bool GrayImage::read( const std::string& filename )
     {
         const kvs::Dicom dcm( filename );
         const BaseClass::ImageType type = BaseClass::Gray;
-        return( BaseClass::create( dcm.width(), dcm.height(), type, dcm.pixelData() ) );
+        return BaseClass::create( dcm.width(), dcm.height(), type, dcm.pixelData() );
     }
 
     kvsMessageError( "Read-method for %s is not implemented.",
                      filename.c_str() );
 
-    return( false );
+    return false;
 }
 
 /*==========================================================================*/
@@ -588,7 +582,7 @@ bool GrayImage::write( const std::string& filename ) const
         kvsml.setPixelType( "gray" );
         kvsml.setWritingDataType( kvs::KVSMLImageObject::Ascii );
         kvsml.setPixels( BaseClass::pixels() );
-        return( kvsml.write( filename ) );
+        return kvsml.write( filename );
     }
 
     // Bitmap and PPM image.
@@ -597,27 +591,27 @@ bool GrayImage::write( const std::string& filename ) const
          kvs::Ppm::CheckExtension( filename ) )
     {
         kvs::ColorImage image( *this );
-        return( image.write( filename ) );
+        return image.write( filename );
     }
 
     // PGM image.
     if ( kvs::Pgm::CheckExtension( filename ) )
     {
         kvs::Pgm pgm( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
-        return( pgm.write( filename ) );
+        return pgm.write( filename );
     }
 
     // PBM image.
     if ( kvs::Pbm::CheckExtension( filename ) )
     {
         kvs::BitImage image( *this );
-        return( image.write( filename ) );
+        return image.write( filename );
     }
 
     kvsMessageError( "Write-method for %s is not implemented.",
                      filename.c_str() );
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -629,15 +623,14 @@ bool GrayImage::write( const std::string& filename ) const
 /*===========================================================================*/
 bool GrayImage::read_image( const kvs::ColorImage& image )
 {
-    if ( !BaseClass::create( image.width(), image.height(), BaseClass::Gray ) )
+    if ( BaseClass::create( image.width(), image.height(), BaseClass::Gray ) )
     {
-        return( false );
+        auto method = GrayImage::MeanValue();
+        method( image, BaseClass::pixelData() );
+        return true;
     }
 
-    GrayImage::MeanValue method;
-    method( image, BaseClass::pixelData() );
-
-    return( true );
+    return false;
 }
 
 /*===========================================================================*/
@@ -649,25 +642,24 @@ bool GrayImage::read_image( const kvs::ColorImage& image )
 /*===========================================================================*/
 bool GrayImage::read_image( const kvs::BitImage& image )
 {
-    if ( !BaseClass::create( image.width(), image.height(), kvs::ImageBase::Gray ) )
+    if ( BaseClass::create( image.width(), image.height(), kvs::ImageBase::Gray ) )
     {
-        return( false );
-    }
-
-    kvs::UInt8* pixels = BaseClass::pixelData().data();
-    const size_t width = image.width();
-    const size_t height = image.height();
-    size_t index = 0;
-    for ( size_t j = 0; j < height; j++ )
-    {
-        for ( size_t i = 0; i < width; i++, index++ )
+        auto* pixels = BaseClass::pixelData().data();
+        const auto width = image.width();
+        const auto height = image.height();
+        size_t index = 0;
+        for ( size_t j = 0; j < height; j++ )
         {
-            const kvs::UInt8 pixel = image.pixel( i, j ) ? 255 : 0;
-            pixels[ index ] = pixel;
+            for ( size_t i = 0; i < width; i++, index++ )
+            {
+                const kvs::UInt8 pixel = image.pixel( i, j ) ? 255 : 0;
+                pixels[ index ] = pixel;
+            }
         }
+        return true;
     }
 
-    return( true );
+    return false;
 }
 
 } // end of namespace kvs

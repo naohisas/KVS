@@ -13,30 +13,30 @@ namespace
 {
 
 const std::string DirNames[ kvs::CubicImage::NumberOfDirections ] = {
-    std::string( "right" ),
-    std::string( "left" ),
-    std::string( "top" ),
-    std::string( "bottom" ),
-    std::string( "back" ),
-    std::string( "front" )
+    { "right" },
+    { "left" },
+    { "top" },
+    { "bottom" },
+    { "back" },
+    { "front" }
 };
 
 const kvs::Vec3 DirVecs[ kvs::CubicImage::NumberOfDirections ] = {
-    kvs::Vec3( +1,  0,  0 ), // right
-    kvs::Vec3( -1,  0,  0 ), // left
-    kvs::Vec3(  0, +1,  0 ), // top
-    kvs::Vec3(  0, -1,  0 ), // bottom
-    kvs::Vec3(  0,  0, +1 ), // back
-    kvs::Vec3(  0,  0, -1 )  // front
+    { +1,  0,  0 }, // right
+    { -1,  0,  0 }, // left
+    {  0, +1,  0 }, // top
+    {  0, -1,  0 }, // bottom
+    {  0,  0, +1 }, // back
+    {  0,  0, -1 }  // front
 };
 
 const kvs::Vec3 UpVecs[ kvs::CubicImage::NumberOfDirections ] = {
-    kvs::Vec3( 0, 1,  0 ), // right
-    kvs::Vec3( 0, 1,  0 ), // left
-    kvs::Vec3( 0, 0,  1 ), // top
-    kvs::Vec3( 0, 0, -1 ), // bottom
-    kvs::Vec3( 0, 1,  0 ), // back
-    kvs::Vec3( 0, 1,  0 )  // front
+    { 0, 1,  0 }, // right
+    { 0, 1,  0 }, // left
+    { 0, 0,  1 }, // top
+    { 0, 0, -1 }, // bottom
+    { 0, 1,  0 }, // back
+    { 0, 1,  0 }  // front
 };
 
 inline void Draw(
@@ -51,7 +51,7 @@ inline void Draw(
     {
         for ( size_t i = 0; i < w; i++ )
         {
-            const kvs::RGBColor pixel = source.pixel( i, j );
+            const auto pixel = source.pixel( i, j );
             result->setPixel( i + offset_i, j + offset_j, pixel );
         }
     }

@@ -47,11 +47,11 @@ public:
     static kvs::Vec3 UpVector( const Direction dir );
 
 private:
-    Layout m_layout;
-    std::array<kvs::ColorImage,NumberOfDirections> m_images;
+    Layout m_layout = Layout::Cross;
+    std::array<kvs::ColorImage,NumberOfDirections> m_images{};
 
 public:
-    CubicImage(): m_layout( Cross ) {}
+    CubicImage() = default;
 
     Layout layout() const { return m_layout; }
     const kvs::ColorImage& image( const Direction& dir ) const { return m_images[dir]; }

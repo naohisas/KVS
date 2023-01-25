@@ -6,6 +6,7 @@
 /****************************************************************************/
 #pragma once
 #include <limits>
+#include <functional>
 #include "ImageBase.h"
 #include "GrayImage.h"
 
@@ -27,56 +28,22 @@ public:
     using BaseClass = kvs::ImageBase;
     using PixelType = bool;
 
-public:
-    // Binarization method.
-
-    struct PTile
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
-
-    struct Distinction
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
-
-    struct Byer
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
-
-    struct Halftone
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
-
-    struct EmphasizedHalftone
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
-
-    struct Screw
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
-
-    struct DeformedScrew
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
-
-    struct DotConcentrate
-    {
-        void operator () ( const kvs::GrayImage& image, kvs::ValueArray<kvs::UInt8>& data );
-    };
+    // Binarization method
+    using BinarizationMethod = std::function<void(const kvs::GrayImage&, BaseClass::PixelData&)>;
+    static BinarizationMethod PTile();
+    static BinarizationMethod Distinction();
+    static BinarizationMethod Byer();
+    static BinarizationMethod Halftone();
+    static BinarizationMethod EmphasizedHalftone();
+    static BinarizationMethod Screw();
+    static BinarizationMethod DeformedScrew();
+    static BinarizationMethod DotConcentrate();
 
 public:
-    BitImage();
+    BitImage() = default;
     BitImage( const size_t width, const size_t height, const bool bit = true );
     BitImage( const size_t width, const size_t height, const kvs::ValueArray<kvs::UInt8>& data );
-    explicit BitImage( const kvs::GrayImage& image );
-    template <typename BinarizationMethod>
-    BitImage( const kvs::GrayImage& image, BinarizationMethod method );
+    BitImage( const kvs::GrayImage& image, BinarizationMethod method = PTile() );
     explicit BitImage( const std::string& filename );
 
     bool create( const size_t width, const size_t height, const bool bit = true );
@@ -100,19 +67,5 @@ private:
     void set_bit( const size_t i, const size_t j );
     void reset_bit( const size_t i, const size_t j );
 };
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new bit image from the color image.
- *  @param  image [in] gray image
- *  @param  method [in] binarization method
- */
-/*===========================================================================*/
-template <typename BinarizationMethod>
-inline BitImage::BitImage( const kvs::GrayImage& image, BinarizationMethod method )
-{
-    BaseClass::create( image.width(), image.height(), kvs::ImageBase::Bit );
-    method( image, BaseClass::pixelData() );
-}
 
 } // end of namespace kvs

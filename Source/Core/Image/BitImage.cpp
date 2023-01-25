@@ -94,7 +94,7 @@ inline void Dithering(
     const size_t height = image.height();
     const size_t bpl = ( width + 7 ) >> 3;
     const double r = 1.0 / 15.0;
-    const kvs::Matrix44d dmask = ( mask - kvs::Matrix44d::Constant( 8.0 ) ) * r;
+    const kvs::Matrix44d dmask = ( mask - kvs::Mat4d::Constant( 8.0 ) ) * r;
 
     for ( size_t j = 0; j < width; j++ )
     {
@@ -122,8 +122,8 @@ inline void Dithering(
 /*===========================================================================*/
 inline kvs::ValueArray<kvs::UInt32> Histogram( const kvs::GrayImage& image )
 {
-    const size_t npixels = image.numberOfPixels();
-    const kvs::UInt8* data = image.pixels().data();
+    const auto npixels = image.numberOfPixels();
+    const auto* data = image.pixels().data();
 
     kvs::ValueArray<kvs::UInt32> count( 256 );
     count.fill( 0 );
@@ -133,7 +133,7 @@ inline kvs::ValueArray<kvs::UInt32> Histogram( const kvs::GrayImage& image )
         count[ value ] += 1;
     }
 
-    return( count );
+    return count;
 }
 
 } // end of namespace
@@ -144,247 +144,224 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Binarize by using P-tile method.
- *  @param  image [in] grey-scale image
- *  @param  data [out] pixel data array (bit array)
+ *  @brief  Returns binarization method (P-tile).
  */
 /*===========================================================================*/
-void BitImage::PTile::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+BitImage::BinarizationMethod BitImage::PTile()
 {
-    const size_t width = image.width();
-    const size_t height= image.height();
-    const double ratio = 1.0 / static_cast<double>( width * height );
-    const kvs::ValueArray<kvs::UInt32> histogram = ::Histogram( image );
-
-    // Create the cumulative frequency.
-    kvs::ValueArray<double> cum( 256 );
-    cum[0] = histogram[0];
-    for ( size_t i = 1; i < 256; i++ ) cum[i] = cum[i-1] + static_cast<double>(histogram[i]);
-    for ( size_t i = 0; i < 256; i++ ) cum[i] = cum[i] * ratio;
-
-    const double p = 0.4;
-    double diff = 100.0;
-    double temp = 0.0;
-    size_t threshold = 0;
-    for( size_t i = 0; i < 256; i++ )
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
     {
-        temp = kvs::Math::Abs( p - cum[i] );
-        if( temp < diff )
+        const size_t width = image.width();
+        const size_t height= image.height();
+        const double ratio = 1.0 / static_cast<double>( width * height );
+        const kvs::ValueArray<kvs::UInt32> histogram = ::Histogram( image );
+
+        // Create the cumulative frequency.
+        kvs::ValueArray<double> cum( 256 );
+        cum[0] = histogram[0];
+        for ( size_t i = 1; i < 256; i++ ) cum[i] = cum[i-1] + static_cast<double>(histogram[i]);
+        for ( size_t i = 0; i < 256; i++ ) cum[i] = cum[i] * ratio;
+
+        const double p = 0.4;
+        double diff = 100.0;
+        double temp = 0.0;
+        size_t threshold = 0;
+        for ( size_t i = 0; i < 256; i++ )
         {
-            diff      = temp;
-            threshold = i;
+            temp = kvs::Math::Abs( p - cum[i] );
+            if ( temp < diff )
+            {
+                diff      = temp;
+                threshold = i;
+            }
         }
-    }
 
-    ::Thresholding( static_cast<kvs::UInt8>(threshold), image, data );
+        ::Thresholding( static_cast<kvs::UInt8>(threshold), image, data );
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Binarize by using Distinction method.
- *  @param  image [in] gray image
- *  @param  data [out] pixel data array (bit array)
+ *  @brief  Returns binarization method (Distinction).
  */
 /*===========================================================================*/
-void BitImage::Distinction::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+BitImage::BinarizationMethod BitImage::Distinction()
 {
-    const size_t width = image.width();
-    const size_t height= image.height();
-    const double ratio = 1.0 / static_cast<double>( width * height );
-    const kvs::ValueArray<kvs::UInt32> histogram = ::Histogram( image );
-
-    // Create the probability distribution.
-    kvs::ValueArray<double> p( 256 );
-    for ( size_t i = 0; i < 256; i++ ) p[i] = static_cast<double>(histogram[i]) * ratio;
-
-    // Calculate the sum of the probability distribution for each class.
-    kvs::ValueArray<double> w1( 256 ); w1.fill( 0 );
-    kvs::ValueArray<double> w2( 256 ); w2.fill( 0 );
-    for ( size_t i = 0; i < 256; i++ )
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
     {
-        for ( size_t j = 0; j <   i; j++ ) w1[i] += p[j];
-        for ( size_t k = i; k < 256; k++ ) w2[i] += p[k];
-    }
-    // Calculate the mean for each class.
-    kvs::ValueArray<double> m1( 256 ); m1.fill( 0 );
-    kvs::ValueArray<double> m2( 256 ); m2.fill( 0 );
-    for ( size_t i = 0; i < 256; i++ )
-    {
-        for ( size_t j = 0; j <   i; j++ ) m1[i] += static_cast<double>(j) * p[j] / w1[i];
-        for ( size_t k = i; k < 256; k++ ) m2[i] += static_cast<double>(k) * p[k] / w2[i];
-    }
+        const size_t width = image.width();
+        const size_t height= image.height();
+        const double ratio = 1.0 / static_cast<double>( width * height );
+        const kvs::ValueArray<kvs::UInt32> histogram = ::Histogram( image );
 
-    // Calculate the variance for each class.
-    kvs::ValueArray<double> s2_1( 256 ); s2_1.fill( 0 );
-    kvs::ValueArray<double> s2_2( 256 ); s2_2.fill( 0 );
-    for ( size_t i = 0; i < 256; i++ )
-    {
-        const double v = static_cast<double>(i);
-        for ( size_t j = 0; j < i; j++ )
+        // Create the probability distribution.
+        kvs::ValueArray<double> p( 256 );
+        for ( size_t i = 0; i < 256; i++ ) p[i] = static_cast<double>(histogram[i]) * ratio;
+
+        // Calculate the sum of the probability distribution for each class.
+        kvs::ValueArray<double> w1( 256 ); w1.fill( 0 );
+        kvs::ValueArray<double> w2( 256 ); w2.fill( 0 );
+        for ( size_t i = 0; i < 256; i++ )
         {
-            s2_1[i] += p[j] * ( v - m1[i] ) * ( v - m1[i] ) / w1[i];
+            for ( size_t j = 0; j <   i; j++ ) w1[i] += p[j];
+            for ( size_t k = i; k < 256; k++ ) w2[i] += p[k];
         }
-        for ( size_t k = 0; k < 256; k++ )
+        // Calculate the mean for each class.
+        kvs::ValueArray<double> m1( 256 ); m1.fill( 0 );
+        kvs::ValueArray<double> m2( 256 ); m2.fill( 0 );
+        for ( size_t i = 0; i < 256; i++ )
         {
-            s2_2[i] += p[k] * ( v - m2[i] ) * ( v - m2[i] ) / w2[i];
+            for ( size_t j = 0; j <   i; j++ ) m1[i] += static_cast<double>(j) * p[j] / w1[i];
+            for ( size_t k = i; k < 256; k++ ) m2[i] += static_cast<double>(k) * p[k] / w2[i];
         }
-    }
 
-    // Calculate the variance between the classes and the variance within
-    // the classes. And then, calculate the threshold value.
-    kvs::ValueArray<double> s2_b( 256 ); s2_b.fill( 0 );
-    kvs::ValueArray<double> s2_w( 256 ); s2_w.fill( 0 );
-    double max_ratio = 0.0;
-    size_t threshold = 0;
-    for ( size_t i = 0; i < 256; i++ )
+        // Calculate the variance for each class.
+        kvs::ValueArray<double> s2_1( 256 ); s2_1.fill( 0 );
+        kvs::ValueArray<double> s2_2( 256 ); s2_2.fill( 0 );
+        for ( size_t i = 0; i < 256; i++ )
+        {
+            const double v = static_cast<double>(i);
+            for ( size_t j = 0; j < i; j++ )
+            {
+                s2_1[i] += p[j] * ( v - m1[i] ) * ( v - m1[i] ) / w1[i];
+            }
+            for ( size_t k = 0; k < 256; k++ )
+            {
+                s2_2[i] += p[k] * ( v - m2[i] ) * ( v - m2[i] ) / w2[i];
+            }
+        }
+
+        // Calculate the variance between the classes and the variance within
+        // the classes. And then, calculate the threshold value.
+        kvs::ValueArray<double> s2_b( 256 ); s2_b.fill( 0 );
+        kvs::ValueArray<double> s2_w( 256 ); s2_w.fill( 0 );
+        double max_ratio = 0.0;
+        size_t threshold = 0;
+        for ( size_t i = 0; i < 256; i++ )
+        {
+            // The variance between the classes.
+            s2_b[i] = w1[i] * w2[i] * ( m1[i] - m2[i] ) * ( m1[i] - m2[i] );
+            // The variance within the classes.
+            s2_w[i] = w1[i] * s2_1[i] + w2[i] * s2_2[i];
+
+            const double ratio = s2_b[i] / s2_w[i];
+            if ( ratio > max_ratio )
+            {
+                max_ratio = ratio;
+                threshold = i;
+            }
+        }
+
+        ::Thresholding( static_cast<kvs::UInt8>(threshold), image, data );
+    };
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns binarization method (Byer).
+ */
+/*===========================================================================*/
+BitImage::BinarizationMethod BitImage::Byer()
+{
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
     {
-        // The variance between the classes.
-        s2_b[i] = w1[i] * w2[i] * ( m1[i] - m2[i] ) * ( m1[i] - m2[i] );
-        // The variance within the classes.
-        s2_w[i] = w1[i] * s2_1[i] + w2[i] * s2_2[i];
-
-        const double ratio = s2_b[i] / s2_w[i];
-        if ( ratio > max_ratio )
-        {
-            max_ratio = ratio;
-            threshold = i;
-        }
-    }
-
-    ::Thresholding( static_cast<kvs::UInt8>(threshold), image, data );
+        const kvs::Matrix44d mask(
+            0.0,  8.0,  2.0,  10.0,
+            12.0, 4.0,  14.0, 6.0,
+            3.0,  11.0, 1.0,  9.0,
+            15.0, 7.0,  13.0, 5.0 );
+        ::Dithering( mask, image, data );
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Binarize by using Byer method.
- *  @param  image [in] gray image
- *  @param  data [out] pixel data array (bit array)
+ *  @brief  Returns binarization method (Halftone).
  */
 /*===========================================================================*/
-void BitImage::Byer::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+BitImage::BinarizationMethod BitImage::Halftone()
 {
-    const kvs::Matrix44d mask(
-        0.0,  8.0,  2.0,  10.0,
-        12.0, 4.0,  14.0, 6.0,
-        3.0,  11.0, 1.0,  9.0,
-        15.0, 7.0,  13.0, 5.0 );
-
-    ::Dithering( mask, image, data );
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
+    {
+        const kvs::Matrix44d mask(
+            10.0, 4.0,  6.0,  8.0,
+            12.0, 0.0,  2.0,  14.0,
+            7.0,  9.0,  11.0, 5.0,
+            3.0,  15.0, 13.0, 1.0 );
+        ::Dithering( mask, image, data );
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Binarize by using Halftone method.
- *  @param  image [in] gray image
- *  @param  data [out] pixel data array (bit array)
+ *  @brief  Returns binarization method (Emphasized halftone).
  */
 /*===========================================================================*/
-void BitImage::Halftone::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+BitImage::BinarizationMethod BitImage::EmphasizedHalftone()
 {
-    const kvs::Matrix44d mask(
-        10.0, 4.0,  6.0,  8.0,
-        12.0, 0.0,  2.0,  14.0,
-        7.0,  9.0,  11.0, 5.0,
-        3.0,  15.0, 13.0, 1.0 );
-
-    ::Dithering( mask, image, data );
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
+    {
+        const kvs::Matrix44d mask(
+            12.0, 4.0, 8.0, 14.0,
+            11.0, 0.0, 2.0, 6.0,
+            7.0,  3.0, 1.0, 10.0,
+            15.0, 9.0, 5.0, 13.0 );
+        ::Dithering( mask, image, data );
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Binarize by using Emphasized halftone method.
- *  @param  image [in] gray image
- *  @param  data [out] pixel data array (bit array)
+ *  @brief  Returns binarization method (Screw).
  */
 /*===========================================================================*/
-void BitImage::EmphasizedHalftone::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+BitImage::BinarizationMethod BitImage::Screw()
 {
-    const kvs::Matrix44d mask(
-        12.0, 4.0, 8.0, 14.0,
-        11.0, 0.0, 2.0, 6.0,
-        7.0,  3.0, 1.0, 10.0,
-        15.0, 9.0, 5.0, 13.0 );
-
-    ::Dithering( mask, image, data );
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
+    {
+        const kvs::Matrix44d mask(
+            13.0, 7.0,  6.0,  12.0,
+            8.0,  1.0,  0.0,  5.0,
+            9.0,  2.0,  3.0,  4.0,
+            14.0, 10.0, 11.0, 15.0 );
+        ::Dithering( mask, image, data );
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Binarize by using Screw method.
- *  @param  image [in] gray image
- *  @param  data [out] pixel data array (bit array)
+ *  @brief  Returns binarization method (Deformed screw).
  */
 /*===========================================================================*/
-void BitImage::Screw::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+BitImage::BinarizationMethod BitImage::DeformedScrew()
 {
-    const kvs::Matrix44d mask(
-        13.0, 7.0,  6.0,  12.0,
-        8.0,  1.0,  0.0,  5.0,
-        9.0,  2.0,  3.0,  4.0,
-        14.0, 10.0, 11.0, 15.0 );
-
-    ::Dithering( mask, image, data );
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
+    {
+        const kvs::Matrix44d mask(
+            15.0, 4.0, 8.0, 12.0,
+            11.0, 0.0, 1.0, 5.0,
+            7.0,  3.0, 2.0, 9.0,
+            14.0, 9.0, 6.0, 13.0 );
+        ::Dithering( mask, image, data );
+    };
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Binarize by using Deformed screw method.
- *  @param  image [in] gray image
- *  @param  data [out] pixel data array (bit array)
+ *  @brief  Returns binarization method (Dot concentrate).
  */
 /*===========================================================================*/
-void BitImage::DeformedScrew::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
+BitImage::BinarizationMethod BitImage::DotConcentrate()
 {
-    const kvs::Matrix44d mask(
-        15.0, 4.0, 8.0, 12.0,
-        11.0, 0.0, 1.0, 5.0,
-        7.0,  3.0, 2.0, 9.0,
-        14.0, 9.0, 6.0, 13.0 );
-
-    ::Dithering( mask, image, data );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Binarize by using Dot concentrate method.
- *  @param  image [in] gray image
- *  @param  data [out] pixel data array (bit array)
- */
-/*===========================================================================*/
-void BitImage::DotConcentrate::operator () (
-    const kvs::GrayImage& image,
-    kvs::ValueArray<kvs::UInt8>& data )
-{
-    const kvs::Matrix44d mask(
-        13.0, 4.0, 8.0, 14.0,
-        10.0, 0.0, 1.0, 7.0,
-        6.0,  3.0, 2.0, 11.0,
-        15.0, 9.0, 5.0, 13.0 );
-
-    ::Dithering( mask, image, data );
-}
-
-/*==========================================================================*/
-/**
- *  Constructs a new bit image.
- */
-/*==========================================================================*/
-BitImage::BitImage()
-{
+    return [] ( const kvs::GrayImage& image, BaseClass::PixelData& data )
+    {
+        const kvs::Matrix44d mask(
+            13.0, 4.0, 8.0, 14.0,
+            10.0, 0.0, 1.0, 7.0,
+            6.0,  3.0, 2.0, 11.0,
+            15.0, 9.0, 5.0, 13.0 );
+        ::Dithering( mask, image, data );
+    };
 }
 
 /*==========================================================================*/
@@ -421,12 +398,12 @@ BitImage::BitImage(
 /**
  *  @brief  Constructs a new bit image from the color image.
  *  @param  image [in] gray image
+ *  @param  method [in] binarization method
  */
 /*===========================================================================*/
-BitImage::BitImage( const kvs::GrayImage& image )
+BitImage::BitImage( const kvs::GrayImage& image, BinarizationMethod method )
 {
     BaseClass::create( image.width(), image.height(), kvs::ImageBase::Bit );
-    BitImage::PTile method;
     method( image, BaseClass::pixelData() );
 }
 
@@ -452,7 +429,7 @@ bool BitImage::pixel( const size_t index ) const
 {
     const size_t i = index / BaseClass::width();
     const size_t j = index % BaseClass::width();
-    return( this->pixel( i, j ) );
+    return this->pixel( i, j );
 }
 
 /*==========================================================================*/
@@ -465,8 +442,9 @@ bool BitImage::pixel( const size_t index ) const
 /*==========================================================================*/
 bool BitImage::pixel( const size_t i, const size_t j ) const
 {
-    const kvs::UInt8* pixels = BaseClass::pixels().data();
-    return( pixels[ j * BaseClass::bytesPerLine() + ( i >> 3 ) ] & ::SetBitMask[ i & 7 ] ? true : false );
+    const auto* pixels = BaseClass::pixels().data();
+    const auto bpl = BaseClass::bytesPerLine();
+    return ( pixels[ j * bpl + ( i >> 3 ) ] & ::SetBitMask[ i & 7 ] ? true : false );
 }
 
 /*===========================================================================*/
@@ -544,31 +522,31 @@ size_t BitImage::count() const
 {
     size_t counter = 0;
 
-    const size_t height = BaseClass::height();
-    const size_t bpl = BaseClass::bytesPerLine();
-    const size_t padding = BaseClass::padding();
-    const kvs::UInt8* pixels = BaseClass::pixels().data();
-    for( size_t j = 0; j < height; j++ )
+    const auto height = BaseClass::height();
+    const auto bpl = BaseClass::bytesPerLine();
+    const auto padding = BaseClass::padding();
+    const auto* pixels = BaseClass::pixels().data();
+    for ( size_t j = 0; j < height; j++ )
     {
         const size_t line_head = j * bpl;
-        for( size_t i = 0; i < bpl - 1; i++ )
+        for ( size_t i = 0; i < bpl - 1; i++ )
         {
             const size_t data_head = line_head + i;
-            for( size_t b = 0; b < 8; b++ )
+            for ( size_t b = 0; b < 8; b++ )
             {
-                if( ( pixels[data_head] & ::SetBitMask[b] ) == 255 ) counter++;
+                if ( ( pixels[data_head] & ::SetBitMask[b] ) == 255 ) counter++;
             }
         }
 
         // Decrement padding bit.
         const size_t data_head = line_head + ( bpl - 1 );
-        for( size_t b = 0; b < 8 - padding; b++ )
+        for ( size_t b = 0; b < 8 - padding; b++ )
         {
-            if( ( pixels[data_head] & ::SetBitMask[b] ) == 255 ) counter++;
+            if ( ( pixels[data_head] & ::SetBitMask[b] ) == 255 ) counter++;
         }
     }
 
-    return( counter );
+    return counter;
 }
 
 /*===========================================================================*/
@@ -581,11 +559,11 @@ void BitImage::fill( const bool bit )
 {
     const kvs::UInt8 mask = ( bit ) ? ( ::SetBitMask[8] ) : ( ::ResetBitMask[8] );
 
-    kvs::UInt8* pixels = BaseClass::pixelData().data();
-    for( size_t j = 0; j < BaseClass::height(); j++ )
+    auto* pixels = BaseClass::pixelData().data();
+    for ( size_t j = 0; j < BaseClass::height(); j++ )
     {
         const size_t line_head = j * BaseClass::bytesPerLine();
-        for( size_t i = 0; i < BaseClass::bytesPerLine(); i++ )
+        for ( size_t i = 0; i < BaseClass::bytesPerLine(); i++ )
         {
             pixels[ line_head + i ] = mask;
         }
@@ -614,8 +592,9 @@ void BitImage::invert( const size_t index )
 /*===========================================================================*/
 void BitImage::invert( const size_t i, const size_t j )
 {
-    kvs::UInt8* pixels = BaseClass::pixelData().data();
-    pixels[ j * BaseClass::bytesPerLine() + ( i >> 3 ) ] ^= ::SetBitMask[ i & 7 ];
+    auto* pixels = BaseClass::pixelData().data();
+    const auto bpl = BaseClass::bytesPerLine();
+    pixels[ j * bpl + ( i >> 3 ) ] ^= ::SetBitMask[ i & 7 ];
 }
 
 /*===========================================================================*/
@@ -658,13 +637,13 @@ bool BitImage::read( const std::string& filename )
         kvs::GrayImage image; image.read( filename );
         if ( !BaseClass::create( image.width(), image.height(), BaseClass::Bit ) )
         {
-            return( false );
+            return false;
         }
 
-        BitImage::PTile method;
+        auto method = BitImage::PTile();
         method( image, BaseClass::pixelData() );
 
-        return( true );
+        return true;
     }
 
     // Bit image.
@@ -672,13 +651,13 @@ bool BitImage::read( const std::string& filename )
     {
         const kvs::Pbm pbm( filename );
         const kvs::ValueArray<kvs::UInt8>& data = pbm.pixels().asValueArray();
-        return( BaseClass::create( pbm.width(), pbm.height(), BaseClass::Bit, data ) );
+        return BaseClass::create( pbm.width(), pbm.height(), BaseClass::Bit, data );
     }
 
     kvsMessageError( "Read-method for %s is not implemented.",
                      filename.c_str() );
 
-    return( false );
+    return false;
 }
 
 /*==========================================================================*/
@@ -699,29 +678,29 @@ bool BitImage::write( const std::string& filename )
          kvs::Ppm::CheckExtension( filename ) )
     {
         kvs::ColorImage image( *this );
-        return( image.write( filename ) );
+        return image.write( filename );
     }
 
     // PGM image.
     if ( kvs::Pgm::CheckExtension( filename ) )
     {
         kvs::GrayImage image( *this );
-        return( image.write( filename ) );
+        return image.write( filename );
     }
 
     // PBM image.
     if ( kvs::Pbm::CheckExtension( filename ) )
     {
-        const size_t nvalues = BaseClass::width() * BaseClass::height();
-        const kvs::UInt8* values = BaseClass::pixels().data();
+        const auto nvalues = BaseClass::width() * BaseClass::height();
+        const auto* values = BaseClass::pixels().data();
         kvs::Pbm pbm( BaseClass::width(), BaseClass::height(), kvs::BitArray( values, nvalues ) );
-        return( pbm.write( filename ) );
+        return pbm.write( filename );
     }
 
     kvsMessageError( "Write-method for %s is not implemented.",
                      filename.c_str() );
 
-    return( false );
+    return false;
 }
 
 /*===========================================================================*/
@@ -733,8 +712,9 @@ bool BitImage::write( const std::string& filename )
 /*===========================================================================*/
 void BitImage::set_bit( const size_t i, const size_t j )
 {
-    kvs::UInt8* pixels = BaseClass::pixelData().data();
-    pixels[ j * BaseClass::bytesPerLine() +( i >> 3 ) ] |= ::SetBitMask[ i & 7 ];
+    auto* pixels = BaseClass::pixelData().data();
+    const auto bpl = BaseClass::bytesPerLine();
+    pixels[ j * bpl +( i >> 3 ) ] |= ::SetBitMask[ i & 7 ];
 }
 
 /*===========================================================================*/
@@ -746,8 +726,9 @@ void BitImage::set_bit( const size_t i, const size_t j )
 /*===========================================================================*/
 void BitImage::reset_bit( const size_t i, const size_t j )
 {
-    kvs::UInt8* pixels = BaseClass::pixelData().data();
-    pixels[ j * BaseClass::bytesPerLine() + ( i >> 3 ) ] &= ::ResetBitMask[ i & 7 ];
+    auto* pixels = BaseClass::pixelData().data();
+    const auto bpl = BaseClass::bytesPerLine();
+    pixels[ j * bpl + ( i >> 3 ) ] &= ::ResetBitMask[ i & 7 ];
 }
 
 } // end of namespace kvs

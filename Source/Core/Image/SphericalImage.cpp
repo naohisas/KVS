@@ -29,14 +29,14 @@ inline kvs::RGBColor Interp(
     const float xratio = x - x0;
     const float yratio = y - y0;
 
-    const kvs::Vec3 p0 = image.pixel( x0, y0 ).toVec3();
-    const kvs::Vec3 p1 = image.pixel( x0, y1 ).toVec3();
-    const kvs::Vec3 p2 = image.pixel( x1, y0 ).toVec3();
-    const kvs::Vec3 p3 = image.pixel( x1, y1 ).toVec3();
+    const auto p0 = image.pixel( x0, y0 ).toVec3();
+    const auto p1 = image.pixel( x0, y1 ).toVec3();
+    const auto p2 = image.pixel( x1, y0 ).toVec3();
+    const auto p3 = image.pixel( x1, y1 ).toVec3();
 
-    const kvs::Vec3 d = p0 * ( 1.0f - xratio ) + p2 * xratio;
-    const kvs::Vec3 e = p1 * ( 1.0f - xratio ) + p3 * xratio;
-    return kvs::RGBColor( d * ( 1.0f - yratio ) + e * yratio );
+    const auto d = p0 * ( 1.0f - xratio ) + p2 * xratio;
+    const auto e = p1 * ( 1.0f - xratio ) + p3 * xratio;
+    return { d * ( 1.0f - yratio ) + e * yratio };
 }
 
 }
@@ -44,11 +44,6 @@ inline kvs::RGBColor Interp(
 
 namespace kvs
 {
-
-SphericalImage::SphericalImage( const kvs::ColorImage& image ):
-    kvs::ColorImage( image )
-{
-}
 
 SphericalImage::SphericalImage( const kvs::CubicImage& cubic_image )
 {

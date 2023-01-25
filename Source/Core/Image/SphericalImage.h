@@ -21,7 +21,7 @@ class CubicImage;
 class SphericalImage : public kvs::ColorImage
 {
 public:
-    SphericalImage( const kvs::ColorImage& image );
+    SphericalImage( const kvs::ColorImage& image ): kvs::ColorImage( image ) {}
     SphericalImage( const kvs::CubicImage& cubic_image );
 
     void stitch( const kvs::CubicImage& cubic_image );

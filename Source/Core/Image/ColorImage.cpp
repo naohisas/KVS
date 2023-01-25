@@ -236,7 +236,7 @@ bool ColorImage::read( const std::string& filename )
         const kvs::KVSMLImageObject kvsml( filename );
         if ( kvsml.pixelType() == "color" )
         {
-            const BaseClass::ImageType type = BaseClass::Color;
+            const auto type = BaseClass::Color;
             return BaseClass::create( kvsml.width(), kvsml.height(), type, kvsml.pixels() );
         }
         if ( kvsml.pixelType() == "gray" )
@@ -250,7 +250,7 @@ bool ColorImage::read( const std::string& filename )
     if ( kvs::Bmp::CheckExtension( filename ) )
     {
         const kvs::Bmp bmp( filename );
-        const BaseClass::ImageType type = BaseClass::Color;
+        const auto type = BaseClass::Color;
         return BaseClass::create( bmp.width(), bmp.height(), type, bmp.pixels() );
     }
 
@@ -258,7 +258,7 @@ bool ColorImage::read( const std::string& filename )
     if ( kvs::Ppm::CheckExtension( filename ) )
     {
         const kvs::Ppm ppm( filename );
-        const BaseClass::ImageType type = BaseClass::Color;
+        const auto type = BaseClass::Color;
         return BaseClass::create( ppm.width(), ppm.height(), type, ppm.pixels() );
     }
 
@@ -316,13 +316,13 @@ bool ColorImage::read( const std::string& filename )
         const kvs::Tiff tiff( filename );
         if ( tiff.colorMode() == kvs::Tiff::Color24 )
         {
-            const kvs::ValueArray<kvs::UInt8>& data = tiff.rawData().asValueArray<kvs::UInt8>();
-            const BaseClass::ImageType type = BaseClass::Color;
+            const auto& data = tiff.rawData().asValueArray<kvs::UInt8>();
+            const auto type = BaseClass::Color;
             return BaseClass::create( tiff.width(), tiff.height(), type, data );
         }
         if ( tiff.colorMode() == kvs::Tiff::Gray8 )
         {
-            const kvs::ValueArray<kvs::UInt8>& data = tiff.rawData().asValueArray<kvs::UInt8>();
+            const auto& data = tiff.rawData().asValueArray<kvs::UInt8>();
             kvs::GrayImage image( tiff.width(), tiff.height(), data );
             return this->read_image( image );
         }
@@ -418,23 +418,22 @@ bool ColorImage::write( const std::string& filename ) const
 /*===========================================================================*/
 bool ColorImage::read_image( const kvs::GrayImage& image )
 {
-    if ( !BaseClass::create( image.width(), image.height(), kvs::ImageBase::Color ) )
+    if ( BaseClass::create( image.width(), image.height(), kvs::ImageBase::Color ) )
     {
-        return false;
+        auto* pixels = BaseClass::pixelData().data();
+        const auto* data = image.pixels().data();
+        const auto npixels = BaseClass::numberOfPixels();
+        for ( size_t index = 0, index3 = 0; index < npixels; index++, index3 += 3 )
+        {
+            const auto pixel = data[ index ];
+            pixels[ index3 + 0 ] = pixel;
+            pixels[ index3 + 1 ] = pixel;
+            pixels[ index3 + 2 ] = pixel;
+        }
+        return true;
     }
 
-    kvs::UInt8* pixels = BaseClass::pixelData().data();
-    const kvs::UInt8* data = image.pixels().data();
-    const size_t npixels = BaseClass::numberOfPixels();
-    for ( size_t index = 0, index3 = 0; index < npixels; index++, index3 += 3 )
-    {
-        const kvs::UInt8 pixel = data[ index ];
-        pixels[ index3 + 0 ] = pixel;
-        pixels[ index3 + 1 ] = pixel;
-        pixels[ index3 + 2 ] = pixel;
-    }
-
-    return true;
+    return false;
 }
 
 /*===========================================================================*/
@@ -446,27 +445,26 @@ bool ColorImage::read_image( const kvs::GrayImage& image )
 /*===========================================================================*/
 bool ColorImage::read_image( const kvs::BitImage& image )
 {
-    if ( !BaseClass::create( image.width(), image.height(), kvs::ImageBase::Color ) )
+    if ( BaseClass::create( image.width(), image.height(), kvs::ImageBase::Color ) )
     {
-        return false;
-    }
-
-    kvs::UInt8* pixels = BaseClass::pixelData().data();
-    const size_t width = image.width();
-    const size_t height = image.height();
-    size_t index3 = 0;
-    for ( size_t j = 0; j < height; j++ )
-    {
-        for ( size_t i = 0; i < width; i++, index3 += 3 )
+        auto* pixels = BaseClass::pixelData().data();
+        const auto width = image.width();
+        const auto height = image.height();
+        size_t index3 = 0;
+        for ( size_t j = 0; j < height; j++ )
         {
-            const kvs::UInt8 pixel = image.pixel( i, j ) ? 255 : 0;
-            pixels[ index3 + 0 ] = pixel;
-            pixels[ index3 + 1 ] = pixel;
-            pixels[ index3 + 2 ] = pixel;
+            for ( size_t i = 0; i < width; i++, index3 += 3 )
+            {
+                const auto pixel = image.pixel( i, j ) ? 255 : 0;
+                pixels[ index3 + 0 ] = pixel;
+                pixels[ index3 + 1 ] = pixel;
+                pixels[ index3 + 2 ] = pixel;
+            }
         }
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 } // end of namespace kvs
