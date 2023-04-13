@@ -28,20 +28,21 @@ For Windows, the FFMPEG binary can be downloaded from the following site.
 
 [FFMPEG - FFmpeg-Builds-Win32](https://github.com/sudo-nautilus/FFmpeg-Builds-Win32/releases)
 
- - Donwload the FFMPEG of version 5 (ffmpeg-n5.1-latest-win32-gpl-shared-5.1.zip).
  - NOTE: Due to some limitations, a 32-bit binary is currently required; only the 64-bit binary can be downloaded from the FFMPEG home site, so please download the 32-bit binary from the above site.
 
 Follow the steps below to install the FFMPEG.
 
-1. Create an install target folder (e.g. C:\ffmpeg) and set an environment variable `KVS_FFMPEG_DIR` to the target folder as follows:
+1. Donwload the FFMPEG of version 5 (ffmpeg-n5.1-latest-win32-gpl-shared-5.1.zip) from the above site.
+
+2. Create an install target folder (e.g. C:\ffmpeg) and set an environment variable `KVS_FFMPEG_DIR` to the target folder as follows:
 
 |Variable|Value|
 |:-------|:----|
 |KVS_FFMPEG_DIR |C:\ffmpeg|
 
-2. Copy the folders of include and lib included in the downloaded file to the target folder.
+3. Copy the folders of include and lib included in the downloaded file to the target folder.
 
-3. Copy all of DLL files (*.dll) in the bin folder to the following folder.
+4. Copy all of DLL files (*.dll) in the bin folder to the following folder.
 
 |Files|Folder|
 |:-------|:----|
