@@ -118,8 +118,30 @@ std::deque<uint64_t> Codec::supportedChannelLayouts() const
     if (!m_raw)
         return channelLayouts;
 
+#if API_NEW_CHANNEL_LAYOUT
+    array_to_container(m_raw->ch_layouts, channelLayouts, [](auto& layout) {
+            static const AVChannelLayout zeroed{};
+            return !memcmp(&layout, &zeroed, sizeof(zeroed));
+        }, [](auto &layout) {
+            return layout.order == AV_CHANNEL_ORDER_NATIVE ? layout.u.mask : 0;
+        });
+#else
     array_to_container(m_raw->channel_layouts, channelLayouts, [](uint64_t layout) {
         return layout == 0;
+    });
+#endif
+
+    return channelLayouts;
+}
+
+std::deque<ChannelLayoutView> Codec::supportedChannelLayouts2() const
+{
+    deque<ChannelLayoutView> channelLayouts;
+    if (!m_raw)
+        return channelLayouts;
+
+    array_to_container(m_raw->ch_layouts, channelLayouts, [](const auto& layout) {
+        return layout.nb_channels == 0;
     });
 
     return channelLayouts;

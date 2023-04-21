@@ -17,6 +17,9 @@ LIBRARY_PATH := $(FFMPEG_LIBRARY_PATH)
 LINK_LIBRARY := $(FFMPEG_LINK_LIBRARY)
 INSTALL_DIR  := $(KVS_DIR)
 
+# warning: nested namespace definition
+CPPFLAGS += -Wno-c++17-extensions
+
 
 #=============================================================================
 #  Include build rule.
