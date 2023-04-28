@@ -6,7 +6,8 @@
 /*****************************************************************************/
 #pragma once
 #include <functional>
-#include <mpi.h>
+//#include <mpi.h>
+#include "MPI.h"
 
 
 namespace kvs

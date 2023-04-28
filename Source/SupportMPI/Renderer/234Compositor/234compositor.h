@@ -36,6 +36,10 @@
 
 // MPI Library
 #ifndef _MPI_INCLUDE
+// Disable C++ bindings
+#define OMPI_SKIP_MPICXX 1
+#define MPICH_SKIP_MPICXX 1
+#define MPI_NO_CPPBIND 1
 	#include <mpi.h>
 #endif
 
