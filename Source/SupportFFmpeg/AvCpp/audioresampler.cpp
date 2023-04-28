@@ -82,34 +82,9 @@ uint64_t AudioResampler::dstChannelLayout() const
     return m_dstChannelsLayout;
 }
 
-namespace {
-int get_nb_channels(uint64_t mask)
-{
-#if API_NEW_CHANNEL_LAYOUT
-    AVChannelLayout layout{};
-    av_channel_layout_from_mask(&layout, mask);
-    return layout.nb_channels;
-#else
-    return av_get_channel_layout_nb_channels(mask);
-#endif
-}
-
-int opt_set_channel_layout(void *obj, bool in, uint64_t mask)
-{
-#if API_NEW_CHANNEL_LAYOUT
-    AVChannelLayout layout{};
-    av_channel_layout_from_mask(&layout, mask);
-    return av_opt_set_chlayout(obj, in ? "in_chlayout" : "out_chlayout", &layout, 0);
-#else
-    return av_opt_set_channel_layout(obj, in ? "in_channel_layout" : "out_channel_layout", int64_t(mask), 0);
-#endif
-}
-
-} // anonymous
-
 int AudioResampler::dstChannels() const
 {
-    return get_nb_channels(m_dstChannelsLayout);
+    return av_get_channel_layout_nb_channels(m_dstChannelsLayout);
 }
 
 int AudioResampler::dstSampleRate() const
@@ -129,7 +104,7 @@ uint64_t AudioResampler::srcChannelLayout() const
 
 int AudioResampler::srcChannels() const
 {
-    return get_nb_channels(m_srcChannelsLayout);
+    return av_get_channel_layout_nb_channels(m_srcChannelsLayout);
 }
 
 int AudioResampler::srcSampleRate() const
@@ -380,7 +355,7 @@ bool AudioResampler::init(uint64_t dstChannelsLayout, int dstRate, SampleFormat 
     });
 
     /* set options */
-    sts = opt_set_channel_layout(m_raw, true, srcChannelsLayout);
+    sts = av_opt_set_channel_layout(m_raw, "in_channel_layout",     int64_t(srcChannelsLayout), 0);
     if (sts < 0)
         goto ffmpeg_internal_fails;
 
@@ -392,7 +367,7 @@ bool AudioResampler::init(uint64_t dstChannelsLayout, int dstRate, SampleFormat 
     if (sts < 0)
         goto ffmpeg_internal_fails;
 
-    sts = opt_set_channel_layout(m_raw, false, dstChannelsLayout);
+    sts = av_opt_set_channel_layout(m_raw, "out_channel_layout",    int64_t(dstChannelsLayout), 0);
     if (sts < 0)
         goto ffmpeg_internal_fails;
 

@@ -17,7 +17,6 @@ enum class Errors
     CodecStreamInvalid,
     CodecInvalidDirection,
     CodecAlreadyOpened,
-    CodecIsNotOpened,
     CodecInvalid,
     CodecNotOpened,
     CodecInvalidDecodeProc,

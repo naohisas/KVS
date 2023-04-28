@@ -117,7 +117,7 @@ VideoFrame::VideoFrame(const VideoFrame &other)
 }
 
 VideoFrame::VideoFrame(VideoFrame &&other)
-    : Frame<VideoFrame>(std::move(other))
+    : Frame<VideoFrame>(move(other))
 {
 }
 
@@ -128,7 +128,7 @@ VideoFrame &VideoFrame::operator=(const VideoFrame &rhs)
 
 VideoFrame &VideoFrame::operator=(VideoFrame &&rhs)
 {
-    return moveOperator(std::move(rhs));
+    return moveOperator(move(rhs));
 }
 
 PixelFormat VideoFrame::pixelFormat() const
@@ -247,16 +247,7 @@ int AudioSamples::init(SampleFormat sampleFormat, int samplesCount, uint64_t cha
 AudioSamples::AudioSamples(const uint8_t *data, size_t size, SampleFormat sampleFormat, int samplesCount, uint64_t channelLayout, int sampleRate, int align)
     : AudioSamples(sampleFormat, samplesCount, channelLayout, sampleRate, align)
 {
-    auto const channels = [](uint64_t mask) -> int {
-#if API_NEW_CHANNEL_LAYOUT
-        AVChannelLayout layout{};
-        av_channel_layout_from_mask(&layout, mask);
-        return layout.nb_channels;
-#else
-        return av_get_channel_layout_nb_channels(mask);
-#endif
-    } (channelLayout);
-
+    const auto channels = av_get_channel_layout_nb_channels(channelLayout);
     auto calcSize = sampleFormat.requiredBufferSize(channels, samplesCount, align);
 
     if (calcSize > size)
@@ -278,7 +269,7 @@ AudioSamples::AudioSamples(const AudioSamples &other)
 }
 
 AudioSamples::AudioSamples(AudioSamples &&other)
-    : Frame<AudioSamples>(std::move(other))
+    : Frame<AudioSamples>(move(other))
 {
 }
 
@@ -289,7 +280,7 @@ AudioSamples &AudioSamples::operator=(const AudioSamples &rhs)
 
 AudioSamples &AudioSamples::operator=(AudioSamples &&rhs)
 {
-    return moveOperator(std::move(rhs));
+    return moveOperator(move(rhs));
 }
 
 SampleFormat AudioSamples::sampleFormat() const
@@ -334,25 +325,11 @@ string AudioSamples::channelsLayoutString() const
     if (!m_raw)
         return "";
     char buf[128] = {0};
-#if API_NEW_CHANNEL_LAYOUT
-    av_channel_layout_describe(&m_raw->ch_layout, buf, sizeof(buf));
-#else
     av_get_channel_layout_string(buf,
                                  sizeof(buf),
                                  av::frame::get_channels(m_raw),
                                  av::frame::get_channel_layout(m_raw));
-#endif
     return string(buf);
-}
-
-void frame::priv::channel_layout_copy(AVFrame &dst, const AVFrame &src)
-{
-#if API_NEW_CHANNEL_LAYOUT
-    av_channel_layout_copy(&dst.ch_layout, &src.ch_layout);
-#else
-    dst.channel_layout = src.channel_layout;
-    dst.channels       = src.channels;
-#endif
 }
 
 } // ::av
