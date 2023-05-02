@@ -99,6 +99,10 @@
 + kvs::ColorMap::setColorSpaceToHSL()
 + kvs::ColorMap::setPoints( const std::list<std::pair<float,kvs::RGBColor>>& )
 + kvs::ColorMap::setPoints( const std::list<kvs::RGBColor>& )
++ kvs::OpacityMap::setPoints( const std::list<std::pair<float,float>>& )
++ kvs::OpacityMap::setPoints( const std::list<float>& )
++ kvs::OpacityMap::clearPoints()
++ kvs::OpacityMap::reversePoints()
 
 **Added new function**
 + kvs::OpenGL::TypeOf<T>()

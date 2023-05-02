@@ -29,7 +29,6 @@ public:
     static void SetDefaultColorMap( ColorMapFunction func );
 
     static kvs::ColorMap Rainbow( const size_t resolution = 256 );
-
     static kvs::ColorMap CoolWarm( const size_t resolution = 256 );
     static kvs::ColorMap BrewerBrBG( const size_t resolution = 256 );
     static kvs::ColorMap BrewerPiYG( const size_t resolution = 256 );
@@ -40,7 +39,6 @@ public:
     static kvs::ColorMap BrewerRdYlBu( const size_t resolution = 256 );
     static kvs::ColorMap BrewerRdYlGn( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSpectral( const size_t resolution = 256 );
-
     static kvs::ColorMap Viridis( const size_t resolution = 256 );
     static kvs::ColorMap Plasma( const size_t resolution = 256 );
     static kvs::ColorMap Inferno( const size_t resolution = 256 );

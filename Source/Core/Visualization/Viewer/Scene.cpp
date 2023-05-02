@@ -173,8 +173,8 @@ void Scene::removeObject( int object_id, bool delete_object, bool delete_rendere
 /*===========================================================================*/
 void Scene::removeObject( std::string object_name, bool delete_object, bool delete_renderer )
 {
-    const kvs::ObjectBase* object = m_object_manager->object( object_name );
-    const int object_id = m_object_manager->objectID( object );
+    const auto* object = m_object_manager->object( object_name );
+    const auto object_id = m_object_manager->objectID( object );
     this->removeObject( object_id, delete_object, delete_renderer );
 }
 

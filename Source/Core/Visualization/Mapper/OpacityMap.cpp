@@ -9,80 +9,8 @@
 #include <kvs/Math>
 
 
-namespace
-{
-
-const size_t Resolution = 256;
-
-struct Equal
-{
-    float value;
-
-    Equal( const float v ) : value( v ){}
-
-    bool operator() ( const kvs::OpacityMap::Point& point ) const
-    {
-        return kvs::Math::Equal( point.first, value );
-    }
-};
-
-struct Less
-{
-    bool operator() ( const kvs::OpacityMap::Point& p1, const kvs::OpacityMap::Point& p2 ) const
-    {
-        return p1.first < p2.first;
-    }
-};
-
-} // end of namespace
-
-
 namespace kvs
 {
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new OpacityMap class.
- */
-/*==========================================================================*/
-OpacityMap::OpacityMap():
-    m_resolution( ::Resolution ),
-    m_min_value( 0.0f ),
-    m_max_value( 0.0f ),
-    m_points(),
-    m_table()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new OpacityMap class.
- *  @param  resolution [in] table resolution
- */
-/*===========================================================================*/
-OpacityMap::OpacityMap( const size_t resolution ):
-    m_resolution( resolution ),
-    m_min_value( 0.0f ),
-    m_max_value( 0.0f ),
-    m_points(),
-    m_table()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new OpacityMap class.
- *  @param  table [in] opacity table
- */
-/*===========================================================================*/
-OpacityMap::OpacityMap( const Table& table ):
-    m_resolution( table.size() ),
-    m_min_value( 0.0f ),
-    m_max_value( 0.0f ),
-    m_points(),
-    m_table( table )
-{
-}
 
 /*==========================================================================*/
 /**
@@ -118,21 +46,6 @@ OpacityMap::OpacityMap( const OpacityMap::Table& table, const float min_value, c
 {
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new OpacityMap class.
- *  @param  opacity_map [in] opacity map
- */
-/*==========================================================================*/
-OpacityMap::OpacityMap( const OpacityMap& other ):
-    m_resolution( other.m_resolution ),
-    m_min_value( other.m_min_value ),
-    m_max_value( other.m_max_value ),
-    m_points( other.m_points ),
-    m_table( other.m_table )
-{
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Returns true if the range is specified.
@@ -142,6 +55,24 @@ OpacityMap::OpacityMap( const OpacityMap& other ):
 bool OpacityMap::hasRange() const
 {
     return !kvs::Math::Equal( m_min_value, m_max_value );
+}
+
+void OpacityMap::setPoints( const std::list<float>& opacities )
+{
+    const size_t nopacities = opacities.size();
+    const float stride = 1.0f / ( nopacities - 1 );
+
+    this->addPoint( 0.0f, opacities.front() ); // start point
+    auto opacity = opacities.begin(); opacity++;
+    auto end = opacities.end(); end--;
+    size_t index = 1;
+    while ( opacity != end )
+    {
+        const float value = kvs::Math::Round( m_resolution * stride * index );
+        this->addPoint( value, *opacity );
+        opacity++; index++;
+    }
+    this->addPoint( float( m_resolution - 1 ), opacities.back() ); // end point
 }
 
 /*===========================================================================*/
@@ -164,7 +95,7 @@ void OpacityMap::addPoint( const float value, const float opacity )
 /*===========================================================================*/
 void OpacityMap::removePoint( const float value )
 {
-    m_points.remove_if( ::Equal( value ) );
+    m_points.remove_if( [ value ]( Point& p ) { return kvs::Math::Equal( p.first, value ); } );
 }
 
 /*==========================================================================*/
@@ -193,7 +124,7 @@ void OpacityMap::create()
     }
     else
     {
-        m_points.sort( ::Less() );
+        m_points.sort( [] ( const Point& p1, const Point& p2 ) { return p1.first < p2.first; } );
 
         if ( m_points.front().first > min_value ) this->addPoint( min_value, 0.0f );
         if ( m_points.back().first < max_value ) this->addPoint( max_value, 1.0f );
