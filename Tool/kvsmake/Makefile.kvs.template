@@ -244,10 +244,10 @@ $(TARGET_OCL): $(OBJECTS)
 	$(CC) -c $(CFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
 %.o: %.f
-	$(FC) -c $< $(INCLUDE_PATH)
+	$(FC) -c $(FCFLAGS) $< $(INCLUDE_PATH)
 
 %.o: %.f90
-	$(FC) -c $< $(INCLUDE_PATH)
+	$(FC) -c $(FCFLAGS) $< $(INCLUDE_PATH)
 
 %.o: %.f95
 	$(FC) -c $< $(INCLUDE_PATH)

@@ -458,7 +458,7 @@ ifeq "$(KVS_SUPPORT_OPENCV)" "1"
     OPENCV_LIBRARY_PATH := `pkg-config --libs-only-L opencv`
     OPENCV_LINK_LIBRARY := `pkg-config --libs opencv`
   else
-    OPENCV_INCLUDE_PATH := `pkg-config --cflags opencv4` -std=c++14 -DKVS_OPENCV4
+    OPENCV_INCLUDE_PATH := `pkg-config --cflags opencv4` -DKVS_OPENCV4
     OPENCV_LIBRARY_PATH := `pkg-config --libs-only-L opencv4`
     OPENCV_LINK_LIBRARY := `pkg-config --libs opencv4`
   endif
@@ -548,6 +548,8 @@ endif
 #=============================================================================
 #  Compiler option.
 #=============================================================================
+
+# C++ compiler
 CPPFLAGS :=
 
 # For Fujitsu C++ compiler (FCC/mpiFCC/FCCpx/mpiFCCpx)
@@ -597,20 +599,55 @@ else
   endif
 endif
 
+# Fortran compiler
+FCFLAGS :=
+
+# For Fujitsu Fortran compiler (frt/mpifrt/frtpx/mpifrtpx)
+ifeq ($(KVS_FC),$(findstring $(KVS_FC),frt mpifrt frtpx mpifrtpx))
+  ifdef DEBUG
+    FCFLAGS += -O0 -g
+  else
+    FCFLAGS += -O3
+  endif
+
+# For Intel Fortran compiler (ifort/mpiifort)
+else ifeq ($(KVS_FC),$(findstring $(KVS_FC),ifort mpiifort))
+  ifdef DEBUG
+    FCFLAGS += -O0 -g
+  else
+    FCFLAGS += -O3
+  endif
+
+# For gfrtran
+else
+  ifdef DEBUG
+    FCFLAGS += -O0 -ggdb3
+  else
+    FCFLAGS += -O3
+  endif
+endif
+
+
 # OpenMP
 ifeq "$(KVS_ENABLE_OPENMP)" "1"
   # For Fujitsu C++ compiler (FCCpx/mpiFCCpx)
   ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCCpx mpiFCCpx))
     CPPFLAGS += -Kopenmp
+  # For Fujitsu Fortran compiler (frt/mpifrt/frtpx/mpifrtpx)
+  else ifeq ($(KVS_FC),$(findstring $(KVS_FC),frt mpifrt frtpx mpifrtpx))
+    FCFLAGS += -Kopenmp
   # For Intel C++ compiler (icpc mpiicpc)
   else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
     CPPFLAGS += -qopenmp
-  # For g++
+  # For Intel Fortran compiler (ifort/mpiifort)
+  else ifeq ($(KVS_FC),$(findstring $(KVS_FC),ifort mpiifort))
+    FCFLAGS += -qopenmp
+  # For g++/gfortran
   else
     CPPFLAGS += -fopenmp
+    FCFLAGS += -fopenmp
   endif
 endif
-
 
 #=============================================================================
 #  Definition.
