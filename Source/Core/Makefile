@@ -20,6 +20,10 @@ INSTALL_DIR  := $(KVS_DIR)
 INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
 INCLUDE_PATH += $(GL_INCLUDE_PATH)
 
+INCLUDE_PATH += $(OPENMP_INCLUDE_PATH)
+LIBRARY_PATH += $(OPENMP_LIBRARY_PATH)
+LINK_LIBRARY += $(OPENMP_LINK_LIBRARY)
+
 
 #=============================================================================
 #  Include build rule.

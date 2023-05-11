@@ -17,10 +17,10 @@ LIBRARY_PATH := -L../../Source/Core/$(OUTDIR)
 LINK_LIBRARY := -lkvsCore
 INSTALL_DIR  := $(KVS_DIR)
 
-
 INCLUDE_PATH += $(OPENMP_INCLUDE_PATH)
 LIBRARY_PATH += $(OPENMP_LIBRARY_PATH)
 LINK_LIBRARY += $(OPENMP_LINK_LIBRARY)
+
 
 #=============================================================================
 #  Project name.

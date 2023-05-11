@@ -302,7 +302,15 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
       OPENMP_LINK_LIBRARY += -liomp5
     # For g++
     else
-      OPENMP_LINK_LIBRARY += -lgomp
+      ifeq "$(shell uname -s)" "Darwin"
+        ifeq ($(findstring clang, $(shell $(KVS_CPP) --version)),clang)
+          OPENMP_LINK_LIBRARY += -lomp
+        else
+          OPENMP_LINK_LIBRARY += -lgomp
+        endif
+      else
+        OPENMP_LINK_LIBRARY += -lgomp
+      endif
     endif
   endif
 endif
@@ -644,6 +652,13 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
     FCFLAGS += -qopenmp
   # For g++/gfortran
   else
+     # For g++/gfortran
+    ifeq "$(shell uname -s)" "Darwin"
+      ifeq ($(findstring clang, $(shell $(KVS_CPP) --version)),clang)
+        CPPFLAGS += -Xpreprocessor
+        FCFLAGS += -Xpreprocessor
+      endif
+    endif
     CPPFLAGS += -fopenmp
     FCFLAGS += -fopenmp
   endif

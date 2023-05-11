@@ -17,6 +17,10 @@ LIBRARY_PATH := $(MPI_LIBRARY_PATH)
 LINK_LIBRARY := $(MPI_LINK_LIBRARY)
 INSTALL_DIR  := $(KVS_DIR)
 
+INCLUDE_PATH += $(OPENMP_INCLUDE_PATH)
+LIBRARY_PATH += $(OPENMP_LIBRARY_PATH)
+LINK_LIBRARY += $(OPENMP_LINK_LIBRARY)
+
 
 #=============================================================================
 #  Include build rule.
