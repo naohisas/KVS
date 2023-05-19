@@ -39,6 +39,12 @@ public:
     static kvs::ColorMap BrewerRdYlBu( const size_t resolution = 256 );
     static kvs::ColorMap BrewerRdYlGn( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSpectral( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerSingleHueGreys( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerSingleHueGreens( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerSingleHueBlues( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerSingleHueReds( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerSingleHuePurples( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerSingleHueOranges( const size_t resolution = 256 );
     static kvs::ColorMap Viridis( const size_t resolution = 256 );
     static kvs::ColorMap Plasma( const size_t resolution = 256 );
     static kvs::ColorMap Inferno( const size_t resolution = 256 );

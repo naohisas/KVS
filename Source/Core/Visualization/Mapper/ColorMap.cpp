@@ -421,6 +421,217 @@ kvs::ColorMap ColorMap::BrewerSpectral( const size_t resolution )
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns ColorBrewer sequential (single-hue) grey colormap.
+ *  @param  resolution [in] table resolution
+ *  @return single-hue grey colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerSingleHueGreys( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 255, 255, 255 },
+        { 240, 240, 240 },
+        { 217, 217, 217 },
+        { 189, 189, 189 },
+        { 150, 150, 150 },
+        { 115, 115, 115 },
+        {  82,  82,  82 },
+        {  37,  37,  37 },
+        {   0,   0,   0 }
+    };
+    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer sequential (single-hue) green colormap.
+ *  @param  resolution [in] table resolution
+ *  @return single-hue green colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerSingleHueGreens( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 247, 252, 245 },
+        { 229, 245, 224 },
+        { 199, 233, 192 },
+        { 161, 217, 155 },
+        { 116, 196, 118 },
+        {  65, 171,  93 },
+        {  35, 139,  69 },
+        {   0, 109,  44 },
+        {   0,  68,  27 }
+    };
+    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer sequential (single-hue) blue colormap.
+ *  @param  resolution [in] table resolution
+ *  @return single-hue blue colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerSingleHueBlues( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 247, 251, 255 },
+        { 222, 235, 247 },
+        { 198, 219, 239 },
+        { 158, 202, 225 },
+        { 107, 174, 214 },
+        {  66, 146, 198 },
+        {  33, 113, 181 },
+        {   8,  81, 156 },
+        {   8,  48, 107 }
+    };
+    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer sequential (single-hue) red colormap.
+ *  @param  resolution [in] table resolution
+ *  @return single-hue red colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerSingleHueReds( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 255, 245, 240 },
+        { 254, 224, 210 },
+        { 252, 187, 161 },
+        { 252, 146, 114 },
+        { 251, 106,  74 },
+        { 239,  59,  44 },
+        { 203,  24,  29 },
+        { 165,  15,  21 },
+        { 103,   0,  13 }
+    };
+    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer sequential (single-hue) purple colormap.
+ *  @param  resolution [in] table resolution
+ *  @return single-hue purple colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerSingleHuePurples( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 252, 251, 253 },
+        { 239, 237, 245 },
+        { 218, 218, 235 },
+        { 188, 189, 220 },
+        { 158, 154, 200 },
+        { 128, 125, 186 },
+        { 106,  81, 163 },
+        {  84,  39, 143 },
+        {  63,   0, 125 }
+    };
+    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns ColorBrewer sequential (single-hue) orange colormap.
+ *  @param  resolution [in] table resolution
+ *  @return single-hue orange colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] C.A.Brewer, "Color use guidelines for mapping", visualization in modern
+ *      cartography, pp.123–148, 1994. DOI: 10.1117/12.175328
+ *      http://colorbrewer2.org
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::BrewerSingleHueOranges( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 255, 245, 235 },
+        { 254, 230, 206 },
+        { 253, 208, 162 },
+        { 253, 174, 107 },
+        { 253, 141,  60 },
+        { 241, 105,  19 },
+        { 217,  72,   1 },
+        { 166,  54,   3 },
+        { 127,  39,   4 }
+    };
+    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Returns viridis colormap.
  *  @param  resolution [in] table resolution
  *  @return viridis colormap

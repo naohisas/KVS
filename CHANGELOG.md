@@ -99,6 +99,12 @@
 + kvs::ColorMap::setColorSpaceToHSL()
 + kvs::ColorMap::setPoints( const std::list<std::pair<float,kvs::RGBColor>>& )
 + kvs::ColorMap::setPoints( const std::list<kvs::RGBColor>& )
++ kvs::ColorMap::BrewerSingleHueGreys( resolution );
++ kvs::ColorMap::BrewerSingleHueGreens( resolution );
++ kvs::ColorMap::BrewerSingleHueBlues( resolution );
++ kvs::ColorMap::BrewerSingleHueReds( resolution );
++ kvs::ColorMap::BrewerSingleHuePurples( resolution );
++ kvs::ColorMap::BrewerSingleHueOranges( resolution );
 + kvs::OpacityMap::setPoints( const std::list<std::pair<float,float>>& )
 + kvs::OpacityMap::setPoints( const std::list<float>& )
 + kvs::OpacityMap::clearPoints()
