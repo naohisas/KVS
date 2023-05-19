@@ -445,7 +445,7 @@ kvs::ColorMap ColorMap::BrewerSingleHueGreys( const size_t resolution )
         {  37,  37,  37 },
         {   0,   0,   0 }
     };
-    colors.reverse();
+    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -480,7 +480,7 @@ kvs::ColorMap ColorMap::BrewerSingleHueGreens( const size_t resolution )
         {   0, 109,  44 },
         {   0,  68,  27 }
     };
-    colors.reverse();
+    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -515,7 +515,7 @@ kvs::ColorMap ColorMap::BrewerSingleHueBlues( const size_t resolution )
         {   8,  81, 156 },
         {   8,  48, 107 }
     };
-    colors.reverse();
+    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -550,7 +550,7 @@ kvs::ColorMap ColorMap::BrewerSingleHueReds( const size_t resolution )
         { 165,  15,  21 },
         { 103,   0,  13 }
     };
-    colors.reverse();
+    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -585,7 +585,7 @@ kvs::ColorMap ColorMap::BrewerSingleHuePurples( const size_t resolution )
         {  84,  39, 143 },
         {  63,   0, 125 }
     };
-    colors.reverse();
+    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -621,7 +621,7 @@ kvs::ColorMap ColorMap::BrewerSingleHueOranges( const size_t resolution )
         { 166,  54,   3 },
         { 127,  39,   4 }
     };
-    colors.reverse();
+    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
