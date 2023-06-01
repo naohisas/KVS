@@ -55,6 +55,11 @@ Rendering driver
 - llvmpipe: LLVM optimized Gallium driver. Very fast but LLVM is required. Recommended.
 - swr: Intel CPU optimized Gallium driver (known as OpenSWR). Very fast. Recommended if you use Intel CPUs.
 
+For Mac, several packages need to be installed with homebrew before cmpiling OSMesa as follows:
+```sh
+$ brew install cmake libtool automake autoreconf
+```
+
 5. Compile and install OSMesa.
 
 ```sh
