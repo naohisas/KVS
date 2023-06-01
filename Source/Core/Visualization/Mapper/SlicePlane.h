@@ -30,23 +30,25 @@ class SlicePlane : public kvs::MapperBase, public kvs::PolygonObject
     kvsModuleSuperClass( kvs::PolygonObject );
 
 private:
-    kvs::Vec4 m_coefficients; ///< coeficients of a slice plane
+    kvs::Vec4 m_coef{ 0.0f, 0.0f, 0.0f, 0.0f }; ///< coeficients of a slice plane
 
 public:
-    SlicePlane();
+    SlicePlane() = default;
+    virtual ~SlicePlane() = default;
+
     SlicePlane(
         const kvs::VolumeObjectBase* volume,
         const kvs::Vec4& coefficients,
         const kvs::TransferFunction& transfer_function );
+
     SlicePlane(
         const kvs::VolumeObjectBase* volume,
         const kvs::Vec3& point,
         const kvs::Vec3& normal,
         const kvs::TransferFunction& transfer_function );
-    virtual ~SlicePlane();
 
-    void setPlane( const kvs::Vec4& coefficients );
-    void setPlane( const kvs::Vec3& point, const kvs::Vec3& normal );
+    void setPlane( const kvs::Vec4& coef ) { m_coef = coef; }
+    void setPlane( const kvs::Vec3& point, const kvs::Vec3& normal ) { m_coef = { normal, -point.dot( normal ) }; }
 
     SuperClass* exec( const kvs::ObjectBase* object );
 

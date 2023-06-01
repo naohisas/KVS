@@ -26,11 +26,11 @@ class Isosurface : public kvs::MapperBase, public kvs::PolygonObject
     kvsModuleSuperClass( kvs::PolygonObject );
 
 private:
-    double m_isolevel; ///< isosurface level
-    bool m_duplication; ///< duplication flag
+    double m_isolevel = 0.0; ///< isosurface level
+    bool m_duplication = true; ///< duplication flag
 
 public:
-    Isosurface();
+    Isosurface() = default;
     Isosurface(
         const kvs::VolumeObjectBase* volume,
         const SuperClass::NormalType normal_type = SuperClass::PolygonNormal );
@@ -44,7 +44,7 @@ public:
         const SuperClass::NormalType normal_type,
         const bool duplication,
         const kvs::TransferFunction& transfer_function );
-    virtual ~Isosurface();
+    virtual ~Isosurface() = default;
 
     void setIsolevel( const double isolevel ) { m_isolevel = isolevel; }
 

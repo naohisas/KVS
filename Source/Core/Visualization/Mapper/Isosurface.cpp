@@ -16,19 +16,6 @@
 namespace kvs
 {
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Isosurface class.
- */
-/*==========================================================================*/
-Isosurface::Isosurface():
-    kvs::MapperBase(),
-    kvs::PolygonObject(),
-    m_isolevel( 0 ),
-    m_duplication( true )
-{
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Isosurface class.
@@ -40,8 +27,7 @@ Isosurface::Isosurface(
     const kvs::VolumeObjectBase* volume,
     const SuperClass::NormalType normal_type ):
     kvs::MapperBase(),
-    kvs::PolygonObject(),
-    m_duplication( true )
+    kvs::PolygonObject()
 {
     SuperClass::setNormalType( normal_type );
 
@@ -68,12 +54,11 @@ Isosurface::Isosurface(
 /*===========================================================================*/
 Isosurface::Isosurface(
     const kvs::VolumeObjectBase* volume,
-    const double                 isolevel,
-    const NormalType             normal_type ):
+    const double isolevel,
+    const NormalType normal_type ):
     kvs::MapperBase(),
     kvs::PolygonObject(),
-    m_isolevel( isolevel ),
-    m_duplication( true )
+    m_isolevel( isolevel )
 {
     SuperClass::setNormalType( normal_type );
 
@@ -99,9 +84,9 @@ Isosurface::Isosurface(
 /*==========================================================================*/
 Isosurface::Isosurface(
     const kvs::VolumeObjectBase* volume,
-    const double                 isolevel,
-    const NormalType             normal_type,
-    const bool                   duplication,
+    const double isolevel,
+    const NormalType normal_type,
+    const bool duplication,
     const kvs::TransferFunction& transfer_function ):
     kvs::MapperBase( transfer_function ),
     kvs::PolygonObject(),
@@ -120,15 +105,6 @@ Isosurface::Isosurface(
     this->exec( volume );
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Destroys the Isosurface class.
- */
-/*==========================================================================*/
-Isosurface::~Isosurface()
-{
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Executes the mapper process.
@@ -145,7 +121,7 @@ Isosurface::SuperClass* Isosurface::exec( const kvs::ObjectBase* object )
         return NULL;
     }
 
-    const kvs::VolumeObjectBase* volume = kvs::VolumeObjectBase::DownCast( object );
+    const auto* volume = kvs::VolumeObjectBase::DownCast( object );
     if ( !volume )
     {
         BaseClass::setSuccess( false );
@@ -176,8 +152,7 @@ void Isosurface::mapping( const kvs::VolumeObjectBase* volume )
 
     if ( volume->volumeType() == kvs::VolumeObjectBase::Structured )
     {
-        const kvs::StructuredVolumeObject* structured_volume =
-            kvs::StructuredVolumeObject::DownCast( volume );
+        const auto* structured_volume = kvs::StructuredVolumeObject::DownCast( volume );
 
         kvs::PolygonObject* polygon = new kvs::MarchingCubes(
             structured_volume,
@@ -213,8 +188,7 @@ void Isosurface::mapping( const kvs::VolumeObjectBase* volume )
     }
     else // volume->volumeType() == kvs::VolumeObjectBase::Unstructured
     {
-        const kvs::UnstructuredVolumeObject* unstructured_volume =
-            kvs::UnstructuredVolumeObject::DownCast( volume );
+        const auto* unstructured_volume = kvs::UnstructuredVolumeObject::DownCast( volume );
 
         switch ( unstructured_volume->cellType() )
         {

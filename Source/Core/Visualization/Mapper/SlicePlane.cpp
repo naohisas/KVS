@@ -17,17 +17,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  Constructs a new SlicePlane class.
- */
-/*==========================================================================*/
-SlicePlane::SlicePlane():
-    kvs::MapperBase(),
-    kvs::PolygonObject()
-{
-}
-
-/*==========================================================================*/
-/**
  *  Constructs and creates a polygon object.
  *  @param volume [in] pointer to the volume object
  *  @param coefficients [in] coefficients of the plane
@@ -64,38 +53,6 @@ SlicePlane::SlicePlane(
 {
     this->setPlane( point, normal );
     this->exec( volume );
-}
-
-/*==========================================================================*/
-/**
- *  Destructs.
- */
-/*==========================================================================*/
-SlicePlane::~SlicePlane()
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets the plane by coeffients of the plane equation.
- *  @param  coefficients [in] coefficients of the plane equation
- */
-/*===========================================================================*/
-void SlicePlane::setPlane( const kvs::Vec4& coefficients )
-{
-    m_coefficients = coefficients;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Sets the plane by a point and a normal vector.
- *  @param  point  [in] position of any point on the plane
- *  @param  normal [in] normal vector of the plane
- */
-/*===========================================================================*/
-void SlicePlane::setPlane( const kvs::Vec3& point, const kvs::Vec3& normal )
-{
-    m_coefficients = kvs::Vec4( normal, -point.dot( normal ) );
 }
 
 /*===========================================================================*/
@@ -209,6 +166,14 @@ void SlicePlane::extract_plane(
     const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
     const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
 
+    const auto min_coord = volume->minObjectCoord();
+    const auto max_coord = volume->maxObjectCoord();
+    const auto scale_factor = ( max_coord - min_coord ) / kvs::Vec3{ ncells };
+    auto scale_coord = [&] ( const kvs::Vec3& coord )
+    {
+        return ( coord + min_coord ) * scale_factor;
+    };
+
     // Extract surfaces.
     size_t index = 0;
     for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
@@ -263,17 +228,17 @@ void SlicePlane::extract_plane(
 
                     // Calculate coordinates of the vertices which are composed
                     // of the triangle polygon.
-                    const kvs::Vec3 vertex0( this->interpolate_vertex( v0, v1 ) );
+                    const kvs::Vec3 vertex0( scale_coord( this->interpolate_vertex( v0, v1 ) ) );
                     coords.push_back( vertex0.x() );
                     coords.push_back( vertex0.y() );
                     coords.push_back( vertex0.z() );
 
-                    const kvs::Vec3 vertex1( this->interpolate_vertex( v2, v3 ) );
+                    const kvs::Vec3 vertex1( scale_coord( this->interpolate_vertex( v2, v3 ) ) );
                     coords.push_back( vertex1.x() );
                     coords.push_back( vertex1.y() );
                     coords.push_back( vertex1.z() );
 
-                    const kvs::Vec3 vertex2( this->interpolate_vertex( v4, v5 ) );
+                    const kvs::Vec3 vertex2( scale_coord( this->interpolate_vertex( v4, v5 ) ) );
                     coords.push_back( vertex2.x() );
                     coords.push_back( vertex2.y() );
                     coords.push_back( vertex2.z() );
@@ -987,10 +952,10 @@ float SlicePlane::substitute_plane_equation(
     const size_t z ) const
 {
     return
-        m_coefficients.x() * x +
-        m_coefficients.y() * y +
-        m_coefficients.z() * z +
-        m_coefficients.w();
+        m_coef.x() * x +
+        m_coef.y() * y +
+        m_coef.z() * z +
+        m_coef.w();
 }
 
 /*==========================================================================*/
@@ -1004,10 +969,10 @@ float SlicePlane::substitute_plane_equation(
     const kvs::Vec3& vertex ) const
 {
     return
-        m_coefficients.x() * vertex.x() +
-        m_coefficients.y() * vertex.y() +
-        m_coefficients.z() * vertex.z() +
-        m_coefficients.w();
+        m_coef.x() * vertex.x() +
+        m_coef.y() * vertex.y() +
+        m_coef.z() * vertex.z() +
+        m_coef.w();
 }
 
 /*==========================================================================*/

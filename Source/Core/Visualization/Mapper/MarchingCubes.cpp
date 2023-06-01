@@ -157,6 +157,14 @@ void MarchingCubes::extract_surfaces_with_duplication(
     const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
     const kvs::UInt32 slice_size( volume->numberOfNodesPerSlice() );
 
+    const auto min_coord = volume->minObjectCoord();
+    const auto max_coord = volume->maxObjectCoord();
+    const auto scale_factor = ( max_coord - min_coord ) / kvs::Vec3{ ncells };
+    auto scale_coord = [&] ( const kvs::Vec3& coord )
+    {
+        return ( coord + min_coord ) * scale_factor;
+    };
+
     // Extract surfaces.
     size_t index = 0;
     size_t local_index[8];
@@ -223,17 +231,17 @@ void MarchingCubes::extract_surfaces_with_duplication(
 
                     // Calculate coordinates of the vertices which are composed
                     // of the triangle polygon.
-                    const kvs::Vec3 vertex0( this->interpolate_vertex<T>( v0, v1 ) );
+                    const kvs::Vec3 vertex0( scale_coord( this->interpolate_vertex<T>( v0, v1 ) ) );
                     coords.push_back( vertex0.x() );
                     coords.push_back( vertex0.y() );
                     coords.push_back( vertex0.z() );
 
-                    const kvs::Vec3 vertex1( this->interpolate_vertex<T>( v2, v3 ) );
+                    const kvs::Vec3 vertex1( scale_coord( this->interpolate_vertex<T>( v2, v3 ) ) );
                     coords.push_back( vertex1.x() );
                     coords.push_back( vertex1.y() );
                     coords.push_back( vertex1.z() );
 
-                    const kvs::Vec3 vertex2( this->interpolate_vertex<T>( v4, v5 ) );
+                    const kvs::Vec3 vertex2( scale_coord( this->interpolate_vertex<T>( v4, v5 ) ) );
                     coords.push_back( vertex2.x() );
                     coords.push_back( vertex2.y() );
                     coords.push_back( vertex2.z() );
@@ -394,6 +402,14 @@ void MarchingCubes::calculate_isopoints(
     const kvs::UInt32 slice_size( volume->numberOfNodesPerSlice() );
     const double isolevel = m_isolevel;
 
+    const auto min_coord = volume->minObjectCoord();
+    const auto max_coord = volume->maxObjectCoord();
+    const auto scale_factor = ( max_coord - min_coord ) / kvs::Vec3{ ncells };
+    auto scale_coord = [&] ( const kvs::Vec3& coord )
+    {
+        return ( coord + min_coord ) * scale_factor;
+    };
+
     kvs::UInt32 nisopoints = 0;
     size_t index = 0;
     for ( kvs::UInt32 z = 0; z < resolution.z(); ++z )
@@ -414,7 +430,7 @@ void MarchingCubes::calculate_isopoints(
                     {
                         const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
                         const kvs::Vec3 v2( static_cast<float>(x+1), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vec3 isopoint( this->interpolate_vertex<T>( v1, v2 ) );
+                        const kvs::Vec3 isopoint( scale_coord( this->interpolate_vertex<T>( v1, v2 ) ) );
 
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
@@ -431,7 +447,7 @@ void MarchingCubes::calculate_isopoints(
                     {
                         const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
                         const kvs::Vec3 v2( static_cast<float>(x), static_cast<float>(y+1), static_cast<float>(z) );
-                        const kvs::Vec3 isopoint( this->interpolate_vertex<T>( v1, v2 ) );
+                        const kvs::Vec3 isopoint( scale_coord( this->interpolate_vertex<T>( v1, v2 ) ) );
 
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
@@ -448,7 +464,7 @@ void MarchingCubes::calculate_isopoints(
                     {
                         const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
                         const kvs::Vec3 v2( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z+1) );
-                        const kvs::Vec3 isopoint( this->interpolate_vertex<T>( v1, v2 ) );
+                        const kvs::Vec3 isopoint( scale_coord( this->interpolate_vertex<T>( v1, v2 ) ) );
 
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
