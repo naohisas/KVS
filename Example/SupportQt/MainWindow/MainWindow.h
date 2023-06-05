@@ -5,6 +5,7 @@
  */
 /*****************************************************************************/
 #pragma once
+#include <kvs/qt/Qt>
 #include <kvs/qt/Screen>
 #include <kvs/StructuredVolumeObject>
 #include <kvs/StructuredVolumeImporter>
@@ -53,15 +54,15 @@ public:
         delete m_file_menu;
     }
 
-private slots:
-    void open()
+private:
+    Q_SLOT void open()
     {
         QFileDialog* dialog = new QFileDialog( this, "Open file ...", QDir::homePath() );
         if ( dialog->exec() )
         {
-            typedef kvs::StructuredVolumeImporter Importer;
-            typedef kvs::StructuredVolumeObject Object;
-            typedef kvs::glsl::RayCastingRenderer Renderer;
+            using Importer = kvs::StructuredVolumeImporter;
+            using Object = kvs::StructuredVolumeObject;
+            using Renderer = kvs::glsl::RayCastingRenderer;
 
             std::string object_name = "Object";
             if ( m_screen->scene()->hasObject( object_name ) )
