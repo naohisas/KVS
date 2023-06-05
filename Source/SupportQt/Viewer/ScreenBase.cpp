@@ -219,6 +219,8 @@ void ScreenBase::create()
         // User specified geometry.
         QWidget::setGeometry( BaseClass::x(), BaseClass::y(), BaseClass::width(), BaseClass::height() );
     }
+
+    QWidget::setVisible( true );
 }
 
 /*===========================================================================*/
