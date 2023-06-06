@@ -370,13 +370,13 @@ void ColorPalette::draw_selected_color_value()
     const float s = this->get_S_value();
     const float v = this->get_V_value();
 
-    char R[10]; sprintf( R, "R: %3d", r );
-    char G[10]; sprintf( G, "G: %3d", g );
-    char B[10]; sprintf( B, "B: %3d", b );
+    char R[10]; snprintf( R, sizeof(R), "R: %3d", r );
+    char G[10]; snprintf( G, sizeof(G), "G: %3d", g );
+    char B[10]; snprintf( B, sizeof(B), "B: %3d", b );
 
-    char H[10]; sprintf( H, "H: %3d", static_cast<int>( h * 255.0f + 0.5f ) );
-    char S[10]; sprintf( S, "S: %3d", static_cast<int>( s * 255.0f + 0.5f ) );
-    char V[10]; sprintf( V, "V: %3d", static_cast<int>( v * 255.0f + 0.5f ) );
+    char H[10]; snprintf( H, sizeof(H), "H: %3d", static_cast<int>( h * 255.0f + 0.5f ) );
+    char S[10]; snprintf( S, sizeof(S), "S: %3d", static_cast<int>( s * 255.0f + 0.5f ) );
+    char V[10]; snprintf( V, sizeof(V), "V: %3d", static_cast<int>( v * 255.0f + 0.5f ) );
 
     int x = m_selected_color_box.x0();
     int y = m_selected_color_box.y1() + 10;

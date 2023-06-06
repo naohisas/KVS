@@ -150,9 +150,9 @@ const Time& Time::now()
 
 std::string Time::toString( const std::string sep ) const
 {
-    char h[3]; sprintf( h, "%02d", m_hour );
-    char m[3]; sprintf( m, "%02d", m_minute );
-    char s[3]; sprintf( s, "%02d", m_second );
+    char h[3]; snprintf( h, sizeof(h), "%02d", m_hour );
+    char m[3]; snprintf( m, sizeof(m), "%02d", m_minute );
+    char s[3]; snprintf( s, sizeof(s), "%02d", m_second );
 
     return std::string( h ) + sep + std::string( m ) + sep + std::string( s );
 }

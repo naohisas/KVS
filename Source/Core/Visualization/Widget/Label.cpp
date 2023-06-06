@@ -49,7 +49,7 @@ void Label::setText( const char* text, ... )
     char buffer[ ::MaxLineLength ];
     va_list args;
     va_start( args, text );
-    vsprintf( buffer, text, args );
+    vsnprintf( buffer, sizeof(buffer), text, args );
     va_end( args );
     this->setText( std::string( buffer ) );
 }
@@ -65,7 +65,7 @@ void Label::addText( const char* text, ... )
     char buffer[ ::MaxLineLength ];
     va_list args;
     va_start( args, text );
-    vsprintf( buffer, text, args );
+    vsnprintf( buffer, sizeof(buffer), text, args );
     va_end( args );
     this->addText( std::string( buffer ) );
 }

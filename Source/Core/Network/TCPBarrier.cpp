@@ -46,7 +46,7 @@ TCPBarrier::~TCPBarrier()
 /*===========================================================================*/
 void TCPBarrier::wait()
 {
-    char send_buffer[::BARRIER_BUFFER_SIZE]; sprintf( send_buffer, "BARRIER" );
+    char send_buffer[::BARRIER_BUFFER_SIZE]; snprintf( send_buffer, sizeof(send_buffer), "BARRIER" );
 //        m_client->disableBlocking();
     m_client->send( send_buffer, ::BARRIER_BUFFER_SIZE );
 

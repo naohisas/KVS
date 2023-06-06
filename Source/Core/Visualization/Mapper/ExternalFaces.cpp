@@ -2043,6 +2043,21 @@ void ExternalFaces::mapping( const kvs::UnstructuredVolumeObject* volume )
         else if ( type == typeid( kvs::Real64 ) ) { this->calculate_hexahedral_faces<kvs::Real64>( volume ); }
         break;
     }
+    case kvs::UnstructuredVolumeObject::QuadraticHexahedra:
+    {
+        const std::type_info& type = volume->values().typeInfo()->type();
+        if (      type == typeid( kvs::Int8   ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int8  >( volume ); }
+        else if ( type == typeid( kvs::Int16  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int16 >( volume ); }
+        else if ( type == typeid( kvs::Int32  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int32 >( volume ); }
+        else if ( type == typeid( kvs::Int64  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Int64 >( volume ); }
+        else if ( type == typeid( kvs::UInt8  ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt8 >( volume ); }
+        else if ( type == typeid( kvs::UInt16 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt16>( volume ); }
+        else if ( type == typeid( kvs::UInt32 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt32>( volume ); }
+        else if ( type == typeid( kvs::UInt64 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::UInt64>( volume ); }
+        else if ( type == typeid( kvs::Real32 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Real32>( volume ); }
+        else if ( type == typeid( kvs::Real64 ) ) { this->calculate_quadratic_hexahedral_faces<kvs::Real64>( volume ); }
+        break;
+    }
     case kvs::UnstructuredVolumeObject::Prism:
     {
         const std::type_info& type = volume->values().typeInfo()->type();

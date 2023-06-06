@@ -94,7 +94,7 @@ void Text::setText( const char* text, ... )
 
     va_list args;
     va_start( args, text );
-    vsprintf( buffer, text, args );
+    vsnprintf( buffer, sizeof(buffer), text, args );
     va_end( args );
 
     m_text.push_back( std::string( buffer ) );
@@ -124,7 +124,7 @@ void Text::addText( const char* text, ... )
 
     va_list args;
     va_start( args, text );
-    vsprintf( buffer, text, args );
+    vsnprintf( buffer, sizeof(buffer), text, args );
     va_end( args );
 
     m_text.push_back( std::string( buffer ) );

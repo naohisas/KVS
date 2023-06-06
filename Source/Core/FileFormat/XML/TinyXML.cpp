@@ -1011,7 +1011,7 @@ const std::string* TiXmlElement::Attribute( const std::string& name, int* i ) co
 void TiXmlElement::SetAttribute( const std::string& name, int val )
 {
     char buf[64];
-    sprintf( buf, "%d", val );
+    snprintf( buf, 64, "%d", val );
 
     std::string v = buf;
 

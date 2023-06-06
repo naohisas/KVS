@@ -320,9 +320,9 @@ int Date::daysInYear() const
 
 std::string Date::toString( const std::string sep ) const
 {
-    char y[5]; sprintf( y, "%04d", m_year );
-    char m[3]; sprintf( m, "%02d", m_month );
-    char d[3]; sprintf( d, "%02d", m_day );
+    char y[5]; snprintf( y, sizeof(y), "%04d", m_year );
+    char m[3]; snprintf( m, sizeof(m), "%02d", m_month );
+    char d[3]; snprintf( d, sizeof(d), "%02d", m_day );
     return std::string( y ) + sep + std::string( m ) + sep + std::string( d );
 }
 

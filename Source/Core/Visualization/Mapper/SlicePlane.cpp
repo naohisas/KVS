@@ -163,7 +163,7 @@ void SlicePlane::extract_plane(
     std::vector<kvs::UInt8> colors;
 
     const kvs::Vec3u ncells( volume->resolution() - kvs::Vec3u::Constant(1) );
-    const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
+//    const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
     const kvs::ColorMap& color_map( BaseClass::transferFunction().colorMap() );
 
     const auto min_coord = volume->minObjectCoord();
@@ -175,7 +175,7 @@ void SlicePlane::extract_plane(
     };
 
     // Extract surfaces.
-    size_t index = 0;
+//    size_t index = 0;
     for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
     {
         for ( kvs::UInt32 y = 0; y < ncells.y(); ++y )
@@ -269,9 +269,9 @@ void SlicePlane::extract_plane(
                     normals.push_back( normal.z() );
                 } // end of loop-triangle
             } // end of loop-x
-            ++index;
+//            ++index;
         } // end of loop-y
-        index += line_size;
+//        index += line_size;
     } // end of loop-z
 
     SuperClass::setCoords( kvs::ValueArray<kvs::Real32>( coords ) );

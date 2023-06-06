@@ -840,7 +840,7 @@ void AVSUcd::seek_target_step( FILE* const ifs )
     char buffer[ ::MaxLineLength ];
 
     char target_step[ ::MaxLineLength ];
-    sprintf( target_step, "step%u", static_cast<unsigned int>( m_step_id + 1 ) );
+    snprintf( target_step, ::MaxLineLength, "step%u", static_cast<unsigned int>( m_step_id + 1 ) );
 
     while ( fgets( buffer, ::MaxLineLength, ifs ) != 0 )
     {

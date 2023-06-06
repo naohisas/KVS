@@ -44,7 +44,7 @@ const std::string Comma( const size_t n )
 {
     char N[30]; memset( N, 0, 30 );
 
-    sprintf( N, "%lu", n );
+    snprintf( N, sizeof(N), "%lu", n );
     if ( strlen(N) > 3 )
     {
         memmove( &N[strlen(N)-3], &N[strlen(N)-4], 4 );
