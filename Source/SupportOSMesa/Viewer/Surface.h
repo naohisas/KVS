@@ -18,13 +18,13 @@ namespace osmesa
 class Surface
 {
 private:
-    size_t m_width; ///< width of image buffer
-    size_t m_height; ///< height of image buffer
-    kvs::ValueArray<kvs::UInt8> m_buffer; ///< image buffer
+    size_t m_width = 0; ///< width of image buffer
+    size_t m_height = 0; ///< height of image buffer
+    kvs::ValueArray<kvs::UInt8> m_buffer{}; ///< image buffer
 
 public:
-    Surface();
-    ~Surface();
+    Surface() = default;
+    ~Surface() { this->destroy(); }
 
     void* handle() { return m_buffer.data(); }
     size_t width() const { return m_width; }

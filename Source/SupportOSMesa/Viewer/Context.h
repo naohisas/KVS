@@ -35,11 +35,11 @@ public:
     static GLint GetYAxisDirection();
 
 private:
-    OSMesaContext m_handle;
+    OSMesaContext m_handle{ nullptr };
 
 public:
-    Context();
-    ~Context();
+    Context() = default;
+    ~Context() { this->destroy(); }
 
     void* handle() { return m_handle; }
     bool isValid() const { return m_handle != NULL; }

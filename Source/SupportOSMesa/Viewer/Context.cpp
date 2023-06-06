@@ -93,26 +93,6 @@ GLint Context::GetYAxisDirection()
 
 /*===========================================================================*/
 /**
- *  @brief  Construct a Context class.
- */
-/*===========================================================================*/
-Context::Context():
-    m_handle( NULL )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroy the Context class.
- */
-/*===========================================================================*/
-Context::~Context()
-{
-    this->destroy();
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Create a OSMesa rendering context
  *  @param  format [in] pixel format (OSMESA_*: COLOR_INDEX, RGBA, BGRA, ARGB, RGB, BGR)
  *  @param  depth_bits [in] desired bit size of depth buffer
@@ -178,7 +158,7 @@ bool Context::makeCurrent( kvs::osmesa::Surface& surface )
 /*===========================================================================*/
 void Context::releaseCurrent()
 {
-    OSMesaMakeCurrent( NULL, NULL, GL_UNSIGNED_BYTE, 0, 0 );
+    OSMesaMakeCurrent( nullptr, nullptr, GL_UNSIGNED_BYTE, 0, 0 );
 }
 
 } // end of namespace osmesa

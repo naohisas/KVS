@@ -43,17 +43,6 @@ namespace kvs
 namespace osmesa
 {
 
-Surface::Surface():
-    m_width( 0 ),
-    m_height( 0 )
-{
-}
-
-Surface::~Surface()
-{
-    this->destroy();
-}
-
 bool Surface::create( const size_t width, const size_t height, const int format )
 {
     const size_t bpp = ::BytePerPixel( format );
