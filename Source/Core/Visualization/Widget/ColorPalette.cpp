@@ -366,9 +366,9 @@ void ColorPalette::draw_selected_color_value()
     const int g = static_cast<int>( current_color.g() );
     const int b = static_cast<int>( current_color.b() );
 
-    char R[10]; sprintf( R, "R: %3d", r );
-    char G[10]; sprintf( G, "G: %3d", g );
-    char B[10]; sprintf( B, "B: %3d", b );
+    char R[10]; snprintf( R, sizeof(R), "R: %3d", r );
+    char G[10]; snprintf( G, sizeof(G), "G: %3d", g );
+    char B[10]; snprintf( B, sizeof(B), "B: %3d", b );
 
     int x = m_selected_color_box.x0();
     int y = m_selected_color_box.y1() + 10;
