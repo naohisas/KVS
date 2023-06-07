@@ -655,8 +655,10 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
      # For g++/gfortran
     ifeq "$(shell uname -s)" "Darwin"
       ifeq ($(findstring clang, $(shell $(KVS_CPP) --version)),clang)
+#        CPPFLAGS += -Qunused-arguments
+#        CPPFLAGS += -Xclang
         CPPFLAGS += -Xpreprocessor
-        FCFLAGS += -Xpreprocessor
+#        FCFLAGS += -Xpreprocessor
       endif
     endif
     CPPFLAGS += -fopenmp
