@@ -259,7 +259,8 @@ macx {
         LIBS += -L$$GLEW_LIBRARY_PATH -lGLEW
     }
     equals( KVS_ENABLE_OPENMP, "1" ) {
-        LIBS += -L$$OPENMP_LIBRARY_PATH -lgomp -fopenmp
+        LIBS += -L$$OPENMP_LIBRARY_PATH
+        macx-clang { LIBS += -lomp } else { LIBS += -lgomp }
     }
     equals( KVS_SUPPORT_GLUT, "1" ) {
         LIBS += $$KVS_DIR/lib/libkvsSupportGLUT.a -framework GLUT
@@ -304,6 +305,17 @@ unix:!macx {
     equals( KVS_SUPPORT_PYTHON, "1" ) {
         LIBS += $$KVS_DIR/lib/libkvsSupportPython.a $$PYTHON_LIBRARY_PATH
 	LIBS += $$PYTHON_LINK_LIBRARY
+    }
+}
+
+
+#=============================================================================
+#  Flags.
+#=============================================================================
+macx-clang
+{
+    equals( KVS_ENABLE_OPENMP, "1" ) {
+        QMAKE_LFLAGS += -Xpreprocessor -fopenmp
     }
 }
 
