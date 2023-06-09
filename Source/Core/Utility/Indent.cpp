@@ -11,11 +11,6 @@
 namespace kvs
 {
 
-Indent::Indent( const size_t width ):
-    m_width( width )
-{
-}
-
 Indent Indent::nextIndent() const
 {
     const size_t width = ( m_width == 0 ) ? 4 : m_width * 2;

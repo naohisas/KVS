@@ -34,16 +34,16 @@ template<typename T>
 class ValueArray
 {
 public:
-    typedef ValueArray<T> this_type;
-    typedef T value_type;
-    typedef T* iterator;
-    typedef const T* const_iterator;
-    typedef T& reference;
-    typedef const T& const_reference;
-    typedef std::size_t size_type;
-    typedef std::ptrdiff_t difference_type;
-    typedef std::reverse_iterator<iterator> reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    using this_type = ValueArray<T>;
+    using value_type = T;
+    using iterator = T*;
+    using const_iterator = const T*;
+    using reference = T&;
+    using const_reference = const T&;
+    using size_type = std::size_t;
+    using difference_type = std::ptrdiff_t;
+    using reverse_iterator = std::reverse_iterator<iterator>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 private:
     kvs::SharedPointer<value_type> m_values; ///< values

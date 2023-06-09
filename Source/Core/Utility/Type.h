@@ -12,28 +12,26 @@
 namespace kvs
 {
 
-typedef char    Int8;
-typedef unsigned char  UInt8;
-typedef short          Int16;
-typedef unsigned short UInt16;
-typedef int            Int32;
-typedef unsigned int   UInt32;
-
+using Int8 = char;
+using UInt8 = unsigned char;
+using Int16 = short;
+using UInt16 = unsigned short;
+using Int32 = int;
+using UInt32 = unsigned int;
 #if defined ( KVS_COMPILER_VC )
-typedef signed __int64   Int64;
-typedef unsigned __int64 UInt64;
+using Int64 = signed __int64;
+using UInt64 = unsigned __int64;
 #else
 #if defined ( KVS_PLATFORM_CPU_64 ) // LP64
-typedef long          Int64;
-typedef unsigned long UInt64;
+using Int64 = long;
+using UInt64 = unsigned long;
 #else                               // LLP64
-typedef long long          Int64;
-typedef unsigned long long UInt64;
+using Int64 = long long;
+using UInt64 = unsigned long long;
 #endif
 #endif
-
-typedef float       Real32;
-typedef double      Real64;
+using Real32 = float;
+using Real64 = double;
 
 
 class Type

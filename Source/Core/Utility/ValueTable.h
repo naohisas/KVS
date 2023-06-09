@@ -31,38 +31,38 @@ class ValueTable
     class RowOrderIterator;
 
 public:
-    typedef kvs::ValueArray<T> Column;
-    typedef std::vector<Column> Columns;
+    using Column = kvs::ValueArray<T>;
+    using Columns = std::vector<Column>;
 
     // Iterators.
-    typedef typename Columns::iterator column_iterator;
-    typedef typename Columns::const_iterator const_column_iterator;
-    typedef std::reverse_iterator<column_iterator> column_reverse_iterator;
-    typedef const std::reverse_iterator<const_column_iterator> const_column_reverse_iterator;
+    using column_iterator = typename Columns::iterator;
+    using const_column_iterator = typename Columns::const_iterator;
+    using column_reverse_iterator = std::reverse_iterator<column_iterator>;
+    using const_column_reverse_iterator = const std::reverse_iterator<const_column_iterator>;
 
-    typedef Column& column_reference;
-    typedef const Column& const_column_reference;
+    using column_reference = Column&;
+    using const_column_reference = const Column&;
 
-    typedef ValueTable<T> this_type;
-    typedef T value_type;
+    using this_type = ValueTable<T>;
+    using value_type = T;
 
     // Column order iterators.
-    typedef ColumnOrderIterator column_order_iterator;
-    typedef const ColumnOrderIterator const_column_order_iterator;
-    typedef std::reverse_iterator<column_order_iterator> column_order_reverse_iterator;
-    typedef std::reverse_iterator<const_column_order_iterator> const_column_order_reverse_iterator;
+    using column_order_iterator = ColumnOrderIterator;
+    using const_column_order_iterator = const ColumnOrderIterator;
+    using column_order_reverse_iterator = std::reverse_iterator<column_order_iterator>;
+    using const_column_order_reverse_iterator = std::reverse_iterator<const_column_order_iterator>;
 
     // Row order iterators.
-    typedef RowOrderIterator row_order_iterator;
-    typedef const RowOrderIterator const_row_order_iterator;
-    typedef std::reverse_iterator<row_order_iterator> row_order_reverse_iterator;
-    typedef std::reverse_iterator<const_row_order_iterator> const_row_order_reverse_iterator;
+    using row_order_iterator = RowOrderIterator;
+    using const_row_order_iterator = const RowOrderIterator;
+    using row_order_reverse_iterator = std::reverse_iterator<row_order_iterator>;
+    using const_row_order_reverse_iterator = std::reverse_iterator<const_row_order_iterator>;
 
     // Standard iterators (column-order).
-    typedef column_order_iterator iterator;
-    typedef const_column_order_iterator const_iterator;
-    typedef column_order_reverse_iterator reverse_iterator;
-    typedef const_column_order_reverse_iterator const_reverse_iterator;
+    using iterator = column_order_iterator;
+    using const_iterator = const_column_order_iterator;
+    using reverse_iterator = column_order_reverse_iterator;
+    using const_reverse_iterator = const_column_order_reverse_iterator;
 
 private:
     Columns m_columns; ///< column vector
@@ -494,18 +494,18 @@ template <typename T>
 class ValueTable<T>::ColumnOrderIterator
 {
 private:
-    typedef ColumnOrderIterator this_type;
-    typedef typename ValueTable<T>::Column::reference row_reference;
-    typedef typename ValueTable<T>::Column::iterator row_iterator;
-    typedef typename ValueTable<T>::Column::const_reference const_row_reference;
-    typedef typename ValueTable<T>::Column::const_iterator const_row_iterator;
+    using this_type = ColumnOrderIterator;
+    using row_reference = typename ValueTable<T>::Column::reference;
+    using row_iterator = typename ValueTable<T>::Column::iterator;
+    using const_row_reference = typename ValueTable<T>::Column::const_reference;
+    using const_row_iterator = typename ValueTable<T>::Column::const_iterator;
 
 public:
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
-    typedef std::ptrdiff_t difference_type;
-    typedef std::random_access_iterator_tag iterator_category;
+    using value_type = T;
+    using pointer = T*;
+    using reference = T&;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::random_access_iterator_tag;
 
 private:
     row_iterator m_row_iterator;
@@ -651,18 +651,18 @@ template <typename T>
 class ValueTable<T>::RowOrderIterator
 {
 private:
-    typedef RowOrderIterator this_type;
-    typedef typename ValueTable<T>::Column::reference row_reference;
-    typedef typename ValueTable<T>::Column::iterator row_iterator;
-    typedef typename ValueTable<T>::Column::const_reference const_row_reference;
-    typedef typename ValueTable<T>::Column::const_iterator const_row_iterator;
+    using this_type = RowOrderIterator;
+    using row_reference = typename ValueTable<T>::Column::reference;
+    using row_iterator = typename ValueTable<T>::Column::iterator;
+    using const_row_reference = typename ValueTable<T>::Column::const_reference;
+    using const_row_iterator = typename ValueTable<T>::Column::const_iterator;
 
 public:
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
-    typedef std::ptrdiff_t difference_type;
-    typedef std::random_access_iterator_tag iterator_category;
+    using value_type = T;
+    using pointer = T*;
+    using reference = T&;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::random_access_iterator_tag;
 
 private:
     row_iterator m_row_iterator;

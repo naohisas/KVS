@@ -53,17 +53,17 @@ public:
     };
 
 private:
-    int m_year; ///< year
-    int m_month; ///< month
-    int m_day; ///< day
-    long m_julian_day; ///< julian day
+    int m_year = 0; ///< year
+    int m_month = 0; ///< month
+    int m_day = 0; ///< day
+    long m_julian_day = 0; ///< julian day
 
 public:
     Date();
     Date( const long julian_day );
     Date( const int year, const int month, const int day );
     Date( const Date& date );
-    virtual ~Date();
+    virtual ~Date() = default;
 
     Date& operator = ( const Date& date );
     Date& operator += ( const int days );

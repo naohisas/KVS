@@ -33,13 +33,13 @@ template <typename T>
 class SharedPointer
 {
 public:
-    typedef T element_type;
+    using element_type = T;
 
 private:
-    typedef SharedPointer<T> this_type;
+    using this_type = SharedPointer<T>;
 
     // to avoid void&
-    typedef typename kvs::temporal::ref<T>::reference reference;
+    using reference = typename kvs::temporal::ref<T>::reference;
 
 public:
     // constructors
@@ -49,9 +49,7 @@ public:
  *  Constructs a empty SharedPointer object.
  */
 /*==========================================================================*/
-    SharedPointer()
-        : m_pointer( NULL ), m_shared_count()
-    {}
+    SharedPointer(): m_pointer( NULL ), m_shared_count() {}
 
 /*==========================================================================*/
 /**
@@ -60,8 +58,7 @@ public:
  */
 /*==========================================================================*/
     template <typename Y>
-    explicit SharedPointer( Y* p )
-        : m_pointer( p ), m_shared_count( p )
+    explicit SharedPointer( Y* p ): m_pointer( p ), m_shared_count( p )
     {
         // @TODO do_enable_shared;
     }
@@ -74,8 +71,7 @@ public:
  */
 /*==========================================================================*/
     template <typename Y, typename D>
-    SharedPointer( Y* p, D d )
-        : m_pointer( p ), m_shared_count( p, d )
+    SharedPointer( Y* p, D d ): m_pointer( p ), m_shared_count( p, d )
     {
         // @TODO do_enable_shared;
     }
@@ -86,14 +82,10 @@ public:
  *  @param other [in] shared pointer
  */
 /*==========================================================================*/
-    SharedPointer( const SharedPointer& r )
-        : m_pointer( r.m_pointer ), m_shared_count( r.m_shared_count )
-    {}
+    SharedPointer( const SharedPointer& r ): m_pointer( r.m_pointer ), m_shared_count( r.m_shared_count ) {}
 
     template <typename Y>
-    SharedPointer( const SharedPointer<Y>& r )
-        : m_pointer( r.m_pointer ), m_shared_count( r.m_shared_count )
-    {}
+    SharedPointer( const SharedPointer<Y>& r ): m_pointer( r.m_pointer ), m_shared_count( r.m_shared_count ) {}
 
 /*==========================================================================*/
 /**
@@ -101,9 +93,7 @@ public:
  */
 /*==========================================================================*/
     template <typename Y>
-    SharedPointer( const SharedPointer<Y>& r, T* p )
-        : m_pointer( p ), m_shared_count( r.m_shared_count )
-    {}
+    SharedPointer( const SharedPointer<Y>& r, T* p ): m_pointer( p ), m_shared_count( r.m_shared_count ) {}
 
 public:
     // assingment

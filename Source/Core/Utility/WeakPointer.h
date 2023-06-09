@@ -20,10 +20,10 @@ template <typename T>
 class WeakPointer
 {
 private:
-    typedef WeakPointer<T> this_type;
+    using this_type = WeakPointer<T>;
 
 public:
-    typedef T element_type;
+    using element_type = T;
 
 public:
     // constructors

@@ -31,8 +31,8 @@ class MemoryTracer
 public:
     class Lock;
     class Node;
-    typedef void* Address;
-    typedef std::map<Address,Node> Map;
+    using Address = void*;
+    using Map = std::map<Address,Node>;
 
 public:
     enum AllocationType
@@ -49,13 +49,13 @@ public:
     };
 
 private:
-    size_t m_nallocations; ///< currently number of allocations
-    size_t m_total_nallocations; ///< total number of allocations
-    size_t m_total_ndeallocations; ///< total number of deallocations
-    size_t m_allocated_memory; ///< allocated memory size in byte
-    size_t m_peak_allocated_memory; ///< peak allocated memory size in byte
-    int m_lock_counter; ///< lock counter
-    Map m_map; ///< memory map
+    size_t m_nallocations = 0; ///< currently number of allocations
+    size_t m_total_nallocations = 0; ///< total number of allocations
+    size_t m_total_ndeallocations = 0; ///< total number of deallocations
+    size_t m_allocated_memory = 0; ///< allocated memory size in byte
+    size_t m_peak_allocated_memory = 0; ///< peak allocated memory size in byte
+    int m_lock_counter = 0; ///< lock counter
+    Map m_map{}; ///< memory map
 
 public:
     static int ArgumentCount; ///< argument count
@@ -91,7 +91,7 @@ private:
 class MemoryTracer::Lock
 {
 private:
-    MemoryTracer* m_tracer; ///< pointer to the memory tracer
+    MemoryTracer* m_tracer = nullptr; ///< pointer to the memory tracer
 
 public:
     Lock( MemoryTracer* tracer );
@@ -106,13 +106,13 @@ public:
 class MemoryTracer::Node
 {
 private:
-    size_t m_size; ///< byte size
-    char const* m_name; ///< filename
-    int m_line; ///< line number
-    MemoryTracer::AllocationType m_type; ///< allocation type
+    size_t m_size = 0; ///< byte size
+    char const* m_name = 0; ///< filename
+    int m_line = 0; ///< line number
+    MemoryTracer::AllocationType m_type = MemoryTracer::Unknown; ///< allocation type
 
 public:
-    Node( );
+    Node( ) = default;
     Node( size_t size, char const* name, int line, MemoryTracer::AllocationType type );
 
     size_t size() const;

@@ -29,10 +29,6 @@ Time::Time( const int hour, const int minute, const int second ):
     m_total_seconds = this->convert_to_seconds( m_hour, m_minute, m_second );
 }
 
-Time::~Time()
-{
-}
-
 Time& Time::operator = ( const Time& time )
 {
     m_hour          = time.m_hour;

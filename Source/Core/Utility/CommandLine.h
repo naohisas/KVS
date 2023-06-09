@@ -34,10 +34,10 @@ public:
 public:
     class Option;
     class Value;
-    typedef std::string Argument;
-    typedef std::vector<std::string> Arguments;
-    typedef std::vector<Option> Options;
-    typedef std::vector<Value> Values;
+    using Argument = std::string;
+    using Arguments = std::vector<std::string>;
+    using Options = std::vector<Option>;
+    using Values = std::vector<Value>;
 
 private:
     int m_argc = 0; ///< argument count

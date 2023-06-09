@@ -10,8 +10,6 @@ namespace kvs
 {
 
 template <typename T>
-inline void IgnoreUnusedVariable( T )
-{
-}
+inline void IgnoreUnusedVariable( T ) {}
 
 } // end of namespace kvs

@@ -64,9 +64,9 @@ public:
 
     struct Context
     {
-        const char* file; ///< file name
-        int line; ///< line number
-        const char* func; ///< function name
+        const char* file = 0; ///< file name
+        int line = 0; ///< line number
+        const char* func = 0; ///< function name
     };
 
     typedef void (*Handler)( std::ostream& stream, const kvs::Message::Type, const kvs::Message::Context&, const std::string& );
@@ -79,13 +79,12 @@ public:
     static void SetHandler( Handler handler );
 
 private:
-    Type m_type; ///< message type
-    Context m_context; ///< message context
-    std::ostringstream m_message; ///< output message
+    Type m_type = Message::Default; ///< message type
+    Context m_context{}; ///< message context
+    std::ostringstream m_message{}; ///< output message
 
 public:
-    Message( const char* file, int line, const char* func ):
-        m_type( Message::Default )
+    Message( const char* file, int line, const char* func )
     {
         m_context.file = file;
         m_context.line = line;

@@ -23,14 +23,14 @@ public:
     static bool Exists( const std::string& file_path );
 
 private:
-    std::string m_file_path; ///< file path (ex. "/tmp/abc/xyz.tar.gz")
-    std::string m_path_name; ///< path name (ex. "/tmp/abc")
-    std::string m_file_name; ///< file name (ex. "xyz.tar.gz")
+    std::string m_file_path{}; ///< file path (ex. "/tmp/abc/xyz.tar.gz")
+    std::string m_path_name{}; ///< path name (ex. "/tmp/abc")
+    std::string m_file_name{}; ///< file name (ex. "xyz.tar.gz")
 
 public:
-    File();
+    File() = default;
     File( const std::string& file_path );
-    virtual ~File() {}
+    virtual ~File() = default;
 
     bool operator <( const File& file ) const;
     bool operator ==( const File& file ) const;

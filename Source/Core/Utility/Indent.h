@@ -17,7 +17,7 @@ private:
     size_t m_width; ///< indent width
 
 public:
-    explicit Indent( const size_t width = 0 );
+    explicit Indent( const size_t width = 0 ): m_width( width ) {}
 
     Indent nextIndent() const;
     friend std::ostream& operator << ( std::ostream& os, const kvs::Indent& indent );

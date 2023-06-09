@@ -12,6 +12,6 @@
 namespace kvs
 {
 
-typedef std::vector<kvs::File> FileList;
+using FileList = std::vector<kvs::File>;
 
 } // end of namespace kvs

@@ -20,15 +20,15 @@ namespace kvs
 class Time
 {
 private:
-    int m_hour; ///< hour
-    int m_minute; ///< minute
-    int m_second; ///< second
-    long m_total_seconds; ///< total seconds
+    int m_hour = 0; ///< hour
+    int m_minute = 0; ///< minute
+    int m_second = 0; ///< second
+    long m_total_seconds = 0; ///< total seconds
 
 public:
     Time();
     Time( const int hour, const int minute, const int second );
-    virtual ~Time();
+    virtual ~Time() = default;
 
     Time& operator = ( const Time& time );
     Time& operator += ( const int seconds );

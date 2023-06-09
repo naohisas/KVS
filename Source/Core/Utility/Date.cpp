@@ -172,10 +172,6 @@ Date::Date( const Date& date ):
 {
 }
 
-Date::~Date()
-{
-}
-
 Date& Date::operator = ( const Date& date )
 {
     m_year = date.m_year;

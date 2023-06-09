@@ -23,27 +23,17 @@ namespace kvs
 /*===========================================================================*/
 struct SliceRange
 {
-    mutable long start; ///< starting index
-    mutable long stop;  ///< stopping index (not included)
-    mutable long step;  ///< step (not zero)
-    mutable bool has_stop; ///< if true, 'stop' is specified
+    mutable long start = 0; ///< starting index
+    mutable long stop = 1;  ///< stopping index (not included)
+    mutable long step = 1;  ///< step (not zero)
+    mutable bool has_stop = false; ///< if true, 'stop' is specified
 
-    SliceRange():
-        start( 0 ),
-        stop( 1 ),
-        step( 1 ),
-        has_stop( false ) {}
-
-    SliceRange( const long in_start ):
-        start( in_start ),
-        stop( 1 ),
-        step( 1 ),
-        has_stop( false ) {}
+    SliceRange() = default;
+    SliceRange( const long in_start ): start( in_start ) {}
 
     SliceRange( const long in_start, const long in_stop ):
         start( in_start ),
         stop( in_stop ),
-        step( 1 ),
         has_stop( true ) {}
 
     SliceRange( const long in_start, const long in_stop, const long in_step ):

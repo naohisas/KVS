@@ -145,13 +145,7 @@ namespace kvs
  *  @brief  Constructs a new MemoryTracer class.
  */
 /*===========================================================================*/
-MemoryTracer::MemoryTracer():
-    m_nallocations( 0 ),
-    m_total_nallocations( 0 ),
-    m_total_ndeallocations( 0 ),
-    m_allocated_memory( 0 ),
-    m_peak_allocated_memory( 0 ),
-    m_lock_counter( 0 )
+MemoryTracer::MemoryTracer()
 {
     kvs::MemoryTracer::IsConstructed = true;
 }
@@ -162,13 +156,7 @@ MemoryTracer::MemoryTracer():
  *  @param  filename [in] name of log file
  */
 /*===========================================================================*/
-MemoryTracer::MemoryTracer( char* filename ):
-    m_nallocations( 0 ),
-    m_total_nallocations( 0 ),
-    m_total_ndeallocations( 0 ),
-    m_allocated_memory( 0 ),
-    m_peak_allocated_memory( 0 ),
-    m_lock_counter( 0 )
+MemoryTracer::MemoryTracer( char* filename )
 {
     kvs::MemoryTracer::IsConstructed = true;
     kvs::MemoryTracer::LogFileName = filename;
@@ -475,19 +463,6 @@ MemoryTracer::Lock::~Lock()
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Node class.
- */
-/*===========================================================================*/
-MemoryTracer::Node::Node():
-    m_size( 0 ),
-    m_name( 0 ),
-    m_line( 0 ),
-    m_type( MemoryTracer::Unknown )
-{
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Node class.
  *  @param  size [in] memory size in byte
  *  @param  name [in] filename of source code
  *  @param  line [in] line number
@@ -514,7 +489,7 @@ MemoryTracer::Node::Node(
 /*===========================================================================*/
 size_t MemoryTracer::Node::size() const
 {
-    return( m_size );
+    return m_size;
 }
 
 /*===========================================================================*/
@@ -525,7 +500,7 @@ size_t MemoryTracer::Node::size() const
 /*===========================================================================*/
 const char* MemoryTracer::Node::name() const
 {
-    return( m_name );
+    return m_name;
 }
 
 /*===========================================================================*/
@@ -536,7 +511,7 @@ const char* MemoryTracer::Node::name() const
 /*===========================================================================*/
 int MemoryTracer::Node::line() const
 {
-    return( m_line );
+    return m_line;
 }
 
 /*===========================================================================*/
@@ -547,7 +522,7 @@ int MemoryTracer::Node::line() const
 /*===========================================================================*/
 MemoryTracer::AllocationType MemoryTracer::Node::type() const
 {
-    return( m_type );
+    return m_type;
 }
 
 } // end of namespace kvs
