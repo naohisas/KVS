@@ -41,6 +41,9 @@ TEMPLATE = app
 #=============================================================================
 TARGET = PROJECT_NAME_REPLACED_BY_KVSMAKE
 
+# Add *.pro to distclean target
+QMAKE_DISTCLEAN += PROJECT_NAME_REPLACED_BY_KVSMAKE.pro
+
 
 #=============================================================================
 #  Configuration valiable.
