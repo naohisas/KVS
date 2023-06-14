@@ -33,10 +33,11 @@ class PointObject : public kvs::GeometryObjectBase
     kvsModuleBaseClass( kvs::GeometryObjectBase );
 
 private:
-    kvs::ValueArray<kvs::Real32> m_sizes; ///< size array
+    kvs::ValueArray<kvs::Real32> m_sizes{}; ///< size array
 
 public:
     PointObject();
+    virtual ~PointObject() = default;
     explicit PointObject( const kvs::LineObject& line );
     explicit PointObject( const kvs::PolygonObject& polygon );
 

@@ -23,18 +23,18 @@ class Camera;
 class Trackball
 {
 private:
-    float m_size; ///< trackball size
-    float m_depth; ///< how near from center
-    float m_scaling_factor; ///< scaling factor
-    kvs::Vec2 m_rotation_center; ///< center of rotation in the devise coordinate system
-    kvs::Vec3 m_scaling; ///< current scaling value
-    kvs::Vec3 m_translation; ///< current translation vector
-    kvs::Quaternion m_rotation; ///< current rotation quaternion
-    kvs::Camera* m_ref_camera; ///< pointer to camera (reference only)
+    float m_size = 0.6f; ///< trackball size
+    float m_depth = 1.0f; ///< how near from center
+    float m_scaling_factor = 100.0f; ///< scaling factor
+    kvs::Vec2 m_rotation_center{ 0.0f, 0.0f }; ///< center of rotation in the devise coordinate system
+    kvs::Vec3 m_scaling{ 1.0f, 1.0f, 1.0f }; ///< current scaling value
+    kvs::Vec3 m_translation{ 0.0f, 0.0f, 0.0f }; ///< current translation vector
+    kvs::Quaternion m_rotation{ 0.0f, 0.0f, 0.0f, 1.0f }; ///< current rotation quaternion
+    kvs::Camera* m_ref_camera = nullptr; ///< pointer to camera (reference only)
 
 public:
-    Trackball();
-    virtual ~Trackball();
+    Trackball() = default;
+    virtual ~Trackball() = default;
 
     void setSize( const float size ) { m_size = size; }
     void setDepth( const float depth ) { m_depth = depth; }

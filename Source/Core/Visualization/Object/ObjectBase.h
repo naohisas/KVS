@@ -53,7 +53,7 @@ private:
     bool m_visible = true; ///< visiblity for the object
 
 public:
-    ObjectBase() = default;
+    ObjectBase( const ObjectType type = UnknownObject ): m_object_type( type ) {};
     virtual ~ObjectBase() = default;
 
     ObjectBase& operator = ( const ObjectBase& object );

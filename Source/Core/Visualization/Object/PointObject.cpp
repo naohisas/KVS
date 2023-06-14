@@ -46,9 +46,9 @@ namespace kvs
  *  @brief  Constructs a new PointObject class.
  */
 /*===========================================================================*/
-PointObject::PointObject()
+PointObject::PointObject(): BaseClass( Point )
 {
-    BaseClass::setGeometryType( Point );
+//    BaseClass::setGeometryType( Point );
     this->setSize( 1 );
 }
 

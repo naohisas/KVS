@@ -20,11 +20,11 @@ namespace kvs
 class PaintDevice
 {
 private:
-    kvs::NanoVG* m_render_engine; ///< render engin based on NanoVG
-    kvs::FontStash* m_text_engine; ///< text rendering engin
+    kvs::NanoVG* m_render_engine = nullptr; ///< render engin based on NanoVG
+    kvs::FontStash* m_text_engine = nullptr; ///< text rendering engin
 
 public:
-    PaintDevice();
+    PaintDevice() = default;
     ~PaintDevice();
 
     kvs::NanoVG* renderEngine() { return m_render_engine; }

@@ -24,7 +24,7 @@ class CameraCoordinate;
 class NormalizedDeviceCoordinate
 {
 private:
-    kvs::Vec3 m_position; ///< position in normalized device coordinates
+    kvs::Vec3 m_position{}; ///< position in normalized device coordinates
 
 public:
     NormalizedDeviceCoordinate( const kvs::Vec3& position );

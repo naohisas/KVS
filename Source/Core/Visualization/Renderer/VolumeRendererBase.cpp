@@ -13,35 +13,6 @@
 namespace kvs
 {
 
-/*==========================================================================*/
-/**
- *  Constructor.
- */
-/*==========================================================================*/
-VolumeRendererBase::VolumeRendererBase():
-    m_window_width( 0 ),
-    m_window_height( 0 ),
-    m_device_pixel_ratio( 1.0f ),
-    m_shader( NULL ),
-    m_object( NULL )
-{
-    m_depth_buffer.setFormat( GL_DEPTH_COMPONENT );
-    m_depth_buffer.setType( GL_FLOAT );
-
-    m_color_buffer.setFormat( GL_RGBA );
-    m_color_buffer.setType( GL_UNSIGNED_BYTE );
-}
-
-/*==========================================================================*/
-/**
- *  Destructor.
- */
-/*==========================================================================*/
-VolumeRendererBase::~VolumeRendererBase()
-{
-    if ( m_shader ) { delete m_shader; }
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Allocates a memory for the depth data.

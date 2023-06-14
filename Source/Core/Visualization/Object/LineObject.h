@@ -48,13 +48,14 @@ public:
     };
 
 private:
-    LineType m_line_type; ///< line type
-    ColorType m_color_type; ///< line color type
-    kvs::ValueArray<kvs::UInt32> m_connections; ///< connection array
-    kvs::ValueArray<kvs::Real32> m_sizes; ///< size array
+    LineType m_line_type = UnknownLineType; ///< line type
+    ColorType m_color_type = UnknownColorType; ///< line color type
+    kvs::ValueArray<kvs::UInt32> m_connections{}; ///< connection array
+    kvs::ValueArray<kvs::Real32> m_sizes{}; ///< size array
 
 public:
     LineObject();
+    virtual ~LineObject() = default;
     explicit LineObject( const kvs::PolygonObject& polygon );
 
     void shallowCopy( const LineObject& object );

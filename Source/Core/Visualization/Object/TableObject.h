@@ -30,24 +30,25 @@ class TableObject : public kvs::ObjectBase
     kvsModuleBaseClass( kvs::ObjectBase );
 
 public:
-    typedef kvs::AnyValueTable::Columns Columns;
-    typedef std::vector<std::string> Labels;
-    typedef std::vector<kvs::Real64> Values;
-    typedef std::vector<kvs::UInt8> InsideRangeFlags;
+    using Columns = kvs::AnyValueTable::Columns;
+    using Labels = std::vector<std::string>;
+    using Values = std::vector<kvs::Real64>;
+    using InsideRangeFlags = std::vector<kvs::UInt8>;
 
 private:
-    size_t m_nrows; ///< number of rows
-    size_t m_ncolumns; ///< number of columns
-    kvs::AnyValueTable m_table; ///< table data
-    Labels m_labels; ///< label list
-    Values m_min_values; ///< min. values for each column
-    Values m_max_values; ///< max. values for each column
-    Values m_min_ranges; ///< min. value range
-    Values m_max_ranges; ///< max. value range
-    InsideRangeFlags m_inside_range_flags; ///< check flags for value range
+    size_t m_nrows = 0; ///< number of rows
+    size_t m_ncolumns = 0; ///< number of columns
+    kvs::AnyValueTable m_table{}; ///< table data
+    Labels m_labels{}; ///< label list
+    Values m_min_values{}; ///< min. values for each column
+    Values m_max_values{}; ///< max. values for each column
+    Values m_min_ranges{}; ///< min. value range
+    Values m_max_ranges{}; ///< max. value range
+    InsideRangeFlags m_inside_range_flags{}; ///< check flags for value range
 
 public:
-    TableObject();
+    TableObject(): BaseClass( Table ) {}
+    virtual ~TableObject() = default;
 
     void shallowCopy( const TableObject& other );
     void deepCopy( const TableObject& other );

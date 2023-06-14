@@ -172,21 +172,6 @@ kvs::Range GetMinMaxValues( const kvs::UnstructuredVolumeObject* volume )
 namespace kvs
 {
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new UnstructuredVolumeObject class.
- */
-/*==========================================================================*/
-UnstructuredVolumeObject::UnstructuredVolumeObject():
-    kvs::VolumeObjectBase(),
-    m_cell_type( UnknownCellType ),
-    m_nnodes( 0 ),
-    m_ncells( 0 ),
-    m_connections()
-{
-    BaseClass::setVolumeType( Unstructured );
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Shallow copys.

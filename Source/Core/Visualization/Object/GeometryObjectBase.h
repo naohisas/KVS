@@ -40,13 +40,16 @@ public:
     };
 
 private:
-    GeometryType m_geometry_type; ///< geometry type
-    kvs::ValueArray<kvs::Real32> m_coords; ///< vertex array
-    kvs::ValueArray<kvs::UInt8> m_colors; ///< color (r,g,b) array
-    kvs::ValueArray<kvs::Real32> m_normals; ///< normal array
+    GeometryType m_geometry_type = UnknownGeometryType; ///< geometry type
+    kvs::ValueArray<kvs::Real32> m_coords{}; ///< vertex array
+    kvs::ValueArray<kvs::UInt8> m_colors{}; ///< color (r,g,b) array
+    kvs::ValueArray<kvs::Real32> m_normals{}; ///< normal array
 
 public:
-    GeometryObjectBase();
+    GeometryObjectBase( const GeometryType type = UnknownGeometryType ):
+        BaseClass( Geometry ),
+        m_geometry_type( type ) {}
+    virtual ~GeometryObjectBase() = default;
 
     void shallowCopy( const GeometryObjectBase& object );
     void deepCopy( const GeometryObjectBase& object );

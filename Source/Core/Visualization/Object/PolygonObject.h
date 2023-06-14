@@ -54,14 +54,15 @@ public:
     };
 
 private:
-    PolygonType m_polygon_type; ///< polygon type
-    ColorType m_color_type; ///< polygon color type
-    NormalType m_normal_type; ///< polygon normal type
-    kvs::ValueArray<kvs::UInt32> m_connections; ///< connection array
-    kvs::ValueArray<kvs::UInt8> m_opacities; ///< opacity array
+    PolygonType m_polygon_type = UnknownPolygonType; ///< polygon type
+    ColorType m_color_type = UnknownColorType; ///< polygon color type
+    NormalType m_normal_type = UnknownNormalType; ///< polygon normal type
+    kvs::ValueArray<kvs::UInt32> m_connections{}; ///< connection array
+    kvs::ValueArray<kvs::UInt8> m_opacities{}; ///< opacity array
 
 public:
     PolygonObject();
+    virtual ~PolygonObject() = default;
 
     void shallowCopy( const PolygonObject& object );
     void deepCopy( const PolygonObject& object );

@@ -42,18 +42,21 @@ public:
     };
 
 private:
-    VolumeType m_volume_type; ///< volume type
-    std::string m_label; ///< data label
-    std::string m_unit; ///< data unit
-    size_t m_veclen; ///< Vector length.
-    Coords m_coords; ///< Coordinate array
-    Values m_values; ///< Value array
-    mutable bool m_has_min_max_values; ///< Whether includes min/max values or not
-    mutable kvs::Real64 m_min_value; ///< Minimum field value
-    mutable kvs::Real64 m_max_value; ///< Maximum field value
+    VolumeType m_volume_type = UnknownVolumeType; ///< volume type
+    std::string m_label = ""; ///< data label
+    std::string m_unit = ""; ///< data unit
+    size_t m_veclen = 0; ///< Vector length.
+    Coords m_coords{}; ///< Coordinate array
+    Values m_values{}; ///< Value array
+    mutable bool m_has_min_max_values = false; ///< Whether includes min/max values or not
+    mutable kvs::Real64 m_min_value = 0.0; ///< Minimum field value
+    mutable kvs::Real64 m_max_value = 0.0; ///< Maximum field value
 
 public:
-    VolumeObjectBase();
+    VolumeObjectBase( const VolumeType type = UnknownVolumeType ):
+        BaseClass( Volume ),
+        m_volume_type( type ) {}
+    virtual ~VolumeObjectBase() = default;
 
     void shallowCopy( const VolumeObjectBase& object );
     void deepCopy( const VolumeObjectBase& object );

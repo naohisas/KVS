@@ -84,16 +84,6 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new ImageObject class.
- */
-/*===========================================================================*/
-ImageObject::ImageObject()
-{
-    BaseClass::setObjectType( Image );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new ImageObject class.
  *  @param  width [in] image width
  *  @param  height [in] image height
  *  @param  pixels [in] pixel data array

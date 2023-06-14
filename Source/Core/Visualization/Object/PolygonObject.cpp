@@ -151,12 +151,8 @@ namespace kvs
  *  @brief  Constructs a new PolygonObject class.
  */
 /*===========================================================================*/
-PolygonObject::PolygonObject():
-    m_polygon_type( UnknownPolygonType ),
-    m_color_type( UnknownColorType ),
-    m_normal_type( UnknownNormalType )
+PolygonObject::PolygonObject(): BaseClass( Polygon )
 {
-    BaseClass::setGeometryType( Polygon );
     this->setOpacity( 255 );
 }
 

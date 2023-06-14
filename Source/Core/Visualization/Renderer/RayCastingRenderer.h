@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__RAY_CASTING_RENDERER_H_INCLUDE
-#define KVS__RAY_CASTING_RENDERER_H_INCLUDE
-
+#pragma once
 #include <kvs/VolumeRendererBase>
 #include <kvs/TransferFunction>
 #include <kvs/StructuredVolumeObject>
@@ -28,15 +26,13 @@ class RayCastingRenderer : public kvs::VolumeRendererBase
     kvsModuleBaseClass( kvs::VolumeRendererBase );
 
 private:
-
-    float m_step; ///< sampling step
-    float m_opaque; ///< opaque value for early ray termination
-    size_t m_ray_width; ///< ray width
-    bool m_enable_lod; ///< enable LOD rendering
-    float m_modelview[16]; ///< modelview matrix
+    float m_step = 0.5f; ///< sampling step
+    float m_opaque = 0.97f; ///< opaque value for early ray termination
+    size_t m_ray_width = 1; ///< ray width
+    bool m_enable_lod = false; ///< enable LOD rendering
+    float m_modelview[16] = {0}; ///< modelview matrix
 
 public:
-
     RayCastingRenderer();
     RayCastingRenderer( const kvs::TransferFunction& tfunc );
     template <typename ShadingType>
@@ -49,7 +45,6 @@ public:
     void disableLODControl() { m_enable_lod = false; m_ray_width = 1; }
 
 private:
-
     template <typename T>
     void rasterize(
         const kvs::StructuredVolumeObject* volume,
@@ -64,5 +59,3 @@ public:
 } // end of namespace kvs
 
 #include "RayCastingRendererGLSL.h"
-
-#endif // KVS__RAY_CASTING_RENDERER_H_INCLUDE

@@ -23,11 +23,7 @@ namespace kvs
  *  @brief  Constructs a new RayCastingRenderer class.
  */
 /*===========================================================================*/
-RayCastingRenderer::RayCastingRenderer():
-    m_step( 0.5f ),
-    m_opaque( 0.97f ),
-    m_ray_width( 1 ),
-    m_enable_lod( false )
+RayCastingRenderer::RayCastingRenderer()
 {
     BaseClass::setShader( kvs::Shader::Lambert() );
 }
@@ -38,11 +34,7 @@ RayCastingRenderer::RayCastingRenderer():
  *  @param  trunc [in] transfer function
  */
 /*===========================================================================*/
-RayCastingRenderer::RayCastingRenderer( const kvs::TransferFunction& tfunc ):
-    m_step( 0.5f ),
-    m_opaque( 0.97f ),
-    m_ray_width( 1 ),
-    m_enable_lod( false )
+RayCastingRenderer::RayCastingRenderer( const kvs::TransferFunction& tfunc )
 {
     BaseClass::setTransferFunction( tfunc );
     BaseClass::setShader( kvs::Shader::Lambert() );
@@ -55,11 +47,7 @@ RayCastingRenderer::RayCastingRenderer( const kvs::TransferFunction& tfunc ):
  */
 /*===========================================================================*/
 template <typename ShadingType>
-RayCastingRenderer::RayCastingRenderer( const ShadingType shader ):
-    m_step( 0.5f ),
-    m_opaque( 0.97f ),
-    m_ray_width( 1 ),
-    m_enable_lod( false )
+RayCastingRenderer::RayCastingRenderer( const ShadingType shader )
 {
     BaseClass::setShader( shader );
 }
@@ -161,8 +149,8 @@ void RayCastingRenderer::rasterize(
 
     // Readback pixels.
     BaseClass::readImage();
-    kvs::UInt8* const pixel_data = BaseClass::colorData().data();
-    kvs::Real32* const depth_data = BaseClass::depthData().data();
+    auto* const pixel_data = BaseClass::colorData().data();
+    auto* const depth_data = BaseClass::depthData().data();
 
     // LOD control.
     size_t ray_width = 1;
@@ -193,9 +181,9 @@ void RayCastingRenderer::rasterize(
     // Execute ray casting.
     const size_t width = BaseClass::framebufferWidth();
     const size_t height = BaseClass::framebufferHeight();
-    const kvs::Shader::ShadingModel& shader = BaseClass::shader();
-    const kvs::ColorMap& cmap = BaseClass::transferFunction().colorMap();
-    const kvs::OpacityMap& omap = BaseClass::transferFunction().opacityMap();
+    const auto& shader = BaseClass::shader();
+    const auto& cmap = BaseClass::transferFunction().colorMap();
+    const auto& omap = BaseClass::transferFunction().opacityMap();
     const float step = m_step;
     const float opaque = m_opaque;
     size_t depth_index = 0;
@@ -213,7 +201,7 @@ void RayCastingRenderer::rasterize(
                 float r = 0.0f;
                 float g = 0.0f;
                 float b = 0.0f;
-                float a = 0.0;
+                float a = 0.0f;
 
                 const float depth0 = depth_data[ depth_index ];
                 depth_data[ depth_index ] = ray.depth();
@@ -229,9 +217,9 @@ void RayCastingRenderer::rasterize(
                     if ( !kvs::Math::IsZero( opacity ) )
                     {
                         // Shading.
-                        const kvs::Vec3 vertex = ray.point();
-                        const kvs::Vec3 normal = interpolator.template gradient<T>();
-                        const kvs::RGBColor color = shader.shadedColor( cmap.at(s), vertex, normal );
+                        const auto vertex = ray.point();
+                        const auto normal = interpolator.template gradient<T>();
+                        const auto color = shader.shadedColor( cmap.at(s), vertex, normal );
 
                         // Front-to-back accumulation.
                         const float current_alpha = ( 1.0f - a ) * opacity;
@@ -289,11 +277,11 @@ void RayCastingRenderer::rasterize(
                 // Shift the x position of the mask by -ray_width/2.
                 const size_t X = kvs::Math::Max( int( x - ray_width / 2 ), 0 );
 
-                const kvs::UInt8  r = pixel_data[ pixel_index ];
-                const kvs::UInt8  g = pixel_data[ pixel_index + 1 ];
-                const kvs::UInt8  b = pixel_data[ pixel_index + 2 ];
-                const kvs::UInt8  a = pixel_data[ pixel_index + 3 ];
-                const kvs::Real32 d = depth_data[ depth_index ];
+                const auto r = pixel_data[ pixel_index ];
+                const auto g = pixel_data[ pixel_index + 1 ];
+                const auto b = pixel_data[ pixel_index + 2 ];
+                const auto a = pixel_data[ pixel_index + 3 ];
+                const auto d = depth_data[ depth_index ];
                 for ( size_t j = 0; j < ray_width && Y + j < height; j++ )
                 {
                     const size_t J = Y + j;

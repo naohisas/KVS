@@ -116,19 +116,6 @@ kvs::Range GetMinMaxValues( const kvs::VolumeObjectBase* volume )
 namespace kvs
 {
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new empty StructuredVolumeObject.
- */
-/*==========================================================================*/
-StructuredVolumeObject::StructuredVolumeObject():
-    kvs::VolumeObjectBase(),
-    m_grid_type( UnknownGridType ),
-    m_resolution( kvs::Vec3ui( 0, 0, 0 ) )
-{
-    BaseClass::setVolumeType( Structured );
-}
-
 /*===========================================================================*/
 /**
  *  @brief  Shallow copys.
@@ -138,8 +125,8 @@ StructuredVolumeObject::StructuredVolumeObject():
 void StructuredVolumeObject::shallowCopy( const StructuredVolumeObject& object )
 {
     BaseClass::shallowCopy( object );
-    this->m_grid_type = object.gridType();
-    this->m_resolution = object.resolution();
+    m_grid_type = object.gridType();
+    m_resolution = object.resolution();
 }
 
 /*===========================================================================*/
@@ -151,8 +138,8 @@ void StructuredVolumeObject::shallowCopy( const StructuredVolumeObject& object )
 void StructuredVolumeObject::deepCopy( const StructuredVolumeObject& object )
 {
     BaseClass::deepCopy( object );
-    this->m_grid_type = object.gridType();
-    this->m_resolution = object.resolution();
+    m_grid_type = object.gridType();
+    m_resolution = object.resolution();
 }
 
 /*===========================================================================*/

@@ -39,18 +39,19 @@ public:
     };
 
 private:
-    ImageObject::PixelType m_type; ///< pixel type
-    size_t m_width; ///< image width
-    size_t m_height; ///< image height
-    kvs::ValueArray<kvs::UInt8> m_pixels; ///< pixel data
+    ImageObject::PixelType m_type = UnknownPixelType; ///< pixel type
+    size_t m_width = 0; ///< image width
+    size_t m_height = 0; ///< image height
+    kvs::ValueArray<kvs::UInt8> m_pixels{}; ///< pixel data
 
 public:
-    ImageObject();
+    ImageObject(): BaseClass( Image ) {}
     ImageObject(
         const size_t width,
         const size_t height,
         const kvs::ValueArray<kvs::UInt8>& pixels,
         const PixelType type = Color24 );
+    virtual ~ImageObject() = default;
 
     void shallowCopy( const ImageObject& object );
     void deepCopy( const ImageObject& object );

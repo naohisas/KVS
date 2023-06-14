@@ -100,7 +100,9 @@ Scene::~Scene()
  *  @return Pair of IDs (object ID and renderer ID)
  */
 /*===========================================================================*/
-const std::pair<int,int> Scene::registerObject( kvs::ObjectBase* object, kvs::RendererBase* renderer )
+const std::pair<int,int> Scene::registerObject(
+    kvs::ObjectBase* object,
+    kvs::RendererBase* renderer )
 {
     // If the given pointer to the renderer is null, a renderer for the given
     // object is automatically created by using visualization pipeline class.
@@ -146,7 +148,10 @@ const std::pair<int,int> Scene::registerObject( kvs::ObjectBase* object, kvs::Re
  *  @param  delete_renderer [in] if true, the renderers for the object will be deleted
  */
 /*===========================================================================*/
-void Scene::removeObject( int object_id, bool delete_object, bool delete_renderer )
+void Scene::removeObject(
+    int object_id,
+    bool delete_object,
+    bool delete_renderer )
 {
     // Remove the object specified by the given object ID for the object manager.
     m_object_manager->erase( object_id, delete_object );
@@ -171,7 +176,10 @@ void Scene::removeObject( int object_id, bool delete_object, bool delete_rendere
  *  @param  delete_renderer [in] if true, the registered renderers for the object will be deleted
  */
 /*===========================================================================*/
-void Scene::removeObject( std::string object_name, bool delete_object, bool delete_renderer )
+void Scene::removeObject(
+    std::string object_name,
+    bool delete_object,
+    bool delete_renderer )
 {
     const auto* object = m_object_manager->object( object_name );
     const auto object_id = m_object_manager->objectID( object );
@@ -186,7 +194,10 @@ void Scene::removeObject( std::string object_name, bool delete_object, bool dele
  *  @param  delete_object [in] if true, the registered object will be deleted
  */
 /*===========================================================================*/
-void Scene::replaceObject( int object_id, kvs::ObjectBase* object, bool delete_object )
+void Scene::replaceObject(
+    int object_id,
+    kvs::ObjectBase* object,
+    bool delete_object )
 {
     m_object_manager->change( object_id, object, delete_object );
 }
@@ -199,7 +210,10 @@ void Scene::replaceObject( int object_id, kvs::ObjectBase* object, bool delete_o
  *  @param  delete_object [in] if true, the registered object will be deleted
  */
 /*===========================================================================*/
-void Scene::replaceObject( std::string object_name, kvs::ObjectBase* object, bool delete_object )
+void Scene::replaceObject(
+    std::string object_name,
+    kvs::ObjectBase* object,
+    bool delete_object )
 {
     m_object_manager->change( object_name, object, delete_object );
 }
@@ -212,7 +226,10 @@ void Scene::replaceObject( std::string object_name, kvs::ObjectBase* object, boo
  *  @param  delete_renderer [in] if true, the registered renderer will be deleted
  */
 /*===========================================================================*/
-void Scene::replaceRenderer( int renderer_id, kvs::RendererBase* renderer, bool delete_renderer )
+void Scene::replaceRenderer(
+    int renderer_id,
+    kvs::RendererBase* renderer,
+    bool delete_renderer )
 {
     m_renderer_manager->change( renderer_id, renderer, delete_renderer );
 }
@@ -225,7 +242,10 @@ void Scene::replaceRenderer( int renderer_id, kvs::RendererBase* renderer, bool 
  *  @param  delete_renderer [in] if true, the registered renderer will be deleted
  */
 /*===========================================================================*/
-void Scene::replaceRenderer( std::string renderer_name, kvs::RendererBase* renderer, bool delete_renderer )
+void Scene::replaceRenderer(
+    std::string renderer_name,
+    kvs::RendererBase* renderer,
+    bool delete_renderer )
 {
     m_renderer_manager->change( renderer_name, renderer, delete_renderer );
 }
@@ -696,9 +716,9 @@ void Scene::paintFunction()
         const int size = m_id_manager->size();
         for ( int index = 0; index < size; index++ )
         {
-            kvs::IDManager::IDPair id = m_id_manager->id( index );
-            kvs::ObjectBase* object = m_object_manager->object( id.first );
-            kvs::RendererBase* renderer = m_renderer_manager->renderer( id.second );
+            auto id = m_id_manager->id( index );
+            auto* object = m_object_manager->object( id.first );
+            auto* renderer = m_renderer_manager->renderer( id.second );
             if ( object->isVisible() )
             {
                 kvs::OpenGL::PushMatrix();
@@ -869,11 +889,11 @@ bool Scene::detect_collision( const kvs::Vec2& p_win )
     const size_t size = m_id_manager->size();
     for ( size_t i = 0; i < size; i++ )
     {
-        kvs::IDManager::IDPair id = m_id_manager->id( i );
-        kvs::ObjectBase* object = m_object_manager->object( id.first );
-        const kvs::Vec2 p = this->position_in_device( object );
-        const kvs::Vec2 diff = p - p_win;
-        const double distance = diff.length();
+        auto id = m_id_manager->id( i );
+        auto* object = m_object_manager->object( id.first );
+        const auto p = this->position_in_device( object );
+        const auto diff = p - p_win;
+        const auto distance = diff.length();
         if ( distance < min_distance )
         {
             min_distance = distance;
@@ -919,21 +939,21 @@ bool Scene::detect_collision( const kvs::ObjectBase* object, const kvs::Vec2& p_
         const kvs::Vec3 min_object_coord = object->minObjectCoord();
         const kvs::Vec3 max_object_coord = object->maxObjectCoord();
         const kvs::Vec3 corners[8] = {
-            kvs::Vec3( min_object_coord.x(), min_object_coord.y(), min_object_coord.z() ),
-            kvs::Vec3( max_object_coord.x(), min_object_coord.y(), min_object_coord.z() ),
-            kvs::Vec3( min_object_coord.x(), min_object_coord.y(), max_object_coord.z() ),
-            kvs::Vec3( max_object_coord.x(), min_object_coord.y(), max_object_coord.z() ),
-            kvs::Vec3( min_object_coord.x(), max_object_coord.y(), min_object_coord.z() ),
-            kvs::Vec3( max_object_coord.x(), max_object_coord.y(), min_object_coord.z() ),
-            kvs::Vec3( min_object_coord.x(), max_object_coord.y(), max_object_coord.z() ),
-            kvs::Vec3( max_object_coord.x(), max_object_coord.y(), max_object_coord.z() ) };
+            { min_object_coord.x(), min_object_coord.y(), min_object_coord.z() },
+            { max_object_coord.x(), min_object_coord.y(), min_object_coord.z() },
+            { min_object_coord.x(), min_object_coord.y(), max_object_coord.z() },
+            { max_object_coord.x(), min_object_coord.y(), max_object_coord.z() },
+            { min_object_coord.x(), max_object_coord.y(), min_object_coord.z() },
+            { max_object_coord.x(), max_object_coord.y(), min_object_coord.z() },
+            { min_object_coord.x(), max_object_coord.y(), max_object_coord.z() },
+            { max_object_coord.x(), max_object_coord.y(), max_object_coord.z() } };
 
         // Calculate max distance between the center and the corner in
         // the window coordinate system.
         for( int i = 0; i < 8; i++ )
         {
-            const kvs::Vec2 corner = ::Object2Window( corners[i], m_camera );
-            const float distance = static_cast<float>( ( corner - center ).length() );
+            const auto corner = ::Object2Window( corners[i], m_camera );
+            const auto distance = static_cast<float>( ( corner - center ).length() );
             max_distance = kvs::Math::Max( max_distance, distance );
         }
     }

@@ -25,17 +25,17 @@ namespace kvs
 class Painter
 {
 private:
-    kvs::PaintDevice* m_device; ///< paint device (not allocated, just reference)
-    float m_device_pixel_ratio; ///< device pixel ratio set from the screen
-    kvs::Font m_font; ///< font
-    GLdouble m_model[16]; ///< modelview matrix
-    GLdouble m_proj[16]; ///< projection matrix
-    GLint m_view[4]; ///< viewport
+    kvs::PaintDevice* m_device = nullptr; ///< paint device (not allocated, just reference)
+    float m_device_pixel_ratio = 1.0f; ///< device pixel ratio set from the screen
+    kvs::Font m_font{}; ///< font
+    GLdouble m_model[16] = {0}; ///< modelview matrix
+    GLdouble m_proj[16] = {0}; ///< projection matrix
+    GLint m_view[4] = {0}; ///< viewport
 
 public:
-    Painter();
-    Painter( kvs::ScreenBase* screen );
-    virtual ~Painter();
+    Painter() = default;
+    Painter( kvs::ScreenBase* screen ) { this->begin( screen ); }
+    virtual ~Painter() { this->end(); }
 
     kvs::PaintDevice* device() const { return m_device; }
     float devicePixelRatio() const { return m_device_pixel_ratio; }

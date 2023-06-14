@@ -22,7 +22,7 @@ class FontMetrics
 {
 private:
     const kvs::Font& m_font; ///< reference to the font data
-    kvs::PaintDevice* m_device; ///< pointer to the paint device
+    kvs::PaintDevice* m_device = nullptr; ///< pointer to the paint device
 
 public:
     FontMetrics( const kvs::Font& font, kvs::PaintDevice* device );

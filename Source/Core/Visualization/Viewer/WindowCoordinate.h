@@ -22,11 +22,11 @@ class NormalizedDeviceCoordinate;
 class WindowCoordinate
 {
 private:
-    kvs::Vec3 m_position; ///< position in window coordinates
-    int m_x; ///< x coordinate value of left corner of the viewport
-    int m_y; ///< y coordinate value of left corner of the viewport
-    size_t m_width; ///< width of the viewport
-    size_t m_height; ///< height of the viewport
+    kvs::Vec3 m_position{}; ///< position in window coordinates
+    int m_x = 0; ///< x coordinate value of left corner of the viewport
+    int m_y = 0; ///< y coordinate value of left corner of the viewport
+    size_t m_width = 0; ///< width of the viewport
+    size_t m_height = 0; ///< height of the viewport
     static float m_front; ///< depth value of the front clipping plane
     static float m_back; ///< depth value of the back clipping plane
 

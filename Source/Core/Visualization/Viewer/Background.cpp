@@ -11,25 +11,13 @@
 namespace kvs
 {
 
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Background class.
- */
-/*===========================================================================*/
-Background::Background():
-    m_type( MonoColor ),
-    m_opacity( 0.0f )
-{
-}
-
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new Background class.
  *  @param  c [in] background color
  */
 /*==========================================================================*/
-Background::Background( const kvs::RGBColor& c ):
-    m_opacity( 0.0f )
+Background::Background( const kvs::RGBColor& c )
 {
     this->setColor( c );
 }
@@ -41,8 +29,7 @@ Background::Background( const kvs::RGBColor& c ):
  *  @param  c1 [in] color on the corner #1 (top side color)
  */
 /*==========================================================================*/
-Background::Background( const kvs::RGBColor& c0, const kvs::RGBColor& c1 ):
-    m_opacity( 0.0f )
+Background::Background( const kvs::RGBColor& c0, const kvs::RGBColor& c1 )
 {
     this->setColor( c0, c1 );
 }
@@ -60,19 +47,9 @@ Background::Background(
     const kvs::RGBColor& c0,
     const kvs::RGBColor& c1,
     const kvs::RGBColor& c2,
-    const kvs::RGBColor& c3 ):
-    m_opacity( 0.0f )
+    const kvs::RGBColor& c3 )
 {
     this->setColor( c0, c1, c2, c3 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the Background class.
- */
-/*===========================================================================*/
-Background::~Background()
-{
 }
 
 /*==========================================================================*/

@@ -26,25 +26,25 @@ class VolumeRendererBase : public kvs::RendererBase
     kvsModule( kvs::VolumeRendererBase, Renderer );
 
 private:
-    size_t m_window_width; ///< window width
-    size_t m_window_height; ///< window height
-    float m_device_pixel_ratio; ///< device pixel ratio
-    kvs::ValueArray<kvs::Real32> m_depth_data; ///< depth data as float type
-    kvs::ValueArray<kvs::UInt8> m_color_data; ///< color (RGBA) data as uchar type
-    kvs::FrameBuffer m_depth_buffer; ///< depth buffer
-    kvs::FrameBuffer m_color_buffer; ///< color (RGBA) buffer
-    kvs::TransferFunction m_tfunc; ///< transfer function
-    kvs::Shader::ShadingModel* m_shader; ///< shading method
-    const kvs::ObjectBase* m_object; ///< rendering object
+    size_t m_window_width = 0; ///< window width
+    size_t m_window_height = 0; ///< window height
+    float m_device_pixel_ratio = 1.0f; ///< device pixel ratio
+    kvs::ValueArray<kvs::Real32> m_depth_data{}; ///< depth data as float type
+    kvs::ValueArray<kvs::UInt8> m_color_data{}; ///< color (RGBA) data as uchar type
+    kvs::FrameBuffer m_depth_buffer{ GL_DEPTH_COMPONENT, GL_FLOAT }; ///< depth buffer
+    kvs::FrameBuffer m_color_buffer{ GL_RGBA, GL_UNSIGNED_BYTE }; ///< color (RGBA) buffer
+    kvs::TransferFunction m_tfunc{}; ///< transfer function
+    kvs::Shader::ShadingModel* m_shader = nullptr; ///< shading method
+    const kvs::ObjectBase* m_object = nullptr; ///< rendering object
 
 public:
-    VolumeRendererBase();
-    virtual ~VolumeRendererBase();
+    VolumeRendererBase() = default;
+    virtual ~VolumeRendererBase() { if ( m_shader ) { delete m_shader; } }
 
     virtual void exec(
         kvs::ObjectBase* object,
-        kvs::Camera* camera = NULL,
-        kvs::Light* light  = NULL ) = 0;
+        kvs::Camera* camera = nullptr,
+        kvs::Light* light  = nullptr ) = 0;
 
     size_t windowWidth() const { return m_window_width; }
     size_t windowHeight() const { return m_window_height; }
@@ -87,7 +87,7 @@ inline void VolumeRendererBase::setShader( const ShadingType shader )
     if ( m_shader )
     {
         delete m_shader;
-        m_shader = NULL;
+        m_shader = nullptr;
     }
 
     m_shader = new ShadingType( shader );

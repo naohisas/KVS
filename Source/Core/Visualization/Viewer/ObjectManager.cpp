@@ -21,23 +21,16 @@ namespace kvs
  *  @brief  Creates a new ObjectManager class.
  */
 /*===========================================================================*/
-ObjectManager::ObjectManager()
+ObjectManager::ObjectManager(): BaseClass( BaseClass::ObjectManager )
 {
-    ObjectBase::setObjectType( kvs::ObjectBase::ObjectManager );
-
-    m_object_tree.clear();
-    m_has_active_object = false;
-    m_object_map.clear();
-
-    m_current_object_id = 0;
     this->insert_root();
 
-    const kvs::Vec3 min_obj = kvs::Vec3::Constant(  1000000.0f );
-    const kvs::Vec3 max_obj = kvs::Vec3::Constant( -1000000.0f );
+    const auto min_obj = kvs::Vec3::Constant(  1000000.0f );
+    const auto max_obj = kvs::Vec3::Constant( -1000000.0f );
     ObjectBase::setMinMaxObjectCoords( min_obj, max_obj );
 
-    const kvs::Vec3 min_ext = kvs::Vec3::Constant( -3.0f );
-    const kvs::Vec3 max_ext = kvs::Vec3::Constant(  3.0f );
+    const auto min_ext = kvs::Vec3::Constant( -3.0f );
+    const auto max_ext = kvs::Vec3::Constant(  3.0f );
     ObjectBase::setMinMaxExternalCoords( min_ext, max_ext );
 }
 

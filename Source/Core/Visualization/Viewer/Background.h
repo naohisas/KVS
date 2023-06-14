@@ -30,19 +30,19 @@ public:
     };
 
 private:
-    Type m_type;///< background type
-    bool m_image_changed; ///< flag for changing background image
+    Type m_type = MonoColor; ///< background type
+    bool m_image_changed = false; ///< flag for changing background image
     kvs::RGBColor m_color[4]; ///< color on the corners
-    kvs::Real32 m_opacity; ///< opacity
-    kvs::ColorImage m_image; ///< background image
-    kvs::Texture2D m_texture; ///< background image texture
+    kvs::Real32 m_opacity = 0.0f; ///< opacity
+    kvs::ColorImage m_image{}; ///< background image
+    kvs::Texture2D m_texture{}; ///< background image texture
 
 public:
-    Background();
+    Background() = default;
     Background( const kvs::RGBColor& c );
     Background( const kvs::RGBColor& c0, const kvs::RGBColor& c1 );
     Background( const kvs::RGBColor& c0, const kvs::RGBColor& c1, const kvs::RGBColor& c2, const kvs::RGBColor& c3 );
-    virtual ~Background();
+    virtual ~Background() = default;
 
     Background& operator = ( const Background& bg );
 

@@ -45,41 +45,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new Painter class.
- */
-/*===========================================================================*/
-Painter::Painter():
-    m_device( NULL ),
-    m_device_pixel_ratio( 1.0f )
-{
-    memset( m_model, 0, sizeof( GLdouble ) * 16 );
-    memset( m_proj, 0, sizeof( GLdouble ) * 16 );
-    memset( m_view, 0, sizeof( GLint ) * 4 );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new Painter class.
- *  @param  screen [in] rendering screen
- */
-/*===========================================================================*/
-Painter::Painter( kvs::ScreenBase* screen )
-{
-    this->begin( screen );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the Painter class.
- */
-/*===========================================================================*/
-Painter::~Painter()
-{
-    this->end();
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Begins painting to the specified screen
  *  @param  screen [in] rendering screen
  *  @return true if successful

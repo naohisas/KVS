@@ -23,8 +23,8 @@ class WorldCoordinate;
 class ObjectCoordinate
 {
 private:
-    kvs::Vector3f m_position; ///< position in object coordinates
-    const kvs::ObjectBase* m_object; ///< object defines object coordinates
+    kvs::Vec3 m_position{}; ///< position in object coordinates
+    const kvs::ObjectBase* m_object = nullptr; ///< object defines object coordinates
 
 public:
     ObjectCoordinate( const kvs::Vec3& position, const kvs::ObjectBase* object );

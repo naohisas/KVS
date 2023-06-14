@@ -119,18 +119,15 @@ kvs::KVSMLLineObject::WritingDataType GetWritingDataType( const bool ascii, cons
 class EdgeMap
 {
 public:
-
-    typedef kvs::UInt32 Key;
-    typedef std::pair<kvs::UInt32,kvs::UInt32> Value;
-    typedef std::multimap<Key,Value> Bucket;
+    using Key = kvs::UInt32;
+    using Value = std::pair<kvs::UInt32,kvs::UInt32>;
+    using Bucket = std::multimap<Key,Value>;
 
 private:
-
-    size_t m_nvertices; ///< number of vertices of the original data
-    Bucket m_bucket; ///< bucket for the edge data
+    size_t m_nvertices = 0; ///< number of vertices of the original data
+    Bucket m_bucket{}; ///< bucket for the edge data
 
 public:
-
     EdgeMap( const size_t nvertices ):
         m_nvertices( nvertices ) {}
 
@@ -257,9 +254,8 @@ namespace kvs
  *  @brief  Constructs a new LineObject class.
  */
 /*===========================================================================*/
-LineObject::LineObject()
+LineObject::LineObject(): BaseClass( Line )
 {
-    BaseClass::setGeometryType( Line );
     this->setSize( 1 );
 }
 

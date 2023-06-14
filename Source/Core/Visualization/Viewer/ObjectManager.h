@@ -23,18 +23,19 @@ namespace kvs
 class ObjectManager : public kvs::ObjectBase
 {
 private:
-    typedef kvs::Tree<kvs::ObjectBase*> ObjectTree;
-    typedef ObjectTree::iterator ObjectIterator;
-    typedef std::pair<int,ObjectIterator> ObjectPair;
-    typedef std::map<int,ObjectIterator> ObjectMap;
+    using BaseClass = kvs::ObjectBase;
+    using ObjectTree = kvs::Tree<kvs::ObjectBase*>;
+    using ObjectIterator = ObjectTree::iterator;
+    using ObjectPair = std::pair<int,ObjectIterator>;
+    using ObjectMap = std::map<int,ObjectIterator>;
 
 private:
-    bool m_has_active_object; ///< If active object exists true.
-    ObjectIterator m_root; ///< pointer to the root of the tree
-    ObjectIterator m_active_object; ///< pointer to the active object
-    ObjectMap m_object_map; ///< object map
-    int m_current_object_id; ///< current object ID
-    ObjectTree m_object_tree; ///< object tree
+    bool m_has_active_object = false; ///< If active object exists true.
+    ObjectIterator m_root{}; ///< pointer to the root of the tree
+    ObjectIterator m_active_object{}; ///< pointer to the active object
+    ObjectMap m_object_map{}; ///< object map
+    int m_current_object_id = 0; ///< current object ID
+    ObjectTree m_object_tree{}; ///< object tree
 
 public:
     ObjectManager();

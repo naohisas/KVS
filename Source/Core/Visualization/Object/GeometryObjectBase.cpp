@@ -13,17 +13,6 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new GeometryObjectBase class.
- */
-/*===========================================================================*/
-GeometryObjectBase::GeometryObjectBase():
-    m_geometry_type( UnknownGeometryType )
-{
-    BaseClass::setObjectType( Geometry );
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Shallow copy.
  *  @param  object [in] object
  */

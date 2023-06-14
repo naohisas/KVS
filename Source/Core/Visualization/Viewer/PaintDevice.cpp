@@ -12,24 +12,13 @@ namespace kvs
 
 /*===========================================================================*/
 /**
- *  @brief  Constructs a new PaintDevice class.
- */
-/*===========================================================================*/
-PaintDevice::PaintDevice():
-    m_render_engine( NULL ),
-    m_text_engine( NULL )
-{
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Destroys the PaintDevice class.
  */
 /*===========================================================================*/
 PaintDevice::~PaintDevice()
 {
-    if ( m_render_engine ) delete m_render_engine;
-    if ( m_text_engine ) delete m_text_engine;
+    if ( m_render_engine ) { delete m_render_engine; }
+    if ( m_text_engine ) { delete m_text_engine; }
 }
 
 /*===========================================================================*/

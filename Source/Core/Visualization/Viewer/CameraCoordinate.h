@@ -23,11 +23,10 @@ class WorldCoordinate;
 class CameraCoordinate
 {
 private:
-    kvs::Vec3 m_position; ///< position in camera coordinates
-    const kvs::Camera* m_camera; ///< camera defines camera coordinates
+    kvs::Vec3 m_position{}; ///< position in camera coordinates
+    const kvs::Camera* m_camera = nullptr; ///< camera defines camera coordinates
 
 public:
-
     CameraCoordinate( const kvs::Vec3& position, const kvs::Camera* camera );
 
     const kvs::Vec3& position() const { return m_position; }

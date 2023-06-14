@@ -5,6 +5,7 @@
  */
 /****************************************************************************/
 #pragma once
+#include <kvs/OpenGL>
 #include <kvs/XformControl>
 #include <kvs/Vector3>
 #include <kvs/Camera>
@@ -24,11 +25,11 @@ class RGBAColor;
 class Light : public kvs::XformControl
 {
 private:
-    kvs::Vec3 m_transform_center;
-    unsigned int  m_id; ///< light ID
-    kvs::Vec3 m_diffuse; ///< diffuse color
-    kvs::Vec3 m_ambient; ///< ambient color
-    kvs::Vec3 m_specular; ///< specular color
+    kvs::Vec3 m_transform_center{ 0.0f, 0.0f, 0.0f };
+    unsigned int  m_id = GL_LIGHT0; ///< light ID
+    kvs::Vec3 m_diffuse{ 1.0f, 1.0f, 1.0f }; ///< diffuse color
+    kvs::Vec3 m_ambient{ 0.0f, 0.0f, 0.0f }; ///< ambient color
+    kvs::Vec3 m_specular{ 1.0f, 1.0f, 1.0f }; ///< specular color
 
 public:
     static void SetModelLocalViewer( bool flag );
@@ -37,7 +38,7 @@ public:
 
 public:
     Light();
-    virtual ~Light();
+    virtual ~Light() = default;
 
     void setID( const unsigned int id );
     void setPosition( const float x, const float y, const float z );

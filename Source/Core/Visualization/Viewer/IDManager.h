@@ -23,14 +23,14 @@ namespace kvs
 class IDManager
 {
 public:
-    typedef std::pair<int,int> IDPair;
-    typedef std::list<IDPair> IDList;
-    typedef std::list<IDPair>::iterator IDIterator;
-    typedef std::list<IDPair>::reverse_iterator IDReverseIterator;
+    using IDPair = std::pair<int,int>;
+    using IDList = std::list<IDPair>;
+    using IDIterator = std::list<IDPair>::iterator;
+    using IDReverseIterator = std::list<IDPair>::reverse_iterator;
 
 private:
-    std::vector<int> m_flip_table; ///< accessor to ID list
-    IDList m_id_list; ///< ID list
+    std::vector<int> m_flip_table{}; ///< accessor to ID list
+    IDList m_id_list{}; ///< ID list
 
 public:
     IDManager();

@@ -41,13 +41,14 @@ public:
     };
 
 private:
-    CellType m_cell_type; ///< Cell type.
-    size_t m_nnodes; ///< Number of nodes.
-    size_t m_ncells; ///< Number of cells.
-    Connections m_connections; ///< Connection ( Node ID ) array.
+    CellType m_cell_type = UnknownCellType; ///< Cell type.
+    size_t m_nnodes = 0; ///< Number of nodes.
+    size_t m_ncells = 0; ///< Number of cells.
+    Connections m_connections{}; ///< Connection ( Node ID ) array.
 
 public:
-    UnstructuredVolumeObject();
+    UnstructuredVolumeObject(): BaseClass( Unstructured ) {}
+    virtual ~UnstructuredVolumeObject() = default;
 
     void shallowCopy( const UnstructuredVolumeObject& object );
     void deepCopy( const UnstructuredVolumeObject& object );

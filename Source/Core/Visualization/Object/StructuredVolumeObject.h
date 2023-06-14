@@ -35,11 +35,12 @@ public:
     };
 
 private:
-    GridType m_grid_type; ///< grid type
-    kvs::Vec3ui m_resolution; ///< Node resolution.
+    GridType m_grid_type = UnknownGridType; ///< grid type
+    kvs::Vec3ui m_resolution{ 0, 0, 0 }; ///< Node resolution.
 
 public:
-    StructuredVolumeObject();
+    StructuredVolumeObject(): BaseClass( Structured ) {}
+    virtual ~StructuredVolumeObject() = default;
 
     void shallowCopy( const StructuredVolumeObject& object );
     void deepCopy( const StructuredVolumeObject& object );

@@ -12,23 +12,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  @brief  Constructs a new empty VolumeObjectBase.
- */
-/*==========================================================================*/
-VolumeObjectBase::VolumeObjectBase():
-    m_volume_type( UnknownVolumeType ),
-    m_label( "" ),
-    m_unit( "" ),
-    m_veclen( 0 ),
-    m_has_min_max_values( false ),
-    m_min_value( 0.0 ),
-    m_max_value( 0.0 )
-{
-    BaseClass::setObjectType( Volume );
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Sets the min/max values.
  *  @param  min_value [in] Minimum value.
  *  @param  max_value [in] Maximum value.

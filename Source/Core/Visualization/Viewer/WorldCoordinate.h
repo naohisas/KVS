@@ -25,7 +25,7 @@ class ObjectCoordinate;
 class WorldCoordinate
 {
 private:
-    kvs::Vec3 m_position; ///< position in world coordinates
+    kvs::Vec3 m_position{}; ///< position in world coordinates
 
 public:
     WorldCoordinate( const kvs::Vec3& position );

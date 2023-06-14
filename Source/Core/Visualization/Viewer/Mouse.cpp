@@ -12,33 +12,6 @@ namespace kvs
 
 /*==========================================================================*/
 /**
- *  @brief  Constructs a new Mouse class.
- */
-/*==========================================================================*/
-Mouse::Mouse():
-    m_operation_mode( Mouse::Rotation ),
-    m_old( kvs::Vec2i::Zero() ),
-    m_new( kvs::Vec2i::Zero() ),
-    m_start( kvs::Vec2i::Zero() ),
-    m_stop( kvs::Vec2i::Zero() ),
-    m_timer(),
-    m_enable_auto_updating( true ),
-    m_is_updating( false ),
-    m_is_damping( false )
-{
-}
-
-/*==========================================================================*/
-/**
- *  @brief  Destroys the Mouse class.
- */
-/*==========================================================================*/
-Mouse::~Mouse()
-{
-}
-
-/*==========================================================================*/
-/**
  *  @brief  Press event function.
  *  @param  x [in] x coordinate value of the mouse pointer position
  *  @param  y [in] y coordinate value of the mouse pointer position
