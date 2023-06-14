@@ -503,7 +503,7 @@ void RayCastingRenderer::exec(
     const size_t height = camera->windowHeight();
     auto* volume = kvs::StructuredVolumeObject::DownCast( object );
 
-    const kvs::Vec3u ncells( volume->resolution() - kvs::Vec3u::Constant(1) );
+    const auto ncells = volume->resolution() - kvs::Vec3u::Constant(1);
     const auto min_coord = volume->minObjectCoord();
     const auto max_coord = volume->maxObjectCoord();
     const auto scale_factor = ( max_coord - min_coord ) / kvs::Vec3{ ncells };
