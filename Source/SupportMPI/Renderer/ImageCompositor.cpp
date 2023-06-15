@@ -27,26 +27,61 @@ namespace kvs
 namespace mpi
 {
 
-ImageCompositor::ImageCompositor( const int rank, const int size, const MPI_Comm comm ):
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new ImageCompositor class.
+ *  @param  rank [in] MPI rank
+ *  @param  size [in] number of MPI processes
+ *  @param  comm [in] MPI communicator
+ */
+/*===========================================================================*/
+ImageCompositor::ImageCompositor(
+    const int rank,
+    const int size,
+    const MPI_Comm comm ):
     m_rank( rank ),
     m_size( size ),
     m_comm( comm )
 {
 }
 
-ImageCompositor::ImageCompositor( const kvs::mpi::Communicator& comm ):
+/*===========================================================================*/
+/**
+ *  @brief  Constructs a new ImageCompositor class.
+ *  @param  comm [in] MPI communicator
+ */
+/*===========================================================================*/
+ImageCompositor::ImageCompositor(
+    const kvs::mpi::Communicator& comm ):
     m_rank( comm.rank() ),
     m_size( comm.size() ),
     m_comm( comm.handler() )
 {
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Destroys the ImageCompositor class.
+ */
+/*===========================================================================*/
 ImageCompositor::~ImageCompositor()
 {
     this->destroy();
 }
 
-bool ImageCompositor::initialize( const size_t width, const size_t height, const bool enable_depth_testing )
+/*===========================================================================*/
+/**
+ *  @brief  Initializes the image compositor.
+ *  @param  width [in] image width
+ *  @param  height [in] image height
+ *  @param  enable_depth_testing [in] flag for depth testing    
+ *  @return true, if the Initialization is done successfully
+ */
+/*===========================================================================*/
+bool ImageCompositor::initialize(
+    const size_t width,
+    const size_t height,
+    const bool enable_depth_testing )
 {
     if ( m_width != width || m_height != height ) { this->destroy(); }
 
@@ -60,6 +95,11 @@ bool ImageCompositor::initialize( const size_t width, const size_t height, const
     return true;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Destroys the ImageCompositor class.
+ */
+/*===========================================================================*/
 bool ImageCompositor::destroy()
 {
     if ( m_width == 0 && m_height == 0 ) { return true; }
@@ -75,6 +115,13 @@ bool ImageCompositor::destroy()
     return true;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Runs the image compositor w/o depth testing.
+ *  @param  color_buffer [in] color buffer
+ *  @return true, if the process is done successfully
+ */
+/*===========================================================================*/
 bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer )
 {
     KVS_ASSERT( m_pixel_type == ALPHA );
@@ -90,7 +137,19 @@ bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer )
     return status == EXIT_SUCCESS;
 }
 
-bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer, const kvs::Real32 depth, const bool btof  )
+/*===========================================================================*/
+/**
+ *  @brief  Runs the image compositor w/ sorting.
+ *  @param  color_buffer [in] color buffer
+ *  @param  depth [in] depth for the color buffer
+ *  @param  btof [in] flag for sorting order (if true, back-to-front)
+ *  @return true, if the process is done successfully
+ */
+/*===========================================================================*/
+bool ImageCompositor::run(
+    kvs::ValueArray<kvs::UInt8>& color_buffer,
+    const kvs::Real32 depth,
+    const bool btof  )
 {
     kvs::mpi::Communicator comm( m_comm );
 
@@ -122,7 +181,17 @@ bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer, const kvs:
     return this->run( color_buffer );
 }
 
-bool ImageCompositor::run( kvs::ValueArray<kvs::UInt8>& color_buffer, kvs::ValueArray<kvs::Real32>& depth_buffer )
+/*===========================================================================*/
+/**
+ *  @brief  Runs the image compositor w/ depth testing.
+ *  @param  color_buffer [in] color buffer
+ *  @param  depth_buffer [in] depth buffer
+ *  @return true, if the process is done successfully
+ */
+/*===========================================================================*/
+bool ImageCompositor::run(
+    kvs::ValueArray<kvs::UInt8>& color_buffer,
+    kvs::ValueArray<kvs::Real32>& depth_buffer )
 {
     KVS_ASSERT( color_buffer.size() == m_width * m_height * 4 );
     KVS_ASSERT( depth_buffer.size() == m_width * m_height );
