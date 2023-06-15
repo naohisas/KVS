@@ -1,3 +1,17 @@
+/*****************************************************************************/
+/**
+ *  @file   ImageCompositor.h
+ *  @author Naohisa Sakamoto
+ */
+/*----------------------------------------------------------------------------
+ *
+ *  Copyright (c) Visualization Laboratory, Kyoto University.
+ *  All rights reserved.
+ *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
+ *
+ *  $Id$
+ */
+/*****************************************************************************/
 #pragma once
 #include <kvs/mpi/Communicator>
 #include <kvs/ValueArray>
@@ -10,16 +24,21 @@ namespace kvs
 namespace mpi
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Image composition class.
+ */
+/*===========================================================================*/
 class ImageCompositor
 {
 private:
-    int m_rank; ///< MPI rank (my rank)
-    int m_size; ///< MPI size (number of nodes)
-    MPI_Comm m_comm; ///< MPI communicator
-    size_t m_width; ///< image width
-    size_t m_height; ///< image height
-    unsigned int m_pixel_type; ///< pixel type (RGBA 32-bit or RGBA-Z 64-bit)
-    unsigned int m_merge_type; ///< merge type (depth-testing or alpha-blending)
+    int m_rank = 0; ///< MPI rank (my rank)
+    int m_size = 0; ///< MPI size (number of nodes)
+    MPI_Comm m_comm = 0; ///< MPI communicator
+    size_t m_width = 0; ///< image width
+    size_t m_height = 0; ///< image height
+    unsigned int m_pixel_type = 0; ///< pixel type (RGBA 32-bit or RGBA-Z 64-bit)
+    unsigned int m_merge_type = 0; ///< merge type (depth-testing or alpha-blending)
 
 public:
     ImageCompositor( const int rank, const int size, const MPI_Comm comm = MPI_COMM_WORLD );

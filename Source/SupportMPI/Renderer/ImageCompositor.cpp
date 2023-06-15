@@ -1,3 +1,17 @@
+/*****************************************************************************/
+/**
+ *  @file   ImageCompositor.cpp
+ *  @author Naohisa Sakamoto
+ */
+/*----------------------------------------------------------------------------
+ *
+ *  Copyright (c) Visualization Laboratory, Kyoto University.
+ *  All rights reserved.
+ *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
+ *
+ *  $Id$
+ */
+/*****************************************************************************/
 #include "ImageCompositor.h"
 #define OMPI_SKIP_MPICXX 1
 #define MPICH_SKIP_MPICXX 1
@@ -16,22 +30,14 @@ namespace mpi
 ImageCompositor::ImageCompositor( const int rank, const int size, const MPI_Comm comm ):
     m_rank( rank ),
     m_size( size ),
-    m_comm( comm ),
-    m_width( 0 ),
-    m_height( 0 ),
-    m_pixel_type( -1 ),
-    m_merge_type( -1 )
+    m_comm( comm )
 {
 }
 
 ImageCompositor::ImageCompositor( const kvs::mpi::Communicator& comm ):
     m_rank( comm.rank() ),
     m_size( comm.size() ),
-    m_comm( comm.handler() ),
-    m_width( 0 ),
-    m_height( 0 ),
-    m_pixel_type( -1 ),
-    m_merge_type( -1 )
+    m_comm( comm.handler() )
 {
 }
 
