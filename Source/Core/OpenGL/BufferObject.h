@@ -53,7 +53,7 @@ public:
     class Binder;
     class GuardedBinder;
 
-    static GLsizei PaddedBufferSize( GLsizei size );
+    static GLsizeiptr PaddedBufferSize( GLsizeiptr size );
 
 public:
     BufferObject( const GLenum target, const GLenum target_binding, const GLenum usage );
@@ -77,15 +77,15 @@ public:
     bool isValid() const;
     bool isBound() const;
 
-    GLsizei load( const size_t size, const void* data, const size_t offset = 0 );
+    GLsizeiptr load( const size_t size, const void* data, const size_t offset = 0 );
     void* map( const GLenum type = AccessType::ReadWrite ) { return this->mapBuffer( type ); }
     void unmap() { this->unmapBuffer(); }
 
 protected:
     void createID();
     void deleteID();
-    void setBufferData( GLsizei width, const GLvoid* data );
-    void setBufferSubData( GLsizei width, const GLvoid* data, GLint xoffset = 0 );
+    void setBufferData( GLsizeiptr width, const GLvoid* data );
+    void setBufferSubData( GLsizeiptr width, const GLvoid* data, GLint xoffset = 0 );
     void* mapBuffer( const GLenum access_type );
     void unmapBuffer();
 };

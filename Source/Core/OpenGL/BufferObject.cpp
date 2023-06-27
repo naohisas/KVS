@@ -18,7 +18,7 @@ namespace kvs
  *  @return buffer size
  */
 /*===========================================================================*/
-GLsizei BufferObject::PaddedBufferSize( GLsizei size )
+GLsizeiptr BufferObject::PaddedBufferSize( GLsizeiptr size )
 {
      int x = size;
      return (x + 15) & ~15;
@@ -136,7 +136,7 @@ bool BufferObject::isBound() const
  *  @param  offset [in] texel offset within the existing buffer data array
  */
 /*===========================================================================*/
-GLsizei BufferObject::load( const size_t size, const void* data, const size_t offset )
+GLsizeiptr BufferObject::load( const size_t size, const void* data, const size_t offset )
 {
     if ( !m_is_loaded )
     {
@@ -187,7 +187,7 @@ void BufferObject::deleteID()
  *  @param  data [in] pointer to data that will be copied
  */
 /*===========================================================================*/
-void BufferObject::setBufferData( GLsizei size, const GLvoid* data )
+void BufferObject::setBufferData( GLsizeiptr size, const GLvoid* data )
 {
     KVS_ASSERT( this->isBound() );
     KVS_GL_CALL( glBufferData( m_target, size, data, m_usage ) );
@@ -201,7 +201,7 @@ void BufferObject::setBufferData( GLsizei size, const GLvoid* data )
  *  @param  offset [in] offset into the buffer object's data in bytes
  */
 /*===========================================================================*/
-void BufferObject::setBufferSubData( GLsizei size, const GLvoid* data, GLint offset )
+void BufferObject::setBufferSubData( GLsizeiptr size, const GLvoid* data, GLint offset )
 {
     KVS_ASSERT( this->isBound() );
     KVS_GL_CALL( glBufferSubData( m_target, offset, size, data ) );
