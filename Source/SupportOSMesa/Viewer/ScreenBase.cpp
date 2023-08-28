@@ -65,14 +65,6 @@ namespace kvs
 namespace osmesa
 {
 
-ScreenBase::ScreenBase()
-{
-}
-
-ScreenBase::~ScreenBase()
-{
-}
-
 kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer( GLenum mode ) const
 {
     kvs::OpenGL::SetReadBuffer( mode );

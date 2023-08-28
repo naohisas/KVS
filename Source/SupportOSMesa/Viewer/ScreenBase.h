@@ -21,15 +21,16 @@ namespace osmesa
 
 class ScreenBase : public kvs::ScreenBase
 {
-    typedef kvs::ScreenBase BaseClass;
+public:
+    using BaseClass = kvs::ScreenBase;
 
 private:
-    kvs::osmesa::Context m_context; ///< OSMesa rendering context
-    kvs::osmesa::Surface m_surface; ///< OSMesa drawing surface
+    kvs::osmesa::Context m_context{}; ///< OSMesa rendering context
+    kvs::osmesa::Surface m_surface{}; ///< OSMesa drawing surface
 
 public:
-    ScreenBase();
-    virtual ~ScreenBase();
+    ScreenBase() = default;
+    virtual ~ScreenBase() = default;
 
     const kvs::ValueArray<kvs::UInt8>& buffer() const { return m_surface.buffer(); }
     kvs::ValueArray<kvs::UInt8> readbackColorBuffer( GLenum mode = GL_FRONT ) const;

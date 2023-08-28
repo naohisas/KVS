@@ -23,12 +23,12 @@ namespace osmesa
 class Screen : public kvs::osmesa::ScreenBase
 {
 public:
-    typedef kvs::osmesa::ScreenBase BaseClass;
-    typedef kvs::Scene::ControlTarget ControlTarget;
+    using BaseClass = kvs::osmesa::ScreenBase;
+    using ControlTarget = kvs::Scene::ControlTarget;
 
 private:
-    bool m_enable_default_paint_event; ///< flag for default paint event
-    kvs::Scene* m_scene; ///< scene
+    bool m_enable_default_paint_event = true; ///< flag for default paint event
+    kvs::Scene* m_scene = nullptr; ///< scene
 
 public:
     Screen();

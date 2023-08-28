@@ -28,7 +28,6 @@ namespace osmesa
 {
 
 Screen::Screen():
-    m_enable_default_paint_event( true ),
     m_scene( new kvs::Scene( this ) )
 {
 }
