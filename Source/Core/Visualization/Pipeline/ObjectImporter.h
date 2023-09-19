@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__OBJECT_IMPORTER_H_INCLUDE
-#define KVS__OBJECT_IMPORTER_H_INCLUDE
-
+#pragma once
 #include <string>
 #include <kvs/FileFormatBase>
 #include <kvs/ImporterBase>
@@ -24,7 +22,6 @@ namespace kvs
 class ObjectImporter
 {
 public:
-
     enum ImporterType
     {
         Image = 0, ///< image object importer
@@ -37,14 +34,12 @@ public:
     };
 
 private:
-
-    std::string m_filename; ///< input filename
-    ImporterType m_importer_type; ///< importer type
-    kvs::FileFormatBase* m_file_format; ///< pointer to the estimated file format class
-    kvs::ImporterBase* m_importer; ///< pointer to the estimated importer class
+    std::string m_filename{}; ///< input filename
+    ImporterType m_importer_type = ImporterType::Unknown; ///< importer type
+    kvs::FileFormatBase* m_file_format = nullptr; ///< pointer to the estimated file format
+    kvs::ImporterBase* m_importer = nullptr; ///< pointer to the estimated importer
 
 public:
-
     explicit ObjectImporter( const std::string& filename );
     ~ObjectImporter();
 
@@ -57,5 +52,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__OBJECT_IMPORTER_H_INCLUDE

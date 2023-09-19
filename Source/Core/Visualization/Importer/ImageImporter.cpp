@@ -36,6 +36,7 @@ ImageImporter::ImageImporter( const std::string& filename )
     {
         BaseClass::setSuccess( SuperClass::read( filename ) );
     }
+
     else if ( kvs::Bmp::CheckExtension( filename ) )
     {
         kvs::Bmp* file_format = new kvs::Bmp( filename );
@@ -57,6 +58,51 @@ ImageImporter::ImageImporter( const std::string& filename )
         this->import( file_format );
         delete file_format;
     }
+
+    else if ( kvs::Png::CheckExtension( filename ) )
+    {
+        kvs::Png* file_format = new kvs::Png( filename );
+        if( !file_format )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            return;
+        }
+
+        if( file_format->isFailure() )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            delete file_format;
+            return;
+        }
+
+        this->import( file_format );
+        delete file_format;
+    }
+
+    else if ( kvs::Jpg::CheckExtension( filename ) )
+    {
+        kvs::Jpg* file_format = new kvs::Jpg( filename );
+        if( !file_format )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            return;
+        }
+
+        if( file_format->isFailure() )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot read '%s'.",filename.c_str());
+            delete file_format;
+            return;
+        }
+
+        this->import( file_format );
+        delete file_format;
+    }
+
     else if ( kvs::Tiff::CheckExtension( filename ) )
     {
         kvs::Tiff* file_format = new kvs::Tiff( filename );
@@ -78,6 +124,7 @@ ImageImporter::ImageImporter( const std::string& filename )
         this->import( file_format );
         delete file_format;
     }
+
     else if ( kvs::Ppm::CheckExtension( filename ) )
     {
         kvs::Ppm* file_format = new kvs::Ppm( filename );
@@ -99,6 +146,7 @@ ImageImporter::ImageImporter( const std::string& filename )
         this->import( file_format );
         delete file_format;
     }
+
     else if ( kvs::Pgm::CheckExtension( filename ) )
     {
         kvs::Pgm* file_format = new kvs::Pgm( filename );
@@ -120,6 +168,7 @@ ImageImporter::ImageImporter( const std::string& filename )
         this->import( file_format );
         delete file_format;
     }
+
     else if ( kvs::Pbm::CheckExtension( filename ) )
     {
         kvs::Pbm* file_format = new kvs::Pbm( filename );
@@ -141,6 +190,7 @@ ImageImporter::ImageImporter( const std::string& filename )
         this->import( file_format );
         delete file_format;
     }
+
     else if ( kvs::Dicom::CheckExtension( filename ) )
     {
         kvs::Dicom* file_format = new kvs::Dicom( filename );
@@ -162,6 +212,7 @@ ImageImporter::ImageImporter( const std::string& filename )
         this->import( file_format );
         delete file_format;
     }
+
     else if ( kvs::IPLab::CheckExtension( filename ) )
     {
         kvs::IPLab* file_format = new kvs::IPLab( filename );
@@ -233,6 +284,14 @@ ImageImporter::SuperClass* ImageImporter::exec( const kvs::FileFormatBase* file_
         BaseClass::setSuccess( SuperClass::read( file_format->filename() ) );
     }
     else if ( const kvs::Bmp* image = dynamic_cast<const kvs::Bmp*>( file_format ) )
+    {
+        this->import( image );
+    }
+    else if ( const kvs::Png* image = dynamic_cast<const kvs::Png*>( file_format ) )
+    {
+        this->import( image );
+    }
+    else if ( const kvs::Jpg* image = dynamic_cast<const kvs::Jpg*>( file_format ) )
     {
         this->import( image );
     }
@@ -360,6 +419,68 @@ void ImageImporter::import( const kvs::Pbm* pbm )
 
     SuperClass::setSize( pbm->width(), pbm->height() );
     SuperClass::setPixels( data, kvs::ImageObject::Gray8 ); // shallow copy
+}
+
+void ImageImporter::import( const kvs::Png* png )
+{
+    if ( png->bytesPerPixel() == 1 )
+    {
+        SuperClass::setSize( png->width(), png->height() );
+        SuperClass::setPixels( png->pixels(), kvs::ImageObject::Gray8 ); // shallow copy
+    }
+    else if ( png->bytesPerPixel() == 3 )
+    {
+        SuperClass::setSize( png->width(), png->height() );
+        SuperClass::setPixels( png->pixels(), kvs::ImageObject::Color24 ); // shallow copy
+    }
+    else if ( png->bytesPerPixel() == 4 )
+    {
+        const size_t npixels = png->width() * png->height();
+        kvs::ValueArray<kvs::UInt8> pixels( npixels * 3 );
+        for ( size_t i = 0; i < npixels; ++i )
+        {
+            pixels[ 3 * i + 0 ] = png->pixels()[ 4 * i + 0 ];
+            pixels[ 3 * i + 1 ] = png->pixels()[ 4 * i + 1 ];
+            pixels[ 3 * i + 2 ] = png->pixels()[ 4 * i + 2 ];
+        }
+        SuperClass::setSize( png->width(), png->height() );
+        SuperClass::setPixels( pixels, kvs::ImageObject::Color24 ); // shallow copy
+    }
+    else
+    {
+        kvsMessageError() << "PNG image (2-bpp) is not supported." << std::endl;
+    }
+}
+
+void ImageImporter::import( const kvs::Jpg* jpg )
+{
+    if ( jpg->bytesPerPixel() == 1 )
+    {
+        SuperClass::setSize( jpg->width(), jpg->height() );
+        SuperClass::setPixels( jpg->pixels(), kvs::ImageObject::Gray8 ); // shallow copy
+    }
+    else if ( jpg->bytesPerPixel() == 3 )
+    {
+        SuperClass::setSize( jpg->width(), jpg->height() );
+        SuperClass::setPixels( jpg->pixels(), kvs::ImageObject::Color24 ); // shallow copy
+    }
+    else if ( jpg->bytesPerPixel() == 4 )
+    {
+        const size_t npixels = jpg->width() * jpg->height();
+        kvs::ValueArray<kvs::UInt8> pixels( npixels * 3 );
+        for ( size_t i = 0; i < npixels; ++i )
+        {
+            pixels[ 3 * i + 0 ] = jpg->pixels()[ 4 * i + 0 ];
+            pixels[ 3 * i + 1 ] = jpg->pixels()[ 4 * i + 1 ];
+            pixels[ 3 * i + 2 ] = jpg->pixels()[ 4 * i + 2 ];
+        }
+        SuperClass::setSize( jpg->width(), jpg->height() );
+        SuperClass::setPixels( pixels, kvs::ImageObject::Color24 ); // shallow copy
+    }
+    else
+    {
+        kvsMessageError() << "JPG image (2-bpp) is not supported." << std::endl;
+    }
 }
 
 /*==========================================================================*/

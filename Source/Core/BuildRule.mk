@@ -61,6 +61,7 @@ $(OUTDIR)/./FileFormat/GrADS/Vars.o \
 $(OUTDIR)/./FileFormat/GrADS/XYZDef.o \
 $(OUTDIR)/./FileFormat/IPLab/IPLab.o \
 $(OUTDIR)/./FileFormat/IPLab/IPLabList.o \
+$(OUTDIR)/./FileFormat/JPG/Jpg.o \
 $(OUTDIR)/./FileFormat/JSON/Array.o \
 $(OUTDIR)/./FileFormat/JSON/Json.o \
 $(OUTDIR)/./FileFormat/JSON/Object.o \
@@ -552,6 +553,10 @@ $(OUTDIR)/./FileFormat/JSON/%.o: ./FileFormat/JSON/%.cpp ./FileFormat/JSON/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/JSON
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/JPG/%.o: ./FileFormat/JPG/%.cpp ./FileFormat/JPG/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/JPG
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/IPLab/%.o: ./FileFormat/IPLab/%.cpp ./FileFormat/IPLab/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/IPLab
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -628,6 +633,8 @@ install::
 	$(INSTALL) ./FileFormat/GrADS/*.h $(INSTALL_DIR)/include/Core/./FileFormat/GrADS
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
 	$(INSTALL) ./FileFormat/IPLab/*.h $(INSTALL_DIR)/include/Core/./FileFormat/IPLab
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/JPG
+	$(INSTALL) ./FileFormat/JPG/*.h $(INSTALL_DIR)/include/Core/./FileFormat/JPG
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/JSON
 	$(INSTALL) ./FileFormat/JSON/*.h $(INSTALL_DIR)/include/Core/./FileFormat/JSON
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/KVSML

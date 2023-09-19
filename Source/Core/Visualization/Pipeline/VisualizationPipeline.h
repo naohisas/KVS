@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__VISUALIZATION_PIPELINE_H_INCLUDE
-#define KVS__VISUALIZATION_PIPELINE_H_INCLUDE
-
+#pragma once
 #include <iostream>
 #include <string>
 #include <list>
@@ -30,25 +28,21 @@ namespace kvs
 class VisualizationPipeline
 {
 public:
-
-    typedef std::list<kvs::PipelineModule> ModuleList;
-
-private:
-
-    size_t m_id; ///< pipeline ID
-    std::string m_filename; ///< filename
-    bool m_cache; ///< cache mode (DISABLE NOW)
-    ModuleList m_module_list; ///< pipeline module list
-
-    const kvs::ObjectBase* m_object; ///< pointer to the object inserted to the manager
-    const kvs::RendererBase* m_renderer; ///< pointer to the renderer inserted to the manager
+    using ModuleList = std::list<kvs::PipelineModule>;
 
 private:
+    size_t m_id = 0; ///< pipeline ID
+    std::string m_filename{""}; ///< filename
+    bool m_cache = true; ///< cache mode (DISABLE NOW)
+    ModuleList m_module_list{}; ///< pipeline module list
 
+    const kvs::ObjectBase* m_object = nullptr; ///< pointer to the object inserted to the manager
+    const kvs::RendererBase* m_renderer = nullptr; ///< pointer to the renderer inserted to the manager
+
+private:
     VisualizationPipeline();
 
 public:
-
     explicit VisualizationPipeline( const std::string& filename );
     explicit VisualizationPipeline( kvs::ObjectBase* object );
     virtual ~VisualizationPipeline();
@@ -57,20 +51,19 @@ public:
     bool import();
     bool exec();
 
-    bool cache() const;
-    void enableCache();
-    void disableCache();
-    bool hasObject() const;
+    bool cache() const { return m_cache; }
+    void enableCache() { m_cache = true; }
+    void disableCache() { m_cache = false; }
+    bool hasObject() const { return m_object != nullptr; }
     bool hasRenderer() const;
-    const kvs::ObjectBase* object() const;
-    const kvs::RendererBase* renderer() const;
+    const kvs::ObjectBase* object() const { return m_object; }
+    const kvs::RendererBase* renderer() const { return m_renderer; }
     void print( std::ostream& os, const kvs::Indent& indent = kvs::Indent(0) ) const;
 
     friend std::string& operator << ( std::string& str, const VisualizationPipeline& pipeline );
     friend std::ostream& operator << ( std::ostream& os, const VisualizationPipeline& pipeline );
 
 private:
-
     bool create_renderer_module( const kvs::ObjectBase* object );
     bool create_renderer_module( const kvs::GeometryObjectBase* geometry );
     bool create_renderer_module( const kvs::VolumeObjectBase* volume );
@@ -79,5 +72,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__VISUALIZATION_PIPELINE_H_INCLUDE

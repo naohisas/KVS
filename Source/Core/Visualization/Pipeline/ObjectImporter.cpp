@@ -14,6 +14,8 @@
 #include <kvs/Ppm>
 #include <kvs/Pgm>
 #include <kvs/Pbm>
+#include <kvs/Png>
+#include <kvs/Jpg>
 #include <kvs/Stl>
 #include <kvs/Ply>
 #include <kvs/Tiff>
@@ -45,10 +47,7 @@ namespace kvs
  */
 /*===========================================================================*/
 ObjectImporter::ObjectImporter( const std::string& filename ):
-    m_filename( filename ),
-    m_importer_type( ObjectImporter::Unknown ),
-    m_file_format( NULL ),
-    m_importer( NULL )
+    m_filename( filename )
 {
 }
 
@@ -74,32 +73,37 @@ kvs::ObjectBase* ObjectImporter::import()
 {
     if ( !this->estimate_file_format() )
     {
-        kvsMessageError( "Cannot create a file format class for '%s'.", m_filename.c_str() );
-        return NULL;
+        kvsMessageError()
+            << "Cannot create a file format for '" << m_filename << "'."
+            << std::endl;
+        return nullptr;
     }
 
     if ( !this->estimate_importer() )
     {
-        kvsMessageError( "Cannot create a importer class for '%s'.", m_filename.c_str() );
-        return NULL;
+        kvsMessageError()
+            << "Cannot create a importer class for '" << m_filename << "'."
+            << std::endl;
+        return nullptr;
     }
 
     if ( !m_file_format->read( m_filename ) )
     {
-        kvsMessageError( "Cannot read a '%s'.", m_filename.c_str() );
-        return NULL;
+        kvsMessageError()
+            << "Cannot read a '" << m_filename << "'." << std::endl;
+        return nullptr;
     }
 
     kvs::ObjectBase* object = m_importer->exec( m_file_format );
     if ( !object )
     {
-        kvsMessageError( "Cannot import a object." );
+        kvsMessageError() << "Cannot import a object." << std::endl;
 
         // NOTE: Delete m_importer only when the memory allocation
         //       of m_importer is failed.
         delete m_importer;
 
-        return NULL;
+        return nullptr;
     }
 
     return object;
@@ -150,6 +154,18 @@ bool ObjectImporter::estimate_file_format()
         m_file_format = new kvs::Pbm;
     }
 
+    else if ( kvs::Png::CheckExtension( file.filePath() ) )
+    {
+        m_importer_type = ObjectImporter::Image;
+        m_file_format = new kvs::Png;
+    }
+
+    else if ( kvs::Jpg::CheckExtension( file.filePath() ) )
+    {
+        m_importer_type = ObjectImporter::Image;
+        m_file_format = new kvs::Jpg;
+    }
+
     else if ( kvs::Stl::CheckExtension( file.filePath() ) )
     {
         m_importer_type = ObjectImporter::Polygon;
@@ -180,10 +196,11 @@ bool ObjectImporter::estimate_file_format()
         m_file_format = new kvs::IPLab;
     }
 
-    else if ( file.extension() == "kvsml" ||
-              file.extension() == "KVSML" ||
-              file.extension() == "xml"   ||
-              file.extension() == "XML" )
+    else if (
+        file.extension() == "kvsml" ||
+        file.extension() == "KVSML" ||
+        file.extension() == "xml"   ||
+        file.extension() == "XML" )
     {
         if ( kvs::KVSMLImageObject::CheckFormat( file.filePath() ) )
         {
@@ -239,7 +256,7 @@ bool ObjectImporter::estimate_file_format()
 /*===========================================================================*/
 bool ObjectImporter::estimate_importer()
 {
-    switch( m_importer_type )
+    switch ( m_importer_type )
     {
     case ObjectImporter::Point:
     {

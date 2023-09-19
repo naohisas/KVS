@@ -4,9 +4,7 @@
  *  @author Naohisa Sakamoto
  */
 /****************************************************************************/
-#ifndef KVS__PIPELINE_MODULE_H_INCLUDE
-#define KVS__PIPELINE_MODULE_H_INCLUDE
-
+#pragma once
 #include <cstring>
 #include <kvs/FilterBase>
 #include <kvs/MapperBase>
@@ -32,7 +30,6 @@ class PipelineModule
     friend class kvs::VisualizationPipeline;
 
 public:
-
     enum Category
     {
         Empty = 0, ///< empty module
@@ -43,21 +40,19 @@ public:
 
     union Module
     {
-        kvs::FilterBase* filter; ///< pointer to the KVS filter class
+        kvs::FilterBase* filter = nullptr; ///< pointer to the KVS filter class
         kvs::MapperBase* mapper; ///< pointer to the KVS mapper class
         kvs::RendererBase* renderer; ///< pointer to the KVS renderer class
     };
 
 protected:
-
-    bool m_auto_delete; ///< flag whether the module is deleted or not (usually 'true')
-    kvs::ReferenceCounter* m_counter;  ///< Reference counter.
-    Category m_category; ///< module category
-    Module m_module; ///< pointer to the module (SHARED)
+    bool m_auto_delete = true; ///< flag whether the module is deleted or not (usually 'true')
+    kvs::ReferenceCounter* m_counter = nullptr;  ///< Reference counter.
+    Category m_category = Category::Empty; ///< module category
+    Module m_module{}; ///< pointer to the module (SHARED)
 
 public:
-
-    PipelineModule();
+    PipelineModule() = default;
     template <typename T>
     explicit PipelineModule( T* module ):
         m_auto_delete( true ),
@@ -142,5 +137,3 @@ private:
 };
 
 } // end of namespace kvs
-
-#endif // KVS__PIPELINE_MODULE_H_INCLUDE

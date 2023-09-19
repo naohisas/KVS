@@ -14,19 +14,6 @@ namespace kvs
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new PipelineModule class.
- */
-/*===========================================================================*/
-PipelineModule::PipelineModule():
-    m_auto_delete( true ),
-    m_counter( 0 ),
-    m_category( Empty )
-{
-    memset( &m_module, 0, sizeof( Module ) );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Constructs a new PipelineModule class.
  *  @param  module [in] pipeline module
  */
 /*===========================================================================*/

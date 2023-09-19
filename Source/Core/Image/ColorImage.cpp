@@ -17,6 +17,7 @@
 #include <kvs/Pgm>
 #include <kvs/Pbm>
 #include <kvs/Png>
+#include <kvs/Jpg>
 #include <kvs/Tiff>
 #include <kvs/Dicom>
 
@@ -310,6 +311,40 @@ bool ColorImage::read( const std::string& filename )
         }
     }
 
+    // JPG image.
+    if ( kvs::Jpg::CheckExtension( filename ) )
+    {
+        const kvs::Jpg jpg( filename );
+        if ( jpg.bytesPerPixel() == 1 )
+        {
+            kvs::GrayImage image( jpg.width(), jpg.height(), jpg.pixels() );
+            return this->read_image( image );
+        }
+        else if ( jpg.bytesPerPixel() == 3 )
+        {
+            const auto type = BaseClass::Color;
+            return BaseClass::create( jpg.width(), jpg.height(), type, jpg.pixels() );
+        }
+        else if ( jpg.bytesPerPixel() == 4 )
+        {
+            const size_t npixels = jpg.width() * jpg.height();
+            kvs::ValueArray<kvs::UInt8> pixels( npixels * 3 );
+            for ( size_t i = 0; i < npixels; ++i )
+            {
+                pixels[ 3 * i + 0 ] = jpg.pixels()[ 4 * i + 0 ];
+                pixels[ 3 * i + 1 ] = jpg.pixels()[ 4 * i + 1 ];
+                pixels[ 3 * i + 2 ] = jpg.pixels()[ 4 * i + 2 ];
+            }
+            const auto type = BaseClass::Color;
+            return BaseClass::create( jpg.width(), jpg.height(), type, pixels );
+        }
+        else
+        {
+            kvsMessageError() << "JPG image (2-bpp) is not supported." << std::endl;
+            return false;
+        }
+    }
+
     // TIFF image.
     if ( kvs::Tiff::CheckExtension( filename ) )
     {
@@ -380,6 +415,13 @@ bool ColorImage::write( const std::string& filename ) const
     {
         kvs::Png png( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
         return png.write( filename );
+    }
+
+    // JPG image.
+    if ( kvs::Jpg::CheckExtension( filename ) )
+    {
+        kvs::Jpg jpg( BaseClass::width(), BaseClass::height(), BaseClass::pixels() );
+        return jpg.write( filename );
     }
 
     // PPM image.

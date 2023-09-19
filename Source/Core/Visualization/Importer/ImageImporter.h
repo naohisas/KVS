@@ -15,6 +15,8 @@
 #include <kvs/Ppm>
 #include <kvs/Pgm>
 #include <kvs/Pbm>
+#include <kvs/Png>
+#include <kvs/Jpg>
 #include <kvs/Dicom>
 #include <kvs/IPLab>
 
@@ -47,6 +49,8 @@ private:
     void import( const kvs::Ppm* ppm );
     void import( const kvs::Pgm* pgm );
     void import( const kvs::Pbm* pbm );
+    void import( const kvs::Png* png );
+    void import( const kvs::Jpg* jpg );
     void import( const kvs::Dicom* dicom );
     void import( const kvs::IPLab* ipl );
 };

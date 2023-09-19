@@ -80,7 +80,6 @@ int Main::exec()
     kvs::Screen screen( &app );
     screen.setSize( 512, 512 );
     screen.setTitle( "kvsview - Default" );
-    screen.show();
 
     // Visualization pipeline.
     m_input_name = arg.value<std::string>();
@@ -127,11 +126,12 @@ int Main::exec()
     if ( pipe.object()->objectType() == kvs::ObjectBase::Image )
     {
         const auto* image = kvs::ImageObject::DownCast( pipe.object() );
-        const size_t width = image->width();
-        const size_t height = image->height();
+        const auto width = image->width();
+        const auto height = image->height();
         screen.setSize( width, height );
     }
 
+    screen.show();
     return arg.clear(), app.run();
 }
 

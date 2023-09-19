@@ -51,11 +51,7 @@ namespace kvs
  */
 /*===========================================================================*/
 VisualizationPipeline::VisualizationPipeline():
-    m_id( ::Counter++ ),
-    m_filename(""),
-    m_cache( true ),
-    m_object( NULL ),
-    m_renderer( NULL )
+    m_id( ::Counter++ )
 {
     ::context.push_back( this );
     if ( ::Flag ) { atexit( ::ExitFunction ); ::Flag = false; }
@@ -69,10 +65,7 @@ VisualizationPipeline::VisualizationPipeline():
 /*===========================================================================*/
 VisualizationPipeline::VisualizationPipeline( const std::string& filename ):
     m_id( ::Counter++ ),
-    m_filename( filename ),
-    m_cache( true ),
-    m_object( NULL ),
-    m_renderer( NULL )
+    m_filename( filename )
 {
     ::context.push_back( this );
     if ( ::Flag ) { atexit( ::ExitFunction ); ::Flag = false; }
@@ -86,10 +79,7 @@ VisualizationPipeline::VisualizationPipeline( const std::string& filename ):
 /*===========================================================================*/
 VisualizationPipeline::VisualizationPipeline( kvs::ObjectBase* object ):
     m_id( ::Counter++ ),
-    m_filename(""),
-    m_cache( true ),
-    m_object( object ),
-    m_renderer( NULL )
+    m_object( object )
 {
     ::context.push_back( this );
     if ( ::Flag ) { atexit( ::ExitFunction ); ::Flag = false; }
@@ -115,7 +105,6 @@ VisualizationPipeline::~VisualizationPipeline()
 VisualizationPipeline& VisualizationPipeline::connect( kvs::PipelineModule& module )
 {
     m_module_list.push_back( module );
-
     return *this;
 }
 
@@ -132,7 +121,7 @@ bool VisualizationPipeline::import()
         // Check filename.
         if ( m_filename.empty() )
         {
-            kvsMessageError( "Input data is not specified." );
+            kvsMessageError() << "Input data is not specified." << std::endl;
             return false;
         }
 
@@ -141,13 +130,12 @@ bool VisualizationPipeline::import()
         kvs::ObjectBase* object = importer.import();
         if ( !object )
         {
-            kvsMessageError( "Cannot import an object." );
+            kvsMessageError() << "Cannot import an object." << std::endl;
             return false;
         }
 
         // Attache the imported object.
         m_object = object;
-
     }
 
     return true;
@@ -164,7 +152,7 @@ bool VisualizationPipeline::exec()
     // Setup object.
     if ( !this->import() )
     {
-        kvsMessageError( "Cannot import the object." );
+        kvsMessageError() << "Cannot import the object." << std::endl;
         return false;
     }
 
@@ -206,7 +194,9 @@ bool VisualizationPipeline::exec()
         // create renderer module.
         if ( !this->create_renderer_module( object ) )
         {
-            kvsMessageError( "Cannot create a renderer for '%s'.", m_filename.c_str() );
+            kvsMessageError()
+                << "Cannot create a renderer for '" << m_filename << "'."
+                << std::endl;
             return false;
         }
     }
@@ -228,48 +218,6 @@ bool VisualizationPipeline::exec()
 
 /*===========================================================================*/
 /**
- *  @brief  Check whether the cache mechanism is enable or disable. (currently N/A)
- *  @return true, if the cache is enable.
- */
-/*===========================================================================*/
-bool VisualizationPipeline::cache() const
-{
-    return m_cache;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Enable the cache mechanism.
- */
-/*===========================================================================*/
-void VisualizationPipeline::enableCache()
-{
-    m_cache = true;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Disable the cache mechanism.
- */
-/*===========================================================================*/
-void VisualizationPipeline::disableCache()
-{
-    m_cache = false;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Check whether the object module is included in the pipeline.
- *  @return true, if the object module is included.
- */
-/*===========================================================================*/
-bool VisualizationPipeline::hasObject() const
-{
-    return m_object != NULL;
-}
-
-/*===========================================================================*/
-/**
  *  @brief  Check whether the renderer module is included in the pipeline.
  *  @return true, if the renderer module is included.
  */
@@ -277,28 +225,6 @@ bool VisualizationPipeline::hasObject() const
 bool VisualizationPipeline::hasRenderer() const
 {
     return this->count_module( kvs::PipelineModule::Renderer ) > 0;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the pointer to the object.
- *  @return pointer to the object
- */
-/*===========================================================================*/
-const kvs::ObjectBase* VisualizationPipeline::object() const
-{
-    return m_object;
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Returns the pointer to the renderer.
- *  @return pointer to the renderer
- */
-/*===========================================================================*/
-const kvs::RendererBase* VisualizationPipeline::renderer() const
-{
-    return m_renderer;
 }
 
 /*===========================================================================*/
@@ -342,7 +268,6 @@ std::string& operator << ( std::string& str, const VisualizationPipeline& pipeli
 std::ostream& operator << ( std::ostream& os, const VisualizationPipeline& pipeline )
 {
     std::string p; p << pipeline; os << p;
-
     return os;
 }
 

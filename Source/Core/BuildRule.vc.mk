@@ -61,6 +61,7 @@ $(OUTDIR)\.\FileFormat\GrADS\Vars.obj \
 $(OUTDIR)\.\FileFormat\GrADS\XYZDef.obj \
 $(OUTDIR)\.\FileFormat\IPLab\IPLab.obj \
 $(OUTDIR)\.\FileFormat\IPLab\IPLabList.obj \
+$(OUTDIR)\.\FileFormat\JPG\Jpg.obj \
 $(OUTDIR)\.\FileFormat\JSON\Array.obj \
 $(OUTDIR)\.\FileFormat\JSON\Json.obj \
 $(OUTDIR)\.\FileFormat\JSON\Object.obj \
@@ -610,6 +611,12 @@ $<
 $<
 <<
 
+{.\FileFormat\JPG\}.cpp{$(OUTDIR)\.\FileFormat\JPG\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\JPG $(MKDIR) $(OUTDIR)\.\FileFormat\JPG
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\JPG\ @<<
+$<
+<<
+
 {.\FileFormat\IPLab\}.cpp{$(OUTDIR)\.\FileFormat\IPLab\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\IPLab $(MKDIR) $(OUTDIR)\.\FileFormat\IPLab
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\IPLab\ @<<
@@ -710,6 +717,8 @@ install::
 	$(INSTALL) .\FileFormat\GrADS\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\GrADS
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
 	$(INSTALL) .\FileFormat\IPLab\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\IPLab
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\JPG $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\JPG
+	$(INSTALL) .\FileFormat\JPG\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\JPG
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\JSON $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\JSON
 	$(INSTALL) .\FileFormat\JSON\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\JSON
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\KVSML

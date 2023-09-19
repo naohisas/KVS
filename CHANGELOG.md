@@ -20,6 +20,7 @@
 + kvs::qt::TransferFunctionEditor
 + kvs::CategoryAxis
 + kvs::HSLColor
++ kvs::Jpg
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled
