@@ -236,6 +236,9 @@ void StochasticUniformGridRenderer::Engine::setup(
 /*===========================================================================*/
 void StochasticUniformGridRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
+    kvs::OpenGL::Enable( GL_DEPTH_TEST );
+    kvs::OpenGL::Enable( GL_TEXTURE_2D );
+
     kvs::ProgramObject::Binder unit( m_render_pass.shaderProgram() );
     this->draw_buffer_object( kvs::StructuredVolumeObject::DownCast( object ) );
 }
