@@ -74,10 +74,10 @@ void Texture2D::load(
     const size_t xoffset,
     const size_t yoffset )
 {
-//    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
-//    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
-//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
-//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
+    const GLint swap = kvs::OpenGL::Integer( GL_UNPACK_SWAP_BYTES );
+    const GLint alignment = kvs::OpenGL::Integer( GL_UNPACK_ALIGNMENT );
+    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap ? GL_TRUE : GL_FALSE );
+    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, 1 );
 
     if ( !m_is_loaded )
     {
@@ -89,8 +89,8 @@ void Texture2D::load(
         BaseClass::setSubImage2D( width, height, data, xoffset, yoffset );
     }
 
-//    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
-//    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
+    BaseClass::setPixelStorageMode( GL_UNPACK_SWAP_BYTES, swap );
+    BaseClass::setPixelStorageMode( GL_UNPACK_ALIGNMENT, alignment );
 }
 
 /*==========================================================================*/
