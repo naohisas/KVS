@@ -27,6 +27,7 @@ class ColorMap
 public:
     using ColorMapFunction = std::function<kvs::ColorMap(const size_t)>;
     static void SetDefaultColorMap( ColorMapFunction func );
+    static kvs::ColorMap DefaultColorMap( const size_t resolution = 256 );
 
     static kvs::ColorMap Rainbow( const size_t resolution = 256 );
     static kvs::ColorMap CoolWarm( const size_t resolution = 256 );
@@ -81,6 +82,9 @@ public:
     ColorMap( const ColorMap& other ) { *this = other; }
     ColorMap( const size_t resolution, const float min_value, const float max_value );
     ColorMap( const Table& table, const float min_value, const float max_value );
+    ColorMap( const size_t resolution, const Points& points );
+    ColorMap( const size_t resolution, const Points& points, const float min_value, const float max_value );
+    ColorMap( const size_t resolution, const std::list<kvs::RGBColor>& colors );
     virtual ~ColorMap() = default;
 
     ColorSpace colorSpace() const { return m_color_space; }

@@ -7,6 +7,7 @@
 #pragma once
 #include <list>
 #include <utility>
+#include <functional>
 #include <kvs/ValueArray>
 #include <kvs/Type>
 
@@ -21,6 +22,16 @@ namespace kvs
 /*==========================================================================*/
 class OpacityMap
 {
+public:
+    using OpacityMapFunction = std::function<kvs::OpacityMap(const size_t, const float)>;
+    static void SetDefaultOpacityMap( OpacityMapFunction func );
+    static kvs::OpacityMap DefaultOpacityMap( const size_t resolution = 256, const float max_opacity = 1.0f );
+
+    static kvs::OpacityMap Constant( const size_t resolution = 256, const float max_opacity = 1.0f );
+    static kvs::OpacityMap Linear( const size_t resolution = 256, const float max_opacity = 1.0f );
+    static kvs::OpacityMap Gaussian( const size_t resolution = 256, const float max_opacity = 1.0f );
+    static kvs::OpacityMap Gaussian( const size_t resolution, const float u, const float s, const float max_opacity = 1.0f );
+
 public:
     using Table = kvs::ValueArray<float>;
     using Point = std::pair<float,float>;
@@ -40,6 +51,9 @@ public:
     OpacityMap( const OpacityMap& other ) { *this = other; }
     OpacityMap( const size_t resolution, const float min_value, const float max_value );
     OpacityMap( const Table& table, const float min_value, const float max_value );
+    OpacityMap( const size_t resolution, const Points& points );
+    OpacityMap( const size_t resolution, const Points& points, const float min_value, const float max_value );
+    OpacityMap( const size_t resolution, const std::list<float>& opacities );
     virtual ~OpacityMap() = default;
 
     float minValue() const { return m_min_value; }

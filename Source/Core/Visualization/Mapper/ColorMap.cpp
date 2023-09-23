@@ -33,6 +33,11 @@ void ColorMap::SetDefaultColorMap( ColorMapFunction func )
     ::DefaultColorMap = func;
 }
 
+kvs::ColorMap ColorMap::DefaultColorMap( const size_t resolution )
+{
+    return ::DefaultColorMap( resolution );
+}
+
 /*===========================================================================*/
 /**
  *  @brief  Returns rainbow colormap.
@@ -814,6 +819,26 @@ ColorMap::ColorMap( const ColorMap::Table& table, const float min_value, const f
     m_points(),
     m_table( table )
 {
+}
+
+ColorMap::ColorMap( const size_t resolution, const Points& points ):
+    m_resolution( resolution )
+{
+    this->setPoints( points );
+    this->create();
+}
+
+ColorMap::ColorMap( const size_t resolution, const Points& points, const float min_value, const float max_value )
+{
+    this->setPoints( points );
+    this->setRange( min_value, max_value );
+    this->create();
+}
+
+ColorMap::ColorMap( const size_t resolution, const std::list<kvs::RGBColor>& colors )
+{
+    this->setPoints( colors );
+    this->create();
 }
 
 /*===========================================================================*/

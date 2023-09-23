@@ -9,8 +9,68 @@
 #include <kvs/Math>
 
 
+namespace
+{
+
+// Default opacity map
+kvs::OpacityMap::OpacityMapFunction DefaultOpacityMap = kvs::OpacityMap::Linear;
+
+} // end of namespace
+
+
 namespace kvs
 {
+
+void OpacityMap::SetDefaultOpacityMap( OpacityMapFunction func )
+{
+    ::DefaultOpacityMap = func;
+}
+
+kvs::OpacityMap OpacityMap::DefaultOpacityMap( const size_t resolution, const float max_opacity )
+{
+    return ::DefaultOpacityMap( resolution, max_opacity );
+}
+
+kvs::OpacityMap OpacityMap::Constant( const size_t resolution, const float max_opacity )
+{
+    Table table( resolution );
+    for ( size_t i = 0; i < resolution; ++i )
+    {
+        table[i] = max_opacity;
+    }
+    return kvs::OpacityMap( table );
+}
+
+kvs::OpacityMap OpacityMap::Linear( const size_t resolution, const float max_opacity )
+{
+    Table table( resolution );
+    const auto scale = 1.0f / static_cast<float>( resolution - 1 );
+    for ( size_t i = 0; i < resolution; ++i )
+    {
+        table[i] = static_cast<float>( i ) * scale * max_opacity;
+    }
+    return kvs::OpacityMap( table );
+}
+
+kvs::OpacityMap OpacityMap::Gaussian( const size_t resolution, const float max_opacity )
+{
+    const auto u = 1.0f; // mean: [0,1]
+    const auto s = 0.2f; // standard deviation: [0,1]
+    return OpacityMap::Gaussian( resolution, u, s, max_opacity );
+}
+
+kvs::OpacityMap OpacityMap::Gaussian( const size_t resolution, const float u, const float s, const float max_opacity )
+{
+    Table table( resolution );
+    const auto s2 = s * s;
+    const auto scale = 1.0f / static_cast<float>( resolution - 1 );
+    for ( size_t i = 0; i < resolution; ++i )
+    {
+        const auto x = static_cast<float>( i ) * scale;
+        table[i] = std::exp( -1.0f * ( x - u ) * ( x - u ) / ( 2.0f * s2 ) ) * max_opacity;
+    }
+    return kvs::OpacityMap( table );
+}
 
 /*==========================================================================*/
 /**
@@ -44,6 +104,26 @@ OpacityMap::OpacityMap( const OpacityMap::Table& table, const float min_value, c
     m_points(),
     m_table( table )
 {
+}
+
+OpacityMap::OpacityMap( const size_t resolution, const Points& points ):
+    m_resolution( resolution )
+{
+    this->setPoints( points );
+    this->create();
+}
+
+OpacityMap::OpacityMap( const size_t resolution, const Points& points, const float min_value, const float max_value )
+{
+    this->setPoints( points );
+    this->setRange( min_value, max_value );
+    this->create();
+}
+
+OpacityMap::OpacityMap( const size_t resolution, const std::list<float>& opacities )
+{
+    this->setPoints( opacities );
+    this->create();
 }
 
 /*===========================================================================*/
@@ -113,17 +193,13 @@ void OpacityMap::create()
         max_value = this->maxValue();
     }
 
-    m_table.allocate( m_resolution );
     if ( m_points.size() == 0 )
     {
-        const float scale = 1.0f / static_cast<float>( m_resolution - 1 );
-        for ( size_t i = 0; i < m_resolution; ++i )
-        {
-            m_table[i] = scale * static_cast<float>( i );
-        }
+        *this = ::DefaultOpacityMap( m_resolution, 1.0f );
     }
     else
     {
+        m_table.allocate( m_resolution );
         m_points.sort( [] ( const Point& p1, const Point& p2 ) { return p1.first < p2.first; } );
 
         if ( m_points.front().first > min_value ) this->addPoint( min_value, 0.0f );
