@@ -5,7 +5,6 @@
  */
 /*****************************************************************************/
 #pragma once
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -21,7 +20,6 @@ namespace kvs
 class FieldViewData : public kvs::FileFormatBase
 {
 public:
-
     enum ElementType
     {
         Tet = FV_TET_ELEM_ID,
@@ -32,92 +30,82 @@ public:
 
     struct Version
     {
-        int major; // major number
-        int minor; // minor number
+        int major = 0; // major number
+        int minor = 0; // minor number
     };
 
     struct Constant
     {
-        float time; // Time
-        float mach; // Freestream Mach number
-        float alpha; // Angle-of-attack
-        float re; // Reynolds number
+        float time = 0.0f; // Time
+        float mach = 0.0f; // Freestream Mach number
+        float alpha = 0.0f; // Angle-of-attack
+        float re = 0.0f; // Reynolds number
     };
 
     struct BoundaryCondition
     {
-        size_t ntypes; // number of boundary face types
-        std::vector<int> results; // 1: data is defined on the face, 0: not defined
-        std::vector<int> normals; // normal information of the face
-        std::vector<std::string> names; // face name
+        size_t ntypes = 0; // number of boundary face types
+        std::vector<int> results{}; // 1: data is defined on the face, 0: not defined
+        std::vector<int> normals{}; // normal information of the face
+        std::vector<std::string> names{}; // face name
     };
 
     struct Node
     {
-        float x;
-        float y;
-        float z;
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
     };
 
     struct Face
     {
-        int type; // boundary type
-        kvs::ValueArray<int> id;
+        int type = 0; // boundary type
+        kvs::ValueArray<int> id{};
     };
 
     struct Element
     {
-        int type; // element type: 1-tet, 2-hex, 3-prism, 4-pyramid
-        kvs::ValueArray<int> id;
+        int type = 0; // element type: 1-tet, 2-hex, 3-prism, 4-pyramid
+        kvs::ValueArray<int> id{};
     };
 
     struct Variable
     {
-        int type; // 1-scalar, 3-vector (one of components of the vector)
-        kvs::ValueArray<float> data; // array of the variable data
+        int type = 0; // 1-scalar, 3-vector (one of components of the vector)
+        kvs::ValueArray<float> data{}; // array of the variable data
     };
 
     struct Grid
     {
-        size_t nnodes; // number of nodes
-        size_t nelements[5]; // 0-all, 1-tet, 2-hex, 3-prism, 4-pyramid
-        std::vector<Node> nodes; // nodes
-        std::vector<Face> faces; // boundary faces
-        std::vector<Element> elements; // elements
-        std::vector<Variable> variables; // variables
-        std::vector<Variable> variables_on_face; // variables on the face
+        size_t nnodes = 0; // number of nodes
+        size_t nelements[5] = {}; // 0-all, 1-tet, 2-hex, 3-prism, 4-pyramid
+        std::vector<Node> nodes{}; // nodes
+        std::vector<Face> faces{}; // boundary faces
+        std::vector<Element> elements{}; // elements
+        std::vector<Variable> variables{}; // variables
+        std::vector<Variable> variables_on_face{}; // variables on the face
     };
 
 public:
-
     static bool CheckExtension( const std::string& filename );
 
 private:
-
-    Version m_version; // version numbers
-    Constant m_constant; // constant numbers
-    BoundaryCondition m_boundary_condition; // boundary condition
-    size_t m_nvariables; ///< number of variables
-    size_t m_nvariables_on_face; ///< number of variables on the boundary face
-    size_t m_ngrids; ///< number of grid data
-    std::vector<std::string> m_variable_names; ///< variable names
-    std::vector<std::string> m_variable_names_on_face; ///< variable names on the boundary face
-    std::vector<Grid> m_grids; ///< grid data
-    mutable int m_importing_element_type; ///< importing element type
-    mutable size_t m_importing_grid_index; ///< importing grid index
-    mutable size_t m_importing_variable_index; ///< importing variable index
+    Version m_version{}; // version numbers
+    Constant m_constant{}; // constant numbers
+    BoundaryCondition m_boundary_condition{}; // boundary condition
+    size_t m_nvariables = 0; ///< number of variables
+    size_t m_nvariables_on_face = 0; ///< number of variables on the boundary face
+    size_t m_ngrids = 0; ///< number of grid data
+    std::vector<std::string> m_variable_names{}; ///< variable names
+    std::vector<std::string> m_variable_names_on_face{}; ///< variable names on the boundary face
+    std::vector<Grid> m_grids{}; ///< grid data
+    mutable int m_importing_element_type = 0; ///< importing element type
+    mutable size_t m_importing_grid_index = 0; ///< importing grid index
+    mutable size_t m_importing_variable_index = 0; ///< importing variable index
 
 public:
-
-    FieldViewData():
-        m_nvariables( 0 ),
-        m_nvariables_on_face( 0 ),
-        m_ngrids( 0 ) {}
-
-    FieldViewData( const std::string& filename )
-    {
-        this->read( filename );
-    }
+    FieldViewData() = default;
+    FieldViewData( const std::string& filename ) { this->read( filename ); }
 
     const Version& version() const { return m_version; }
     const Constant& constant() const { return m_constant; }
@@ -161,7 +149,6 @@ public:
     bool readBinaryResult( const std::string& filename, bool swap, size_t offset );
 
 private:
-
     bool write( const std::string& ) { return false; }
 
     void read_version( FILE* fp );

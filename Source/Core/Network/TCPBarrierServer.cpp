@@ -55,7 +55,6 @@ TCPBarrierServer::~TCPBarrierServer()
 /*===========================================================================*/
 void TCPBarrierServer::run()
 {
-//    while( true )
     for ( ; ; )
     {
         char recv_buffer[::BARRIER_BUFFER_SIZE];
@@ -67,7 +66,8 @@ void TCPBarrierServer::run()
             m_nodes.push_back( node );
         }
 
-        char send_buffer[::BARRIER_BUFFER_SIZE]; sprintf( send_buffer, "RELEASE" );
+        char send_buffer[::BARRIER_BUFFER_SIZE];
+        snprintf( send_buffer, ::BARRIER_BUFFER_SIZE, "RELEASE" );
         std::list<kvs::TCPSocket*>::iterator node = m_nodes.begin();
         for( int i = 0; i < m_block_counter; i++ )
         {

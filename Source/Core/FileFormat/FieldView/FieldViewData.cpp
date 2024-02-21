@@ -24,13 +24,12 @@ namespace
 /*===========================================================================*/
 class Record
 {
-    FILE* m_fp; //< file pointer
-    bool m_swap; //< flag for byte swapping
-    size_t m_offset; //< offset bytes for reading record length
-    size_t m_length; //< record length
+    FILE* m_fp = nullptr; //< file pointer
+    bool m_swap = false; //< flag for byte swapping
+    size_t m_offset = 0; //< offset bytes for reading record length
+    size_t m_length = 0; //< record length
 
 public:
-
     static void Error()
     {
         kvsMessageError( "Failed to read the record." );
@@ -65,12 +64,10 @@ public:
     }
 
 public:
-
     Record( FILE* fp, bool swap, size_t offset ):
         m_fp( fp ),
         m_swap( swap ),
-        m_offset( offset ),
-        m_length( 0 )
+        m_offset( offset )
     {
         KVS_ASSERT( m_offset == 0 || m_offset == 4 );
 
@@ -121,7 +118,6 @@ public:
     }
 
 private:
-
     int seek_length_field()
     {
         KVS_ASSERT( m_offset == 4 );
@@ -145,12 +141,11 @@ private:
 /*===========================================================================*/
 class Format
 {
-    std::string m_filename; ///< filename
-    bool m_swap; ///< flag for byte-swap
-    size_t m_offset; ///< offset byte
+    std::string m_filename = ""; ///< filename
+    bool m_swap = false; ///< flag for byte-swap
+    size_t m_offset = 0; ///< offset byte
 
 public:
-
     Format( const std::string& filename ):
         m_filename( filename ) {}
 
@@ -194,7 +189,6 @@ public:
     }
 
 private:
-
     bool check_binary( FILE* fp, bool swap, size_t offset ) const
     {
         int magic = Record::PeekValue<int>( fp, swap, offset );
