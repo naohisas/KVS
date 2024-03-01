@@ -45,9 +45,10 @@ MarchingCubes::MarchingCubes(
 /*===========================================================================*/
 MarchingCubes::SuperClass* MarchingCubes::exec( const kvs::ObjectBase* object )
 {
+    BaseClass::setSuccess( false );
+
     if ( !object )
     {
-        BaseClass::setSuccess( false );
         kvsMessageError("Input object is NULL.");
         return nullptr;
     }
@@ -55,14 +56,12 @@ MarchingCubes::SuperClass* MarchingCubes::exec( const kvs::ObjectBase* object )
     const auto* volume = kvs::StructuredVolumeObject::DownCast( object );
     if ( !volume )
     {
-        BaseClass::setSuccess( false );
         kvsMessageError("Input object is not structured volume object.");
         return nullptr;
     }
 
     if ( volume->veclen() != 1 )
     {
-        BaseClass::setSuccess( false );
         kvsMessageError("Input volume is not sclar field data.");
         return nullptr;
     }
@@ -75,6 +74,7 @@ MarchingCubes::SuperClass* MarchingCubes::exec( const kvs::ObjectBase* object )
 
     this->mapping( volume );
 
+    BaseClass::setSuccess( true );
     return this;
 }
 
@@ -84,7 +84,7 @@ MarchingCubes::SuperClass* MarchingCubes::exec( const kvs::ObjectBase* object )
  *  @param  volume [in] pointer to the volume object
  */
 /*==========================================================================*/
-void MarchingCubes::mapping( const kvs::StructuredVolumeObject* volume )
+void MarchingCubes::mapping( const Volume* volume )
 {
     // Attach the pointer to the volume object.
     BaseClass::attachVolume( volume );
@@ -93,36 +93,41 @@ void MarchingCubes::mapping( const kvs::StructuredVolumeObject* volume )
 
     if ( m_duplication )
     {
-        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-        SuperClass::setNormalType( kvs::PolygonObject::PolygonNormal );
-        SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+        SuperClass::setPolygonTypeToTriangle();
+        SuperClass::setNormalTypeToPolygon();
+        SuperClass::setColorTypeToPolygon();
     }
     else
     {
-        SuperClass::setPolygonType( kvs::PolygonObject::Triangle );
-        SuperClass::setColorType( kvs::PolygonObject::PolygonColor );
+        SuperClass::setPolygonTypeToTriangle();
+        SuperClass::setColorTypeToPolygon();
     }
 
+    // Isosurfaces will not be generated from the volume data with the same
+    // min. and max. values of the physical quantity.
     const auto min_value = BaseClass::volume()->minValue();
     const auto max_value = BaseClass::volume()->maxValue();
     if ( kvs::Math::Equal( min_value, max_value ) ) { return; }
 
     // Extract surfaces.
-    const auto& type = volume->values().typeInfo()->type();
-    if (      type == typeid( kvs::Int8   ) ) this->extract_surfaces<kvs::Int8>( volume );
-    else if ( type == typeid( kvs::Int16  ) ) this->extract_surfaces<kvs::Int16>( volume );
-    else if ( type == typeid( kvs::Int32  ) ) this->extract_surfaces<kvs::Int32>( volume );
-    else if ( type == typeid( kvs::Int64  ) ) this->extract_surfaces<kvs::Int64>( volume );
-    else if ( type == typeid( kvs::UInt8  ) ) this->extract_surfaces<kvs::UInt8>( volume );
-    else if ( type == typeid( kvs::UInt16 ) ) this->extract_surfaces<kvs::UInt16>( volume );
-    else if ( type == typeid( kvs::UInt32 ) ) this->extract_surfaces<kvs::UInt32>( volume );
-    else if ( type == typeid( kvs::UInt64 ) ) this->extract_surfaces<kvs::UInt64>( volume );
-    else if ( type == typeid( kvs::Real32 ) ) this->extract_surfaces<kvs::Real32>( volume );
-    else if ( type == typeid( kvs::Real64 ) ) this->extract_surfaces<kvs::Real64>( volume );
-    else
+    switch ( volume->values().typeID() )
+    {
+    case kvs::Type::TypeInt8:   { this->extract_surfaces<kvs::Int8>  ( volume ); break; }
+    case kvs::Type::TypeInt16:  { this->extract_surfaces<kvs::Int16> ( volume ); break; }
+    case kvs::Type::TypeInt32:  { this->extract_surfaces<kvs::Int32> ( volume ); break; }
+    case kvs::Type::TypeInt64:  { this->extract_surfaces<kvs::Int64> ( volume ); break; }
+    case kvs::Type::TypeUInt8:  { this->extract_surfaces<kvs::UInt8> ( volume ); break; }
+    case kvs::Type::TypeUInt16: { this->extract_surfaces<kvs::UInt16>( volume ); break; }
+    case kvs::Type::TypeUInt32: { this->extract_surfaces<kvs::UInt32>( volume ); break; }
+    case kvs::Type::TypeUInt64: { this->extract_surfaces<kvs::UInt64>( volume ); break; }
+    case kvs::Type::TypeReal32: { this->extract_surfaces<kvs::Real32>( volume ); break; }
+    case kvs::Type::TypeReal64: { this->extract_surfaces<kvs::Real64>( volume ); break; }
+    default:
     {
         BaseClass::setSuccess( false );
         kvsMessageError("Unsupported data type '%s'.", volume->values().typeInfo()->typeName() );
+        break;
+    }
     }
 }
 
@@ -133,10 +138,12 @@ void MarchingCubes::mapping( const kvs::StructuredVolumeObject* volume )
  */
 /*==========================================================================*/
 template <typename T>
-void MarchingCubes::extract_surfaces( const kvs::StructuredVolumeObject* volume )
+void MarchingCubes::extract_surfaces( const Volume* volume )
 {
-    if ( m_duplication ) this->extract_surfaces_with_duplication<T>( volume );
-    else                 this->extract_surfaces_without_duplication<T>( volume );
+    if ( m_duplication )
+        this->extract_surfaces_with_duplication<T>( volume );
+    else
+        this->extract_surfaces_without_duplication<T>( volume );
 }
 
 /*==========================================================================*/
@@ -146,26 +153,28 @@ void MarchingCubes::extract_surfaces( const kvs::StructuredVolumeObject* volume 
  */
 /*==========================================================================*/
 template <typename T>
-void MarchingCubes::extract_surfaces_with_duplication(
-    const kvs::StructuredVolumeObject* volume )
+void MarchingCubes::extract_surfaces_with_duplication( const Volume* volume )
 {
-    // Calculated the coordinate data array and the normal vector array.
-    std::vector<kvs::Real32> coords;
-    std::vector<kvs::Real32> normals;
+    // Variables wille store calculated the coordinate values and the normal vectors.
+    Coords coords;
+    Normals normals;
 
-    const kvs::Vec3u ncells( volume->resolution() - kvs::Vec3u::Constant(1) );
-    const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
-    const kvs::UInt32 slice_size( volume->numberOfNodesPerSlice() );
+    const auto ncells = volume->resolution() - kvs::Vec3u::Constant(1);
+    const auto line_size = kvs::UInt32( volume->numberOfNodesPerLine() );
+    const auto slice_size = kvs::UInt32( volume->numberOfNodesPerSlice() );
 
     const auto min_coord = volume->minObjectCoord();
     const auto max_coord = volume->maxObjectCoord();
     const auto scale_factor = ( max_coord - min_coord ) / kvs::Vec3{ ncells };
-    auto scale_coord = [&] ( const kvs::Vec3& coord )
+    auto interpolate = [&] ( const kvs::Vec3& v1, const kvs::Vec3& v2 )
     {
-        return ( coord + min_coord ) * scale_factor;
+        const auto p = this->interpolate_vertex<T>( v1, v2 );
+        return ( p + min_coord ) * scale_factor;
     };
 
     // Extract surfaces.
+    auto Edge = MarchingCubesTable::TriangleID;
+    auto Vert = MarchingCubesTable::VertexID;
     size_t index = 0;
     size_t local_index[8];
     for ( kvs::UInt32 z = 0; z < ncells.z(); ++z )
@@ -191,67 +200,33 @@ void MarchingCubes::extract_surfaces_with_duplication(
                 if ( table_index == 255 ) continue;
 
                 // Calculate the triangle polygons.
-                for ( size_t i = 0; MarchingCubesTable::TriangleID[ table_index ][i] != -1; i += 3 )
+                for ( size_t i = 0; Edge[ table_index ][i] != -1; i += 3 )
                 {
                     // Refer the edge IDs from the TriangleTable by using the table_index.
-                    const int e0 = MarchingCubesTable::TriangleID[table_index][i];
-                    const int e1 = MarchingCubesTable::TriangleID[table_index][i+2];
-                    const int e2 = MarchingCubesTable::TriangleID[table_index][i+1];
+                    const int e0 = Edge[table_index][i];
+                    const int e1 = Edge[table_index][i+2];
+                    const int e2 = Edge[table_index][i+1];
 
                     // Determine vertices for each edge.
-                    const kvs::Vec3 v0(
-                        static_cast<float>( x + MarchingCubesTable::VertexID[e0][0][0] ),
-                        static_cast<float>( y + MarchingCubesTable::VertexID[e0][0][1] ),
-                        static_cast<float>( z + MarchingCubesTable::VertexID[e0][0][2] ) );
+                    const auto v0 = kvs::Vec3{ x + Vert[e0][0][0], y + Vert[e0][0][1], z + Vert[e0][0][2] };
+                    const auto v1 = kvs::Vec3{ x + Vert[e0][1][0], y + Vert[e0][1][1], z + Vert[e0][1][2] };
+                    const auto v2 = kvs::Vec3{ x + Vert[e1][0][0], y + Vert[e1][0][1], z + Vert[e1][0][2] };
+                    const auto v3 = kvs::Vec3{ x + Vert[e1][1][0], y + Vert[e1][1][1], z + Vert[e1][1][2] };
+                    const auto v4 = kvs::Vec3{ x + Vert[e2][0][0], y + Vert[e2][0][1], z + Vert[e2][0][2] };
+                    const auto v5 = kvs::Vec3{ x + Vert[e2][1][0], y + Vert[e2][1][1], z + Vert[e2][1][2] };
 
-                    const kvs::Vec3 v1(
-                        static_cast<float>( x + MarchingCubesTable::VertexID[e0][1][0] ),
-                        static_cast<float>( y + MarchingCubesTable::VertexID[e0][1][1] ),
-                        static_cast<float>( z + MarchingCubesTable::VertexID[e0][1][2] ) );
-
-                    const kvs::Vec3 v2(
-                        static_cast<float>( x + MarchingCubesTable::VertexID[e1][0][0] ),
-                        static_cast<float>( y + MarchingCubesTable::VertexID[e1][0][1] ),
-                        static_cast<float>( z + MarchingCubesTable::VertexID[e1][0][2] ) );
-
-                    const kvs::Vec3 v3(
-                        static_cast<float>( x + MarchingCubesTable::VertexID[e1][1][0] ),
-                        static_cast<float>( y + MarchingCubesTable::VertexID[e1][1][1] ),
-                        static_cast<float>( z + MarchingCubesTable::VertexID[e1][1][2] ) );
-
-                    const kvs::Vec3 v4(
-                        static_cast<float>( x + MarchingCubesTable::VertexID[e2][0][0] ),
-                        static_cast<float>( y + MarchingCubesTable::VertexID[e2][0][1] ),
-                        static_cast<float>( z + MarchingCubesTable::VertexID[e2][0][2] ) );
-
-                    const kvs::Vec3 v5(
-                        static_cast<float>( x + MarchingCubesTable::VertexID[e2][1][0] ),
-                        static_cast<float>( y + MarchingCubesTable::VertexID[e2][1][1] ),
-                        static_cast<float>( z + MarchingCubesTable::VertexID[e2][1][2] ) );
-
-                    // Calculate coordinates of the vertices which are composed
-                    // of the triangle polygon.
-                    const kvs::Vec3 vertex0( scale_coord( this->interpolate_vertex<T>( v0, v1 ) ) );
-                    coords.push_back( vertex0.x() );
-                    coords.push_back( vertex0.y() );
-                    coords.push_back( vertex0.z() );
-
-                    const kvs::Vec3 vertex1( scale_coord( this->interpolate_vertex<T>( v2, v3 ) ) );
-                    coords.push_back( vertex1.x() );
-                    coords.push_back( vertex1.y() );
-                    coords.push_back( vertex1.z() );
-
-                    const kvs::Vec3 vertex2( scale_coord( this->interpolate_vertex<T>( v4, v5 ) ) );
-                    coords.push_back( vertex2.x() );
-                    coords.push_back( vertex2.y() );
-                    coords.push_back( vertex2.z() );
+                    // Calculate coordinates of the vertices which are composed of the triangle polygon.
+                    const auto v01 = interpolate( v0, v1 );
+                    const auto v23 = interpolate( v2, v3 );
+                    const auto v45 = interpolate( v4, v5 );
+                    coords.push_back( v01.x() ); coords.push_back( v01.y() ); coords.push_back( v01.z() );
+                    coords.push_back( v23.x() ); coords.push_back( v23.y() ); coords.push_back( v23.z() );
+                    coords.push_back( v45.x() ); coords.push_back( v45.y() ); coords.push_back( v45.z() );
 
                     // Calculate a normal vector for the triangle polygon.
-                    const kvs::Vec3 normal( ( vertex1 - vertex0 ).cross( vertex2 - vertex0 ) );
-                    normals.push_back( normal.x() );
-                    normals.push_back( normal.y() );
-                    normals.push_back( normal.z() );
-                } // end of loop-triangle
+                    const auto n = ( v23 - v01 ).cross( v45 - v01 );
+                    normals.push_back( n.x() ); normals.push_back( n.y() ); normals.push_back( n.z() );
+                }
             } // end of loop-x
             ++index;
         } // end of loop-y
@@ -274,8 +249,7 @@ void MarchingCubes::extract_surfaces_with_duplication(
  */
 /*==========================================================================*/
 template <typename T>
-void MarchingCubes::extract_surfaces_without_duplication(
-    const kvs::StructuredVolumeObject* volume )
+void MarchingCubes::extract_surfaces_without_duplication( const Volume* volume )
 {
     const size_t volume_size = volume->numberOfNodes();
     const size_t byte_size   = sizeof( kvs::UInt32 ) * 3 * volume_size;
@@ -390,7 +364,7 @@ const kvs::Vec3 MarchingCubes::interpolate_vertex(
 /*==========================================================================*/
 template <typename T>
 void MarchingCubes::calculate_isopoints(
-    kvs::UInt32*&             vertex_map,
+    kvs::UInt32*& vertex_map,
     std::vector<kvs::Real32>& coords )
 {
     const T* const values = static_cast<const T*>( BaseClass::volume()->values().data() );
@@ -405,9 +379,10 @@ void MarchingCubes::calculate_isopoints(
     const auto min_coord = volume->minObjectCoord();
     const auto max_coord = volume->maxObjectCoord();
     const auto scale_factor = ( max_coord - min_coord ) / kvs::Vec3{ ncells };
-    auto scale_coord = [&] ( const kvs::Vec3& coord )
+    auto interpolate = [&] ( const kvs::Vec3& v1, const kvs::Vec3& v2 )
     {
-        return ( coord + min_coord ) * scale_factor;
+        const auto p = this->interpolate_vertex<T>( v1, v2 );
+        return ( p + min_coord ) * scale_factor;
     };
 
     kvs::UInt32 nisopoints = 0;
@@ -428,10 +403,7 @@ void MarchingCubes::calculate_isopoints(
                     if ( ( static_cast<double>( values[id0] ) > isolevel ) !=
                          ( static_cast<double>( values[id1] ) > isolevel ) )
                     {
-                        const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vec3 v2( static_cast<float>(x+1), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vec3 isopoint( scale_coord( this->interpolate_vertex<T>( v1, v2 ) ) );
-
+                        const auto isopoint = interpolate( {x, y, z}, {x+1, y, z} );
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
                         coords.push_back( isopoint.z() );
@@ -445,10 +417,7 @@ void MarchingCubes::calculate_isopoints(
                     if ( ( static_cast<double>( values[id0] ) > isolevel ) !=
                          ( static_cast<double>( values[id2] ) > isolevel ) )
                     {
-                        const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vec3 v2( static_cast<float>(x), static_cast<float>(y+1), static_cast<float>(z) );
-                        const kvs::Vec3 isopoint( scale_coord( this->interpolate_vertex<T>( v1, v2 ) ) );
-
+                        const auto isopoint = interpolate( {x, y, z}, {x, y+1, z} );
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
                         coords.push_back( isopoint.z() );
@@ -462,10 +431,7 @@ void MarchingCubes::calculate_isopoints(
                     if ( ( static_cast<double>( values[id0] ) > isolevel ) !=
                          ( static_cast<double>( values[id3] ) > isolevel ) )
                     {
-                        const kvs::Vec3 v1( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) );
-                        const kvs::Vec3 v2( static_cast<float>(x), static_cast<float>(y), static_cast<float>(z+1) );
-                        const kvs::Vec3 isopoint( scale_coord( this->interpolate_vertex<T>( v1, v2 ) ) );
-
+                        const auto isopoint = interpolate( {x, y, z}, {x, y, z+1} );
                         coords.push_back( isopoint.x() );
                         coords.push_back( isopoint.y() );
                         coords.push_back( isopoint.z() );
@@ -488,17 +454,17 @@ void MarchingCubes::calculate_isopoints(
 /*==========================================================================*/
 template <typename T>
 void MarchingCubes::connect_isopoints(
-    kvs::UInt32*&             vertex_map,
+    kvs::UInt32*& vertex_map,
     std::vector<kvs::UInt32>& connections )
 {
-    const kvs::StructuredVolumeObject* volume =
-        reinterpret_cast<const kvs::StructuredVolumeObject*>( BaseClass::volume() );
+    const auto* volume = kvs::StructuredVolumeObject::DownCast( BaseClass::volume() );
 
     const kvs::Vec3u resolution( volume->resolution() );
     const kvs::Vec3u ncells( resolution - kvs::Vec3u::Constant(1) );
     const kvs::UInt32 line_size( volume->numberOfNodesPerLine() );
     const kvs::UInt32 slice_size( volume->numberOfNodesPerSlice() );
 
+    auto Edge = MarchingCubesTable::TriangleID;
     size_t index = 0;
     size_t local_index[8];
     size_t local_edge[12];
@@ -537,11 +503,11 @@ void MarchingCubes::connect_isopoints(
                 local_edge[10] = local_edge[8] + 3 + 3 * line_size;
                 local_edge[11] = local_edge[8] + 3 * line_size;
 
-                for ( size_t i = 0; MarchingCubesTable::TriangleID[table_index][i] != -1; i += 3 )
+                for ( size_t i = 0; Edge[table_index][i] != -1; i += 3 )
                 {
-                    const int e0 = local_edge[ MarchingCubesTable::TriangleID[table_index][i]   ];
-                    const int e1 = local_edge[ MarchingCubesTable::TriangleID[table_index][i+2] ];
-                    const int e2 = local_edge[ MarchingCubesTable::TriangleID[table_index][i+1] ];
+                    const int e0 = local_edge[ Edge[table_index][i]   ];
+                    const int e1 = local_edge[ Edge[table_index][i+2] ];
+                    const int e2 = local_edge[ Edge[table_index][i+1] ];
 
                     connections.push_back( vertex_map[e0] );
                     connections.push_back( vertex_map[e1] );
@@ -563,9 +529,9 @@ void MarchingCubes::connect_isopoints(
  */
 /*==========================================================================*/
 void MarchingCubes::calculate_normals_on_polygon(
-    const std::vector<kvs::Real32>& coords,
-    const std::vector<kvs::UInt32>& connections,
-    std::vector<kvs::Real32>&       normals )
+    const Coords& coords,
+    const Connects& connections,
+    Normals& normals )
 {
     if ( coords.empty() ) return;
 
@@ -601,28 +567,28 @@ void MarchingCubes::calculate_normals_on_polygon(
  */
 /*==========================================================================*/
 void MarchingCubes::calculate_normals_on_vertex(
-    const std::vector<kvs::Real32>& coords,
-    const std::vector<kvs::UInt32>& connections,
-    std::vector<kvs::Real32>&       normals )
+    const Coords& coords,
+    const Connects& connections,
+    Normals& normals )
 {
-    if ( coords.empty() ) return;
+    if ( coords.empty() ) { return; }
 
     normals.resize( coords.size() );
     std::fill( normals.begin(), normals.end(), 0.0f );
 
-    const kvs::Real32* const coords_ptr = &coords[ 0 ];
-    const size_t size = connections.size();
+    const auto* const coords_ptr = &coords[ 0 ];
+    const auto size = connections.size();
     for ( kvs::UInt32 index = 0; index < size; index += 3 )
     {
-        const kvs::UInt32 coord0_index = 3 * connections[ index     ];
-        const kvs::UInt32 coord1_index = 3 * connections[ index + 1 ];
-        const kvs::UInt32 coord2_index = 3 * connections[ index + 2 ];
+        const auto coord0_index = 3 * connections[ index     ];
+        const auto coord1_index = 3 * connections[ index + 1 ];
+        const auto coord2_index = 3 * connections[ index + 2 ];
 
-        const kvs::Vec3 v0( coords_ptr + coord0_index );
-        const kvs::Vec3 v1( coords_ptr + coord1_index );
-        const kvs::Vec3 v2( coords_ptr + coord2_index );
+        const auto v0 = kvs::Vec3( coords_ptr + coord0_index );
+        const auto v1 = kvs::Vec3( coords_ptr + coord1_index );
+        const auto v2 = kvs::Vec3( coords_ptr + coord2_index );
 
-        const kvs::Vec3 normal( ( v1 - v0 ).cross( v2 - v0 ) );
+        const auto normal = kvs::Vec3( ( v1 - v0 ).cross( v2 - v0 ) );
 
         normals[ coord0_index     ] += normal.x();
         normals[ coord0_index + 1 ] += normal.y();

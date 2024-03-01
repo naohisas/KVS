@@ -28,7 +28,7 @@ template<typename T>
 class Matrix22
 {
 private:
-    Vector2<T> m_data[2]; ///< Row vectors.
+    Vector2<T> m_data[2] = { {}, {} }; ///< Row vectors.
 
 public:
     static const Matrix22 Zero() { Matrix22 m; m.setZero(); return m; }
@@ -36,7 +36,7 @@ public:
     static const Matrix22 Identity() { Matrix22 m; m.setIdentity(); return m; }
     static const Matrix22 Constant( const T x ) { Matrix22 m; m.setConstant(x); return m; }
     static const Matrix22 Diagonal( const T x ) { Matrix22 m; m.setDiagonal(x); return m; }
-    static const Matrix22 Diagonal( const kvs::Vector2<T>& v ) { Matrix22 m; m.setDiagonal(v); return m; }
+    static const Matrix22 Diagonal( const Vector2<T>& v ) { Matrix22 m; m.setDiagonal(v); return m; }
     static const Matrix22 Random() { Matrix22 m; m.setRandom(); return m; }
     static const Matrix22 Random( const kvs::UInt32 seed ) { Matrix22 m; m.setRandom( seed ); return m; }
     static const Matrix22 Random( const T min, const T max ) { Matrix22 m; m.setRandom( min, max ); return m; }
@@ -44,7 +44,7 @@ public:
     static const Matrix22 Rotation( const double deg );
 
 public:
-    Matrix22();
+    Matrix22() = default;
     Matrix22(
         const T a00, const T a01,
         const T a10, const T a11 );
@@ -52,6 +52,13 @@ public:
         const Vector2<T>& v0,
         const Vector2<T>& v1 );
     explicit Matrix22( const T elements[4] );
+
+    template <
+        typename T00, typename T01,
+        typename T10, typename T11>
+    Matrix22(
+        const T00 a00, const T01 a01,
+        const T10 a10, const T11 a11 );
 
     void set(
         const T a00, const T a01,
@@ -199,10 +206,12 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Matrix22<float> Matrix22f;
-typedef Matrix22<double> Matrix22d;
-typedef Matrix22<float> Mat2;
-typedef Matrix22<double> Mat2d;
+using Mat2 = Matrix22<float>;
+using Mat2f = Matrix22<float>;
+using Mat2d = Matrix22<double>;
+
+using Matrix22f = Matrix22<float>;
+using Matrix22d = Matrix22<double>;
 
 
 template<typename T>
@@ -219,17 +228,6 @@ const Matrix22<T> Matrix22<T>::Rotation( const double deg )
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new Matrix22.
- */
-/*==========================================================================*/
-template<typename T>
-inline Matrix22<T>::Matrix22()
-{
-    this->setZero();
-};
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Matrix22.
  *  @param  a00 [in] Element.
  *  @param  a01 [in] Element.
  *  @param  a10 [in] Element.
@@ -239,11 +237,9 @@ inline Matrix22<T>::Matrix22()
 template<typename T>
 inline Matrix22<T>::Matrix22(
     const T a00, const T a01,
-    const T a10, const T a11 )
+    const T a10, const T a11 ):
+    m_data{ { a00, a01 }, { a10, a11 } }
 {
-    this->set(
-        a00, a01,
-        a10, a11 );
 }
 
 /*==========================================================================*/
@@ -256,9 +252,9 @@ inline Matrix22<T>::Matrix22(
 template<typename T>
 inline Matrix22<T>::Matrix22(
     const Vector2<T>& v0,
-    const Vector2<T>& v1 )
+    const Vector2<T>& v1 ):
+    m_data{ v0, v1 }
 {
-    this->set( v0, v1 );
 }
 
 /*==========================================================================*/
@@ -268,9 +264,24 @@ inline Matrix22<T>::Matrix22(
  */
 /*==========================================================================*/
 template<typename T>
-inline Matrix22<T>::Matrix22( const T elements[4] )
+inline Matrix22<T>::Matrix22( const T elements[4] ):
+    m_data{
+        { elements[0], elements[1] },
+        { elements[2], elements[3] } }
 {
-    this->set( elements );
+}
+
+template <typename T>
+template <
+    typename T00, typename T01,
+    typename T10, typename T11>
+inline Matrix22<T>::Matrix22(
+    const T00 a00, const T01 a01,
+    const T10 a10, const T11 a11 ):
+    m_data{
+        { static_cast<T>(a00), static_cast<T>(a01) },
+        { static_cast<T>(a10), static_cast<T>(a11) } }
+{
 }
 
 /*==========================================================================*/

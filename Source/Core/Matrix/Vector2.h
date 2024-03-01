@@ -27,7 +27,7 @@ template<typename T>
 class Vector2
 {
 private:
-    T m_data[2]; ///< Elements.
+    T m_data[2] = { 0, 0 }; ///< Elements.
 
 public:
     static const Vector2 Zero() { return Vector2( T(0), T(0) ); }
@@ -42,11 +42,15 @@ public:
     static const Vector2 Random( const T min, const T max, const kvs::UInt32 seed ) { Vector2 v; v.setRandom( min, max, seed ); return v; }
 
 public:
-    Vector2();
-    template <typename U>
-    explicit Vector2( const kvs::Vector2<U>& v );
+    Vector2() = default;
     Vector2( const T x, const T y );
     explicit Vector2( const T elements[2] );
+
+    template <typename X, typename Y>
+    Vector2( const X x, const Y y );
+
+    template <typename U>
+    explicit Vector2( const kvs::Vector2<U>& v );
 
     T& x() { return m_data[0]; }
     T& y() { return m_data[1]; }
@@ -175,35 +179,19 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Vector2<float> Vec2;
-typedef Vector2<unsigned int> Vec2u;
-typedef Vector2<int> Vec2i;
-typedef Vector2<double> Vec2d;
-typedef Vector2<int> Vector2i;
-typedef Vector2<unsigned int> Vector2u;
-typedef Vector2<float> Vector2f;
-typedef Vector2<double> Vector2d;
-typedef Vector2<unsigned int> Vector2ui;
-typedef Vector2<unsigned int> Vec2ui;
+using Vec2 = Vector2<float>;
+using Vec2u = Vector2<unsigned int>;
+using Vec2i = Vector2<int>;
+using Vec2f = Vector2<float>;
+using Vec2d = Vector2<double>;
+using Vec2ui = Vector2<unsigned int>;
 
+using Vector2i = Vector2<int>;
+using Vector2u = Vector2<unsigned int>;
+using Vector2f = Vector2<float>;
+using Vector2d = Vector2<double>;
+using Vector2ui = Vector2<unsigned int>;
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Vector2.
- */
-/*==========================================================================*/
-template<typename T>
-inline Vector2<T>::Vector2()
-{
-    this->setZero();
-}
-
-template <typename T>
-template <typename U>
-inline Vector2<T>::Vector2( const kvs::Vector2<U>& v )
-{
-    this->set( static_cast<T>( v.x() ), static_cast<T>( v.y() ) );
-}
 
 /*==========================================================================*/
 /**
@@ -213,9 +201,9 @@ inline Vector2<T>::Vector2( const kvs::Vector2<U>& v )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector2<T>::Vector2( const T x, const T y )
+inline Vector2<T>::Vector2( const T x, const T y ):
+    m_data{ x, y }
 {
-    this->set( x, y );
 }
 
 /*==========================================================================*/
@@ -225,9 +213,23 @@ inline Vector2<T>::Vector2( const T x, const T y )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector2<T>::Vector2( const T elements[2] )
+inline Vector2<T>::Vector2( const T elements[2] ):
+    m_data{ elements[0], elements[1] }
 {
-    this->set( elements );
+}
+
+template <typename T>
+template <typename X, typename Y>
+inline Vector2<T>::Vector2( const X x, const Y y ):
+    m_data{ static_cast<T>(x), static_cast<T>(y) }
+{
+}
+
+template <typename T>
+template <typename U>
+inline Vector2<T>::Vector2( const kvs::Vector2<U>& v ):
+    m_data{ static_cast<T>(v.x()), static_cast<T>(v.y()) }
+{
 }
 
 /*==========================================================================*/

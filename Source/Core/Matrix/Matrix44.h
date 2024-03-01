@@ -27,7 +27,7 @@ template<typename T>
 class Matrix44
 {
 private:
-    Vector4<T> m_data[4]; ///< Row vectors.
+    Vector4<T> m_data[4] = { {}, {}, {}, {} }; ///< Row vectors.
 
 public:
     static const Matrix44 Zero() { Matrix44 m; m.setZero(); return m; }
@@ -42,7 +42,7 @@ public:
     static const Matrix44 Random( const T min, const T max, const kvs::UInt32 seed ) { Matrix44 m; m.setRandom( min, max, seed ); return m; }
 
 public:
-    Matrix44();
+    Matrix44() = default;
     Matrix44(
         const T a00, const T a01, const T a02, const T a03,
         const T a10, const T a11, const T a12, const T a13,
@@ -54,6 +54,17 @@ public:
         const Vector4<T>& v2,
         const Vector4<T>& v3 );
     explicit Matrix44( const T elements[16] );
+
+    template <
+        typename T00, typename T01, typename T02, typename T03,
+        typename T10, typename T11, typename T12, typename T13,
+        typename T20, typename T21, typename T22, typename T23,
+        typename T30, typename T31, typename T32, typename T33>
+    Matrix44(
+        const T00 a00, const T01 a01, const T02 a02, const T03 a03,
+        const T10 a10, const T11 a11, const T12 a12, const T13 a13,
+        const T20 a20, const T21 a21, const T22 a22, const T23 a23,
+        const T30 a30, const T31 a31, const T32 a32, const T33 a33 );
 
     void set(
         const T a00, const T a01, const T a02, const T a03,
@@ -211,22 +222,13 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Matrix44<float> Matrix44f;
-typedef Matrix44<double> Matrix44d;
-typedef Matrix44<float> Mat4;
-typedef Matrix44<double> Mat4d;
+using Mat4 = Matrix44<float>;
+using Mat4f = Matrix44<float>;
+using Mat4d = Matrix44<double>;
 
+using Matrix44f = Matrix44<float>;
+using Matrix44d = Matrix44<double>;
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Matrix44.
- */
-/*==========================================================================*/
-template<typename T>
-inline Matrix44<T>::Matrix44()
-{
-    this->setZero();
-};
 
 /*==========================================================================*/
 /**
@@ -254,13 +256,13 @@ inline Matrix44<T>::Matrix44(
     const T a00, const T a01, const T a02, const T a03,
     const T a10, const T a11, const T a12, const T a13,
     const T a20, const T a21, const T a22, const T a23,
-    const T a30, const T a31, const T a32, const T a33 )
+    const T a30, const T a31, const T a32, const T a33 ):
+    m_data{
+        { a00, a01, a02, a03 },
+        { a10, a11, a12, a13 },
+        { a20, a21, a22, a23 },
+        { a30, a31, a32, a33 } }
 {
-    this->set(
-        a00, a01, a02, a03,
-        a10, a11, a12, a13,
-        a20, a21, a22, a23,
-        a30, a31, a32, a33 );
 }
 
 /*==========================================================================*/
@@ -277,9 +279,9 @@ inline Matrix44<T>::Matrix44(
     const Vector4<T>& v0,
     const Vector4<T>& v1,
     const Vector4<T>& v2,
-    const Vector4<T>& v3 )
+    const Vector4<T>& v3 ):
+    m_data{ v0, v1, v2, v3 }
 {
-    this->set( v0, v1, v2, v3 );
 }
 
 /*==========================================================================*/
@@ -289,9 +291,32 @@ inline Matrix44<T>::Matrix44(
  */
 /*==========================================================================*/
 template<typename T>
-inline Matrix44<T>::Matrix44( const T elements[16] )
+inline Matrix44<T>::Matrix44( const T elements[16] ):
+    m_data{
+        { elements[0], elements[1], elements[2], elements[3] },
+        { elements[4], elements[5], elements[6], elements[7] },
+        { elements[8], elements[9], elements[10], elements[11] },
+        { elements[12], elements[13], elements[14], elements[15] } }
 {
-    this->set( elements );
+}
+
+template <typename T>
+template <
+    typename T00, typename T01, typename T02, typename T03,
+    typename T10, typename T11, typename T12, typename T13,
+    typename T20, typename T21, typename T22, typename T23,
+    typename T30, typename T31, typename T32, typename T33>
+inline Matrix44<T>::Matrix44(
+    const T00 a00, const T01 a01, const T02 a02, const T03 a03,
+    const T10 a10, const T11 a11, const T12 a12, const T13 a13,
+    const T20 a20, const T21 a21, const T22 a22, const T23 a23,
+    const T30 a30, const T31 a31, const T32 a32, const T33 a33 ):
+    m_data{
+        { static_cast<T>(a00), static_cast<T>(a01), static_cast<T>(a02), static_cast<T>(a03) },
+        { static_cast<T>(a10), static_cast<T>(a11), static_cast<T>(a12), static_cast<T>(a13) },
+        { static_cast<T>(a20), static_cast<T>(a21), static_cast<T>(a22), static_cast<T>(a23) },
+        { static_cast<T>(a30), static_cast<T>(a31), static_cast<T>(a32), static_cast<T>(a33) } }
+{
 }
 
 /*==========================================================================*/

@@ -150,24 +150,8 @@ void Isosurface::mapping( const kvs::VolumeObjectBase* volume )
         return;
     }
 
-    if ( volume->volumeType() == kvs::VolumeObjectBase::Structured )
+    auto shallow_copy = [&] ( const kvs::PolygonObject* polygon )
     {
-        const auto* structured_volume = kvs::StructuredVolumeObject::DownCast( volume );
-
-        kvs::PolygonObject* polygon = new kvs::MarchingCubes(
-            structured_volume,
-            m_isolevel,
-            SuperClass::normalType(),
-            m_duplication,
-            BaseClass::transferFunction() );
-        if ( !polygon )
-        {
-            BaseClass::setSuccess( false );
-            kvsMessageError("Cannot create isosurfaces.");
-            return;
-        }
-
-        // Shallow copy.
         SuperClass::setCoords( polygon->coords() );
         SuperClass::setColors( polygon->colors() );
         SuperClass::setNormals( polygon->normals() );
@@ -183,23 +167,37 @@ void Isosurface::mapping( const kvs::VolumeObjectBase* volume )
         SuperClass::setMinMaxExternalCoords(
             polygon->minExternalCoord(),
             polygon->maxExternalCoord() );
+    };
 
+    const auto ntype = SuperClass::normalType();
+    const auto tfunc = BaseClass::transferFunction();
+
+    // Structured volume object
+    if ( volume->volumeType() == kvs::VolumeObjectBase::Structured )
+    {
+        const auto* svolume = kvs::StructuredVolumeObject::DownCast( volume );
+        auto* polygon = new kvs::MarchingCubes(
+            svolume, m_isolevel, ntype, m_duplication, tfunc );
+        if ( !polygon )
+        {
+            BaseClass::setSuccess( false );
+            kvsMessageError("Cannot create isosurfaces.");
+            return;
+        }
+
+        shallow_copy( polygon );
         delete polygon;
     }
-    else // volume->volumeType() == kvs::VolumeObjectBase::Unstructured
+    // Unstructured volume object
+    else
     {
-        const auto* unstructured_volume = kvs::UnstructuredVolumeObject::DownCast( volume );
-
-        switch ( unstructured_volume->cellType() )
+        const auto* uvolume = kvs::UnstructuredVolumeObject::DownCast( volume );
+        switch ( uvolume->cellType() )
         {
         case kvs::UnstructuredVolumeObject::Tetrahedra:
         {
-            kvs::PolygonObject* polygon = new kvs::MarchingTetrahedra(
-                unstructured_volume,
-                m_isolevel,
-                SuperClass::normalType(),
-                m_duplication,
-                BaseClass::transferFunction() );
+            auto* polygon = new kvs::MarchingTetrahedra(
+                uvolume, m_isolevel, ntype, m_duplication, tfunc );
             if ( !polygon )
             {
                 BaseClass::setSuccess( false );
@@ -207,69 +205,28 @@ void Isosurface::mapping( const kvs::VolumeObjectBase* volume )
                 return;
             }
 
-            // Shallow copy.
-            SuperClass::setCoords( polygon->coords() );
-            SuperClass::setColors( polygon->colors() );
-            SuperClass::setNormals( polygon->normals() );
-            SuperClass::setConnections( polygon->connections() );
-            SuperClass::setOpacities( polygon->opacities() );
-            SuperClass::setPolygonType( polygon->polygonType() );
-            SuperClass::setColorType( polygon->colorType() );
-            SuperClass::setNormalType( polygon->normalType() );
-
-            SuperClass::setMinMaxObjectCoords(
-                polygon->minObjectCoord(),
-                polygon->maxObjectCoord() );
-            SuperClass::setMinMaxExternalCoords(
-                polygon->minExternalCoord(),
-                polygon->maxExternalCoord() );
-
+            shallow_copy( polygon );
             delete polygon;
             break;
         }
         case kvs::UnstructuredVolumeObject::Hexahedra:
         {
-            kvs::PolygonObject* polygon = new kvs::MarchingHexahedra(
-                unstructured_volume,
-                m_isolevel,
-                SuperClass::normalType(),
-                m_duplication,
-                BaseClass::transferFunction() );
+            auto* polygon = new kvs::MarchingHexahedra(
+                uvolume, m_isolevel, ntype, m_duplication, tfunc );
             if ( !polygon )
             {
                 kvsMessageError("Cannot create isosurfaces.");
                 return;
             }
 
-            // Shallow copy.
-            SuperClass::setCoords( polygon->coords() );
-            SuperClass::setColors( polygon->colors() );
-            SuperClass::setNormals( polygon->normals() );
-            SuperClass::setConnections( polygon->connections() );
-            SuperClass::setOpacities( polygon->opacities() );
-            SuperClass::setPolygonType( polygon->polygonType() );
-            SuperClass::setColorType( polygon->colorType() );
-            SuperClass::setNormalType( polygon->normalType() );
-
-            SuperClass::setMinMaxObjectCoords(
-                polygon->minObjectCoord(),
-                polygon->maxObjectCoord() );
-            SuperClass::setMinMaxExternalCoords(
-                polygon->minExternalCoord(),
-                polygon->maxExternalCoord() );
-
+            shallow_copy( polygon );
             delete polygon;
-
             break;
         }
         case kvs::UnstructuredVolumeObject::Pyramid:
         {
-            kvs::PolygonObject* polygon = new kvs::MarchingPyramid(
-                unstructured_volume,
-                m_isolevel,
-                SuperClass::normalType(),
-                m_duplication,
-                BaseClass::transferFunction() );
+            auto* polygon = new kvs::MarchingPyramid(
+                uvolume, m_isolevel, ntype, m_duplication, tfunc );
             if ( !polygon )
             {
                 BaseClass::setSuccess( false );
@@ -277,59 +234,22 @@ void Isosurface::mapping( const kvs::VolumeObjectBase* volume )
                 return;
             }
 
-            // Shallow copy.
-            SuperClass::setCoords( polygon->coords() );
-            SuperClass::setColors( polygon->colors() );
-            SuperClass::setNormals( polygon->normals() );
-            SuperClass::setConnections( polygon->connections() );
-            SuperClass::setOpacities( polygon->opacities() );
-            SuperClass::setPolygonType( polygon->polygonType() );
-            SuperClass::setColorType( polygon->colorType() );
-            SuperClass::setNormalType( polygon->normalType() );
-
-            SuperClass::setMinMaxObjectCoords(
-                polygon->minObjectCoord(),
-                polygon->maxObjectCoord() );
-            SuperClass::setMinMaxExternalCoords(
-                polygon->minExternalCoord(),
-                polygon->maxExternalCoord() );
-
+            shallow_copy( polygon );
             delete polygon;
             break;
         }
         case kvs::UnstructuredVolumeObject::Prism:
         {
-            kvs::PolygonObject* polygon = new kvs::MarchingPrism(
-                unstructured_volume,
-                m_isolevel,
-                SuperClass::normalType(),
-                m_duplication,
-                BaseClass::transferFunction() );
+            auto* polygon = new kvs::MarchingPrism(
+                uvolume, m_isolevel, ntype, m_duplication, tfunc );
             if ( !polygon )
             {
                 kvsMessageError("Cannot create isosurfaces.");
                 return;
             }
 
-            // Shallow copy.
-            SuperClass::setCoords( polygon->coords() );
-            SuperClass::setColors( polygon->colors() );
-            SuperClass::setNormals( polygon->normals() );
-            SuperClass::setConnections( polygon->connections() );
-            SuperClass::setOpacities( polygon->opacities() );
-            SuperClass::setPolygonType( polygon->polygonType() );
-            SuperClass::setColorType( polygon->colorType() );
-            SuperClass::setNormalType( polygon->normalType() );
-
-            SuperClass::setMinMaxObjectCoords(
-                polygon->minObjectCoord(),
-                polygon->maxObjectCoord() );
-            SuperClass::setMinMaxExternalCoords(
-                polygon->minExternalCoord(),
-                polygon->maxExternalCoord() );
-
+            shallow_copy( polygon );
             delete polygon;
-
             break;
         }
         default: break;

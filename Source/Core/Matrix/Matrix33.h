@@ -28,7 +28,7 @@ template<typename T>
 class Matrix33
 {
 private:
-    Vector3<T> m_data[3]; ///< Row vectors.
+    Vector3<T> m_data[3] = { {}, {}, {} }; ///< Row vectors.
 
 public:
     static const Matrix33 Zero() { Matrix33 m; m.setZero(); return m; }
@@ -47,7 +47,7 @@ public:
     static const Matrix33 RotationZ( const double deg );
 
 public:
-    Matrix33();
+    Matrix33() = default;
     Matrix33(
         const T a00, const T a01, const T a02,
         const T a10, const T a11, const T a12,
@@ -57,6 +57,15 @@ public:
         const Vector3<T>& v1,
         const Vector3<T>& v2 );
     explicit Matrix33( const T elements[9] );
+
+    template <
+        typename T00, typename T01, typename T02,
+        typename T10, typename T11, typename T12,
+        typename T20, typename T21, typename T22>
+    Matrix33(
+        const T00 a00, const T01 a01, const T02 a02,
+        const T10 a10, const T11 a11, const T12 a12,
+        const T20 a20, const T21 a21, const T22 a22 );
 
     void set(
         const T a00, const T a01, const T a02,
@@ -209,10 +218,12 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Matrix33<float> Matrix33f;
-typedef Matrix33<double> Matrix33d;
-typedef Matrix33<float> Mat3;
-typedef Matrix33<double> Mat3d;
+using Mat3 = Matrix33<float>;
+using Mat3f = Matrix33<float>;
+using Mat3d = Matrix33<double>;
+
+using Matrix33f = Matrix33<float>;
+using Matrix33d = Matrix33<double>;
 
 
 template<typename T>
@@ -276,17 +287,6 @@ const Matrix33<T> Matrix33<T>::RotationZ( const double deg )
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new Matrix33.
- */
-/*==========================================================================*/
-template<typename T>
-inline Matrix33<T>::Matrix33()
-{
-    this->setZero();
-};
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Matrix33.
  *  @param  a00 [in] Element.
  *  @param  a01 [in] Element.
  *  @param  a02 [in] Element.
@@ -302,12 +302,12 @@ template<typename T>
 inline Matrix33<T>::Matrix33(
     const T a00, const T a01, const T a02,
     const T a10, const T a11, const T a12,
-    const T a20, const T a21, const T a22 )
+    const T a20, const T a21, const T a22 ):
+    m_data{
+        { a00, a01, a02 },
+        { a10, a11, a12 },
+        { a20, a21, a22 } }
 {
-    this->set(
-        a00, a01, a02,
-        a10, a11, a12,
-        a20, a21, a22 );
 }
 
 /*==========================================================================*/
@@ -322,9 +322,9 @@ template<typename T>
 inline Matrix33<T>::Matrix33(
     const Vector3<T>& v0,
     const Vector3<T>& v1,
-    const Vector3<T>& v2 )
+    const Vector3<T>& v2 ):
+    m_data{ v0, v1, v2 }
 {
-    this->set( v0, v1, v2 );
 }
 
 /*==========================================================================*/
@@ -334,9 +334,28 @@ inline Matrix33<T>::Matrix33(
  */
 /*==========================================================================*/
 template<typename T>
-inline Matrix33<T>::Matrix33( const T elements[9] )
+inline Matrix33<T>::Matrix33( const T elements[9] ):
+    m_data{
+        { elements[0], elements[1], elements[2] },
+        { elements[3], elements[4], elements[5] },
+        { elements[6], elements[7], elements[8] } }
 {
-    this->set( elements );
+}
+
+template <typename T>
+template <
+    typename T00, typename T01, typename T02,
+    typename T10, typename T11, typename T12,
+    typename T20, typename T21, typename T22>
+inline Matrix33<T>::Matrix33(
+    const T00 a00, const T01 a01, const T02 a02,
+    const T10 a10, const T11 a11, const T12 a12,
+    const T20 a20, const T21 a21, const T22 a22 ):
+    m_data{
+        { static_cast<T>(a00), static_cast<T>(a01), static_cast<T>(a02) },
+        { static_cast<T>(a10), static_cast<T>(a11), static_cast<T>(a12) },
+        { static_cast<T>(a20), static_cast<T>(a21), static_cast<T>(a22) } }
+{
 }
 
 /*==========================================================================*/

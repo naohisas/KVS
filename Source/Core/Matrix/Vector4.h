@@ -27,7 +27,7 @@ template <typename T>
 class Vector4
 {
 private:
-    T m_data[4]; ///< Elements.
+    T m_data[4] = { 0, 0, 0, 0 }; ///< Elements.
 
 public:
     static const Vector4 Zero() { return Vector4( T(0), T(0), T(0), T(0) ); }
@@ -44,13 +44,17 @@ public:
     static const Vector4 Random( const T min, const T max, const kvs::UInt32 seed ) { Vector4 v; v.setRandom( min, max, seed ); return v; }
 
 public:
-    Vector4();
-    template <typename U>
-    explicit Vector4( const kvs::Vector4<U>& v );
+    Vector4() = default;
     Vector4( const T x, const T y, const T z, const T w );
     Vector4( const Vector2<T>& other, const T z , const T w );
     Vector4( const Vector3<T>& other, const T w );
     explicit Vector4( const T elements[4] );
+
+    template <typename X, typename Y, typename Z, typename W>
+    Vector4( const X x, const Y y, const Z z, const W w );
+
+    template <typename U>
+    explicit Vector4( const kvs::Vector4<U>& v );
 
     T& x() { return m_data[0]; }
     T& y() { return m_data[1]; }
@@ -191,6 +195,7 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
+/*
 typedef Vector4<int> Vector4i;
 typedef Vector4<unsigned int> Vector4u;
 typedef Vector4<float> Vector4f;
@@ -201,29 +206,20 @@ typedef Vector4<unsigned int> Vec4u;
 typedef Vector4<double> Vec4d;
 typedef Vector4<unsigned int> Vector4ui;
 typedef Vector4<unsigned int> Vec4ui;
+*/
+using Vec4 = Vector4<float>;
+using Vec4i = Vector4<int>;
+using Vec4u = Vector4<unsigned int>;
+using Vec4f = Vector4<float>;
+using Vec4d = Vector4<double>;
+using Vec4ui = Vector4<unsigned int>;
 
+using Vector4i = Vector4<int>;
+using Vector4u = Vector4<unsigned int>;
+using Vector4f = Vector4<float>;
+using Vector4d = Vector4<double>;
+using Vector4ui = Vector4<unsigned int>;
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Vector4.
- */
-/*==========================================================================*/
-template<typename T>
-inline Vector4<T>::Vector4()
-{
-    this->setZero();
-}
-
-template <typename T>
-template <typename U>
-inline Vector4<T>::Vector4( const kvs::Vector4<U>& v )
-{
-    this->set(
-        static_cast<T>( v.x() ),
-        static_cast<T>( v.y() ),
-        static_cast<T>( v.z() ),
-        static_cast<T>( v.w() ) );
-}
 
 /*==========================================================================*/
 /**
@@ -235,9 +231,9 @@ inline Vector4<T>::Vector4( const kvs::Vector4<U>& v )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector4<T>::Vector4( const T x, const T y, const T z, const T w )
+inline Vector4<T>::Vector4( const T x, const T y, const T z, const T w ):
+    m_data{ x, y, z, w }
 {
-    this->set( x, y, z, w );
 }
 
 /*==========================================================================*/
@@ -249,9 +245,9 @@ inline Vector4<T>::Vector4( const T x, const T y, const T z, const T w )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector4<T>::Vector4( const Vector2<T>& other, const T z , const T w )
+inline Vector4<T>::Vector4( const Vector2<T>& other, const T z , const T w ):
+    m_data{ other.x(), other.y(), z, w }
 {
-    this->set( other, z, w );
 }
 
 /*==========================================================================*/
@@ -262,9 +258,9 @@ inline Vector4<T>::Vector4( const Vector2<T>& other, const T z , const T w )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector4<T>::Vector4( const Vector3<T>& other, const T w )
+inline Vector4<T>::Vector4( const Vector3<T>& other, const T w ):
+    m_data{ other.x(), other.y(), other.z(), w }
 {
-    this->set( other, w );
 }
 
 /*==========================================================================*/
@@ -274,9 +270,23 @@ inline Vector4<T>::Vector4( const Vector3<T>& other, const T w )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector4<T>::Vector4( const T elements[4] )
+inline Vector4<T>::Vector4( const T elements[4] ):
+    m_data{ elements[0], elements[1], elements[2], elements[3] }
 {
-    this->set( elements );
+}
+
+template <typename T>
+template <typename X, typename Y, typename Z, typename W>
+inline Vector4<T>::Vector4( const X x, const Y y, const Z z, const W w ):
+    m_data{ static_cast<T>(x), static_cast<T>(y), static_cast<T>(z), static_cast<T>(w) }
+{
+}
+
+template <typename T>
+template <typename U>
+inline Vector4<T>::Vector4( const kvs::Vector4<U>& v ):
+    m_data{ static_cast<T>(v.x()), static_cast<T>(v.y()), static_cast<T>(v.z()), static_cast<T>(v.w()) }
+{
 }
 
 /*==========================================================================*/

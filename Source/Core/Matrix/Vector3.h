@@ -27,7 +27,7 @@ template<typename T>
 class Vector3
 {
 private:
-    T m_data[3]; ///< Elements.
+    T m_data[3] = { 0, 0, 0 }; ///< Elements.
 
 public:
     static const Vector3 Zero() { return Vector3( T(0), T(0), T(0) ); }
@@ -43,12 +43,16 @@ public:
     static const Vector3 Random( const T min, const T max, const kvs::UInt32 seed ) { Vector3 v; v.setRandom( min, max, seed ); return v; }
 
 public:
-    Vector3();
+    Vector3() = default;
+    Vector3( const T x, const T y, const T z );
+    explicit Vector3( const T elements[3] );
+    explicit Vector3( const Vector2<T>& other, const T z );
+
+    template <typename X, typename Y, typename Z>
+    Vector3( const X x, const Y y, const Z z );
+
     template <typename U>
     explicit Vector3( const kvs::Vector3<U>& v );
-    Vector3( const T x, const T y, const T z );
-    explicit Vector3( const Vector2<T>& other, const T z );
-    explicit Vector3( const T elements[3] );
 
     T& x() { return m_data[0]; }
     T& y() { return m_data[1]; }
@@ -184,38 +188,18 @@ public:
  *  Type definition.
  */
 /*==========================================================================*/
-typedef Vector3<int> Vector3i;
-typedef Vector3<unsigned int> Vector3u;
-typedef Vector3<float> Vector3f;
-typedef Vector3<double> Vector3d;
-typedef Vector3<float> Vec3;
-typedef Vector3<int> Vec3i;
-typedef Vector3<unsigned int> Vec3u;
-typedef Vector3<double> Vec3d;
-typedef Vector3<unsigned int> Vector3ui;
-typedef Vector3<unsigned int> Vec3ui;
+using Vec3 = Vector3<float>;
+using Vec3i = Vector3<int>;
+using Vec3u = Vector3<unsigned int>;
+using Vec3f = Vector3<float>;
+using Vec3d = Vector3<double>;
+using Vec3ui = Vector3<unsigned int>;
+using Vector3i = Vector3<int>;
+using Vector3u = Vector3<unsigned int>;
+using Vector3f = Vector3<float>;
+using Vector3d = Vector3<double>;
+using Vector3ui = Vector3<unsigned int>;
 
-
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Vector3.
- */
-/*==========================================================================*/
-template<typename T>
-inline Vector3<T>::Vector3()
-{
-    this->setZero();
-}
-
-template <typename T>
-template <typename U>
-inline Vector3<T>::Vector3( const kvs::Vector3<U>& v )
-{
-    this->set(
-        static_cast<T>( v.x() ),
-        static_cast<T>( v.y() ),
-        static_cast<T>( v.z() ) );
-}
 
 /*==========================================================================*/
 /**
@@ -226,9 +210,21 @@ inline Vector3<T>::Vector3( const kvs::Vector3<U>& v )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector3<T>::Vector3( const T x, const T y, const T z )
+inline Vector3<T>::Vector3( const T x, const T y, const T z ):
+    m_data{ x, y, z }
 {
-    this->set( x, y, z );
+}
+
+/*==========================================================================*/
+/**
+ *  @brief  Constructs a new Vector3.
+ *  @param  elements [in] Array of elements.
+ */
+/*==========================================================================*/
+template<typename T>
+inline Vector3<T>::Vector3( const T elements[3] ):
+    m_data{ elements[0], elements[1], elements[2] }
+{
 }
 
 /*==========================================================================*/
@@ -239,21 +235,23 @@ inline Vector3<T>::Vector3( const T x, const T y, const T z )
  */
 /*==========================================================================*/
 template<typename T>
-inline Vector3<T>::Vector3( const Vector2<T>& other, const T z )
+inline Vector3<T>::Vector3( const Vector2<T>& other, const T z ):
+    m_data{ other.x(), other.y(), z }
 {
-    this->set( other, z );
 }
 
-/*==========================================================================*/
-/**
- *  @brief  Constructs a new Vector3.
- *  @param  elements [in] Array of elements.
- */
-/*==========================================================================*/
-template<typename T>
-inline Vector3<T>::Vector3( const T elements[3] )
+template <typename T>
+template <typename X, typename Y, typename Z>
+inline Vector3<T>::Vector3( const X x, const Y y, const Z z ):
+    m_data{ static_cast<T>(x), static_cast<T>(y), static_cast<T>(z) }
 {
-    this->set( elements );
+}
+
+template <typename T>
+template <typename U>
+inline Vector3<T>::Vector3( const kvs::Vector3<U>& v ):
+    m_data{ static_cast<T>(v.x()), static_cast<T>(v.y()), static_cast<T>(v.z()) }
+{
 }
 
 /*==========================================================================*/
