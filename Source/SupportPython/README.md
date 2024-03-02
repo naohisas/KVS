@@ -33,6 +33,10 @@ or add following lines to ```~/.config/pip/pip.conf```:
 break-system-packages = true
 ```
 
+For more detailed information, see the following links.
+- [How do I solve "error: externally-managed-environment" every time I use pip 3?](https://stackoverflow.com/questions/75608323/how-do-i-solve-error-externally-managed-environment-every-time-i-use-pip-3)
+- [Brew Python. How to install Python on macOS.](https://mac.install.guide/python/brew)
+
 ## Compile
 In the compiling process of KVS, ```python``` and ```python-config``` command is called for setting python environment information. If yout want to use other version of Python, you can use the environment variable ```KVS_PY``` to change it to your specific version of python as follows:
 ```
