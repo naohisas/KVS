@@ -23,6 +23,16 @@ $ brew install python3
 $ pip3 install numpy
 ```
 
+If you get an error like "error: externally-managed-environment ..." when installing numpy, please install it as follows:
+```
+$ pip3 install numpy --break-system-packages
+```
+or add following lines to ```~/.config/pip/pip.conf```:
+```
+[global]
+break-system-packages = true
+```
+
 ## Compile
 In the compiling process of KVS, ```python``` and ```python-config``` command is called for setting python environment information. If yout want to use other version of Python, you can use the environment variable ```KVS_PY``` to change it to your specific version of python as follows:
 ```
