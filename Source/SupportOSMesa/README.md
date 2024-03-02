@@ -30,7 +30,7 @@ $ git clone https://github.com/devernay/osmesa-install.git
 $ cd osmesa-install
 ```
 
-4. Modify the install-script 'osmesa-install.sh' as follows.
+4. Modify the install-script 'osmesa-install.sh' as follows. Note that these options can also be specified directly via environmental variables at compile time.
 
 ```
 a) Specify the install target directory of OSMesa.
@@ -57,7 +57,7 @@ Rendering driver
 
 For Mac, several packages need to be installed with homebrew before cmpiling OSMesa as follows:
 ```sh
-$ brew install cmake libtool automake autoreconf
+$ brew install gsed pkg-config cmake libtool automake autoconf
 ```
 
 5. Compile and install OSMesa.
@@ -66,6 +66,11 @@ $ brew install cmake libtool automake autoreconf
 $ mkdir build
 $ cd build
 $ ../osmesa-install.sh
+```
+
+To specify the options directly via environmental variables, compile and install as follows:
+```
+$ OSMESA_PREFIX=${HOME}/local/osmesa OSMESA_DRIVER=3 MANGLED=0 LLVM_PREFIX=${HOME}/local/llvm LLVM_BUILD=1 ../osmesa-install.sh
 ```
 
 6. Set environment variables for using the SupportOSMesa.
