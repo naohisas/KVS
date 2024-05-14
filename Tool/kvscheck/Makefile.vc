@@ -146,7 +146,7 @@ LINK_LIBRARY = $(LINK_LIBRARY) $(GL_LINK_LIBRARY)
 #  Flags.
 #=============================================================================
 !IF "$(KVS_SUPPORT_QT)" == "1"
-CPPFLAGS = $(CPPFLAGS) /DKVSCHECK_QT_VERSION=\"'qmake -query QT_VERSION'\"
+CPPFLAGS = $(CPPFLAGS) /DKVSCHECK_QT_VERSION="qmake -query QT_VERSION"
 !ENDIF
 
 

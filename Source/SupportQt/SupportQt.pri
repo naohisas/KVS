@@ -32,6 +32,9 @@ win32 {
 #  configuration valiable
 #=============================================================================
 CONFIG += warn_off opengl staticlib
+win32 {
+CONFIG += static_runtime
+}
 QT     += opengl
 
 greaterThan( QT_MAJOR_VERSION, 5 ) {
@@ -51,7 +54,9 @@ cygwin* {
 }
 
 DEFINES += KVS_SUPPORT_QT
-
+win32 {
+DEFINES += KVS_ENABLE_GLEW
+}
 
 #=============================================================================
 #  include path

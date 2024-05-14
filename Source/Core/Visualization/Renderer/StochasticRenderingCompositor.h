@@ -106,9 +106,12 @@ inline void StochasticRenderingCompositor::for_each_object( Function function )
         auto id = m_scene->IDManager()->id( i );
         auto* object = m_scene->objectManager()->object( id.first );
         auto* r = m_scene->rendererManager()->renderer( id.second );
-        if ( auto* renderer = Renderer::DownCast( r ) )
+        if( object->isVisible() )
         {
-            function( object, renderer );
+            if ( auto* renderer = Renderer::DownCast( r ) )
+            {
+                function( object, renderer );
+            }
         }
     }
 }
