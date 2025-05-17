@@ -31,5 +31,11 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.3
 QT_MAC_SDK_VERSION_MAX = 11.3
 ```
 
+If you get the fatal error "'iostream' file not found" after upgrading MacOSX, try reinstalling commandline tools as follows:
+```
+$ sudo rm -rf /Library/Developer/CommandLineTools
+$ xcode-select --install
+```
+
 ### Windows
 Not tested.
