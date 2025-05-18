@@ -20,15 +20,20 @@ In order to use qmake command, you may need to set:
 export PATH="/usr/local/opt/qt/bin:$PATH"     (intel mac)
 export PATH="/opt/homebrew/opt/qt/bin:$PATH"  (m1 mac)
 ```
-And check mac SDK version in the mkspecs in case of Qt5
+And check mac SDK version in the mkspecs
 ```
+<Qt5>
 $ vi /usr/local/opt/qt/mkspecs/common/macx.conf     (intel mac)
 $ vi /opt/homebrew/opt/qt/mkspecs/common/macx.conf  (m1 mac)
 
-Modify 'QMAKE_MACOSX_DEPLOYMENT_TARGET' and 'QT_MAC_SDK_VERSION_MAX' (* Not required for Qt6?)
+<Qt6>
+$ vi /usr/local/opt/qt/share/qt/mkspecs/qconfig.pri     (intel mac)
+$ vi /opt/homebrew/opt/qt/share/qt/mkspecs/qconfig.pri  (m1 mac)
+
+Modify 'QMAKE_MACOSX_DEPLOYMENT_TARGET' and 'QT_MAC_SDK_VERSION_MAX'
 e.g.)
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.3
-QT_MAC_SDK_VERSION_MAX = 11.3
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 15.0
+QT_MAC_SDK_VERSION_MAX = 15.0
 ```
 
 If you get the fatal error "'iostream' file not found" after upgrading MacOSX, try reinstalling commandline tools as follows:
