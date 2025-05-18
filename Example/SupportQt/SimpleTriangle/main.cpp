@@ -19,6 +19,7 @@
 // KVS
 #include <kvs/OpenGL>
 #include <kvs/PaintEventListener>
+#include <kvs/Label>
 
 
 /*===========================================================================*/
@@ -50,15 +51,13 @@ int main( int argc, char** argv )
     screen.addEvent( &paint_event );
 
     // Message.
-    /*
-    kvs::glut::Label message( &screen );
+    kvs::Label message( &screen );
     message.setMargin( 10 );
-    message.addText( "Rotation:    [Left Button]" );
-    message.addText( "Translation: [Right Button] or [Ctrl] + [Left Button]" );
-    message.addText( "Scaling:     [Shift] + [Left Button]" );
-    message.addText( "Quit:        [Esc] or [q]" );
+    message.addText( "Rotation:  [Left Button]" );
+    message.addText( "Translation:  [Right Button] or [Ctrl] + [Left Button]" );
+    message.addText( "Scaling:  [Shift] + [Left Button]" );
+    message.addText( "Quit:  [Esc] or [q]" );
     message.show();
-    */
 
     return app.run();
 }
