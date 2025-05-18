@@ -2,7 +2,8 @@
 SupportFFmpeg is a support class library with the FFmpeg for KVS. By checking the flag `KVS_SUPPORT_FFMPEG` in the kvs.cong, FFmpeg supported classes are compiled and available.
 
 ## Prerequisite
-To compile the SupportFFmpeg, the FFmpeg needs to be installed. Note: The current version of SupportFFmpeg may cause compile errors in FFmpeg version of 6.0 or higher. Therefore, please use FFmpeg version 5.0 or lower.
+To compile the SupportFFmpeg, the FFmpeg needs to be installed.
+- NOTE: The current version of SupportFFmpeg may cause compile errors in FFmpeg version of 6.0 or higher. Therefore, please use FFmpeg version 5.0 or lower.
 
 
 ### Linux
