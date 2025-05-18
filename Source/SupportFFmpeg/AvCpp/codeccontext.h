@@ -9,6 +9,7 @@
 #include "avlog.h"
 #include "frame.h"
 #include "codec.h"
+#include "channellayout.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -16,6 +17,13 @@ extern "C" {
 }
 
 namespace av {
+
+namespace codec_context::audio {
+void set_channels(AVCodecContext *obj, int channels);
+void set_channel_layout_mask(AVCodecContext *obj, uint64_t mask);
+int get_channels(const AVCodecContext *obj);
+uint64_t get_channel_layout_mask(const AVCodecContext *obj);
+}
 
 class CodecContext2 : public FFWrapperPtr<AVCodecContext>, public noncopyable
 {
@@ -88,7 +96,7 @@ public:
     void setOption(const std::string &key, const std::string &val, int flags, OptionalErrorCode ec = throws());
 
     int frameSize() const noexcept;
-    int frameNumber() const noexcept;
+    int64_t frameNumber() const noexcept;
 
     // Note, set ref counted to enable for multithreaded processing
     bool isRefCountedFrames() const noexcept;
@@ -219,8 +227,6 @@ public:
     explicit CodecContextBase(const Codec &codec)
         : CodecContext2(codec, _direction, _type)
     {
-        if (checkCodec(codec, _direction, _type, throws()))
-            m_raw = avcodec_alloc_context3(codec.raw());
     }
 
     //
@@ -246,7 +252,7 @@ public:
 
     AVMediaType codecType() const noexcept
     {
-        return codecType(_type);
+        return CodecContext2::codecType(_type);
     }
 };
 
@@ -490,14 +496,7 @@ public:
     {
         if (!isValid())
             return 0;
-
-        if (m_raw->channels)
-            return m_raw->channels;
-
-        if (m_raw->channel_layout)
-            return av_get_channel_layout_nb_channels(m_raw->channel_layout);
-
-        return 0;
+        return codec_context::audio::get_channels(m_raw);
     }
 
     SampleFormat sampleFormat() const noexcept
@@ -509,15 +508,17 @@ public:
     {
         if (!isValid())
             return 0;
-
-        if (m_raw->channel_layout)
-            return m_raw->channel_layout;
-
-        if (m_raw->channels)
-            return av_get_default_channel_layout(m_raw->channels);
-
-        return 0;
+        return codec_context::audio::get_channel_layout_mask(m_raw);
     }
+
+#if API_NEW_CHANNEL_LAYOUT
+    ChannelLayoutView channelLayout2() const noexcept
+    {
+        if (!isValid())
+            return ChannelLayoutView{};
+        return ChannelLayoutView{m_raw->ch_layout};
+    }
+#endif
 
     void setSampleRate(int sampleRate) noexcept
     {
@@ -536,11 +537,7 @@ public:
     {
         if (!isValid() || channels <= 0)
             return;
-        m_raw->channels = channels;
-        if (m_raw->channel_layout != 0 ||
-            av_get_channel_layout_nb_channels(m_raw->channel_layout) != channels) {
-            m_raw->channel_layout = av_get_default_channel_layout(channels);
-        }
+        codec_context::audio::set_channels(m_raw, channels);
     }
 
     void setSampleFormat(SampleFormat sampleFormat) noexcept
@@ -552,16 +549,18 @@ public:
     {
         if (!isValid() || layout == 0)
             return;
-
-        m_raw->channel_layout = layout;
-
-        // Make channels and channel_layout sync
-        if (m_raw->channels == 0 ||
-            (uint64_t)av_get_default_channel_layout(m_raw->channels) != layout)
-        {
-            m_raw->channels = av_get_channel_layout_nb_channels(layout);
-        }
+        codec_context::audio::set_channel_layout_mask(m_raw, layout);
     }
+
+#if API_NEW_CHANNEL_LAYOUT
+    void setChannelLayout(ChannelLayout layout) noexcept
+    {
+        if (!isValid() || !layout.isValid())
+            return;
+        m_raw->ch_layout = *layout.raw();
+        layout.release(); // is controlled by the CodecContext
+    }
+#endif
 
 protected:
     using Parent::moveOperator;

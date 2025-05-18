@@ -2,9 +2,11 @@
 
 #include <memory>
 
+#include "averror.h"
 #include "ffmpeg.h"
 #include "rational.h"
 #include "timestamp.h"
+#include "codecparameters.h"
 
 namespace av
 {
@@ -55,6 +57,9 @@ public:
     void setSampleAspectRatio(const Rational &aspectRatio);
     void setAverageFrameRate(const Rational &frameRate);
 
+    CodecParametersView codecParameters() const;
+    void setCodecParameters(CodecParametersView codecpar, OptionalErrorCode ec = throws());
+
     /**
      * Flags to the user to detect events happening on the stream.
      * A combination of AVSTREAM_EVENT_FLAG_*. Must be cleared by the user.
@@ -64,6 +69,8 @@ public:
     int eventFlags() const noexcept;
     bool eventFlags(int flags) const noexcept;
     void eventFlagsClear(int flags) noexcept;
+
+    void setupEncodingParameters(const class VideoEncoderContext& ctx, OptionalErrorCode ec = throws());
 
 private:
     std::weak_ptr<char> m_parentMonitor;

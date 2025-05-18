@@ -1,4 +1,5 @@
 #include "formatcontext.h"
+#include "codeccontext.h"
 #include "stream.h"
 
 namespace av
@@ -121,6 +122,18 @@ void Stream::setAverageFrameRate(const Rational &frameRate)
     RAW_SET2(isValid(), avg_frame_rate, frameRate.getValue());
 }
 
+CodecParametersView Stream::codecParameters() const
+{
+    return m_raw ? m_raw->codecpar : nullptr;
+}
+
+void Stream::setCodecParameters(CodecParametersView codecpar, OptionalErrorCode ec)
+{
+    if (m_raw && m_raw->codecpar) {
+        codecpar.copyTo(m_raw->codecpar, ec);
+    }
+}
+
 int Stream::eventFlags() const noexcept
 {
     if (!isValid() || m_direction != Direction::Decoding)
@@ -140,6 +153,19 @@ void Stream::eventFlagsClear(int flags) noexcept
     if (!isValid() || m_direction != Direction::Decoding)
         return;
     m_raw->event_flags &= ~flags;
+}
+
+void Stream::setupEncodingParameters(const VideoEncoderContext &ctx, OptionalErrorCode ec)
+{
+    if (!isValid())
+        return;
+
+    if (!ctx.isOpened()) {
+        throws_if(ec, Errors::CodecIsNotOpened);
+        return;
+    }
+
+    codecParameters().copyFrom(ctx);
 }
 
 } // ::av

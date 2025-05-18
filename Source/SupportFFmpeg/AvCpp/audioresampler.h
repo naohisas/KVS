@@ -11,6 +11,8 @@
 
 namespace av {
 
+// TODO: support New Channel Layout directly
+
 class AudioResampler : public FFWrapperPtr<SwrContext>, public noncopyable
 {
 public:
@@ -37,12 +39,12 @@ public:
 
     void swap(AudioResampler& other);
 
-    uint64_t dstChannelLayout() const;
+    uint64_t       dstChannelLayout() const;
     int            dstChannels()      const;
     int            dstSampleRate()    const;
     SampleFormat   dstSampleFormat()  const;
 
-    uint64_t srcChannelLayout() const;
+    uint64_t       srcChannelLayout() const;
     int            srcChannels()      const;
     int            srcSampleRate()    const;
     SampleFormat   srcSampleFormat()  const;
@@ -126,6 +128,8 @@ private:
     int            m_streamIndex = -1;
     Timestamp      m_prevPts;
     Timestamp      m_nextPts;
+
+    int64_t        m_filterSize;
 };
 
 } // namespace av

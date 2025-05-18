@@ -9,6 +9,7 @@
 #include "packet.h"
 #include "dictionary.h"
 #include "codec.h"
+#include "codecparameters.h"
 
 #include "codeccontext.h"
 
@@ -82,7 +83,7 @@ int decode(AVCodecContext *avctx,
     }
 
     ret = avcodec_receive_frame(avctx, picture);
-    if (ret < 0 && ret != AVERROR(EAGAIN))
+    if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
         return ret;
     if (ret >= 0 && got_picture_ptr)
         *got_picture_ptr = 1;
@@ -311,9 +312,11 @@ CodecContext2::CodecContext2(const Stream &st, const Codec &codec, Direction dir
 #else
     m_raw = avcodec_alloc_context3(c.raw());
     if (m_raw) {
-        avcodec_parameters_to_context(m_raw, st.raw()->codecpar);
+        st.codecParameters().copyTo(*this);
     }
 #endif
+
+    setTimeBase(st.timeBase());
 }
 
 CodecContext2::CodecContext2(const Codec &codec, Direction direction, AVMediaType type)
@@ -395,8 +398,9 @@ void CodecContext2::setCodec(const Codec &codec, bool resetDefaults, Direction d
     FF_ENABLE_DEPRECATION_WARNINGS
 #else
     // TBD: need a check
-    if (m_stream.isValid())
-        avcodec_parameters_from_context(m_stream.raw()->codecpar, m_raw);
+    if (m_stream.isValid()) {
+        m_stream.codecParameters().copyFrom(*this);
+    }
 #endif
 }
 
@@ -505,9 +509,9 @@ void CodecContext2::copyContextFrom(const CodecContext2 &other, OptionalErrorCod
         throws_if(ec, stat, ffmpeg_category());
     FF_ENABLE_DEPRECATION_WARNINGS
 #else
-    AVCodecParameters params{};
-    avcodec_parameters_from_context(&params, other.m_raw);
-    avcodec_parameters_to_context(m_raw, &params);
+    CodecParameters params;
+    params.copyFrom(other);
+    params.copyTo(*this);
 #endif
     m_raw->codec_tag = 0;
 }
@@ -561,9 +565,13 @@ int CodecContext2::frameSize() const noexcept
     return RAW_GET2(isValid(), frame_size, 0);
 }
 
-int CodecContext2::frameNumber() const noexcept
+int64_t CodecContext2::frameNumber() const noexcept
 {
+#if API_FRAME_NUM
+    return RAW_GET2(isValid(), frame_num, 0);
+#else
     return RAW_GET2(isValid(), frame_number, 0);
+#endif
 }
 
 bool CodecContext2::isRefCountedFrames() const noexcept
@@ -838,21 +846,23 @@ AudioSamples AudioDecoderContext::decode(const Packet &inPacket, size_t offset, 
         outSamples.setComplete(false);
     }
 
-    // Fix channels layout
+    // Fix channels layout, only for legacy Channel Layout, new API assumes both parameters more sync
+#if !API_NEW_CHANNEL_LAYOUT
     if (outSamples.channelsCount() && !outSamples.channelsLayout())
         av::frame::set_channel_layout(outSamples.raw(), av_get_default_channel_layout(outSamples.channelsCount()));
+#endif
 
     return outSamples;
 }
 
 AudioEncoderContext::AudioEncoderContext(AudioEncoderContext &&other)
-    : Parent(move(other))
+    : Parent(std::move(other))
 {
 }
 
 AudioEncoderContext &AudioEncoderContext::operator=(AudioEncoderContext &&other)
 {
-    return moveOperator(move(other));
+    return moveOperator(std::move(other));
 }
 
 Packet AudioEncoderContext::encode(OptionalErrorCode ec)
@@ -958,11 +968,8 @@ CodecContext2::encodeCommon(Packet &outPacket,
         FF_ENABLE_DEPRECATION_WARNINGS
 #endif
         outPacket.setStreamIndex(m_stream.index());
-    }
-
-    // Recalc PTS/DTS/Duration
-    if (m_stream.isValid()) {
-        outPacket.setTimeBase(m_stream.timeBase());
+    } else if (timeBase() != Rational()) {
+        outPacket.setTimeBase(timeBase());
     }
 
     outPacket.setComplete(true);
@@ -973,5 +980,79 @@ CodecContext2::encodeCommon(Packet &outPacket,
 
 #undef warnIfNotAudio
 #undef warnIfNotVideo
+
+namespace codec_context::audio {
+
+//
+// TBD: make a generic function
+//
+void set_channels(AVCodecContext *obj, int channels)
+{
+#if API_NEW_CHANNEL_LAYOUT
+    if (!av_channel_layout_check(&obj->ch_layout) || (obj->ch_layout.nb_channels != channels)) {
+        av_channel_layout_uninit(&obj->ch_layout);
+        av_channel_layout_default(&obj->ch_layout, channels);
+    }
+#else
+    obj->channels = channels;
+    if (obj->channel_layout != 0 || av_get_channel_layout_nb_channels(obj->channel_layout) != channels) {
+        obj->channel_layout = av_get_default_channel_layout(channels);
+    }
+#endif
+}
+
+void set_channel_layout_mask(AVCodecContext *obj, uint64_t mask)
+{
+#if API_NEW_CHANNEL_LAYOUT
+    if (!av_channel_layout_check(&obj->ch_layout) ||
+        (obj->ch_layout.order != AV_CHANNEL_ORDER_NATIVE) ||
+        ((obj->ch_layout.order == AV_CHANNEL_ORDER_NATIVE) && (obj->ch_layout.u.mask != mask))) {
+        av_channel_layout_uninit(&obj->ch_layout);
+        av_channel_layout_from_mask(&obj->ch_layout, mask);
+    }
+#else
+    obj->channel_layout = mask;
+
+    // Make channels and channel_layout sync
+    if (obj->channels == 0 ||
+        (uint64_t)av_get_default_channel_layout(obj->channels) != mask)
+    {
+        obj->channels = av_get_channel_layout_nb_channels(mask);
+    }
+#endif
+}
+
+int get_channels(const AVCodecContext *obj)
+{
+#if API_NEW_CHANNEL_LAYOUT
+    return obj->ch_layout.nb_channels;
+#else
+    if (obj->channels)
+        return obj->channels;
+
+    if (obj->channel_layout)
+        return av_get_channel_layout_nb_channels(obj->channel_layout);
+
+    return 0;
+#endif
+}
+
+
+uint64_t get_channel_layout_mask(const AVCodecContext *obj)
+{
+#if API_NEW_CHANNEL_LAYOUT
+    return obj->ch_layout.order == AV_CHANNEL_ORDER_NATIVE ? obj->ch_layout.u.mask : 0;
+#else
+    if (obj->channel_layout)
+        return obj->channel_layout;
+
+    if (obj->channels)
+        return av_get_default_channel_layout(obj->channels);
+
+    return 0;
+#endif
+}
+
+}
 
 } // namespace av

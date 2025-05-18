@@ -10,14 +10,6 @@
 #include <kvs/MutexLocker>
 
 
-#if FF_API_CONVERGENCE_DURATION
-#define KVS_FFMPEG_DEMUXER__WARNING_OFF FF_DISABLE_DEPRECATION_WARNINGS
-#define KVS_FFMPEG_DEMUXER__WARNING_ON  FF_ENABLE_DEPRECATION_WARNINGS
-#else
-#define KVS_FFMPEG_DEMUXER__WARNING_OFF
-#define KVS_FFMPEG_DEMUXER__WARNING_ON
-#endif
-
 namespace kvs
 {
 
@@ -80,7 +72,20 @@ bool Demuxer::open( const std::string& filename )
 void Demuxer::close()
 {
     if ( m_format_context.isOpened() ) { m_format_context.close(); }
+
+    // In FFmpeg prior to 4.0, explicitly destory and recreate the codec context
+    // instead of 'close' because the following warnings occur.
+    //    Warning: 'close' is deprecated: Start from FFmpeg 4.0 it is
+    //    recommended to destroy and recreate codec context insted of close.
+#if LIBAVCODEC_VERSION_MAJOR < 58 // FFmpeg < 4.0
     if ( m_decoder.isOpened() ) { m_decoder.close(); }
+#else
+    if ( m_decoder.isOpened() )
+    {
+        m_decoder.~VideoDecoderContext();
+        m_decoder = av::VideoDecoderContext();
+    }
+#endif
 }
 
 /*===========================================================================*/
@@ -120,10 +125,8 @@ bool Demuxer::grab()
             continue;
         }
 
-        KVS_FFMPEG_DEMUXER__WARNING_OFF;
         m_current_frame = m_decoder.decode( packet, m_error );
         if ( m_error ) { valid = false; break; }
-        KVS_FFMPEG_DEMUXER__WARNING_ON;
 
         if ( m_current_frame.isValid() )
         {
