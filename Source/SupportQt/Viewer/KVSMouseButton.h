@@ -22,12 +22,14 @@ namespace qt
 /*==========================================================================*/
 class KVSMouseButton
 {
-public:
 #if ( KVS_QT_VERSION >= 4 )
-    static int Button( Qt::MouseButton button );
+    using State = Qt::MouseButton;
 #else
-    static int Button( Qt::ButtonState button );
+    using State = Qt::ButtonState;
 #endif
+
+public:
+    static int Button( KVSMouseButton::State button );
 };
 
 /*==========================================================================*/
@@ -37,25 +39,20 @@ public:
  *  @return KVS mouse button code
  */
 /*==========================================================================*/
-#if ( KVS_QT_VERSION >= 4 )
-inline int KVSMouseButton::Button( Qt::MouseButton button )
-#else
-inline int KVSMouseButton::Button( Qt::ButtonState button )
-#endif
+inline int KVSMouseButton::Button( KVSMouseButton::State button )
 {
     switch( button )
     {
-    case Qt::LeftButton: return( kvs::MouseButton::Left );
+    case Qt::LeftButton: return kvs::MouseButton::Left;
 #if ( KVS_QT_VERSION >= 6 )
-    case Qt::MiddleButton: return( kvs::MouseButton::Middle );
+    case Qt::MiddleButton: return kvs::MouseButton::Middle;
 #else
-    case Qt::MidButton: return( kvs::MouseButton::Middle );
+    case Qt::MidButton: return kvs::MouseButton::Middle;
 #endif
-    case Qt::RightButton: return( kvs::MouseButton::Right );
+    case Qt::RightButton: return kvs::MouseButton::Right;
     default: break;
     }
-
-    return( button );
+    return button;
 }
 
 } // end of namespace qt

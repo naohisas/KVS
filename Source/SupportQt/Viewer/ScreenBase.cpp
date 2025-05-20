@@ -23,6 +23,11 @@
 namespace
 {
 
+/*===========================================================================*/
+/**
+ *  @brief  Internal event timer for kvs::qt::ScreenBase class.
+ */
+/*===========================================================================*/
 class EventTimer : public QObject, public kvs::EventTimer
 {
 public:
@@ -36,6 +41,12 @@ private:
     void timerEvent( QTimerEvent* e ) { this->nortify(); }
 };
 
+/*===========================================================================*/
+/**
+ *  @brief  Starts the timer.
+ *  @param  msec [in] interval time in milli-seconds
+ */
+/*===========================================================================*/
 void EventTimer::start( int msec )
 {
     if ( msec < 0 ) { return; }
@@ -47,6 +58,11 @@ void EventTimer::start( int msec )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Stops the timer.
+ */
+/*===========================================================================*/
 void EventTimer::stop()
 {
     if ( !this->isStopped() )
@@ -56,6 +72,11 @@ void EventTimer::stop()
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Nortifies the event to the listeners.
+ */
+/*===========================================================================*/
 void EventTimer::nortify()
 {
     if ( !this->isStopped() )
@@ -107,9 +128,7 @@ const ScreenBase* ScreenBase::DownCast( const kvs::ScreenBase* screen )
  */
 /*===========================================================================*/
 ScreenBase::ScreenBase( kvs::qt::Application* application, QWidget* parent ):
-//    QGLWidget( parent ),
-//    QOpenGLWidget( parent ),
-    GLWidget( parent ),
+    kvs::qt::OpenGLWidget( parent ),
     m_mouse_event( new kvs::MouseEvent() ),
     m_key_event( new kvs::KeyEvent() ),
     m_wheel_event( new kvs::WheelEvent() )
@@ -129,6 +148,13 @@ ScreenBase::~ScreenBase()
     if ( m_wheel_event ) { delete m_wheel_event; }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets an event with name.
+ *  @param  event [in] pointer to the event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
 void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
 {
     if ( event->eventType() & kvs::EventBase::TimerEvent )
@@ -138,6 +164,13 @@ void ScreenBase::setEvent( kvs::EventListener* event, const std::string& name )
     BaseClass::setEvent( event, name );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Adds an event with name.
+ *  @param  event [in] pointer to the event
+ *  @param  name [in] name of the event
+ */
+/*===========================================================================*/
 void ScreenBase::addEvent( kvs::EventListener* event, const std::string& name )
 {
     if ( event->eventType() & kvs::EventBase::TimerEvent )
@@ -161,31 +194,14 @@ void ScreenBase::create()
     // Initialize display mode.
 #if defined( KVS_QT_QOPENGL_ENABLED )
     QSurfaceFormat f = QSurfaceFormat::defaultFormat();
-    f.setRedBufferSize(
-        displayFormat().colorBuffer() ?
-        8 : f.redBufferSize() );
-    f.setGreenBufferSize(
-        displayFormat().colorBuffer() ?
-        8 : f.greenBufferSize() );
-    f.setBlueBufferSize(
-        displayFormat().colorBuffer() ?
-        8 : f.blueBufferSize() );
-    f.setAlphaBufferSize(
-        displayFormat().alphaChannel() ?
-        8 : f.alphaBufferSize() );
-    f.setDepthBufferSize(
-        displayFormat().depthBuffer() ?
-        32 : f.depthBufferSize() );
-    f.setStencilBufferSize(
-        displayFormat().stencilBuffer() ?
-        8 : f.stencilBufferSize() );
-    f.setSamples(
-        displayFormat().multisampleBuffer() ?
-        4 : f.samples() );
-    f.setSwapBehavior(
-        displayFormat().doubleBuffer() ?
-        QSurfaceFormat::DoubleBuffer:
-        QSurfaceFormat::SingleBuffer );
+    f.setRedBufferSize( displayFormat().colorBuffer() ? 8 : f.redBufferSize() );
+    f.setGreenBufferSize( displayFormat().colorBuffer() ? 8 : f.greenBufferSize() );
+    f.setBlueBufferSize( displayFormat().colorBuffer() ? 8 : f.blueBufferSize() );
+    f.setAlphaBufferSize( displayFormat().alphaChannel() ? 8 : f.alphaBufferSize() );
+    f.setDepthBufferSize( displayFormat().depthBuffer() ? 32 : f.depthBufferSize() );
+    f.setStencilBufferSize( displayFormat().stencilBuffer() ? 8 : f.stencilBufferSize() );
+    f.setSamples( displayFormat().multisampleBuffer() ? 4 : f.samples() );
+    f.setSwapBehavior( displayFormat().doubleBuffer() ? QSurfaceFormat::DoubleBuffer : QSurfaceFormat::SingleBuffer );
     f.setStereo( displayFormat().stereoBuffer() );
     QSurfaceFormat::setDefaultFormat( f );
 #else
@@ -249,12 +265,8 @@ void ScreenBase::showFullScreen()
     if ( BaseClass::isFullScreen() ) { return; }
     BaseClass::showFullScreen();
 
-//    const int x = QGLWidget::pos().x();
-//    const int y = QGLWidget::pos().y();
-//    const int x = QOpenGLWidget::pos().x();
-//    const int y = QOpenGLWidget::pos().y();
-    const int x = GLWidget::pos().x();
-    const int y = GLWidget::pos().y();
+    const int x = OpenGLWidget::pos().x();
+    const int y = OpenGLWidget::pos().y();
     BaseClass::setPosition( x, y );
 
     QWidget::showFullScreen();
@@ -317,9 +329,7 @@ void ScreenBase::pushDown()
 /*===========================================================================*/
 void ScreenBase::redraw()
 {
-//    QGLWidget::updateGL();
-//    QOpenGLWidget::update();
-    GLWidget::update();
+    OpenGLWidget::update();
 }
 
 /*===========================================================================*/
@@ -332,9 +342,7 @@ void ScreenBase::redraw()
 void ScreenBase::resize( int width, int height )
 {
     BaseClass::setSize( width, height );
-//    QGLWidget::resize( width, height );
-//    QOpenGLWidget::resize( width, height );
-    GLWidget::resize( width, height );
+    OpenGLWidget::resize( width, height );
 }
 
 /*===========================================================================*/
@@ -359,7 +367,7 @@ void ScreenBase::initializeGL()
 
     // Set device pixel ratio.
 #if ( QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 ) )
-    BaseClass::setDevicePixelRatio( GLWidget::devicePixelRatio() );
+    BaseClass::setDevicePixelRatio( OpenGLWidget::devicePixelRatio() );
 #else
     const kvs::Vec4 vp = kvs::OpenGL::Viewport();
     BaseClass::setDevicePixelRatio( vp[2] / BaseClass::width() );
@@ -389,7 +397,7 @@ void ScreenBase::initializeGL()
 void ScreenBase::paintGL()
 {
 #if ( KVS_QT_VERSION >= 6 )
-    kvs::FrameBufferObject::SetUnbindID( GLWidget::defaultFramebufferObject() );
+    kvs::FrameBufferObject::SetUnbindID( OpenGLWidget::defaultFramebufferObject() );
 #endif
     this->paintEvent();
 }
@@ -411,7 +419,7 @@ void ScreenBase::resizeGL( int width, int height )
     // 2.9. In KVS with SupportQt, the width and height which are not scaled
     // are passed to the resizeEvent method in order to keep the compatibility
     // with the previous version of KVS-based applications.
-    const qreal scale = GLWidget::devicePixelRatio();
+    const qreal scale = OpenGLWidget::devicePixelRatio();
     width = static_cast<size_t>( width / scale + 0.5 );
     height = static_cast<size_t>( height / scale + 0.5 );
 #endif
@@ -549,6 +557,12 @@ void ScreenBase::keyPressEvent( QKeyEvent* event )
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Key release event for Qt.
+ *  @param  event [in] pointer to the key event
+ */
+/*===========================================================================*/
 void ScreenBase::keyReleaseEvent( QKeyEvent* event )
 {
     m_key_event->setPosition( 0, 0 );

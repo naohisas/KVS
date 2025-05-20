@@ -22,6 +22,12 @@
 #include <QtCore>
 #endif
 
+/*===========================================================================*/
+/**
+ *  @def   KVS_QT_VERSION
+ *  @breif Qt version number macro
+ */
+/*===========================================================================*/
 #if   ( QT_VERSION >= 0x020000 && QT_VERSION < 0x030000 )
 #define KVS_QT_VERSION 2
 #elif ( QT_VERSION >= 0x030000 && QT_VERSION < 0x040000 )
@@ -37,6 +43,9 @@
 #endif
 
 
+/*===========================================================================*/
+// Includes Qt header files.
+/*===========================================================================*/
 #if ( KVS_QT_VERSION >= 5 )
 #include <QtCore>
 #include <QtGui>
@@ -66,9 +75,14 @@
 #endif
 #endif
 
+
+/*===========================================================================*/
+// Version check for Qt OpenGL support.
+/*===========================================================================*/
 #if ( QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 ) )
 #define KVS_QT_QOPENGL_ENABLED
 #endif
+
 
 namespace kvs
 {

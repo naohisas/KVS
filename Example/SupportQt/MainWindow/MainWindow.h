@@ -38,7 +38,10 @@ public:
         m_screen = new kvs::qt::Screen( app );
         QMainWindow::setCentralWidget( m_screen );
 
-        m_open_action = new QAction( tr("&Open..."), this );
+        m_open_action = new QAction( this );
+        m_open_action->setText( tr("&Open...") );
+        m_open_action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_O ) );
+        m_open_action->setShortcutContext( Qt::ApplicationShortcut );
         QObject::connect( m_open_action, SIGNAL( triggered() ), this, SLOT( open() ) );
 
         m_file_menu = menuBar()->addMenu( tr("&File") );
@@ -57,27 +60,25 @@ public:
 private:
     Q_SLOT void open()
     {
-        QFileDialog* dialog = new QFileDialog( this, "Open file ...", QDir::homePath() );
+        auto* dialog = new QFileDialog( this, "Open file ...", QDir::homePath() );
         if ( dialog->exec() )
         {
             using Importer = kvs::StructuredVolumeImporter;
             using Object = kvs::StructuredVolumeObject;
             using Renderer = kvs::glsl::RayCastingRenderer;
 
-            std::string object_name = "Object";
+            auto object_name = std::string( "Object" );
             if ( m_screen->scene()->hasObject( object_name ) )
             {
                 m_screen->scene()->removeObject( object_name );
             }
 
-            QStringList filenames = dialog->selectedFiles();
-            QString filename = filenames.at(0);
+            auto filenames = dialog->selectedFiles();
+            auto filename = filenames.at(0);
+            auto* object = new Importer( filename.toStdString() );
+            auto* renderer = new Renderer();
 
-            Object* object = new Importer( filename.toStdString() );
             object->setName( object_name );
-
-            Renderer* renderer = new Renderer();
-
             m_screen->registerObject( object, renderer );
             m_screen->redraw();
         }

@@ -53,12 +53,7 @@ Application::~Application()
 int Application::run()
 {
     static bool flag = true;
-    if ( flag )
-    {
-        flag = false;
-        return m_app->exec();
-    }
-
+    if ( flag ) { flag = false; return m_app->exec(); }
     return -1;
 }
 

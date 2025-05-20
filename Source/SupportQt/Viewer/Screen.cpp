@@ -158,11 +158,24 @@ void Screen::setBackgroundColor( const kvs::RGBColor& color )
     m_scene->background()->setColor( color );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets background colors.
+ *  @param  color1 [in] top side color
+ *  @param  color2 [in] bottom side color
+ */
+/*===========================================================================*/
 void Screen::setBackgroundColor( const kvs::RGBColor& color1, const kvs::RGBColor& color2 )
 {
     m_scene->background()->setColor( color1, color2 );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets a background image.
+ *  @param  image [in] background image
+ */
+/*===========================================================================*/
 void Screen::setBackgroundImage( const kvs::ColorImage& image )
 {
     m_scene->background()->setImage( image );
@@ -179,16 +192,31 @@ void Screen::setControlTarget( const ControlTarget target )
     m_scene->controlTarget() = target;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets a control target to object.
+ */
+/*===========================================================================*/
 void Screen::setControlTargetToObject()
 {
     this->setControlTarget( kvs::Scene::TargetObject );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets a control target to camera.
+ */
+/*===========================================================================*/
 void Screen::setControlTargetToCamera()
 {
     this->setControlTarget( kvs::Scene::TargetCamera );
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Sets a control target to light.
+ */
+/*===========================================================================*/
 void Screen::setControlTargetToLight()
 {
     this->setControlTarget( kvs::Scene::TargetLight );
@@ -308,8 +336,7 @@ void Screen::paintEvent()
 
     kvs::PaintEvent event;
     BaseClass::eventHandler()->notify( &event );
-
-//    BaseClass::frameSwapped();
+    //BaseClass::frameSwapped();
 }
 
 /*===========================================================================*/

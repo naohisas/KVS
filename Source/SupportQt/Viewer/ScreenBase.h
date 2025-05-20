@@ -22,9 +22,9 @@ namespace qt
 class Application;
 
 #if defined( KVS_QT_QOPENGL_ENABLED )
-using GLWidget = QOpenGLWidget;
+using OpenGLWidget = QOpenGLWidget;
 #else
-using GLWidget = QGLWidget;
+using OpenGLWidget = QGLWidget;
 #endif
 
 /*===========================================================================*/
@@ -32,7 +32,7 @@ using GLWidget = QGLWidget;
  *  @brief  Qt screen base class.
  */
 /*===========================================================================*/
-class ScreenBase : public GLWidget, public kvs::ScreenBase
+class ScreenBase : public kvs::qt::OpenGLWidget, public kvs::ScreenBase
 {
     Q_OBJECT
 
