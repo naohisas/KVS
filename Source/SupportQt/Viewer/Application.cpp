@@ -23,15 +23,22 @@ namespace qt
  */
 /*===========================================================================*/
 Application::Application( int& argc, char** argv ):
-    kvs::ApplicationBase( argc, argv ),
-    m_app( new QApplication( argc, argv ) )
+    kvs::ApplicationBase( argc, argv )
 {
-#if ( KVS_QT_VERSION >= 6 )
-        const QRect desk = QGuiApplication::primaryScreen()->geometry();
-#else
-        const QRect desk = QApplication::desktop()->screenGeometry();
+#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 5, 0 ) )
+    // NOTE: Avoiding problems related to the OpenGL context when developing
+    // linked-view applications using the QMainWinodow and QDockWidget classes.
+    // 'Qt::AA_ShareOpenGLContexts' must be set before instantiating QApplication.
+    QApplication::setAttribute( Qt::AA_ShareOpenGLContexts );
 #endif
-        BaseClass::setDesktop( { desk.width(), desk.height() } );
+    m_app = new QApplication( argc, argv );
+
+#if ( KVS_QT_VERSION >= 6 )
+    const QRect desk = QGuiApplication::primaryScreen()->geometry();
+#else
+    const QRect desk = QApplication::desktop()->screenGeometry();
+#endif
+    BaseClass::setDesktop( { desk.width(), desk.height() } );
 }
 
 /*===========================================================================*/
