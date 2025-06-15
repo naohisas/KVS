@@ -13,15 +13,6 @@
 #include <kvs/ScreenBase>
 
 
-// Default parameters.
-namespace { namespace Default
-{
-const kvs::RGBAColor BackgroundColor = kvs::RGBAColor( 200, 200, 200, 0.0f );
-const kvs::RGBAColor BackgroundBorderColor = kvs::RGBAColor( 0, 0, 0, 1.0f );
-const float BackgroundBorderWidth = 0.0f;
-} }
-
-
 namespace kvs
 {
 
@@ -32,32 +23,10 @@ namespace kvs
  */
 /*===========================================================================*/
 WidgetBase::WidgetBase( kvs::ScreenBase* screen ):
-    m_parent( nullptr ),
-    m_screen( screen ),
-    m_painter(),
-    m_margin( 0 ),
-    m_visible( false ),
-    m_active( false ),
-    m_anchor( Fixed ),
-    m_corner( TopLeft )
+    m_screen( screen )
 {
     addEventType( kvs::EventBase::InitializeEvent );
-
     if ( screen ) screen->eventHandler()->attach( this );
-
-    // Set default parameters.
-    this->setBackgroundColor( ::Default::BackgroundColor );
-    this->setBackgroundBorderColor( ::Default::BackgroundBorderColor );
-    this->setBackgroundBorderWidth( ::Default::BackgroundBorderWidth );
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destructs the WidgetBase class.
- */
-/*===========================================================================*/
-WidgetBase::~WidgetBase()
-{
 }
 
 /*===========================================================================*/
@@ -68,10 +37,7 @@ WidgetBase::~WidgetBase()
 /*===========================================================================*/
 void WidgetBase::setBackgroundOpacity( const float opacity )
 {
-    const kvs::UInt8 r = m_background_color.r();
-    const kvs::UInt8 g = m_background_color.g();
-    const kvs::UInt8 b = m_background_color.b();
-    m_background_color = kvs::RGBAColor( r, g, b, opacity );
+    m_background_color = { m_background_color, opacity };
 }
 
 /*===========================================================================*/
@@ -82,12 +48,15 @@ void WidgetBase::setBackgroundOpacity( const float opacity )
 /*===========================================================================*/
 void WidgetBase::setBackgroundBorderOpacity( const float opacity )
 {
-    const kvs::UInt8 r = m_background_border_color.r();
-    const kvs::UInt8 g = m_background_border_color.g();
-    const kvs::UInt8 b = m_background_border_color.b();
-    m_background_border_color = kvs::RGBAColor( r, g, b, opacity );
+    m_background_border_color = { m_background_border_color, opacity };
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Anchors to top of the parent widget.
+ *  @param  parent [in] pointer to the parent widget
+ */
+/*===========================================================================*/
 void WidgetBase::anchorToTop( const kvs::WidgetBase* parent )
 {
     switch ( parent->anchor() )
@@ -95,14 +64,34 @@ void WidgetBase::anchorToTop( const kvs::WidgetBase* parent )
     case Anchor::TopRight:
     case Anchor::BottomRight:
     case Anchor::RightCenter:
+        //
+        //        +----------+
+        //        |   this   |
+        //   +----+----------+
+        //   |    parent     |
+        //   +---------------+
+        //
         this->anchorBottomRightToTopRight( parent );
         break;
     default:
+        //
+        //   +----------+
+        //   |   this   |
+        //   +----------+----+
+        //   |    parent     |
+        //   +---------------+
+        //
         this->anchorBottomLeftToTopLeft( parent );
         break;
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Anchors to bottom of the parent widget.
+ *  @param  parent [in] pointer to the parent widget
+ */
+/*===========================================================================*/
 void WidgetBase::anchorToBottom( const kvs::WidgetBase* parent )
 {
     switch ( parent->anchor() )
@@ -110,14 +99,34 @@ void WidgetBase::anchorToBottom( const kvs::WidgetBase* parent )
     case Anchor::TopRight:
     case Anchor::BottomRight:
     case Anchor::RightCenter:
+        //
+        //   +---------------+
+        //   |    parent     |
+        //   +----+----------+
+        //        |   this   |
+        //        +----------+
+        //
         this->anchorTopRightToBottomRight( parent );
         break;
     default:
+        //
+        //   +---------------+
+        //   |    parent     |
+        //   +----------+----+
+        //   |   this   |
+        //   +----------+
+        //
         this->anchorTopLeftToBottomLeft( parent );
         break;
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Anchors to left of the parent widget.
+ *  @param  parent [in] pointer to the parent widget
+ */
+/*===========================================================================*/
 void WidgetBase::anchorToLeft( const kvs::WidgetBase* parent )
 {
     switch ( parent->anchor() )
@@ -125,14 +134,34 @@ void WidgetBase::anchorToLeft( const kvs::WidgetBase* parent )
     case Anchor::BottomLeft:
     case Anchor::BottomCenter:
     case Anchor::BottomRight:
+        //
+        //            +--------------+
+        //            |              |
+        //   +--------+    parent    |
+        //   |  this  |              |
+        //   +--------+--------------+
+        //
         this->anchorBottomRightToBottomLeft( parent );
         break;
     default:
+        //
+        //   +------- +--------------+
+        //   |  this  |              |
+        //   +--------+    parent    |
+        //            |              |
+        //            +--------------+
+        //
         this->anchorTopRightToTopLeft( parent );
         break;
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Anchors to right of the parent widget.
+ *  @param  parent [in] pointer to the parent widget
+ */
+/*===========================================================================*/
 void WidgetBase::anchorToRight( const kvs::WidgetBase* parent )
 {
     switch ( parent->anchor() )
@@ -140,9 +169,23 @@ void WidgetBase::anchorToRight( const kvs::WidgetBase* parent )
     case Anchor::BottomLeft:
     case Anchor::BottomCenter:
     case Anchor::BottomRight:
+        //
+        //   +--------------+
+        //   |              |
+        //   |    parent    +--------+
+        //   |              |  this  |
+        //   +--------------+--------+
+        //
         this->anchorBottomLeftToBottomRight( parent );
         break;
     default:
+        //
+        //   +--------------+--------+
+        //   |              |  this  |
+        //   |    parent    +--------+
+        //   |              |
+        //   +--------------+
+        //
         this->anchorTopLeftToTopRight( parent );
         break;
     }
@@ -150,19 +193,20 @@ void WidgetBase::anchorToRight( const kvs::WidgetBase* parent )
 
 /*===========================================================================*/
 /**
- *  @brief  Shows the screen.
+ *  @brief  Shows the widget.
  */
 /*===========================================================================*/
 void WidgetBase::show()
 {
     if ( Rectangle::width() == 0 ) Rectangle::setWidth( this->adjustedWidth() );
     if ( Rectangle::height() == 0 ) Rectangle::setHeight( this->adjustedHeight() );
+
     m_visible = true;
 }
 
 /*===========================================================================*/
 /**
- *  @brief  Hides the screen.
+ *  @brief  Hides the widget.
  */
 /*===========================================================================*/
 void WidgetBase::hide()
@@ -170,25 +214,31 @@ void WidgetBase::hide()
     m_visible = false;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns anchor position of the widget.
+ *  @return anchor position
+ */
+/*===========================================================================*/
 kvs::Vec2i WidgetBase::anchorPosition()
 {
+    const int aw = this->width();
+    const int ah = this->height();
     if ( m_parent )
     {
         const int px0 = m_parent->x0();
         const int py0 = m_parent->y0();
         const int px1 = m_parent->x1();
         const int py1 = m_parent->y1();
-        const int aw = this->width();
-        const int ah = this->height();
         switch ( m_anchor )
         {
         case Anchor::TopLeft:
         {
             switch ( m_corner )
             {
-            case Anchor::BottomLeft: return kvs::Vec2i( px0, py0 - ah );
-            case Anchor::BottomRight: return kvs::Vec2i( px0 - aw, py0 - ah );
-            case Anchor::TopRight: return kvs::Vec2i( px0 - aw, py0 );
+            case Anchor::BottomLeft:  return { px0, py0 - ah };
+            case Anchor::BottomRight: return { px0 - aw, py0 - ah };
+            case Anchor::TopRight:    return { px0 - aw, py0 };
             default: break;
             }
             break;
@@ -197,9 +247,9 @@ kvs::Vec2i WidgetBase::anchorPosition()
         {
             switch ( m_corner )
             {
-            case Anchor::BottomLeft: return kvs::Vec2i( px1, py0 - ah );
-            case Anchor::BottomRight: return kvs::Vec2i( px1 - aw, py0 - ah );
-            case Anchor::TopLeft: return kvs::Vec2i( px1, py0 );
+            case Anchor::BottomLeft:  return { px1, py0 - ah };
+            case Anchor::BottomRight: return { px1 - aw, py0 - ah };
+            case Anchor::TopLeft:     return { px1, py0 };
             default: break;
             }
             break;
@@ -208,9 +258,9 @@ kvs::Vec2i WidgetBase::anchorPosition()
         {
             switch ( m_corner )
             {
-            case Anchor::BottomRight: return kvs::Vec2i( px0 - aw, py1 - ah );
-            case Anchor::TopRight: return kvs::Vec2i( px0 - aw, py1 );
-            case Anchor::TopLeft: return kvs::Vec2i( px0, py1 );
+            case Anchor::BottomRight: return { px0 - aw, py1 - ah };
+            case Anchor::TopRight:    return { px0 - aw, py1 };
+            case Anchor::TopLeft:     return { px0, py1 };
             default: break;
             }
             break;
@@ -219,9 +269,9 @@ kvs::Vec2i WidgetBase::anchorPosition()
         {
             switch ( m_corner )
             {
-            case Anchor::BottomLeft: return kvs::Vec2i( px1, py1 - ah );
-            case Anchor::TopLeft: return kvs::Vec2i( px1, py1 );
-            case Anchor::TopRight: return kvs::Vec2i( px1 - aw, py1 );
+            case Anchor::BottomLeft: return { px1, py1 - ah };
+            case Anchor::TopLeft:    return { px1, py1 };
+            case Anchor::TopRight:   return { px1 - aw, py1 };
             default: break;
             }
             break;
@@ -233,19 +283,17 @@ kvs::Vec2i WidgetBase::anchorPosition()
     {
         const int w = m_screen->width();
         const int h = m_screen->height();
-        const int aw = this->width();
-        const int ah = this->height();
         switch ( m_anchor )
         {
-        case Anchor::TopLeft: return kvs::Vec2i( 0, 0 );
-        case Anchor::TopCenter: return kvs::Vec2i( ( w - aw ) / 2, 0 );
-        case Anchor::TopRight: return kvs::Vec2i( w - aw, 0 );
-        case Anchor::BottomLeft: return kvs::Vec2i( 0, h - ah );
-        case Anchor::BottomCenter: return kvs::Vec2i( ( w - aw ) / 2, h - ah );
-        case Anchor::BottomRight: return kvs::Vec2i( w - aw, h - ah );
-        case Anchor::LeftCenter: return kvs::Vec2i( 0, ( h - ah ) / 2 );
-        case Anchor::Center: return kvs::Vec2i( ( w - aw ) / 2, ( h - ah ) / 2 );
-        case Anchor::RightCenter: return kvs::Vec2i( w - aw, ( h - ah ) / 2 );
+        case Anchor::TopLeft:      return { 0, 0 };
+        case Anchor::TopCenter:    return { ( w - aw ) / 2, 0 };
+        case Anchor::TopRight:     return { w - aw, 0 };
+        case Anchor::BottomLeft:   return { 0, h - ah };
+        case Anchor::BottomCenter: return { ( w - aw ) / 2, h - ah };
+        case Anchor::BottomRight:  return { w - aw, h - ah };
+        case Anchor::LeftCenter:   return { 0, ( h - ah ) / 2 };
+        case Anchor::Center:       return { ( w - aw ) / 2, ( h - ah ) / 2 };
+        case Anchor::RightCenter:  return { w - aw, ( h - ah ) / 2 };
         default: break;
         }
     }
@@ -268,16 +316,21 @@ void WidgetBase::drawBackground()
 
     kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
+    const auto dpr = m_screen->devicePixelRatio();
+    const auto x0 = this->x0() * dpr;
+    const auto x1 = this->x1() * dpr;
+    const auto y0 = this->y0() * dpr;
+    const auto y1 = this->y1() * dpr;
     if ( m_background_color.a() > 0.0f )
     {
         // Draw background.
         kvs::OpenGL::Begin( GL_POLYGON );
         {
             kvs::OpenGL::Color( m_background_color );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y1() ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y0() ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y0() ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y1() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) ); // bottom-left
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) ); // top-left
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) ); // top-right
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) ); // bottom-right
         }
         kvs::OpenGL::End();
     }
@@ -289,21 +342,25 @@ void WidgetBase::drawBackground()
         kvs::OpenGL::Begin( GL_POLYGON );
         {
             kvs::OpenGL::Color( m_background_border_color );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y1() ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x0(), this->y0() ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y0() ) );
-            kvs::OpenGL::Vertex( kvs::Vec2( this->x1(), this->y1() ) );
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y1 ) ); // bottom-left
+            kvs::OpenGL::Vertex( kvs::Vec2( x0, y0 ) ); // top-left
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y0 ) ); // top-right
+            kvs::OpenGL::Vertex( kvs::Vec2( x1, y1 ) ); // bottom-right
         }
         kvs::OpenGL::End();
     }
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Initialize event method.
+ */
+/*===========================================================================*/
 void WidgetBase::initializeEvent()
 {
     if ( Rectangle::width() == 0 ) Rectangle::setWidth( this->adjustedWidth() );
     if ( Rectangle::height() == 0 ) Rectangle::setHeight( this->adjustedHeight() );
-    const auto p = anchorPosition();
-    Rectangle::setPosition( p.x(), p.y() );
+    Rectangle::setPosition( this->anchorPosition() );
 }
 
 } // end of namespace kvs

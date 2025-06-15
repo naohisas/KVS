@@ -23,6 +23,42 @@ namespace kvs
 /*===========================================================================*/
 class ColorMapBar : public kvs::WidgetBase
 {
+    //   Horizontal)
+    //
+    //      margin                                   margin
+    //      +----+-----------------------------------+----+
+    //      |                                             | margin
+    //      +    +                                   +    +
+    //      |    "caption"                                |
+    //      |    +-----------------------------------+    |
+    //      |    |             color bar             |    |
+    //      |    +-----------------------------------+    +
+    //      |    "min_value"               "max_value"    |
+    //      +    +                                   +    |
+    //      |                                             | margin
+    //      +----+-----------------------------------+----+
+    //
+    //   Vertiacl)
+    //
+    //      margin               margin
+    //      +----+---------------+----+
+    //      |                         | margin
+    //      +    +               +    +
+    //      |    "caption"            |
+    //      |    +----+               |
+    //      |    |    |"max_value"    |
+    //      |    |    |               |
+    //      |    |    |               |
+    //      |    |col.|               |
+    //      |    | bar|               |
+    //      |    |    |               |
+    //      |    |    |               |
+    //      |    |    |               |
+    //      |    |    |"min_value"    |
+    //      +    +----+          +    +    +
+    //      |                         | margin
+    //      +----+---------------+----+
+    //
 public:
     using BaseClass = kvs::WidgetBase;
     using ScreenUpdatedFunc = std::function<void()>;
@@ -35,26 +71,28 @@ public:
     };
 
 private:
-    std::string m_caption; ///< caption
-    OrientationType m_orientation; ///< bar layout
-    size_t m_ndivisions; ///< number of divisions of the bar
-    float m_division_line_width; ///< division line width
-    kvs::RGBColor m_division_line_color; ///< division line color
-    double m_min_value; ///< min. value
-    double m_max_value; ///< max. value
-    float m_border_width; ///< border line width
-    kvs::RGBColor m_border_color; ///< border line color
-    kvs::ColorMap m_colormap; ///< color map
-    kvs::Texture2D m_texture; ///< texture data
-    bool m_show_range_value; ///< range value showing flag
-    bool m_enable_anti_aliasing; ///< check flag for anti-aliasing
-    bool m_texture_downloaded; ///< check flag for texture
-    ScreenUpdatedFunc m_screen_updated;
-    ScreenResizedFunc m_screen_resized;
+    std::string m_caption = ""; ///< caption
+    OrientationType m_orientation = OrientationType::Horizontal; ///< bar layout
+    size_t m_ndivisions = 5; ///< number of divisions of the bar
+    float m_division_line_width = 1.0f; ///< division line width
+    kvs::RGBColor m_division_line_color{ 0, 0, 0 }; ///< division line color
+    int m_color_bar_width = 200; ///< color bar width
+    int m_color_bar_height = 20; ///< color bar height
+    double m_min_value = 0.0; ///< min. value
+    double m_max_value = 255.0; ///< max. value
+    float m_border_width = 1.0f; ///< border line width
+    kvs::RGBColor m_border_color{ 0, 0 , 0 }; ///< border line color
+    kvs::ColorMap m_colormap{ 256 }; ///< color map
+    kvs::Texture2D m_texture{}; ///< texture data
+    bool m_show_range_value = true; ///< range value showing flag
+    bool m_enable_anti_aliasing = false; ///< check flag for anti-aliasing
+    bool m_texture_downloaded = false; ///< check flag for texture
+    ScreenUpdatedFunc m_screen_updated = nullptr;
+    ScreenResizedFunc m_screen_resized = nullptr;
 
 public:
     ColorMapBar( kvs::ScreenBase* screen = 0 );
-    virtual ~ColorMapBar();
+    virtual ~ColorMapBar() = default;
 
     void screenUpdated( ScreenUpdatedFunc func ) { m_screen_updated = func; }
     void screenResized( ScreenResizedFunc func ) { m_screen_resized = func; }
@@ -73,6 +111,8 @@ public:
     void setNumberOfDivisions( const size_t ndivisions ) { m_ndivisions = ndivisions; }
     void setDivisionLineWidth( const float width ) { m_division_line_width = width; }
     void setDivisionLineColor( const kvs::RGBColor& color ) { m_division_line_color = color; }
+    void setColorBarWidth( const int width ) { m_color_bar_width = width; }
+    void setColorBarHwight( const int height ) { m_color_bar_height = height; }
     void setRange( const double min_value, const double max_value ) { m_min_value = min_value; m_max_value = max_value; }
     void setBorderWidth( const float width ) { m_border_width = width; }
     void setBorderColor( const kvs::RGBColor& color ) { m_border_color = color; }

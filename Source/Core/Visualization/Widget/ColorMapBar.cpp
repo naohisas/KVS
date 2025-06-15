@@ -13,17 +13,6 @@
 #include <kvs/IgnoreUnusedVariable>
 
 
-// Constant variables
-namespace
-{
-const double MinValue = 0.0f;
-const double MaxValue = 255.0f;
-const size_t ColorMapBarWidth = 200;
-const size_t ColorMapBarHeight = 20;
-const size_t ColorMapBarMargin = 10;
-}
-
-
 namespace kvs
 {
 
@@ -34,38 +23,15 @@ namespace kvs
  */
 /*===========================================================================*/
 ColorMapBar::ColorMapBar( kvs::ScreenBase* screen ):
-    kvs::WidgetBase( screen ),
-    m_show_range_value( true ),
-    m_texture_downloaded( false ),
-    m_screen_updated( nullptr ),
-    m_screen_resized( nullptr )
+    kvs::WidgetBase( screen )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
         kvs::EventBase::ResizeEvent );
 
-    BaseClass::setMargin( ::ColorMapBarMargin );
-    this->setCaption( "" );
-    this->setOrientation( ColorMapBar::Horizontal );
-    this->setNumberOfDivisions( 5 );
-    this->setDivisionLineWidth( 1.0f );
-    this->setDivisionLineColor( kvs::RGBColor( 0, 0, 0 ) );
-    this->setRange( ::MinValue, ::MaxValue );
-    this->setBorderWidth( 1.0f );
-    this->setBorderColor( kvs::RGBColor( 0, 0, 0 ) );
-    this->disableAntiAliasing();
+    BaseClass::setMargin( 10 );
 
-    m_colormap.setResolution( 256 );
     m_colormap.create();
-}
-
-/*===========================================================================*/
-/**
- *  @brief  Destroys the ColorMapBar class.
- */
-/*===========================================================================*/
-ColorMapBar::~ColorMapBar()
-{
 }
 
 /*===========================================================================*/
@@ -113,16 +79,21 @@ void ColorMapBar::paintEvent()
     const std::string min_value = kvs::String::From( m_min_value );
     const std::string max_value = kvs::String::From( m_max_value );
     const int text_height = BaseClass::painter().fontMetrics().height();
-    const int min_text_width = BaseClass::painter().fontMetrics().width( min_value );
+    const int text_padding = 5;
     const int max_text_width = BaseClass::painter().fontMetrics().width( max_value );
-    const int caption_height = ( m_caption.size() == 0 ) ? 0 : text_height + 5;
+    const int caption_height = ( m_caption.size() == 0 ) ? 0 : text_height + text_padding;
 
     // Draw the color bar.
     {
         const int x = BaseClass::x0() + BaseClass::margin();
         const int y = BaseClass::y0() + BaseClass::margin() + caption_height;
-        const int width = BaseClass::width();
-        const int height = BaseClass::height();
+        int width = m_color_bar_width;
+        int height = m_color_bar_height;
+        if ( m_orientation == ColorMapBar::Vertical )
+        {
+            width = m_color_bar_height;
+            height = m_color_bar_width;
+        }
         this->draw_color_bar( x, y, width, height );
         this->draw_border( x, y, width, height );
     }
@@ -145,14 +116,14 @@ void ColorMapBar::paintEvent()
         {
             {
                 const int x = BaseClass::x0() + BaseClass::margin();
-                const int y = BaseClass::y1() + 30;
-                const kvs::Vec2 p( x, y + caption_height );
+                const int y = BaseClass::y0() + BaseClass::margin() + caption_height;
+                const kvs::Vec2 p( x, y + m_color_bar_height + caption_height );
                 BaseClass::painter().drawText( p, min_value );
             }
             {
-                const int x = BaseClass::x1() + BaseClass::margin() - max_text_width;
-                const int y = BaseClass::y1() + 30;
-                const kvs::Vec2 p( x, y + caption_height );
+                const int x = BaseClass::x0() + BaseClass::margin() + m_color_bar_width - max_text_width;
+                const int y = BaseClass::y0() + BaseClass::margin() + caption_height;
+                const kvs::Vec2 p( x, y + m_color_bar_height + caption_height );
                 BaseClass::painter().drawText( p, max_value );
             }
             break;
@@ -160,15 +131,15 @@ void ColorMapBar::paintEvent()
         case ColorMapBar::Vertical:
         {
             {
-                const int x = BaseClass::x1() + 20;
-                const int y = BaseClass::y0() + 30;
-                const kvs::Vec2 p( x, y + caption_height );
+                const int x = BaseClass::x0() + BaseClass::margin() + m_color_bar_height;
+                const int y = BaseClass::y0() + BaseClass::margin() + caption_height;
+                const kvs::Vec2 p( x + text_padding, y + text_height );
                 BaseClass::painter().drawText( p, max_value );
             }
             {
-                const int x = BaseClass::x1() + 20;
-                const int y = BaseClass::y1() + BaseClass::margin();
-                const kvs::Vec2 p( x, y + caption_height );
+                const int x = BaseClass::x0() + BaseClass::margin() + m_color_bar_height;
+                const int y = BaseClass::y0() + BaseClass::margin() + m_color_bar_width;
+                const kvs::Vec2 p( x + text_padding, y + caption_height );
                 BaseClass::painter().drawText( p, min_value );
             }
             break;
@@ -208,24 +179,22 @@ int ColorMapBar::adjustedWidth()
     BaseClass::painter().begin( BaseClass::screen() );
     const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
 
-    size_t width = 0;
+    int width = 0;
     switch ( m_orientation )
     {
     case ColorMapBar::Horizontal:
     {
-        width = metrics.width( m_caption ) + BaseClass::margin() * 2;
-        width = kvs::Math::Max( width, ::ColorMapBarWidth );
+        width = kvs::Math::Max( metrics.width( m_caption ), m_color_bar_width );
+        width += BaseClass::margin() * 2;
         break;
     }
     case ColorMapBar::Vertical:
     {
-        const std::string min_value = kvs::String::From( m_min_value );
-        const std::string max_value = kvs::String::From( m_max_value );
-        const size_t min_text_width = metrics.width( min_value );
-        const size_t max_text_width = metrics.width( max_value );
-        width = ( min_value.size() > max_value.size() ) ? min_text_width : max_text_width;
+        const auto min_value = kvs::String::From( m_min_value );
+        const auto max_value = kvs::String::From( m_max_value );
+        width = kvs::Math::Max( metrics.width( min_value ), metrics.width( max_value ) );
+        width = kvs::Math::Max( metrics.width( m_caption ), width );
         width += BaseClass::margin() * 2;
-        width = kvs::Math::Max( width, ::ColorMapBarHeight );
         break;
     }
     default: break;
@@ -233,7 +202,7 @@ int ColorMapBar::adjustedWidth()
 
     BaseClass::painter().end();
 
-    return static_cast<int>( width );
+    return width;
 }
 
 /*===========================================================================*/
@@ -246,23 +215,29 @@ int ColorMapBar::adjustedHeight()
 {
     BaseClass::painter().begin( BaseClass::screen() );
     const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
+    const int text_height = metrics.height();
+    const int text_padding = 5;
 
-    size_t height = 0;
-    const size_t text_height = metrics.height();
+    int height = ( m_caption == "" ) ? 0 : text_height + text_padding;
     switch ( m_orientation )
     {
     case ColorMapBar::Horizontal:
-        height = ::ColorMapBarHeight + ( text_height + BaseClass::margin() ) * 2;
+    {
+        height += kvs::Math::Equal( m_min_value, m_max_value ) ? 0 : text_height;
+        height += m_color_bar_height;
+        height += BaseClass::margin() * 2;
         break;
+    }
     case ColorMapBar::Vertical:
-        height = ::ColorMapBarWidth + text_height + BaseClass::margin() * 2;
+        height += m_color_bar_width;
+        height += BaseClass::margin() * 2;
         break;
     default: break;
     }
 
     BaseClass::painter().end();
 
-    return static_cast<int>( height );
+    return height;
 }
 
 /*===========================================================================*/
@@ -360,13 +335,13 @@ void ColorMapBar::draw_border( const int x, const int y, const int width, const 
 
     engine->beginPath();
     engine->setStrokeWidth( m_border_width );
-    engine->roundedRect( x - 0.5f, y + 2.0f, width + 1.0f, height, 3 );
-    engine->setStrokeColor( kvs::RGBAColor( 250, 250, 250, 0.6f ) );
+    engine->roundedRect( x - 0.5f, y + 2.0f, width + 1.0f, height, 1 );
+    engine->setStrokeColor( kvs::RGBAColor( 250, 250, 250, 0.1f ) );
     engine->stroke();
 
     engine->beginPath();
     engine->setStrokeWidth( m_border_width );
-    engine->roundedRect( x - 0.5f, y, width + 1.0f, height, 3 );
+    engine->roundedRect( x - 0.5f, y, width + 1.0f, height, 1 );
     engine->setStrokeColor( m_border_color );
     engine->stroke();
 

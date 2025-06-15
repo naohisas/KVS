@@ -6,6 +6,7 @@
 /*****************************************************************************/
 #pragma once
 #include <kvs/Vector2>
+#include <kvs/Vector4>
 
 
 namespace kvs
@@ -65,14 +66,30 @@ public:
     void setWidth( const int width ) { m_width = width; }
     void setHeight( const int height ) { m_height = height; }
     void setPosition( const int x, const int y ) { m_x = x; m_y = y; }
+    void setPosition( const kvs::Vec2i& p ) { this->setPosition( p.x(), p.y() ); }
     void setSize( const int width, const int height ) { m_width = width; m_height = height; }
+    void setSize( const kvs::Vec2i& s ) { this->setSize( s.x(), s.y() ); }
     void setGeometry( const int x, const int y, const int width, const int height )
     {
         this->setPosition( x, y );
         this->setSize( width, height );
     }
+    void setGeometry( const kvs::Vec2i& p, const kvs::Vec2i& s )
+    {
+        this->setPosition( p );
+        this->setSize( s );
+    }
+    void setGeometry( const kvs::Vec4i& g )
+    {
+        this->setPosition( g.x(), g.y() );
+        this->setSize( g.z(), g.w() );
+    }
 
     bool contains( const int x, const int y, const bool proper = false ) const;
+    bool contains( const kvs::Vec2i& p, const bool proper = false ) const
+    {
+        return this->contains( p.x(), p.y(), proper );
+    }
 };
 
 } // end of namespace kvs

@@ -25,6 +25,24 @@ class ScreenBase;
 /*===========================================================================*/
 class WidgetBase : public kvs::Rectangle, public kvs::EventListener
 {
+    // Widget layout
+    //
+    //           x0                         x1
+    //     +------+--------------------------+------+
+    //     |      margin                margin      |
+    //  y0 +      +----+----------------+----+      |
+    //     |      |        background        |margin|
+    //     |      +    +----------------+    +      |
+    //     |      |    |                |    |      |
+    //     |      |    |    contents    |    |      |
+    //     |      |    |                |    |      |
+    //     |      +    +----------------+    +      |
+    //     |      |                          |margin|
+    //  y1 +      +----+----------------+----+      |
+    //     |                <widget>                |
+    //     +----------------------------------------+
+    //                      <screen>
+    //
 public:
     enum Anchor
     {
@@ -41,22 +59,22 @@ public:
     };
 
 private:
-    const WidgetBase* m_parent; ///< pointer to the parent widget
-    kvs::ScreenBase* m_screen; ///< pointer to the screen
-    kvs::Painter m_painter; ///< painter
+    const WidgetBase* m_parent = nullptr; ///< pointer to the parent widget
+    kvs::ScreenBase* m_screen = nullptr; ///< pointer to the screen
+    kvs::Painter m_painter{}; ///< painter
 
-    int m_margin; ///< margin
-    kvs::RGBAColor m_background_color; ///< background color
-    kvs::RGBAColor m_background_border_color; ///< background border color
-    float m_background_border_width; ///< background border width
-    bool m_visible; ///< visible status flag
-    bool m_active; ///< active status flag
-    Anchor m_anchor; ///< anchor point on the screen or the parent widget
-    Anchor m_corner; ///< corner point of this widget pinned to the screen or the parent widget
+    int m_margin = 0; ///< margin
+    kvs::RGBAColor m_background_color{ 200, 200, 200, 0.0f }; ///< background color
+    kvs::RGBAColor m_background_border_color{ 0, 0, 0, 1.0f }; ///< background border color
+    float m_background_border_width = 0.0f; ///< background border width
+    bool m_visible = false; ///< visible status flag
+    bool m_active = false; ///< active status flag
+    Anchor m_anchor = Anchor::Fixed; ///< anchor point on the screen or the parent widget
+    Anchor m_corner = Anchor::TopLeft; ///< corner point of this widget pinned to the screen or the parent widget
 
 public:
     WidgetBase( kvs::ScreenBase* screen );
-    virtual ~WidgetBase();
+    virtual ~WidgetBase() = default;
 
 public:
     const kvs::Font& font() const { return m_painter.font(); }
