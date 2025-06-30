@@ -20,6 +20,17 @@ namespace kvs
 /*===========================================================================*/
 class Slider : public kvs::WidgetBase
 {
+    //      margin                                   margin
+    //      +----+-----------------------------------+----+
+    //      |                                             | margin
+    //      +    +                                   +    +
+    //      |    "caption"                                |
+    //      |    |=============()====================|    |
+    //      |    "min_value"               "max_value"    |
+    //      +    +                                   +    |
+    //      |                                             | margin
+    //      +----+-----------------------------------+----+
+    //
 public:
     using BaseClass = kvs::WidgetBase;
     using SliderPressedFunc = std::function<void()>;
@@ -30,21 +41,24 @@ public:
     using ScreenResizedFunc = std::function<void()>;
 
 private:
-    std::string m_caption; ///< caption
-    float m_value; ///< value
-    float m_min_value; ///< min. value
-    float m_max_value; ///< max. value
-    bool m_change_value; ///< value change flag
-    bool m_show_range_value; ///< range value showing flag
-    bool m_pushed;
-    kvs::RGBColor m_slider_color; ///< slider (cursor) color
-    kvs::RGBColor m_cursor_color; ///< cursor color
-    SliderPressedFunc m_slider_pressed;
-    SliderMovedFunc m_slider_moved;
-    SliderReleasedFunc m_slider_released;
-    ValueChangedFunc m_value_changed;
-    ScreenUpdatedFunc m_screen_updated;
-    ScreenResizedFunc m_screen_resized;
+    std::string m_caption = ""; ///< caption
+    float m_value = 0.5f; ///< value
+    float m_min_value = 0.0f; ///< min. value
+    float m_max_value = 1.0f; ///< max. value
+    int m_slider_width = 150; ///< slider width
+    int m_slider_height = 30; ///< slider height
+    int m_cursor_size = 15; ///< cusor size
+    bool m_change_value = false; ///< value change flag
+    bool m_show_range_value = true; ///< range value showing flag
+    bool m_pushed = false;
+    kvs::RGBColor m_slider_color{ 200, 200, 200 }; ///< slider (cursor) color
+    kvs::RGBColor m_cursor_color{ kvs::RGBColor::White() }; ///< cursor color
+    SliderPressedFunc m_slider_pressed = nullptr;
+    SliderMovedFunc m_slider_moved = nullptr;
+    SliderReleasedFunc m_slider_released = nullptr;
+    ValueChangedFunc m_value_changed = nullptr;
+    ScreenUpdatedFunc m_screen_updated = nullptr;
+    ScreenResizedFunc m_screen_resized = nullptr;
 
 public:
     Slider( kvs::ScreenBase* screen = 0 );
@@ -67,11 +81,17 @@ public:
     float value() const { return m_value; }
     float minValue() const { return m_min_value; }
     float maxValue() const { return m_max_value; }
+    int sliderWidth() const { return m_slider_width; }
+    int sliderHeight() const { return m_slider_height; }
+    int cursorSize() const { return m_cursor_size; }
 
     void setCaption( const std::string caption ) { m_caption = caption; }
     void setValue( const float value ) { m_value = value; }
     void setRange( const float min_value, const float max_value );
+    void setSliderWidth( const int width ) { m_slider_width = width; }
+    void setSliderHeight( const int height ) { m_slider_height = height; }
     void setSliderColor( const kvs::RGBColor& color );
+    void setCursorSize( const int size ) { m_cursor_size = size; }
     void setCursorColor( const kvs::RGBColor& color ) { m_cursor_color = color; }
     void showRange() { m_show_range_value = true; }
     void hideRange() { m_show_range_value = false; }

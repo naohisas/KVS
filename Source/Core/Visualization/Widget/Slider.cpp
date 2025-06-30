@@ -13,24 +13,8 @@
 #include <kvs/MouseEvent>
 
 
-// Default parameters.
-namespace { namespace Default
-{
-const float         Value = 0.5f;
-const float         MinValue = 0.0f;
-const float         MaxValue = 1.0f;
-const size_t        SliderMargin = 10;
-const size_t        SliderWidth = 150;
-const size_t        SliderHeight = 30;
-const kvs::RGBColor SliderColor = kvs::RGBColor( 200, 200, 200 );
-const size_t        CursorWidth = 15;
-const size_t        CursorHeight = 15;
-const kvs::RGBColor CursorColor = kvs::RGBColor::White();
-} }
-
 // Instance counter.
 static int InstanceCounter = 0;
-
 
 namespace kvs
 {
@@ -42,16 +26,7 @@ namespace kvs
  */
 /*===========================================================================*/
 Slider::Slider( kvs::ScreenBase* screen ):
-    kvs::WidgetBase( screen ),
-    m_change_value( false ),
-    m_show_range_value( true ),
-    m_pushed( false ),
-    m_slider_pressed( nullptr ),
-    m_slider_moved( nullptr ),
-    m_slider_released( nullptr ),
-    m_value_changed( nullptr ),
-    m_screen_updated( nullptr ),
-    m_screen_resized( nullptr )
+    kvs::WidgetBase( screen )
 {
     BaseClass::addEventType(
         kvs::EventBase::PaintEvent |
@@ -60,12 +35,8 @@ Slider::Slider( kvs::ScreenBase* screen ):
         kvs::EventBase::MouseMoveEvent |
         kvs::EventBase::MouseReleaseEvent );
 
-    BaseClass::setMargin( ::Default::SliderMargin );
+    BaseClass::setMargin( 10 );
     this->setCaption( "Slider " + kvs::String::From( ::InstanceCounter++ ) );
-    this->setValue( ::Default::Value );
-    this->setRange( ::Default::MinValue, ::Default::MaxValue );
-    this->setSliderColor( ::Default::SliderColor );
-    this->setCursorColor( ::Default::CursorColor );
 }
 
 /*===========================================================================*/
@@ -154,10 +125,10 @@ void Slider::draw_cursor( const int x, const int y, const int width )
     kvs::NanoVG* engine = BaseClass::painter().device()->renderEngine();
 
     const int p = static_cast<int>( width * ( m_value - m_min_value ) / ( m_max_value - m_min_value ) + 0.5 );
-    const int x0 = static_cast<int>( x + p - ::Default::CursorWidth * 0.5 + 0.5 );
-    const int x1 = static_cast<int>( x + p + ::Default::CursorWidth * 0.5 + 0.5 );
-    const int y0 = static_cast<int>( y - ::Default::CursorHeight * 0.5 + 0.5 );
-    const int y1 = static_cast<int>( y + ::Default::CursorHeight * 0.5 + 0.5 );
+    const int x0 = static_cast<int>( x + p - m_cursor_size * 0.5 + 0.5 );
+    const int x1 = static_cast<int>( x + p + m_cursor_size * 0.5 + 0.5 );
+    const int y0 = static_cast<int>( y - m_cursor_size * 0.5 + 0.5 );
+    const int y1 = static_cast<int>( y + m_cursor_size * 0.5 + 0.5 );
 
     const kvs::Vec2 center( ( x0 + x1 ) * 0.5f, ( y0 + y1 ) * 0.5f + 3.0f );
     const float radius = ( y1 - y0 ) * 0.5f;
@@ -230,7 +201,7 @@ bool Slider::is_in_slider( const int x, const int y, const bool proper )
     BaseClass::painter().end();
 
     const int bar_x = BaseClass::x0() + BaseClass::margin();
-    const int bar_y = BaseClass::y0() + BaseClass::margin() + character_height + ::Default::SliderHeight / 2;
+    const int bar_y = BaseClass::y0() + BaseClass::margin() + character_height + m_slider_height / 2;
     const int bar_width = BaseClass::width() - BaseClass::margin() * 2;
 
     const int x0 = bar_x;
@@ -265,14 +236,14 @@ bool Slider::is_in_cursor( const int x, const int y, const bool proper )
     BaseClass::painter().end();
 
     const int bar_x = BaseClass::x0() + BaseClass::margin();
-    const int bar_y = BaseClass::y0() + BaseClass::margin() + character_height + ::Default::SliderHeight / 2;
+    const int bar_y = BaseClass::y0() + BaseClass::margin() + character_height + m_slider_height / 2;
     const int bar_width = BaseClass::width() - BaseClass::margin() * 2;
 
     const int p = static_cast<int>( bar_width * ( m_value - m_min_value ) / ( m_max_value - m_min_value ) + 0.5f );
-    const int x0 = static_cast<int>( bar_x + p - ::Default::CursorWidth * 0.5 + 0.5 );
-    const int x1 = static_cast<int>( bar_x + p + ::Default::CursorWidth * 0.5 + 0.5 );
-    const int y0 = static_cast<int>( bar_y - ::Default::CursorHeight * 0.5 + 0.5 );
-    const int y1 = static_cast<int>( bar_y + ::Default::CursorHeight * 0.5 + 0.5 );
+    const int x0 = static_cast<int>( bar_x + p - m_cursor_size * 0.5 + 0.5 );
+    const int x1 = static_cast<int>( bar_x + p + m_cursor_size * 0.5 + 0.5 );
+    const int y0 = static_cast<int>( bar_y - m_cursor_size * 0.5 + 0.5 );
+    const int y1 = static_cast<int>( bar_y + m_cursor_size * 0.5 + 0.5 );
 
     if ( proper )
     {
@@ -309,10 +280,10 @@ int Slider::adjustedWidth()
     BaseClass::painter().begin( BaseClass::screen() );
     const kvs::FontMetrics metrics = BaseClass::painter().fontMetrics();
     const size_t text_width = metrics.width( m_caption );
-    const size_t width = text_width + BaseClass::margin() * 2;
+    const int width = text_width + BaseClass::margin() * 2;
     BaseClass::painter().end();
 
-    return kvs::Math::Max( width, ::Default::SliderWidth );
+    return kvs::Math::Max( width, m_slider_width );
 }
 
 /*===========================================================================*/
@@ -328,7 +299,7 @@ int Slider::adjustedHeight()
     const size_t text_height = metrics.height();
     BaseClass::painter().end();
 
-    return ::Default::SliderHeight + ( text_height + BaseClass::margin() ) * 2;
+    return m_slider_height + ( text_height + BaseClass::margin() ) * 2;
 }
 
 /*===========================================================================*/
@@ -360,7 +331,7 @@ void Slider::paintEvent()
     // Draw the slider bar and cursor.
     {
         const int x = BaseClass::x0() + BaseClass::margin();
-        const int y = BaseClass::y0() + BaseClass::margin() + height + ::Default::SliderHeight / 2;
+        const int y = BaseClass::y0() + BaseClass::margin() + height + m_slider_height / 2;
         const int width = BaseClass::width() - BaseClass::margin() * 2;
         this->draw_slider_bar( x, y, width );
         this->draw_cursor( x, y, width );
@@ -372,7 +343,7 @@ void Slider::paintEvent()
         {
             const std::string min_value = kvs::String::From( m_min_value );
             const int x = BaseClass::x0() + BaseClass::margin();
-            const int y = BaseClass::y0() + BaseClass::margin() + height + ::Default::SliderHeight;
+            const int y = BaseClass::y0() + BaseClass::margin() + height + m_slider_height;
             const kvs::Vec2 p( x, y + height );
             BaseClass::painter().drawText( p, min_value );
         }
@@ -381,7 +352,7 @@ void Slider::paintEvent()
             const std::string max_value = kvs::String::From( m_max_value );
             const size_t text_width = BaseClass::painter().fontMetrics().width( max_value );
             const int x = BaseClass::x1() - BaseClass::margin() - text_width;
-            const int y = BaseClass::y0() + BaseClass::margin() + height + ::Default::SliderHeight;
+            const int y = BaseClass::y0() + BaseClass::margin() + height + m_slider_height;
             const kvs::Vec2 p( x, y + height );
             BaseClass::painter().drawText( p, max_value );
         }

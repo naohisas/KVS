@@ -20,17 +20,13 @@ namespace kvs
 class Margins
 {
 private:
-    int m_left; ///< left margin
-    int m_top; ///< top margin
-    int m_right; ///< right margin
-    int m_bottom; ///< bottom margin
+    int m_left = 0; ///< left margin
+    int m_top = 0; ///< top margin
+    int m_right = 0; ///< right margin
+    int m_bottom = 0; ///< bottom margin
 
 public:
-    Margins():
-        m_left(0),
-        m_top(0),
-        m_right(0),
-        m_bottom(0) {}
+    Margins() = default;
 
     Margins( const int margin ):
         m_left( margin ),

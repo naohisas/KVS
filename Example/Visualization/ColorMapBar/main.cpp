@@ -40,6 +40,7 @@ int main( int argc, char** argv )
     kvs::ColorMapBar cmap_bar( &screen );
     cmap_bar.setCaption( "Colormap" );
     cmap_bar.setColorMap( cmap );
+    cmap_bar.anchorToBottomRight();
     cmap_bar.show();
 
     return app.run();
