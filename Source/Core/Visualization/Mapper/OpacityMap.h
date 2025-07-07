@@ -70,7 +70,7 @@ public:
     void addPoint( const float value, const float opacity );
     void removePoint( const float value );
     void clearPoints() { m_points.clear(); }
-    void reversePoints() { m_points.reverse(); }
+    void reversePoints();
     void create();
 
     kvs::Real32 operator []( const size_t index ) const;

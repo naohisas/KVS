@@ -178,6 +178,16 @@ void OpacityMap::removePoint( const float value )
     m_points.remove_if( [ value ]( Point& p ) { return kvs::Math::Equal( p.first, value ); } );
 }
 
+void OpacityMap::reversePoints()
+{
+    auto itr_f = m_points.begin();
+    auto itr_b = m_points.rbegin();
+    for ( size_t i = 0; i < m_points.size() / 2; i++ )
+    {
+        std::swap( (itr_f++)->second, (itr_b++)->second );
+    }
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Creates the opacity map.

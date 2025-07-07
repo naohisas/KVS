@@ -110,7 +110,7 @@ public:
     void setPoints( const std::list<kvs::RGBColor>& colors );
     void removePoint( const float value );
     void clearPoints() { m_points.clear(); }
-    void reversePoints() { m_points.reverse(); }
+    void reversePoints();
     void create();
 
     const kvs::RGBColor operator []( const size_t index ) const;
