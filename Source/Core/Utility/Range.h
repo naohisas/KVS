@@ -76,6 +76,13 @@ public:
     {
         return m_upper;
     }
+
+    Range& operator =( const Range& rhs )
+    {
+        m_lower = rhs.m_lower;
+        m_upper = rhs.m_upper;
+        return *this;
+    }
 };
 
 template <typename T>
