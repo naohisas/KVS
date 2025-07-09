@@ -51,6 +51,13 @@ public:
     static kvs::ColorMap Inferno( const size_t resolution = 256 );
     static kvs::ColorMap Magma( const size_t resolution = 256 );
     static kvs::ColorMap Cividis( const size_t resolution = 256 );
+    static kvs::ColorMap Berlin( const size_t resolution = 256 );
+    static kvs::ColorMap Managua( const size_t resolution = 256 );
+    static kvs::ColorMap Vanimo( const size_t resolution = 256 );
+
+    static kvs::ColorMap Sequential( const kvs::RGBColor& c, const size_t resolution = 256 );
+    static kvs::ColorMap Sequential( const std::list<kvs::RGBColor>& cs, const size_t resolution = 256 );
+    static kvs::ColorMap Diverging( const kvs::RGBColor& c1, const kvs::RGBColor& c2, const size_t resolution = 256 );
 
 public:
     using Table = kvs::ValueArray<kvs::UInt8>;
@@ -111,7 +118,12 @@ public:
     void removePoint( const float value );
     void clearPoints() { m_points.clear(); }
     void reversePoints();
+    void reverse();
+    void brighten( const float beta );
     void create();
+
+    kvs::ColorMap reversed() const;
+    kvs::ColorMap brightened( const float beta ) const;
 
     const kvs::RGBColor operator []( const size_t index ) const;
     const kvs::RGBColor at( const float value ) const;

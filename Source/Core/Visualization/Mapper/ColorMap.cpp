@@ -785,6 +785,192 @@ kvs::ColorMap ColorMap::Cividis( const size_t resolution )
     return cmap;
 }
 
+/*===========================================================================*/
+/**
+ *  @brief  Returns berlin colormap.
+ *  @param  resolution [in] table resolution
+ *  @return berlin colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Berlin( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 158, 176, 255 },
+        {  91, 164, 219 },
+        {  45, 117, 151 },
+        {  26,  66,  86 },
+        {  17,  25,  30 },
+        {  40,  13,   1 },
+        {  80,  24,   3 },
+        { 138,  63,  42 },
+        { 196, 117, 106 },
+        { 255, 173, 173 }
+    };
+//    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns managa colormap.
+ *  @param  resolution [in] table resolution
+ *  @return berlin colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Managua( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 255, 207, 103 },
+        { 221, 154,  85 },
+        { 185, 108,  70 },
+        { 146,  70,  59 },
+        { 103,  43,  60 },
+        {  78,  49,  94 },
+        {  78,  85, 147 },
+        {  91, 128, 188 },
+        { 109, 177, 222 },
+        { 129, 231, 255 }
+    };
+//    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns vanimo colormap.
+ *  @param  resolution [in] table resolution
+ *  @return berlin colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Vanimo( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 255, 205, 253 },
+        { 211, 129, 196 },
+        { 161,  73, 142 },
+        {  92,  36,  79 },
+        {  35,  20,  29 },
+        {  27,  30,  17 },
+        {  54,  73,  26 },
+        {  90, 124,  42 },
+        { 133, 181,  77 },
+        { 190, 253, 165 }
+    };
+//    colors.reverse();
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns sequence colormap (single hue).
+ *  @param  c [in] color
+ *  @param  resolution [in] table resolution
+ *  @return sequence colormap
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Sequential(
+    const kvs::RGBColor& c,
+    const size_t resolution )
+{
+    const kvs::LabColor lab( c );
+    const auto l = lab.l();
+    const auto a = lab.a();
+    const auto b = lab.b();
+    const auto lmax = 100.0f;
+
+    Table table( resolution * 3 );
+    for ( size_t i = 0; i < resolution; i++ )
+    {
+        const auto ratio = float(i) / ( resolution - 1 );
+        const auto li = kvs::Math::Mix( l, lmax, ratio );
+        const auto rgb = kvs::LabColor( li, a, b ).toRGBColor();
+        table[ 3 * i + 0 ] = rgb.r();
+        table[ 3 * i + 1 ] = rgb.g();
+        table[ 3 * i + 2 ] = rgb.b();
+    }
+
+    return kvs::ColorMap( table );
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns sequence colormap (multiple hue).
+ *  @param  cs [in] color list
+ *  @param  resolution [in] table resolution
+ *  @return sequence colormap
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Sequential(
+    const std::list<kvs::RGBColor>& cs,
+    const size_t resolution )
+{
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( cs );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns diverging colormap.
+ *  @param  c1 [i] left side color
+ *  @param  c2 [i] right side color
+ *  @param  resolution [i] table resolution
+ *  @return diverging colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Kenneth Moreland, "Diverging Color Maps for Scientific Visualization",
+ *      In Proceedings of the 5th International Symposium on Visual Computing,
+ *      December 2009.
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Diverging(
+    const kvs::RGBColor& c1,
+    const kvs::RGBColor& c2,
+    const size_t resolution )
+{
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( { c1, c2 } );
+    cmap.setColorSpaceToMsh();
+    cmap.create();
+    return cmap;
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Constructs a new ColoryMap class.
@@ -915,6 +1101,40 @@ void ColorMap::reversePoints()
     }
 }
 
+void ColorMap::reverse()
+{
+    if ( !m_points.empty() ) { this->reversePoints(); }
+    if ( m_table.size() > 0 )
+    {
+        for ( size_t i = 0; i < m_resolution / 2; i++ )
+        {
+            const auto j = m_resolution - 1 - i;
+            std::swap( m_table[ 3 * i + 0 ], m_table[ 3 * j + 0 ] );
+            std::swap( m_table[ 3 * i + 1 ], m_table[ 3 * j + 1 ] );
+            std::swap( m_table[ 3 * i + 2 ], m_table[ 3 * j + 2 ] );
+        }
+    }
+}
+
+void ColorMap::brighten( const float beta )
+{
+    KVS_ASSERT( ( -1.0f < beta ) && ( beta <= 1.0f ) );
+
+    const auto r = beta > 0 ? 1.0f - beta : 1.0f / ( 1.0f + beta );
+    for ( size_t i = 0; i < m_resolution; i++ )
+    {
+        const auto c = kvs::RGBColor( m_table.data() + 3 * i );
+        const auto lab = kvs::LabColor( c );
+        const auto l = std::pow( lab.l() / 100.0f, r );
+        const auto a = lab.a();
+        const auto b = lab.b();
+        const auto rgb = kvs::LabColor( l * 100.f, a, b ).toRGBColor();
+        m_table[ 3 * i + 0 ] = rgb.r();
+        m_table[ 3 * i + 1 ] = rgb.g();
+        m_table[ 3 * i + 2 ] = rgb.b();
+    }
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Creates the color map.
@@ -1026,6 +1246,20 @@ void ColorMap::create()
             m_table[ i * ::NumberOfChannels + 2 ] = color.b();
         }
     }
+}
+
+kvs::ColorMap ColorMap::reversed() const
+{
+    kvs::ColorMap cmap( this->table().clone(), this->minValue(), this->maxValue() );
+    cmap.reverse();
+    return cmap;
+}
+
+kvs::ColorMap ColorMap::brightened( const float beta ) const
+{
+    kvs::ColorMap cmap( this->table().clone(), this->minValue(), this->maxValue() );
+    cmap.brighten( beta );
+    return cmap;
 }
 
 /*==========================================================================*/

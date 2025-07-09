@@ -71,7 +71,10 @@ public:
     void removePoint( const float value );
     void clearPoints() { m_points.clear(); }
     void reversePoints();
+    void reverse();
     void create();
+
+    kvs::OpacityMap reversed() const;
 
     kvs::Real32 operator []( const size_t index ) const;
     kvs::Real32 at( const float value ) const;

@@ -7,6 +7,7 @@
 #include "OpacityMap.h"
 #include <kvs/Assert>
 #include <kvs/Math>
+#include <algorithm>
 
 
 namespace
@@ -188,6 +189,12 @@ void OpacityMap::reversePoints()
     }
 }
 
+void OpacityMap::reverse()
+{
+    if ( !m_points.empty() ) { this->reversePoints(); }
+    if ( m_table.size() > 0 ) { std::reverse( m_table.begin(), m_table.end() ); }
+}
+
 /*==========================================================================*/
 /**
  *  @brief  Creates the opacity map.
@@ -261,6 +268,13 @@ void OpacityMap::create()
             m_table[i] = opacity;
         }
     }
+}
+
+kvs::OpacityMap kvs::OpacityMap::reversed() const
+{
+    kvs::OpacityMap cmap( this->table().clone(), this->minValue(), this->maxValue() );
+    cmap.reverse();
+    return cmap;
 }
 
 /*==========================================================================*/
