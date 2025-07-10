@@ -55,7 +55,7 @@ class ColorMapBar : public kvs::WidgetBase
     //      |    |    |               |
     //      |    |    |               |
     //      |    |    |"min_value"    |
-    //      +    +----+          +    +    +
+    //      +    +----+          +    +
     //      |                         | margin
     //      +----+---------------+----+
     //
@@ -112,7 +112,8 @@ public:
     void setDivisionLineWidth( const float width ) { m_division_line_width = width; }
     void setDivisionLineColor( const kvs::RGBColor& color ) { m_division_line_color = color; }
     void setColorBarWidth( const int width ) { m_color_bar_width = width; }
-    void setColorBarHwight( const int height ) { m_color_bar_height = height; }
+    void setColorBarHeight( const int height ) { m_color_bar_height = height; }
+    void setColorBarSize( const int width, const int height ) { m_color_bar_width = width; m_color_bar_height = height; }
     void setRange( const double min_value, const double max_value ) { m_min_value = min_value; m_max_value = max_value; }
     void setBorderWidth( const float width ) { m_border_width = width; }
     void setBorderColor( const kvs::RGBColor& color ) { m_border_color = color; }

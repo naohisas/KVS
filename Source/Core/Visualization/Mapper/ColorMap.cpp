@@ -119,7 +119,6 @@ kvs::ColorMap ColorMap::BrewerBrBG( const size_t resolution )
         {   1, 102,  94 },
         {   0,  60,  48 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -156,7 +155,6 @@ kvs::ColorMap ColorMap::BrewerPiYG( const size_t resolution )
         {  77, 146,  33 },
         {  39, 100,  25 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -193,7 +191,6 @@ kvs::ColorMap ColorMap::BrewerPRGn( const size_t resolution )
         {  27, 120,  55 },
         {   0,  68,  27 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -230,7 +227,6 @@ kvs::ColorMap ColorMap::BrewerPuOr( const size_t resolution )
         {  84,  39, 136 },
         {  45,   0,  75 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -267,7 +263,6 @@ kvs::ColorMap ColorMap::BrewerRdBu( const size_t resolution )
         {  33, 102, 172 },
         {   5,  48,  97 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -304,7 +299,6 @@ kvs::ColorMap ColorMap::BrewerRdGy( const size_t resolution )
         {  77,  77,  77 },
         {  26,  26,  26 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -341,7 +335,6 @@ kvs::ColorMap ColorMap::BrewerRdYlBu( const size_t resolution )
         {  69, 117, 180 },
         {  49,  54, 149 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -378,7 +371,6 @@ kvs::ColorMap ColorMap::BrewerRdYlGn( const size_t resolution )
         {  26, 152,  80 },
         {   0, 104,  55 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -415,7 +407,6 @@ kvs::ColorMap ColorMap::BrewerSpectral( const size_t resolution )
         {  50, 136, 189 },
         {  94,  79, 162 }
     };
-    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -450,7 +441,6 @@ kvs::ColorMap ColorMap::BrewerSingleHueGreys( const size_t resolution )
         {  37,  37,  37 },
         {   0,   0,   0 }
     };
-    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -485,7 +475,6 @@ kvs::ColorMap ColorMap::BrewerSingleHueGreens( const size_t resolution )
         {   0, 109,  44 },
         {   0,  68,  27 }
     };
-    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -520,7 +509,6 @@ kvs::ColorMap ColorMap::BrewerSingleHueBlues( const size_t resolution )
         {   8,  81, 156 },
         {   8,  48, 107 }
     };
-    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -555,7 +543,6 @@ kvs::ColorMap ColorMap::BrewerSingleHueReds( const size_t resolution )
         { 165,  15,  21 },
         { 103,   0,  13 }
     };
-    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -590,7 +577,6 @@ kvs::ColorMap ColorMap::BrewerSingleHuePurples( const size_t resolution )
         {  84,  39, 143 },
         {  63,   0, 125 }
     };
-    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -626,7 +612,6 @@ kvs::ColorMap ColorMap::BrewerSingleHueOranges( const size_t resolution )
         { 166,  54,   3 },
         { 127,  39,   4 }
     };
-    //colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -637,7 +622,7 @@ kvs::ColorMap ColorMap::BrewerSingleHueOranges( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns viridis colormap.
+ *  @brief  Returns viridis colormap. [perceptually sequential colormap]
  *  @param  resolution [in] table resolution
  *  @return viridis colormap
  */
@@ -667,7 +652,7 @@ kvs::ColorMap ColorMap::Viridis( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns plasma colormap.
+ *  @brief  Returns plasma colormap. [perceptually sequential colormap]
  *  @param  resolution [in] table resolution
  *  @return plasma colormap
  */
@@ -697,7 +682,7 @@ kvs::ColorMap ColorMap::Plasma( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns inferno colormap.
+ *  @brief  Returns inferno colormap. [perceptually sequential colormap]
  *  @param  resolution [in] table resolution
  *  @return inferno colormap
  */
@@ -727,7 +712,7 @@ kvs::ColorMap ColorMap::Inferno( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns magma colormap.
+ *  @brief  Returns magma colormap. [perceptually sequential colormap]
  *  @param  resolution [in] table resolution
  *  @return magma colormap
  */
@@ -757,7 +742,7 @@ kvs::ColorMap ColorMap::Magma( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns cividis colormap.
+ *  @brief  Returns cividis colormap. [perceptually sequential colormap]
  *  @param  resolution [in] table resolution
  *  @return cividis colormap
  */
@@ -787,7 +772,7 @@ kvs::ColorMap ColorMap::Cividis( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns berlin colormap.
+ *  @brief  Returns berlin colormap. [diverging colormap]
  *  @param  resolution [in] table resolution
  *  @return berlin colormap
  */
@@ -812,7 +797,6 @@ kvs::ColorMap ColorMap::Berlin( const size_t resolution )
         { 196, 117, 106 },
         { 255, 173, 173 }
     };
-//    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -823,7 +807,7 @@ kvs::ColorMap ColorMap::Berlin( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns managa colormap.
+ *  @brief  Returns managua colormap. [diverging colormap]
  *  @param  resolution [in] table resolution
  *  @return berlin colormap
  */
@@ -848,7 +832,6 @@ kvs::ColorMap ColorMap::Managua( const size_t resolution )
         { 109, 177, 222 },
         { 129, 231, 255 }
     };
-//    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -859,7 +842,7 @@ kvs::ColorMap ColorMap::Managua( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns vanimo colormap.
+ *  @brief  Returns vanimo colormap. [diverging colormap]
  *  @param  resolution [in] table resolution
  *  @return berlin colormap
  */
@@ -884,7 +867,6 @@ kvs::ColorMap ColorMap::Vanimo( const size_t resolution )
         { 133, 181,  77 },
         { 190, 253, 165 }
     };
-//    colors.reverse();
 
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
@@ -895,7 +877,7 @@ kvs::ColorMap ColorMap::Vanimo( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns sequence colormap (single hue).
+ *  @brief  Returns sequential colormap (single hue).
  *  @param  c [in] color
  *  @param  resolution [in] table resolution
  *  @return sequence colormap
@@ -927,7 +909,7 @@ kvs::ColorMap ColorMap::Sequential(
 
 /*===========================================================================*/
 /**
- *  @brief  Returns sequence colormap (multiple hue).
+ *  @brief  Returns sequential colormap (multiple hue).
  *  @param  cs [in] color list
  *  @param  resolution [in] table resolution
  *  @return sequence colormap
