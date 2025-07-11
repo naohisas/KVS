@@ -31,6 +31,8 @@ public:
 
     static kvs::ColorMap Rainbow( const size_t resolution = 256 );
     static kvs::ColorMap CoolWarm( const size_t resolution = 256 );
+
+    // Diverging
     static kvs::ColorMap BrewerBrBG( const size_t resolution = 256 );
     static kvs::ColorMap BrewerPiYG( const size_t resolution = 256 );
     static kvs::ColorMap BrewerPRGn( const size_t resolution = 256 );
@@ -40,17 +42,37 @@ public:
     static kvs::ColorMap BrewerRdYlBu( const size_t resolution = 256 );
     static kvs::ColorMap BrewerRdYlGn( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSpectral( const size_t resolution = 256 );
+
+    // Sequential (single hue)
     static kvs::ColorMap BrewerSingleHueGreys( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSingleHueGreens( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSingleHueBlues( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSingleHueReds( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSingleHuePurples( const size_t resolution = 256 );
     static kvs::ColorMap BrewerSingleHueOranges( const size_t resolution = 256 );
+
+    // Sequential (multiple hue)
+    static kvs::ColorMap BrewerMultiHueBuGn( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueBuPu( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueGnBu( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueOrRd( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHuePuBu( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHuePuBuGn( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHuePuRd( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueRdPu( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueYlGn( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueYlGnBu( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueYlOrBr( const size_t resolution = 256 );
+    static kvs::ColorMap BrewerMultiHueYlOrRd( const size_t resolution = 256 );
+
+    // Sequential (perceptually uniform)
     static kvs::ColorMap Viridis( const size_t resolution = 256 );
     static kvs::ColorMap Plasma( const size_t resolution = 256 );
     static kvs::ColorMap Inferno( const size_t resolution = 256 );
     static kvs::ColorMap Magma( const size_t resolution = 256 );
     static kvs::ColorMap Cividis( const size_t resolution = 256 );
+
+    // Diverging
     static kvs::ColorMap Berlin( const size_t resolution = 256 );
     static kvs::ColorMap Managua( const size_t resolution = 256 );
     static kvs::ColorMap Vanimo( const size_t resolution = 256 );
