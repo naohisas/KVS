@@ -30,6 +30,7 @@ int main( int argc, char** argv )
     const size_t ncols = 2;
     const size_t screen_width = ( width + margin * 2 ) * ncols;
     const size_t screen_height = height * nrows + margin + 5;
+
     kvs::Application app( argc, argv );
     kvs::Screen screen( &app );
     screen.setTitle( "kvs::ColorMap (Diverging Colormap)" );
@@ -38,7 +39,7 @@ int main( int argc, char** argv )
 
     // Cool-Warm
     kvs::ColorMapBar cool_warm_cmap( &screen );
-    cool_warm_cmap.setCaption( "kvs::ColorMap::CoolWarm" );
+    cool_warm_cmap.setCaption( "CoolWarm" );
     cool_warm_cmap.setColorMap( kvs::ColorMap::CoolWarm( resolution ) );
     cool_warm_cmap.setColorBarWidth( width );
     cool_warm_cmap.setHeight( height );
@@ -49,7 +50,7 @@ int main( int argc, char** argv )
 
     // BrBG: brown, (white), blue-green
     kvs::ColorMapBar brbg_cmap( &screen );
-    brbg_cmap.setCaption( "kvs::ColorMap::BrewerBrBG" );
+    brbg_cmap.setCaption( "BrewerBrBG" );
     brbg_cmap.setColorMap( kvs::ColorMap::BrewerBrBG( resolution ) );
     brbg_cmap.setColorBarWidth( width );
     brbg_cmap.setHeight( height );
@@ -60,7 +61,7 @@ int main( int argc, char** argv )
 
     // PiYG: pink, (white), yello-green
     kvs::ColorMapBar piyg_cmap( &screen );
-    piyg_cmap.setCaption( "kvs::ColorMap::BrewerPiYG" );
+    piyg_cmap.setCaption( "BrewerPiYG" );
     piyg_cmap.setColorMap( kvs::ColorMap::BrewerPiYG( resolution ) );
     piyg_cmap.setColorBarWidth( width );
     piyg_cmap.setHeight( height );
@@ -71,7 +72,7 @@ int main( int argc, char** argv )
 
     // PRGn: purple, (white), green
     kvs::ColorMapBar prgn_cmap( &screen );
-    prgn_cmap.setCaption( "kvs::ColorMap::BrewerPRGn" );
+    prgn_cmap.setCaption( "BrewerPRGn" );
     prgn_cmap.setColorMap( kvs::ColorMap::BrewerPRGn( resolution ) );
     prgn_cmap.setColorBarWidth( width );
     prgn_cmap.setHeight( height );
@@ -82,7 +83,7 @@ int main( int argc, char** argv )
 
     // PuOr: orange, (white), purple
     kvs::ColorMapBar puor_cmap( &screen );
-    puor_cmap.setCaption( "kvs::ColorMap::BrewerPuOr" );
+    puor_cmap.setCaption( "BrewerPuOr" );
     puor_cmap.setColorMap( kvs::ColorMap::BrewerPuOr( resolution ) );
     puor_cmap.setColorBarWidth( width );
     puor_cmap.setHeight( height );
@@ -93,7 +94,7 @@ int main( int argc, char** argv )
 
     // RdBu: red, (white), blue
     kvs::ColorMapBar rdbu_cmap( &screen );
-    rdbu_cmap.setCaption( "kvs::ColorMap::BrewerRdBu" );
+    rdbu_cmap.setCaption( "BrewerRdBu" );
     rdbu_cmap.setColorMap( kvs::ColorMap::BrewerRdBu( resolution ) );
     rdbu_cmap.setColorBarWidth( width );
     rdbu_cmap.setHeight( height );
@@ -104,7 +105,7 @@ int main( int argc, char** argv )
 
     // RdGy: red, (white), gray
     kvs::ColorMapBar rdgy_cmap( &screen );
-    rdgy_cmap.setCaption( "kvs::ColorMap::BrewerRdGy" );
+    rdgy_cmap.setCaption( "BrewerRdGy" );
     rdgy_cmap.setColorMap( kvs::ColorMap::BrewerRdGy( resolution ) );
     rdgy_cmap.setColorBarWidth( width );
     rdgy_cmap.setHeight( height );
@@ -115,7 +116,7 @@ int main( int argc, char** argv )
 
     // RdYlBu: red, yello, blue
     kvs::ColorMapBar rdylbu_cmap( &screen );
-    rdylbu_cmap.setCaption( "kvs::ColorMap::BrewerRdYlBu" );
+    rdylbu_cmap.setCaption( "BrewerRdYlBu" );
     rdylbu_cmap.setColorMap( kvs::ColorMap::BrewerRdYlBu( resolution ) );
     rdylbu_cmap.setColorBarWidth( width );
     rdylbu_cmap.setHeight( height );
@@ -126,7 +127,7 @@ int main( int argc, char** argv )
 
     // RdYlGn: red, yello, green
     kvs::ColorMapBar rdylgn_cmap( &screen );
-    rdylgn_cmap.setCaption( "kvs::ColorMap::BrewerRdYlGn" );
+    rdylgn_cmap.setCaption( "BrewerRdYlGn" );
     rdylgn_cmap.setColorMap( kvs::ColorMap::BrewerRdYlGn( resolution ) );
     rdylgn_cmap.setColorBarWidth( width );
     rdylgn_cmap.setHeight( height );
@@ -137,7 +138,7 @@ int main( int argc, char** argv )
 
     // Spectral: red, orange, yello, green, blue
     kvs::ColorMapBar spectral_cmap( &screen );
-    spectral_cmap.setCaption( "kvs::ColorMap::BrewerSpectral" );
+    spectral_cmap.setCaption( "BrewerSpectral" );
     spectral_cmap.setColorMap( kvs::ColorMap::BrewerSpectral( resolution ) );
     spectral_cmap.setColorBarWidth( width );
     spectral_cmap.setHeight( height );
@@ -148,7 +149,7 @@ int main( int argc, char** argv )
 
     // Berlin
     kvs::ColorMapBar berlin_cmap( &screen );
-    berlin_cmap.setCaption( "kvs::ColorMap::Berlin" );
+    berlin_cmap.setCaption( "Berlin" );
     berlin_cmap.setColorMap( kvs::ColorMap::Berlin( resolution ) );
     berlin_cmap.setColorBarWidth( width );
     berlin_cmap.setHeight( height );
@@ -159,7 +160,7 @@ int main( int argc, char** argv )
 
     // Managua
     kvs::ColorMapBar managua_cmap( &screen );
-    managua_cmap.setCaption( "kvs::ColorMap::Managua" );
+    managua_cmap.setCaption( "Managua" );
     managua_cmap.setColorMap( kvs::ColorMap::Managua( resolution ) );
     managua_cmap.setColorBarWidth( width );
     managua_cmap.setHeight( height );
@@ -170,7 +171,7 @@ int main( int argc, char** argv )
 
     // Vanimo
     kvs::ColorMapBar vanimo_cmap( &screen );
-    vanimo_cmap.setCaption( "kvs::ColorMap::Vanimo" );
+    vanimo_cmap.setCaption( "Vanimo" );
     vanimo_cmap.setColorMap( kvs::ColorMap::Vanimo( resolution ) );
     vanimo_cmap.setColorBarWidth( width );
     vanimo_cmap.setHeight( height );
@@ -179,11 +180,11 @@ int main( int argc, char** argv )
     vanimo_cmap.anchorToBottom( &managua_cmap );
     vanimo_cmap.show();
 
-    // Original
+    // Original diverging
     const auto c1 = kvs::RGBColor(  35, 127, 146 );
     const auto c2 = kvs::RGBColor( 207,  85,  62 );
     kvs::ColorMapBar original_cmap( &screen );
-    original_cmap.setCaption( "kvs::ColorMap::Diverging" );
+    original_cmap.setCaption( "Diverging" );
     original_cmap.setColorMap( kvs::ColorMap::Diverging( c1, c2, resolution ) );
     original_cmap.setColorBarWidth( width );
     original_cmap.setHeight( height );
