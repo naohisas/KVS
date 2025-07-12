@@ -73,9 +73,16 @@ public:
     static kvs::ColorMap Cividis( const size_t resolution = 256 );
 
     // Diverging
+    static kvs::ColorMap Cork( const size_t resolution = 256 );
+    static kvs::ColorMap Broc( const size_t resolution = 256 );
+    static kvs::ColorMap Vik( const size_t resolution = 256 );
+    static kvs::ColorMap Lisbon( const size_t resolution = 256 );
+    static kvs::ColorMap Tofino( const size_t resolution = 256 );
     static kvs::ColorMap Berlin( const size_t resolution = 256 );
-    static kvs::ColorMap Managua( const size_t resolution = 256 );
+    static kvs::ColorMap Bam( const size_t resolution = 256 );
+    static kvs::ColorMap Roma( const size_t resolution = 256 );
     static kvs::ColorMap Vanimo( const size_t resolution = 256 );
+    static kvs::ColorMap Managua( const size_t resolution = 256 );
 
     static kvs::ColorMap Sequential( const kvs::RGBColor& c, const size_t resolution = 256 );
     static kvs::ColorMap Sequential( const std::list<kvs::RGBColor>& cs, const size_t resolution = 256 );

@@ -1180,6 +1180,181 @@ kvs::ColorMap ColorMap::Cividis( const size_t resolution )
 
 /*===========================================================================*/
 /**
+ *  @brief  Returns cork colormap. [diverging colormap]
+ *  @param  resolution [in] table resolution
+ *  @return cork colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap kvs::ColorMap::Cork( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        {  44,  25,  76 },
+        {  40,  69, 120 },
+        {  73, 116, 159 },
+        { 131, 161, 190 },
+        { 202, 215, 227 },
+        { 210, 225, 210 },
+        { 142, 179, 141 },
+        {  79, 137,  78 },
+        {  28,  91,  25 },
+        {  15,  41,   3 }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns broc colormap. [diverging colormap]
+ *  @param  resolution [in] table resolution
+ *  @return broc colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap kvs::ColorMap::Broc( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        {  44,  26,  76 },
+        {  40,  68, 119 },
+        {  75, 118, 160 },
+        { 139, 167, 194 },
+        { 206, 217, 229 },
+        { 232, 232, 210 },
+        { 197, 197, 143 },
+        { 141, 141,  86 },
+        {  85,  85,  39 },
+        {  38,  38,   0 }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns vik colormap. [diverging colormap]
+ *  @param  resolution [in] table resolution
+ *  @return vik colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap kvs::ColorMap::Vik( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        {   0,  18,  97 },
+        {   3,  62, 125 },
+        {  30, 111, 157 },
+        { 113, 168, 196 },
+        { 201, 221, 231 },
+        { 234, 206, 189 },
+        { 211, 151, 116 },
+        { 190, 101,  51 },
+        { 139,  39,   6 },
+        {  89,   0,   8 }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns lisbon colormap. [diverging colormap]
+ *  @param  resolution [in] table resolution
+ *  @return lisbon colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap kvs::ColorMap::Lisbon( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 230, 229, 255 },
+        { 155, 175, 211 },
+        {  81, 119, 164 },
+        {  30,  67, 104 },
+        {  17,  30,  44 },
+        {  39,  37,  26 },
+        {  87,  81,  52 },
+        { 141, 133,  86 },
+        { 201, 195, 144 },
+        { 255, 255, 217 }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns tofino colormap. [diverging colormap]
+ *  @param  resolution [in] table resolution
+ *  @return tofino colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap kvs::ColorMap::Tofino( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 222, 217, 255 },
+        { 147, 164, 222 },
+        {  74, 107, 172 },
+        {  39,  60, 101 },
+        {  18,  25,  38 },
+        {  18,  34,  20 },
+        {  36,  77,  40 },
+        {  63, 129,  68 },
+        { 136, 185, 112 },
+        { 219, 230, 155 }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Returns berlin colormap. [diverging colormap]
  *  @param  resolution [in] table resolution
  *  @return berlin colormap
@@ -1215,9 +1390,9 @@ kvs::ColorMap ColorMap::Berlin( const size_t resolution )
 
 /*===========================================================================*/
 /**
- *  @brief  Returns managua colormap. [diverging colormap]
+ *  @brief  Returns bam colormap. [diverging colormap]
  *  @param  resolution [in] table resolution
- *  @return berlin colormap
+ *  @return bam colormap
  */
 /*----------------------------------------------------------------------------
  *  Reference:
@@ -1226,19 +1401,54 @@ kvs::ColorMap ColorMap::Berlin( const size_t resolution )
  *      https://zenodo.org/records/8409685
  */
 /*===========================================================================*/
-kvs::ColorMap ColorMap::Managua( const size_t resolution )
+kvs::ColorMap kvs::ColorMap::Bam( const size_t resolution )
 {
     std::list<kvs::RGBColor> colors = {
-        { 255, 207, 103 },
-        { 221, 154,  85 },
-        { 185, 108,  70 },
-        { 146,  70,  59 },
-        { 103,  43,  60 },
-        {  78,  49,  94 },
-        {  78,  85, 147 },
-        {  91, 128, 188 },
-        { 109, 177, 222 },
-        { 129, 231, 255 }
+        { 101,   2,  75 },
+        { 158,  60, 133 },
+        { 201, 112, 178 },
+        { 228, 174, 214 },
+        { 245, 227, 239 },
+        { 239, 243, 229 },
+        { 193, 218, 162 },
+        { 124, 168,  86 },
+        {  69, 123,  42 },
+        {  13,  76,   0 }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns roma colormap. [diverging colormap]
+ *  @param  resolution [in] table resolution
+ *  @return roma colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap kvs::ColorMap::Roma( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 126,  23,   0 },
+        { 153,  82,  21 },
+        { 176, 128,  43 },
+        { 200, 180,  85 },
+        { 208, 227, 163 },
+        { 164, 229, 211 },
+        {  93, 193, 211 },
+        {  50, 146, 194 },
+        {  32, 100, 174 },
+        {   3,  49, 152 }
     };
 
     kvs::ColorMap cmap( resolution );
@@ -1252,7 +1462,7 @@ kvs::ColorMap ColorMap::Managua( const size_t resolution )
 /**
  *  @brief  Returns vanimo colormap. [diverging colormap]
  *  @param  resolution [in] table resolution
- *  @return berlin colormap
+ *  @return vanimo colormap
  */
 /*----------------------------------------------------------------------------
  *  Reference:
@@ -1274,6 +1484,41 @@ kvs::ColorMap ColorMap::Vanimo( const size_t resolution )
         {  90, 124,  42 },
         { 133, 181,  77 },
         { 190, 253, 165 }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns managua colormap. [diverging colormap]
+ *  @param  resolution [in] table resolution
+ *  @return managua colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] Crameri, F. (2018), Scientific colour maps, Zenodo,
+ *      doi:10.5281/zenodo.1243862
+ *      https://zenodo.org/records/8409685
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Managua( const size_t resolution )
+{
+    std::list<kvs::RGBColor> colors = {
+        { 255, 207, 103 },
+        { 221, 154,  85 },
+        { 185, 108,  70 },
+        { 146,  70,  59 },
+        { 103,  43,  60 },
+        {  78,  49,  94 },
+        {  78,  85, 147 },
+        {  91, 128, 188 },
+        { 109, 177, 222 },
+        { 129, 231, 255 }
     };
 
     kvs::ColorMap cmap( resolution );

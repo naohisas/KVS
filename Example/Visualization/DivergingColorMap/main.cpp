@@ -27,7 +27,7 @@ int main( int argc, char** argv )
     const size_t height = 50;
 
     const size_t nrows = 7;
-    const size_t ncols = 2;
+    const size_t ncols = 3;
     const size_t screen_width = ( width + margin * 2 ) * ncols;
     const size_t screen_height = height * nrows + margin + 5;
 
@@ -114,6 +114,8 @@ int main( int argc, char** argv )
     rdgy_cmap.anchorToBottom( &rdbu_cmap );
     rdgy_cmap.show();
 
+    //--------------------------------------------------------------------------
+
     // RdYlBu: red, yello, blue
     kvs::ColorMapBar rdylbu_cmap( &screen );
     rdylbu_cmap.setCaption( "BrewerRdYlBu" );
@@ -147,6 +149,63 @@ int main( int argc, char** argv )
     spectral_cmap.anchorToBottom( &rdylgn_cmap );
     spectral_cmap.show();
 
+    // Broc
+    kvs::ColorMapBar broc_cmap( &screen );
+    broc_cmap.setCaption( "Broc" );
+    broc_cmap.setColorMap( kvs::ColorMap::Broc( resolution ) );
+    broc_cmap.setColorBarWidth( width );
+    broc_cmap.setHeight( height );
+    broc_cmap.setMargin( margin );
+    broc_cmap.hideRange();
+    broc_cmap.anchorToBottom( &spectral_cmap );
+    broc_cmap.show();
+
+    // Lisbon
+    kvs::ColorMapBar lisbon_cmap( &screen );
+    lisbon_cmap.setCaption( "Lisbon" );
+    lisbon_cmap.setColorMap( kvs::ColorMap::Lisbon( resolution ) );
+    lisbon_cmap.setColorBarWidth( width );
+    lisbon_cmap.setHeight( height );
+    lisbon_cmap.setMargin( margin );
+    lisbon_cmap.hideRange();
+    lisbon_cmap.anchorToBottom( &broc_cmap );
+    lisbon_cmap.show();
+
+    // Cork
+    kvs::ColorMapBar cork_cmap( &screen );
+    cork_cmap.setCaption( "Cork" );
+    cork_cmap.setColorMap( kvs::ColorMap::Cork( resolution ) );
+    cork_cmap.setColorBarWidth( width );
+    cork_cmap.setHeight( height );
+    cork_cmap.setMargin( margin );
+    cork_cmap.hideRange();
+    cork_cmap.anchorToBottom( &lisbon_cmap );
+    cork_cmap.show();
+
+    // Tofino
+    kvs::ColorMapBar tofino_cmap( &screen );
+    tofino_cmap.setCaption( "Lisbon" );
+    tofino_cmap.setColorMap( kvs::ColorMap::Tofino( resolution ) );
+    tofino_cmap.setColorBarWidth( width );
+    tofino_cmap.setHeight( height );
+    tofino_cmap.setMargin( margin );
+    tofino_cmap.hideRange();
+    tofino_cmap.anchorToBottom( &cork_cmap );
+    tofino_cmap.show();
+
+    //--------------------------------------------------------------------------
+
+    // Vik
+    kvs::ColorMapBar vik_cmap( &screen );
+    vik_cmap.setCaption( "Vik" );
+    vik_cmap.setColorMap( kvs::ColorMap::Vik( resolution ) );
+    vik_cmap.setColorBarWidth( width );
+    vik_cmap.setHeight( height );
+    vik_cmap.setMargin( margin );
+    vik_cmap.hideRange();
+    vik_cmap.anchorToRight( &rdylbu_cmap );
+    vik_cmap.show();
+
     // Berlin
     kvs::ColorMapBar berlin_cmap( &screen );
     berlin_cmap.setCaption( "Berlin" );
@@ -155,8 +214,19 @@ int main( int argc, char** argv )
     berlin_cmap.setHeight( height );
     berlin_cmap.setMargin( margin );
     berlin_cmap.hideRange();
-    berlin_cmap.anchorToBottom( &spectral_cmap );
+    berlin_cmap.anchorToBottom( &vik_cmap );
     berlin_cmap.show();
+
+    // Roma
+    kvs::ColorMapBar roma_cmap( &screen );
+    roma_cmap.setCaption( "Roma" );
+    roma_cmap.setColorMap( kvs::ColorMap::Roma( resolution ) );
+    roma_cmap.setColorBarWidth( width );
+    roma_cmap.setHeight( height );
+    roma_cmap.setMargin( margin );
+    roma_cmap.hideRange();
+    roma_cmap.anchorToBottom( &berlin_cmap );
+    roma_cmap.show();
 
     // Managua
     kvs::ColorMapBar managua_cmap( &screen );
@@ -166,8 +236,19 @@ int main( int argc, char** argv )
     managua_cmap.setHeight( height );
     managua_cmap.setMargin( margin );
     managua_cmap.hideRange();
-    managua_cmap.anchorToBottom( &berlin_cmap );
+    managua_cmap.anchorToBottom( &roma_cmap );
     managua_cmap.show();
+
+    // Bam
+    kvs::ColorMapBar bam_cmap( &screen );
+    bam_cmap.setCaption( "Bam" );
+    bam_cmap.setColorMap( kvs::ColorMap::Bam( resolution ) );
+    bam_cmap.setColorBarWidth( width );
+    bam_cmap.setHeight( height );
+    bam_cmap.setMargin( margin );
+    bam_cmap.hideRange();
+    bam_cmap.anchorToBottom( &managua_cmap );
+    bam_cmap.show();
 
     // Vanimo
     kvs::ColorMapBar vanimo_cmap( &screen );
@@ -177,7 +258,7 @@ int main( int argc, char** argv )
     vanimo_cmap.setHeight( height );
     vanimo_cmap.setMargin( margin );
     vanimo_cmap.hideRange();
-    vanimo_cmap.anchorToBottom( &managua_cmap );
+    vanimo_cmap.anchorToBottom( &bam_cmap );
     vanimo_cmap.show();
 
     // Original diverging
