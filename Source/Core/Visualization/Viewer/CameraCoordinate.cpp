@@ -32,10 +32,10 @@ CameraCoordinate::CameraCoordinate( const kvs::Vec3& position, const kvs::Camera
  *  @return normalized device coordinates
  */
 /*===========================================================================*/
-const NormalizedDeviceCoordinate CameraCoordinate::toNormalizedDeviceCoordinate() const
+const kvs::NormalizedDeviceCoordinate CameraCoordinate::toNormalizedDeviceCoordinate() const
 {
-    const kvs::Vec3 position = kvs::Xform( m_camera->projectionMatrix() ).project( m_position );
-    return NormalizedDeviceCoordinate( position );
+    const auto p = kvs::Xform( m_camera->projectionMatrix() ).project( m_position );
+    return kvs::NormalizedDeviceCoordinate( p );
 }
 
 /*===========================================================================*/
@@ -44,9 +44,9 @@ const NormalizedDeviceCoordinate CameraCoordinate::toNormalizedDeviceCoordinate(
  *  @return world coordinates
  */
 /*===========================================================================*/
-const WorldCoordinate CameraCoordinate::toWorldCoordinate() const
+const kvs::WorldCoordinate CameraCoordinate::toWorldCoordinate() const
 {
-    return WorldCoordinate( m_camera->xform().transform( m_position ) );
+    return kvs::WorldCoordinate( m_camera->xform().transform( m_position ) );
 }
 
 } // end of namespace kvs

@@ -34,7 +34,7 @@ NormalizedDeviceCoordinate::NormalizedDeviceCoordinate( const kvs::Vec3& positio
  *  @return world coordinates
  */
 /*===========================================================================*/
-const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
+const kvs::WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
     const int x,
     const int y,
     const size_t width,
@@ -54,7 +54,7 @@ const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
  *  @return world coordinates
  */
 /*===========================================================================*/
-const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
+const kvs::WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
     const kvs::Vec4i& viewport ) const
 {
     return this->toWindowCoordinate(
@@ -71,11 +71,11 @@ const WindowCoordinate NormalizedDeviceCoordinate::toWindowCoordinate(
  *  @return camera coordinates
  */
 /*===========================================================================*/
-const CameraCoordinate NormalizedDeviceCoordinate::toCameraCoordinate( const kvs::Camera* camera ) const
+const kvs::CameraCoordinate NormalizedDeviceCoordinate::toCameraCoordinate( const kvs::Camera* camera ) const
 {
     const kvs::Xform xform( camera->projectionMatrix() );
     const kvs::Vec3 position = xform.inverse().project( m_position );
-    return CameraCoordinate( position, camera );
+    return kvs::CameraCoordinate( position, camera );
 }
 
 } // end of namespace kvs

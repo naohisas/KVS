@@ -32,11 +32,11 @@ ObjectCoordinate::ObjectCoordinate( const kvs::Vec3& position, const kvs::Object
  *  @return world coordinates
  */
 /*===========================================================================*/
-const WorldCoordinate ObjectCoordinate::toWorldCoordinate() const
+const kvs::WorldCoordinate ObjectCoordinate::toWorldCoordinate() const
 {
     KVS_ASSERT( m_object != NULL );
     const kvs::Vec3 position = m_object->xform().transform( m_position );
-    return WorldCoordinate( position );
+    return kvs::WorldCoordinate( position );
 }
 
 } // end of namespace kvs

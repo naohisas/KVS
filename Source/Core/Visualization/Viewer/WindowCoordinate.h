@@ -40,7 +40,7 @@ public:
     WindowCoordinate( const kvs::Vec3& position, const kvs::Vec4i& viewport );
 
     const kvs::Vec3& position() const { return m_position; }
-    const NormalizedDeviceCoordinate toNormalizedDeviceCoordinate() const;
+    const kvs::NormalizedDeviceCoordinate toNormalizedDeviceCoordinate() const;
 };
 
 } // end of namespace kvs

@@ -97,13 +97,13 @@ WindowCoordinate::WindowCoordinate( const kvs::Vec3& position, const kvs::Vec4i&
  *  @return transformed position in the normalized device coordinates
  */
 /*===========================================================================*/
-const NormalizedDeviceCoordinate WindowCoordinate::toNormalizedDeviceCoordinate() const
+const kvs::NormalizedDeviceCoordinate WindowCoordinate::toNormalizedDeviceCoordinate() const
 {
     const float x = 2.0f * ( m_position[0] - m_x ) / m_width - 1.0f;
     const float y = 2.0f * ( m_position[1] - m_y ) / m_height - 1.0f;
     const float z = WindowCoordinate::InvertDepth( m_position[2] ) * 2.0f - 1.0f;
     const kvs::Vec3 position( x, y, z );
-    return NormalizedDeviceCoordinate( position );
+    return kvs::NormalizedDeviceCoordinate( position );
 }
 
 } // end of namespace kvs

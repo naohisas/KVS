@@ -31,8 +31,8 @@ public:
     WorldCoordinate( const kvs::Vec3& position );
 
     const kvs::Vec3& position() const { return m_position; }
-    const CameraCoordinate toCameraCoordinate( const kvs::Camera* camera ) const;
-    const ObjectCoordinate toObjectCoordinate( const kvs::ObjectBase* object ) const;
+    const kvs::CameraCoordinate toCameraCoordinate( const kvs::Camera* camera ) const;
+    const kvs::ObjectCoordinate toObjectCoordinate( const kvs::ObjectBase* object ) const;
 };
 
 } // end of namespace kvs

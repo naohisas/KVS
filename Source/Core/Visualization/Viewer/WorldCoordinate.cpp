@@ -33,10 +33,10 @@ WorldCoordinate::WorldCoordinate( const kvs::Vec3& position ):
  *  @return transformed position in camera coordinates
  */
 /*===========================================================================*/
-const CameraCoordinate WorldCoordinate::toCameraCoordinate( const kvs::Camera* camera ) const
+const kvs::CameraCoordinate WorldCoordinate::toCameraCoordinate( const kvs::Camera* camera ) const
 {
     const kvs::Vec3 position = kvs::Xform( camera->viewingMatrix() ).transform( m_position );
-    return CameraCoordinate( position, camera );
+    return kvs::CameraCoordinate( position, camera );
 }
 
 /*===========================================================================*/
@@ -46,10 +46,10 @@ const CameraCoordinate WorldCoordinate::toCameraCoordinate( const kvs::Camera* c
  *  @return transformed position in object coordinates
  */
 /*===========================================================================*/
-const ObjectCoordinate WorldCoordinate::toObjectCoordinate( const kvs::ObjectBase* object ) const
+const kvs::ObjectCoordinate WorldCoordinate::toObjectCoordinate( const kvs::ObjectBase* object ) const
 {
     const kvs::Vec3 position = object->xform().inverse().transform( m_position );
-    return ObjectCoordinate( position, object );
+    return kvs::ObjectCoordinate( position, object );
 }
 
 } // end of namespace kvs

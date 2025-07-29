@@ -30,7 +30,7 @@ public:
     ObjectCoordinate( const kvs::Vec3& position, const kvs::ObjectBase* object );
 
     const kvs::Vec3& position() const { return m_position; }
-    const WorldCoordinate toWorldCoordinate() const;
+    const kvs::WorldCoordinate toWorldCoordinate() const;
 };
 
 } // end of namespace kvs

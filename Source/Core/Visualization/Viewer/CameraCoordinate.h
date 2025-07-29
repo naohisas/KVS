@@ -30,8 +30,8 @@ public:
     CameraCoordinate( const kvs::Vec3& position, const kvs::Camera* camera );
 
     const kvs::Vec3& position() const { return m_position; }
-    const NormalizedDeviceCoordinate toNormalizedDeviceCoordinate() const;
-    const WorldCoordinate toWorldCoordinate() const;
+    const kvs::NormalizedDeviceCoordinate toNormalizedDeviceCoordinate() const;
+    const kvs::WorldCoordinate toWorldCoordinate() const;
 };
 
 } // end of namespace kvs
