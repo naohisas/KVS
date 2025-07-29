@@ -20,7 +20,8 @@ namespace
 
 // Default values.
 const size_t NumberOfChannels = 3;
-kvs::ColorMap::ColorMapFunction DefaultColorMap = kvs::ColorMap::BrewerRdBu;
+//kvs::ColorMap::ColorMapFunction DefaultColorMap = kvs::ColorMap::BrewerRdBu;
+kvs::ColorMap::ColorMapFunction DefaultColorMap = kvs::ColorMap::Fast;
 
 }
 
@@ -87,6 +88,41 @@ kvs::ColorMap ColorMap::CoolWarm( const size_t resolution )
     kvs::ColorMap cmap( resolution );
     cmap.setPoints( colors );
     cmap.setColorSpaceToMsh();
+    cmap.create();
+    return cmap;
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Returns fast diverging colormap.
+ *  @param  resolution [in] table resolution
+ *  @return fast colormap
+ */
+/*----------------------------------------------------------------------------
+ *  Reference:
+ *  [1] F. Samsel, W. A. Scott and K. Moreland, A New Default Colormap for ParaView,
+ *      In IEEE Computer Graphics and Applications, vol. 44, no. 04, pp. 150-160,
+ *      July-Aug. 2024, doi: 10.1109/MCG.2024.3383137.
+ *      https://www.computer.org/csdl/magazine/cg/2024/04/10640196/1ZySI5cfpNm
+ */
+/*===========================================================================*/
+kvs::ColorMap ColorMap::Fast( const size_t resolution )
+{
+    Points colors = {
+        { 1.00f * 255, { 150,  20,  30 } },
+        { 0.85f * 255, { 204,  90,  41 } },
+        { 0.71f * 255, { 237, 158,  80 } },
+        { 0.59f * 255, { 244, 213, 130 } },
+        { 0.50f * 255, { 229, 241, 196 } },
+        { 0.43f * 255, { 175, 237, 234 } },
+        { 0.30f * 255, {  91, 190, 243 } },
+        { 0.17f * 255, {  62, 117, 207 } },
+        { 0.00f * 255, {  14,  14, 120 } }
+    };
+
+    kvs::ColorMap cmap( resolution );
+    cmap.setPoints( colors );
+    cmap.setColorSpaceToLab();
     cmap.create();
     return cmap;
 }

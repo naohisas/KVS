@@ -29,8 +29,12 @@ public:
     static void SetDefaultColorMap( ColorMapFunction func );
     static kvs::ColorMap DefaultColorMap( const size_t resolution = 256 );
 
+    // Traditional
     static kvs::ColorMap Rainbow( const size_t resolution = 256 );
+
+    // ParaView
     static kvs::ColorMap CoolWarm( const size_t resolution = 256 );
+    static kvs::ColorMap Fast( const size_t resolution = 256 );
 
     // Diverging
     static kvs::ColorMap BrewerBrBG( const size_t resolution = 256 );
