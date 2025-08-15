@@ -1168,11 +1168,7 @@ int bswap_rgba_BYTE ( unsigned int my_rank, unsigned int nnodes, \
 		image_size = width * height + global_add_pixels; 
 	#endif
 
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 	
 	switch ( image_ID ) {
 		case ID_RGBA32: temp_image_byte_ptr = temp_image_rgba32;
@@ -1426,11 +1422,7 @@ int bswap_rgbaz_BYTE ( unsigned int my_rank, unsigned int nnodes, \
 		image_size = width * height + global_add_pixels; 
 	#endif
 
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 
 	switch ( image_ID ) {
 		case ID_RGBA32:  temp_image_byte_ptr = temp_image_rgba32;
@@ -1680,11 +1672,7 @@ int bswap_rgba128 ( unsigned int my_rank, unsigned int nnodes, \
 		image_size = width * height + global_add_pixels; 
 	#endif
 
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 
 	bs_blnd_image_ptr  = my_image;
 	bs_send_image_size = image_size; // width * height ( + global_add_pixels )
@@ -1903,11 +1891,7 @@ int bswap_rgbaz160 ( unsigned int my_rank, unsigned int nnodes, \
 		image_size = width * height + global_add_pixels; 
 	#endif
 
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 
 	bs_blnd_image_ptr  = my_image;
 	bs_send_image_size = image_size; // width * height ( + global_add_pixels )
@@ -2125,11 +2109,7 @@ int stage2_bswap_rgba_BYTE ( unsigned int my_rank, unsigned int nnodes, \
 		image_size = width * height + global_add_pixels; 
 	#endif
 
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 
 	switch ( image_ID ) {
 		case ID_RGBA32: temp_image_byte_ptr = temp_image_rgba32;
@@ -3150,11 +3130,7 @@ int stage2_bswap_rgbaz_BYTE ( unsigned int my_rank, unsigned int nnodes, \
 		image_size = width * height + global_add_pixels; 
 	#endif
 
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 
 	switch ( image_ID ) {
 		case ID_RGBA32: temp_image_byte_ptr = temp_image_rgba32;
@@ -4087,11 +4063,7 @@ int stage2_bswap_rgba128 (  unsigned int my_rank, unsigned int nnodes, \
 	// ====================================================================
 	// 			 	COMPOSITE IMAGES ( BINARY SWAP )
 	// ====================================================================
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 
 	 // Power of two number of pixels
 	#ifdef _GATHERV	
@@ -5067,11 +5039,7 @@ int stage2_bswap_rgbaz160 (  unsigned int my_rank, unsigned int nnodes, \
 		image_size = width * height + global_add_pixels; 
 	#endif
 
-	#ifdef C99
-		bs_max_stage = (unsigned int)( log2( (double) nnodes ));
-	#else
-		bs_max_stage = (unsigned int)( (float)log( nnodes ) * M_LOG2E );
-	#endif
+	bs_max_stage = (unsigned int)( log2( (double) nnodes ));
 
 	bs_recv_image_size = 0;
 
