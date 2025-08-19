@@ -5,11 +5,42 @@
  */
 /*****************************************************************************/
 #pragma once
-// Disable C++ bindings
+
+// Deactivate C++ wrappers
+#ifndef OMPI_SKIP_MPICXX
 #define OMPI_SKIP_MPICXX 1
+#define __KVS_MPI_SKIP_OMPI__
+#endif
+
+#ifndef MPICH_SKIP_MPICXX
 #define MPICH_SKIP_MPICXX 1
+#define __KVS_MPI_SKIP_MPICH__
+#endif
+
+#ifndef MPI_NO_CPPBIND
 #define MPI_NO_CPPBIND 1
+#define __KVS_MPI_SKIP_SGI__
+#endif
+
+// Include MPI header
 #include <mpi.h>
+
+// Activate C++ wrappers
+#ifdef __KVS_MPI_SKIP_OMPI__
+#undef OMPI_SKIP_MPICXX
+#undef __KVS_MPI_SKIP_OMPI__
+#endif
+
+#ifdef __KVS_MPI_SKIP_MPICH__
+#undef MPICH_SKIP_MPICXX
+#undef __KVS_MPI_SKIP_MPICH__
+#endif
+
+#ifdef __KVS_MPI_SKIP_SGI__
+#undef MPI_NO_CPPBIND
+#undef __KVS_MPI_SKIP_SGI__
+#endif
+
 #include <kvs/String>
 #include "MPICall.h"
 
