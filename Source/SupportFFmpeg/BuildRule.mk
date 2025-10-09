@@ -7,8 +7,10 @@ $(OUTDIR)/./AvCpp/audioresampler.o \
 $(OUTDIR)/./AvCpp/averror.o \
 $(OUTDIR)/./AvCpp/avtime.o \
 $(OUTDIR)/./AvCpp/avutils.o \
+$(OUTDIR)/./AvCpp/channellayout.o \
 $(OUTDIR)/./AvCpp/codec.o \
 $(OUTDIR)/./AvCpp/codeccontext.o \
+$(OUTDIR)/./AvCpp/codecparameters.o \
 $(OUTDIR)/./AvCpp/dictionary.o \
 $(OUTDIR)/./AvCpp/format.o \
 $(OUTDIR)/./AvCpp/formatcontext.o \

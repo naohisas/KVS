@@ -111,6 +111,9 @@ $(OUTDIR)\.\FileFormat\PNM\Header.obj \
 $(OUTDIR)\.\FileFormat\PNM\Pbm.obj \
 $(OUTDIR)\.\FileFormat\PNM\Pgm.obj \
 $(OUTDIR)\.\FileFormat\PNM\Ppm.obj \
+$(OUTDIR)\.\FileFormat\Plot3D\GridData.obj \
+$(OUTDIR)\.\FileFormat\Plot3D\Plot3D.obj \
+$(OUTDIR)\.\FileFormat\Plot3D\SolutionData.obj \
 $(OUTDIR)\.\FileFormat\STL\Stl.obj \
 $(OUTDIR)\.\FileFormat\TIFF\Entry.obj \
 $(OUTDIR)\.\FileFormat\TIFF\Header.obj \
@@ -581,6 +584,12 @@ $<
 $<
 <<
 
+{.\FileFormat\Plot3D\}.cpp{$(OUTDIR)\.\FileFormat\Plot3D\}.obj::
+	IF NOT EXIST $(OUTDIR)\.\FileFormat\Plot3D $(MKDIR) $(OUTDIR)\.\FileFormat\Plot3D
+	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\Plot3D\ @<<
+$<
+<<
+
 {.\FileFormat\PNM\}.cpp{$(OUTDIR)\.\FileFormat\PNM\}.obj::
 	IF NOT EXIST $(OUTDIR)\.\FileFormat\PNM $(MKDIR) $(OUTDIR)\.\FileFormat\PNM
 	$(CPP) /c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) /Fo$(OUTDIR)\.\FileFormat\PNM\ @<<
@@ -729,6 +738,8 @@ install::
 	$(INSTALL) .\FileFormat\PNG\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\PNG
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\PNM $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\PNM
 	$(INSTALL) .\FileFormat\PNM\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\PNM
+	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\Plot3D $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\Plot3D
+	$(INSTALL) .\FileFormat\Plot3D\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\Plot3D
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\STL $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\STL
 	$(INSTALL) .\FileFormat\STL\*.h $(INSTALL_DIR)\include\Core\.\FileFormat\STL
 	IF NOT EXIST $(INSTALL_DIR)\include\Core\.\FileFormat\TIFF $(MKDIR) $(INSTALL_DIR)\include\Core\.\FileFormat\TIFF

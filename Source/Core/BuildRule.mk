@@ -111,6 +111,9 @@ $(OUTDIR)/./FileFormat/PNM/Header.o \
 $(OUTDIR)/./FileFormat/PNM/Pbm.o \
 $(OUTDIR)/./FileFormat/PNM/Pgm.o \
 $(OUTDIR)/./FileFormat/PNM/Ppm.o \
+$(OUTDIR)/./FileFormat/Plot3D/GridData.o \
+$(OUTDIR)/./FileFormat/Plot3D/Plot3D.o \
+$(OUTDIR)/./FileFormat/Plot3D/SolutionData.o \
 $(OUTDIR)/./FileFormat/STL/Stl.o \
 $(OUTDIR)/./FileFormat/TIFF/Entry.o \
 $(OUTDIR)/./FileFormat/TIFF/Header.o \
@@ -533,6 +536,10 @@ $(OUTDIR)/./FileFormat/STL/%.o: ./FileFormat/STL/%.cpp ./FileFormat/STL/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/STL
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
 
+$(OUTDIR)/./FileFormat/Plot3D/%.o: ./FileFormat/Plot3D/%.cpp ./FileFormat/Plot3D/%.h
+	$(MKDIR) $(OUTDIR)/./FileFormat/Plot3D
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
 $(OUTDIR)/./FileFormat/PNM/%.o: ./FileFormat/PNM/%.cpp ./FileFormat/PNM/%.h
 	$(MKDIR) $(OUTDIR)/./FileFormat/PNM
 	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
@@ -645,6 +652,8 @@ install::
 	$(INSTALL) ./FileFormat/PNG/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PNG
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/PNM
 	$(INSTALL) ./FileFormat/PNM/*.h $(INSTALL_DIR)/include/Core/./FileFormat/PNM
+	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/Plot3D
+	$(INSTALL) ./FileFormat/Plot3D/*.h $(INSTALL_DIR)/include/Core/./FileFormat/Plot3D
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/STL
 	$(INSTALL) ./FileFormat/STL/*.h $(INSTALL_DIR)/include/Core/./FileFormat/STL
 	$(MKDIR) $(INSTALL_DIR)/include/Core/./FileFormat/TIFF

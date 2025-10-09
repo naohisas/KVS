@@ -21,6 +21,7 @@
 + kvs::CategoryAxis
 + kvs::HSLColor
 + kvs::Jpg
++ kvs::Plot3D
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled
