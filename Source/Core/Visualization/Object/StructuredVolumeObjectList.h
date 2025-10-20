@@ -50,6 +50,9 @@ public:
         m_filenames( filenames ),
         m_importer( importer ) {}
 
+    void shallowCopy( const StructuredVolumeObjectList& object_list );
+    void deepCopy( const StructuredVolumeObjectList& object_list );
+
     const ObjectList& objects() const { return m_objects; }
     const FilenameList& filenames() const { return m_filenames; }
 

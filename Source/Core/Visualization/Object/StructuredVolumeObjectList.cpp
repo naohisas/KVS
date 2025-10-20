@@ -27,6 +27,58 @@ ThisClass::Object ThisClass::DefaultImporter( const ThisClass::Filename& filenam
 
 /*===========================================================================*/
 /**
+ *  @brief  Shallow copys.
+ *  @param  object_list [in] structured volume object list
+ */
+/*===========================================================================*/
+void ThisClass::shallowCopy( const StructuredVolumeObjectList& object_list )
+{
+    if ( !m_objects.empty() )
+    {
+        m_objects.clear();
+        m_objects.shrink_to_fit();
+    }
+
+    m_filenames = object_list.m_filenames;
+    m_importer = object_list.m_importer;
+    m_min_value = object_list.m_min_value;
+    m_max_value = object_list.m_max_value;
+
+    for ( const auto& object : object_list.objects() )
+    {
+        Object o; o.shallowCopy( object );
+        m_objects.push_back( o );
+    }
+}
+
+/*===========================================================================*/
+/**
+ *  @brief  Deep copys.
+ *  @param  object_list [in] structured volume object list
+ */
+/*===========================================================================*/
+void ThisClass::deepCopy( const StructuredVolumeObjectList& object_list )
+{
+    if ( !m_objects.empty() )
+    {
+        m_objects.clear();
+        m_objects.shrink_to_fit();
+    }
+
+    m_filenames = object_list.m_filenames;
+    m_importer = object_list.m_importer;
+    m_min_value = object_list.m_min_value;
+    m_max_value = object_list.m_max_value;
+
+    for ( const auto& object : object_list.objects() )
+    {
+        Object o; o.deepCopy( object );
+        m_objects.push_back( o );
+    }
+}
+
+/*===========================================================================*/
+/**
  *  @brief  Returns the number of objects stored in the list.
  *  @return number of objects
  */
