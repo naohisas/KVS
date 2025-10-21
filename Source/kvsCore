@@ -275,6 +275,7 @@
 #include <Core/Visualization/Mapper/CellLocator.h>
 #include <Core/Visualization/Mapper/CellTree.h>
 #include <Core/Visualization/Mapper/CellTreeLocator.h>
+#include <Core/Visualization/Mapper/ColoredMarchingCubes.h>
 #include <Core/Visualization/Mapper/ColorMap.h>
 #include <Core/Visualization/Mapper/DivergingColorMap.h>
 #include <Core/Visualization/Mapper/ExternalFaces.h>

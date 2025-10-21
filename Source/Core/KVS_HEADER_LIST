@@ -275,6 +275,7 @@ Visualization/Mapper/CellByCellUniformSampling
 Visualization/Mapper/CellLocator
 Visualization/Mapper/CellTree
 Visualization/Mapper/CellTreeLocator
+Visualization/Mapper/ColoredMarchingCubes
 Visualization/Mapper/ColorMap
 Visualization/Mapper/DivergingColorMap
 Visualization/Mapper/ExternalFaces

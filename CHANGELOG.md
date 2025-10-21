@@ -22,6 +22,7 @@
 + kvs::HSLColor
 + kvs::Jpg
 + kvs::Plot3D
++ kvs::ColoredMarchingCubes
 
 **Added new method**
 + kvs::ColorStream::isBoldEnabled

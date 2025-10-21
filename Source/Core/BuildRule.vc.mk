@@ -298,6 +298,7 @@ $(OUTDIR)\.\Visualization\Mapper\CellLocator.obj \
 $(OUTDIR)\.\Visualization\Mapper\CellTree.obj \
 $(OUTDIR)\.\Visualization\Mapper\CellTreeLocator.obj \
 $(OUTDIR)\.\Visualization\Mapper\ColorMap.obj \
+$(OUTDIR)\.\Visualization\Mapper\ColoredMarchingCubes.obj \
 $(OUTDIR)\.\Visualization\Mapper\DivergingColorMap.obj \
 $(OUTDIR)\.\Visualization\Mapper\ExternalFaces.obj \
 $(OUTDIR)\.\Visualization\Mapper\ExtractEdges.obj \
