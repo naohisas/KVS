@@ -73,5 +73,22 @@ KVS is released under BSD 3-Clause License. See [LICENSE](LICENSE) for details.
 + KVS/Source/SupportMPI/Renderer/ImageCompositor uses [234Compositor](https://github.com/avr-aics-riken/234Compositor) (2-clause BSD license).
 + KVS/Source/SupportFFmpeg/AvCpp uses [AvCpp](https://github.com/h4tr3d/avcpp) (3-clause BSD license).
 
+KVS can be used for research, software development, and other similar purposes under the above-described license. While the license does not explicitly restrict or require anything regarding its use for developing commercial software, we would appreciate notification if this is the case.
+
 # Citation
+When using KVS for your research and publishing the results in papers or other works, please cite this webpage or the following paper as a reference:
+
 Naohisa Sakamoto and Koji Koyamada, [KVS: A simple and effective framework for scientific visualization](https://www.jstage.jst.go.jp/article/jasse/2/1/2_76/_article/-char/en), Journal of Advanced Simulation in Science and Engineering (JASSE), Vol. 2, Issue 1, pp. 76-95, 2015.
+
+```
+@article{Naohisa Sakamoto2015,
+  title={KVS: A simple and effective framework for scientific visualization},
+  author={Naohisa Sakamoto and Koji Koyamada},
+  journal={Journal of Advanced Simulation in Science and Engineering},
+  volume={2},
+  number={1},
+  pages={76-95},
+  year={2015},
+  doi={10.15748/jasse.2.76}
+}
+```
