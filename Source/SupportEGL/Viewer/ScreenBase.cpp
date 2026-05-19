@@ -2,6 +2,7 @@
 /**
  *  @file   ScreenBase.cpp
  *  @author Naohisa Sakamoto
+ *  @edit   Taro Murase
  */
 /*****************************************************************************/
 #include "ScreenBase.h"
@@ -45,6 +46,19 @@ kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer( GLenum mode ) const
     kvs::ValueArray<kvs::UInt8> buffer( this->width() * this->height() * 4 );
     kvs::OpenGL::ReadPixels( 0, 0, this->width(), this->height(), GL_RGBA, GL_UNSIGNED_BYTE, buffer.data() );
 
+    ///add
+    const size_t stride = this->width() * 4; 
+    for ( size_t y = 0; y < this->height() / 2; ++y )
+      {
+        kvs::UInt8* top = buffer.data() + y * stride;
+        kvs::UInt8* bottom = buffer.data() + ( this->height() - y - 1 ) * stride;
+        for ( size_t x = 0; x < stride; ++x )
+          {
+            std::swap( top[x], bottom[x] );
+          }
+      }
+    ///add
+    
     return buffer;
 }
 
