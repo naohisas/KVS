@@ -11,6 +11,51 @@
 #include <kvs/Message>
 #include <iostream>
 #include <string>
+#include <cstdio>
+#include <cfenv>
+
+
+namespace
+{
+
+template <typename T>
+inline void Flip( T* data, const size_t width, const size_t height, const size_t ncomps )
+{
+    // NOTE: In case that a none-zero value is specified for the environment variable
+    // 'KVS_EGL_Y_FLIP', the data will be flipped.
+    // e.g.) export KVS_EGL_Y_FLIP=1   (flipped) default
+    //       export KVS_EGL_Y_FLIP=0   (not flipped)
+    //
+    bool y_flip = true;
+    const char* KVS_EGL_Y_FLIP( std::getenv( "KVS_EGL_Y_FLIP" ) );
+    if ( KVS_EGL_Y_FLIP != nullptr )
+    {
+        if ( std::atoi( KVS_EGL_Y_FLIP ) == 0 )
+        {
+            y_flip = false;
+        }
+    }
+
+    if ( y_flip )
+    {
+        const size_t stride = width * ncomps;
+
+        T* pdata = data;
+        const size_t end_line = height / 2;
+        for ( size_t i = 0; i < end_line; i++ )
+        {
+            T* src = pdata + ( i * stride );
+            T* dst = pdata + ( ( height - i - 1 ) * stride );
+            for ( size_t j = 0; j < stride; j++ )
+            {
+                std::swap( *src, *dst );
+                src++; dst++;
+            }
+        }
+    }
+}
+
+}
 
 
 namespace kvs
@@ -43,22 +88,12 @@ kvs::ValueArray<kvs::UInt8> ScreenBase::readbackColorBuffer( GLenum mode ) const
     kvs::OpenGL::SetReadBuffer( mode );
     kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
 
-    kvs::ValueArray<kvs::UInt8> buffer( this->width() * this->height() * 4 );
-    kvs::OpenGL::ReadPixels( 0, 0, this->width(), this->height(), GL_RGBA, GL_UNSIGNED_BYTE, buffer.data() );
+    const size_t width = this->width();
+    const size_t height = this->height();
+    kvs::ValueArray<kvs::UInt8> buffer( width * height * 4 );
+    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer.data() );
+    ::Flip( buffer.data(), width, height, 4 );
 
-    ///add
-    const size_t stride = this->width() * 4; 
-    for ( size_t y = 0; y < this->height() / 2; ++y )
-      {
-        kvs::UInt8* top = buffer.data() + y * stride;
-        kvs::UInt8* bottom = buffer.data() + ( this->height() - y - 1 ) * stride;
-        for ( size_t x = 0; x < stride; ++x )
-          {
-            std::swap( top[x], bottom[x] );
-          }
-      }
-    ///add
-    
     return buffer;
 }
 
@@ -67,8 +102,11 @@ kvs::ValueArray<kvs::Real32> ScreenBase::readbackDepthBuffer( GLenum mode ) cons
     kvs::OpenGL::SetReadBuffer( mode );
     kvs::OpenGL::SetPixelStorageMode( GL_PACK_ALIGNMENT, GLint(1) );
 
-    kvs::ValueArray<kvs::Real32> buffer( this->width() * this->height() );
-    kvs::OpenGL::ReadPixels( 0, 0, this->width(), this->height(), GL_DEPTH_COMPONENT, GL_FLOAT, buffer.data() );
+    const size_t width = this->width();
+    const size_t height = this->height();
+    kvs::ValueArray<kvs::Real32> buffer( width * height );
+    kvs::OpenGL::ReadPixels( 0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, buffer.data() );
+    ::Flip( buffer.data(), width, height, 1 );
 
     return buffer;
 }
