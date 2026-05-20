@@ -156,7 +156,7 @@ inline T CommandLine::Option::value( size_t index ) const
     {
         kvsMessageError( "Option '-%s' has only %d values.",
                          m_name.c_str(), m_nvalues );
-        return T( 0 );
+        return T{};
     }
     return kvs::String::To<T>( m_values[ index ] );
 }
@@ -223,7 +223,7 @@ inline T CommandLine::optionValue( const std::string& option_name, size_t index 
     if ( option == m_options.end() || !option->isGiven() )
     {
         kvsMessageError( "Cannot find '-%s' option.", option->name().c_str() );
-        return T( 0 );
+        return T{};
     }
     return option->value<T>( index );
 }
