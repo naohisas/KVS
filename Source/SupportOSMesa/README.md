@@ -4,8 +4,82 @@ SupportOSMesa is a support class library with [OSMesa](https://docs.mesa3d.org/o
 ## Prerequisite
 The OSMesa is required to compile the SupportOSMesa. Although the OSMesa can be easily installed with the package manager, such as apt-get on Ubuntu, we recommend the compile and install it by downloading the source codes of the OSMesa on your developping environment in order to use high-perfrmance rendering functionalities. 
 
-### OSMesa installation
-The OSMesa can be easily compiled and installed by using [osmesa-install](https://github.com/devernay/osmesa-install.git) as follows.
+### Mac
+An environment in which to compile OSMesa using Homebrew can be set up on macOS.
+
+1. Install the required packages using homebrew.
+```sh
+$ brew install meson ninja pkg-config llvm@20 python@3.14
+```
+* To safely compile OSMesa 25.0.7, llvm@20 and python@3.14 need to be install.
+
+2. Install the Python modules (mako, packaging, pyyaml) required for building Mesa into the build venv (~/.venvs/mesa-build).
+```sh
+$ PY="$(brew --prefix python@3.14)/bin/python3.14"
+$ $PY -m venv ~/.venvs/mesa-build
+$source ~/.venvs/mesa-build/bin/activate
+$ python -m pip install -U pip
+$ python -m pip install mako packaging pyyaml
+```
+
+3. Move to your working directory (e.g. ~/Work/Temp), in which the OSMesa will be downloaded.
+```sh
+$ cd ~/Work/Temp
+```
+
+4. Download the OSMesa version 25.0.7.
+```sh
+$ curl -LO https://archive.mesa3d.org/mesa-25.0.7.tar.xz
+$ tar xf mesa-25.0.7.tar.xz
+$ cd mesa-25.0.7
+```
+
+5. Set the environment variables required for compilation. Specify the installation directory in the OSMESA_PREFIX environment variable.
+```sh
+$ export OSMESA_PREFIX="$HOME/local/osmesa"
+$ export LLVM20_PREFIX="$(brew --prefix llvm@20)"
+$ export PATH="$LLVM20_PREFIX/bin:$(brew --prefix bison)/bin:$PATH"
+$ export PKG_CONFIG_PATH="$LLVM20_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+$ export LLVM_CONFIG="$LLVM20_PREFIX/bin/llvm-config"
+```
+
+6. Compile and install OSMesa.
+```sh
+$ meson setup build/ \
+  --prefix=$OSMESA_PREFIX \
+  --libdir=lib \
+  -Dbuildtype=release \
+  -Db_ndebug=true \
+  -Dllvm=enabled \
+  -Dshared-llvm=enabled \
+  -Ddraw-use-llvm=true \
+  -Dopengl=true \
+  -Dosmesa=true \
+  -Dgallium-drivers=llvmpipe \
+  -Dshared-glapi=enabled \
+  -Dplatforms= \
+  -Dglx=disabled \
+  -Degl=disabled \
+  -Dgbm=disabled \
+  -Dgles1=disabled \
+  -Dgles2=disabled \
+  -Dglvnd=false \
+  -Dvulkan-drivers= \
+  -Dtools= \
+  -Dgallium-opencl=disabled \
+  -Dgallium-rusticl=false
+$ ninja -C build/ install
+```
+
+6. Set environment variables in your shell setting file (e.g. ~/.bashrc) for using the SupportOSMesa.
+```
+export PKG_CONFIG_PATH=$KVS_OSMESA_DIR/lib/pkgconfig/:$PKG_CONFIG_PATH
+export KVS_OSMESA_DIR=${HOME}/local/osmesa
+export KVS_OSMESA_LINK_LIBRARY="$(pkg-config --cflags --libs osmesa)"
+```
+
+### Linux/Mac with osmesa-install.sh
+The OSMesa can also be easily compiled and installed by using [osmesa-install](https://github.com/devernay/osmesa-install.git) as follows.
 
 1. Create install target directories for OSMesa and LLVM. In the following example, the target directries; osmesa and llvm are created under "~/local".
 
