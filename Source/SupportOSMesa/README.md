@@ -71,7 +71,7 @@ $ meson setup build/ \
 $ ninja -C build/ install
 ```
 
-6. Set environment variables in your shell setting file (e.g. ~/.bashrc) for using the SupportOSMesa.
+7. Set environment variables in your shell setting file (e.g. ~/.bashrc) for using the SupportOSMesa.
 ```
 export KVS_OSMESA_DIR=${HOME}/local/osmesa
 export PKG_CONFIG_PATH=$KVS_OSMESA_DIR/lib/pkgconfig/:$PKG_CONFIG_PATH
