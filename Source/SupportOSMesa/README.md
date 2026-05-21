@@ -34,7 +34,7 @@ $ tar xf mesa-25.0.7.tar.xz
 $ cd mesa-25.0.7
 ```
 
-5. Set the environment variables required for compilation. Specify the installation directory in the OSMESA_PREFIX environment variable.
+5. Set the environment variables required for compilation temporary in the current terminal. Specify the installation directory in the OSMESA_PREFIX environment variable.
 ```sh
 $ export OSMESA_PREFIX="$HOME/local/osmesa"
 $ export LLVM20_PREFIX="$(brew --prefix llvm@20)"
@@ -73,10 +73,11 @@ $ ninja -C build/ install
 
 6. Set environment variables in your shell setting file (e.g. ~/.bashrc) for using the SupportOSMesa.
 ```
-export PKG_CONFIG_PATH=$KVS_OSMESA_DIR/lib/pkgconfig/:$PKG_CONFIG_PATH
 export KVS_OSMESA_DIR=${HOME}/local/osmesa
+export PKG_CONFIG_PATH=$KVS_OSMESA_DIR/lib/pkgconfig/:$PKG_CONFIG_PATH
 export KVS_OSMESA_LINK_LIBRARY="$(pkg-config --cflags --libs osmesa)"
 ```
+* Set the environment variable KVS_OSMESA_DIR to the directory where OSMesa is installed (the same directory specified by OSMESA_PREFIX during compilation).
 
 ### Linux/Mac with osmesa-install.sh
 The OSMesa can also be easily compiled and installed by using [osmesa-install](https://github.com/devernay/osmesa-install.git) as follows.
