@@ -5,8 +5,6 @@
  */
 /*****************************************************************************/
 #pragma once
-#include <functional>
-//#include <mpi.h>
 #include "MPI.h"
 
 
@@ -20,61 +18,61 @@ namespace Operator
 {
 
 template <typename T>
-struct Max : public std::binary_function<T,T,T>
+struct Max
 {
     const T& operator () ( const T& x, const T& y ) const { return x < y ? y : x; }
 };
 
 template <typename T>
-struct Min : public std::binary_function<T,T,T>
+struct Min
 {
     const T& operator () ( const T& x, const T& y ) const { return x < y ? x : y; }
 };
 
 template <typename T>
-struct Sum : public std::binary_function<T,T,T>
+struct Sum
 {
     T operator () ( const T& x, const T& y ) const { return x + y; }
 };
 
 template <typename T>
-struct Prod : public std::binary_function<T,T,T>
+struct Prod
 {
     T operator () ( const T& x, const T& y ) const { return x * y; }
 };
 
 template <typename T>
-struct LogicalAND : public std::binary_function<T,T,T>
+struct LogicalAND
 {
     bool operator () ( const T& x, const T& y ) const { return x && y; }
 };
 
 template <typename T>
-struct BitwiseAND : public std::binary_function<T,T,T>
+struct BitwiseAND
 {
     T operator () ( const T& x, const T& y ) const { return x & y; }
 };
 
 template <typename T>
-struct LogicalOR : public std::binary_function<T,T,T>
+struct LogicalOR
 {
     bool operator () ( const T& x, const T& y ) const { return x || y; }
 };
 
 template <typename T>
-struct BitwiseOR : public std::binary_function<T,T,T>
+struct BitwiseOR
 {
     T operator () ( const T& x, const T& y ) const { return x | y; }
 };
 
 template <typename T>
-struct LogicalXOR : public std::binary_function<T,T,T>
+struct LogicalXOR
 {
     bool operator () ( const T& x, const T& y ) const { return ( x || y ) && !( x && y ); }
 };
 
 template <typename T>
-struct BitwiseXOR : public std::binary_function<T,T,T>
+struct BitwiseXOR
 {
     T operator () ( const T& x, const T& y ) const { return x ^ y; }
 };
