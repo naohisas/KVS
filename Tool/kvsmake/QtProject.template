@@ -218,7 +218,7 @@ NUMPY_LIBRARY_PATH = .
 equals( KVS_SUPPORT_PYTHON, "1" ) {
     PYTHON_VER = $$system( "$$PY -c \"from __future__ import print_function; import sys; print( sys.version_info[0] )\"")
     PYTHON_INCLUDE_PATH = $$system( "$$PYCONF --includes | sed -e 's/-I//g'" )
-    PYTHON_LIBRARY_PATH = $$system( "$$PYCONF --ldflags" )
+    PYTHON_LIBRARY_PATH = $$system( "$$PYCONF --ldflags | tr ' ' '\\n' | grep '^-L\\|^-F' | tr '\\n' ' '" )
     equals( PYTHON_VER, "2" ) {
         PYTHON_LINK_LIBRARY = $$system( "$$PYCONF --libs" )
     }

@@ -10,6 +10,7 @@
 #include <kvs/StringList>
 #include <kvs/OpenGL>
 #include <kvs/Message>
+#include <kvs/IgnoreUnusedVariable>
 #if defined( KVS_SUPPORT_GLUT )
 #include <kvs/glut/GLUT>
 #endif
@@ -25,8 +26,8 @@ namespace kvscheck
 /*===========================================================================*/
 class Extension : public kvs::Program
 {
-    int m_argc;
-    char** m_argv;
+    int m_argc = 0;
+    char** m_argv = nullptr;
 
 public:
     Extension( int argc, char** argv ): m_argc( argc ), m_argv( argv ) {}
@@ -73,6 +74,8 @@ public:
         return 0;
 #endif
 #else
+        kvs::IgnoreUnusedVariable( m_argc );
+        kvs::IgnoreUnusedVariable( m_argv );
         kvsMessageError(
             "KVS_SUPPORT_GLUT option is disabled in the installed KVS. "
             "GLUT is required to check OpenGL information using kvscheck.");

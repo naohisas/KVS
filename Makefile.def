@@ -484,7 +484,7 @@ endif
 ifeq "$(KVS_SUPPORT_PYTHON)" "1"
   PYTHON_VER := $(shell $(PY) -c "from __future__ import print_function; import sys; print( sys.version_info[0] )")
   PYTHON_INCLUDE_PATH := $(shell $(PYCONF) --includes)
-  PYTHON_LIBRARY_PATH := $(shell $(PYCONF) --ldflags)
+  PYTHON_LIBRARY_PATH := $(filter -L% -F%,$(shell $(PYCONF) --ldflags))
   ifeq "$(PYTHON_VER)" "3"
     PYTHON_LINK_LIBRARY := $(shell $(PYCONF) --libs --embed)
   else
