@@ -3,12 +3,14 @@
 #include <utility>
 #include <iostream>
 #include <memory>
-
-#if __cplusplus > 201703L
-#include <compare>
-#endif
+#include <type_traits>
 
 #include "ffmpeg.h"
+#include "avutils.h"
+
+#if AVCPP_USE_SPACESHIP_OPERATOR
+#  include <compare>
+#endif
 
 namespace av
 {
@@ -49,18 +51,16 @@ public:
     Rational& operator=  (double value) noexcept;
 
     bool      operator== (const Rational   &other) const noexcept;
-#if __cplusplus > 201703L
+#if AVCPP_USE_SPACESHIP_OPERATOR
     std::strong_ordering operator<=>(const Rational &other) const noexcept
     {
-        switch (threewaycmp(other)) {
-        case -1:
-            return std::strong_ordering::less;
-        case 0:
+        if (auto const cmp = threewaycmp(other); cmp == 0) {
             return std::strong_ordering::equal;
-        case 1:
+        } else if (cmp < 0) {
+            return std::strong_ordering::less;
+        } else {
             return std::strong_ordering::greater;
         }
-        return std::strong_ordering::equal; // make a compiler happy
     }
 #else
     bool operator!= (const Rational &other) const noexcept {
@@ -100,6 +100,20 @@ private:
 };
 
 
+template<typename T>
+auto operator/ (T num, Rational value) ->
+    std::enable_if_t<std::is_floating_point_v<T> || std::is_integral_v<T>, Rational>
+{
+    return Rational{num, 1} / value;
+}
+
+template<typename T>
+auto operator/ (Rational value, T num) ->
+    std::enable_if_t<std::is_floating_point_v<T> || std::is_integral_v<T>, Rational>
+{
+    return value / Rational{num, 1};
+}
+
 inline std::ostream& operator<< (std::ostream &stream, const Rational &value)
 {
     stream << value.getNumerator() << '/' << value.getDenominator();
@@ -129,3 +143,23 @@ inline std::istream& operator>> (std::istream &stream, Rational &value)
 
 
 } // ::av
+
+
+#ifdef __cpp_lib_format
+#include <format>
+// std::format
+template <typename CharT>
+struct std::formatter<av::Rational, CharT>
+{
+    template<typename ParseContext>
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
+    template<typename ParseContext>
+    auto format(const av::Rational& value, ParseContext& ctx) const
+    {
+        return std::format_to(ctx.out(), "{}/{}", value.getNumerator(), value.getDenominator());
+    }
+};
+#endif

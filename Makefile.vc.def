@@ -156,6 +156,7 @@ GLFW_LIBRARY_PATH = $(GLFW_LIBRARY_PATH) /LIBPATH:"$(KVS_GLFW_DIR)\lib"
 FFMPEG_INCLUDE_PATH =
 FFMPEG_LIBRARY_PATH =
 FFMPEG_LINK_LIBRARY = avcodec.lib avformat.lib avutil.lib avdevice.lib avfilter.lib swscale.lib
+FFMPEG_LINK_LIBRARY = avcodec.lib avformat.lib avutil.lib avdevice.lib avfilter.lib swscale.lib swresample.lib
 !IFDEF KVS_FFMPEG_DIR
 FFMPEG_INCLUDE_PATH = $(FFMPEG_INCLUDE_PATH) /I"$(KVS_FFMPEG_DIR)\include"
 FFMPEG_LIBRARY_PATH = $(FFMPEG_LIBRARY_PATH) /LIBPATH:"$(KVS_FFMPEG_DIR)\lib"

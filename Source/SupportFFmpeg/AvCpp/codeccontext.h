@@ -1,5 +1,7 @@
 #pragma once
 
+#include "avcompat.h"
+
 #include "ffmpeg.h"
 #include "stream.h"
 #include "avutils.h"
@@ -13,7 +15,6 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
-#include <libavformat/version.h>
 }
 
 namespace av {
@@ -23,6 +24,10 @@ void set_channels(AVCodecContext *obj, int channels);
 void set_channel_layout_mask(AVCodecContext *obj, uint64_t mask);
 int get_channels(const AVCodecContext *obj);
 uint64_t get_channel_layout_mask(const AVCodecContext *obj);
+}
+
+namespace codec_context::internal {
+const int *get_supported_samplerates(const struct AVCodec *codec);
 }
 
 class CodecContext2 : public FFWrapperPtr<AVCodecContext>, public noncopyable
@@ -40,10 +45,12 @@ protected:
     CodecContext2();
 
     // Stream decoding/encoding
+#if AVCPP_HAS_AVFORMAT
     CodecContext2(const class Stream &st,
                   const class Codec& codec,
                   Direction direction,
                   AVMediaType type);
+#endif // if AVCPP_HAS_AVFORMAT
 
     // Stream independ decoding/encoding
     CodecContext2(const class Codec &codec, Direction direction, AVMediaType type);
@@ -89,7 +96,9 @@ public:
     Rational timeBase() const noexcept;
     void setTimeBase(const Rational &value) noexcept;
 
+#if AVCPP_HAS_AVFORMAT
     const Stream& stream() const noexcept;
+#endif // if AVCPP_HAS_AVFORMAT
     Codec codec() const noexcept;
 
     void setOption(const std::string &key, const std::string &val, OptionalErrorCode ec = throws());
@@ -165,7 +174,9 @@ public:
                  int (*encodeProc)(AVCodecContext *, AVPacket *, const AVFrame *, int *));
 
 private:
+#if AVCPP_HAS_AVFORMAT
     Stream m_stream;
+#endif // if AVCPP_HAS_AVFORMAT
 };
 
 
@@ -184,7 +195,9 @@ protected:
 public:
     GenericCodecContext() = default;
 
+#if AVCPP_HAS_AVFORMAT
     GenericCodecContext(Stream st);
+#endif // if AVCPP_HAS_AVFORMAT
 
     GenericCodecContext(GenericCodecContext&& other);
 
@@ -218,10 +231,12 @@ public:
     }
 
     // Stream decoding/encoding
+#if AVCPP_HAS_AVFORMAT
     explicit CodecContextBase(const class Stream &st, const class Codec& codec = Codec())
         : CodecContext2(st, codec, _direction, _type)
     {
     }
+#endif // if AVCPP_HAS_AVFORMAT
 
     // Stream independ decoding/encoding
     explicit CodecContextBase(const Codec &codec)
@@ -318,7 +333,7 @@ public:
 
     void setWidth(int w) // Note, it also sets coded_width
     {
-        if (isValid() & !isOpened())
+        if (isValid() && !isOpened())
         {
             m_raw->width       = w;
             m_raw->coded_width = w;
@@ -511,7 +526,7 @@ public:
         return codec_context::audio::get_channel_layout_mask(m_raw);
     }
 
-#if API_NEW_CHANNEL_LAYOUT
+#if AVCPP_API_NEW_CHANNEL_LAYOUT
     ChannelLayoutView channelLayout2() const noexcept
     {
         if (!isValid())
@@ -524,7 +539,11 @@ public:
     {
         if (!isValid())
             return;
-        int sr = guessValue(sampleRate, m_raw->codec->supported_samplerates, EqualComparator<int>(0));
+#if AVCPP_CXX_STANDARD >= 20
+        int sr = guessValue(sampleRate, make_array_view_until<const int>(codec_context::internal::get_supported_samplerates(m_raw->codec), 0));
+#else
+        int sr = guessValue(sampleRate, codec_context::internal::get_supported_samplerates(m_raw->codec), EqualComparator<int>(0));
+#endif
         if (sr != sampleRate)
         {
             fflog(AV_LOG_INFO, "Guess sample rate %d instead unsupported %d\n", sr, sampleRate);
@@ -552,7 +571,7 @@ public:
         codec_context::audio::set_channel_layout_mask(m_raw, layout);
     }
 
-#if API_NEW_CHANNEL_LAYOUT
+#if AVCPP_API_NEW_CHANNEL_LAYOUT
     void setChannelLayout(ChannelLayout layout) noexcept
     {
         if (!isValid() || !layout.isValid())

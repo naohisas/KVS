@@ -2,6 +2,8 @@
 #include "codeccontext.h"
 #include "stream.h"
 
+#if AVCPP_HAS_AVFORMAT
+
 namespace av
 {
 
@@ -59,7 +61,7 @@ Timestamp Stream::duration() const
 
 Timestamp Stream::currentDts() const
 {
-#if (LIBAVFORMAT_VERSION_MAJOR) >= 59
+#if (AVCPP_AVFORMAT_VERSION_MAJOR) >= 59
     return {av::NoPts, timeBase()};
 #else
     return {RAW_GET2(isValid(), cur_dts, av::NoPts), timeBase()};
@@ -68,7 +70,7 @@ Timestamp Stream::currentDts() const
 
 AVMediaType Stream::mediaType() const
 {
-#if !USE_CODECPAR
+#if !AVCPP_USE_CODECPAR
     FF_DISABLE_DEPRECATION_WARNINGS
     return RAW_GET2(isValid() && m_raw->codec, codec->codec_type, AVMEDIA_TYPE_UNKNOWN);
     FF_ENABLE_DEPRECATION_WARNINGS
@@ -170,3 +172,4 @@ void Stream::setupEncodingParameters(const VideoEncoderContext &ctx, OptionalErr
 
 } // ::av
 
+#endif // if AVCPP_HAS_AVFORMAT

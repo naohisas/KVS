@@ -412,7 +412,7 @@ ifeq "$(KVS_SUPPORT_FFMPEG)" "1"
   ifdef KVS_FFMPEG_LINK_LIBRARY
     FFMPEG_LINK_LIBRARY += $(KVS_FFMPEG_LINK_LIBRARY)
   else
-    FFMPEG_LINK_LIBRARY += -lavcodec -lavformat -lavutil -lavdevice -lavfilter -lswscale
+    FFMPEG_LINK_LIBRARY += -lavcodec -lavformat -lavutil -lavdevice -lavfilter -lswscale -lswresample
   endif
 endif
 
