@@ -27,6 +27,11 @@ void SphericalMovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     const auto* frame = video->device().queryFrame();
     if ( !frame ) { return; }
 
+    const auto width = frame->width;
+    const auto height = frame->height;
+    const auto* data = frame->imageData; // BGRBGRBGR...
+    if ( width <= 0 || height <= 0 || !data ) { return; }
+
     BaseClass::startTimer();
 
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -42,23 +47,17 @@ void SphericalMovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     const kvs::Vec2 image_size( video->width(), video->height() );
     const kvs::Vec2 screen_size( camera->windowWidth(), camera->windowHeight() );
 
-    const auto width = frame->width;
-    const auto height = frame->height;
-    const auto* data = frame->imageData; // BGRBGRBGR...
-    if ( frame->width <= 0 || frame->height <= 0 || !frame->imageData ) { return; }
-    if ( !BaseClass::texture().isCreated() ) { BaseClass::createTexture( video ); }
     if ( !BaseClass::texture().isCreated() ) { return; }
 
     BaseClass::texture().bind();
+    kvs::Texture::Binder unit( BaseClass::texture(), 0 );
+    kvs::ProgramObject::Binder shader( m_shader_program );
     BaseClass::texture().load( width, height, data );
-    m_shader_program.bind();
     m_shader_program.setUniform( "spherical_map", 0 );
     m_shader_program.setUniform( "R", object->xform().rotation() );
     m_shader_program.setUniform( "image_size", image_size );
     m_shader_program.setUniform( "screen_size", screen_size );
     BaseClass::textureMapping();
-    BaseClass::texture().unbind();
-    m_shader_program.unbind();
 
     BaseClass::updateFrameIndex( video );
 

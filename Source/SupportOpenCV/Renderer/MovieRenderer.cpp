@@ -44,6 +44,13 @@ void MovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     const auto width = frame->width;
     const auto height = frame->height;
     const auto* data = frame->imageData; // BGRBGRBGR...
+    if ( width <= 0 || height <= 0 || !data )
+    {
+        kvs::OpenGL::SetClearDepth( 1000 );
+        BaseClass::stopTimer();
+        return;
+    }
+
     BaseClass::texture().bind();
     BaseClass::texture().load( width, height, data );
     BaseClass::textureMapping();

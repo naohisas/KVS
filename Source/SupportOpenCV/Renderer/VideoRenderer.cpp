@@ -93,6 +93,7 @@ void VideoRenderer::createTexture( const kvs::opencv::VideoObject* video )
     else
     {
         kvsMessageError("Unknown pixel color type.");
+        return;
     }
 
     const auto frame = video->device().queryFrame();

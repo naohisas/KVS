@@ -96,9 +96,9 @@ bool VideoObject::createCaptureDevice( const std::string& filename )
 bool VideoObject::initialize( const kvs::opencv::CaptureDevice& device )
 {
     const auto* frame = device.queryFrame();
-    if ( !frame )
+    if ( !frame || frame->width <= 0 || frame->height <= 0 || !frame->imageData )
     {
-        kvsMessageError("Cannot query a new frame from the capture device.");
+        kvsMessageError("Cannot query a valid frame from the capture device.");
         return false;
     }
 
