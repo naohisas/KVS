@@ -47,9 +47,12 @@ void SphericalMovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     const kvs::Vec2 image_size( video->width(), video->height() );
     const kvs::Vec2 screen_size( camera->windowWidth(), camera->windowHeight() );
 
-    if ( !BaseClass::texture().isCreated() ) { return; }
+    if ( !BaseClass::texture().isCreated() )
+    {
+        BaseClass::stopTimer();
+        return;
+    }
 
-    BaseClass::texture().bind();
     kvs::Texture::Binder unit( BaseClass::texture(), 0 );
     kvs::ProgramObject::Binder shader( m_shader_program );
     BaseClass::texture().load( width, height, data );
