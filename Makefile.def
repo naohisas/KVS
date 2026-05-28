@@ -61,6 +61,10 @@ ifndef KVS_PY
   KVS_PY := python
 endif
 
+ifndef KVS_CPP_STANDARD
+  KVS_CPP_STANDARD := 17
+endif
+
 
 SHELL  := /bin/bash
 CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
@@ -562,7 +566,7 @@ CPPFLAGS :=
 
 # For Fujitsu C++ compiler (FCC/mpiFCC/FCCpx/mpiFCCpx)
 ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCC FCCpx mpiFCC mpiFCCpx))
-  CPPFLAGS += -std=c++14
+  CPPFLAGS += -std=c++$(KVS_CPP_STANDARD)
   ifdef DEBUG
     CPPFLAGS += -O0 -g
   else
@@ -575,7 +579,7 @@ ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),FCC FCCpx mpiFCC mpiFCCpx))
 
 # For Intel C++ compiler (icpc/mpiicpc)
 else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
-  CPPFLAGS += -std=c++14
+  CPPFLAGS += -std=c++$(KVS_CPP_STANDARD)
   CPPFLAGS += -Wall
   ifdef DEBUG
     CPPFLAGS += -O0 -g
@@ -585,7 +589,7 @@ else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),icpc mpiicpc))
 
 # For Clang compiler (clang++)
 else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),clang++))
-  CPPFLAGS += -std=c++14
+  CPPFLAGS += -std=c++$(KVS_CPP_STANDARD)
   CPPFLAGS += -Wall
   ifdef DEBUG
     CPPFLAGS += -O0 -g
@@ -595,7 +599,7 @@ else ifeq ($(KVS_CPP),$(findstring $(KVS_CPP),clang++))
 
 # For g++
 else
-  CPPFLAGS += -std=c++14
+  CPPFLAGS += -std=c++$(KVS_CPP_STANDARD)
   CPPFLAGS += -Wall
   ifdef DEBUG
     CPPFLAGS += -O0 -ggdb3

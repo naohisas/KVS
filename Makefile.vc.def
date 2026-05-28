@@ -27,6 +27,10 @@ LD     = link /nologo
 AR     = lib /nologo
 QMAKE  = qmake
 
+!IFNDEF KVS_CPP_STANDARD
+KVS_CPP_STANDARD = 17
+!ENDIF
+
 MKDIR   = mkdir
 RM      = del /s
 RMDIR   = rmdir /q /s
@@ -260,7 +264,7 @@ EGL_LIBRARY_PATH = $(EGL_LIBRARY_PATH) /LIBPATH:"$(KVS_EGL_DIR)\lib"
 #=============================================================================
 #  Compiler option.
 #=============================================================================
-CPPFLAGS = /W3 /EHsc /GR
+CPPFLAGS = /W3 /EHsc /GR /std:c++$(KVS_CPP_STANDARD)
 
 !IFDEF DEBUG
 CPPFLAGS = $(CPPFLAGS) /Od /MTd

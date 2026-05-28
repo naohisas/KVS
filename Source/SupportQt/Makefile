@@ -41,4 +41,4 @@ install:: $(QT_MAKEFILE)
 #  qmake.
 #=============================================================================
 $(QT_MAKEFILE):
-	$(QMAKE) -o $(QT_MAKEFILE) $(SOLUTION).pro
+	$(QMAKE) -o $(QT_MAKEFILE) $(SOLUTION).pro KVS_CPP_STANDARD=$(KVS_CPP_STANDARD)

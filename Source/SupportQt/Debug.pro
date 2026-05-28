@@ -14,6 +14,10 @@ KVS_CPP = $$(KVS_CPP)
 QMAKE_CXX = $(KVS_CPP)
 }
 
-QMAKE_CXXFLAGS += -std=c++14
+isEmpty( KVS_CPP_STANDARD ) {
+KVS_CPP_STANDARD = 17
+}
+
+CONFIG += c++$${KVS_CPP_STANDARD}
 
 include( SupportQt.pri )
