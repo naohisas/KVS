@@ -46,6 +46,13 @@ void VideoRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     const auto width = frame->width;
     const auto height = frame->height;
     const auto* data = frame->imageData; // BGRBGRBGR...
+    if ( width <= 0 || height <= 0 || !data )
+    {
+        kvs::OpenGL::SetClearDepth( 1000 );
+        BaseClass::stopTimer();
+        return;
+    }
+
     this->texture().bind();
     this->texture().load( width, height, data );
     this->textureMapping();
@@ -89,9 +96,14 @@ void VideoRenderer::createTexture( const kvs::opencv::VideoObject* video )
     }
 
     const auto frame = video->device().queryFrame();
-    const int frame_width = frame->width;
-    const int frame_height = frame->height;
-    m_texture.create( frame_width, frame_height );
+    if ( !frame || frame->width <= 0 || frame->height <= 0 || !frame->imageData )
+    {
+        return;
+    }
+
+    m_texture.setWrapS( GL_CLAMP_TO_EDGE );
+    m_texture.setWrapT( GL_CLAMP_TO_EDGE );
+    m_texture.create( frame->width, frame->height );
 }
 
 /*===========================================================================*/

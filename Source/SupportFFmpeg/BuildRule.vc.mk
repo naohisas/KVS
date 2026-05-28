@@ -7,6 +7,7 @@ $(OUTDIR)\.\AvCpp\audioresampler.obj \
 $(OUTDIR)\.\AvCpp\averror.obj \
 $(OUTDIR)\.\AvCpp\avtime.obj \
 $(OUTDIR)\.\AvCpp\avutils.obj \
+$(OUTDIR)\.\AvCpp\buffer.obj \
 $(OUTDIR)\.\AvCpp\channellayout.obj \
 $(OUTDIR)\.\AvCpp\codec.obj \
 $(OUTDIR)\.\AvCpp\codeccontext.obj \

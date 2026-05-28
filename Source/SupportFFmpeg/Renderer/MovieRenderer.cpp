@@ -48,7 +48,14 @@ void MovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Lig
     {
         const auto width = movie->width();
         const auto height = movie->height();
-        const auto buffer = movie->currentBuffer(); // RGBRGB...
+        const auto& buffer = movie->currentBuffer(); // RGBRGB...
+        if ( width == 0 || height == 0 || buffer.size() != width * height * 3 )
+        {
+            kvs::OpenGL::SetClearDepth( 1000 );
+            BaseClass::stopTimer();
+            return;
+        }
+
         this->texture().bind();
         this->texture().load( width, height, buffer.data() );
         this->drawTexture();
@@ -92,8 +99,8 @@ void MovieRenderer::createTexture( const kvs::ffmpeg::MovieObject* object )
     m_top = 1.0;
 
     m_texture.release();
-    m_texture.setWrapS( GL_REPEAT );
-    m_texture.setWrapT( GL_REPEAT );
+    m_texture.setWrapS( GL_CLAMP_TO_EDGE );
+    m_texture.setWrapT( GL_CLAMP_TO_EDGE );
     m_texture.setMagFilter( GL_LINEAR );
     m_texture.setMinFilter( GL_LINEAR );
     m_texture.setPixelFormat( GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE );

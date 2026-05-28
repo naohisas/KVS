@@ -59,6 +59,13 @@ void SphericalMovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera,
         const auto width = movie->width();
         const auto height = movie->height();
         const auto buffer = movie->currentBuffer(); // RGBRGB...
+        if ( width == 0 || height == 0 || buffer.size() != width * height * 3 )
+        {
+            kvs::OpenGL::SetClearDepth( 1000 );
+            BaseClass::stopTimer();
+            return;
+        }
+
         BaseClass::texture().load( width, height, buffer.data() );
         BaseClass::drawTexture();
     }

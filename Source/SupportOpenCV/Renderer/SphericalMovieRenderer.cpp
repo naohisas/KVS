@@ -45,6 +45,9 @@ void SphericalMovieRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     const auto width = frame->width;
     const auto height = frame->height;
     const auto* data = frame->imageData; // BGRBGRBGR...
+    if ( frame->width <= 0 || frame->height <= 0 || !frame->imageData ) { return; }
+    if ( !BaseClass::texture().isCreated() ) { BaseClass::createTexture( video ); }
+    if ( !BaseClass::texture().isCreated() ) { return; }
 
     BaseClass::texture().bind();
     BaseClass::texture().load( width, height, data );

@@ -241,6 +241,7 @@ struct GLNVGcontext {
 	int ctextures;
 	int textureId;
 	GLuint vertBuf;
+	GLuint dummyTex;
 #if defined NANOVG_GL3
 	GLuint vertArr;
 #endif
@@ -422,7 +423,7 @@ static void glnvg__dumpProgramError(GLuint prog, const char* name)
 
 static void glnvg__checkError(GLNVGcontext* gl, const char* str)
 {
-	GLenum err;
+	GLenum err = GL_NO_ERROR;
 	if ((gl->flags & NVG_DEBUG) == 0) return;
 	KVS_GL_CALL( err = glGetError() );
 	if (err != GL_NO_ERROR) {
@@ -433,8 +434,10 @@ static void glnvg__checkError(GLNVGcontext* gl, const char* str)
 
 static int glnvg__createShader(GLNVGshader* shader, const char* name, const char* header, const char* opts, const char* vshader, const char* fshader)
 {
-	GLint status;
-	GLuint prog, vert, frag;
+	GLint status = GL_FALSE;
+	GLuint prog = 0;
+	GLuint vert = 0;
+	GLuint frag = 0;
 	const char* str[3];
 	str[0] = header;
 	str[1] = opts != NULL ? opts : "";
@@ -711,6 +714,17 @@ static int glnvg__renderCreate(void* uptr)
 	KVS_GL_CALL( glGenVertexArrays(1, &gl->vertArr) );
 #endif
 	KVS_GL_CALL( glGenBuffers(1, &gl->vertBuf) );
+	{
+		unsigned char data[4] = { 255, 255, 255, 255 };
+		KVS_GL_CALL( glGenTextures(1, &gl->dummyTex) );
+		KVS_GL_CALL( glBindTexture(GL_TEXTURE_2D, gl->dummyTex) );
+		KVS_GL_CALL( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
+		KVS_GL_CALL( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) );
+		KVS_GL_CALL( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) );
+		KVS_GL_CALL( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) );
+		KVS_GL_CALL( glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data) );
+		KVS_GL_CALL( glBindTexture(GL_TEXTURE_2D, 0) );
+	}
 
 #if NANOVG_GL_USE_UNIFORMBUFFER
 	// Create UBOs
@@ -991,14 +1005,15 @@ static void glnvg__setUniforms(GLNVGcontext* gl, int uniformOffset, int image)
 #else
     GLNVGfragUniforms* frag = nvg__fragUniformPtr(gl, uniformOffset);
     KVS_GL_CALL( glUniform4fv(gl->shader.loc[GLNVG_LOC_FRAG], NANOVG_GL_UNIFORMARRAY_SIZE, &(frag->uniformArray[0][0])) );
+    NVG_NOTUSED(frag);
 #endif
 
     if (image != 0) {
         GLNVGtexture* tex = glnvg__findTexture(gl, image);
-        glnvg__bindTexture(gl, tex != NULL ? tex->tex : 0);
+        glnvg__bindTexture(gl, tex != NULL ? tex->tex : gl->dummyTex);
         glnvg__checkError(gl, "tex paint tex");
     } else {
-        glnvg__bindTexture(gl, 0);
+        glnvg__bindTexture(gl, gl->dummyTex);
     }
 }
 
@@ -1012,6 +1027,7 @@ static void glnvg__renderViewport(void* uptr, int width, int height, float devic
 static void glnvg__fill(GLNVGcontext* gl, GLNVGcall* call)
 {
 	GLNVGpath* paths = &gl->paths[call->pathOffset];
+	NVG_NOTUSED(paths);
 	int i, npaths = call->pathCount;
 
 	// Draw shapes
@@ -1056,6 +1072,7 @@ static void glnvg__fill(GLNVGcontext* gl, GLNVGcall* call)
 static void glnvg__convexFill(GLNVGcontext* gl, GLNVGcall* call)
 {
 	GLNVGpath* paths = &gl->paths[call->pathOffset];
+	NVG_NOTUSED(paths);
 	int i, npaths = call->pathCount;
 
 	glnvg__setUniforms(gl, call->uniformOffset, call->image);
@@ -1073,6 +1090,7 @@ static void glnvg__convexFill(GLNVGcontext* gl, GLNVGcall* call)
 static void glnvg__stroke(GLNVGcontext* gl, GLNVGcall* call)
 {
 	GLNVGpath* paths = &gl->paths[call->pathOffset];
+	NVG_NOTUSED(paths);
 	int npaths = call->pathCount, i;
 
 	if (gl->flags & NVG_STENCIL_STROKES) {
@@ -1198,9 +1216,9 @@ static void glnvg__renderFlush(void* uptr)
 		KVS_GL_CALL( glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP) );
 		KVS_GL_CALL( glStencilFunc(GL_ALWAYS, 0, 0xffffffff) );
 		KVS_GL_CALL( glActiveTexture(GL_TEXTURE0) );
-		KVS_GL_CALL( glBindTexture(GL_TEXTURE_2D, 0) );
+		KVS_GL_CALL( glBindTexture(GL_TEXTURE_2D, gl->dummyTex) );
 		#if NANOVG_GL_USE_STATE_FILTER
-		gl->boundTexture = 0;
+		gl->boundTexture = gl->dummyTex;
 		gl->stencilMask = 0xffffffff;
 		gl->stencilFunc = GL_ALWAYS;
 		gl->stencilFuncRef = 0;
@@ -1545,6 +1563,8 @@ static void glnvg__renderDelete(void* uptr)
 #endif
 	if (gl->vertBuf != 0)
             KVS_GL_CALL( glDeleteBuffers(1, &gl->vertBuf) );
+	if (gl->dummyTex != 0)
+            KVS_GL_CALL( glDeleteTextures(1, &gl->dummyTex) );
 
 	for (i = 0; i < gl->ntextures; i++) {
             if (gl->textures[i].tex != 0 && (gl->textures[i].flags & NVG_IMAGE_NODELETE) == 0)
