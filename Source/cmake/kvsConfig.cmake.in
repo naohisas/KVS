@@ -1,0 +1,147 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+set(KVS_VERSION "@PROJECT_VERSION@")
+set(KVS_ENABLE_OPENGL @KVS_ENABLE_OPENGL@)
+set(KVS_ENABLE_GLU @KVS_ENABLE_GLU@)
+set(KVS_ENABLE_GLEW @KVS_ENABLE_GLEW@)
+set(KVS_ENABLE_OPENMP @KVS_ENABLE_OPENMP@)
+set(KVS_ENABLE_DEPRECATED @KVS_ENABLE_DEPRECATED@)
+set(KVS_SUPPORT_GLUT @KVS_SUPPORT_GLUT@)
+set(KVS_SUPPORT_GLFW @KVS_SUPPORT_GLFW@)
+set(KVS_SUPPORT_FFMPEG @KVS_SUPPORT_FFMPEG@)
+set(KVS_SUPPORT_QT @KVS_SUPPORT_QT@)
+set(KVS_SUPPORT_OPENCV @KVS_SUPPORT_OPENCV@)
+set(KVS_SUPPORT_CUDA @KVS_SUPPORT_CUDA@)
+set(KVS_SUPPORT_PYTHON @KVS_SUPPORT_PYTHON@)
+set(KVS_SUPPORT_MPI @KVS_SUPPORT_MPI@)
+set(KVS_SUPPORT_EGL @KVS_SUPPORT_EGL@)
+set(KVS_SUPPORT_OSMESA @KVS_SUPPORT_OSMESA@)
+
+if(@KVS_CONFIG_NEEDS_OPENGL@ OR @KVS_CONFIG_NEEDS_OPENGL_GLU@)
+    find_dependency(OpenGL)
+endif()
+
+if(@KVS_CONFIG_NEEDS_GLEW@)
+    find_dependency(GLEW)
+endif()
+
+if(@KVS_CONFIG_OPENMP_USES_TARGET@)
+    find_dependency(OpenMP COMPONENTS CXX)
+endif()
+
+if(@KVS_CONFIG_NEEDS_GLUT@)
+    find_dependency(GLUT)
+endif()
+
+if(@KVS_CONFIG_NEEDS_GLFW@)
+    find_dependency(glfw3 CONFIG)
+endif()
+
+if(@KVS_CONFIG_FFMPEG_USES_PKGCONFIG@)
+    find_dependency(PkgConfig)
+    pkg_check_modules(KVS_FFMPEG REQUIRED IMPORTED_TARGET
+        libavcodec libavformat libavutil libavdevice libavfilter libswscale libswresample
+    )
+endif()
+
+if(@KVS_SUPPORT_OPENCV@)
+    if(@KVS_CONFIG_OPENCV_USES_PKGCONFIG@)
+        find_dependency(PkgConfig)
+        pkg_check_modules(KVS_OPENCV QUIET IMPORTED_TARGET opencv4)
+        if(NOT KVS_OPENCV_FOUND)
+            pkg_check_modules(KVS_OPENCV REQUIRED IMPORTED_TARGET opencv)
+        endif()
+    else()
+        find_dependency(OpenCV)
+    endif()
+endif()
+
+set(_kvs_qt_package "@KVS_CONFIG_QT_PACKAGE@")
+set(_kvs_qt_components "@KVS_CONFIG_QT_COMPONENTS@")
+if(_kvs_qt_package)
+    find_dependency(${_kvs_qt_package} COMPONENTS ${_kvs_qt_components})
+endif()
+
+if(@KVS_SUPPORT_CUDA@)
+    find_dependency(CUDAToolkit)
+endif()
+
+if(@KVS_SUPPORT_PYTHON@)
+    find_dependency(Python3 COMPONENTS Interpreter Development NumPy)
+endif()
+
+if(@KVS_SUPPORT_MPI@)
+    find_dependency(MPI COMPONENTS CXX)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/kvsTargets.cmake")
+
+set(_kvs_known_components
+    Core
+    SupportGLUT
+    SupportGLFW
+    SupportFFmpeg
+    SupportQt
+    SupportOpenCV
+    SupportCUDA
+    SupportPython
+    SupportMPI
+    SupportEGL
+    SupportOSMesa
+)
+
+foreach(_component IN LISTS _kvs_known_components)
+    set(kvs_${_component}_FOUND FALSE)
+endforeach()
+
+if(TARGET kvs::kvsCore)
+    set(kvs_Core_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportGLUT)
+    set(kvs_SupportGLUT_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportGLFW)
+    set(kvs_SupportGLFW_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportFFmpeg)
+    set(kvs_SupportFFmpeg_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportQt)
+    set(kvs_SupportQt_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportOpenCV)
+    set(kvs_SupportOpenCV_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportCUDA)
+    set(kvs_SupportCUDA_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportPython)
+    set(kvs_SupportPython_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportMPI)
+    set(kvs_SupportMPI_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportEGL)
+    set(kvs_SupportEGL_FOUND TRUE)
+endif()
+if(TARGET kvs::kvsSupportOSMesa)
+    set(kvs_SupportOSMesa_FOUND TRUE)
+endif()
+
+foreach(_component IN LISTS kvs_FIND_COMPONENTS)
+    list(FIND _kvs_known_components "${_component}" _known_component_index)
+    if(_known_component_index EQUAL -1)
+        set(kvs_${_component}_FOUND FALSE)
+        if(kvs_FIND_REQUIRED_${_component})
+            set(kvs_NOT_FOUND_MESSAGE "Unsupported KVS component: ${_component}")
+        endif()
+    endif()
+endforeach()
+
+set(KVS_FOUND TRUE)
+set(KVS_LIBRARIES kvs::kvsCore)
+set(KVS_INCLUDE_DIRS "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_INCLUDEDIR@")
+
+check_required_components(kvs)
