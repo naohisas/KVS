@@ -256,7 +256,6 @@ function(kvs_make_library_paths out_var component)
 
     if(DEFINED ${_dir_var} AND NOT "${${_dir_var}}" STREQUAL "")
         list(APPEND _paths "${${_dir_var}}/lib")
-        list(APPEND _paths "${${_dir_var}}/lib64")
     endif()
     if(DEFINED ${_library_var} AND NOT "${${_library_var}}" STREQUAL "")
         kvs_parse_make_prefixed_paths(_env_paths "-L" "${${_library_var}}")

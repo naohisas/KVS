@@ -120,6 +120,23 @@ function(kvs_install_header_tree relative_dir)
     )
 endfunction()
 
+function(kvs_install_core_resource_files)
+    install(
+        DIRECTORY "${KVS_SOURCE_DIR}/Core/Visualization/Shader/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/Core/Visualization/Shader"
+        FILES_MATCHING
+            PATTERN "*.vert"
+            PATTERN "*.frag"
+            PATTERN "*.geom"
+    )
+    install(
+        DIRECTORY "${KVS_SOURCE_DIR}/Core/Visualization/Font/"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/Core/Visualization/Font"
+        FILES_MATCHING
+            PATTERN "*.ttf"
+    )
+endfunction()
+
 function(kvs_install_files_in_directory source_dir destination)
     file(GLOB _files CONFIGURE_DEPENDS "${source_dir}/*")
     foreach(_file IN LISTS _files)
@@ -365,6 +382,7 @@ target_include_directories(kvsCore PUBLIC ${KVS_GL_INCLUDE_DIRS})
 kvs_target_link_directories_if_any(kvsCore PUBLIC ${KVS_GL_LIBRARY_DIRS})
 target_link_libraries(kvsCore PUBLIC ${KVS_GL_LIBRARIES})
 kvs_install_library(kvsCore kvsCore Core "")
+kvs_install_core_resource_files()
 kvs_install_kvs_wrapper_files("")
 
 #
@@ -492,7 +510,6 @@ endif()
 # SupportQt
 #
 if(KVS_SUPPORT_QT)
-    set(CMAKE_AUTOMOC ON)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
     find_package(Qt6 QUIET COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
     if(Qt6_FOUND)
@@ -518,6 +535,7 @@ if(KVS_SUPPORT_QT)
     kvs_collect_sources(kvsSupportQt_SOURCES SupportQt)
     kvs_collect_headers(kvsSupportQt_HEADERS SupportQt)
     add_library(kvsSupportQt STATIC ${kvsSupportQt_SOURCES} ${kvsSupportQt_HEADERS})
+    set_target_properties(kvsSupportQt PROPERTIES AUTOMOC ON)
     generate_export_header(kvsSupportQt)
     kvs_target_common(kvsSupportQt)
     target_compile_definitions(kvsSupportQt PRIVATE ${KVS_QT_DEFINITIONS})
