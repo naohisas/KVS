@@ -65,6 +65,10 @@ ifndef KVS_CPP_STANDARD
   KVS_CPP_STANDARD := 17
 endif
 
+ifndef KVS_MACOSX_DEPLOYMENT_TARGET
+  KVS_MACOSX_DEPLOYMENT_TARGET :=
+endif
+
 
 SHELL  := /bin/bash
 CCACHE := $(shell $(SHELL) -c "(type -p ccache; type -p ccache-swig) | head -1")
@@ -670,6 +674,12 @@ ifeq "$(KVS_ENABLE_OPENMP)" "1"
   endif
 endif
 
+ifeq "$(shell uname -s)" "Darwin"
+  ifneq "$(KVS_MACOSX_DEPLOYMENT_TARGET)" ""
+    CPPFLAGS += -mmacosx-version-min=$(KVS_MACOSX_DEPLOYMENT_TARGET)
+  endif
+endif
+
 #=============================================================================
 #  Definition.
 #=============================================================================
@@ -761,3 +771,9 @@ endif
 #  Linker option.
 #=============================================================================
 LDFLAGS :=
+
+ifeq "$(shell uname -s)" "Darwin"
+  ifneq "$(KVS_MACOSX_DEPLOYMENT_TARGET)" ""
+    LDFLAGS += -mmacosx-version-min=$(KVS_MACOSX_DEPLOYMENT_TARGET)
+  endif
+endif

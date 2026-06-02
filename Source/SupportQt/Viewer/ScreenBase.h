@@ -38,6 +38,12 @@ class ScreenBase : public kvs::qt::OpenGLWidget, public kvs::ScreenBase
 
     using BaseClass = kvs::ScreenBase;
 
+private:
+    // Keep Qt's event-handler overloads visible while preserving KVS-compatible
+    // callback names.
+    using OpenGLWidget::paintEvent;
+    using OpenGLWidget::resizeEvent;
+
 public:
     static ScreenBase* DownCast( kvs::ScreenBase* screen );
     static const ScreenBase* DownCast( const kvs::ScreenBase* screen );
