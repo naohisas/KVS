@@ -2,241 +2,80 @@ Kyoto Visualization System
 ===
 [![Join the chat at https://gitter.im/naohisas/KVS](https://badges.gitter.im/naohisas/KVS.svg)](https://gitter.im/naohisas/KVS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Kyoto Visualization System (KVS) is a multi-platform, open-source C++ library for developing scientific visualization applications. KVS provides classes and interfaces for isosurface extraction, streamlines, volume rendering, image processing, and related visualization tasks.
+Kyoto Visualization System (KVS) is a multi-platform, open-source C++ library for developing scientific visualization applications. KVS provides various classes and interfaces, such as isosurace extraction, streamlines and volume rendering, to visualize medical data obtained by computerized tomography or magnetic resonance imaging, numerical data from computational fluid dynamics and so on.
 
 # Installation
 
 ## Getting KVS
-
+The source code of KVS can be downloaded via GitHub as follows:
 ```
-git clone https://github.com/naohisas/KVS.git
-cd KVS
+$ git clone https://github.com/naohisas/KVS.git
 ```
 
-## Installation directory
+## Configuration
+The environment variable ```KVS_DIR``` should be set to an install directory of KVS, and the binary directory ```KVS_DIR/bin``` which includes several KVS commands should be add to the PATH variable.
 
-KVS is installed into the directory specified by `KVS_DIR`.
-
-### Linux / macOS
-
+### Linux/Mac
 ```
-export KVS_DIR=$HOME/local/kvs
+export KVS_DIR=~/local/kvs
 export PATH=$KVS_DIR/bin:$PATH
 ```
 
 ### Windows
 
-| Variable | Value |
-|:--|:--|
-| `KVS_DIR` | `C:\Program Files\kvs` |
-| `PATH` | `%PATH%;%KVS_DIR%\bin` |
+|Variable|Value|
+|:-------|:----|
+|KVS_DIR |C:\Program Files\kvs|
+|PATH|%PATH%;%KVS_DIR%\bin|
 
-# Configuration
+## Support software package
+KVS supports the following software packages. By checking (changing 0:disable to 1:enable) the enable/support flags corresponding to each package in [kvs.conf](https://github.com/naohisas/KVS/blob/develop/kvs.conf), the functionalities provided from them can be available in KVS.
 
-KVS build options are mainly controlled by `kvs.conf` and environment variables.
-
-`kvs.conf` contains feature flags such as `KVS_ENABLE_OPENGL` and `KVS_SUPPORT_QT`.
-
-```
-KVS_ENABLE_OPENGL     = 1
-KVS_ENABLE_GLU        = 1
-KVS_ENABLE_GLEW       = 0
-KVS_ENABLE_OPENMP     = 0
-KVS_ENABLE_DEPRECATED = 0
-
-KVS_SUPPORT_GLUT      = 1
-KVS_SUPPORT_GLFW      = 0
-KVS_SUPPORT_FFMPEG    = 0
-KVS_SUPPORT_OPENCV    = 0
-KVS_SUPPORT_QT        = 0
-KVS_SUPPORT_PYTHON    = 0
-KVS_SUPPORT_MPI       = 0
-KVS_SUPPORT_EGL       = 0
-KVS_SUPPORT_OSMESA    = 0
-```
-
-Set a flag to `1` to enable the corresponding feature or support library.
-
-# Build with make
-
-## Linux / macOS
-
-```
-make
-make install
-```
-
-## Windows
-
-```
-nmake
-nmake install
-```
-
-## Common make targets
-
-| Target | Description |
-|:--|:--|
-| `make` or `make build` | Build KVS |
-| `make install` | Install KVS into `KVS_DIR` |
-| `make clean` | Remove build files |
-| `make rebuild` | Clean and build again |
-| `make uninstall` | Remove the installed `KVS_DIR` directory |
-| `make reinstall` | Uninstall and install again |
-
-## make build options
-
-The following variables can be passed as environment variables or command-line variables.
-
-```
-KVS_CPP_STANDARD=17 make
-KVS_CPP_STANDARD=17 make install
-```
-
-```
-KVS_CPP=clang++ KVS_CC=clang make
-```
-
-On macOS, `KVS_MACOSX_DEPLOYMENT_TARGET` can be used when a specific deployment target is required.
-
-```
-KVS_MACOSX_DEPLOYMENT_TARGET=14.0 make
-KVS_MACOSX_DEPLOYMENT_TARGET=14.0 make install
-```
-
-If `KVS_MACOSX_DEPLOYMENT_TARGET` is not specified, KVS does not add `-mmacosx-version-min`, allowing the compiler, SDK, and package manager environment to choose the default deployment target.
-
-# Build with CMake
-
-KVS also supports CMake builds. The CMake build reads `kvs.conf` and `Makefile.def` so that it can use settings compatible with the make-based build.
-
-```
-cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$KVS_DIR
-cmake --build build -j
-cmake --install build
-```
-
-You can also specify `KVS_DIR` directly.
-
-```
-cmake -S . -B build -DKVS_DIR=$HOME/local/kvs
-cmake --build build -j
-cmake --install build
-```
-
-## CMake build options
-
-CMake options can be specified with `-D`.
-
-```
-cmake -S . -B build \
-  -DKVS_DIR=$HOME/local/kvs \
-  -DKVS_CPP_STANDARD=17 \
-  -DKVS_SUPPORT_QT=ON \
-  -DKVS_SUPPORT_OPENCV=ON
-```
-
-On macOS:
-
-```
-cmake -S . -B build \
-  -DKVS_DIR=$HOME/local/kvs \
-  -DKVS_MACOSX_DEPLOYMENT_TARGET=14.0
-```
-
-# Main build variables
-
-| Variable | make | CMake | Description |
-|:--|:--:|:--:|:--|
-| `KVS_DIR` | yes | yes | KVS installation prefix |
-| `KVS_CPP_STANDARD` | yes | yes | C++ standard, default is `17` |
-| `KVS_MACOSX_DEPLOYMENT_TARGET` | yes | yes | macOS deployment target |
-| `KVS_CPP` | yes | yes | C++ compiler |
-| `KVS_CC` | yes | partial | C compiler used by make |
-| `KVS_FC` | yes | partial | Fortran compiler used by make |
-| `KVS_LD` | yes | yes | Linker command |
-| `KVS_PY` | yes | yes | Python executable |
-| `KVS_*_DIR` | yes | yes | Root directory of an optional dependency |
-| `KVS_*_INCLUDE_PATH` | yes | yes | Include path of an optional dependency |
-| `KVS_*_LIBRARY_PATH` | yes | yes | Library path of an optional dependency |
-| `KVS_*_LINK_LIBRARY` | yes | yes | Explicit link libraries |
-
-Examples:
-
-```
-KVS_GLFW_DIR=/opt/homebrew/opt/glfw make
-```
-
-```
-cmake -S . -B build -DKVS_GLFW_DIR=/opt/homebrew/opt/glfw
-```
-
-# Support packages
-
-KVS supports optional packages through `kvs.conf`.
-
-| Package | Flag | Description |
+|Package|Flag|Description|
 |:--|:--|:--|
-| OpenGL | `KVS_ENABLE_OPENGL` | Enable OpenGL-based rendering functionality |
-| GLU | `KVS_ENABLE_GLU` | Enable GLU support |
-| GLEW | `KVS_ENABLE_GLEW` | Enable GLEW support |
-| OpenMP | `KVS_ENABLE_OPENMP` | Enable OpenMP parallelization |
-| Deprecated APIs | `KVS_ENABLE_DEPRECATED` | Enable deprecated functions and classes |
-| CUDA | `KVS_SUPPORT_CUDA` | Enable CUDA support |
-| GLUT | `KVS_SUPPORT_GLUT` | Build GLUT-based screen and widgets |
-| GLFW | `KVS_SUPPORT_GLFW` | Build GLFW-based screen and widgets |
-| FFmpeg | `KVS_SUPPORT_FFMPEG` | Build movie input/output support |
-| OpenCV | `KVS_SUPPORT_OPENCV` | Build OpenCV-based image/video support |
-| Qt | `KVS_SUPPORT_QT` | Build Qt-based screen and widgets |
-| Python | `KVS_SUPPORT_PYTHON` | Build Python interaction support |
-| MPI | `KVS_SUPPORT_MPI` | Build MPI support |
-| EGL | `KVS_SUPPORT_EGL` | Build GPU off-screen rendering support |
-| OSMesa | `KVS_SUPPORT_OSMESA` | Build CPU off-screen rendering support |
+|OpenGL|KVS_ENABLE_OPENGL|Flag for enabling OpenGL functionalities. If '0' (disable) is specified for this flag, the renderer classes implemented with OpenGL functions in the visualization modules will be unavailable.|
+|GLU|KVS_ENABLE_GLU|Flag for enabling GLU (OpenGL Utility Library) functionalities. KVS can be complied even if this flag is zero.|
+|GLEW|KVS_ENABLE_GLEW|Flag for enabling GLEW (OpenGL Extension Wrangler Library) functionalities. Note: GLEW needs to be installed to compile KVS on Windows environments.|
+|OpenMP|KVS_ENABLE_OPENMP|Flag for enabling OpenMP functionalities. OpenMP supported compiler is required.|
+|(Deprecated functions)|KVS_ENABLE_DEPRECATED|Flag for enabling the deprecated functions and classes in KVS. Note: Although the deprecated functions and classes can be available by checking this flag, but not recommended.|
+|GLUT|KVS_SUPPORT_GLUT|Flag for supporting GLUT functions. The screen class based on the GLUT is provided. See [SupportGLUT README](Source/SupportGLUT/README.md) for setting information.|
+|GLFW|KVS_SUPPORT_GLFW|Flag for supporting GLFW functions. The screen class based on the GLFW is provided. Note: GLUT or GLFW is required for developing viewer application with KVS. See [SupportGLFW README](Source/SupportGLFW/README.md) for setting information.|
+|FFmpeg|KVS_SUPPORT_FFMPEG|Flag for supporting FFmpeg functions. See [SupportFFmpeg README](Source/SupportFFmpeg/README.md) for setting information.|
+|OpenCV|KVS_SUPPORT_OPENCV|Flag for supporting OpenCV functions. See [SupportOpenCV README](Source/SupportOpenCV/README.md) for setting information.|
+|Qt|KVS_SUPPORT_QT|Flag for supporting Qt classes. The screen class based on the Qt. See [SupportQt README](Source/SupportQt/README.md) for setting information.|
+|Python|KVS_SUPPORT_PYTHON|Flag for supporting Python in KVS. By using these classes, python codes can be called in c++ codes. See [SupportPython README](Source/SupportPython/README.md) for setting information.|
+|MPI|KVS_SUPPORT_MPI|Flag for supporting MPI functions. Note: MPI compiler is required. See [SupportMPI README](Source/SupportMPI/README.md) for setting information.|
+|EGL|KVS_SUPPORT_EGL|Flag for supporting EGL (The Khronos Native Platform Graphics Interface) functions. By checking this flag, GPU-based off-screen class is provided. See [SupportEGL README](Source/SupportEGL/README.md) for setting information.|
+|OSMesa|KVS_SUPPORT_OSMESA|Flag for supporting OSMesa (Off-screen Mesa) functions. By checking this flag, CPU-based off-screen class is provided. See [SupportOSMesa README](Source/SupportOSMesa/README.md) for setting information.|
 
-For package-specific settings, see the corresponding README files under `Source/Support*`.
+## Build and install
+By using the make command, KVS can be easily build and install to ```KVS_DIR```.
 
-# After installation
-
-The following files and directories are installed under `KVS_DIR`.
-
-| Path | Description |
-|:--|:--|
-| `bin/` | KVS tools such as `kvsmake`, `kvscheck`, `kvsconv`, and `kvsview` |
-| `include/` | Header files |
-| `lib/` | Static libraries |
-| `lib/cmake/` | CMake package configuration files |
-| `kvs.conf` | Installed KVS configuration |
-| `Makefile.def` | Installed make configuration |
-
-After installation, `kvsmake` can be used to create example or application build files.
-
++ Windows
 ```
-kvsmake -G
-make
+$ cd KVS
+$ nmake
+$ nmake install
 ```
 
-For Qt applications:
-
++ Linux and Mac OS X
 ```
-kvsmake -Q
-qmake
-make
+$ cd KVS
+$ make
+$ make install
 ```
 
 # Copyright
+KVS is released under BSD 3-Clause License. See [LICENSE](LICENSE) for details.
 
-KVS is released under the BSD 3-Clause License. See [LICENSE](LICENSE) for details.
++ KVS/Source/Core/NanoVG uses [nanovg](https://github.com/memononen/nanovg) (zlib license) and [stb](https://github.com/nothings/stb) (Public Domain, MIT license).
++ KVS/Source/Core/FileFormat/XML uses [tinyxml](http://www.grinninglizard.com/tinyxml/) (zlib license).
++ KVS/Source/SupportMPI/Renderer/ImageCompositor uses [234Compositor](https://github.com/avr-aics-riken/234Compositor) (2-clause BSD license).
++ KVS/Source/SupportFFmpeg/AvCpp uses [AvCpp](https://github.com/h4tr3d/avcpp) (3-clause BSD license).
 
-KVS/Source/Core/NanoVG uses [nanovg](https://github.com/memononen/nanovg) and [stb](https://github.com/nothings/stb).
-
-KVS/Source/Core/FileFormat/XML uses [tinyxml](http://www.grinninglizard.com/tinyxml/).
-
-KVS/Source/SupportMPI/Renderer/ImageCompositor uses [234Compositor](https://github.com/avr-aics-riken/234Compositor).
-
-KVS/Source/SupportFFmpeg/AvCpp uses [AvCpp](https://github.com/h4tr3d/avcpp).
+KVS can be used for research, software development, and other similar purposes under the above-described license. While the license does not explicitly restrict or require anything regarding its use for developing commercial software, we would appreciate notification if this is the case.
 
 # Citation
-
 When using KVS for your research and publishing the results in papers or other works, please cite this webpage or the following paper as a reference:
 
 Naohisa Sakamoto and Koji Koyamada, [KVS: A simple and effective framework for scientific visualization](https://www.jstage.jst.go.jp/article/jasse/2/1/2_76/_article/-char/en), Journal of Advanced Simulation in Science and Engineering (JASSE), Vol. 2, Issue 1, pp. 76-95, 2015.
