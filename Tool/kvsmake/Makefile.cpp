@@ -5,6 +5,7 @@
  */
 /****************************************************************************/
 #include "Makefile.h"
+#include <cstdlib>
 #include <string>
 #include <fstream>
 #include <kvs/Message>
@@ -94,7 +95,7 @@ int Makefile::exec()
     if ( !in.is_open() )
     {
         kvsMessageError() << "Cannot open " << kvsmake::MakefileTemplate << "." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     //  Open a Makefile.
@@ -102,11 +103,11 @@ int Makefile::exec()
     if ( !out.is_open() )
     {
         kvsMessageError() << "Cannot open " << kvsmake::MakefileName << "." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     ::Write( in, out, m_project_name, m_use_mpi );
-    return true;
+    return EXIT_SUCCESS;
 }
 
 } // end of namespace kvsmake

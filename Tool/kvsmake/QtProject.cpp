@@ -224,21 +224,21 @@ int QtProject::exec()
     if ( kvs_dir.empty() )
     {
         kvsMessageError() << "KVS_DIR is not defined." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     const DefaultValue cpp_standard = KVSDefaultValue( "KVS_CPP_STANDARD" );
     if ( !cpp_standard.found || cpp_standard.value.empty() )
     {
         kvsMessageError() << "KVS_CPP_STANDARD is not defined." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     const DefaultValue macosx_deployment_target = KVSDefaultValue( "KVS_MACOSX_DEPLOYMENT_TARGET" );
     if ( !macosx_deployment_target.found )
     {
         kvsMessageError() << "KVS_MACOSX_DEPLOYMENT_TARGET is not defined in Makefile.def." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     const std::string template_file = JoinPath( JoinPath( kvs_dir, "bin" ), "QtProject.template" );
@@ -246,7 +246,7 @@ int QtProject::exec()
     if ( !in.is_open() )
     {
         kvsMessageError() << "Cannot open " << template_file << "." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     const std::string filename( m_project_name + ".pro" );
@@ -254,7 +254,7 @@ int QtProject::exec()
     if ( !out.is_open() )
     {
         kvsMessageError() << "Cannot open " << filename << "." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     ::Write(
@@ -264,7 +264,7 @@ int QtProject::exec()
         cpp_standard.value,
         macosx_deployment_target.value );
 
-    return true;
+    return EXIT_SUCCESS;
 }
 
 } // end of namespace kvsmake
