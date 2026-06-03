@@ -1,38 +1,104 @@
 # SupportGLFW
-SupportGLFW is a support class library with the Graphics Library Framework (GLFW) for KVS. By checking the flag `KVS_SUPPORT_GLFW` in the kvs.cong, GLFW supported classes are compiled and available. The SupportGLFW is required for developping viewer application based on KVS.
 
-```Makefile
+SupportGLFW provides GLFW-based screen and widget classes for KVS viewer applications.
+
+## Enable this support
+
+Edit `kvs.conf`:
+
+```make
+KVS_ENABLE_OPENGL = 1
 KVS_SUPPORT_GLFW = 1
 ```
 
-## Prerequisite
-To compile the SupportGLFW, the GLFW needs to be installed.
+Or enable it when configuring with CMake:
+
+```sh
+cmake -S . -B build -DKVS_SUPPORT_GLFW=ON
+```
+
+## Requirements
+
+SupportGLFW requires GLFW headers and libraries.
+
+## Install dependencies
 
 ### Linux
-On Linux, the GLFW can be installed from a terminal as follows.
-```
-$ sudo apt-get install libglfw3-dev
+
+```sh
+sudo apt-get install libglfw3-dev
 ```
 
-### Mac
-In the case of Mac, the GLFW can be installed by using Homebrew on a terminal as follows.
+### macOS
+
+```sh
+brew install glfw
 ```
-$ brew install glfw
+
+For Intel Mac:
+
+```sh
+export KVS_GLFW_DIR=/usr/local/opt/glfw
+```
+
+For Apple Silicon Mac:
+
+```sh
+export KVS_GLFW_DIR=/opt/homebrew/opt/glfw
 ```
 
 ### Windows
-For Windows, The GLFW binary can be downloaded from the following site.
 
-[GLFW - An OpenGL Library](https://www.glfw.org/)
+Download GLFW from:
 
-Click on "64-bit Windows binraries" or "32-bit Windows binaries" in the [download page](https://www.glfw.org/download.html) to download the zip file. After extracting the files, copy these files into the following folders.
+https://www.glfw.org/download.html
 
-|Files|Folders|
-|:--|:--|
-|glfw3.dll|Same folder as GLUT DLL folder, in which glut32.dll is included.|
-|glfw3.lib, glfw3dll.lib|Same folder as GLUT static library folder, in which glut32.lib is included.|
-|glfw3.h, glfw3native.h| Same folder as GLUT header folder, in which glut.h is included.|
+Use binaries compatible with your Visual C++ compiler. If you install GLFW outside the default search paths, set `KVS_GLFW_DIR`, or set the include/library/link variables manually.
 
-- The library files (\*.dll, \*.lib) and header files (\*.h) are included in lib-xxxx and include/GLFW folders, respectively.
-- "xxxx" of lib-xxxx means compiler name (version of MSVC) used for building the SupportGLFW.
-- For GLUT folders, see [SupportGLUT/README](../SupportGLUT/README.md).
+## Build KVS with make
+
+```sh
+export KVS_DIR=$HOME/local/kvs
+export KVS_GLFW_DIR=/opt/homebrew/opt/glfw
+make
+make install
+```
+
+Manual path settings:
+
+```sh
+export KVS_GLFW_INCLUDE_PATH=/path/to/glfw/include
+export KVS_GLFW_LIBRARY_PATH=/path/to/glfw/lib
+export KVS_GLFW_LINK_LIBRARY="-lglfw"
+```
+
+## Build KVS with CMake
+
+```sh
+cmake -S . -B build \
+  -DKVS_DIR=$HOME/local/kvs \
+  -DKVS_SUPPORT_GLFW=ON \
+  -DKVS_GLFW_DIR=/opt/homebrew/opt/glfw
+cmake --build build -j
+cmake --install build
+```
+
+CMake also searches for `glfw` or `glfw3` packages when available.
+
+## Build examples
+
+After installing KVS:
+
+```sh
+cd Example/SupportGLFW
+kvsmake -G
+kvsmake
+```
+
+Use the actual example subdirectory if the example is organized into subfolders.
+
+## Troubleshooting
+
+### GLFW headers or libraries are not found
+
+Set `KVS_GLFW_DIR`. If the installation layout is not `include` and `lib` under one prefix, use `KVS_GLFW_INCLUDE_PATH`, `KVS_GLFW_LIBRARY_PATH`, and `KVS_GLFW_LINK_LIBRARY`.

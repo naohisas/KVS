@@ -1,81 +1,161 @@
 # SupportMPI
-SupportMPI is a support class library with message passing interface (MPI) for KVS. By checking the flag `KVS_SUPPORT_MPI` in kvs.conf, MPI supported classes are compiled and available.
 
-## Prerequisite
-The following software packages are needed to compile SupportMPI.
+SupportMPI provides MPI-based parallel processing classes for KVS.
 
-### MPI Compiler
-MPI compiler, such as OpenMPI and MPICH, must be installed in your computing environment before compiling KVS.mpi.
+## Enable this support
 
-#### Linux
-For Linux, OpenMPI will be available by installing libopenmpi-dev. The following shows a command example with apt-get on Ubuntu Linux.
+Edit `kvs.conf`:
 
-```
-$ apt-get install openmpi-bin libopenmpi-dev
+```make
+KVS_SUPPORT_MPI = 1
 ```
 
-#### Mac OS X
-In case of Mac OS X environment, OpenMPI can be installed with HomeBrew as follows:
+Or enable it when configuring with CMake:
 
-```
-$ brew install openmpi
-```
-
-## Compile
-By default, `mpicxx` compiler is used for compiling the SupportMPI. If you want to change the MPI compiler, you can use the environmnet variable `KVS_MPI_CPP` to change it to your specified compiler as follows.
-
-```
-e.g.) Using Intel MPI compiler
-$ export KVS_MPI_CPP=mpiicpc
+```sh
+cmake -S . -B build -DKVS_SUPPORT_MPI=ON
 ```
 
-## Example Program
-Several example programs with the SupportMPI can be found in the Example/SupportMPI directory. Each of the programs can be easily compiled with kvsmake command. Note that the `-use_mpi` option need to be specified for the kvsmake to generate a Makefile with MPI comiple otions.
+## Requirements
 
-```
-$ cd Example/SupportMPI
-$ cd HelloWorld
-$ kvsmake -G -use_mpi
-$ kvsmake
+SupportMPI requires an MPI implementation such as Open MPI, MPICH, Intel MPI, or Fujitsu MPI.
+
+## Install dependencies
+
+### Linux
+
+Open MPI can be installed on Ubuntu as follows:
+
+```sh
+sudo apt-get install openmpi-bin libopenmpi-dev
 ```
 
-The execution result of the "HelloWorld" program is shown as follows:
+MPICH can be installed as follows:
+
+```sh
+sudo apt-get install mpich libmpich-dev
 ```
-$ ./run.sh
+
+### macOS
+
+```sh
+brew install open-mpi
+```
+
+or:
+
+```sh
+brew install mpich
+```
+
+### Windows
+
+Use an MPI implementation compatible with your compiler environment.
+
+## MPI compiler variables
+
+The make-based build uses MPI compiler wrapper variables when SupportMPI is enabled.
+
+| Variable | Default | Description |
+|:--|:--|:--|
+| `KVS_MPI_CPP` | `mpicxx` | MPI C++ compiler wrapper |
+| `KVS_MPI_CC` | `mpicc` | MPI C compiler wrapper |
+| `KVS_MPI_FC` | `mpif90` | MPI Fortran compiler wrapper |
+| `KVS_MPI_LD` | `$(KVS_MPI_CPP)` | MPI linker command |
+
+Example:
+
+```sh
+export KVS_MPI_CPP=mpiicpc
+```
+
+Manual path settings are also available:
+
+```sh
+export KVS_MPI_INCLUDE_PATH=/path/to/mpi/include
+export KVS_MPI_LIBRARY_PATH=/path/to/mpi/lib
+export KVS_MPI_LINK_LIBRARY="-lmpi"
+```
+
+## Build KVS with make
+
+```sh
+export KVS_DIR=$HOME/local/kvs
+export KVS_MPI_CPP=mpicxx
+make
+make install
+```
+
+If the MPI wrapper uses a different underlying C++ compiler from the compiler used to build KVS, set the wrapper-specific variable.
+
+For Open MPI:
+
+```sh
+OMPI_CXX=clang++ kvsmake
+```
+
+For MPICH:
+
+```sh
+MPICH_CXX=clang++ kvsmake
+```
+
+## Build KVS with CMake
+
+```sh
+cmake -S . -B build \
+  -DKVS_DIR=$HOME/local/kvs \
+  -DKVS_SUPPORT_MPI=ON \
+  -DMPI_CXX_COMPILER=mpicxx
+cmake --build build -j
+cmake --install build
+```
+
+You can also use `KVS_MPI_CPP`:
+
+```sh
+KVS_MPI_CPP=mpicxx cmake -S . -B build -DKVS_SUPPORT_MPI=ON
+```
+
+## Build examples
+
+After installing KVS, generate an MPI-enabled Makefile with `-use_mpi`:
+
+```sh
+cd Example/SupportMPI/HelloWorld
+kvsmake -G -use_mpi
+kvsmake
+```
+
+Run the program with `mpirun` or the provided script:
+
+```sh
+mpirun -np 4 ./HelloWorld
+```
+
+or:
+
+```sh
+./run.sh
+```
+
+Example output:
+
+```text
 Size = 4, Rank = 0
 Size = 4, Rank = 1
 Size = 4, Rank = 2
 Size = 4, Rank = 3
 ```
 
-If you use KVS compiled with the different compiler from the mpicxx wrapper compiler, you need to specify the compiler by using the environment variable ```OMPI_CXX``` for OpenMP or ```MPICH_CXX``` for MPICH as follows:
+## HPC environment examples
 
-- OpenMP
-```
-e.g.)
-$ OMPI_CXX=g++-6 kvsmake
-```
-
-- MPICH
-```
-e.g.)
-$ MPICH_CXX=g++-6 kvsmake
+```sh
+# Fujitsu MPI
+export KVS_MPI_CPP=mpiFCCpx
 ```
 
-### HPC Environment
-The followings are setting examples for each HPC environment.
-
-- K computer (RIKEN)
-```
-$ export KVS_MPI_CPP=mpiFCCpx
-```
-
-- Pi-computer (Kobe University)
-```
-$ export KVS_MPI_CPP=mpiFCCpx
-```
-
-- Pi-VizStudio (Kobe University)
-```
-$ export KVS_MPI_CPP=mpicxx
+```sh
+# Open MPI or MPICH
+export KVS_MPI_CPP=mpicxx
 ```

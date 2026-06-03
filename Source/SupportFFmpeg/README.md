@@ -1,50 +1,117 @@
 # SupportFFmpeg
-SupportFFmpeg is a support class library with the FFmpeg for KVS. By checking the flag `KVS_SUPPORT_FFMPEG` in the kvs.cong, FFmpeg supported classes are compiled and available.
 
-## Prerequisite
-To compile the SupportFFmpeg, the FFmpeg needs to be installed.
-- NOTE: The current version of SupportFFmpeg may cause compile errors in FFmpeg version of 6.0 or higher. Therefore, please use FFmpeg version 5.0 or lower.
+SupportFFmpeg provides FFmpeg-based movie input/output support for KVS.
 
+## Enable this support
+
+Edit `kvs.conf`:
+
+```make
+KVS_SUPPORT_FFMPEG = 1
+```
+
+Or enable it when configuring with CMake:
+
+```sh
+cmake -S . -B build -DKVS_SUPPORT_FFMPEG=ON
+```
+
+## Requirements
+
+SupportFFmpeg requires FFmpeg development headers and libraries.
+
+The current bundled AvCpp-based implementation is intended for FFmpeg 5 or older. FFmpeg 6 or newer may require updating the copied AvCpp sources under `Source/SupportFFmpeg/AvCpp` to a newer AvCPP version and applying compatibility changes for newer FFmpeg APIs.
+
+## Install dependencies
 
 ### Linux
-On Linux, the FFmpeg can be installed from a terminal as follows.
-```
-$ sudo apt-get install ffmpeg
+
+```sh
+sudo apt-get install ffmpeg libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev
 ```
 
-### Mac
-In the case of Mac, the FFmpeg can be installed by using Homebrew on a terminal as follows.
-```
-$ brew install ffmpeg
+### macOS
+
+```sh
+brew install ffmpeg
 ```
 
-In order to link the libraries, you may need to set:
+For Intel Mac:
+
+```sh
+export KVS_FFMPEG_DIR=/usr/local/opt/ffmpeg
 ```
-export KVS_FFMPEG_DIR=/usr/local/opt/ffmpeg      (intel mac)
-export KVS_FFMPEG_DIR=/opt/homebrew/opt/ffmpeg   (m1 mac)
+
+For Apple Silicon Mac:
+
+```sh
+export KVS_FFMPEG_DIR=/opt/homebrew/opt/ffmpeg
+```
+
+If you need a specific Homebrew formula, such as `ffmpeg@5`, point `KVS_FFMPEG_DIR` to that formula:
+
+```sh
+export KVS_FFMPEG_DIR=/opt/homebrew/opt/ffmpeg@5
 ```
 
 ### Windows
-For Windows, the FFMPEG binary can be downloaded from the following site.
 
-[FFMPEG - FFmpeg-Builds-Win32](https://github.com/sudo-nautilus/FFmpeg-Builds-Win32/releases)
+Windows support depends on the FFmpeg binary package and compiler ABI. Use a package that provides headers, import libraries, and DLLs compatible with your Visual C++ compiler.
 
- - NOTE: Due to some limitations, a 32-bit binary is currently required; only the 64-bit binary can be downloaded from the FFMPEG home site, so please download the 32-bit binary from the above site.
+Set:
 
-Follow the steps below to install the FFMPEG.
+| Variable | Example |
+|:--|:--|
+| `KVS_FFMPEG_DIR` | `C:\ffmpeg` |
 
-1. Donwload the FFMPEG of version 5 (ffmpeg-n5.1-latest-win32-gpl-shared-5.1.zip) from the above site.
+The directory is expected to contain `include` and `lib` subdirectories. Make sure the FFmpeg DLLs are available in `PATH` or next to the executable.
 
-2. Create an install target folder (e.g. C:\ffmpeg) and set an environment variable `KVS_FFMPEG_DIR` to the target folder as follows:
+## Build KVS with make
 
-|Variable|Value|
-|:-------|:----|
-|KVS_FFMPEG_DIR |C:\ffmpeg|
+```sh
+export KVS_DIR=$HOME/local/kvs
+export KVS_FFMPEG_DIR=/opt/homebrew/opt/ffmpeg
+make
+make install
+```
 
-3. Copy the folders of include and lib included in the downloaded file to the target folder.
+If automatic library detection is not sufficient, specify include/library/link flags explicitly:
 
-4. Copy all of DLL files (*.dll) in the bin folder to the following folder.
+```sh
+export KVS_FFMPEG_INCLUDE_PATH=/path/to/ffmpeg/include
+export KVS_FFMPEG_LIBRARY_PATH=/path/to/ffmpeg/lib
+export KVS_FFMPEG_LINK_LIBRARY="-lavformat -lavcodec -lavutil -lswscale -lswresample"
+```
 
-|Files|Folder|
-|:-------|:----|
-|avcodec-59.dll<br>avdevice-59.dll<br>avfilter-8.dll<br>avformat-59.dll<br>avutil-57.dll<br>postproc-56.dll<br>swresample-4.dll<br>swscale-6.dll|<ul><li>**Windows 32bit**<br>C:\Windows\System32</li><li>**Windows 64bit**<br>C:\Windows\SysWOW64</li></ul>|
+## Build KVS with CMake
+
+```sh
+cmake -S . -B build \
+  -DKVS_DIR=$HOME/local/kvs \
+  -DKVS_SUPPORT_FFMPEG=ON \
+  -DKVS_FFMPEG_DIR=/opt/homebrew/opt/ffmpeg
+cmake --build build -j
+cmake --install build
+```
+
+CMake can also use `pkg-config` when FFmpeg `.pc` files are available.
+
+## Build examples
+
+After installing KVS:
+
+```sh
+cd Example/SupportFFmpeg/MovieRenderer
+kvsmake -G
+kvsmake
+```
+
+## Troubleshooting
+
+### Compile errors with FFmpeg 6 or newer
+
+Update the AvCpp sources copied into `Source/SupportFFmpeg/AvCpp`, or use FFmpeg 5 or older.
+
+### Libraries are not found
+
+Set `KVS_FFMPEG_DIR` first. If that is not enough, set `KVS_FFMPEG_INCLUDE_PATH`, `KVS_FFMPEG_LIBRARY_PATH`, and `KVS_FFMPEG_LINK_LIBRARY`.

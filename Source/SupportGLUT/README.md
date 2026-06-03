@@ -1,32 +1,102 @@
 # SupportGLUT
-SupportGLUT is a support class library with the OpenGL Utility Toolkit (GLUT) for KVS. By checking the flag KVS_SUPPORT_GLUT in the kvs.cong, GLUT supported classes are compiled and available. The SupportGLUT is required for developping viewer application based on KVS.
-```Makefile
+
+SupportGLUT provides GLUT-based screen and widget classes for KVS viewer applications.
+
+`KVS_SUPPORT_GLUT` is enabled by default in `kvs.conf`.
+
+## Enable this support
+
+Edit `kvs.conf`:
+
+```make
+KVS_ENABLE_OPENGL = 1
 KVS_SUPPORT_GLUT = 1
 ```
 
-## Prerequisite
-To compile the SupportGLUT, the GLUT needs to be installed.
+Or enable it when configuring with CMake:
+
+```sh
+cmake -S . -B build -DKVS_SUPPORT_GLUT=ON
+```
+
+## Requirements
+
+SupportGLUT requires GLUT or FreeGLUT headers and libraries.
+
+## Install dependencies
 
 ### Linux
-If you want to install GLUT from a terminal, you can install it as follows.
-```
-$ sudo apt-get install freeglut3-dev libglut3-dev
-```
-- The above example shows an example of installing freeglut version 3.
 
-### Mac
-On Mac OS X, the GLUT is pre-installed and does not need to be installed.
+```sh
+sudo apt-get install freeglut3-dev
+```
+
+Depending on the distribution, the package name may be `libglut-dev` or similar.
+
+### macOS
+
+GLUT is provided by the macOS SDK. Install Xcode or the Xcode Command Line Tools:
+
+```sh
+xcode-select --install
+```
 
 ### Windows
-For Windows, The GLUT binary can be downloaded from the following site.
 
-[Nate Robins - OpenGL - GLUT for Win32](http://www.xmission.com/~nate/glut.html)
+Legacy GLUT binaries for Win32 have historically been used with KVS:
 
-Click on "[glut-3.7.6-bin.zip (117 KB)](https://user.xmission.com/~nate/glut/glut-3.7.6-bin.zip)" to download the zip file. After extracting the file, copy the extracted files into the following folders.
+http://www.xmission.com/~nate/glut.html
 
-|Files|Folders|
-|:--|:--|
-|glut32.dll|<ul><li>**Windows 32bit**<br>C:\Windows\System32</li><li>**Windows 64bit**<br>C:\Windows\SysWOW64</li></ul>|
-|glut32.lib|<ul><li>**Visual Studio 2010 (Windows XP 32bit)**<br>C:\Program Files\Microsoft SDKs\Windows\v7.0A\Lib</li><li>**Visual Studio 2010 (Windows 7 64bit)**<br>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib</li><li>**Visual Studio 2012 (Windows 7/8 64bit)**<br>C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86</li><li>**Visual Studio 2013 (Windows 7/8/8.1 64bit)**<br>C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86</li><li>**Visual Studio 2015 (Windows 7/8/8.1 64bit)**<br>C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86</li><li>**Visual Studio 2017/2019/2022 (Windows 10/11 64bit)**<br>C:\Program Files (x86)\Windows Kits\10\Lib\10.x.xxxxx.x\um\x86</li></ul>|
-|glut.h|<ul><li>**Visual Studio 2010 (Windows XP 32bit)**<br>C:\Program Files\Microsoft SDKs\Windows\v7.0A\Include\gl</li><li>**Visual Studio 2010 (Windows 7 64bit)**<br>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Include\gl</li><li>**Visual Studio 2012 (Windows 7/8 64bit)**<br>C:\Program Files (x86)\Windows Kits\8.0\Include\um\gl</li><li>**Visual Studio 2013 (Windows 7/8/8.1 64bit)**<br>C:\Program Files (x86)\Windows Kits\8.1\Include\um\gl</li><li>**Visual Studio 2015 (Windows 7/8/8.1 64bit)**<br>C:\Program Files (x86)\Windows Kits\8.1\Include\um\gl</li><li>**Visual Studio 2017/2019/2022 (Windows 10/11 64bit)**<br>C:\Program Files (x86)\Windows Kits\10\Include\10.x.xxxxx.x\um\gl</li></ul>|
-- The location of the files depends on the version of Visual Studio. For Windows environments not listed above, copy the files to the appropriate folder based on the destination of previous versions.
+For modern Windows environments, use headers and libraries compatible with your Visual C++ compiler and make sure the DLL is available in `PATH` or next to the executable.
+
+## Build KVS with make
+
+```sh
+export KVS_DIR=$HOME/local/kvs
+make
+make install
+```
+
+If GLUT is installed in a non-standard location:
+
+```sh
+export KVS_GLUT_DIR=/path/to/glut
+```
+
+Manual path settings:
+
+```sh
+export KVS_GLUT_INCLUDE_PATH=/path/to/glut/include
+export KVS_GLUT_LIBRARY_PATH=/path/to/glut/lib
+export KVS_GLUT_LINK_LIBRARY="-lglut"
+```
+
+## Build KVS with CMake
+
+```sh
+cmake -S . -B build \
+  -DKVS_DIR=$HOME/local/kvs \
+  -DKVS_SUPPORT_GLUT=ON
+cmake --build build -j
+cmake --install build
+```
+
+For a non-standard GLUT installation:
+
+```sh
+cmake -S . -B build \
+  -DKVS_SUPPORT_GLUT=ON \
+  -DKVS_GLUT_DIR=/path/to/glut
+```
+
+## Build examples
+
+After installing KVS:
+
+```sh
+cd Example/SupportGLUT
+kvsmake -G
+kvsmake
+```
+
+Use the actual example subdirectory if the example is organized into subfolders.

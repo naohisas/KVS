@@ -1,51 +1,89 @@
 # SupportOSMesa
-SupportOSMesa is a support class library with [OSMesa](https://docs.mesa3d.org/osmesa.html) (Off-screen Mesa) for KVS. By checking the flag `KVS_SUPPORT_OSMESA` in the kvs.conf, OSMesa supported classes are compiled and availabl.
 
-## Prerequisite
-The OSMesa is required to compile the SupportOSMesa. Although the OSMesa can be easily installed with the package manager, such as apt-get on Ubuntu, we recommend the compile and install it by downloading the source codes of the OSMesa on your developping environment in order to use high-perfrmance rendering functionalities. 
+SupportOSMesa provides OSMesa-based CPU off-screen rendering classes for KVS.
 
-### Mac
-An environment in which to compile OSMesa using Homebrew can be set up on macOS.
+Use SupportOSMesa when you need OpenGL rendering without a window system or GPU-backed EGL context.
 
-1. Install the required packages using homebrew.
-```sh
-$ brew install meson ninja pkg-config llvm@20 python@3.14
-```
-* To safely compile OSMesa 25.0.7, llvm@20 and python@3.14 need to be install.
+## Enable this support
 
-2. Install the Python modules (mako, packaging, pyyaml) required for building Mesa into the build venv (~/.venvs/mesa-build).
-```sh
-$ PY="$(brew --prefix python@3.14)/bin/python3.14"
-$ $PY -m venv ~/.venvs/mesa-build
-$source ~/.venvs/mesa-build/bin/activate
-$ python -m pip install -U pip
-$ python -m pip install mako packaging pyyaml
+Edit `kvs.conf`:
+
+```make
+KVS_ENABLE_OPENGL  = 1
+KVS_SUPPORT_OSMESA = 1
 ```
 
-3. Move to your working directory (e.g. ~/Work/Temp), in which the OSMesa will be downloaded.
+Or enable it when configuring with CMake:
+
 ```sh
-$ cd ~/Work/Temp
+cmake -S . -B build -DKVS_SUPPORT_OSMESA=ON
 ```
 
-4. Download the OSMesa version 25.0.7.
+## Requirements
+
+SupportOSMesa requires OSMesa headers and libraries.
+
+For simple builds, an OS package such as `libosmesa6-dev` may be enough. For faster rendering and better shader support, build Mesa with the `llvmpipe` Gallium driver.
+
+## Quick install
+
+### Linux
+
 ```sh
-$ curl -LO https://archive.mesa3d.org/mesa-25.0.7.tar.xz
-$ tar xf mesa-25.0.7.tar.xz
-$ cd mesa-25.0.7
+sudo apt-get install libosmesa6-dev
 ```
 
-5. Set the environment variables required for compilation temporary in the current terminal. Specify the installation directory in the OSMESA_PREFIX environment variable.
+### macOS
+
+Homebrew does not always provide an OSMesa configuration suitable for KVS off-screen rendering. Building Mesa from source with `llvmpipe` is recommended.
+
+### Windows
+
+Not tested.
+
+## Build Mesa/OSMesa from source on macOS
+
+The following example builds Mesa 25.0.7 with OSMesa and `llvmpipe`.
+
+Install build tools:
+
 ```sh
-$ export OSMESA_PREFIX="$HOME/local/osmesa"
-$ export LLVM20_PREFIX="$(brew --prefix llvm@20)"
-$ export PATH="$LLVM20_PREFIX/bin:$(brew --prefix bison)/bin:$PATH"
-$ export PKG_CONFIG_PATH="$LLVM20_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
-$ export LLVM_CONFIG="$LLVM20_PREFIX/bin/llvm-config"
+brew install meson ninja pkg-config llvm@20 python@3.14 bison
 ```
 
-6. Compile and install OSMesa.
+Create a Python build environment:
+
 ```sh
-$ meson setup build/ \
+PY="$(brew --prefix python@3.14)/bin/python3.14"
+$PY -m venv ~/.venvs/mesa-build
+source ~/.venvs/mesa-build/bin/activate
+python -m pip install -U pip
+python -m pip install mako packaging pyyaml
+```
+
+Download Mesa:
+
+```sh
+cd ~/Work/Temp
+curl -LO https://archive.mesa3d.org/mesa-25.0.7.tar.xz
+tar xf mesa-25.0.7.tar.xz
+cd mesa-25.0.7
+```
+
+Set build variables:
+
+```sh
+export OSMESA_PREFIX="$HOME/local/osmesa"
+export LLVM20_PREFIX="$(brew --prefix llvm@20)"
+export PATH="$LLVM20_PREFIX/bin:$(brew --prefix bison)/bin:$PATH"
+export PKG_CONFIG_PATH="$LLVM20_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+export LLVM_CONFIG="$LLVM20_PREFIX/bin/llvm-config"
+```
+
+Configure and install:
+
+```sh
+meson setup build/ \
   --prefix=$OSMESA_PREFIX \
   --libdir=lib \
   -Dbuildtype=release \
@@ -68,121 +106,100 @@ $ meson setup build/ \
   -Dtools= \
   -Dgallium-opencl=disabled \
   -Dgallium-rusticl=false
-$ ninja -C build/ install
+ninja -C build/ install
 ```
 
-7. Set environment variables in your shell setting file (e.g. ~/.bashrc) for using the SupportOSMesa.
-```
-export KVS_OSMESA_DIR=${HOME}/local/osmesa
-export PKG_CONFIG_PATH=$KVS_OSMESA_DIR/lib/pkgconfig/:$PKG_CONFIG_PATH
+Set variables for KVS:
+
+```sh
+export KVS_OSMESA_DIR=$HOME/local/osmesa
+export PKG_CONFIG_PATH=$KVS_OSMESA_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 export KVS_OSMESA_LINK_LIBRARY="$(pkg-config --cflags --libs osmesa)"
 ```
-* Set the environment variable KVS_OSMESA_DIR to the directory where OSMesa is installed (the same directory specified by OSMESA_PREFIX during compilation).
 
-### Linux/Mac with osmesa-install.sh
-The OSMesa can also be easily compiled and installed by using [osmesa-install](https://github.com/devernay/osmesa-install.git) as follows.
+## Alternative source build with osmesa-install.sh
 
-1. Create install target directories for OSMesa and LLVM. In the following example, the target directries; osmesa and llvm are created under "~/local".
+The external `osmesa-install.sh` script can also be used:
 
-```sh
-$ cd
-$ mkdir local
-$ cd local
-$ mkdir osmesa
-$ mkdir llvm
-```
+https://github.com/devernay/osmesa-install
 
-2. Move to your working directory (e.g. ~/Work/GitHub), in which the osmesa-install will be cloned.
+Example:
 
 ```sh
-$ cd ~/Work/GitHub
+git clone https://github.com/devernay/osmesa-install.git
+cd osmesa-install
+OSMESA_PREFIX=$HOME/local/osmesa \
+OSMESA_DRIVER=3 \
+MANGLED=0 \
+LLVM_PREFIX=$HOME/local/llvm \
+LLVM_BUILD=1 \
+./osmesa-install.sh
 ```
 
-3. Download the osmesa install script.
+Driver notes:
+
+| Driver | Notes |
+|:--|:--|
+| `swrast` | Very slow; GLSL support is limited |
+| `softpipe` | GLSL capable but slow |
+| `llvmpipe` | Recommended; LLVM-based software rasterizer |
+| `swr` | Fast on suitable Intel CPUs |
+
+## Build KVS with make
 
 ```sh
-$ git clone https://github.com/devernay/osmesa-install.git
-$ cd osmesa-install
+export KVS_DIR=$HOME/local/kvs
+export KVS_OSMESA_DIR=$HOME/local/osmesa
+export PKG_CONFIG_PATH=$KVS_OSMESA_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+export KVS_OSMESA_LINK_LIBRARY="$(pkg-config --cflags --libs osmesa)"
+make
+make install
 ```
 
-4. Modify the install-script 'osmesa-install.sh' as follows. Note that these options can also be specified directly via environmental variables at compile time.
-
-```
-a) Specify the install target directory of OSMesa.
-osmesaprefix="${OSMESA_PREFIX:-${HOME}/local/osmesa}
-
-b) Specify the driver of 4. (1:swrast, 2:softpipe, 3:llvmpipe, 4:swr)
-osmesadriver=${OSMESA_DRIVER:-4}
-
-c) Disable 'mangled'. (1:compile mangled OSMesa or 0:not)
-mangled=0
-
-d) Specify the install target directory for LLVM.
-llvmprefix="${LLVM_PREFIX:-${HOME}/local/llvm}
-
-e) Enable 'buildllvm'. (1:download and build LLVM or 0:not)
-buildllvm="${LLVM_BUILD:-1}
-```
-
-Rendering driver
-- swrast: OSMesa original resterizer. very slow and not supported GLSL shader. Not recommended.
-- softpipe: Gallium driver. Supported GLSL shader but very slow. Not recommended.
-- llvmpipe: LLVM optimized Gallium driver. Very fast but LLVM is required. Recommended.
-- swr: Intel CPU optimized Gallium driver (known as OpenSWR). Very fast. Recommended if you use Intel CPUs.
-
-For Mac, several packages need to be installed with homebrew before cmpiling OSMesa as follows:
-```sh
-$ brew install gsed pkg-config cmake libtool automake autoconf
-```
-
-5. Compile and install OSMesa.
+If `pkg-config` is not available, specify the link libraries manually:
 
 ```sh
-$ mkdir build
-$ cd build
-$ ../osmesa-install.sh
+export KVS_OSMESA_LINK_LIBRARY="-lOSMesa"
 ```
 
-To specify the options directly via environmental variables, compile and install as follows:
-```
-$ OSMESA_PREFIX=${HOME}/local/osmesa OSMESA_DRIVER=3 MANGLED=0 LLVM_PREFIX=${HOME}/local/llvm LLVM_BUILD=1 ../osmesa-install.sh
+## Build KVS with CMake
+
+```sh
+cmake -S . -B build \
+  -DKVS_DIR=$HOME/local/kvs \
+  -DKVS_SUPPORT_OSMESA=ON \
+  -DKVS_OSMESA_DIR=$HOME/local/osmesa
+cmake --build build -j
+cmake --install build
 ```
 
-6. Set environment variables for using the SupportOSMesa.
+If needed:
 
-```
-export KVS_OSMESA_DIR=${HOME}/local/osmesa
-export KVS_OSMESA_LINK_LIBRARY="-lOSMesa32 -lz `~/local/llvm/bin/llvm-config --libs` `~/local/llvm/bin/llvm-config --ldflags` -lrt -ldl -lpthread -lm"
-```
-
-## Example Program
-An example program for the SupportOSMesa is available in the Example/SupportOSMesa directory. You can easily compiple the example program with the kvsmake as follows:
-
-```
-$ cd Example/SupportOSMesa
-$ cd Hello
-$ kvsmake -G
-$ kvsmake
+```sh
+cmake -S . -B build \
+  -DKVS_SUPPORT_OSMESA=ON \
+  -DKVS_OSMESA_LINK_LIBRARY="$(pkg-config --cflags --libs osmesa)"
 ```
 
-The offscreen rendering results (12 images) will be generated by executing the compiled program as follows:
+## Build examples
 
+After installing KVS:
+
+```sh
+cd Example/SupportOSMesa/Hello
+kvsmake -G
+kvsmake
+./Hello
 ```
-e.g)
-$ ./Hello
-OSMesa version: 11.2.0
-rendering to ... output_000.bmp
-rendering to ... output_001.bmp
-rendering to ... output_002.bmp
-rendering to ... output_003.bmp
-rendering to ... output_004.bmp
-rendering to ... output_005.bmp
-rendering to ... output_006.bmp
-rendering to ... output_007.bmp
-rendering to ... output_008.bmp
-rendering to ... output_009.bmp
-rendering to ... output_010.bmp
-rendering to ... output_011.bmp
-Total rendering time:   5.92246 [sec]
-Average rendering time: 0.493539 [sec]
-```
+
+The example writes off-screen rendering results such as `output_000.bmp`.
+
+## Troubleshooting
+
+### OSMesa headers or libraries are not found
+
+Set `KVS_OSMESA_DIR`. If the installation layout is not `include` and `lib` under one prefix, set `KVS_OSMESA_INCLUDE_PATH`, `KVS_OSMESA_LIBRARY_PATH`, and `KVS_OSMESA_LINK_LIBRARY`.
+
+### Runtime library not found
+
+Add the OSMesa library directory to the runtime library path for your platform, such as `DYLD_LIBRARY_PATH` on macOS or `LD_LIBRARY_PATH` on Linux.
