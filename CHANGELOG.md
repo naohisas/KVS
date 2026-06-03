@@ -1,6 +1,45 @@
 ### Version 3.x.x Released (2021.xx.xx)
 
-**Default colormap changed: Rainbow to BrewerRdBu
+**Default colormap changed: Rainbow to BrewerRdBu**
+
+**Changed build system**
++ Changed the default C++ standard to C++17 and added KVS_CPP_STANDARD for make, CMake, qmake, and Visual C++ builds.
++ Added KVS_MACOSX_DEPLOYMENT_TARGET and propagated it to make, CMake, qmake, and kvsmake-generated Qt projects.
++ Modernized the CMake build to read kvs.conf and Makefile.def, install headers/resources/tools, and generate find_package package files.
++ Removed legacy CMake package config scripts in Source/cmake in favor of generated package config files.
++ Installed shader/font resources and kvsmake templates with CMake.
+
+**Changed SupportFFmpeg**
++ Added an FFmpeg compatibility layer for newer FFmpeg APIs.
++ Updated bundled AvCpp sources for newer FFmpeg APIs.
++ Added KVS FFmpeg compatibility/configuration headers avcompat.h and avconfig.h.
++ Improved FFmpeg movie renderers to avoid rendering with missing textures.
+
+**Changed SupportOpenCV**
++ Improved OpenCV movie/video renderers to validate frames and textures before rendering.
++ Stopped renderer timers when frame textures are unavailable.
++ Updated OpenCV detection to use pkg-config --exists for opencv4/opencv.
+
+**Changed OpenGL/NanoVG**
++ Added a dummy GL texture path to avoid invalid texture bindings in NanoVG widget rendering.
++ Clamped texture wrapping for image/movie rendering paths.
+
+**Changed SupportQt**
++ Added using declarations for QOpenGLWidget paintEvent and resizeEvent compatibility.
++ Propagated KVS_CPP_STANDARD and KVS_MACOSX_DEPLOYMENT_TARGET to SupportQt qmake projects and kvsmake-generated Qt project files.
++ Improved macOS deployment target handling without requiring Qt mkspec edits.
+
+**Changed SupportMPI**
++ Removed deprecated std::binary_function inheritance from kvs::mpi::Operator.
+
+**Changed tools**
++ Normalized kvsmake generator command exit codes so successful -G/-Q generation returns 0.
++ Filtered Python linker flags used by KVS build tools.
++ Updated kvscheck initialization and kvsview support library linkage.
+
+**Updated documentation**
++ Revised the top-level README with make/CMake build instructions, build variables, installation layout, and Support package links.
++ Revised Support README files for EGL, FFmpeg, GLFW, GLUT, MPI, OSMesa, OpenCV, Python, and Qt with make/CMake examples and dependency configuration notes.
 
 **Added new class**
 + kvs::Stat::IncrementalMean
